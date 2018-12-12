@@ -34,6 +34,7 @@ export default class Message extends MapHubsComponent<Props, MessageStoreState> 
   }
 
   render () {
+    const {t} = this
     /* eslint-disable react/no-danger */
 
     let messageDisplay = ''
@@ -94,7 +95,7 @@ export default class Message extends MapHubsComponent<Props, MessageStoreState> 
           {messageDisplay}
         </ModalContent>
         <ModalFooter>
-          <a href='#!' className=' modal-action modal-close waves-effect waves-light btn-flat' onClick={this.onDismiss}>{this.__('Okay')}</a>
+          <a href='#!' className=' modal-action modal-close waves-effect waves-light btn-flat' onClick={this.onDismiss}>{t('Okay')}</a>
         </ModalFooter>
       </Modal>
     )

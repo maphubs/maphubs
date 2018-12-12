@@ -1,20 +1,16 @@
 // @flow
 import React from 'react'
-import MapHubsComponent from '../MapHubsComponent'
 import slugify from 'slugify'
 import _isequal from 'lodash.isequal'
 
 type Props = {|
   maps: Array<Object>,
-  showTitle: boolean
+  showTitle: boolean,
+  t: Function
 |}
 
-type DefaultProps = {
-  showTitle: boolean
-}
-
-export default class MapList extends MapHubsComponent<Props, void> {
-  static defaultProps: DefaultProps = {
+export default class MapList extends React.Component<Props, void> {
+  static defaultProps = {
     showTitle: true
   }
 
@@ -27,22 +23,18 @@ export default class MapList extends MapHubsComponent<Props, void> {
   }
 
   render () {
-    let title = ''
-    let className = 'collection'
-    if (this.props.showTitle) {
-      className = 'collection with-header'
-      title = (
-        <li className='collection-header'>
-          <h4>{this.__('Maps')}</h4>
-        </li>
-      )
-    }
+    const {t, showTitle, maps} = this.props
+    const className = showTitle ? 'collection with-header' : 'collection'
 
     return (
       <ul className={className}>
-        {title}
-        {this.props.maps.map((map, i) => {
-          const mapTitle = this._o_(map.title)
+        {showTitle &&
+          <li className='collection-header'>
+            <h4>{t('Maps')}</h4>
+          </li>
+        }
+        {maps.map((map, i) => {
+          const mapTitle = t(map.title)
           const slugTitle = slugify(mapTitle)
           return (
             <li className='collection-item' key={map.map_id}>

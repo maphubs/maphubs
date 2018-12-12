@@ -59,6 +59,7 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
   }
 
   submit = (model: Object) => {
+    const {t} = this
     const _this = this
     const layers = []
 
@@ -84,10 +85,10 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
 
     }, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         NotificationActions.showNotification({
-          message: _this.__('Layer Saved'),
+          message: t('Layer Saved'),
           dismissAfter: 1000,
           onDismiss () {
             // reset style to load correct source
@@ -110,19 +111,20 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     return (
       <div className='row'>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div>
-            <p>{this.__('Paste the selected IDs from the Planet Explorer API box')}</p>
+            <p>{t('Paste the selected IDs from the Planet Explorer API box')}</p>
             <div className='row'>
-              <TextArea name='selectedIDs' label={this.__('Planet Explorer Selected IDs')}
+              <TextArea name='selectedIDs' label={t('Planet Explorer Selected IDs')}
                 length={2000}
                 icon='info' className='col s12'required />
             </div>
           </div>
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Save and Continue')}</button>
+            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
           </div>
         </Formsy>
       </div>

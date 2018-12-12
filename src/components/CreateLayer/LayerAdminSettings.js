@@ -49,10 +49,11 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
+    const {t} = this
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (_this.props.warnIfUnsaved && _this.state.pendingChanges) {
-        const msg = _this.__('You have not saved your edits, your changes will be lost.')
+        const msg = t('You have not saved your edits, your changes will be lost.')
         e.returnValue = msg
         return msg
       }
@@ -85,6 +86,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
   }
 
   onSubmit = (model: Object) => {
+    const {t} = this
     const _this = this
 
     if (!model.group && this.state.owned_by_group_id) {
@@ -94,7 +96,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
 
     LayerActions.saveAdminSettings(model, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         _this.setState({pendingChanges: false})
         _this.props.onSubmit()
@@ -103,10 +105,11 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
   }
 
   saveExternalLayerConfig = (config: Object) => {
+    const {t} = this
     const _this = this
     LayerActions.saveExternalLayerConfig(config, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         _this.setState({pendingChanges: false})
         _this.props.onSubmit()
@@ -115,6 +118,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const {is_external, external_layer_config, allow_public_submit, disable_export, owned_by_group_id} = this.state
 
     let elcEditor = ''
@@ -123,7 +127,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
         <div className='row' style={{height: '300px'}}>
           <CodeEditor ref='pageEditor' id='layer-elc-editor' mode='json'
             code={JSON.stringify(external_layer_config, undefined, 2)}
-            title={this.__('External Layer Config')}
+            title={t('External Layer Config')}
             onSave={this.saveExternalLayerConfig} modal={false} />
         </div>
       )
@@ -136,16 +140,16 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
               <div className='row'>
                 <Toggle
                   name='disableExport'
-                  labelOff={this.__('Allow Export')}
-                  labelOn={this.__('Disable Export')}
+                  labelOff={t('Allow Export')}
+                  labelOn={t('Disable Export')}
                   checked={disable_export}
                 />
               </div>
               <div className='row'>
                 <Toggle
                   name='allowPublicSubmit'
-                  labelOff={this.__('Disabled')}
-                  labelOn={this.__('Allow Public Data Submission')}
+                  labelOff={t('Disabled')}
+                  labelOn={t('Allow Public Data Submission')}
                   checked={allow_public_submit}
                 />
               </div>

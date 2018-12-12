@@ -31,6 +31,7 @@ export default class LayerNotes extends MapHubsComponent<Props, LayerNotesStoreS
   }
 
   render () {
+    const {t} = this
     let resources = ''
     if (this.props.editing) {
       resources = (
@@ -42,7 +43,7 @@ export default class LayerNotes extends MapHubsComponent<Props, LayerNotesStoreS
             options={{
               buttonLabels: 'fontawesome',
               delay: 100,
-              placeholder: {text: this.__('Enter text, links to webpages, links to documents (from Dropbox, Google Docs, etc.)')},
+              placeholder: {text: t('Enter text, links to webpages, links to documents (from Dropbox, Google Docs, etc.)')},
               toobar: {
                 buttons: ['bold', 'italic', 'underline', 'anchor', 'h5', 'quote', 'orderedlist', 'unorderedlist', 'pre', 'removeFormat']
               },

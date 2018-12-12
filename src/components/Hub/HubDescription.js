@@ -49,6 +49,7 @@ export default class HubDescription extends MapHubsComponent<Props, HubStoreStat
   }
 
   render () {
+    const {t} = this
     let description = ''
     let descriptionVal = null
     if (this.state.hub.description) descriptionVal = this.state.hub.description.replace('&nbsp;', '')
@@ -63,7 +64,7 @@ export default class HubDescription extends MapHubsComponent<Props, HubStoreStat
                 onChange={this.handleDescriptionChange}
                 options={{toolbar: false,
                   buttonLabels: false,
-                  placeholder: {text: this.__('Enter a Description or Intro for Your Hub')},
+                  placeholder: {text: t('Enter a Description or Intro for Your Hub')},
                   disableReturn: true,
                   buttons: []}}
               />

@@ -49,52 +49,42 @@ export default class UserStories extends MapHubsComponent<Props, void> {
   }
 
   render () {
-    const _this = this
-
-    let button = ''
-    if (this.props.myStories) {
-      button = (
-        <div>
-          <div className='fixed-action-btn action-button-bottom-right'>
-            <FloatingButton
-              href='/user/createstory' icon='add'
-              tooltip={this.__('Create New Story')} tooltipPosition='top' />
-          </div>
-        </div>
-      )
-    }
-
-    let emptyMessage = ''
-    if (!this.props.stories || this.props.stories.length === 0) {
-      emptyMessage = (
-        <div className='row' style={{height: 'calc(100% - 100px)'}}>
-          <div className='valign-wrapper' style={{height: '100%'}}>
-            <div className='valign align-center center-align' style={{width: '100%'}}>
-              <h5>{this.__('Click the button below to create your first story')}</h5>
-            </div>
-          </div>
-        </div>
-      )
-    }
+    const {t} = this
+    const {myStories, stories, username} = this.props
 
     return (
       <ErrorBoundary>
         <Header activePage='mystories' {...this.props.headerConfig} />
         <main style={{minHeight: 'calc(100% - 70px)'}}>
           <div className='container' style={{height: '100%'}}>
-            {emptyMessage}
-            {this.props.stories.map((story) => {
+            {(!stories || stories.length === 0) &&
+              <div className='row' style={{height: 'calc(100% - 100px)'}}>
+                <div className='valign-wrapper' style={{height: '100%'}}>
+                  <div className='valign align-center center-align' style={{width: '100%'}}>
+                    <h5>{t('Click the button below to create your first story')}</h5>
+                  </div>
+                </div>
+              </div>
+            }
+            {stories.map((story) => {
               return (
                 <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                   <div className='card-content'>
-                    <StorySummary baseUrl={'/user/' + _this.props.username} story={story} />
+                    <StorySummary baseUrl={`/user/${username}`} story={story} />
                   </div>
                 </div>
               )
             })}
-
           </div>
-          {button}
+          {myStories &&
+            <div>
+              <div className='fixed-action-btn action-button-bottom-right'>
+                <FloatingButton
+                  href='/user/createstory' icon='add'
+                  tooltip={t('Create New Story')} tooltipPosition='top' />
+              </div>
+            </div>
+          }
         </main>
         <Footer {...this.props.footerConfig} />
       </ErrorBoundary>

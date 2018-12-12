@@ -242,6 +242,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
    }
 
   onSave = (model: Object, cb: Function) => {
+    const {t} = this
     const _this = this
     const [, MapState, BaseMapState] = this.props.containers
     const position = MapState.state.map.getPosition()
@@ -251,7 +252,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
 
     const err = this.privacyCheck(model.private, model.group)
     if (err) {
-      MessageActions.showMessage({title: _this.__('Error'), message: err})
+      MessageActions.showMessage({title: t('Error'), message: err})
     } else {
       const basemap = BaseMapState.state.baseMap
       if (!this.state.map_id || this.state.map_id === -1) {
@@ -259,10 +260,10 @@ class MapMaker extends MapHubsComponent<Props, State> {
           cb()
           if (err) {
             // display error to user
-            MessageActions.showMessage({title: _this.__('Error'), message: err})
+            MessageActions.showMessage({title: t('Error'), message: err})
           } else {
             // hide designer
-            NotificationActions.showNotification({message: _this.__('Map Saved')})
+            NotificationActions.showNotification({message: t('Map Saved')})
             _this.onCreate()
           }
         })
@@ -271,10 +272,10 @@ class MapMaker extends MapHubsComponent<Props, State> {
           cb()
           if (err) {
             // display error to user
-            MessageActions.showMessage({title: _this.__('Error'), message: err})
+            MessageActions.showMessage({title: t('Error'), message: err})
           } else {
             // hide designer
-            NotificationActions.showNotification({message: _this.__('Map Saved')})
+            NotificationActions.showNotification({message: t('Map Saved')})
             _this.onCreate()
           }
         })
@@ -306,12 +307,13 @@ class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   addLayer = (layer: Layer) => {
+    const {t} = this
     const _this = this
     const [, MapState] = this.props.containers
     // clone the layer object so we don't mutate the data in the search results
     layer = JSON.parse(JSON.stringify(layer))
     if (MapState.state.map) {
-      if (this.state.mapLayers && this.state.mapLayers.length === 0 && layer.extent_bbox) {      
+      if (this.state.mapLayers && this.state.mapLayers.length === 0 && layer.extent_bbox) {
         MapState.state.map.fitBounds(layer.extent_bbox, 16, 25, false)
       }
       const position = MapState.state.map.getPosition()
@@ -321,7 +323,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
 
     Actions.addToMap(layer, (err) => {
       if (err) {
-        NotificationActions.showNotification({message: _this.__('Map already contains this layer'), dismissAfter: 3000, position: 'topright'})
+        NotificationActions.showNotification({message: t('Map already contains this layer'), dismissAfter: 3000, position: 'topright'})
       }
 
       // switch to map tab
@@ -485,7 +487,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
             <AddLayerPanel myLayers={this.props.myLayers}
               popularLayers={this.props.popularLayers}
               groups={this.props.groups}
-              onAdd={this.addLayer} />
+              onAdd={this.addLayer} t={t} />
           </div>
           <div id='maptab' className='row no-margin' style={{height: 'calc(100vh - 100px)', display: tabContentDisplay}}>
             <div className='row' style={{height: '100%', width: '100%', margin: 0, position: 'relative'}}>

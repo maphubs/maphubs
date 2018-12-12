@@ -78,6 +78,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
+    const {t} = this
     const _this = this
     window.addEventListener('onunload', (e) => {
       if (_this.state.layer_id && _this.state.layer_id !== -1 && !_this.state.complete) {
@@ -100,7 +101,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
 
     window.addEventListener('beforeunload', (e) => {
       if (!_this.state.complete) {
-        const msg = _this.__('You have not finished creating your layer, if you leave now your layer will be deleted.')
+        const msg = t('You have not finished creating your layer, if you leave now your layer will be deleted.')
         e.returnValue = msg
         return msg
       }
@@ -108,7 +109,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
   }
 
   submit = (layerId: number, name: LocalizedString) => {
-    window.location = '/layer/info/' + layerId + '/' + slugify(this._o_(name))
+    window.location = '/layer/info/' + layerId + '/' + slugify(this.t(name))
   }
 
   nextStep = () => {
@@ -120,6 +121,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     if (!this.props.groups || this.props.groups.length === 0) {
       return (
         <div>
@@ -127,8 +129,8 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
           <main>
             <div className='container'>
               <div className='row'>
-                <h5>{this.__('Please Join a Group')}</h5>
-                <p>{this.__('Please create or join a group before creating a layer.')}</p>
+                <h5>{t('Please Join a Group')}</h5>
+                <p>{t('Please create or join a group before creating a layer.')}</p>
               </div>
             </div>
           </main>
@@ -136,7 +138,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
       )
     }
 
-    const stepText = this.__('Step') + ' ' + this.state.step
+    const stepText = t('Step') + ' ' + this.state.step
     let progressWidth = ''
 
     const progressClassName = classNames('determinate', progressWidth)

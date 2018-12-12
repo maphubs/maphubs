@@ -89,10 +89,11 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
+    const {t} = this
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (_this.state.layer && !_this.state.complete) {
-        const msg = _this.__('You have not finished creating your layer.')
+        const msg = t('You have not finished creating your layer.')
         e.returnValue = msg
         return msg
       }
@@ -152,7 +153,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
           checkClientError(res, err, () => {}, (cb) => {
             const layer_id = res.body.layer_id
             _this.setState({complete: true})
-            window.location = '/layer/info/' + layer_id + '/' + slugify(_this._o_(name))
+            window.location = '/layer/info/' + layer_id + '/' + slugify(_this.t(name))
             cb()
           })
         })
@@ -160,6 +161,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     if (!this.props.groups || this.props.groups.length === 0) {
       return (
         <ErrorBoundary>
@@ -167,8 +169,8 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
           <main>
             <div className='container'>
               <div className='row'>
-                <h5>{this.__('Please Join a Group')}</h5>
-                <p>{this.__('Please create or join a group before creating a layer.')}</p>
+                <h5>{t('Please Join a Group')}</h5>
+                <p>{t('Please create or join a group before creating a layer.')}</p>
               </div>
             </div>
           </main>
@@ -189,7 +191,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                 mapConfig={this.props.mapConfig}
                 glStyle={this.state.layer.style}
                 fitBounds={this.state.layer.preview_position.bbox}
-                t={this.t}
+                t={t}
               >
                 <MiniLegend
                   t={this.t}
@@ -212,7 +214,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
           </div>
           <div>
             <button className='btn right' style={{marginTop: '20px'}}
-              onClick={this.saveLayer}>{this.__('Save Layer')}</button>
+              onClick={this.saveLayer}>{t('Save Layer')}</button>
           </div>
         </div>
       )
@@ -221,22 +223,22 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main>
-          <h4>{this.__('Link to a Remote Layer')}</h4>
+          <h4>{t('Link to a Remote Layer')}</h4>
           <div className='container center'>
-            <p>{this.__('Please copy and paste a link to a remote MapHubs layer')}</p>
+            <p>{t('Please copy and paste a link to a remote MapHubs layer')}</p>
             <div className='row'>
               <Formsy onValidSubmit={this.loadRemoteUrl} onValid={this.enableButton} onInvalid={this.disableButton}>
                 <TextInput
-                  name='remoteLayerUrl' label={this.__('Remote MapHubs URL')} icon='link' className='col s12' validations='maxLength:250,isHttps,validMapHubsLayerPath' validationErrors={{
-                    maxLength: this.__('Must be 250 characters or less.'),
-                    isHttps: this.__('MapHubs requires encryption for external links, URLs must start with https://'),
-                    validMapHubsLayerPath: this.__('Not a valid MapHubs Layer URL')
+                  name='remoteLayerUrl' label={t('Remote MapHubs URL')} icon='link' className='col s12' validations='maxLength:250,isHttps,validMapHubsLayerPath' validationErrors={{
+                    maxLength: t('Must be 250 characters or less.'),
+                    isHttps: t('MapHubs requires encryption for external links, URLs must start with https://'),
+                    validMapHubsLayerPath: t('Not a valid MapHubs Layer URL')
                   }} length={250}
-                  dataPosition='top' dataTooltip={this.__('MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer')}
+                  dataPosition='top' dataTooltip={t('MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer')}
                   required />
                 <SelectGroup groups={this.props.groups} type='layer' />
                 <div className='right'>
-                  <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Load Remote Layer')}</button>
+                  <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Load Remote Layer')}</button>
                 </div>
               </Formsy>
             </div>

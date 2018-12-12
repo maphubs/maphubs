@@ -68,6 +68,7 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = (input: string) => {
+    const {t} = this
     const _this = this
     debug.log('searching for: ' + input)
     request.get(urlUtil.getBaseUrl() + '/api/maps/search?q=' + input)
@@ -79,10 +80,10 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
           } else {
             if (res.body.maps && res.body.maps.length > 0) {
               _this.setState({searchActive: true, searchResults: res.body.maps})
-              NotificationActions.showNotification({message: res.body.maps.length + ' ' + _this.__('Results'), position: 'bottomleft'})
+              NotificationActions.showNotification({message: res.body.maps.length + ' ' + t('Results'), position: 'bottomleft'})
             } else {
             // show error message
-              NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
+              NotificationActions.showNotification({message: t('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
             }
           }
         },
@@ -109,15 +110,15 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
         const searchCards = this.state.searchResults.map(cardUtil.getMapCard)
 
         searchResults = (
-          <CardCollection title={this.__('Search Results')} cards={searchCards} t={t} />
+          <CardCollection title={t('Search Results')} cards={searchCards} t={t} />
         )
       } else {
         searchResults = (
           <div className='row'>
             <div className='col s12'>
-              <h5>{this.__('Search Results')}</h5>
+              <h5>{t('Search Results')}</h5>
               <div className='divider' />
-              <p><b>{this.__('No Results Found')}</b></p>
+              <p><b>{t('No Results Found')}</b></p>
             </div>
           </div>
         )
@@ -128,7 +129,7 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
     if (this.state.showList) {
       maps = (
         <div className='container'>
-          <MapList showTitle={false} maps={this.props.maps} />
+          <MapList showTitle={false} maps={this.props.maps} t={t} />
         </div>
       )
     } else {
@@ -145,10 +146,10 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <div className='row' style={{marginBottom: '0px'}}>
               <div className='col l8 m7 s12'>
-                <h4 className='no-margin'>{this.__('Maps')}</h4>
+                <h4 className='no-margin'>{t('Maps')}</h4>
               </div>
               <div className='col l3 m4 s12 right' style={{paddingRight: '15px'}}>
-                <SearchBox label={this.__('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
+                <SearchBox label={t('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
               </div>
             </div>
           </div>
@@ -157,7 +158,7 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
 
             <div className='left-align' style={{marginLeft: '15px', marginTop: '25px'}}>
               <Formsy>
-                <Toggle name='mode' onChange={this.onModeChange} labelOff={this.__('Grid')} labelOn={this.__('List')} checked={this.state.showList} />
+                <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={this.state.showList} />
               </Formsy>
             </div>
             <div className='row'>
@@ -169,7 +170,7 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
             <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
               <FloatingButton
                 href='/map/new'
-                tooltip={this.__('Create New Map')}
+                tooltip={t('Create New Map')}
                 tooltipPosition='top'
                 icon='add' />
             </div>

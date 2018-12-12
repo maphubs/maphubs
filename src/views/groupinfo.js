@@ -69,7 +69,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const _this = this
+    const {t} = this
     const groupId = this.props.group.group_id ? this.props.group.group_id : ''
     let editButton = ''
 
@@ -83,12 +83,12 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
             <li>
               <FloatingButton
                 href='/createlayer' icon='add' color='green'
-                tooltip={this.__('Add New Layer')} tooltipPosition='left' />
+                tooltip={t('Add New Layer')} tooltipPosition='left' />
             </li>
             <li>
               <FloatingButton
                 href={`/group/${groupId}/admin`} icon='settings' color='blue'
-                tooltip={this.__('Manage Group')} tooltipPosition='left' />
+                tooltip={t('Manage Group')} tooltipPosition='left' />
             </li>
           </ul>
         </div>
@@ -96,9 +96,9 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
 
       var addButtons = (
         <div className='valign-wrapper'>
-          <a className='btn valign' style={{margin: 'auto'}} href={'/map/new?group_id=' + groupId}>{this.__('Make a Map')}</a>
-          <a className='btn valign' style={{margin: 'auto'}} href={'/createlayer?group_id=' + groupId}>{this.__('Add a Layer')}</a>
-          <a className='btn valign' style={{margin: 'auto'}} href={'/createhub?group_id=' + groupId}>{this.__('Create a Hub')}</a>
+          <a className='btn valign' style={{margin: 'auto'}} href={'/map/new?group_id=' + groupId}>{t('Make a Map')}</a>
+          <a className='btn valign' style={{margin: 'auto'}} href={'/createlayer?group_id=' + groupId}>{t('Add a Layer')}</a>
+          <a className='btn valign' style={{margin: 'auto'}} href={'/createhub?group_id=' + groupId}>{t('Create a Hub')}</a>
         </div>
       )
     }
@@ -107,7 +107,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
     if (this.props.group.unofficial) {
       unofficial = (
         <div className='row'>
-          <p><b>{this.__('Unofficial Group')}</b> - {this.__('This group is maintained by Maphubs using public data and is not intended to represent the listed organization. If you represent this group and would like to take ownership please contact us.')}</p>
+          <p><b>{t('Unofficial Group')}</b> - {t('This group is maintained by Maphubs using public data and is not intended to represent the listed organization. If you represent this group and would like to take ownership please contact us.')}</p>
         </div>
       )
     }
@@ -115,14 +115,14 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
     let descriptionWithLinks = ''
 
     if (this.props.group.description) {
-      const localizedDescription = this._o_(this.props.group.description)
+      const localizedDescription = this.t(this.props.group.description)
       // regex for detecting links
       const regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig
       descriptionWithLinks = localizedDescription.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>")
     }
-    let status = this.__('DRAFT')
+    let status = t('DRAFT')
     if (this.props.group.published) {
-      status = this.__('Published')
+      status = t('Published')
     }
 
     const allCards = cardUtil.combineCards([this.state.mapCards, this.state.layerCards, this.state.hubCards])
@@ -131,20 +131,20 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <div style={{marginLeft: '10px', marginRight: '10px'}}>
-          <h4>{this._o_(this.props.group.name)}</h4>
+          <h4>{this.t(this.props.group.name)}</h4>
           <div className='row'>
             <div className='col s6'>
-              <img alt={this.__('Group Photo')} width='300' className='' src={'/img/resize/600?url=/group/' + groupId + '/image'} />
+              <img alt={t('Group Photo')} width='300' className='' src={'/img/resize/600?url=/group/' + groupId + '/image'} />
             </div>
             <div className='col s6'>
               <div className='row'>
-                <p><b>{this.__('Description: ')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
+                <p><b>{t('Description: ')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
               </div>
               <div className='row'>
-                <p><b>{this.__('Status: ')}</b>{status}</p>
+                <p><b>{t('Status: ')}</b>{status}</p>
               </div>
               <div className='row'>
-                <p><b>{this.__('Location: ')}</b>{this.props.group.location}</p>
+                <p><b>{t('Location: ')}</b>{this.props.group.location}</p>
               </div>
               {unofficial}
             </div>
@@ -163,14 +163,14 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
           <div>
             <ul className='collection with-header'>
               <li className='collection-header'>
-                <h5>{this.__('Members')}</h5>
+                <h5>{t('Members')}</h5>
               </li>
               {this.props.members.map(function (user, i) {
                 let icon = ''
                 if (user.role === 'Administrator') {
                   icon = (
                     <Tooltip
-                      title={_this.__('Group Administrator')}
+                      title={t('Group Administrator')}
                       position='top' inertia followCursor>
                       <i className='secondary-content material-icons'>
                         supervisor_account
@@ -180,7 +180,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
                 }
                 let image = ''
                 if (user.image) {
-                  image = (<img alt={this.__('Profile Photo')} className='circle' src={user.image} />)
+                  image = (<img alt={t('Profile Photo')} className='circle' src={user.image} />)
                 } else {
                   image = (<i className='material-icons circle'>person</i>)
                 }

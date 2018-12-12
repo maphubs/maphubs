@@ -22,7 +22,7 @@ export default class FeatureProps extends MapHubsComponent<Props, void> {
               const val = this.props.data[preset.tag]
               return (
                 <li key={`feature-attrib-${i}`} style={{padding: 5, lineHeight: '14px'}} className='collection-item attribute-collection-item'>
-                  <p style={{color: 'rgb(158, 158, 158)', fontSize: '12px'}}>{_this._o_(preset.label)}</p>
+                  <p style={{color: 'rgb(158, 158, 158)', fontSize: '12px'}}>{_this.t(preset.label)}</p>
                   <p className='word-wrap' style={{fontSize: '14px'}}>
                     {val}
                   </p>

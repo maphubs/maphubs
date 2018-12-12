@@ -57,6 +57,7 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
   }
 
   submit = (model: Object) => {
+    const {t} = this
     const _this = this
 
     LayerActions.saveDataSettings({
@@ -70,10 +71,10 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
       }
     }, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         NotificationActions.showNotification({
-          message: _this.__('Layer Saved'),
+          message: t('Layer Saved'),
           dismissAfter: 1000,
           onDismiss () {
             // reset style to load correct source
@@ -92,10 +93,11 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const dataTypeOptions = [
-      {value: 'point', label: this.__('Point')},
-      {value: 'line', label: this.__('Line')},
-      {value: 'polygon', label: this.__('Polygon')}
+      {value: 'point', label: t('Point')},
+      {value: 'line', label: t('Line')},
+      {value: 'polygon', label: t('Polygon')}
     ]
 
     return (
@@ -103,19 +105,19 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
 
           <div>
-            <p>{this.__('GeoJSON URL')}</p>
+            <p>{t('GeoJSON URL')}</p>
             <div className='row'>
               <TextInput
-                name='geojsonUrl' label={this.__('GeoJSON URL')} icon='info' className='col s12' validations='maxLength:500,isHttps' validationErrors={{
-                  maxLength: this.__('Must be 500 characters or less.'),
-                  isHttps: this.__('SSL required for external links, URLs must start with https://')
+                name='geojsonUrl' label={t('GeoJSON URL')} icon='info' className='col s12' validations='maxLength:500,isHttps' validationErrors={{
+                  maxLength: t('Must be 500 characters or less.'),
+                  isHttps: t('SSL required for external links, URLs must start with https://')
                 }} length={500}
-                dataPosition='top' dataTooltip={this.__('Vector Tile URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.pbf'}
+                dataPosition='top' dataTooltip={t('Vector Tile URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.pbf'}
                 required />
             </div>
             <div className='row'>
-              <TextInput name='id' label={this.__('ID Property (Optional)')} icon='info' className='col s12'
-                dataPosition='top' dataTooltip={this.__('Some features require idenify a unique identifier that can be used to select features')}
+              <TextInput name='id' label={t('ID Property (Optional)')} icon='info' className='col s12'
+                dataPosition='top' dataTooltip={t('Some features require idenify a unique identifier that can be used to select features')}
                 required />
             </div>
             <div className='row'>
@@ -128,7 +130,7 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
           </div>
 
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Save and Continue')}</button>
+            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
           </div>
         </Formsy>
 

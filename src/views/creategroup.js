@@ -57,7 +57,8 @@ export default class CreateGroup extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const stepText = this.__('Step') + ' ' + this.state.step
+    const {t} = this
+    const stepText = t('Step') + ' ' + this.state.step
     let progressWidth = ''
     let step1 = false
     let step2 = false
@@ -79,7 +80,7 @@ export default class CreateGroup extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <div className='container'>
-          <h4>{this.__('Create Group')}</h4>
+          <h4>{t('Create Group')}</h4>
           <div className='row center'>
             <b>{stepText}</b>
 

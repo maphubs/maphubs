@@ -27,7 +27,7 @@ export default class ConfirmationStore extends Reflux.Store {
     this.listenTo(LocaleActions.changeLocale, this.updateLocale)
   }
 
-  __ (text: string) {
+  t (text: string) {
     let locale = 'en'
     if (this.state && this.state.locale) {
       locale = this.state.locale
@@ -39,10 +39,10 @@ export default class ConfirmationStore extends Reflux.Store {
     return {
       show: false,
       locale: 'en',
-      title: this.__('Confirmation'),
-      message: this.__('Please confirm'),
-      postitiveButtonText: this.__('Okay'),
-      negativeButtonText: this.__('Cancel'),
+      title: this.t('Confirmation'),
+      message: this.t('Please confirm'),
+      postitiveButtonText: this.t('Okay'),
+      negativeButtonText: this.t('Cancel'),
       onPositiveResponse () {},
       onNegativeResponse () {}
     }

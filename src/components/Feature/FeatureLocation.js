@@ -1,6 +1,5 @@
 //  @flow
 import React from 'react'
-import MapHubsPureComponent from '../MapHubsPureComponent'
 import {addLocaleData, IntlProvider, FormattedNumber} from 'react-intl'
 import turf_centroid from '@turf/centroid'
 import {OpenLocationCode} from 'open-location-code'
@@ -20,16 +19,17 @@ addLocaleData(pt)
 const openLocationCode = new OpenLocationCode()
 
 type Props = {
-  geojson?: Object
+  geojson?: Object,
+  t: Function
 }
 
-export default class FeatureLocation extends MapHubsPureComponent<Props, void> {
+export default class FeatureLocation extends React.PureComponent<Props, void> {
   render () {
-    const {geojson} = this.props
+    const {geojson, t} = this.props
     if (!geojson) {
       return (
         <div className='row'>
-          <h5>{this.__('Data Not Available')}</h5>
+          <h5>{t('Data Not Available')}</h5>
         </div>
       )
     }
@@ -44,13 +44,13 @@ export default class FeatureLocation extends MapHubsPureComponent<Props, void> {
       <div className='row'>
         <div className='row no-margin'>
           <span>
-            <b>{this.__('Latitude:')}</b>&nbsp;
+            <b>{t('Latitude:')}</b>&nbsp;
             <IntlProvider locale={this.state.locale}>
               <FormattedNumber value={lat} />
             </IntlProvider>&nbsp;
           </span>
           <span>
-            <b>{this.__('Longitude:')}</b>&nbsp;
+            <b>{t('Longitude:')}</b>&nbsp;
             <IntlProvider locale={this.state.locale}>
               <FormattedNumber value={lon} />
             </IntlProvider>&nbsp;
@@ -58,13 +58,13 @@ export default class FeatureLocation extends MapHubsPureComponent<Props, void> {
         </div>
         <div className='row no-margin'>
           <span>
-            <b>{this.__('Plus Code:')}</b>&nbsp;
-            {plusCode} (<a href='https://plus.codes/' target='_blank'>{this.__('More Info')}</a>)
+            <b>{t('Plus Code:')}</b>&nbsp;
+            {plusCode} (<a href='https://plus.codes/' target='_blank'>{t('More Info')}</a>)
           </span>
         </div>
         <div className='row no-margin'>
           <span>
-            <b>{this.__('UTM:')}</b>&nbsp;
+            <b>{t('UTM:')}</b>&nbsp;
             {utm.properties.zoneNumber}{utm.properties.zoneLetter}&nbsp;
             <IntlProvider locale={this.state.locale}>
               <FormattedNumber value={utm.geometry.coordinates[0]} />

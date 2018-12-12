@@ -47,10 +47,11 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
+    const {t} = this
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (_this.state.group_id && !_this.state.layer_id) {
-        const msg = _this.__('You have not finished importing your layer.')
+        const msg = t('You have not finished importing your layer.')
         e.returnValue = msg
         return msg
       }
@@ -62,16 +63,18 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
   }
 
   onUpload = (result: Object) => {
+    const {t} = this
     if (result.success) {
       this.setState({layer_id: result.layer_id, processing: false})
     } else {
-      MessageActions.showMessage({title: this.__('Error'), message: result.error})
+      MessageActions.showMessage({title: t('Error'), message: result.error})
       this.setState({processing: false})
     }
   }
 
   onUploadError = (err: string) => {
-    MessageActions.showMessage({title: this.__('Error'), message: err})
+    const {t} = this
+    MessageActions.showMessage({title: t('Error'), message: err})
   }
 
   onProcessingStart = () => {
@@ -79,6 +82,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     if (!this.props.groups || this.props.groups.length === 0) {
       return (
         <ErrorBoundary>
@@ -86,8 +90,8 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
           <main>
             <div className='container'>
               <div className='row'>
-                <h5>{this.__('Please Join a Group')}</h5>
-                <p>{this.__('Please create or join a group before creating a layer.')}</p>
+                <h5>{t('Please Join a Group')}</h5>
+                <p>{t('Please create or join a group before creating a layer.')}</p>
               </div>
             </div>
           </main>
@@ -110,8 +114,8 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
     if (this.state.layer_id) {
       importComplete = (
         <div className='row'>
-          <p>{this.__('Import Complete')}</p>
-          <a className='btn' href={`/lyr/${this.state.layer_id}`}>{this.__('Go to Layer')}</a>
+          <p>{t('Import Complete')}</p>
+          <a className='btn' href={`/lyr/${this.state.layer_id}`}>{t('Go to Layer')}</a>
         </div>
       )
     }
@@ -121,7 +125,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
       const url = `/api/import/layer/${this.state.group_id}/upload`
       uploadBox = (
         <div className='row'>
-          <p>{this.__('Please upload a MapHubs (.maphubs) file')}</p>
+          <p>{t('Please upload a MapHubs (.maphubs) file')}</p>
           <FileUpload onUpload={this.onUpload} onFinishTx={this.onProcessingStart} onError={this.onUploadError} action={url} />
         </div>
       )
@@ -131,13 +135,13 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main>
-          <h4>{this.__('Import Layer')}</h4>
+          <h4>{t('Import Layer')}</h4>
           <div className='container center'>
             {groupSelection}
             {uploadBox}
             {importComplete}
           </div>
-          <Progress id='load-data-progess' title={this.__('Loading Data')} subTitle={this.__('Data Loading: This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.processing} />
+          <Progress id='load-data-progess' title={t('Loading Data')} subTitle={t('Data Loading: This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.processing} />
         </main>
       </ErrorBoundary>
     )

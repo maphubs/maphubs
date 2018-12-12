@@ -12,7 +12,8 @@ import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 
 type Props = {
-  text: LocalizedString
+  text: LocalizedString,
+  t: Function
 }
 
 type State = {
@@ -27,7 +28,7 @@ export default class MailingList extends MapHubsComponent<Props, State> {
     email: ''
   }
 
-  static defaultProps: Props = {
+  static defaultProps = {
     text: {en: '', fr: '', es: '', it: ''}
   }
 
@@ -56,16 +57,17 @@ export default class MailingList extends MapHubsComponent<Props, State> {
   }
 
   onSubmit = (model: Object) => {
+    const {t} = this
     const _this = this
     if (this.state.valid) {
       UserActions.joinMailingList(model.email, this.state._csrf, (err) => {
         if (err) {
           MessageActions.showMessage({title: err.title, message: err.detail})
         } else {
-          _this.setState({email: _this.state.email, placeholder: _this.__('Thanks for signing up!')})
+          _this.setState({email: _this.state.email, placeholder: t('Thanks for signing up!')})
           NotificationActions.showNotification(
             {
-              message: _this.__('Added ' + model.email + ' to the list. Thanks for joining!'),
+              message: t('Added ' + model.email + ' to the list. Thanks for joining!'),
               position: 'topright'
             })
         }
@@ -73,20 +75,21 @@ export default class MailingList extends MapHubsComponent<Props, State> {
     } else {
       NotificationActions.showNotification(
         {
-          message: _this.__('Please enter a valid email address'),
+          message: t('Please enter a valid email address'),
           position: 'topright'
         })
     }
   }
 
   render () {
+    const {t} = this
     const _this = this
 
-    const placeholder = this.state.placeholder ? this.state.placeholder : _this.__('Sign up for our mailing list')
+    const placeholder = this.state.placeholder ? this.state.placeholder : t('Sign up for our mailing list')
     return (
       <div className='container valign-wrapper' style={{height: '62px'}}>
         <div className='col s6 valign right-align'>
-          <b style={{fontSize: '14px'}}>{this._o_(this.props.text)}</b>
+          <b style={{fontSize: '14px'}}>{this.t(this.props.text)}</b>
         </div>
         <div className='col s6 valign'>
           <Formsy onSubmit={this.onSubmit} onValid={this.onValid} onInvalid={this.onInvalid}>
@@ -94,13 +97,13 @@ export default class MailingList extends MapHubsComponent<Props, State> {
               <TextInput name='email' label={null} placeholder={placeholder}
                 className='left no-margin no-padding mailing-list-text-input'
                 validations={{isEmail: true}} validationErrors={{
-                  isEmail: this.__('Not a valid email address.')
+                  isEmail: t('Not a valid email address.')
                 }}
                 showCharCount={false}
                 useMaterialize={false}
                 value={this.state.email}
-                onClick={function () {
-                  _this.setState({placeholder: _this.__('Enter your email address')})
+                onClick={() => {
+                  _this.setState({placeholder: t('Enter your email address')})
                 }}
                 required />
               <button type='submit' className='left waves-effect waves-light btn'
@@ -115,7 +118,7 @@ export default class MailingList extends MapHubsComponent<Props, State> {
                   paddingLeft: 0,
                   paddingRight: 0,
                   textTransform: 'none'
-                }}>{this.__('Sign up')}</button>
+                }}>{t('Sign up')}</button>
             </div>
           </Formsy>
         </div>

@@ -63,7 +63,7 @@ export default class Map extends MapHubsComponent<Props, void> {
   }
 
   mapCreated = (mapId: number, title: LocalizedString) => {
-    window.location = '/map/view/' + mapId + '/' + slugify(this._o_(title))
+    window.location = '/map/view/' + mapId + '/' + slugify(this.t(title))
   }
 
   render () {

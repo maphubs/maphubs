@@ -54,10 +54,11 @@ export default class AllStories extends MapHubsComponent<Props, State> {
   }
 
   onCreateStory = () => {
+    const {t} = this
     if (this.state.user && this.state.user.display_name) {
       window.location = '/user/' + this.state.user.display_name + '/stories'
     } else {
-      MessageActions.showMessage({title: 'Login Required', message: this.__('Please login to your account or register for an account.')})
+      MessageActions.showMessage({title: 'Login Required', message: t('Please login to your account or register for an account.')})
     }
   }
 

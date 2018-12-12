@@ -23,6 +23,7 @@ export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStor
   }
 
   onSubmit = () => {
+    const {t} = this
     const _this = this
     const data = {
       is_external: false,
@@ -34,19 +35,20 @@ export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStor
 
     LayerActions.saveDataSettings(data, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
-        NotificationActions.showNotification({message: _this.__('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit})
+        NotificationActions.showNotification({message: t('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit})
       }
     })
   }
 
   render () {
+    const {t} = this
     return (
       <div className='row'>
-        <p>{this.__('Creating a new layer of type:') + ' ' + this.props.type}</p>
+        <p>{t('Creating a new layer of type:') + ' ' + this.props.type}</p>
         <div className='right'>
-          <button className='waves-effect waves-light btn' onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Save and Continue')}</button>
+          <button className='waves-effect waves-light btn' onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
         </div>
       </div>
     )

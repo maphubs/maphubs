@@ -6,7 +6,6 @@ import request from 'superagent'
 import Formsy from 'formsy-react'
 import MessageActions from '../../actions/MessageActions'
 import NotificationActions from '../../actions/NotificationActions'
-import MapHubsComponent from '../MapHubsComponent'
 import Select from '../forms/select'
 import {checkClientError} from '../../services/client-error-response'
 import cardUtil from '../../services/card-util'
@@ -20,7 +19,8 @@ type Props = {
   myLayers: Array<Layer>,
   popularLayers: Array<Layer>,
   groups: Array<Group>,
-  onAdd: Function
+  onAdd: Function,
+  t: Function
 }
 
 type State = {
@@ -29,7 +29,7 @@ type State = {
   selectedGroupId?: string
 }
 
-export default class AddLayerPanel extends MapHubsComponent<Props, State> {
+export default class AddLayerPanel extends React.Component<Props, State> {
   props: Props
 
   state = {
@@ -39,6 +39,7 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = (input: string) => {
+    const {t} = this.props
     const _this = this
     debug.log('searching for: ' + input)
     request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
@@ -50,10 +51,10 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
           } else {
             if (res.body.layers && res.body.layers.length > 0) {
               _this.setState({searchActive: true, searchResults: res.body.layers})
-              NotificationActions.showNotification({message: res.body.layers.length + ' ' + _this.__('Results'), position: 'topright'})
+              NotificationActions.showNotification({message: res.body.layers.length + ' ' + t('Results'), position: 'topright'})
             } else {
             // show error message
-              NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'topright'})
+              NotificationActions.showNotification({message: t('No Results Found'), dismissAfter: 5000, position: 'topright'})
             }
           }
         },
@@ -65,6 +66,7 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
   }
 
   handleGroupSearch = (group_id: string) => {
+    const {t} = this.props
     if (!group_id) {
       this.resetSearch()
       return
@@ -80,10 +82,10 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
           } else {
             if (res.body.layers && res.body.layers.length > 0) {
               _this.setState({searchActive: true, searchResults: res.body.layers, selectedGroupId: group_id})
-              NotificationActions.showNotification({message: res.body.layers.length + ' ' + _this.__('Results'), position: 'topright'})
+              NotificationActions.showNotification({message: res.body.layers.length + ' ' + t('Results'), position: 'topright'})
             } else {
             // show error message
-              NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'topright'})
+              NotificationActions.showNotification({message: t('No Results Found'), dismissAfter: 5000, position: 'topright'})
             }
           }
         },
@@ -99,10 +101,11 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t, myLayers, popularLayers, onAdd} = this.props
     const _this = this
     let myCards = []
     let popularCards = []
-    let myLayers = ''
+    let myLayersDisplay = ''
 
     const cardCarouselStops = [
       {breakpoint: 600, settings: {slidesToShow: 1, slidesToScroll: 1}},
@@ -114,22 +117,22 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
       {breakpoint: 4000, settings: {slidesToShow: 8, slidesToScroll: 8}}
     ]
 
-    if (this.props.myLayers && this.props.myLayers.length > 0) {
-      myCards = this.props.myLayers.map((layer, i) => {
-        return cardUtil.getLayerCard(layer, i, [], _this.props.onAdd)
+    if (myLayers && myLayers.length > 0) {
+      myCards = myLayers.map((layer, i) => {
+        return cardUtil.getLayerCard(layer, i, [], onAdd)
       })
-      myLayers = (
+      myLayersDisplay = (
         <div className='row'>
           <div className='col s12'>
-            <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('My Layers')}</h5>
+            <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('My Layers')}</h5>
             <div className='divider' />
-            <CardCarousel cards={myCards} infinite={false} responsive={cardCarouselStops} showAddButton t={this.t} />
+            <CardCarousel cards={myCards} infinite={false} responsive={cardCarouselStops} showAddButton t={t} />
           </div>
         </div>
       )
     }
 
-    popularCards = this.props.popularLayers.map((layer, i) => {
+    popularCards = popularLayers.map((layer, i) => {
       return cardUtil.getLayerCard(layer, i, [], _this.props.onAdd)
     })
 
@@ -143,9 +146,9 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
         searchResults = (
           <div className='row'>
             <div className='col s12'>
-              <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
+              <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('Search Results')}</h5>
               <div className='divider' />
-              <CardCarousel infinite={false} cards={searchCards} responsive={cardCarouselStops} showAddButton t={this.t} />
+              <CardCarousel infinite={false} cards={searchCards} responsive={cardCarouselStops} showAddButton t={t} />
             </div>
           </div>
         )
@@ -153,9 +156,9 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
         searchResults = (
           <div className='row'>
             <div className='col s12'>
-              <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
+              <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('Search Results')}</h5>
               <div className='divider' />
-              <p><b>{this.__('No Results Found')}</b></p>
+              <p><b>{t('No Results Found')}</b></p>
             </div>
           </div>
         )
@@ -167,7 +170,7 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
       this.props.groups.map((group) => {
         groupOptions.push({
           value: group.group_id,
-          label: _this._o_(group.name)
+          label: t(group.name)
         })
       })
     }
@@ -176,13 +179,13 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
       <div style={{paddingTop: '10px'}}>
         <div className='row no-margin'>
           <div className='col s6'>
-            <SearchBox label={this.__('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
+            <SearchBox label={t('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
           </div>
           <div className='col s6'>
             <Formsy >
               <Select name='group' id='group-select' startEmpty
                 value={this.state.selectedGroupId} onChange={this.handleGroupSearch}
-                emptyText={this.__('or Select a Group')} options={groupOptions} className='col s12'
+                emptyText={t('or Select a Group')} options={groupOptions} className='col s12'
                 required
               />
             </Formsy>
@@ -190,12 +193,12 @@ export default class AddLayerPanel extends MapHubsComponent<Props, State> {
         </div>
         <div>
           {searchResults}
-          {myLayers}
+          {myLayersDisplay}
           <div className='row'>
             <div className='col s12'>
-              <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Popular Layers')}</h5>
+              <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('Popular Layers')}</h5>
               <div className='divider' />
-              <CardCarousel cards={popularCards} infinite={false} responsive={cardCarouselStops} showAddButton t={this.t} />
+              <CardCarousel cards={popularCards} infinite={false} responsive={cardCarouselStops} showAddButton t={t} />
             </div>
           </div>
         </div>

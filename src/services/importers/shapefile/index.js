@@ -39,7 +39,7 @@ module.exports = async function (filePath: string, layer_id: number, config?: Ob
       .format('GeoJSON')
       .skipfailures()
       .options(['-t_srs', 'EPSG:4326'])
-      .timeout(120000)
+      .timeout(1200000)
       .stream()
 
     return new Promise((resolve, reject) => {

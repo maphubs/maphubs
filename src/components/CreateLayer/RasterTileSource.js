@@ -56,6 +56,7 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
   }
 
   submit = (model: Object) => {
+    const {t} = this
     const _this = this
     let boundsArr
     if (model.bounds) {
@@ -77,10 +78,10 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
       }
     }, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         NotificationActions.showNotification({
-          message: _this.__('Layer Saved'),
+          message: t('Layer Saved'),
           dismissAfter: 1000,
           onDismiss () {
             // reset style to load correct source
@@ -99,6 +100,7 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     return (
       <div className='row'>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
@@ -106,31 +108,31 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
             <p>Raster Tile Source</p>
             <div className='row'>
               <TextInput
-                name='rasterTileUrl' label={this.__('Raster Tile URL')} icon='info' className='col s12' validations='maxLength:500,isHttps' validationErrors={{
-                  maxLength: this.__('Must be 500 characters or less.'),
-                  isHttps: this.__('SSL required for external links, URLs must start with https://')
+                name='rasterTileUrl' label={t('Raster Tile URL')} icon='info' className='col s12' validations='maxLength:500,isHttps' validationErrors={{
+                  maxLength: t('Must be 500 characters or less.'),
+                  isHttps: t('SSL required for external links, URLs must start with https://')
                 }} length={500}
-                dataPosition='top' dataTooltip={this.__('Raster URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.png'}
+                dataPosition='top' dataTooltip={t('Raster URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.png'}
                 required />
             </div>
             <div className='row'>
-              <TextInput name='minzoom' label={this.__('MinZoom (Optional)')} icon='info' className='col s12'
-                dataPosition='top' dataTooltip={this.__('Lowest tile zoom level available in data')}
+              <TextInput name='minzoom' label={t('MinZoom (Optional)')} icon='info' className='col s12'
+                dataPosition='top' dataTooltip={t('Lowest tile zoom level available in data')}
               />
             </div>
             <div className='row'>
-              <TextInput name='maxzoom' label={this.__('MaxZoom (Optional)')} icon='info' className='col s12'
-                dataPosition='top' dataTooltip={this.__('Highest tile zoom level available in data')}
+              <TextInput name='maxzoom' label={t('MaxZoom (Optional)')} icon='info' className='col s12'
+                dataPosition='top' dataTooltip={t('Highest tile zoom level available in data')}
               />
             </div>
             <div className='row'>
-              <TextInput name='bounds' label={this.__('Bounds (Optional)')} icon='info' className='col s12'
-                dataPosition='top' dataTooltip={this.__('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
+              <TextInput name='bounds' label={t('Bounds (Optional)')} icon='info' className='col s12'
+                dataPosition='top' dataTooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
               />
             </div>
           </div>
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Save and Continue')}</button>
+            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
           </div>
         </Formsy>
       </div>

@@ -49,18 +49,20 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
   }
 
   recheckLogin = () => {
+    const {t} = this
     UserActions.getUser((err) => {
       if (err) {
-        NotificationActions.showNotification({message: this.__('Not Logged In - Please Login Again'), dismissAfter: 3000, position: 'topright'})
+        NotificationActions.showNotification({message: t('Not Logged In - Please Login Again'), dismissAfter: 3000, position: 'topright'})
       }
     })
   }
 
   onSave = (model: Object) => {
+    const {t} = this
     const _this = this
     model.title = Locales.formModelToLocalizedString(model, 'title')
-    if (!model.title || this._o_(model.title) === '') {
-      NotificationActions.showNotification({message: this.__('Please Add a Title'), dismissAfter: 5000, position: 'topright'})
+    if (!model.title || this.t(model.title) === '') {
+      NotificationActions.showNotification({message: t('Please Add a Title'), dismissAfter: 5000, position: 'topright'})
       return
     }
 
@@ -79,6 +81,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const {title, editing, owned_by_group_id} = this.props
     const {canSave, saving, ownedByGroup, user} = this.state
     let groups = []
@@ -99,10 +102,10 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
       // if the user is in a group, show group options
       groupToggle = (
         <div className='row no-margin' style={{width: '100%'}}>
-          <Toggle name='ownedByGroup' labelOff={this.__('Owned by Me')} labelOn={this.__('Owned by My Group')}
+          <Toggle name='ownedByGroup' labelOff={t('Owned by Me')} labelOn={t('Owned by My Group')}
             checked={ownedByGroupChecked} className='col s12'
             onChange={this.onOwnedByGroup}
-            dataPosition='right' dataTooltip={this.__('Select who should own this map')}
+            dataPosition='right' dataTooltip={t('Select who should own this map')}
           />
         </div>
       )
@@ -128,7 +131,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
               }}
               className='col s12'
               validations='maxLength:100' validationErrors={{
-                maxLength: this.__('Name must be 100 characters or less.')
+                maxLength: t('Name must be 100 characters or less.')
               }} length={100}
               required />
           </div>
@@ -137,7 +140,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
           <div className='row no-margin' style={{width: '100%'}}>
             <div className='col s12 valign-wrapper'>
               <button type='submit' className='valign waves-effect waves-light btn' style={{margin: 'auto'}}
-                disabled={(!canSave || saving)}>{this.__('Save Map')}</button>
+                disabled={(!canSave || saving)}>{t('Save Map')}</button>
             </div>
           </div>
 
@@ -147,13 +150,13 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
       return (
         <div>
           <div className='row center-align'>
-            <p>{this.__('You must login or sign up before saving a map.')}</p>
+            <p>{t('You must login or sign up before saving a map.')}</p>
           </div>
           <div className='row center-align'>
-            <a className='btn' href='/login' target='_blank' rel='noopener noreferrer'>{this.__('Login')}</a>
+            <a className='btn' href='/login' target='_blank' rel='noopener noreferrer'>{t('Login')}</a>
           </div>
           <div className='row center-align'>
-            <a className='btn' onClick={this.recheckLogin}>{this.__('Retry')}</a>
+            <a className='btn' onClick={this.recheckLogin}>{t('Retry')}</a>
           </div>
         </div>
       )

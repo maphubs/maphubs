@@ -69,10 +69,11 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
+    const {t} = this
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (!_this.state.submitted) {
-        const msg = _this.__('You have not saved your data, your work will be lost.')
+        const msg = t('You have not saved your data, your work will be lost.')
         e.returnValue = msg
         return msg
       }
@@ -89,32 +90,33 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
   }
 
   onCrop = (data: any, info: Object) => {
-    const _this = this
+    const {t} = this
     Actions.setImage(data, info, function (err) {
       if (err) {
         MessageActions.showMessage({
-          title: _this.__('Failed to Save Photo'),
-          message: this.__('An error occurred while processing this photo. Please confirm that the photo has valid GPS location information. Error Message: ') + err
+          title: t('Failed to Save Photo'),
+          message: t('An error occurred while processing this photo. Please confirm that the photo has valid GPS location information. Error Message: ') + err
         })
       } else {
-        NotificationActions.showNotification({message: _this.__('Photo Added')})
+        NotificationActions.showNotification({message: t('Photo Added')})
       }
     })
   }
 
   onSubmit = (model: Object) => {
+    const {t} = this
     const _this = this
     this.setState({saving: true})
     Actions.submit(model, this.state._csrf, (err) => {
       _this.setState({saving: false})
       if (err) {
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+        MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
         ConfirmationActions.showConfirmation({
-          title: _this.__('Photo Saved'),
-          message: _this.__('Do you want to add another photo?'),
-          postitiveButtonText: _this.__('Yes'),
-          negativeButtonText: _this.__('No'),
+          title: t('Photo Saved'),
+          message: t('Do you want to add another photo?'),
+          postitiveButtonText: t('Yes'),
+          negativeButtonText: t('No'),
           onPositiveResponse () {
             location.reload()
           },
@@ -146,6 +148,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     let dataReview = ''
     let dataForm = ''
     let addPhotoButton = ''
@@ -172,7 +175,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
           </div>
           <div className='row no-margin'>
             <button className='btn' style={{marginLeft: '10px'}}
-              onClick={this.resetPhoto}>{this.__('Replace Photo')}</button>
+              onClick={this.resetPhoto}>{t('Replace Photo')}</button>
           </div>
         </div>
       )
@@ -183,9 +186,9 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
     } else {
       addPhotoButton = (
         <div className='row no-margin'>
-          <p>{this.__('Upload a Photo with Location Information')}</p>
+          <p>{t('Upload a Photo with Location Information')}</p>
           <button className='btn' style={{marginLeft: '10px'}}
-            onClick={this.showImageCrop}>{this.__('Add Photo')}</button>
+            onClick={this.showImageCrop}>{t('Add Photo')}</button>
         </div>
       )
     }
@@ -197,7 +200,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
           <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
             <div className='container'>
               <div className='row center-align'>
-                <h5>{this.__('Add data to:') + ' ' + this._o_(this.props.layer.name)}</h5>
+                <h5>{t('Add data to:') + ' ' + this.t(this.props.layer.name)}</h5>
                 {addPhotoButton}
               </div>
               {dataReview}
@@ -206,7 +209,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
               </div>
             </div>
             <ImageCrop ref='imagecrop' aspectRatio={1} lockAspect resize_max_width={1000} resize_max_height={1000} onCrop={this.onCrop} />
-            <Progress id='saving' title={this.__('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
+            <Progress id='saving' title={t('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
           </main>
         </Provider>
       </ErrorBoundary>

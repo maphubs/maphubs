@@ -25,8 +25,6 @@ type State = {
 } & HubStoreState
 
 export default class HubBanner extends MapHubsPureComponent<Props, State> {
-  props: Props
-
   static defaultProps = {
     editing: false,
     subPage: false
@@ -45,19 +43,6 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
     super(props)
     this.stores.push(HubStore)
   }
-
-  /*
-  shouldComponentUpdate(nextProps: Props, nextState: State){
-    //only update if something changes
-    if(!_isequal(this.props, nextProps)){
-      return true;
-    }
-    if(!_isequal(this.state, nextState)){
-      return true;
-    }
-    return false;
-  }
-  */
 
   handleTitleChange = (title: string) => {
     HubActions.setTitle(title)
@@ -97,6 +82,7 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const omhBaseUrl = urlUtil.getBaseUrl()
 
     const hubBaseUrl = omhBaseUrl + '/hub/' + this.state.hub.hub_id
@@ -123,7 +109,7 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
             text={nameVal}
             onChange={this.handleTitleChange}
             options={{toolbar: false,
-              placeholder: {text: this.__('Enter a Title for Your Hub')},
+              placeholder: {text: t('Enter a Title for Your Hub')},
               disableReturn: true,
               buttons: []}}
           />
@@ -137,7 +123,7 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
             onChange={this.handleTaglineChange}
             options={{toolbar: false,
               buttonLabels: false,
-              placeholder: {text: this.__('Enter a Tagline or Subheading for Your Hub')},
+              placeholder: {text: t('Enter a Tagline or Subheading for Your Hub')},
               disableReturn: true,
               buttons: []}}
           />
@@ -179,20 +165,20 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
     if (this.state.logoImage) { // use new image first
       logoImage = (
         <a href={hubBaseUrl}>
-          <img alt={this.__('Hub Photo')} width='100' style={{borderRadius: '25px'}} src={this.state.logoImage} />
+          <img alt={t('Hub Photo')} width='100' style={{borderRadius: '25px'}} src={this.state.logoImage} />
         </a>
       )
     } else if (this.state.hub.hasLogoImage) { // otherwise if there is an image from the server use that
       logoImage = (
         <a href={hubBaseUrl}>
-          <img alt={this.__('Hub Photo')} width='100' style={{borderRadius: '25px'}} src={`/hub/${this.state.hub.hub_id}/images/logo`} />
+          <img alt={t('Hub Photo')} width='100' style={{borderRadius: '25px'}} src={`/hub/${this.state.hub.hub_id}/images/logo`} />
         </a>
       )
     } else { // show placeholder
       logoImage = (
         <div className='center center-align valign-wrapper' style={{margin: 'auto', borderRadius: '25px', width: '100px', height: '100px', borderStyle: 'dashed', borderColor: '#bdbdbd', borderWidth: '3px'}}>
           <i className='material-icons grey-text valign'>add_a_photo</i>
-          <p className='valign grey-text'>{this.__('Add a Logo')}</p>
+          <p className='valign grey-text'>{t('Add a Logo')}</p>
         </div>
       )
     }
@@ -207,7 +193,7 @@ export default class HubBanner extends MapHubsPureComponent<Props, State> {
         <div className='center center-align' style={{margin: 'auto', borderRadius: '25px', width: '100%', height: '100%', position: 'absolute', top: 0, borderColor: '#bdbdbd', borderStyle: 'dashed', borderWidth: '3px'}}>
           <div className='center center-align valign-wrapper' style={{margin: 'auto', height: '100%', width: '200px'}}>
             <i className='material-icons grey-text valign'>add_a_photo</i>
-            <p className='valign grey-text'>{this.__('Add a Banner Image')}</p>
+            <p className='valign grey-text'>{t('Add a Banner Image')}</p>
           </div>
         </div>
       )

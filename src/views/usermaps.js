@@ -48,6 +48,7 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     const cards = this.props.maps.map(cardUtil.getMapCard)
 
     let createMaps = ''
@@ -57,7 +58,7 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
           <div className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton
               href='/map/new' icon='add'
-              tooltip={this.__('Create New Map')} tooltipPosition='top' />
+              tooltip={t('Create New Map')} tooltipPosition='top' />
           </div>
         </div>
       )
@@ -69,7 +70,7 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
         <div className='row' style={{height: 'calc(100% - 100px)'}}>
           <div className='valign-wrapper' style={{height: '100%'}}>
             <div className='valign align-center center-align' style={{width: '100%'}}>
-              <h5>{this.__('Click the button below to create your first map')}</h5>
+              <h5>{t('Click the button below to create your first map')}</h5>
             </div>
           </div>
         </div>
@@ -78,7 +79,7 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
       myMaps = (
         <div className='row'>
           <div className='col s12'>
-            <h4>{this.__('My Maps')}</h4>
+            <h4>{t('My Maps')}</h4>
             <CardCarousel infinite={false} cards={cards} t={this.t} />
           </div>
         </div>

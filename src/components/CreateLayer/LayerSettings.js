@@ -65,10 +65,11 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
+    const {t} = this
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (_this.props.warnIfUnsaved && _this.state.pendingChanges) {
-        const msg = _this.__('You have not saved your edits, your changes will be lost.')
+        const msg = t('You have not saved your edits, your changes will be lost.')
         e.returnValue = msg
         return msg
       }
@@ -98,6 +99,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
   }
 
   onSubmit = (model: Object) => {
+    const {t} = this
     const _this = this
     model.name = Locales.formModelToLocalizedString(model, 'name')
     model.description = Locales.formModelToLocalizedString(model, 'description')
@@ -120,7 +122,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
 
     LayerActions.saveSettings(model, _this.state._csrf, initLayer, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         _this.setState({pendingChanges: false})
         _this.props.onSubmit()
@@ -133,12 +135,13 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     if (this.props.showGroup && (!this.props.groups || this.props.groups.length === 0)) {
       return (
         <div className='container'>
           <div className='row'>
-            <h5>{this.__('Please Join a Group')}</h5>
-            <p>{this.__('Please create or join a group before creating a layer.')}</p>
+            <h5>{t('Please Join a Group')}</h5>
+            <p>{t('Please create or join a group before creating a layer.')}</p>
           </div>
         </div>
       )
@@ -148,7 +151,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
       canChangeGroup = false
     }
 
-    const licenseOptions = Licenses.getLicenses(this.__)
+    const licenseOptions = Licenses.getLicenses(t)
 
     let prevButton = ''
     let submitIcon = ''
@@ -188,9 +191,9 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   className='col s12'
                   value={this.state.name}
                   validations='maxLength:100' validationErrors={{
-                    maxLength: this.__('Name must be 100 characters or less.')
+                    maxLength: t('Name must be 100 characters or less.')
                   }} length={100}
-                  dataPosition='top' dataTooltip={this.__('Short Descriptive Name for the Layer')}
+                  dataPosition='top' dataTooltip={t('Short Descriptive Name for the Layer')}
                   required />
               </div>
               <div className='row'>
@@ -204,9 +207,9 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   className='col s12'
                   value={this.state.description}
                   validations='maxLength:1000' validationErrors={{
-                    maxLength: this.__('Description must be 1000 characters or less.')
+                    maxLength: t('Description must be 1000 characters or less.')
                   }} length={1000}
-                  dataPosition='top' dataTooltip={this.__('Brief Description of the Layer')}
+                  dataPosition='top' dataTooltip={t('Brief Description of the Layer')}
                   required />
               </div>
               {selectGroup}
@@ -219,29 +222,29 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   }} className='col s12'
                   value={this.state.source}
                   validations='maxLength:300' validationErrors={{
-                    maxLength: this.__('Name must be 300 characters or less.')
+                    maxLength: t('Name must be 300 characters or less.')
                   }} length={300}
-                  dataPosition='top' dataTooltip={this.__('Short Description of the Layer Source')}
+                  dataPosition='top' dataTooltip={t('Short Description of the Layer Source')}
                   required />
               </div>
               <div className='row'>
-                <Select name='license' id='layer-source-select' label={this.__('License')} startEmpty={false}
+                <Select name='license' id='layer-source-select' label={t('License')} startEmpty={false}
                   value={license} options={licenseOptions}
-                  note={this.__('Select a license for more information')}
+                  note={t('Select a license for more information')}
                   className='col s12'
-                  dataPosition='top' dataTooltip={this.__('Layer License')}
+                  dataPosition='top' dataTooltip={t('Layer License')}
                   required
                 />
               </div>
               <div className='row' style={{border: '1px solid #212121', marginLeft: '5px', padding: '10px 25px 25px 10px'}}>
-                <h5>{this.__('Advanced')}</h5>
+                <h5>{t('Advanced')}</h5>
                 <Toggle
                   name='disable_feature_indexing'
-                  labelOff={this.__('Normal Indexing')}
-                  labelOn={this.__('Disable Feature Indexing')}
+                  labelOff={t('Normal Indexing')}
+                  labelOn={t('Disable Feature Indexing')}
                   checked={this.state.disable_feature_indexing}
                   dataPosition='bottom'
-                  dataTooltip={this.__('Disable search indexing for large layers or layers without meaningful data attributes in order to speed up import time.')}
+                  dataTooltip={t('Disable search indexing for large layers or layers without meaningful data attributes in order to speed up import time.')}
                 />
               </div>
             </div>

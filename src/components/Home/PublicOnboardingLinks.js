@@ -1,20 +1,21 @@
 // @flow
 import React from 'react'
-import MapHubsPureComponent from '../MapHubsPureComponent'
 
 type Props = {
-  demo: boolean
+  demo: boolean,
+  t: Function
 }
 
-export default class PublicOnboardingLinks extends MapHubsPureComponent<Props, void> {
+export default class PublicOnboardingLinks extends React.PureComponent<Props, void> {
   props: Props
 
   render () {
+    const {demo, t} = this.props
     let mapDemoText = ''
     let storyDemoText = ''
     let hubDemoText = ''
     let searchDemoText = ''
-    if (this.props.demo) {
+    if (demo) {
       mapDemoText = (
         <div className='flow-text center-align'>Interactive maps you’ve made</div>
       )
@@ -35,7 +36,7 @@ export default class PublicOnboardingLinks extends MapHubsPureComponent<Props, v
             <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
               <i className='material-icons valign center-align' style={{fontSize: '80px', margin: 'auto'}}>map</i>
             </div>
-            <h5 className='center-align'>{this.__('Maps')}</h5>
+            <h5 className='center-align'>{t('Maps')}</h5>
           </a>
           {mapDemoText}
         </div>
@@ -44,7 +45,7 @@ export default class PublicOnboardingLinks extends MapHubsPureComponent<Props, v
             <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
               <i className='material-icons valign center-align' style={{fontSize: '80px', margin: 'auto'}}>library_books</i>
             </div>
-            <h5 className='center-align'>{this.__('Stories')}</h5>
+            <h5 className='center-align'>{t('Stories')}</h5>
           </a>
           {storyDemoText}
         </div>
@@ -53,7 +54,7 @@ export default class PublicOnboardingLinks extends MapHubsPureComponent<Props, v
             <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
               <i className='material-icons valign center-align' style={{fontSize: '80px', margin: 'auto'}}>web</i>
             </div>
-            <h5 className='center-align'>{this.__('Hubs')}</h5>
+            <h5 className='center-align'>{t('Hubs')}</h5>
           </a>
           {hubDemoText}
         </div>
@@ -62,7 +63,7 @@ export default class PublicOnboardingLinks extends MapHubsPureComponent<Props, v
             <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
               <i className='material-icons valign center-align' style={{fontSize: '80px', margin: 'auto'}}>search</i>
             </div>
-            <h5 className='center-align'>{this.__('Search')}</h5>
+            <h5 className='center-align'>{t('Search')}</h5>
           </a>
           {searchDemoText}
         </div>

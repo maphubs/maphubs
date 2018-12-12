@@ -41,7 +41,6 @@ type Props = {
 type State = LocaleStoreState;
 
 export default class Header extends MapHubsComponent<Props, State> {
-  props: Props
   sidenav: any
 
   static defaultProps = {
@@ -60,12 +59,13 @@ export default class Header extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
+    const {t} = this
     M.Sidenav.init(this.sidenav, {})
 
     if (this.detectIE()) {
       MessageActions.showMessage({
-        title: this.__('Unsupported Browser'),
-        message: this.__('Unable to support Internet Explorer. Please use Firefox or Chrome.')
+        title: t('Unsupported Browser'),
+        message: t('Unable to support Internet Explorer. Please use Firefox or Chrome.')
       })
     }
   }
@@ -154,6 +154,7 @@ export default class Header extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const defaultLinkClasses = 'nav-link-item'
     const activeLinkClasses = 'nav-link-item active'
 
@@ -170,7 +171,7 @@ export default class Header extends MapHubsComponent<Props, State> {
         <nav style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)'}}>
           <div className='nav-wrapper z-depth-0'>
             <a className='brand-logo valign-wrapper' href={logoLinkUrl}>
-              <img className='valign' width={MAPHUBS_CONFIG.logoWidth} height={MAPHUBS_CONFIG.logoHeight} style={{margin: '5px'}} src={MAPHUBS_CONFIG.logo} alt={MAPHUBS_CONFIG.productName + ' ' + this.__('Logo')} />
+              <img className='valign' width={MAPHUBS_CONFIG.logoWidth} height={MAPHUBS_CONFIG.logoHeight} style={{margin: '5px'}} src={MAPHUBS_CONFIG.logo} alt={MAPHUBS_CONFIG.productName + ' ' + t('Logo')} />
               <small id='beta-text' style={{position: 'absolute', top: '12px', left: MAPHUBS_CONFIG.logoWidth + 5 + 'px', fontSize: '12px'}}>{MAPHUBS_CONFIG.betaText}</small>
             </a>
 
@@ -178,7 +179,7 @@ export default class Header extends MapHubsComponent<Props, State> {
             <ul className='right hide-on-med-and-down'>
               {showMakeAMap &&
                 <li className='nav-link-wrapper'>
-                  <a className={mapClasses} href='/map/new'>{this.__('Make a Map')}</a>
+                  <a className={mapClasses} href='/map/new'>{t('Make a Map')}</a>
                 </li>
               }
               {showExplore &&
@@ -188,17 +189,17 @@ export default class Header extends MapHubsComponent<Props, State> {
                 this.props.customLinks.map((link, i) => {
                   return (
                     <li key={`nav-custom-link-${i}`} className='nav-link-wrapper'>
-                      <a className={mapClasses} href={link.href}>{this._o_(link.label)}</a>
+                      <a className={mapClasses} href={link.href}>{this.t(link.label)}</a>
                     </li>
                   )
                 })
               }
               <LocaleChooser />
               {showSearch &&
-                <SearchButton t={this.__} searchLink={customSearchLink || '/search'} />
+                <SearchButton t={t} searchLink={customSearchLink || '/search'} />
               }
               {showHelp &&
-                <HelpButton t={this.__} helpLink={customHelpLink || 'https://help.maphubs.com'} />
+                <HelpButton t={t} helpLink={customHelpLink || 'https://help.maphubs.com'} />
               }
               <UserMenu id='user-menu-header' />
             </ul>
@@ -208,24 +209,24 @@ export default class Header extends MapHubsComponent<Props, State> {
               }
               {showMakeAMap &&
                 <li className='nav-link-wrapper'>
-                  <a className={mapClasses} href='/map/new'>{this.__('Make a Map')}</a>
+                  <a className={mapClasses} href='/map/new'>{t('Make a Map')}</a>
                 </li>
               }
               {
                 customLinks.map((link, i) => (
                   <li key={`nav-custom-link-${i}`} className='nav-link-wrapper'>
-                    <a className={mapClasses} href={link.href}>{this._o_(link.label)}</a>
+                    <a className={mapClasses} href={link.href}>{this.t(link.label)}</a>
                   </li>
                 ))
               }
               {showSearch &&
                 <li className='nav-link-wrapper'>
-                  <a className={mapClasses} href={customSearchLink || '/search'}>{this.__('Search')}</a>
+                  <a className={mapClasses} href={customSearchLink || '/search'}>{t('Search')}</a>
                 </li>
               }
               {showHelp &&
                 <li className='nav-link-wrapper'>
-                  <a className={mapClasses} href={customHelpLink || 'https://help.maphubs.com'}>{this.__('Help/Support')}</a>
+                  <a className={mapClasses} href={customHelpLink || 'https://help.maphubs.com'}>{t('Help/Support')}</a>
                 </li>
               }
               <UserMenu id='user-menu-sidenav' sidenav />

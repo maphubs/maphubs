@@ -66,10 +66,11 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
+    const {t} = this
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (!_this.state.submitted) {
-        const msg = _this.__('You have not finished. Layer data replacement may be incomplete.')
+        const msg = t('You have not finished. Layer data replacement may be incomplete.')
         e.returnValue = msg
         return msg
       }
@@ -82,11 +83,12 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
 
   onDataSubmit = () => {
     this.setState({submitted: true})
-    window.location = '/layer/info/' + this.props.layer.layer_id + '/' + slugify(this._o_(this.props.layer.name))
+    window.location = '/layer/info/' + this.props.layer.layer_id + '/' + slugify(this.t(this.props.layer.name))
   }
 
   render () {
-    const name = slugify(this._o_(this.props.layer.name))
+    const {t} = this
+    const name = slugify(this.t(this.props.layer.name))
     const layerId = this.props.layer.layer_id
     const maphubsFileURL = `/api/layer/${layerId}/export/maphubs/${name}.maphubs`
 
@@ -104,15 +106,15 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
           <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
             <div className='container'>
               <div className='row center-align'>
-                <h5>{this.__('Replace data in layer:') + ' ' + this._o_(this.props.layer.name)}</h5>
-                <p>{this.__('First you must download the backup file. This file can be used to restore the previous data if needed.')}</p>
-                <a className='btn' href={maphubsFileURL} target='_blank' onClick={this.onDownload}>{this.__('Download Backup File')}</a>
+                <h5>{t('Replace data in layer:') + ' ' + this.t(this.props.layer.name)}</h5>
+                <p>{t('First you must download the backup file. This file can be used to restore the previous data if needed.')}</p>
+                <a className='btn' href={maphubsFileURL} target='_blank' onClick={this.onDownload}>{t('Download Backup File')}</a>
               </div>
               <div className='row'>
                 {upload}
               </div>
             </div>
-            <Progress id='saving' title={this.__('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
+            <Progress id='saving' title={t('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
           </main>
         </Provider>
       </ErrorBoundary>

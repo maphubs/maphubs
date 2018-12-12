@@ -41,6 +41,7 @@ export default class HubStories extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const _this = this
     let addButton = ''
     const baseUrl = '/hub/' + this.props.hub.hub_id
@@ -48,7 +49,7 @@ export default class HubStories extends MapHubsComponent<Props, State> {
     if (_this.props.editing) {
       addButton = (
         <div>
-          <a href={baseUrl + '/story/create'} className='btn center-align center'><i className='material-icons left'>add</i>{this.__('Add Story')}</a>
+          <a href={baseUrl + '/story/create'} className='btn center-align center'><i className='material-icons left'>add</i>{t('Add Story')}</a>
         </div>
 
       )

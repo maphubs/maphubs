@@ -71,8 +71,9 @@ export default class FileUpload extends MapHubsComponent<Props, State> {
   }
 
   customFormRenderer = (onSubmit: Function, onFileClick: Function) => {
+    const {t} = this
     const _this = this
-    const onSubmitWrapper = function (val) {
+    const onSubmitWrapper = (val) => {
       if (_this.props.onChange) {
         _this.props.onChange()
       }
@@ -85,7 +86,7 @@ export default class FileUpload extends MapHubsComponent<Props, State> {
             <div className='col s12'>
 
               <div className='btn'>
-                <span>{this.__('Choose File')}</span>
+                <span>{t('Choose File')}</span>
                 <input type='file' name='file' style={this.props.inputStyle} ref='input' onChange={onSubmitWrapper} />
               </div>
             </div>
@@ -97,16 +98,17 @@ export default class FileUpload extends MapHubsComponent<Props, State> {
   }
 
   customProgressRenderer = (progress: number, hasError: boolean, cancelHandler: Function) => {
+    const {t} = this
     let progressRenderer
     if (hasError || progress > -1) {
       const progressPct = progress + '%'
 
       let message = (<span>{progressPct}</span>)
       if (hasError) {
-        message = (<span style={{'color': '#a94442'}}>{this.__('Failed to upload ...')}</span>)
+        message = (<span style={{'color': '#a94442'}}>{t('Failed to upload ...')}</span>)
       }
       if (progress === 100) {
-        message = (<span>{this.__('Done')}</span>)
+        message = (<span>{t('Done')}</span>)
       }
 
       progressRenderer = (

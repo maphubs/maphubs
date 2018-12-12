@@ -51,6 +51,7 @@ export default class HubStory extends MapHubsComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     const story = this.props.story
     const title = story.title.replace('&nbsp;', '')
     let button = ''
@@ -60,7 +61,7 @@ export default class HubStory extends MapHubsComponent<Props, void> {
         <div className='fixed-action-btn action-button-bottom-right'>
           <FloatingButton icon='mode_edit'
             href={`${baseUrl}/story/${this.props.story.story_id}/edit/${slugify(title)}`}
-            tooltip={this.__('Edit')} tooltipPosition='left' />
+            tooltip={t('Edit')} tooltipPosition='left' />
         </div>
       )
     }

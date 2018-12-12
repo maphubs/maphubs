@@ -70,17 +70,18 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
   }
 
   onSubmit = () => {
+    const {t} = this
     const _this = this
 
     LayerActions.submitPresets(false, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         LayerActions.replaceData(_this.state._csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: _this.__('Error'), message: err})
+            MessageActions.showMessage({title: t('Error'), message: err})
           } else {
-            NotificationActions.showNotification({message: _this.__('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit})
+            NotificationActions.showNotification({message: t('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit})
           }
         })
       }
@@ -88,7 +89,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
   }
 
   onUpload = (result: Object) => {
-    const _this = this
+    const {t} = this
 
     if (result.success) {
       this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData})
@@ -99,27 +100,29 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
       if (result.code === 'MULTIPLESHP') {
         this.setState({multipleShapefiles: result.shapefiles})
       } else {
-        MessageActions.showMessage({title: _this.__('Error'), message: result.error})
+        MessageActions.showMessage({title: t('Error'), message: result.error})
       }
     }
     this.setState({processing: false})
   }
 
   onUploadError = (err: string) => {
-    MessageActions.showMessage({title: this.__('Error'), message: err})
+    const {t} = this
+    MessageActions.showMessage({title: t('Error'), message: err})
   }
 
   finishUpload = (shapefileName: string) => {
+    const {t} = this
     const _this = this
     LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else if (result.success) {
         _this.setState({geoJSON: result.geoJSON, canSubmit: true, multipleShapefiles: null})
         LayerActions.setDataType(result.data_type)
         LayerActions.setImportedTags(result.uniqueProps, true)
       } else {
-        MessageActions.showMessage({title: _this.__('Error'), message: result.error})
+        MessageActions.showMessage({title: t('Error'), message: result.error})
       }
     })
   }
@@ -129,19 +132,20 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
   }
 
   render () {
+    const {t} = this
     const layer_id = this.state.layer_id ? this.state.layer_id : 0
     const url = `/api/layer/${layer_id}/replace`
     let largeDataMessage = ''
     if (this.state.largeData) {
       largeDataMessage = (
-        <p>{this.__('Data Upload Successful: Large dataset detected, you will be able to view the data after it is saved.')}</p>
+        <p>{t('Data Upload Successful: Large dataset detected, you will be able to view the data after it is saved.')}</p>
       )
     }
     let map = ''
     if (this.state.geoJSON) {
       map = (
         <div ref='mapSection'>
-          <p>{this.__('Please review the data on the map to confirm the upload was successful.')}</p>
+          <p>{t('Please review the data on the map to confirm the upload was successful.')}</p>
           <Map style={{width: '100%', height: '400px'}}
             id='upload-preview-map' t={this.t}
             showFeatureInfoEditButtons={false}
@@ -158,16 +162,16 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
         options.push({value: shpFile, label: shpFile})
       })
       multipleShapefiles = (
-        <RadioModal ref='chooseshape' title={this.__('Multiple Shapefiles Found - Please Select One')}
+        <RadioModal ref='chooseshape' title={t('Multiple Shapefiles Found - Please Select One')}
           options={options} onSubmit={this.finishUpload} />
       )
     }
 
     return (
       <div className='row'>
-        <Progress id='upload-process-progess' title={this.__('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />
+        <Progress id='upload-process-progess' title={t('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />
         <div>
-          <p>{this.__('Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)')}</p>
+          <p>{t('Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)')}</p>
           <div className='row'>
             <FileUpload onUpload={this.onUpload} onFinishTx={this.onProcessingStart} onError={this.onUploadError} action={url} />
           </div>
@@ -178,7 +182,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
           {multipleShapefiles}
         </div>
         <div className='right'>
-          <button className='waves-effect waves-light btn' disabled={!this.state.canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Replace Layer Data')}</button>
+          <button className='waves-effect waves-light btn' disabled={!this.state.canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Replace Layer Data')}</button>
         </div>
       </div>
     )

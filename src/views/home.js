@@ -227,11 +227,11 @@ export default class HomePro extends MapHubsComponent<Props, State> {
                   backgroundImage: 'url(' + slide.img + ')'
                 }}>
                 <div className='slide-text'>
-                  <h2 className='no-margin'>{this._o_(slide.title)}</h2>
-                  <h3 className='no-margin'>{this._o_(slide.text)}</h3>
+                  <h2 className='no-margin'>{this.t(slide.title)}</h2>
+                  <h3 className='no-margin'>{this.t(slide.text)}</h3>
                 </div>
                 <div className='slide-button center'>
-                  <a className='btn waves-effect z-depth-3' style={{borderRadius: '25px'}} href={slide.link}>{this._o_(slide.buttonText)}</a>
+                  <a className='btn waves-effect z-depth-3' style={{borderRadius: '25px'}} href={slide.link}>{this.t(slide.buttonText)}</a>
                 </div>
               </div>
             )
@@ -257,7 +257,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     const bgColor = config.bgColor ? config.bgColor : 'inherit'
     const links = (
       <div key={key} className='row' style={{backgroundColor: bgColor}}>
-        <PublicOnboardingLinks {...config} />
+        <PublicOnboardingLinks t={this.t} {...config} />
       </div>
     )
     return links
@@ -267,7 +267,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     const bgColor = config.bgColor ? config.bgColor : 'inherit'
     const links = (
       <div key={key} className='row' style={{backgroundColor: bgColor}}>
-        <OnboardingLinks />
+        <OnboardingLinks t={this.t} />
       </div>
     )
     return links
@@ -277,13 +277,14 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     const bgColor = config.bgColor ? config.bgColor : 'inherit'
     const links = (
       <div key={key} className='row' style={{backgroundColor: bgColor}}>
-        <MapHubsProLinks />
+        <MapHubsProLinks t={this.t} />
       </div>
     )
     return links
   }
 
   renderCarousel = (config: Object, key: string) => {
+    const {t} = this
     const {state} = this
     let collectionCards = []
     if (config.datasets) {
@@ -342,7 +343,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
       )
     }
 
-    const title = config.title ? this._o_(config.title) : this.__('Trending')
+    const title = config.title ? t(config.title) : t('Trending')
 
     const carousel = (
       <div key={key} className='row' style={{marginBottom: '50px', backgroundColor: bgColor}}>
@@ -365,6 +366,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
   }
 
   renderStories = (config: Object, key: string) => {
+    const {t} = this
     let stories = []
     const {popularStories, featuredStories, recentStories} = this.props
     if (popularStories && popularStories.length > 0) {
@@ -378,9 +380,9 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     }
     let title = ''
     if (config.title) {
-      title = this._o_(config.title)
+      title = t(config.title)
     } else {
-      title = this.__('Stories')
+      title = t('Stories')
     }
     if (stories.length > 0) {
       return (

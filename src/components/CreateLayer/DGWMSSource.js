@@ -56,6 +56,7 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
   }
 
   submit = (model: Object) => {
+    const {t} = this
     const _this = this
 
     const layers = 'DigitalGlobe:Imagery'
@@ -80,10 +81,10 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
       }
     }, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         NotificationActions.showNotification({
-          message: _this.__('Layer Saved'),
+          message: t('Layer Saved'),
           dismissAfter: 1000,
           onDismiss () {
             // reset style to load correct source
@@ -102,20 +103,21 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     return (
       <div className='row'>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div>
             <p>DigitalGlobe <a href='https://discover.digitalglobe.com/' target='_blank'>https://discover.digitalglobe.com/</a></p>
             <div className='row'>
-              <TextInput name='featureid' label={this.__('DG Image ID')} icon='info' className='col s12'
-                dataPosition='top' dataTooltip={this.__('DigitalGlobe Image ID / Legacy ID')}
+              <TextInput name='featureid' label={t('DG Image ID')} icon='info' className='col s12'
+                dataPosition='top' dataTooltip={t('DigitalGlobe Image ID / Legacy ID')}
                 required
               />
             </div>
           </div>
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Save and Continue')}</button>
+            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
           </div>
         </Formsy>
       </div>

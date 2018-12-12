@@ -89,10 +89,11 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     M.Tabs.init(this.refs.tabs, {})
-    const _this = this
+    const {t} = this
+    const {editingNotes} = this.state
     window.addEventListener('beforeunload', (e) => {
-      if (_this.state.editingNotes) {
-        const msg = _this.__('You have not saved your edits, your changes will be lost.')
+      if (editingNotes) {
+        const msg = t('You have not saved your edits, your changes will be lost.')
         e.returnValue = msg
         return msg
       }
@@ -172,7 +173,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     }
 
     const baseUrl = urlUtil.getBaseUrl()
-    const layerUrl = `${baseUrl}/layer/info/${layer.layer_id}/${slugify(this._o_(layer.name))}`
+    const layerUrl = `${baseUrl}/layer/info/${layer.layer_id}/${slugify(this.t(layer.name))}`
     const mhid = feature.mhid.split(':')[1]
 
     let gpxLink
@@ -217,18 +218,18 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                         <TabPane tab={t('Info')} key='data' style={{height: '100%'}}>
                           <Row style={{height: '100%'}}>
                             <Col sm={24} md={12} style={{height: '100%', border: '1px solid #ddd'}}>
-                              <FeaturePhoto photo={this.state.photo} canEdit={canEdit} />
+                              <FeaturePhoto photo={this.state.photo} canEdit={canEdit} t={t} />
                               <div style={{marginLeft: '5px', overflowY: 'auto'}}>
-                                <p style={{fontSize: '16px'}}><b>{t('Layer:')} </b><a href={layerUrl}>{this._o_(layer.name)}</a></p>
-                                <FeatureLocation geojson={geojsonFeature} />
+                                <p style={{fontSize: '16px'}}><b>{t('Layer:')} </b><a href={layerUrl}>{this.t(layer.name)}</a></p>
+                                <FeatureLocation geojson={geojsonFeature} t={t} />
                                 {isPolygon &&
-                                  <FeatureArea geojson={geojsonFeature} />
+                                  <FeatureArea geojson={geojsonFeature} t={t} />
                                 }
                               </div>
                             </Col>
                             <Col sm={24} md={12} style={{height: '100%', border: '1px solid #ddd'}}>
                               <div style={{overflow: 'auto', height: 'calc(100% - 53px)'}}>
-                                <FeatureProps data={geoJSONProps} presets={presets} />
+                                <FeatureProps data={geoJSONProps} presets={presets} t={t} />
                               </div>
                             </Col>
                           </Row>
@@ -253,7 +254,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                           </TabPane>
                         }
                         <TabPane tab={t('Notes')} key='notes' style={{position: 'relative', height: '100%'}}>
-                          <FeatureNotes editing={this.state.editingNotes} />
+                          <FeatureNotes editing={this.state.editingNotes} t={t} />
                           {canEdit &&
                             <HubEditButton editing={this.state.editingNotes}
                               style={{position: 'absolute'}}
@@ -261,7 +262,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                           }
                         </TabPane>
                         <TabPane tab={t('Export')} key='export' style={{position: 'relative', height: '100%', padding: '10px'}}>
-                          <FeatureExport mhid={mhid} {...layer} />
+                          <FeatureExport t={t} mhid={mhid} {...layer} />
                         </TabPane>
                       </Tabs>
                     </Row>

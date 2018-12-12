@@ -5,23 +5,23 @@ import 'medium-editor/dist/css/medium-editor.css'
 import 'medium-editor/dist/css/themes/flat.css'
 import FeatureNotesStore from '../../stores/FeatureNotesStore'
 import FeatureNotesActions from '../../actions/FeatureNotesActions'
-import MapHubsComponent from '../MapHubsComponent'
 import type {FeatureNotesStoreState} from '../../stores/FeatureNotesStore'
 
 type Props = {|
-  editing: boolean
+  editing: boolean,
+  t: Function
 |}
 
-export default class FeatureNotes extends MapHubsComponent<Props, FeatureNotesStoreState> {
-  props: Props
-
+export default class FeatureNotes extends React.Component<Props, FeatureNotesStoreState> {
   static defaultProps = {
     editing: false
   }
 
+  stores: any
+
   constructor (props: Props) {
     super(props)
-    this.stores.push(FeatureNotesStore)
+    this.stores = [FeatureNotesStore]
   }
 
   handleNotesChange = (notes: string) => {
@@ -29,8 +29,9 @@ export default class FeatureNotes extends MapHubsComponent<Props, FeatureNotesSt
   }
 
   render () {
+    const {editing, t} = this.props
     let resources = ''
-    if (this.props.editing) {
+    if (editing) {
       resources = (
         <div className='row'>
           <Editor
@@ -40,7 +41,7 @@ export default class FeatureNotes extends MapHubsComponent<Props, FeatureNotesSt
             options={{
               buttonLabels: 'fontawesome',
               delay: 100,
-              placeholder: {text: this.__('Enter text, links to webpages, links to documents (from Dropbox, Google Docs, etc.)')},
+              placeholder: {text: t('Enter text, links to webpages, links to documents (from Dropbox, Google Docs, etc.)')},
               toobar: {
                 buttons: ['bold', 'italic', 'underline', 'anchor', 'h5', 'quote', 'orderedlist', 'unorderedlist', 'pre', 'removeFormat']
               },

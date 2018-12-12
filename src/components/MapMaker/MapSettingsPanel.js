@@ -28,13 +28,14 @@ export default class MapSettingsPanel extends MapHubsComponent<Props, MapMakerSt
   }
 
   render () {
+    const {t} = this
     return (
       <div>
-        <button onClick={this.showSettingsEditor} className='btn' style={{margin: '10px'}}>{this.__('Advanced Settings')}</button>
+        <button onClick={this.showSettingsEditor} className='btn' style={{margin: '10px'}}>{t('Advanced Settings')}</button>
 
         <CodeEditor ref='settingsEditor' id='map-settings-editor' mode='json'
           code={JSON.stringify(this.state.settings, undefined, 2)}
-          title={this.__('Advanced Map Settings')}
+          title={t('Advanced Map Settings')}
           onSave={this.onSave} modal />
       </div>
     )

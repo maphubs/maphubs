@@ -77,6 +77,7 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     // only render on the client side, avoids caching a username in SSR
     if (typeof window === 'undefined') {
       return ''
@@ -97,15 +98,15 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
           <div>
             <ul id={this.props.id} style={{top: '100px'}}>
               <li className='divider' />
-              <li className='nav-link-wrapper'><a href={`/user/${displayName}/maps`}>{this.__('My Maps')}</a></li>
-              <li className='nav-link-wrapper'><a href={`/user/${displayName}/stories`}>{this.__('My Stories')}</a></li>
-              <li className='nav-link-wrapper'><a href={`/user/${displayName}/groups`}>{this.__('My Groups')}</a></li>
-              <li className='nav-link-wrapper'><a href={`/user/${displayName}/hubs`}>{this.__('My Hubs')}</a></li>
-              <li className='nav-link-wrapper'><a href='/user/profile'>{this.__('Settings')}</a></li>
+              <li className='nav-link-wrapper'><a href={`/user/${displayName}/maps`}>{t('My Maps')}</a></li>
+              <li className='nav-link-wrapper'><a href={`/user/${displayName}/stories`}>{t('My Stories')}</a></li>
+              <li className='nav-link-wrapper'><a href={`/user/${displayName}/groups`}>{t('My Groups')}</a></li>
+              <li className='nav-link-wrapper'><a href={`/user/${displayName}/hubs`}>{t('My Hubs')}</a></li>
+              <li className='nav-link-wrapper'><a href='/user/profile'>{t('Settings')}</a></li>
               {admin &&
-                <li className='nav-link-wrapper'><a href='/admin/manage'>{this.__('Manage Users')}</a></li>
+                <li className='nav-link-wrapper'><a href='/admin/manage'>{t('Manage Users')}</a></li>
               }
-              <li className='nav-link-wrapper'><a href={'/logout'}>{this.__('Logout')}</a></li>
+              <li className='nav-link-wrapper'><a href={'/logout'}>{t('Logout')}</a></li>
             </ul>
           </div>
         )
@@ -118,20 +119,20 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
               <i className='material-icons right' style={{marginLeft: 0, color: '#212121', height: '30px', lineHeight: '30px', width: '15px'}}>arrow_drop_down</i>
             </div>
             <ul id={this.props.id} className='dropdown-content' style={{top: '100px'}}>
-              <li className='usermenu-wrapper'><a href={`/user/${displayName}/maps`}>{this.__('My Maps')}</a></li>
+              <li className='usermenu-wrapper'><a href={`/user/${displayName}/maps`}>{t('My Maps')}</a></li>
               <li className='divider' />
-              <li className='usermenu-wrapper'><a href={`/user/${displayName}/stories`}>{this.__('My Stories')}</a></li>
+              <li className='usermenu-wrapper'><a href={`/user/${displayName}/stories`}>{t('My Stories')}</a></li>
               <li className='divider' />
-              <li className='usermenu-wrapper'><a href={`/user/${displayName}/groups`}>{this.__('My Groups')}</a></li>
+              <li className='usermenu-wrapper'><a href={`/user/${displayName}/groups`}>{t('My Groups')}</a></li>
               <li className='divider' />
-              <li className='usermenu-wrapper'><a href={`/user/${displayName}/hubs`}>{this.__('My Hubs')}</a></li>
+              <li className='usermenu-wrapper'><a href={`/user/${displayName}/hubs`}>{t('My Hubs')}</a></li>
               <li className='divider' />
-              <li className='usermenu-wrapper'><a href='/user/profile'>{this.__('Settings')}</a></li>
+              <li className='usermenu-wrapper'><a href='/user/profile'>{t('Settings')}</a></li>
               {admin &&
-                <li className='usermenu-wrapper'><a href='/admin/manage'>{this.__('Manage Users')}</a></li>
+                <li className='usermenu-wrapper'><a href='/admin/manage'>{t('Manage Users')}</a></li>
               }
               <li className='divider' />
-              <li className='usermenu-wrapper'><a href={'/logout'}>{this.__('Logout')}</a></li>
+              <li className='usermenu-wrapper'><a href={'/logout'}>{t('Logout')}</a></li>
             </ul>
 
           </li>
@@ -145,14 +146,14 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
       if (!MAPHUBS_CONFIG.mapHubsPro) {
         userMenu = (
           <li className='nav-link-wrapper login-with-signup'>
-            <a className='nav-link-item login-with-signup-link' style={{float: !this.props.sidenav ? 'left' : 'inherit'}} href='#' onClick={this.loginClick}>{this.__('Login')}</a>
-            <a className='btn' style={style} href='/signup'>{this.__('Sign Up')}</a>
+            <a className='nav-link-item login-with-signup-link' style={{float: !this.props.sidenav ? 'left' : 'inherit'}} href='#' onClick={this.loginClick}>{t('Login')}</a>
+            <a className='btn' style={style} href='/signup'>{t('Sign Up')}</a>
           </li>
         )
       } else {
         userMenu = (
           <li className='nav-link-wrapper'>
-            <a className='nav-link-item' style={{float: !this.props.sidenav ? 'left' : 'inherit'}} href='#' onClick={this.loginClick}>{this.__('Login')}</a>
+            <a className='nav-link-item' style={{float: !this.props.sidenav ? 'left' : 'inherit'}} href='#' onClick={this.loginClick}>{t('Login')}</a>
           </li>
         )
       }

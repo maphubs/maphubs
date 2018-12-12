@@ -38,17 +38,18 @@ export default class Error extends MapHubsComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     let message = ''
 
     if (this.props.requireInvite) {
       message = (
-        <p className='flow-text center-align'>{this.__('Accessing this site requires an invitation. Please contact us at ')}
+        <p className='flow-text center-align'>{t('Accessing this site requires an invitation. Please contact us at ')}
           <a href={`mailto:${this.props.adminEmail}`}>{this.props.adminEmail}</a>
         </p>
       )
     } else {
       message = (
-        <p className='flow-text center-align'>{this.__('We are having an issue finding your account. Please contact us at ')}
+        <p className='flow-text center-align'>{t('We are having an issue finding your account. Please contact us at ')}
           <a href={`mailto:${this.props.adminEmail}`}>{this.props.adminEmail}</a>
         </p>
       )
@@ -59,7 +60,7 @@ export default class Error extends MapHubsComponent<Props, void> {
         <Header {...this.props.headerConfig} />
         <main>
           <div className='container s12'>
-            <h3 className='center-align'>{this.__('Unable to Access Account')}</h3>
+            <h3 className='center-align'>{t('Unable to Access Account')}</h3>
             {message}
           </div>
         </main>

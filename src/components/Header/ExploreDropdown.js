@@ -49,17 +49,18 @@ export default class ExploreDropdown extends MapHubsComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     const {sidenav, id} = this.props
     if (sidenav) {
       return (
         <ul id={id}>
-          <li><a href='/explore' className='nav-hover-menu-item'>{this.__('Explore')}</a></li>
+          <li><a href='/explore' className='nav-hover-menu-item'>{t('Explore')}</a></li>
           <li className='divider' />
-          <li><a href='/maps' className='nav-hover-menu-item'>{this.__('Maps')}</a></li>
-          <li><a href='/stories' className='nav-hover-menu-item'>{this.__('Stories')}</a></li>
-          <li><a href='/layers' className='nav-hover-menu-item'>{this.__('Layers')}</a></li>
-          <li><a href='/hubs' className='nav-hover-menu-item'>{this.__('Hubs')}</a></li>
-          <li><a href='/groups' className='nav-hover-menu-item'>{this.__('Groups')}</a></li>
+          <li><a href='/maps' className='nav-hover-menu-item'>{t('Maps')}</a></li>
+          <li><a href='/stories' className='nav-hover-menu-item'>{t('Stories')}</a></li>
+          <li><a href='/layers' className='nav-hover-menu-item'>{t('Layers')}</a></li>
+          <li><a href='/hubs' className='nav-hover-menu-item'>{t('Hubs')}</a></li>
+          <li><a href='/groups' className='nav-hover-menu-item'>{t('Groups')}</a></li>
           <li className='divider' />
         </ul>
       )
@@ -71,17 +72,17 @@ export default class ExploreDropdown extends MapHubsComponent<Props, void> {
             id={id} href='#!'
             className='dropdown-trigger'
             data-target={`${id}-content`}
-            style={{paddingRight: 0}}>{this.__('Explore')}
+            style={{paddingRight: 0}}>{t('Explore')}
             <i className='material-icons right' style={{marginLeft: 0}}>arrow_drop_down</i>
           </a>
           <ul id={`${id}-content`} className='dropdown-content'>
-            <li><a href='/explore' className='nav-hover-menu-item'>{this.__('All')}</a></li>
+            <li><a href='/explore' className='nav-hover-menu-item'>{t('All')}</a></li>
             <li className='divider' />
-            <li><a href='/maps' className='nav-hover-menu-item'>{this.__('Maps')}</a></li>
-            <li><a href='/stories' className='nav-hover-menu-item'>{this.__('Stories')}</a></li>
-            <li><a href='/layers' className='nav-hover-menu-item'>{this.__('Layers')}</a></li>
-            <li><a href='/hubs' className='nav-hover-menu-item'>{this.__('Hubs')}</a></li>
-            <li><a href='/groups' className='nav-hover-menu-item'>{this.__('Groups')}</a></li>
+            <li><a href='/maps' className='nav-hover-menu-item'>{t('Maps')}</a></li>
+            <li><a href='/stories' className='nav-hover-menu-item'>{t('Stories')}</a></li>
+            <li><a href='/layers' className='nav-hover-menu-item'>{t('Layers')}</a></li>
+            <li><a href='/hubs' className='nav-hover-menu-item'>{t('Hubs')}</a></li>
+            <li><a href='/groups' className='nav-hover-menu-item'>{t('Groups')}</a></li>
           </ul>
         </li>
       )

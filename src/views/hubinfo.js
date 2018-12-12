@@ -80,10 +80,11 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
+    const {t} = this
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (_this.state.editing) {
-        const msg = _this.__('You have not saved your edits, your changes will be lost.')
+        const msg = t('You have not saved your edits, your changes will be lost.')
         e.returnValue = msg
         return msg
       }
@@ -95,12 +96,13 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
   }
 
   stopEditing = () => {
+    const {t} = this
     const _this = this
     HubActions.saveHub(this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+        MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
-        NotificationActions.showNotification({message: _this.__('Hub Saved')})
+        NotificationActions.showNotification({message: t('Hub Saved')})
         _this.setState({editing: false})
         window.location.reload(true)
       }
@@ -108,25 +110,26 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
   }
 
   publish = () => {
-    const _this = this
+    const {t} = this
     if (this.state.unsavedChanges) {
-      MessageActions.showMessage({title: _this.__('Unsaved Changes'), message: _this.__('Please save your changes before publishing.')})
+      MessageActions.showMessage({title: t('Unsaved Changes'), message: t('Please save your changes before publishing.')})
     } else if (isEmpty(this.state.hub.name) ||
       !this.state.hub.hasLogoImage ||
       !this.state.hub.hasBannerImage) {
-      MessageActions.showMessage({title: _this.__('Required Content'), message: _this.__('Please complete your hub before publishing. Add a title, description, logo image, and banner image. \n We also recommend adding map layers and publishing your first story.')})
+      MessageActions.showMessage({title: t('Required Content'), message: t('Please complete your hub before publishing. Add a title, description, logo image, and banner image. \n We also recommend adding map layers and publishing your first story.')})
     } else {
       HubActions.publish(this.state._csrf, (err) => {
         if (err) {
-          MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+          MessageActions.showMessage({title: t('Server Error'), message: err})
         } else {
-          NotificationActions.showNotification({message: _this.__('Hub Published')})
+          NotificationActions.showNotification({message: t('Hub Published')})
         }
       })
     }
   }
 
   render () {
+    const {t} = this
     let editButton
     let publishButton
     if (this.props.canEdit) {
@@ -138,7 +141,7 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
       if (!this.state.hub.published) {
         publishButton = (
           <div className='center center-align' style={{margin: 'auto', position: 'fixed', top: '15px', zIndex: '1', right: 'calc(50% - 60px)'}}>
-            <button className='waves-effect waves-light btn' onClick={this.publish}>{this.__('Publish')}</button>
+            <button className='waves-effect waves-light btn' onClick={this.publish}>{t('Publish')}</button>
           </div>
         )
       }
@@ -167,7 +170,7 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
               <HubDescription editing={this.state.editing} hubid={this.props.hub.hub_id} />
             </div>
             <div className='row'>
-              <a href={linkBaseUrl + 'stories'}><h5 className='hub-section center-align' style={{marginLeft: '10px'}}>{this.__('Stories')}</h5></a>
+              <a href={linkBaseUrl + 'stories'}><h5 className='hub-section center-align' style={{marginLeft: '10px'}}>{t('Stories')}</h5></a>
               <div className='divider' />
               <div className='container'>
                 <HubStories hub={this.props.hub}
@@ -176,17 +179,17 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
 
               </div>
               <div className='center-align' style={{marginTop: '10px', marginBottom: '10px'}}>
-                <a href={linkBaseUrl + 'stories'} className='btn'>{this.__('View More Stories')}</a>
+                <a href={linkBaseUrl + 'stories'} className='btn'>{t('View More Stories')}</a>
               </div>
             </div>
             <div className='row' style={{minHeight: '200px'}}>
-              <a href={linkBaseUrl + 'resources'}><h5 className='hub-section center-align' style={{marginLeft: '10px'}}>{this.__('Resources')}</h5></a>
+              <a href={linkBaseUrl + 'resources'}><h5 className='hub-section center-align' style={{marginLeft: '10px'}}>{t('Resources')}</h5></a>
               <div className='divider' />
               <div className='container'>
                 <HubResources editing={this.state.editing} />
               </div>
               <div className='center-align' style={{marginTop: '10px', marginBottom: '10px'}}>
-                <a href={linkBaseUrl + 'resources'} className='btn'>{this.__('View Resources')}</a>
+                <a href={linkBaseUrl + 'resources'} className='btn'>{t('View Resources')}</a>
               </div>
             </div>
           </div>
@@ -199,7 +202,7 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
         <Notification />
         <Message />
         <Confirmation />
-        <Progress id='saving-hub' title={this.__('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
+        <Progress id='saving-hub' title={t('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
       </ErrorBoundary>
     )
   }

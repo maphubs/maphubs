@@ -3,23 +3,23 @@ import React from 'react'
 import TextInput from '../forms/textInput'
 import Toggle from '../forms/toggle'
 import Select from '../forms/select'
-import MapHubsComponent from '../MapHubsComponent'
 
 type Props = {|
   preset: Object,
   value: any,
-  style?: Object
+  style?: Object,
+  t: Function
 |}
 
-export default class FormField extends MapHubsComponent<Props, void> {
+export default class FormField extends React.Component<Props, void> {
   props: Props
 
   render () {
-    const {preset, style, value} = this.props
+    const {preset, style, value, t} = this.props
     let field = (
       <TextInput
         name={preset.tag}
-        label={this._o_(preset.label)}
+        label={t(preset.label)}
         className='col s12 no-margin'
         style={style}
         required={preset.isRequired}
@@ -28,28 +28,17 @@ export default class FormField extends MapHubsComponent<Props, void> {
       />
     )
 
-    /*
-    var presetOptions = [
-      {value: 'text', label: this.__('Text')},
-      {value: 'localized', label: this.__('Localized Text')},
-      {value: 'number', label: this.__('Number')},
-      {value: 'radio', label: this.__('Radio Buttons (Choose One)')},
-      {value: 'combo', label: this.__('Combo Box (Dropdown)')},
-      {value: 'check', label: this.__('Check Box (Yes/No)')}
-    ];
-    */
-
     // TODO: add localized string support
 
     if (preset.type === 'number') {
       field = (
         <TextInput
           name={preset.tag}
-          label={this._o_(preset.label)}
+          label={t(preset.label)}
           className='col s12 no-margin'
           style={style}
           validations='isNumeric' validationErrors={{
-            isNumeric: this.__('Value must be a number')
+            isNumeric: t('Value must be a number')
           }}
           required={preset.isRequired}
           value={value}
@@ -66,7 +55,7 @@ export default class FormField extends MapHubsComponent<Props, void> {
       field = (
         <Select
           name={preset.tag} id={'select-' + preset.tag}
-          label={this._o_(preset.label)}
+          label={t(preset.label)}
           options={options}
           className='col s12 no-margin'
           startEmpty={!value}
@@ -77,7 +66,7 @@ export default class FormField extends MapHubsComponent<Props, void> {
     } else if (preset.type === 'check') {
       field = (
         <Toggle name={preset.tag}
-          labelOff='' labelOn={this._o_(preset.label)}
+          labelOff='' labelOn={t(preset.label)}
           className='col s12'
           checked={value}
         />

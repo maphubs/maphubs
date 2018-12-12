@@ -111,18 +111,19 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
   }
 
   render () {
+    const {t} = this
     let toggleFill
     if (this.props.layer.data_type === 'polygon') {
       toggleFill = (
         <div className='row'>
-          <b>{this.__('Fill')}</b>
+          <b>{t('Fill')}</b>
           <Toggle
             name='fill'
-            labelOff={this.__('Outline Only')}
-            labelOn={this.__('Fill')}
+            labelOff={t('Outline Only')}
+            labelOn={t('Fill')}
             checked={this.state.fill}
             dataPosition='right'
-            dataTooltip={this.__('Hide polygon fill and only show the outline in the selected color')}
+            dataTooltip={t('Hide polygon fill and only show the outline in the selected color')}
           />
         </div>
       )
@@ -133,17 +134,17 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
         <Formsy ref='form' onChange={this.onFormChange}>
           {toggleFill}
           <div className='row'>
-            <b>{this.__('Interactive')}</b>
-            <Toggle name='interactive' labelOff={this.__('Off')} labelOn={this.__('On')}
+            <b>{t('Interactive')}</b>
+            <Toggle name='interactive' labelOff={t('Off')} labelOn={t('On')}
               checked={this.state.interactive}
-              dataPosition='right' dataTooltip={this.__('Allow users to interact with this layer by clicking the map')}
+              dataPosition='right' dataTooltip={t('Allow users to interact with this layer by clicking the map')}
             />
           </div>
           <div className='row'>
-            <b>{this.__('Show Below Base Map Labels')}</b>
-            <Toggle name='showBehindBaseMapLabels' labelOff={this.__('Off')} labelOn={this.__('On')}
+            <b>{t('Show Below Base Map Labels')}</b>
+            <Toggle name='showBehindBaseMapLabels' labelOff={t('Off')} labelOn={t('On')}
               checked={this.state.showBehindBaseMapLabels}
-              dataPosition='right' dataTooltip={this.__('Allow base map labels to display on top of this layer')}
+              dataPosition='right' dataTooltip={t('Allow base map labels to display on top of this layer')}
             />
           </div>
         </Formsy>

@@ -60,6 +60,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = (input: string) => {
+    const {t} = this
     const _this = this
     debug.log('searching for: ' + input)
     request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
@@ -71,10 +72,10 @@ export default class Layers extends MapHubsComponent<Props, State> {
           } else {
             if (res.body.layers && res.body.layers.length > 0) {
               _this.setState({searchActive: true, searchResults: res.body.layers})
-              NotificationActions.showNotification({message: res.body.layers.length + ' ' + _this.__('Results'), position: 'bottomleft'})
+              NotificationActions.showNotification({message: res.body.layers.length + ' ' + t('Results'), position: 'bottomleft'})
             } else {
             // show error message
-              NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
+              NotificationActions.showNotification({message: t('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
             }
           }
         },
@@ -90,6 +91,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const featuredCards = this.props.featuredLayers.map(cardUtil.getLayerCard)
     const recentCards = this.props.recentLayers.map(cardUtil.getLayerCard)
     const popularCards = this.props.popularLayers.map(cardUtil.getLayerCard)
@@ -100,15 +102,15 @@ export default class Layers extends MapHubsComponent<Props, State> {
       if (this.state.searchResults.length > 0) {
         const searchCards = this.state.searchResults.map(cardUtil.getLayerCard)
         searchResults = (
-          <CardCollection title={this.__('Search Results')} cards={searchCards} />
+          <CardCollection title={t('Search Results')} cards={searchCards} />
         )
       } else {
         searchResults = (
           <div className='row'>
             <div className='col s12'>
-              <h5>{this.__('Search Results')}</h5>
+              <h5>{t('Search Results')}</h5>
               <div className='divider' />
-              <p><b>{this.__('No Results Found')}</b></p>
+              <p><b>{t('No Results Found')}</b></p>
             </div>
           </div>
         )
@@ -118,7 +120,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
     let featured = ''
     if (featuredCards.length > 0) {
       featured = (
-        <CardCollection title={this.__('Featured')} cards={featuredCards} viewAllLink='/layers/all' />
+        <CardCollection title={t('Featured')} cards={featuredCards} viewAllLink='/layers/all' />
       )
     }
 
@@ -129,28 +131,28 @@ export default class Layers extends MapHubsComponent<Props, State> {
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <div className='row' style={{marginBottom: '0px'}}>
               <div className='col l8 m7 s12'>
-                <h4 className='no-margin'>{this.__('Layers')}</h4>
-                <p style={{fontSize: '16px', margin: 0}}>{this.__('Browse map layers or create a new layer.')}</p>
+                <h4 className='no-margin'>{t('Layers')}</h4>
+                <p style={{fontSize: '16px', margin: 0}}>{t('Browse map layers or create a new layer.')}</p>
               </div>
               <div className='col l3 m4 s12 right' style={{paddingRight: '15px'}}>
-                <SearchBox label={this.__('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
+                <SearchBox label={t('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
               </div>
             </div>
           </div>
           {searchResults}
           {featured}
-          <CardCollection title={this.__('Popular')} cards={popularCards} viewAllLink='/layers/all' />
-          <CardCollection title={this.__('Recent')} cards={recentCards} viewAllLink='/layers/all' />
+          <CardCollection title={t('Popular')} cards={popularCards} viewAllLink='/layers/all' />
+          <CardCollection title={t('Recent')} cards={recentCards} viewAllLink='/layers/all' />
 
           <div className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton
               href='/createlayer'
-              tooltip={this.__('Create New Layer')}
+              tooltip={t('Create New Layer')}
               tooltipPosition='top'
               icon='add' />
           </div>
           <div className='row center-align'>
-            <a className='btn' href='/layers/all'>{this.__('View All Layers')}</a>
+            <a className='btn' href='/layers/all'>{t('View All Layers')}</a>
           </div>
         </main>
         <Footer {...this.props.footerConfig} />

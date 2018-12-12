@@ -1,19 +1,15 @@
 // @flow
 import React from 'react'
-import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
 
 type Props = {|
   groups: Array<Object>,
-  showTitle: boolean
+  showTitle: boolean,
+  t: Function
 |}
 
-type DefaultProps = {
-  showTitle: boolean
-}
-
-export default class GroupList extends MapHubsComponent<Props, void> {
-  static defaultProps: DefaultProps = {
+export default class GroupList extends React.Component<Props, void> {
+  static defaultProps = {
     showTitle: true
   }
 
@@ -26,22 +22,17 @@ export default class GroupList extends MapHubsComponent<Props, void> {
   }
 
   render () {
-    let title = ''
-    let className = 'collection'
-    if (this.props.showTitle) {
-      className = 'collection with-header'
-      title = (
-        <li className='collection-header'>
-          <h4>{this.__('Groups')}</h4>
-        </li>
-      )
-    }
-
+    const {t, showTitle, groups} = this.props
+    const className = showTitle ? 'collection with-header' : 'collection'
     return (
       <ul className={className}>
-        {title}
-        {this.props.groups.map((group, i) => {
-          const groupName = this._o_(group.name)
+        {showTitle &&
+          <li className='collection-header'>
+            <h4>{t('Groups')}</h4>
+          </li>
+        }
+        {groups.map((group, i) => {
+          const groupName = t(group.name)
           return (
             <li className='collection-item' key={group.group_id}>
               <div>{groupName}

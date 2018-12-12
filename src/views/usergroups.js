@@ -56,28 +56,8 @@ export default class UserGroups extends MapHubsComponent<Props, void> {
   }
 
   render () {
-    let addButton = ''
-    let message = ''
-    if (this.props.canEdit) {
-      addButton = (
-        <div>
-          <div className='fixed-action-btn action-button-bottom-right'>
-            <FloatingButton
-              href='/creategroup'
-              tooltip={this.__('Create New Group')} tooltipPosition='top'
-              icon='add' />
-          </div>
-        </div>
-      )
-
-      message = (
-        <h4>{this.__('My Groups')}</h4>
-      )
-    } else {
-      message = (
-        <h4>{this.__('Groups for user: ' + this.props.user.display_name)}</h4>
-      )
-    }
+    const {t} = this
+    const {canEdit, user} = this.props
 
     let groups = ''
     if (this.props.groups && this.props.groups.length > 0) {
@@ -94,7 +74,7 @@ export default class UserGroups extends MapHubsComponent<Props, void> {
         <div className='row' style={{height: 'calc(100% - 100px)'}}>
           <div className='valign-wrapper' style={{height: '100%'}}>
             <div className='valign align-center center-align' style={{width: '100%'}}>
-              <h5>{this.__('Click the button below to create your first group')}</h5>
+              <h5>{t('Click the button below to create your first group')}</h5>
             </div>
           </div>
         </div>
@@ -104,9 +84,23 @@ export default class UserGroups extends MapHubsComponent<Props, void> {
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main style={{marginLeft: '10px', marginRight: '10px'}}>
-          {message}
+          {canEdit &&
+            <h4>{t('My Groups')}</h4>
+          }
+          {!canEdit &&
+            <h4>{t('Groups for user: ') + user.display_name}</h4>
+          }
           {groups}
-          {addButton}
+          {canEdit &&
+            <div>
+              <div className='fixed-action-btn action-button-bottom-right'>
+                <FloatingButton
+                  href='/creategroup'
+                  tooltip={t('Create New Group')} tooltipPosition='top'
+                  icon='add' />
+              </div>
+            </div>
+          }
         </main>
         <Footer {...this.props.footerConfig} />
       </ErrorBoundary>

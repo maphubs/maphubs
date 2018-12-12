@@ -60,6 +60,7 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     let addButton = ''
     let hubsMessage = ''
     if (this.props.canEdit) {
@@ -68,18 +69,18 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
           <div className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton
               href='/createhub'
-              tooltip={this.__('Create New Hub')} tooltipPosition='top'
+              tooltip={t('Create New Hub')} tooltipPosition='top'
               icon='add' />
           </div>
         </div>
       )
 
       hubsMessage = (
-        <h4>{this.__('My Hubs')}</h4>
+        <h4>{t('My Hubs')}</h4>
       )
     } else {
       hubsMessage = (
-        <h4>{this.__('Hubs for user: ' + this.props.user.display_name)}</h4>
+        <h4>{t('Hubs for user: ' + this.props.user.display_name)}</h4>
       )
     }
 
@@ -90,7 +91,7 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
       draftHubs = (
         <div className='row'>
           <div className='col s12 no-padding'>
-            <h5>{this.__('Draft Hubs')}</h5>
+            <h5>{t('Draft Hubs')}</h5>
             <CardCarousel infinite={false} cards={draftCards} t={this.t} />
           </div>
         </div>
@@ -107,7 +108,7 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
       publishedHubs = (
         <div className='row'>
           <div className='col s12 no-padding'>
-            <h5>{this.__('Published Hubs')}</h5>
+            <h5>{t('Published Hubs')}</h5>
             <CardCarousel infinite={false} cards={publishedCards} t={this.t} />
           </div>
         </div>
@@ -123,7 +124,7 @@ export default class UserHubs extends MapHubsComponent<Props, void> {
         <div className='row' style={{height: 'calc(100% - 100px)'}}>
           <div className='valign-wrapper' style={{height: '100%'}}>
             <div className='valign align-center center-align' style={{width: '100%'}}>
-              <h5>{this.__('Click the button below to create your first hub')}</h5>
+              <h5>{t('Click the button below to create your first hub')}</h5>
             </div>
           </div>
         </div>

@@ -1,37 +1,37 @@
 //  @flow
 import React from 'react'
-import MapHubsPureComponent from '../MapHubsPureComponent'
 import slugify from 'slugify'
 
 type Props = {
   mhid: string,
-  layerID: number,
-  layerName: string,
+  layer_id: number,
+  name: string,
   disable_export: Boolean,
-  data_type: String
+  data_type: String,
+  t: Function
 }
 
-export default class FeatureExport extends MapHubsPureComponent<Props, void> {
+export default class FeatureExport extends React.PureComponent<Props, void> {
   render () {
-    const {mhid, layer_id, name, disable_export, data_type} = this.props
+    const {mhid, layer_id, name, disable_export, data_type, t} = this.props
 
-    const geoJSONURL = `/api/feature/json/${layer_id}/${mhid}/${slugify(this._o_(name))}.geojson`
-    const kmlURL = `/api/feature/${layer_id}/${mhid}/export/kml/${slugify(this._o_(name))}.kml`
+    const geoJSONURL = `/api/feature/json/${layer_id}/${mhid}/${slugify(t(name))}.geojson`
+    const kmlURL = `/api/feature/${layer_id}/${mhid}/export/kml/${slugify(t(name))}.kml`
 
     if (!disable_export) {
       let gpxExport
       if (data_type === 'polygon') {
         const gpxLink = `/api/feature/gpx/${layer_id}/${mhid}/feature.gpx`
         gpxExport = (
-          <li><a href={gpxLink}>{this.__('GPX')}</a></li>
+          <li><a href={gpxLink}>{t('GPX')}</a></li>
         )
       }
       return (
         <div>
-          <h5>{this.__('Export Data')}</h5>
+          <h5>{t('Export Data')}</h5>
           <ul className='no-margin'>
-            <li><a href={geoJSONURL}>{this.__('GeoJSON')}</a></li>
-            <li><a href={kmlURL}>{this.__('KML')}</a></li>
+            <li><a href={geoJSONURL}>{t('GeoJSON')}</a></li>
+            <li><a href={kmlURL}>{t('KML')}</a></li>
             {gpxExport}
           </ul>
         </div>
@@ -39,7 +39,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
     } else {
       return (
         <div>
-          <p>{this.__('Export is not available for this layer.')}</p>
+          <p>{t('Export is not available for this layer.')}</p>
         </div>
       )
     }

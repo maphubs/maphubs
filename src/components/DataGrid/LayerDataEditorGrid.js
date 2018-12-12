@@ -149,7 +149,7 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
           columns.push(
             {
               key: preset.tag,
-              name: _this._o_(preset.label),
+              name: _this.t(preset.label),
               width: 120,
               resizable: true,
               sortable: true,
@@ -167,7 +167,7 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
           columns.push(
             {
               key: preset.tag,
-              name: _this._o_(preset.label),
+              name: _this.t(preset.label),
               width: 120,
               resizable: true,
               sortable: true,
@@ -180,7 +180,7 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
           columns.push(
             {
               key: preset.tag,
-              name: _this._o_(preset.label),
+              name: _this.t(preset.label),
               width: 120,
               resizable: true,
               sortable: true,
@@ -192,7 +192,7 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
           columns.push(
             {
               key: preset.tag,
-              name: _this._o_(preset.label),
+              name: _this.t(preset.label),
               width: 120,
               resizable: true,
               sortable: true,
@@ -345,6 +345,7 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
    }
 
    render () {
+     const {t} = this
      const _this = this
 
      if (this.state.rows.length > 0 && typeof window !== 'undefined') {
@@ -373,10 +374,10 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
            }}
            toolbar={<Toolbar
              enableFilter
-             filterRowsButtonText={this.__('Filter Data')}
+             filterRowsButtonText={t('Filter Data')}
            >
              <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={_this.onViewSelectedFeature}>
-               {this.__('View Selected')}
+               {t('View Selected')}
              </button>
            </Toolbar>
            }
@@ -386,7 +387,7 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
        )
      } else {
        return (
-         <div><h5>{this.__(this.props.dataLoadingMsg)}</h5></div>
+         <div><h5>{t(this.props.dataLoadingMsg)}</h5></div>
        )
      }
    }

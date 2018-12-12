@@ -19,15 +19,16 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
   }
 
   onCrop = (data: Object, info: Object) => {
-    const _this = this
+    const {t} = this
+    const {_csrf} = this.state
     // send data to server
-    FeaturePhotoActions.addPhoto(data, info, this.state._csrf, (err) => {
+    FeaturePhotoActions.addPhoto(data, info, _csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+        MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
         NotificationActions.showNotification(
           {
-            message: _this.__('Image Saved'),
+            message: t('Image Saved'),
             position: 'bottomright',
             dismissAfter: 3000,
             onDismiss () {
@@ -39,18 +40,19 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
   }
 
   deletePhoto = () => {
-    const _this = this
+    const {t} = this
+    const {_csrf} = this.state
     ConfirmationActions.showConfirmation({
-      title: _this.__('Confirm Removal'),
-      message: _this.__('Are you sure you want to remove this photo?'),
+      title: t('Confirm Removal'),
+      message: t('Are you sure you want to remove this photo?'),
       onPositiveResponse () {
-        FeaturePhotoActions.removePhoto(_this.state._csrf, (err) => {
+        FeaturePhotoActions.removePhoto(_csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+            MessageActions.showMessage({title: t('Server Error'), message: err})
           } else {
             NotificationActions.showNotification(
               {
-                message: _this.__('Image Removed'),
+                message: t('Image Removed'),
                 position: 'bottomright',
                 dismissAfter: 3000
               })
@@ -61,6 +63,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     const {photo, canEdit} = this.props
 
     let imageCrop = ''
@@ -79,7 +82,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
           {canEdit &&
             <div style={{height: '30px', position: 'relative'}}>
               <Tooltip
-                title={this.__('Replace Photo')}
+                title={t('Replace Photo')}
                 position='left'
                 inertia followCursor
               >
@@ -96,7 +99,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                 </i>
               </Tooltip>
               <Tooltip
-                title={this.__('Download Photo')}
+                title={t('Download Photo')}
                 position='left'
                 inertia followCursor
               >
@@ -114,7 +117,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                 </a>
               </Tooltip>
               <Tooltip
-                title={this.__('Remove Photo')}
+                title={t('Remove Photo')}
                 position='left'
                 inertia followCursor
               >
@@ -141,7 +144,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
           <div>
             <div style={{height: '30px', position: 'relative'}}>
               <Tooltip
-                title={this.__('Add Photo')}
+                title={t('Add Photo')}
                 position='left'
                 inertia followCursor
               >

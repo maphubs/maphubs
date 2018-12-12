@@ -2,7 +2,6 @@
 import React from 'react'
 import Formsy from 'formsy-react'
 import TextArea from '../forms/textArea'
-import TextInput from '../forms/textInput'
 import MultiTextInput from '../forms/MultiTextInput'
 import Toggle from '../forms/toggle'
 import Select from '../forms/select'
@@ -93,14 +92,15 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
   }
 
   onRemove = () => {
-    const _this = this
+    const {t} = this
+    const {id} = this.props
     ConfirmationActions.showConfirmation({
-      title: _this.__('Confirm Removal'),
-      message: _this.__('Are you sure you want to remove this field?') + ' ' +
-        _this.__('Note: this will hide the field, but will not delete the raw data.') + ' ' +
-        _this.__('The field will still be included in data exports.'),
+      title: t('Confirm Removal'),
+      message: t('Are you sure you want to remove this field?') + ' ' +
+        t('Note: this will hide the field, but will not delete the raw data.') + ' ' +
+        t('The field will still be included in data exports.'),
       onPositiveResponse () {
-        Actions.deletePreset(_this.props.id)
+        Actions.deletePreset(id)
       }
     })
   }
@@ -114,25 +114,26 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const presetOptions = [
-      {value: 'text', label: this.__('Text')},
-      {value: 'localized', label: this.__('Localized Text')},
-      {value: 'number', label: this.__('Number')},
-      {value: 'radio', label: this.__('Radio Buttons (Choose One)')},
-      {value: 'combo', label: this.__('Combo Box (Dropdown)')},
-      {value: 'check', label: this.__('Check Box (Yes/No)')}
+      {value: 'text', label: t('Text')},
+      {value: 'localized', label: t('Localized Text')},
+      {value: 'number', label: t('Number')},
+      {value: 'radio', label: t('Radio Buttons (Choose One)')},
+      {value: 'combo', label: t('Combo Box (Dropdown)')},
+      {value: 'check', label: t('Check Box (Yes/No)')}
     ]
 
     let typeOptions = ''
 
     if (this.props.type === 'combo' || this.props.type === 'radio') {
       typeOptions = (
-        <TextArea name='options' label={this.__('Options(seperate with commas)')} icon='list'
+        <TextArea name='options' label={t('Options(seperate with commas)')} icon='list'
           className='row no-margin' validations='maxLength:500' validationErrors={{
-            maxLength: this.__('Description must be 500 characters or less.')
+            maxLength: t('Description must be 500 characters or less.')
           }} length={500}
           value={this.props.options}
-          dataPosition='top' dataTooltip={this.__('Comma seperated list of options to show for the Combo or Radio field. Ex: red, blue, green')}
+          dataPosition='top' dataTooltip={t('Comma seperated list of options to show for the Combo or Radio field. Ex: red, blue, green')}
         />
       )
     }
@@ -150,7 +151,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                 <Select
                   name='type'
                   id='preset-type-select'
-                  label={this.__('Field Type')}
+                  label={t('Field Type')}
                   options={presetOptions}
                   value={this.props.type}
                   startEmpty={typeStartEmpty}
@@ -163,7 +164,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                     en: 'Label', fr: 'Étiquette', es: 'Etiqueta', it: 'Etichetta'
                   }}
                   validations='maxLength:50' validationErrors={{
-                    maxLength: this.__('Name must be 50 characters or less.')
+                    maxLength: t('Name must be 50 characters or less.')
                   }} length={50}
                   value={this.props.label}
                   required
@@ -173,32 +174,32 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
               <div className='col s12 m6' style={{textAlign: 'center'}}>
                 <Toggle
                   name='isRequired'
-                  labelOff={this.__('Optional')}
-                  labelOn={this.__('Required')}
+                  labelOff={t('Optional')}
+                  labelOn={t('Required')}
                   className='row no-margin'
                   style={{paddingTop: '25px'}}
                   checked={this.props.isRequired}
                 />
                 <Toggle
                   name='showOnMap'
-                  labelOff={this.__('Hide in Map')}
-                  labelOn={this.__('Show in Map')}
+                  labelOff={t('Hide in Map')}
+                  labelOn={t('Show in Map')}
                   className='row no-margin'
                   style={{paddingTop: '25px'}}
                   checked={this.props.showOnMap}
                 />
                 <Toggle
                   name='isName'
-                  labelOff={this.__('Regular Field')}
-                  labelOn={this.__('Name Field')}
+                  labelOff={t('Regular Field')}
+                  labelOn={t('Name Field')}
                   className='row no-margin'
                   style={{paddingTop: '25px'}}
                   checked={this.props.isName}
                 />
                 <Toggle
                   name='isDescription'
-                  labelOff={this.__('Regular Field')}
-                  labelOn={this.__('Description Field')}
+                  labelOff={t('Regular Field')}
+                  labelOn={t('Description Field')}
                   className='row no-margin'
                   style={{paddingTop: '25px'}}
                   checked={this.props.isDescription}
@@ -211,11 +212,11 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
         </div>
         <div className='row'>
           <div className='col s8'>
-            <a className='waves-effect waves-light btn' onClick={this.onMoveUp}><i className='material-icons left'>arrow_upward</i>{this.__('Move Up')}</a>
-            <a className='waves-effect waves-light btn' style={{marginLeft: '5px'}} onClick={this.onMoveDown}><i className='material-icons left'>arrow_downward</i>{this.__('Move Down')}</a>
+            <a className='waves-effect waves-light btn' onClick={this.onMoveUp}><i className='material-icons left'>arrow_upward</i>{t('Move Up')}</a>
+            <a className='waves-effect waves-light btn' style={{marginLeft: '5px'}} onClick={this.onMoveDown}><i className='material-icons left'>arrow_downward</i>{t('Move Down')}</a>
           </div>
           <div className='col s4'>
-            <a className='waves-effect waves-light btn right' onClick={this.onRemove}><i className='material-icons left'>delete</i>{this.__('Remove')}</a>
+            <a className='waves-effect waves-light btn right' onClick={this.onRemove}><i className='material-icons left'>delete</i>{t('Remove')}</a>
           </div>
         </div>
       </div>

@@ -123,7 +123,7 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
           columns.push(
             {
               key: preset.tag,
-              name: _this._o_(preset.label),
+              name: _this.t(preset.label),
               width: 120,
               formatter: CheckboxFormatter,
               resizable: true,
@@ -134,7 +134,7 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
           columns.push(
             {
               key: preset.tag,
-              name: _this._o_(preset.label),
+              name: _this.t(preset.label),
               width: 120,
               resizable: true,
               sortable: true,
@@ -280,6 +280,7 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const _this = this
     const {canEdit, presets, layer_id} = this.props
     if (this.state.rows.length > 0 && typeof window !== 'undefined') {
@@ -307,15 +308,15 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
           }}
           toolbar={<Toolbar
             enableFilter
-            filterRowsButtonText={this.__('Filter Data')}
+            filterRowsButtonText={t('Filter Data')}
           >
             {canEdit &&
               <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={this.onEditSelectedFeature}>
-                {this.__('Edit Selected')}
+                {t('Edit Selected')}
               </button>
             }
             <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={_this.onViewSelectedFeature}>
-              {this.__('View Selected')}
+              {t('View Selected')}
             </button>
             {(canEdit && presets) &&
               <EditAttributesModal
@@ -333,7 +334,7 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
       )
     } else {
       return (
-        <div><h5>{this.__(this.props.dataLoadingMsg)}</h5></div>
+        <div><h5>{t(this.props.dataLoadingMsg)}</h5></div>
       )
     }
   }

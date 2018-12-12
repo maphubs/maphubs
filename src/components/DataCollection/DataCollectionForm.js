@@ -17,23 +17,15 @@ type Props = {|
   style?: Object
 |}
 
-type DefaultProps = {
-  showSubmit: boolean
-}
-
 type State = {
   canSubmit: boolean,
   submitText: string
 }
 
 export default class DataCollectionForm extends MapHubsComponent<Props, State> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     showSubmit: true
   }
-
-  state: State
 
   constructor (props: Props) {
     super(props)
@@ -70,6 +62,7 @@ export default class DataCollectionForm extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const {style, showSubmit, presets, values} = this.props
     let submit = ''
     if (showSubmit) {
@@ -94,7 +87,7 @@ export default class DataCollectionForm extends MapHubsComponent<Props, State> {
               }
               if (preset.tag !== 'photo_url') {
                 return (
-                  <FormField key={preset.tag} preset={preset} value={value} />
+                  <FormField t={t} key={preset.tag} preset={preset} value={value} />
                 )
               }
             })

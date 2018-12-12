@@ -59,6 +59,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
   }
 
   onSubmit = () => {
+    const {t} = this
     const _this = this
     const data = {
       is_external: false,
@@ -68,14 +69,15 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
 
     LayerActions.saveDataSettings(data, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
-        NotificationActions.showNotification({message: _this.__('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit})
+        NotificationActions.showNotification({message: t('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit})
       }
     })
   }
 
   onUpload = (file: Object) => {
+    const {t} = this
     const _this = this
     const {layer_id} = this.state
     this.onProcessingStart()
@@ -99,7 +101,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
             if (result.code === 'MULTIPLESHP') {
               this.setState({multipleShapefiles: result.shapefiles, processing: false})
             } else {
-              MessageActions.showMessage({title: _this.__('Error'), message: result.error || 'Unknown Error'})
+              MessageActions.showMessage({title: t('Error'), message: result.error || 'Unknown Error'})
             }
           }
         }
@@ -107,7 +109,8 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
   }
 
   onUploadError = (err: string) => {
-    MessageActions.showMessage({title: this.__('Error'), message: err})
+    const {t} = this
+    MessageActions.showMessage({title: t('Error'), message: err})
   }
 
   finishUpload = (shapefileName: string) => {
@@ -131,6 +134,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const layer_id = this.state.layer_id ? this.state.layer_id : 0
     const { canSubmit, multipleShapefiles, style, bbox } = this.state
     const {mapConfig} = this.props
@@ -147,7 +151,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     if (canSubmit && style) {
       map = (
         <div ref='mapSection'>
-          <p>{this.__('Please review the data on the map to confirm the upload was successful.')}</p>
+          <p>{t('Please review the data on the map to confirm the upload was successful.')}</p>
           <Map style={{width: '100%', height: '400px'}}
             id='upload-preview-map'
             showFeatureInfoEditButtons={false}
@@ -167,7 +171,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
         options.push({value: shpFile, label: shpFile})
       })
       multipleShapefilesDisplay = (
-        <RadioModal ref='chooseshape' title={this.__('Multiple Shapefiles Found - Please Select One')}
+        <RadioModal ref='chooseshape' title={t('Multiple Shapefiles Found - Please Select One')}
           options={options} onSubmit={this.finishUpload} />
       )
     }
@@ -179,7 +183,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
             z-index: 9999 !important;
           }
         `}</style>
-        <Progress id='upload-process-progess' title={this.__('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />
+        <Progress id='upload-process-progess' title={t('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />
         <div>
           <div className='row'>
             <div style={{margin: 'auto auto', maxWidth: '750px'}}>
@@ -199,7 +203,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
           {multipleShapefilesDisplay}
         </div>
         <div className='right'>
-          <button className='waves-effect waves-light btn' disabled={!canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Save and Continue')}</button>
+          <button className='waves-effect waves-light btn' disabled={!canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
         </div>
       </div>
     )

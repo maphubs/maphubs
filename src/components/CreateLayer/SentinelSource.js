@@ -56,6 +56,7 @@ export default class SentinelSource extends MapHubsComponent<Props, State> {
   }
 
   submit = (model: Object) => {
+    const {t} = this
     const _this = this
     const layers = []
 
@@ -81,10 +82,10 @@ export default class SentinelSource extends MapHubsComponent<Props, State> {
 
     }, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         NotificationActions.showNotification({
-          message: _this.__('Layer Saved'),
+          message: t('Layer Saved'),
           dismissAfter: 1000,
           onDismiss () {
             // reset style to load correct source

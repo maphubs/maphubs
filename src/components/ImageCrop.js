@@ -118,13 +118,14 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
   }
 
   checkFileSize = (file: Object) => {
+    const {t} = this
     const _this = this
     return new Promise((resolve, reject) => {
       const maxSize = _this.props.max_size
       let message
 
       if (file.size > maxSize) {
-        message = _this.__('Maximum Size Exceeded:') + ' ' + Math.round(maxSize / 1024)
+        message = t('Maximum Size Exceeded:') + ' ' + Math.round(maxSize / 1024)
         debug.log(message)
         return reject(new Error(message))
       }
@@ -237,6 +238,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
 }
 
   _onChange = (e: any) => {
+    const {t} = this
     const _this = this
     _this.setState({loading: true})
     let files: Array<Object>
@@ -328,7 +330,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
           }
 
           img.onerror = () => {
-            const message = _this.__('Bad Image:') + ' ' + file.name
+            const message = t('Bad Image:') + ' ' + file.name
             debug.log(message)
             MessageActions.showMessage({title: 'Error', message})
           }
@@ -426,6 +428,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
   }
 
   render () {
+    const {t} = this
     let cropper = ''
     if (this.state.src) {
       if (typeof window !== 'undefined') {
@@ -444,7 +447,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
     } else {
       cropper = (
         <div className='valign-wrapper' style={{height: '75%'}}>
-          <h5 className='center-align valign' style={{margin: 'auto'}}>{this.__('Choose an image file')}</h5>
+          <h5 className='center-align valign' style={{margin: 'auto'}}>{t('Choose an image file')}</h5>
         </div>
       )
     }
@@ -483,7 +486,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
       saveButton = (
         <div ref='saveButton' className='fixed-action-btn action-button-bottom-right'>
           <Tooltip
-            title={this.__('Save')}
+            title={t('Save')}
             position='top' inertia followCursor>
             <a onMouseDown={this.onSave} className='btn-floating btn-large omh-color'>
               <i className='large material-icons'>save</i>
@@ -503,7 +506,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
             <div className='col s12'>
               <div className='file-field input-field'>
                 <div className='btn'>
-                  <span>{this.__('Choose File')}</span>
+                  <span>{t('Choose File')}</span>
                   <input type='file' onChange={this._onChange} value={this.state.selectedFile} />
                 </div>
                 <div className='file-path-wrapper'>
@@ -527,5 +530,5 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
       </Modal>
     )
   }
-// <Progress id="imagecrop-loading" title={this.__('Loading')} subTitle="" dismissible={false} show={this.state.loading}/>
+// <Progress id="imagecrop-loading" title={t('Loading')} subTitle="" dismissible={false} show={this.state.loading}/>
 }

@@ -50,17 +50,18 @@ export default class Step2 extends MapHubsComponent<Props, State> {
   }
 
   initEmptyLayer = () => {
+    const {t} = this
     const _this = this
 
     // save presets
     LayerActions.loadDefaultPresets()
     LayerActions.submitPresets(true, this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         LayerActions.initEmptyLayer(_this.state._csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: _this.__('Error'), message: err})
+            MessageActions.showMessage({title: t('Error'), message: err})
           } else {
             LayerActions.tileServiceInitialized()
             if (_this.props.onSubmit) {
@@ -73,19 +74,20 @@ export default class Step2 extends MapHubsComponent<Props, State> {
   }
 
   saveDataLoad = () => {
+    const {t} = this
     const _this = this
 
     _this.setState({saving: true})
     // save presets
     LayerActions.submitPresets(false, this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
         _this.setState({saving: false})
       } else {
         LayerActions.loadData(_this.state._csrf, (err) => {
           _this.setState({saving: false})
           if (err) {
-            MessageActions.showMessage({title: _this.__('Error'), message: err})
+            MessageActions.showMessage({title: t('Error'), message: err})
           } else {
             LayerActions.tileServiceInitialized()
             if (_this.props.onSubmit) {
@@ -105,13 +107,14 @@ export default class Step2 extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     return (
       <div className='row'>
-        <Progress id='load-data-progess' title={this.__('Loading Data')} subTitle={this.__('Data Loading: This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.saving} />
+        <Progress id='load-data-progess' title={t('Loading Data')} subTitle={t('Data Loading: This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.saving} />
 
-        <p>{this.__('Provide Information About the Data Layer')}</p>
+        <p>{t('Provide Information About the Data Layer')}</p>
         <LayerSettings groups={this.props.groups}
-          submitText={this.__('Save and Continue')} onSubmit={this.onSubmit}
+          submitText={t('Save and Continue')} onSubmit={this.onSubmit}
           warnIfUnsaved={false}
         />
       </div>

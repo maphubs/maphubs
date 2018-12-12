@@ -60,6 +60,7 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = (input: string) => {
+    const {t} = this
     const _this = this
     debug.log('searching for: ' + input)
     request.get(urlUtil.getBaseUrl() + '/api/maps/search?q=' + input)
@@ -71,10 +72,10 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
           } else {
             if (res.body.maps && res.body.maps.length > 0) {
               _this.setState({searchActive: true, searchResults: res.body.maps})
-              NotificationActions.showNotification({message: res.body.maps.length + ' ' + _this.__('Results'), position: 'bottomleft'})
+              NotificationActions.showNotification({message: res.body.maps.length + ' ' + t('Results'), position: 'bottomleft'})
             } else {
             // show error message
-              NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
+              NotificationActions.showNotification({message: t('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
             }
           }
         },
@@ -94,6 +95,7 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const _this = this
 
     let myMaps = ''
@@ -104,7 +106,7 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
       myMaps = (
         <div className='row' style={{width: '100%'}}>
           <div className='col s12 no-padding' style={{width: '100%'}}>
-            <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('My Maps')}</h5>
+            <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('My Maps')}</h5>
             <div className='divider' />
             <CardCarousel cards={myCards} infinite={false} t={this.t} />
           </div>
@@ -126,7 +128,7 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
         searchResults = (
           <div className='row'>
             <div className='col s12 no-padding'>
-              <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
+              <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('Search Results')}</h5>
               <div className='divider' />
               <CardCarousel infinite={false} cards={searchCards} t={this.t} />
             </div>
@@ -136,9 +138,9 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
         searchResults = (
           <div className='row'>
             <div className='col s12'>
-              <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Search Results')}</h5>
+              <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('Search Results')}</h5>
               <div className='divider' />
-              <p><b>{this.__('No Results Found')}</b></p>
+              <p><b>{t('No Results Found')}</b></p>
             </div>
           </div>
         )
@@ -153,7 +155,7 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
           </a>
           <div className='row' style={{marginTop: '10px', marginBottom: '10px', marginRight: '35px', marginLeft: '0px'}}>
             <div className='col s12'>
-              <SearchBox label={this.__('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
+              <SearchBox label={t('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
             </div>
           </div>
           <div className='row' style={{height: 'calc(100% - 55px)', width: '100%', overflow: 'auto', paddingRight: '3%', paddingLeft: '3%'}}>
@@ -162,7 +164,7 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
               {myMaps}
               <div className='row'>
                 <div className='col s12 no-padding'>
-                  <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{this.__('Popular Maps')}</h5>
+                  <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('Popular Maps')}</h5>
                   <div className='divider' />
                   <CardCarousel cards={popularCards} infinite={false} t={this.t} />
                 </div>

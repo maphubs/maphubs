@@ -68,6 +68,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = (input: string) => {
+    const {t} = this
     const _this = this
     debug.log('searching for: ' + input)
     request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
@@ -79,10 +80,10 @@ export default class Layers extends MapHubsComponent<Props, State> {
           } else {
             if (res.body.layers && res.body.layers.length > 0) {
               _this.setState({searchActive: true, searchResults: res.body.layers})
-              NotificationActions.showNotification({message: res.body.layers.length + ' ' + _this.__('Results'), position: 'bottomleft'})
+              NotificationActions.showNotification({message: res.body.layers.length + ' ' + t('Results'), position: 'bottomleft'})
             } else {
             // show error message
-              NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
+              NotificationActions.showNotification({message: t('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
             }
           }
         },
@@ -109,7 +110,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
       if (this.state.searchResults.length > 0) {
         const searchCards = this.state.searchResults.map(cardUtil.getLayerCard)
         searchResults = (
-          <CardCollection title={this.__('Search Results')} cards={searchCards} />
+          <CardCollection title={t('Search Results')} cards={searchCards} />
         )
       } else {
         searchResults = (
@@ -134,7 +135,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
     } else {
       const cards = this.props.layers.map(cardUtil.getLayerCard)
       layers = (
-        <CardGrid cards={cards} t={t}/>
+        <CardGrid cards={cards} t={t} />
       )
     }
 
@@ -169,7 +170,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
           <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton
               href='/createlayer'
-              tooltip={this.__('Create New Layer')}
+              tooltip={t('Create New Layer')}
               tooltipPosition='top'
               icon='add' />
           </div>

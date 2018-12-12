@@ -42,8 +42,6 @@ type StoryEditorState = {|
 type State = LocaleStoreState & StoryStoreState & StoryEditorState
 
 export default class StoryEditor extends MapHubsComponent<Props, State> {
-  props: Props
-
   static defaultProps = {
     story: {},
     username: '',
@@ -83,7 +81,7 @@ export default class StoryEditor extends MapHubsComponent<Props, State> {
 
     window.addEventListener('beforeunload', (e) => {
       if (_this.state.unsavedChanges) {
-        const msg = _this.__('You have not saved the edits for your story, your changes will be lost.')
+        const msg = _this.t('You have not saved the edits for your story, your changes will be lost.')
         e.returnValue = msg
         return msg
       }
@@ -147,16 +145,17 @@ getFirstImage = () => {
 }
 
 save = () => {
+  const {t} = this
   const _this = this
 
   if (!this.state.story.title || this.state.story.title === '') {
-    NotificationActions.showNotification({message: _this.__('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'})
+    NotificationActions.showNotification({message: t('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'})
     return
   }
 
   // if this is a hub story, require an author
   if (this.props.storyType === 'hub' && !this.state.story.author) {
-    NotificationActions.showNotification({message: _this.__('Please Add an Author'), dismissAfter: 5000, position: 'bottomleft'})
+    NotificationActions.showNotification({message: t('Please Add an Author'), dismissAfter: 5000, position: 'bottomleft'})
     return
   }
 
@@ -175,13 +174,13 @@ save = () => {
   Actions.save(body, firstline, firstimage, this.state._csrf, (err: Error) => {
     _this.setState({saving: false})
     if (err) {
-      MessageActions.showMessage({title: _this.__('Error'), message: err})
+      MessageActions.showMessage({title: t('Error'), message: err})
     } else {
       _this.addMapCloseButtons() // put back the close buttons
       _this.addImageButtons()
       if (!_this.state.story.published) {
-        NotificationActions.showNotification({message: _this.__('Story Saved'),
-          action: _this.__('Publish'),
+        NotificationActions.showNotification({message: t('Story Saved'),
+          action: t('Publish'),
           dismissAfter: 10000,
           onDismiss () {
 
@@ -191,8 +190,8 @@ save = () => {
           }
         })
       } else {
-        NotificationActions.showNotification({message: _this.__('Story Saved'),
-          action: _this.__('View Story'),
+        NotificationActions.showNotification({message: t('Story Saved'),
+          action: t('View Story'),
           dismissAfter: 10000,
           onDismiss () {
 
@@ -215,19 +214,20 @@ save = () => {
 }
 
 delete = () => {
+  const {t} = this
   const _this = this
   const {story} = this.state
   const title = story.title ? story.title.toString() : 'Unknown'
   ConfirmationActions.showConfirmation({
-    title: _this.__('Confirm Delete'),
-    message: _this.__('Please confirm removal of ') + title,
+    title: t('Confirm Delete'),
+    message: t('Please confirm removal of ') + title,
     onPositiveResponse () {
       Actions.delete(_this.state._csrf, (err) => {
         if (err) {
-          MessageActions.showMessage({title: _this.__('Error'), message: err})
+          MessageActions.showMessage({title: t('Error'), message: err})
         } else {
           NotificationActions.showNotification({
-            message: _this.__('Story Deleted'),
+            message: t('Story Deleted'),
             dismissAfter: 1000,
             onDismiss () {
               window.location = '/'
@@ -323,10 +323,11 @@ onMapCancel = () => {
 }
 
 removeMap = (mapId: number) => {
+  const {t} = this
   const _this = this
   ConfirmationActions.showConfirmation({
-    title: _this.__('Confirm Map Removal'),
-    message: _this.__('Please confirm that you want to remove this map'),
+    title: t('Confirm Map Removal'),
+    message: t('Please confirm that you want to remove this map'),
     onPositiveResponse () {
       $('#map-' + mapId).remove()
       _this.handleBodyChange($('.storybody').html())
@@ -375,35 +376,37 @@ removeImageButtons = () => {
 }
 
 onAddImage = (data: string, info: Object) => {
+  const {t} = this
   const _this = this
   Actions.addImage(data, info, this.state._csrf, (err, res) => {
     if (err || !res.body || !res.body.image_id) {
-      MessageActions.showMessage({title: _this.__('Error'), message: err})
+      MessageActions.showMessage({title: t('Error'), message: err})
     } else {
       const imageId = res.body.image_id
       const url = '/images/story/' + _this.state.story.story_id + '/image/' + imageId + '.jpg'
       // <div contenteditable="false" class="embed-map-container" id="map-' + map_id + '"
       _this.pasteHtmlAtCaret('<div contenteditable="false" id="image-' + imageId + '" class="embed-image-container center-align"><img class="responsive-img" src="' + url + '" /></div><br /><p></p>')
-      NotificationActions.showNotification({message: _this.__('Image Added')})
+      NotificationActions.showNotification({message: t('Image Added')})
       _this.addImageButtons()
     }
   })
 }
 
 onRemoveImage = (imageId: number) => {
+  const {t} = this
   const _this = this
   ConfirmationActions.showConfirmation({
-    title: _this.__('Confirm Image Removal'),
-    message: _this.__('Please confirm that you want to remove this image'),
+    title: t('Confirm Image Removal'),
+    message: t('Please confirm that you want to remove this image'),
     onPositiveResponse () {
       Actions.removeImage(imageId, _this.state._csrf, (err) => {
         if (err) {
-          MessageActions.showMessage({title: _this.__('Error'), message: err})
+          MessageActions.showMessage({title: t('Error'), message: err})
         } else {
           // remove from content
           $('#image-' + imageId).remove()
           _this.handleBodyChange($('.storybody').html())
-          NotificationActions.showNotification({message: _this.__('Image Removed')})
+          NotificationActions.showNotification({message: t('Image Removed')})
         }
       })
     }
@@ -411,19 +414,20 @@ onRemoveImage = (imageId: number) => {
 }
 
 publish = () => {
+  const {t} = this
   const _this = this
   ConfirmationActions.showConfirmation({
-    title: _this.__('Publish story?'),
-    message: _this.__('Please confirm that you want to publish this story'),
+    title: t('Publish story?'),
+    message: t('Please confirm that you want to publish this story'),
     onPositiveResponse () {
       if (!_this.state.story.title || _this.state.story.title === '') {
-        NotificationActions.showNotification({message: _this.__('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'})
+        NotificationActions.showNotification({message: t('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'})
         return
       }
 
       // if this is a hub story, require an author
       if (_this.props.storyType === 'hub' && !_this.state.story.author) {
-        NotificationActions.showNotification({message: _this.__('Please Add an Author'), dismissAfter: 5000, position: 'bottomleft'})
+        NotificationActions.showNotification({message: t('Please Add an Author'), dismissAfter: 5000, position: 'bottomleft'})
         return
       }
 
@@ -442,14 +446,14 @@ publish = () => {
       Actions.save(body, firstline, firstimage, _this.state._csrf, (err: Error) => {
         _this.setState({saving: false})
         if (err) {
-          MessageActions.showMessage({title: _this.__('Error'), message: err})
+          MessageActions.showMessage({title: t('Error'), message: err})
         } else {
           Actions.publish(_this.state._csrf, (err) => {
             if (err) {
-              MessageActions.showMessage({title: _this.__('Error'), message: err})
+              MessageActions.showMessage({title: t('Error'), message: err})
             } else {
-              NotificationActions.showNotification({message: _this.__('Story Published'),
-                action: _this.__('View Story'),
+              NotificationActions.showNotification({message: t('Story Published'),
+                action: t('View Story'),
                 dismissAfter: 10000,
                 onDismiss () {
 
@@ -503,23 +507,24 @@ showAddMap = () => {
   if (this.savedSelectionRange) {
     this.refs.addmap.show()
   } else {
-    NotificationActions.showNotification({message: this.__('Please Select a Line in the Story'), position: 'bottomleft'})
+    NotificationActions.showNotification({message: this.t('Please Select a Line in the Story'), position: 'bottomleft'})
   }
 }
 
 showImageCrop = () => {
   if (!this.state.story.story_id || this.state.story.story_id === -1) {
-    NotificationActions.showNotification({message: this.__('Please Save the Story Before Adding in Image'), dismissAfter: 5000, position: 'bottomleft'})
+    NotificationActions.showNotification({message: this.t('Please Save the Story Before Adding in Image'), dismissAfter: 5000, position: 'bottomleft'})
     return
   }
   if (this.savedSelectionRange) {
     this.refs.imagecrop.show()
   } else {
-    NotificationActions.showNotification({message: this.__('Please Select a Line in the Story'), position: 'bottomleft'})
+    NotificationActions.showNotification({message: this.t('Please Select a Line in the Story'), position: 'bottomleft'})
   }
 }
 
 render () {
+  const {t} = this
   let author = ''
   if (this.props.storyType === 'hub') {
     author = (
@@ -529,7 +534,7 @@ render () {
           text={this.state.story.author}
           onChange={Actions.handleAuthorChange}
           options={{buttonLabels: false,
-            placeholder: {text: this.__('Enter the Author')},
+            placeholder: {text: t('Enter the Author')},
             disableReturn: true,
             imageDragging: false,
             toolbar: {buttons: []}}}
@@ -544,26 +549,26 @@ render () {
       <div ref='deleteButton' className='fixed-action-btn action-button-bottom-right' style={{marginRight: '70px'}}>
         <FloatingButton
           onClick={this.delete}
-          tooltip={this.__('Delete')}
+          tooltip={t('Delete')}
           color='red' icon='delete' />
       </div>
     )
   }
   let publishButton = ''
-  let saveButtonText = this.__('Save')
+  let saveButtonText = t('Save')
   if (!this.state.story.published) {
     publishButton = (
       <div className='center center-align' style={{margin: 'auto', position: 'fixed', bottom: '15px', zIndex: '1', right: 'calc(50% - 60px)'}}>
-        <button className='waves-effect waves-light btn' onClick={this.publish}>{this.__('Publish')}</button>
+        <button className='waves-effect waves-light btn' onClick={this.publish}>{t('Publish')}</button>
       </div>
     )
-    saveButtonText = this.__('Save Draft')
+    saveButtonText = t('Save Draft')
   }
 
   return (
     <div style={{position: 'relative'}}>
       <div className='edit-header omh-color' style={{opacity: 0.5}}>
-        <p style={{textAlign: 'center', color: '#FFF'}}>{this.__('Editing Story')}</p>
+        <p style={{textAlign: 'center', color: '#FFF'}}>{t('Editing Story')}</p>
       </div>
       {publishButton}
       <div className='container editor-container'>
@@ -573,7 +578,7 @@ render () {
             text={this.state.story.title}
             onChange={Actions.handleTitleChange}
             options={{buttonLabels: false,
-              placeholder: {text: this.__('Enter a Title for Your Story')},
+              placeholder: {text: t('Enter a Title for Your Story')},
               disableReturn: true,
               imageDragging: false,
               toolbar: {buttons: []}
@@ -589,7 +594,7 @@ render () {
             options={{
               buttonLabels: 'fontawesome',
               delay: 100,
-              placeholder: {text: this.__('Type your Story Here')},
+              placeholder: {text: t('Type your Story Here')},
               toolbar: {
                 buttons: ['bold', 'italic', 'underline', 'anchor', 'h5', 'justifyLeft', 'justifyCenter', 'justifyRight', 'quote', 'orderedlist', 'unorderedlist', 'pre', 'removeFormat']
               },
@@ -604,7 +609,7 @@ render () {
       </div>
       <div className='row' style={{position: 'absolute', top: '25px', right: '5px'}}>
         <div className='col s12' style={{border: '1px solid RGBA(0,0,0,.7)'}}>
-          <p style={{margin: '5px'}}>{this.__('Select Text to See Formatting Options')}</p>
+          <p style={{margin: '5px'}}>{t('Select Text to See Formatting Options')}</p>
         </div>
       </div>
 
@@ -615,13 +620,13 @@ render () {
       <ImageCrop ref='imagecrop' onCrop={this.onAddImage} resize_max_width={1200} />
 
       <div ref='addButton' className='fixed-action-btn action-button-bottom-right' style={{bottom: '155px'}}>
-        <a onMouseDown={function (e) { e.stopPropagation() }} className='btn-floating btn-large red red-text'>
+        <a onMouseDown={(e) => { e.stopPropagation() }} className='btn-floating btn-large red red-text'>
           <i className='large material-icons'>add</i>
         </a>
         <ul>
           <li>
             <Tooltip
-              title={this.__('Insert Map')}
+              title={t('Insert Map')}
               position='left' inertia followCursor
             >
               <a onMouseDown={this.showAddMap} className='btn-floating green darken-1'>
@@ -631,7 +636,7 @@ render () {
           </li>
           <li>
             <Tooltip
-              title={this.__('Insert Image')}
+              title={t('Insert Image')}
               position='left' inertia followCursor
             >
               <a onMouseDown={this.showImageCrop} className='btn-floating yellow'>
@@ -649,8 +654,8 @@ render () {
       </div>
       {deleteButton}
 
-      <Progress id='adding-map-progess' title={this.__('Adding Map')} subTitle={''} dismissible={false} show={this.state.addingMap} />
-      <Progress id='saving-story' title={this.__('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
+      <Progress id='adding-map-progess' title={t('Adding Map')} subTitle={''} dismissible={false} show={this.state.addingMap} />
+      <Progress id='saving-story' title={t('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
     </div>
   )
 }

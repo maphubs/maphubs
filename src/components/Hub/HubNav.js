@@ -25,17 +25,18 @@ export default class HubHav extends MapHubsPureComponent<Props, void> {
   }
 
   deleteHub = () => {
+    const {t} = this
     const _this = this
     ConfirmationActions.showConfirmation({
-      title: this.__('Confirm Hub Deletion'),
-      message: this.__('Please confirm that you want to delete this hub and all of its stories.'),
+      title: t('Confirm Hub Deletion'),
+      message: t('Please confirm that you want to delete this hub and all of its stories.'),
       onPositiveResponse () {
         HubActions.deleteHub(_this.state._csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: _this.__('Error'), message: err})
+            MessageActions.showMessage({title: t('Error'), message: err})
           } else {
             NotificationActions.showNotification({
-              message: _this.__('Hub Deleted'),
+              message: t('Hub Deleted'),
               dismissAfter: 7000,
               onDismiss () {
                 window.location = '/hubs'
@@ -48,6 +49,7 @@ export default class HubHav extends MapHubsPureComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     const omhBaseUrl = urlUtil.getBaseUrl()
 
     const hubBaseUrl = omhBaseUrl + '/hub/' + this.props.hubid + '/'
@@ -55,7 +57,7 @@ export default class HubHav extends MapHubsPureComponent<Props, void> {
     let deleteButton = ''
     if (this.props.canEdit) {
       deleteButton = (
-        <li className='nav-link-wrapper'><a href='#' onClick={this.deleteHub}>{this.__('Delete Hub')}</a></li>
+        <li className='nav-link-wrapper'><a href='#' onClick={this.deleteHub}>{t('Delete Hub')}</a></li>
       )
     }
     return (
@@ -66,12 +68,12 @@ export default class HubHav extends MapHubsPureComponent<Props, void> {
             <i className='material-icons'>menu</i>
           </a>
           <ul ref='hubNav' className='sidenav' id='nav'>
-            <li className='nav-link-wrapper'><a href={hubBaseUrl}>{this.__('Home')}</a></li>
-            <li className='nav-link-wrapper'><a href={hubBaseUrl + 'stories'}>{this.__('Stories')}</a></li>
-            <li className='nav-link-wrapper'><a href={hubBaseUrl + 'resources'}>{this.__('Resources')}</a></li>
+            <li className='nav-link-wrapper'><a href={hubBaseUrl}>{t('Home')}</a></li>
+            <li className='nav-link-wrapper'><a href={hubBaseUrl + 'stories'}>{t('Stories')}</a></li>
+            <li className='nav-link-wrapper'><a href={hubBaseUrl + 'resources'}>{t('Resources')}</a></li>
             <LocaleChooser />
             <hr />
-            <li className='nav-link-wrapper'><a href={omhBaseUrl}>{this.__('Back to ') + MAPHUBS_CONFIG.productName}</a></li>
+            <li className='nav-link-wrapper'><a href={omhBaseUrl}>{t('Back to ') + MAPHUBS_CONFIG.productName}</a></li>
             {deleteButton}
             <UserMenu id='user-menu-sidenav' sidenav />
           </ul>

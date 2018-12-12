@@ -4,7 +4,6 @@ import Formsy from 'formsy-react'
 import Toggle from './forms/toggle'
 import MessageActions from '../actions/MessageActions'
 import Suggestions from './SearchBar/Suggestions'
-import MapHubsComponent from './MapHubsComponent'
 import LocaleStore from '../stores/LocaleStore'
 
 import $ from 'jquery'
@@ -24,16 +23,8 @@ type Props = {
   autoFocus: boolean,
   inputName: string,
   optionLabel: string,
-  addButtonLabel: string
-}
-
-type DefaultProps = {
-  id: string,
-  autoFocus: boolean,
-  autosuggestDelay: number,
-  inputName: string,
-  placeholder: string,
-  addButtonLabel: string
+  addButtonLabel: string,
+  t: Function
 }
 
 type Value = {|
@@ -48,10 +39,8 @@ type State = {
   option: boolean
 }
 
-export default class AddItem extends MapHubsComponent<Props, State> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+export default class AddItem extends React.Component<Props, State> {
+  static defaultProps = {
     id: 'additem',
     autoFocus: false,
     autosuggestDelay: 250,
@@ -59,8 +48,6 @@ export default class AddItem extends MapHubsComponent<Props, State> {
     placeholder: 'Add',
     addButtonLabel: 'Add'
   }
-
-  state: State
 
   _timerId: any
 
@@ -197,6 +184,7 @@ export default class AddItem extends MapHubsComponent<Props, State> {
  }
 
  render () {
+   const {t} = this.props
    let value
    if (this.state.value && this.state.value.value) {
      value = this.state.value.value
@@ -253,7 +241,7 @@ export default class AddItem extends MapHubsComponent<Props, State> {
            </div>
          </form>
          <Formsy >
-           <Toggle name='admin' onChange={this.handleAddWithOptionChecked} labelOff={this.__('Member')} labelOn={this.__('Administrator')} checked={this.state.option}
+           <Toggle name='admin' onChange={this.handleAddWithOptionChecked} labelOff={t('Member')} labelOn={t('Administrator')} checked={this.state.option}
              dataPosition='top' dataTooltip={this.props.optionLabel}
            />
          </Formsy>

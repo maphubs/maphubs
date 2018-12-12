@@ -58,6 +58,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
   }
 
   submit = (model: Object) => {
+    const {t} = this
     const _this = this
     let dataSettings = null
     if (model.mapServiceUrl) {
@@ -90,10 +91,10 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
     }
     LayerActions.saveDataSettings(dataSettings, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         NotificationActions.showNotification({
-          message: _this.__('Layer Saved'),
+          message: t('Layer Saved'),
           dismissAfter: 1000,
           onDismiss () {
             // reset style to load correct source
@@ -112,10 +113,11 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const agolOptions = [
-      {value: 'mapserverquery', label: this.__('Link to a MapServer Query Service')},
-      {value: 'featureserverquery', label: this.__('Link to a FeatureServer Query Service')},
-      {value: 'mapservertiles', label: this.__('Link to a MapServer Tile Service')}
+      {value: 'mapserverquery', label: t('Link to a MapServer Query Service')},
+      {value: 'featureserverquery', label: t('Link to a FeatureServer Query Service')},
+      {value: 'mapservertiles', label: t('Link to a MapServer Tile Service')}
     ]
 
     let msqOption = false
@@ -139,14 +141,14 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
     if (msqOption) {
       msqForm = (
         <div>
-          <p>{this.__('ArcGIS MapServer Query Source')}</p>
+          <p>{t('ArcGIS MapServer Query Source')}</p>
           <div className='row'>
             <TextInput
-              name='mapServiceUrl' label={this.__('Map Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
-                maxLength: this.__('Must be 250 characters or less.'),
-                isHttps: this.__('SSL required for external links, URLs must start with https://')
+              name='mapServiceUrl' label={t('Map Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
+                maxLength: t('Must be 250 characters or less.'),
+                isHttps: t('SSL required for external links, URLs must start with https://')
               }} length={250}
-              dataPosition='top' dataTooltip={this.__('Map Service URL: ex: http://myserver/arcgis/rest/services/MyMap/MapServer/0')}
+              dataPosition='top' dataTooltip={t('Map Service URL: ex: http://myserver/arcgis/rest/services/MyMap/MapServer/0')}
               required />
           </div>
         </div>
@@ -157,14 +159,14 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
     if (fsqOption) {
       fsqForm = (
         <div>
-          <p>{this.__('ArcGIS FeatureService Query Source')}</p>
+          <p>{t('ArcGIS FeatureService Query Source')}</p>
           <div className='row'>
             <TextInput
-              name='featureServiceUrl' label={this.__('Feature Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
-                maxLength: this.__('Must be 250 characters or less.'),
-                isHttps: this.__('SSL required for external links, URLs must start with https://')
+              name='featureServiceUrl' label={t('Feature Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
+                maxLength: t('Must be 250 characters or less.'),
+                isHttps: t('SSL required for external links, URLs must start with https://')
               }} length={250}
-              dataPosition='top' dataTooltip={this.__('Feature Service URL ex: http://myserver/arcgis/rest/services/MyMap/FeatureServer/0')}
+              dataPosition='top' dataTooltip={t('Feature Service URL ex: http://myserver/arcgis/rest/services/MyMap/FeatureServer/0')}
               required />
           </div>
         </div>
@@ -175,14 +177,14 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
     if (tilesOption) {
       tilesForm = (
         <div>
-          <p>{this.__('ArcGIS MapServer Tiles')}</p>
+          <p>{t('ArcGIS MapServer Tiles')}</p>
           <div className='row'>
             <TextInput
-              name='tileServiceUrl' label={this.__('MapServer Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
-                maxLength: this.__('Must be 250 characters or less.'),
-                isHttps: this.__('SSL required for external links, URLs must start with https://')
+              name='tileServiceUrl' label={t('MapServer Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
+                maxLength: t('Must be 250 characters or less.'),
+                isHttps: t('SSL required for external links, URLs must start with https://')
               }} length={250}
-              dataPosition='top' dataTooltip={this.__('MapServer URL ex: http://myserver/arcgis/rest/services/MyMap/MapServer')}
+              dataPosition='top' dataTooltip={t('MapServer URL ex: http://myserver/arcgis/rest/services/MyMap/MapServer')}
               required />
           </div>
         </div>
@@ -192,7 +194,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
     return (
       <div className='row'>
         <Formsy>
-          <b>{this.__('Choose an Option')}</b>
+          <b>{t('Choose an Option')}</b>
           <div className='row'>
             <Radio name='type' label=''
               defaultValue={this.state.selectedOption}
@@ -207,7 +209,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
           {fsqForm}
           {tilesForm}
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Save and Continue')}</button>
+            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
           </div>
         </Formsy>
       </div>

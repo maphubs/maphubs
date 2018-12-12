@@ -28,13 +28,14 @@ export default class LayerList extends MapHubsComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     let title = ''
     let className = 'collection'
     if (this.props.showTitle) {
       className = 'collection with-header'
       title = (
         <li className='collection-header'>
-          <h4>{this.__('Layers')}</h4>
+          <h4>{t('Layers')}</h4>
         </li>
       )
     }
@@ -44,10 +45,10 @@ export default class LayerList extends MapHubsComponent<Props, void> {
         {title}
         {this.props.layers.map((layer, i) => {
           const layerId = layer && layer.layer_id ? layer.layer_id : 0
-          const slugName = slugify(this._o_(layer.name))
+          const slugName = slugify(this.t(layer.name))
           return (
             <li className='collection-item' key={layerId}>
-              <div>{this._o_(layer.name)}
+              <div>{this.t(layer.name)}
                 <a className='secondary-content' href={`/layer/map/${layerId}/${slugName}`}>
                   <i className='material-icons'>map</i>
                 </a>

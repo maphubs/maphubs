@@ -66,6 +66,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
   }
 
   submit = (model: Object) => {
+    const {t} = this
     const _this = this
     let dataSettings = null
     if (model.mapboxStyleID) {
@@ -92,10 +93,10 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
     }
     LayerActions.saveDataSettings(dataSettings, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         NotificationActions.showNotification({
-          message: _this.__('Layer Saved'),
+          message: t('Layer Saved'),
           dismissAfter: 1000,
           onDismiss () {
             // reset style to load correct source
@@ -114,9 +115,10 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const mapboxOptions = [
-      {value: 'style', label: this.__('Link to a complete Mapbox Studio Style')},
-      {value: 'tiles', label: this.__('Link to Mapbox Data/Raster Tiles')}
+      {value: 'style', label: t('Link to a complete Mapbox Studio Style')},
+      {value: 'tiles', label: t('Link to Mapbox Data/Raster Tiles')}
     ]
 
     let styleOption = false
@@ -136,13 +138,13 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
     if (styleOption) {
       styleForm = (
         <div>
-          <p>{this.__('Mapbox Style Source')}</p>
+          <p>{t('Mapbox Style Source')}</p>
           <div className='row'>
             <TextInput
-              name='mapboxStyleID' label={this.__('Mapbox Style URL')} icon='info' className='col s12' validations={{isValidMapboxStyleURL: true}} validationErrors={{
-                isValidMapboxStyleURL: this.__('Invalid Mapbox Style URL, must be in the format mapbox://styles/...')
+              name='mapboxStyleID' label={t('Mapbox Style URL')} icon='info' className='col s12' validations={{isValidMapboxStyleURL: true}} validationErrors={{
+                isValidMapboxStyleURL: t('Invalid Mapbox Style URL, must be in the format mapbox://styles/...')
               }} length={100}
-              dataPosition='top' dataTooltip={this.__('Mapbox Style URL in the format mapbox://styles/...')}
+              dataPosition='top' dataTooltip={t('Mapbox Style URL in the format mapbox://styles/...')}
               required />
           </div>
         </div>
@@ -152,13 +154,13 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
     if (tilesOption) {
       tilesForm = (
         <div>
-          <p>{this.__('Mapbox Tileset/Raster Source')}</p>
+          <p>{t('Mapbox Tileset/Raster Source')}</p>
           <div className='row'>
-            <TextInput name='mapboxMapID' label={this.__('Mapbox Tileset Map ID')} icon='info' className='col s12'
+            <TextInput name='mapboxMapID' label={t('Mapbox Tileset Map ID')} icon='info' className='col s12'
               validations={{isValidMapboxMapID: true}} validationErrors={{
-                isValidMapboxMapID: this.__('Invalid Mapbox Map ID, should be in the format accountname.mapid')
+                isValidMapboxMapID: t('Invalid Mapbox Map ID, should be in the format accountname.mapid')
               }} length={100}
-              dataPosition='top' dataTooltip={this.__('Mapbox Map ID')}
+              dataPosition='top' dataTooltip={t('Mapbox Map ID')}
               required />
           </div>
         </div>
@@ -169,7 +171,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
     return (
       <div className='row'>
         <Formsy>
-          <b>{this.__('Choose an Option')}</b>
+          <b>{t('Choose an Option')}</b>
           <div className='row'>
             <Radio name='type' label=''
               defaultValue={this.state.selectedOption}
@@ -183,7 +185,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
           {styleForm}
           {tilesForm}
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Save and Continue')}</button>
+            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
           </div>
         </Formsy>
       </div>

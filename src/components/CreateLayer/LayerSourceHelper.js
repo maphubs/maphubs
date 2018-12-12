@@ -15,42 +15,42 @@ import EarthEngineSource from './EarthEngineSource'
 
 export default {
 
-  getSource (type: string, mapConfig: Object) {
+  getSource (type: string, mapConfig: Object, t: Function) {
     if (type === 'local') {
-      return (<UploadLocalSource onSubmit={this.onSubmit} mapConfig={mapConfig} />)
+      return (<UploadLocalSource onSubmit={this.onSubmit} mapConfig={mapConfig} t={t} />)
     } else if (type === 'geojson') {
-      return (<GeoJSONUrlSource onSubmit={this.onSubmit} />)
+      return (<GeoJSONUrlSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'mapbox') {
-      return (<MapboxSource onSubmit={this.onSubmit} />)
+      return (<MapboxSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'raster') {
-      return (<RasterTileSource onSubmit={this.onSubmit} />)
+      return (<RasterTileSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'vector') {
-      return (<VectorTileSource onSubmit={this.onSubmit} />)
+      return (<VectorTileSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'ags') {
-      return (<AGOLSource onSubmit={this.onSubmit} />)
+      return (<AGOLSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'planet') {
-      return (<PlanetLabsSource onSubmit={this.onSubmit} />)
+      return (<PlanetLabsSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'sentinel') {
-      return (<SentinelSource onSubmit={this.onSubmit} />)
+      return (<SentinelSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'wms') {
-      return (<WMSSource onSubmit={this.onSubmit} />)
+      return (<WMSSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'dgwms') {
-      return (<DGWMSSource onSubmit={this.onSubmit} />)
+      return (<DGWMSSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'earthengine') {
-      return (<EarthEngineSource onSubmit={this.onSubmit} />)
+      return (<EarthEngineSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'remote') {
       return (
         <div style={{marginTop: '20px'}}>
           <div className='col s12 m6'>
-            <a className='btn' href='/createremotelayer'>{this.__('Link a Remote Layer')}</a>
+            <a className='btn' href='/createremotelayer'>{t('Link a Remote Layer')}</a>
           </div>
           <div className='col s12 m6'>
-            <a className='btn' href='/importlayer'>{this.__('Import MapHubs File')}</a>
+            <a className='btn' href='/importlayer'>{t('Import MapHubs File')}</a>
           </div>
         </div>
       )
     } else if (type === 'point' || type === 'line' || type === 'polygon') {
-      return (<EmptyLocalSource type={type} onSubmit={this.onSubmit} />)
+      return (<EmptyLocalSource type={type} onSubmit={this.onSubmit} t={t} />)
     } else {
       return ''
     }

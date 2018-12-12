@@ -46,6 +46,7 @@ export default class HubMap extends MapHubsComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     // TODO: if map is set, show the map, otherwise show instruction to set a map
 
     let mapEditButton = ''
@@ -60,14 +61,14 @@ export default class HubMap extends MapHubsComponent<Props, void> {
         mapEditButton = (
           <a className='btn omh-color white-text' onClick={this.showMapSelection}
             style={{position: 'absolute', top: '5px', left: '45%'}}>
-            {this.__('Change Map')}
+            {t('Change Map')}
           </a>
         )
       } else {
         mapEditButton = (
           <a className='btn omh-color white-text' onClick={this.showMapSelection}
             style={{position: 'absolute', top: '45%', left: '45%'}}>
-            {this.__('Select a Map')}
+            {t('Select a Map')}
           </a>
         )
       }

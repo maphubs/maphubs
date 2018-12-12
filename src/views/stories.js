@@ -45,43 +45,41 @@ export default class Stories extends MapHubsComponent<Props, State> {
   }
 
   onCreateStory = () => {
-    if (this.state.user && this.state.user.display_name) {
-      window.location = '/user/' + this.state.user.display_name + '/stories'
+    const {t} = this
+    const {user} = this.state
+    if (user && user.display_name) {
+      window.location = `/user/${user.display_name}/stories`
     } else {
-      MessageActions.showMessage({title: 'Login Required', message: this.__('Please login to your account or register for an account.')})
+      MessageActions.showMessage({title: 'Login Required', message: t('Please login to your account or register for an account.')})
     }
   }
 
   render () {
-    let recent = ''
-    if (this.props.recentStories && this.props.recentStories.length > 0) {
-      recent = (
-        <div className='col s12 m12 l6'>
-          <h4>{this.__('Recent Stories')}</h4>
-          {this.props.recentStories.map((story) => {
-            return (
-              <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
-                <div className='card-content'>
-                  <StorySummary story={story} />
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      )
-    }
-
+    const {t} = this
+    const {recentStories, popularStories} = this.props
     return (
       <ErrorBoundary>
         <Header activePage='stories' {...this.props.headerConfig} />
         <main>
           <div>
-
             <div className='row'>
-              {recent}
+              {(recentStories && recentStories.length > 0) &&
+                <div className='col s12 m12 l6'>
+                  <h4>{t('Recent Stories')}</h4>
+                  {recentStories.map((story) => {
+                    return (
+                      <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
+                        <div className='card-content'>
+                          <StorySummary story={story} />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              }
               <div className='col s12 m12 l6'>
-                <h4>{this.__('Popular Stories')}</h4>
-                {this.props.popularStories.map((story) => {
+                <h4>{t('Popular Stories')}</h4>
+                {popularStories.map((story) => {
                   return (
                     <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
                       <div className='card-content'>
@@ -96,10 +94,10 @@ export default class Stories extends MapHubsComponent<Props, State> {
           <div className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton
               onClick={this.onCreateStory} icon='add'
-              tooltip={this.__('Create New Story')} tooltipPosition='top' />
+              tooltip={t('Create New Story')} tooltipPosition='top' />
           </div>
           <div className='row center-align'>
-            <a className='btn' href='/stories/all'>{this.__('View All Stories')}</a>
+            <a className='btn' href='/stories/all'>{t('View All Stories')}</a>
           </div>
         </main>
         <Footer {...this.props.footerConfig} />

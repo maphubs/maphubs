@@ -112,49 +112,51 @@ export default class Home extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const _this = this
+    const {storyMode, mapMode, hubMode, groupMode, layerMode, featuredStoryCards, popularStoryCards, recentStoryCards} = this.state
     let storyCards = []
-    if (this.state.storyMode === 'featured') {
-      storyCards = this.state.featuredStoryCards
-    } else if (this.state.storyMode === 'popular') {
-      storyCards = this.state.popularStoryCards
-    } else if (this.state.storyMode === 'recent') {
-      storyCards = this.state.recentStoryCards
+    if (storyMode === 'featured') {
+      storyCards = featuredStoryCards
+    } else if (storyMode === 'popular') {
+      storyCards = popularStoryCards
+    } else if (storyMode === 'recent') {
+      storyCards = recentStoryCards
     }
 
     let mapCards = []
-    if (this.state.mapMode === 'featured') {
+    if (mapMode === 'featured') {
       mapCards = this.state.featuredMapCards
-    } else if (this.state.mapMode === 'popular') {
+    } else if (mapMode === 'popular') {
       mapCards = this.state.popularMapCards
-    } else if (this.state.mapMode === 'recent') {
+    } else if (mapMode === 'recent') {
       mapCards = this.state.recentMapCards
     }
 
     let hubCards = []
-    if (this.state.hubMode === 'featured') {
+    if (hubMode === 'featured') {
       hubCards = this.state.featuredHubCards
-    } else if (this.state.hubMode === 'popular') {
+    } else if (hubMode === 'popular') {
       hubCards = this.state.popularHubCards
-    } else if (this.state.hubMode === 'recent') {
+    } else if (hubMode === 'recent') {
       hubCards = this.state.recentHubCards
     }
 
     let groupCards = []
-    if (this.state.groupMode === 'featured') {
+    if (groupMode === 'featured') {
       groupCards = this.state.featuredGroupCards
-    } else if (this.state.groupMode === 'popular') {
+    } else if (groupMode === 'popular') {
       groupCards = this.state.popularGroupCards
-    } else if (this.state.groupMode === 'recent') {
+    } else if (groupMode === 'recent') {
       groupCards = this.state.recentGroupCards
     }
 
     let layerCards = []
-    if (this.state.layerMode === 'featured') {
+    if (layerMode === 'featured') {
       layerCards = this.state.featuredLayerCards
-    } else if (this.state.layerMode === 'popular') {
+    } else if (layerMode === 'popular') {
       layerCards = this.state.popularLayerCards
-    } else if (this.state.layerMode === 'recent') {
+    } else if (layerMode === 'recent') {
       layerCards = this.state.recentLayerCards
     }
 
@@ -164,19 +166,19 @@ export default class Home extends MapHubsComponent<Props, State> {
         <main style={{margin: 0}}>
           <SubPageBanner locale={this.props.locale}
             img='https://hpvhe47439ygwrt.belugacdn.link/maphubs/assets/home/Moabi-Canoe.jpg' backgroundPosition='50% 15%'
-            title={this.__('Explore')} subTitle={this.__(`
+            title={t('Explore')} subTitle={t(`
                Browse Stories, Maps, Groups, Hubs, and Layers
               `)} />
           <div className='row' style={{marginTop: '20px', marginBottom: 0, marginRight: '5px'}}>
             <div className='col s12' style={{paddingLeft: '25%', paddingRight: '25%'}}>
-              <SearchBox label={this.__('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} />
+              <SearchBox label={t('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} />
             </div>
           </div>
           <div className='row no-margin'>
             <div className='row no-margin' style={{height: '50px'}}>
               <div className='col s12 m2 l1'>
                 <a href='/stories'>
-                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{this.__('Stories')}</h5>
+                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Stories')}</h5>
                 </a>
               </div>
               <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
@@ -190,7 +192,7 @@ export default class Home extends MapHubsComponent<Props, State> {
               </div>
             </div>
             <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
-              <a href='/stories' className='btn'>{this.__('More Stories')}</a>
+              <a href='/stories' className='btn'>{t('More Stories')}</a>
             </div>
           </div>
           <div className='divider' />
@@ -198,7 +200,7 @@ export default class Home extends MapHubsComponent<Props, State> {
             <div className='row no-margin' style={{height: '50px'}}>
               <div className='col s12 m2 l1'>
                 <a href='/maps'>
-                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{this.__('Maps')}</h5>
+                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Maps')}</h5>
                 </a>
               </div>
               <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
@@ -212,7 +214,7 @@ export default class Home extends MapHubsComponent<Props, State> {
               </div>
             </div>
             <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
-              <a href='/maps' className='btn'>{this.__('More Maps')}</a>
+              <a href='/maps' className='btn'>{t('More Maps')}</a>
             </div>
           </div>
           <div className='divider' />
@@ -220,7 +222,7 @@ export default class Home extends MapHubsComponent<Props, State> {
             <div className='row no-margin' style={{height: '50px'}}>
               <div className='col s12 m2 l1'>
                 <a href='/hubs'>
-                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{this.__('Hubs')}</h5>
+                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Hubs')}</h5>
                 </a>
               </div>
               <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
@@ -234,7 +236,7 @@ export default class Home extends MapHubsComponent<Props, State> {
               </div>
             </div>
             <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
-              <a href='/hubs' className='btn'>{this.__('More Hubs')}</a>
+              <a href='/hubs' className='btn'>{t('More Hubs')}</a>
             </div>
           </div>
           <div className='divider' />
@@ -242,7 +244,7 @@ export default class Home extends MapHubsComponent<Props, State> {
             <div className='row no-margin' style={{height: '50px'}}>
               <div className='col s12 m2 l1'>
                 <a href='/groups'>
-                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{this.__('Groups')}</h5>
+                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Groups')}</h5>
                 </a>
               </div>
               <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
@@ -256,7 +258,7 @@ export default class Home extends MapHubsComponent<Props, State> {
               </div>
             </div>
             <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
-              <a href='/groups' className='btn'>{this.__('More Groups')}</a>
+              <a href='/groups' className='btn'>{t('More Groups')}</a>
             </div>
           </div>
           <div className='divider' />
@@ -264,7 +266,7 @@ export default class Home extends MapHubsComponent<Props, State> {
             <div className='row no-margin' style={{height: '50px'}}>
               <div className='col s12 m2 l1'>
                 <a href='/layers'>
-                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{this.__('Layers')}</h5>
+                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Layers')}</h5>
                 </a>
               </div>
               <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
@@ -274,11 +276,11 @@ export default class Home extends MapHubsComponent<Props, State> {
             </div>
             <div className='row'>
               <div className='col s12'>
-                <CardCarousel cards={layerCards} infinite={false} t={this.t} />
+                <CardCarousel cards={layerCards} infinite={false} t={t} />
               </div>
             </div>
             <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
-              <a href='/layers' className='btn'>{this.__('More Layers')}</a>
+              <a href='/layers' className='btn'>{t('More Layers')}</a>
             </div>
           </div>
         </main>

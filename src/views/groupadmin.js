@@ -92,23 +92,24 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   onError = (msg: string) => {
-    MessageActions.showMessage({title: this.__('Error'), message: msg})
+    MessageActions.showMessage({title: this.t('Error'), message: msg})
   }
 
   submit = (model: Object) => {
-    const _this = this
+    const {t} = this
+    const {_csrf} = this.state
     const group_id = this.props.group.group_id
 
     model.name = Locales.formModelToLocalizedString(model, 'name')
     model.description = Locales.formModelToLocalizedString(model, 'description')
 
-    GroupActions.updateGroup(group_id, model.name, model.description, model.location, model.published, _this.state._csrf, (err) => {
+    GroupActions.updateGroup(group_id, model.name, model.description, model.location, model.published, _csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+        MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
         NotificationActions.showNotification(
           {
-            message: _this.__('Group Saved'),
+            message: t('Group Saved'),
             position: 'bottomright',
             dismissAfter: 3000,
             onDismiss () {
@@ -120,16 +121,18 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   handleMemberDelete = (user: Object) => {
-    const _this = this
+    const {t} = this
+    const {_csrf} = this.state
+
     ConfirmationActions.showConfirmation({
-      title: _this.__('Confirm Removal'),
-      message: _this.__('Please confirm removal of ') + user.label,
+      title: t('Confirm Removal'),
+      message: t('Please confirm removal of ') + user.label,
       onPositiveResponse () {
-        GroupActions.removeMember(user.key, _this.state._csrf, (err) => {
+        GroupActions.removeMember(user.key, _csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: _this.__('Error'), message: err})
+            MessageActions.showMessage({title: t('Error'), message: err})
           } else {
-            NotificationActions.showNotification({message: _this.__('Member Removed')})
+            NotificationActions.showNotification({message: t('Member Removed')})
           }
         })
       }
@@ -137,17 +140,18 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   handleGroupDelete = () => {
+    const {t} = this
     const _this = this
     ConfirmationActions.showConfirmation({
-      title: _this.__('Confirm Deletion'),
-      message: _this.__('Please confirm removal of group ') + this._o_(this.state.group.name),
+      title: t('Confirm Deletion'),
+      message: t('Please confirm removal of group ') + this.t(this.state.group.name),
       onPositiveResponse () {
         GroupActions.deleteGroup(_this.state._csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: _this.__('Error'), message: err})
+            MessageActions.showMessage({title: t('Error'), message: err})
           } else {
             NotificationActions.showNotification({
-              message: _this.__('Group Deleted'),
+              message: t('Group Deleted'),
               onDismiss () {
                 window.location = '/groups'
               }
@@ -159,19 +163,20 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   handleMemberMakeAdmin = (user: Object) => {
-    const _this = this
+    const {t} = this
+    const {_csrf} = this.state
     if (user.type === 'Administrator') {
       this.handleRemoveMemberAdmin(user)
     } else {
       ConfirmationActions.showConfirmation({
-        title: _this.__('Confirm Administrator'),
-        message: _this.__('Please confirm that you want to make this user an Administrator: ') + user.label,
+        title: t('Confirm Administrator'),
+        message: t('Please confirm that you want to make this user an Administrator: ') + user.label,
         onPositiveResponse () {
-          GroupActions.setMemberAdmin(user.key, _this.state._csrf, (err) => {
+          GroupActions.setMemberAdmin(user.key, _csrf, (err) => {
             if (err) {
-              MessageActions.showMessage({title: _this.__('Error'), message: err})
+              MessageActions.showMessage({title: t('Error'), message: err})
             } else {
-              NotificationActions.showNotification({message: _this.__('Member is now an Administrator'), dismissAfter: 7000})
+              NotificationActions.showNotification({message: t('Member is now an Administrator'), dismissAfter: 7000})
             }
           })
         }
@@ -180,16 +185,17 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   handleRemoveMemberAdmin = (user: Object) => {
-    const _this = this
+    const {t} = this
+    const {_csrf} = this.state
     ConfirmationActions.showConfirmation({
-      title: _this.__('Confirm Remove Administrator'),
-      message: _this.__('Please confirm that you want to remove Administrator permissions for ') + user.label + '.',
+      title: t('Confirm Remove Administrator'),
+      message: t('Please confirm that you want to remove Administrator permissions for ') + user.label + '.',
       onPositiveResponse () {
-        GroupActions.removeMemberAdmin(user.key, _this.state._csrf, (err) => {
+        GroupActions.removeMemberAdmin(user.key, _csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: _this.__('Error'), message: err})
+            MessageActions.showMessage({title: t('Error'), message: err})
           } else {
-            NotificationActions.showNotification({message: _this.__('Member is no longer an Administrator'), dismissAfter: 7000})
+            NotificationActions.showNotification({message: t('Member is no longer an Administrator'), dismissAfter: 7000})
           }
         })
       }
@@ -197,13 +203,14 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   handleAddMember = (user: Object) => {
-    const _this = this
+    const {t} = this
+    const {_csrf} = this.state
     debug.log(user.value.value + ' as Admin:' + user.option)
-    GroupActions.addMember(user.value.value, user.option, _this.state._csrf, (err) => {
+    GroupActions.addMember(user.value.value, user.option, _csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
-        NotificationActions.showNotification({message: _this.__('Member Added'), dismissAfter: 7000})
+        NotificationActions.showNotification({message: t('Member Added'), dismissAfter: 7000})
       }
     })
   }
@@ -213,15 +220,16 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   onCrop = (data: Object) => {
-    const _this = this
+    const {t} = this
+    const {_csrf} = this.state
     // send data to server
-    GroupActions.setGroupImage(data, _this.state._csrf, (err) => {
+    GroupActions.setGroupImage(data, _csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+        MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
         NotificationActions.showNotification(
           {
-            message: _this.__('Image Saved'),
+            message: t('Image Saved'),
             position: 'bottomright',
             dismissAfter: 3000
           })
@@ -231,7 +239,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const _this = this
+    const {t} = this
     const membersList = []
     const groupId = this.props.group.group_id ? this.props.group.group_id : ''
     this.state.members.forEach((user) => {
@@ -242,7 +250,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
         image: user.image,
         icon: 'person',
         actionIcon: 'supervisor_account',
-        actionLabel: _this.__('Add/Remove Administrator Access')
+        actionLabel: t('Add/Remove Administrator Access')
       })
     })
 
@@ -261,20 +269,20 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
           <div className='container'>
             <div className='row'>
               <div className='col s12'>
-                <p>&larr; <a href={groupUrl}>{this.__('Back to Group')}</a></p>
+                <p>&larr; <a href={groupUrl}>{t('Back to Group')}</a></p>
               </div>
             </div>
             <div className='row' style={{marginTop: '20px'}}>
               <div className='col s12 m6 l6'>
-                <img alt={this.__('Group Photo')} width='300' className='' src={'/group/' + groupId + '/image?' + new Date().getTime()} />
+                <img alt={t('Group Photo')} width='300' className='' src={'/group/' + groupId + '/image?' + new Date().getTime()} />
               </div>
               <div className='col s12 m6 l6'>
-                <button className='waves-effect waves-light btn' onClick={this.showImageCrop}>{this.__('Change Image')}</button>
+                <button className='waves-effect waves-light btn' onClick={this.showImageCrop}>{t('Change Image')}</button>
               </div>
 
             </div>
             <div className='row'>
-              <h4>{this._o_(this.props.group.name)}</h4>
+              <h4>{this.t(this.props.group.name)}</h4>
             </div>
             <div className='divider' />
             <div className='row'>
@@ -286,9 +294,9 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     }}
                     icon='info'
                     className='col s12' validations='maxLength:100' validationErrors={{
-                      maxLength: this.__('Name must be 100 characters or less.')
+                      maxLength: t('Name must be 100 characters or less.')
                     }} length={100}
-                    dataPosition='top' dataTooltip={this.__('Short Descriptive Name for the Group')}
+                    dataPosition='top' dataTooltip={t('Short Descriptive Name for the Group')}
                     value={this.state.group.name}
                     required />
                 </div>
@@ -301,29 +309,29 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                       it: 'Descrizione'
                     }}
                     icon='description' className='col s12' validations='maxLength:500' validationErrors={{
-                      maxLength: this.__('Description must be 500 characters or less.')
+                      maxLength: t('Description must be 500 characters or less.')
                     }} length={500}
-                    dataPosition='top' dataTooltip={this.__('Brief Description of the Group')}
+                    dataPosition='top' dataTooltip={t('Brief Description of the Group')}
                     value={this.state.group.description}
                     required />
                 </div>
                 <div className='row'>
                   <TextInput
-                    name='location' label={this.__('Location')} icon='navigation' className='col s12' validations='maxLength:100' validationErrors={{
-                      maxLength: this.__('Location must be 100 characters or less.')
+                    name='location' label={t('Location')} icon='navigation' className='col s12' validations='maxLength:100' validationErrors={{
+                      maxLength: t('Location must be 100 characters or less.')
                     }} length={100}
-                    dataPosition='top' dataTooltip={this.__('Country or City Where the Group is Located')}
+                    dataPosition='top' dataTooltip={t('Country or City Where the Group is Located')}
                     value={this.state.group.location}
                     required />
                 </div>
                 <div className='row'>
-                  <Toggle name='published' labelOff={this.__('Draft')} labelOn={this.__('Published')} className='col s12'
-                    dataPosition='top' dataTooltip={this.__('Include in Public Group Listings')}
+                  <Toggle name='published' labelOff={t('Draft')} labelOn={t('Published')} className='col s12'
+                    dataPosition='top' dataTooltip={t('Include in Public Group Listings')}
                     checked={isPublished}
                   />
                 </div>
                 <div className='right'>
-                  <button className='btn waves-effect waves-light' type='submit' name='action'>{this.__('Update')}</button>
+                  <button className='btn waves-effect waves-light' type='submit' name='action'>{t('Update')}</button>
                 </div>
 
               </Formsy>
@@ -332,9 +340,9 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
               <EditList title='Members' items={membersList} onDelete={this.handleMemberDelete} onAction={this.handleMemberMakeAdmin} onError={this.onError} />
             </div>
             <div className='row'>
-              <h5>{this.__('Add Group Member')}</h5>
-              <AddItem placeholder={this.__('Search for User Name')} suggestionUrl='/api/user/search/suggestions'
-                optionLabel={this.__('Add as Administrator')} addButtonLabel={this.__('Add and Send Invite')}
+              <h5>{t('Add Group Member')}</h5>
+              <AddItem t={t} placeholder={t('Search for User Name')} suggestionUrl='/api/user/search/suggestions'
+                optionLabel={t('Add as Administrator')} addButtonLabel={t('Add and Send Invite')}
                 onAdd={this.handleAddMember} onError={this.onError} />
             </div>
             <div className='row'>
@@ -349,7 +357,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
             <div className='fixed-action-btn action-button-bottom-right'>
               <FloatingButton
                 onClick={this.handleGroupDelete}
-                tooltip={this.__('Delete Group')}
+                tooltip={t('Delete Group')}
                 color='red' icon='delete' />
             </div>
 

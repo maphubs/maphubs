@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import Formsy, {addValidationRule} from 'formsy-react'
+import Formsy from 'formsy-react'
 import TextInput from '../forms/textInput'
 import LayerActions from '../../actions/LayerActions'
 import NotificationActions from '../../actions/NotificationActions'
@@ -45,6 +45,7 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
   }
 
   submit = (model: Object) => {
+    const {t} = this
     const _this = this
 
     LayerActions.saveDataSettings({
@@ -58,10 +59,10 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
       }
     }, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         NotificationActions.showNotification({
-          message: _this.__('Layer Saved'),
+          message: t('Layer Saved'),
           dismissAfter: 1000,
           onDismiss () {
             // reset style to load correct source
@@ -80,6 +81,7 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     return (
       <div className='row'>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
@@ -87,21 +89,21 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
             <p>Raster Tile Source</p>
             <div className='row'>
               <TextInput
-                name='image_id' label={this.__('Image ID/Asset ID')} icon='info' className='col s12' validations='maxLength:200' validationErrors={{
-                  maxLength: this.__('Must be 200 characters or less.')
+                name='image_id' label={t('Image ID/Asset ID')} icon='info' className='col s12' validations='maxLength:200' validationErrors={{
+                  maxLength: t('Must be 200 characters or less.')
                 }} length={200}
-                dataPosition='top' dataTooltip={this.__('EarthEngine Image ID or Asset ID')}
+                dataPosition='top' dataTooltip={t('EarthEngine Image ID or Asset ID')}
                 required />
             </div>
             <div className='row'>
-              <TextInput name='min' label={this.__('Min (Optional)')} icon='info' className='col s12' />
+              <TextInput name='min' label={t('Min (Optional)')} icon='info' className='col s12' />
             </div>
             <div className='row'>
-              <TextInput name='max' label={this.__('Max (Optional)')} icon='info' className='col s12' />
+              <TextInput name='max' label={t('Max (Optional)')} icon='info' className='col s12' />
             </div>
           </div>
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.__('Save and Continue')}</button>
+            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
           </div>
         </Formsy>
       </div>

@@ -30,15 +30,16 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
  }
 
   saveEdits = async (DataEditor: Object) => {
+    const {t} = this
     const _this = this
     this.setState({saving: true})
     await DataEditor.saveEdits(this.state._csrf, (err) => {
       _this.setState({saving: false})
       if (err) {
-        MessageActions.showMessage({title: _this.__('Error'), message: err})
+        MessageActions.showMessage({title: t('Error'), message: err})
       } else {
         NotificationActions.showNotification({
-          message: _this.__('Edits Saved')
+          message: t('Edits Saved')
         })
       }
     })

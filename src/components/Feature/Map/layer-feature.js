@@ -164,7 +164,7 @@ function getLayer (layer: Object, geojson: Object): Layer {
   let isPoint
   if (geojson && geojson.features) {
     const feature = geojson.features[0]
-    if (feature.geometry.type === 'Point') {
+    if (feature.geometry.type === 'Point' || feature.geometry.type === 'LineString') {
       isPoint = true
     }
   }

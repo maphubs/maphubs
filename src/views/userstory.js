@@ -47,6 +47,7 @@ export default class UserStory extends MapHubsComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     const story = this.props.story
 
     let button = ''
@@ -55,7 +56,7 @@ export default class UserStory extends MapHubsComponent<Props, void> {
         <div className='fixed-action-btn action-button-bottom-right'>
           <FloatingButton
             href={`/user/${this.props.username}/story/${this.props.story.story_id}/edit/${slugify(this.props.story.title)}`}
-            tooltip={this.__('Edit')}
+            tooltip={t('Edit')}
             tooltipPosition='left'
             icon='mode_edit' />
         </div>

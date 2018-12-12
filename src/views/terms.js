@@ -42,12 +42,13 @@ export default class Terms extends MapHubsComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     return (
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main className='container'>
           <div className='row'>
-            <h4>{MAPHUBS_CONFIG.productName + ' ' + this.__('Terms of Service')}</h4>
+            <h4>{MAPHUBS_CONFIG.productName + ' ' + t('Terms of Service')}</h4>
           </div>
 
           <p>

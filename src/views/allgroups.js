@@ -69,6 +69,7 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = (input: string) => {
+    const {t} = this
     const _this = this
     debug.log('searching for: ' + input)
     request.get(urlUtil.getBaseUrl() + '/api/groups/search?q=' + input)
@@ -76,14 +77,14 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
       .end((err, res) => {
         checkClientError(res, err, (err) => {
           if (err) {
-            MessageActions.showMessage({title: _this.__('Error'), message: err})
+            MessageActions.showMessage({title: t('Error'), message: err})
           } else {
             if (res.body.groups && res.body.groups.length > 0) {
               _this.setState({searchActive: true, searchResults: res.body.groups})
-              NotificationActions.showNotification({message: res.body.groups.length + ' ' + _this.__('Results'), position: 'bottomleft'})
+              NotificationActions.showNotification({message: res.body.groups.length + ' ' + t('Results'), position: 'bottomleft'})
             } else {
             // show error message
-              NotificationActions.showNotification({message: _this.__('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
+              NotificationActions.showNotification({message: t('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
             }
           }
         },
@@ -129,7 +130,7 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
     if (this.state.showList) {
       groups = (
         <div className='container'>
-          <GroupList showTitle={false} groups={this.props.groups} />
+          <GroupList showTitle={false} groups={this.props.groups} t={t} />
         </div>
       )
     } else {

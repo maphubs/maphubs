@@ -91,21 +91,22 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     let advanced = ''
     if (this.props.showAdvanced) {
       advanced = (
         <li>
           <div className='collapsible-header'>
-            <i className='material-icons'>code</i>{this.__('Advanced')}
+            <i className='material-icons'>code</i>{t('Advanced')}
           </div>
           <div className='collapsible-body'>
             <AdvancedLayerSettings layer={this.props.layer} style={this.props.style} onChange={this.onAdvancedSettingsChange} />
             <div className='row'>
               <div className='col s12, m6'>
-                <button onClick={this.showStyleEditor} className='btn'>{this.__('Style')}</button>
+                <button onClick={this.showStyleEditor} className='btn'>{t('Style')}</button>
               </div>
               <div className='col s12, m6'>
-                <button onClick={this.showLegendEditor} className='btn'>{this.__('Legend')}</button>
+                <button onClick={this.showLegendEditor} className='btn'>{t('Legend')}</button>
               </div>
             </div>
           </div>
@@ -117,7 +118,7 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
         <ul ref='collapsible' className='collapsible' data-collapsible='accordion'>
           <li className='active'>
             <div className='collapsible-header'>
-              <i className='material-icons'>opacity</i>{this.__('Opacity')}
+              <i className='material-icons'>opacity</i>{t('Opacity')}
             </div>
             <div className='collapsible-body'>
               <div className='row'>

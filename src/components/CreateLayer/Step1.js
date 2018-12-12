@@ -38,9 +38,10 @@ export default class Step1 extends MapHubsComponent<Props, State> {
   }
 
   cancelCallback = () => {
+    const {t} = this
     this.setState({warnIfUnsaved: false})
     NotificationActions.showNotification({
-      message: this.__('Layer Cancelled'),
+      message: t('Layer Cancelled'),
       onDismiss () {
         window.location = '/layers'
       }
@@ -48,12 +49,13 @@ export default class Step1 extends MapHubsComponent<Props, State> {
   }
 
    onCancel = () => {
+     const {t} = this
      const _this = this
      if (_this.state.created) {
        // delete the layer
        LayerActions.cancelLayer(this.state._csrf, (err) => {
          if (err) {
-           MessageActions.showMessage({title: _this.__('Error'), message: err})
+           MessageActions.showMessage({title: t('Error'), message: err})
          } else {
            _this.cancelCallback()
          }
@@ -64,11 +66,12 @@ export default class Step1 extends MapHubsComponent<Props, State> {
    }
 
    render () {
+     const {t} = this
      return (
        <div className='row'>
          <CreateLayer onSubmit={this.onSubmit}
            mapConfig={this.props.mapConfig}
-           showCancel cancelText={this.__('Cancel')} onCancel={this.onCancel}
+           showCancel cancelText={t('Cancel')} onCancel={this.onCancel}
          />
        </div>
      )

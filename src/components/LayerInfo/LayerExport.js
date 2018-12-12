@@ -9,14 +9,15 @@ type Props = {
 
 export default class LayerExport extends MapHubsPureComponent<Props, void> {
   render () {
+    const {t} = this
     if (this.props.layer.is_external) {
       return (
         <div>
-          <p>{this.__('This is an external data layer. For exports please see the data source at:')} {this._o_(this.props.layer.source)}</p>
+          <p>{t('This is an external data layer. For exports please see the data source at:')} {this.t(this.props.layer.source)}</p>
         </div>
       )
     } else {
-      const name = slugify(this._o_(this.props.layer.name))
+      const name = slugify(this.t(this.props.layer.name))
       const layerId = this.props.layer.layer_id
 
       const maphubsFileURL = `/api/layer/${layerId}/export/maphubs/${name}.maphubs`
@@ -32,20 +33,20 @@ export default class LayerExport extends MapHubsPureComponent<Props, void> {
         let gpxExport = ''
         if (this.props.layer.data_type !== 'polygon') {
           gpxExport = (
-            <li className='collection-item'>{this.__('GPX:')} <a href={gpxURL}>{gpxURL}</a></li>
+            <li className='collection-item'>{t('GPX:')} <a href={gpxURL}>{gpxURL}</a></li>
           )
         }
         return (
           <div>
             <ul className='collection with-header'>
-              <li className='collection-header'><h5>{this.__('Export Data')}</h5></li>
-              <li className='collection-item'>{this.__('MapHubs Format:')} <a href={maphubsFileURL}>{maphubsFileURL}</a></li>
-              <li className='collection-item'>{this.__('Shapefile:')} <a href={shpURL}>{shpURL}</a></li>
-              <li className='collection-item'>{this.__('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
-              <li className='collection-item'>{this.__('KML:')} <a href={kmlURL}>{kmlURL}</a></li>
-              <li className='collection-item'>{this.__('CSV:')} <a href={csvURL}>{csvURL}</a></li>
-              <li className='collection-item'>{this.__('SVG:')} <a href={svgURL}>{svgURL}</a></li>
-              <li className='collection-item'>{this.__('Geobuf:')} <a href={geobufURL}>{geobufURL}</a> (<a href='https://github.com/mapbox/geobuf'>{this.__('Learn More')}</a>)</li>
+              <li className='collection-header'><h5>{t('Export Data')}</h5></li>
+              <li className='collection-item'>{t('MapHubs Format:')} <a href={maphubsFileURL}>{maphubsFileURL}</a></li>
+              <li className='collection-item'>{t('Shapefile:')} <a href={shpURL}>{shpURL}</a></li>
+              <li className='collection-item'>{t('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
+              <li className='collection-item'>{t('KML:')} <a href={kmlURL}>{kmlURL}</a></li>
+              <li className='collection-item'>{t('CSV:')} <a href={csvURL}>{csvURL}</a></li>
+              <li className='collection-item'>{t('SVG:')} <a href={svgURL}>{svgURL}</a></li>
+              <li className='collection-item'>{t('Geobuf:')} <a href={geobufURL}>{geobufURL}</a> (<a href='https://github.com/mapbox/geobuf'>{t('Learn More')}</a>)</li>
               {gpxExport}
             </ul>
           </div>
@@ -53,7 +54,7 @@ export default class LayerExport extends MapHubsPureComponent<Props, void> {
       } else {
         return (
           <div>
-            <p>{this.__('Export is not available for this layer.')}</p>
+            <p>{t('Export is not available for this layer.')}</p>
           </div>
         )
       }

@@ -74,6 +74,7 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     let startEmpty = true
     let owner
     if (this.state.group_id) {
@@ -86,17 +87,17 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
       this.props.groups.map((group) => {
         groupOptions.push({
           value: group.group_id,
-          label: _this._o_(group.name)
+          label: _this.t(group.name)
         })
       })
 
       groups = (
         <div className='row'>
-          <p style={{padding: '10px'}}>{this.__('Since you are in multiple groups, please select the group that should own this item.')}</p>
-          <Select name='group' id='group-select' label={this.__('Group')} startEmpty={startEmpty}
+          <p style={{padding: '10px'}}>{t('Since you are in multiple groups, please select the group that should own this item.')}</p>
+          <Select name='group' id='group-select' label={t('Group')} startEmpty={startEmpty}
             value={this.state.group_id} onChange={this.onGroupChange}
-            emptyText={this.__('Choose a Group')} options={groupOptions} className='col s12'
-            dataPosition='right' dataTooltip={this.__('Owned by Group')}
+            emptyText={t('Choose a Group')} options={groupOptions} className='col s12'
+            dataPosition='right' dataTooltip={t('Owned by Group')}
             required
           />
         </div>
@@ -105,13 +106,13 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
       owner = this.getOwnerGroup(this.state.group_id)
       groups = (
         <div className='row'>
-          <b>{this.__('Group:')} </b>{this._o_(owner.name)}
+          <b>{t('Group:')} </b>{this.t(owner.name)}
         </div>
       )
     } else {
       groups = (
         <div className='row'>
-          <b>{this.__('Group:')} </b>{this._o_(this.props.groups[0].name)}
+          <b>{t('Group:')} </b>{this.t(this.props.groups[0].name)}
         </div>
       )
     }
@@ -133,7 +134,7 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
             if ((itemCount + 1) > itemLimit) {
               overLimit = true
             }
-            itemName = this.__('private layers')
+            itemName = t('private layers')
           }
         } else if (this.props.type === 'hub') {
           if (owner.account.tier.private_hub_limit > 0) {
@@ -143,7 +144,7 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
             if ((itemCount + 1) > itemLimit) {
               overLimit = true
             }
-            itemName = this.__('private hubs')
+            itemName = t('private hubs')
           }
         } else if (this.props.type === 'map') {
           if (owner.account.tier.private_map_limit > 0) {
@@ -153,12 +154,12 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
             if ((itemCount + 1) > itemLimit) {
               overLimit = true
             }
-            itemName = this.__('private maps')
+            itemName = t('private maps')
           }
         }
       }
       if (privateAllowed) {
-        const tooltipMessage = this.__('Private layers are only accessible to members of the same group')
+        const tooltipMessage = t('Private layers are only accessible to members of the same group')
 
         let checked = false
         let disablePrivate = false
@@ -170,7 +171,7 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
             checked = this.state.private
           } else {
             overLimitMessage = (
-              <p>{this.__('Upgrade your account to add additional ')} {itemName}</p>
+              <p>{t('Upgrade your account to add additional ')} {itemName}</p>
             )
           }
         } else {
@@ -179,12 +180,12 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
 
         privateToggle = (
           <div className='row'>
-            <p style={{padding: '10px'}}>{this.__('Account Level:')} <b>{owner.account.tier.name}</b>&nbsp;
+            <p style={{padding: '10px'}}>{t('Account Level:')} <b>{owner.account.tier.name}</b>&nbsp;
               <span>
-                {this.__('You are currently using ')} {itemCount} {this.__('of')} {itemLimit} {itemName}
+                {t('You are currently using ')} {itemCount} {t('of')} {itemLimit} {itemName}
               </span>
             </p>
-            <Toggle name='private' labelOff={this.__('Public')} disabled={disablePrivate} labelOn={this.__('Private')} checked={checked} className='col s12'
+            <Toggle name='private' labelOff={t('Public')} disabled={disablePrivate} labelOn={t('Private')} checked={checked} className='col s12'
               dataPosition='right' dataTooltip={tooltipMessage}
             />
             {overLimitMessage}

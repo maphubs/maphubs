@@ -67,10 +67,11 @@ export default class HubResourcesPage extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
+    const {t} = this
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (_this.state.editing) {
-        const msg = _this.__('You have not saved your edits, your changes will be lost.')
+        const msg = t('You have not saved your edits, your changes will be lost.')
         e.returnValue = msg
         return msg
       }
@@ -82,66 +83,60 @@ export default class HubResourcesPage extends MapHubsComponent<Props, State> {
   }
 
   stopEditing = () => {
+    const {t} = this
     const _this = this
     HubActions.saveHub(this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+        MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
-        NotificationActions.showNotification({message: _this.__('Hub Saved')})
+        NotificationActions.showNotification({message: t('Hub Saved')})
         _this.setState({editing: false})
       }
     })
   }
 
   publish = () => {
-    const _this = this
+    const {t} = this
     if (this.state.unsavedChanges) {
-      MessageActions.showMessage({title: _this.__('Unsaved Changes'), message: _this.__('Please save your changes before publishing.')})
+      MessageActions.showMessage({title: t('Unsaved Changes'), message: t('Please save your changes before publishing.')})
     } else if (isEmpty(this.state.hub.name) || isEmpty(this.state.hub.description) ||
             !this.state.hub.hasLogoImage || !this.state.hub.hasBannerImage) {
-      MessageActions.showMessage({title: _this.__('Required Content'), message: _this.__('Please complete your hub before publishing. Add a title, description, logo image, and banner image. \n We also recommend adding map layers and publishing your first story.')})
+      MessageActions.showMessage({title: t('Required Content'), message: t('Please complete your hub before publishing. Add a title, description, logo image, and banner image. \n We also recommend adding map layers and publishing your first story.')})
     } else {
       HubActions.publish(this.state._csrf, (err) => {
         if (err) {
-          MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+          MessageActions.showMessage({title: t('Server Error'), message: err})
         } else {
-          NotificationActions.showNotification({message: _this.__('Hub Published')})
+          NotificationActions.showNotification({message: t('Hub Published')})
         }
       })
     }
   }
 
   render () {
-    let editButton = ''
-    let publishButton = ''
-
-    if (this.props.canEdit) {
-      editButton = (
-        <HubEditButton editing={this.state.editing}
-          startEditing={this.startEditing} stopEditing={this.stopEditing} />
-      )
-
-      if (!this.state.hub.published) {
-        publishButton = (
-          <div className='center center-align' style={{margin: 'auto', position: 'fixed', top: '15px', right: 'calc(50% - 60px)'}}>
-            <button className='waves-effect waves-light btn' onClick={this.publish}>{this.__('Publish')}</button>
-          </div>
-        )
-      }
-    }
+    const {t} = this
+    const {canEdit} = this.props
+    const {editing} = this.state
 
     return (
       <ErrorBoundary>
-        <HubNav hubid={this.props.hub.hub_id} canEdit={this.props.canEdit} />
+        <HubNav hubid={this.props.hub.hub_id} canEdit={canEdit} />
         <main style={{marginTop: '0px'}}>
-          {publishButton}
+          {(canEdit && !this.state.hub.published) &&
+            <div className='center center-align' style={{margin: 'auto', position: 'fixed', top: '15px', right: 'calc(50% - 60px)'}}>
+              <button className='waves-effect waves-light btn' onClick={this.publish}>{t('Publish')}</button>
+            </div>
+          }
           <div className='row'>
             <HubBanner editing={false} hubid={this.props.hub.hub_id} subPage />
           </div>
           <div className='container'>
-            <HubResources editing={this.state.editing} />
+            <HubResources editing={editing} />
           </div>
-          {editButton}
+          {canEdit &&
+            <HubEditButton editing={editing}
+              startEditing={this.startEditing} stopEditing={this.stopEditing} />
+          }
           <Footer {...this.props.footerConfig} />
         </main>
         <Notification />

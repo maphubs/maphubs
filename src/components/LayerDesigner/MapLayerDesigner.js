@@ -3,7 +3,6 @@ import React from 'react'
 import LayerDesigner from './LayerDesigner'
 import OpacityChooser from './OpacityChooser'
 import MapStyles from '../Map/Styles'
-import urlUtil from '../../services/url-util'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
 import type {Layer} from '../../types/layer'
@@ -73,7 +72,6 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
   }
 
   setRasterOpacity = (opacity: number) => {
-    const baseUrl = urlUtil.getBaseUrl()
     const {layer_id, shortid} = this.props.layer
     let style
     const elc = this.props.layer.external_layer_config
@@ -119,6 +117,7 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const legendCode: string = (this.props.layer && this.props.layer.legend_html) ? this.props.layer.legend_html : ''
     const style = (this.props.layer && this.props.layer.style) ? this.props.layer.style : undefined
 
@@ -143,7 +142,7 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
         elc.type === 'mapbox-style') {
         designer = (
           <div style={{marginTop: '20px', marginBottom: '20px', padding: '20px', border: '1px solid #b1b1b1'}}>
-            <p>{this.__('Unable to change this layer')}</p>
+            <p>{t('Unable to change this layer')}</p>
           </div>
         )
       } else {
@@ -175,7 +174,7 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
         </div>
         <div>
           <div className='center' style={{margin: '10px'}}>
-            <a className='waves-effect waves-light btn' style={{float: 'none'}} onClick={this.close}>{this.__('Close')}</a>
+            <a className='waves-effect waves-light btn' style={{float: 'none'}} onClick={this.close}>{t('Close')}</a>
           </div>
         </div>
       </div>

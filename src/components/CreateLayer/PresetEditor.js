@@ -29,10 +29,11 @@ export default class PresetEditor extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
+    const {t} = this
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (_this.props.warnIfUnsaved && _this.state.pendingPresetChanges) {
-        const msg = _this.__('You have not saved your edits, your changes will be lost.')
+        const msg = t('You have not saved your edits, your changes will be lost.')
         e.returnValue = msg
         return msg
       }
@@ -59,6 +60,7 @@ export default class PresetEditor extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const _this = this
     let presets = []
     if (this.state.presets) {
@@ -68,7 +70,7 @@ export default class PresetEditor extends MapHubsComponent<Props, State> {
       <div>
         <div className='row no-padding'>
           <div className='left'>
-            <a className='waves-effect waves-light btn' onClick={this.addPreset}><i className='material-icons right'>add</i>{this.__('Add Field')}</a>
+            <a className='waves-effect waves-light btn' onClick={this.addPreset}><i className='material-icons right'>add</i>{t('Add Field')}</a>
           </div>
         </div>
         <ul className='collection'>

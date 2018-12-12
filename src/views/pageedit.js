@@ -58,6 +58,7 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
   }
 
   savePageConfig = (pageConfig: string) => {
+    const {t} = this
     const _this = this
     request.post('/api/page/save')
       .type('json').accept('json')
@@ -70,11 +71,11 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
         checkClientError(res, err, () => {}, (cb) => {
           _this.setState({pageConfig: JSON.parse(pageConfig)})
           if (err) {
-            MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+            MessageActions.showMessage({title: t('Server Error'), message: err})
           } else {
             NotificationActions.showNotification(
               {
-                message: _this.__('Page Saved'),
+                message: t('Page Saved'),
                 position: 'topright',
                 dismissAfter: 3000
               })
@@ -85,13 +86,14 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     return (
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main className='container' style={{height: 'calc(100% - 100px)'}}>
           <CodeEditor ref='pageEditor' id='layer-style-editor' mode='json'
             code={JSON.stringify(this.state.pageConfig, undefined, 2)}
-            title={this.__('Editing Page Config: ') + this.props.page_id}
+            title={t('Editing Page Config: ') + this.props.page_id}
             onSave={this.savePageConfig} modal={false} />
         </main>
         <Footer {...this.props.footerConfig} />

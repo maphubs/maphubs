@@ -102,6 +102,7 @@ export default class Search extends MapHubsComponent<Props, State> {
   }
 
   handleSearch = async (input: string) => {
+    const {t} = this
     this.setState({searching: true})
     try {
       let totalResults = 0
@@ -164,7 +165,7 @@ export default class Search extends MapHubsComponent<Props, State> {
         NotificationActions.showNotification(
           {
             message: totalResults +
-             ' ' + this.__('Results Found'),
+             ' ' + t('Results Found'),
             position: 'bottomright',
             dismissAfter: 3000
           })
@@ -173,7 +174,7 @@ export default class Search extends MapHubsComponent<Props, State> {
         // tell user no results found
         NotificationActions.showNotification(
           {
-            message: this.__('No Results Found'),
+            message: t('No Results Found'),
             position: 'bottomright',
             dismissAfter: 3000
           })
@@ -236,7 +237,7 @@ export default class Search extends MapHubsComponent<Props, State> {
             <div className='row no-margin' style={{height: 'calc(50% - 50px)', minHeight: '200px'}}>
               {cardsPanel}
             </div>
-            <Progress id='searching' title={this.__('Searching')} subTitle='' dismissible={false} show={this.state.searching} />
+            <Progress id='searching' title={t('Searching')} subTitle='' dismissible={false} show={this.state.searching} />
           </main>
           <Footer {...this.props.footerConfig} />
         </Provider>

@@ -190,6 +190,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     let map = ''
 
     let bounds
@@ -205,7 +206,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
         <div style={{position: 'relative'}}>
           <img src={imgSrc} style={{width: '100%', height: '100%', objectFit: 'contain'}} alt={MAPHUBS_CONFIG.productName + ' Map'} />
           <Tooltip
-            title={this.__('Start Interactive Map')}
+            title={t('Start Interactive Map')}
             position='right' inertia followCursor>
             <a onClick={this.startInteractive} className='embed-map-btn btn-floating waves-effect waves-light'
               style={{position: 'absolute', left: 'calc(50% - 30px)', bottom: 'calc(50% - 30px)', backgroundColor: 'rgba(25,25,25,0.35)', height: '60px', width: '60px', zIndex: '999'}}>

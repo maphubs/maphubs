@@ -111,6 +111,7 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     let editor = ''
     if (this.state.show) {
       let enableBasicAutocompletion
@@ -148,8 +149,8 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
 
             <p className='left no-padding'>{this.props.title}</p>
             <div className='right'>
-              <a className='waves-effect waves-light btn' style={{float: 'none', marginRight: '15px'}} onClick={this.onCancel}>{this.__('Cancel')}</a>
-              <a className='waves-effect waves-light btn' style={{float: 'none'}} disabled={!this.state.canSave} onClick={this.onSave}>{this.__('Save')}</a>
+              <a className='waves-effect waves-light btn' style={{float: 'none', marginRight: '15px'}} onClick={this.onCancel}>{t('Cancel')}</a>
+              <a className='waves-effect waves-light btn' style={{float: 'none'}} disabled={!this.state.canSave} onClick={this.onSave}>{t('Save')}</a>
             </div>
 
           </ModalFooter>
@@ -161,7 +162,7 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
           <p className='left no-padding'>{this.props.title}</p>
           {editor}
           <div className='right'>
-            <a className='waves-effect waves-light btn' style={{float: 'none', marginTop: '15px'}} disabled={!this.state.canSave} onClick={this.onSave}>{this.__('Save')}</a>
+            <a className='waves-effect waves-light btn' style={{float: 'none', marginTop: '15px'}} disabled={!this.state.canSave} onClick={this.onSave}>{t('Save')}</a>
           </div>
         </div>
       )

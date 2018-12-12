@@ -30,6 +30,7 @@ export default class ErrorBoundary extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     if (this.state.error) {
       return (
         <div style={{
@@ -45,11 +46,11 @@ export default class ErrorBoundary extends MapHubsComponent<Props, State> {
               clipRule='evenodd' fill={MAPHUBS_CONFIG.primaryColor} fillRule='evenodd' />
           </svg>
           <div style={{padding: '12px'}}>
-            <p style={{margin: 0}}>{this.__('We\'re sorry - something\'s gone wrong.')}</p>
+            <p style={{margin: 0}}>{t('We\'re sorry - something\'s gone wrong.')}</p>
             {Raven.lastEventId() &&
-              <p style={{margin: 0}}>{this.__('Our team has been notified, but click  ')}<button onClick={() => Raven.lastEventId() && Raven.showReportDialog()}>
-                {this.__('here')}
-              </button> {this.__('to fill out a report.')}
+              <p style={{margin: 0}}>{t('Our team has been notified, but click  ')}<button onClick={() => Raven.lastEventId() && Raven.showReportDialog()}>
+                {t('here')}
+              </button> {t('to fill out a report.')}
               </p>
             }
           </div>

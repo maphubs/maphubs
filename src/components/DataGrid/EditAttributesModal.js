@@ -96,6 +96,7 @@ export default class EditAttributesModal extends MapHubsComponent<Props, State> 
   }
 
   render () {
+    const {t} = this
     return (
       <Modal ref='modal' className='edit-attributes-modal' dismissible={false} fixedFooter>
         <ModalContent style={{padding: 0, margin: 0, height: 'calc(100% - 60px)', overflow: 'hidden'}}>
@@ -112,7 +113,7 @@ export default class EditAttributesModal extends MapHubsComponent<Props, State> 
           </div>
         </ModalContent>
         <ModalFooter>
-          <button className='btn omh-color omh-btn-text-color' onClick={this.onSave}>{this.__('Save')}</button>
+          <button className='btn omh-color omh-btn-text-color' onClick={this.onSave}>{t('Save')}</button>
         </ModalFooter>
       </Modal>
     )

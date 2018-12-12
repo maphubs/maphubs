@@ -90,21 +90,22 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
   }
 
   saveStyle = () => {
-    const _this = this
+    const {t} = this
     LayerActions.saveStyle(this.state, this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+        MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
-        NotificationActions.showNotification({message: this.__('Layer Saved'), dismissAfter: 2000})
+        NotificationActions.showNotification({message: t('Layer Saved'), dismissAfter: 2000})
       }
     })
   }
 
   onSave = () => {
-    NotificationActions.showNotification({message: this.__('Layer Saved'), dismissAfter: 2000})
+    NotificationActions.showNotification({message: this.t('Layer Saved'), dismissAfter: 2000})
   }
 
   savePresets = () => {
+    const {t} = this
     const _this = this
     // check for duplicate presets
     if (this.state.presets) {
@@ -112,12 +113,12 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
       const tags = _mapvalues(presets, 'tag')
       const uniqTags = _uniq(tags)
       if (tags.length > uniqTags.length) {
-        MessageActions.showMessage({title: _this.__('Data Error'), message: this.__('Duplicate tag, please choose a unique tag for each field')})
+        MessageActions.showMessage({title: t('Data Error'), message: t('Duplicate tag, please choose a unique tag for each field')})
       } else {
         // save presets
         LayerActions.submitPresets(false, this.state._csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+            MessageActions.showMessage({title: t('Server Error'), message: err})
           } else {
             _this.saveStyle()
           }
@@ -135,21 +136,22 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
   }
 
   deleteLayer = () => {
+    const {t} = this
     const _this = this
     ConfirmationActions.showConfirmation({
-      title: _this.__('Confirm Delete'),
-      message: _this.__('Please confirm removal of') + ' ' +
-      _this._o_(this.props.layer.name) + '. ' +
-      _this.__('All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, stories, and hubs.'),
+      title: t('Confirm Delete'),
+      message: t('Please confirm removal of') + ' ' +
+      t(this.props.layer.name) + '. ' +
+      t('All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, stories, and hubs.'),
       onPositiveResponse () {
         _this.setState({saving: true})
         LayerActions.deleteLayer(_this.state._csrf, (err) => {
           _this.setState({saving: false})
           if (err) {
-            MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+            MessageActions.showMessage({title: t('Server Error'), message: err})
           } else {
             NotificationActions.showNotification({
-              message: _this.__('Layer Deleted'),
+              message: t('Layer Deleted'),
               dismissAfter: 1000,
               onDismiss () {
                 window.location = '/'
@@ -162,7 +164,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
   }
 
   refreshRemoteLayer = () => {
-    const _this = this
+    const {t} = this
     request.post('/api/layer/refresh/remote')
       .type('json').accept('json')
       .send({
@@ -171,9 +173,9 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
       .end((err, res) => {
         checkClientError(res, err, () => {}, (cb) => {
           if (err) {
-            MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+            MessageActions.showMessage({title: t('Server Error'), message: err})
           } else {
-            NotificationActions.showNotification({message: _this.__('Layer Updated'), dismissAfter: 2000})
+            NotificationActions.showNotification({message: t('Layer Updated'), dismissAfter: 2000})
           }
           cb()
         })
@@ -185,13 +187,14 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const _this = this
     let tabContentDisplay = 'none'
     if (typeof window !== 'undefined') {
       tabContentDisplay = 'inherit'
     }
     const layerId = this.props.layer.layer_id ? this.props.layer.layer_id : 0
-    const layerName = slugify(this._o_(this.props.layer.name))
+    const layerName = slugify(this.t(this.props.layer.name))
     const layerInfoUrl = `/layer/info/${layerId}/${layerName}`
 
     if (this.props.layer.remote) {
@@ -202,22 +205,22 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
             <div className='container'>
               <div className='row'>
                 <div className='col s12'>
-                  <p>&larr; <a href={layerInfoUrl}>{this.__('Back to Layer')}</a></p>
+                  <p>&larr; <a href={layerInfoUrl}>{t('Back to Layer')}</a></p>
                 </div>
               </div>
               <div className='row center-align'>
-                <h5>{this.__('Unable to modify remote layers.')}</h5>
+                <h5>{t('Unable to modify remote layers.')}</h5>
                 <div className='center-align center'>
                   <button className='btn' style={{marginTop: '20px'}}
-                    onClick={this.refreshRemoteLayer}>{this.__('Refresh Remote Layer')}</button>
+                    onClick={this.refreshRemoteLayer}>{t('Refresh Remote Layer')}</button>
                 </div>
-                <p>{this.__('You can remove this layer using the button in the bottom right.')}</p>
+                <p>{t('You can remove this layer using the button in the bottom right.')}</p>
               </div>
               <div ref={(el) => { this.menuButton = el }}
                 className='fixed-action-btn action-button-bottom-right'>
                 <FloatingButton
                   onClick={this.deleteLayer}
-                  tooltip={this.__('Delete Layer')}
+                  tooltip={t('Delete Layer')}
                   color='red' icon='delete' />
               </div>
             </div>
@@ -233,20 +236,20 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
               <div>
                 <div className='row'>
                   <div className='col s12'>
-                    <p>&larr; <a href={layerInfoUrl}>{this.__('Back to Layer')}</a></p>
+                    <p>&larr; <a href={layerInfoUrl}>{t('Back to Layer')}</a></p>
                     <ul ref='tabs' className='tabs' style={{overflowX: 'hidden'}}>
                       <li className='tab'>
-                        <a className='active' onClick={() => { _this.selectTab('settings') }} href='#info'>{this.__('Info/Settings')}</a>
+                        <a className='active' onClick={() => { _this.selectTab('settings') }} href='#info'>{t('Info/Settings')}</a>
                       </li>
                       <li className='tab'>
-                        <a onClick={() => { _this.selectTab('fields') }} href='#fields'>{this.__('Fields')}</a>
+                        <a onClick={() => { _this.selectTab('fields') }} href='#fields'>{t('Fields')}</a>
                       </li>
                       <li className='tab'>
-                        <a onClick={() => { _this.selectTab('style') }} href='#style'>{this.__('Style/Display')}</a>
+                        <a onClick={() => { _this.selectTab('style') }} href='#style'>{t('Style/Display')}</a>
                       </li>
                       {this.state.user && this.state.user.admin &&
                       <li className='tab'>
-                        <a onClick={() => { _this.selectTab('admin') }} href='#admin'>{this.__('Admin Only')}</a>
+                        <a onClick={() => { _this.selectTab('admin') }} href='#admin'>{t('Admin Only')}</a>
                       </li>
                       }
                     </ul>
@@ -258,20 +261,20 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                       showGroup={false}
                       warnIfUnsaved
                       onSubmit={this.onSave}
-                      submitText={this.__('Save')}
+                      submitText={t('Save')}
                     />
                     }
                   </div>
                   <div id='fields' className='col s12' style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
                     {this.state.tab === 'fields' &&
                     <div className='container' >
-                      <h5>{this.__('Data Fields')}</h5>
+                      <h5>{t('Data Fields')}</h5>
                       <div className='right'>
-                        <button onClick={this.savePresets} className='waves-effect waves-light btn' disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
+                        <button onClick={this.savePresets} className='waves-effect waves-light btn' disabled={!this.state.canSavePresets}>{t('Save')}</button>
                       </div>
                       <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid} />
                       <div className='right'>
-                        <button onClick={this.savePresets} className='waves-effect waves-light btn' disabled={!this.state.canSavePresets}>{this.__('Save')}</button>
+                        <button onClick={this.savePresets} className='waves-effect waves-light btn' disabled={!this.state.canSavePresets}>{t('Save')}</button>
                       </div>
                     </div>
                     }
@@ -291,7 +294,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                       groups={this.props.groups}
                       warnIfUnsaved
                       onSubmit={this.onSave}
-                      submitText={this.__('Save')}
+                      submitText={t('Save')}
                     />
                     }
                   </div>
@@ -305,18 +308,18 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                   <li>
                     <FloatingButton
                       href={`/layer/replace/${layerId}/${layerName}`}
-                      tooltip={this.__('Replace Layer Data')}
+                      tooltip={t('Replace Layer Data')}
                       color='blue' icon='file_upload' large={false} />
                   </li>
                   <li>
                     <FloatingButton
                       onClick={this.deleteLayer}
-                      tooltip={this.__('Delete Layer')}
+                      tooltip={t('Delete Layer')}
                       color='red' icon='delete' large={false} />
                   </li>
                 </ul>
               </div>
-              <Progress id='saving-layer-admin' title={this.__('Sending')} subTitle='' dismissible={false} show={this.state.saving} />
+              <Progress id='saving-layer-admin' title={t('Sending')} subTitle='' dismissible={false} show={this.state.saving} />
             </main>
           </Provider>
         </ErrorBoundary>

@@ -80,63 +80,54 @@ export default class HubStoriesPage extends MapHubsComponent<Props, State> {
   }
 
   stopEditing = () => {
+    const {t} = this
     const _this = this
     HubActions.saveHub(this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+        MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
-        NotificationActions.showNotification({message: _this.__('Hub Saved')})
+        NotificationActions.showNotification({message: t('Hub Saved')})
         _this.setState({editing: false})
       }
     })
   }
 
   publish = () => {
-    const _this = this
+    const {t} = this
     const hub = this.state.hub ? this.state.hub : {}
     if (this.state.unsavedChanges) {
       MessageActions.showMessage({
-        title: _this.__('Unsaved Changes'),
-        message: _this.__('Please save your changes before publishing.')
+        title: t('Unsaved Changes'),
+        message: t('Please save your changes before publishing.')
       })
     } else if (isEmpty(hub.name) || isEmpty(hub.description) ||
             !hub.hasLogoImage || !hub.hasBannerImage) {
-      MessageActions.showMessage({title: _this.__('Required Content'), message: _this.__('Please complete your hub before publishing. Add a title, description, logo image, and banner image. \n We also recommend adding map layers and publishing your first story.')})
+      MessageActions.showMessage({title: t('Required Content'), message: t('Please complete your hub before publishing. Add a title, description, logo image, and banner image. \n We also recommend adding map layers and publishing your first story.')})
     } else {
       HubActions.publish(this.state._csrf, (err) => {
         if (err) {
-          MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+          MessageActions.showMessage({title: t('Server Error'), message: err})
         } else {
-          NotificationActions.showNotification({message: _this.__('Hub Published')})
+          NotificationActions.showNotification({message: t('Hub Published')})
         }
       })
     }
   }
 
   render () {
-    let editButton = ''
-    let publishButton = ''
-
-    if (this.props.canEdit) {
-      editButton = (
-        <HubEditButton editing={this.state.editing}
-          startEditing={this.startEditing} stopEditing={this.stopEditing} />
-      )
-
-      if (!this.state.hub.published) {
-        publishButton = (
-          <div className='center center-align' style={{margin: 'auto', position: 'fixed', top: '15px', right: 'calc(50% - 60px)'}}>
-            <button className='waves-effect waves-light btn' onClick={this.publish}>{this.__('Publish')}</button>
-          </div>
-        )
-      }
-    }
+    const {t} = this
+    const {canEdit} = this.props
+    const {hub} = this.state
 
     return (
       <ErrorBoundary>
         <HubNav hubid={this.props.hub.hub_id} canEdit={this.props.canEdit} />
         <main style={{marginTop: '0px'}}>
-          {publishButton}
+          {(canEdit && !hub.published) &&
+            <div className='center center-align' style={{margin: 'auto', position: 'fixed', top: '15px', right: 'calc(50% - 60px)'}}>
+              <button className='waves-effect waves-light btn' onClick={this.publish}>{t('Publish')}</button>
+            </div>
+          }
           <div className='row'>
             <HubBanner editing={false} hubid={this.props.hub.hub_id} subPage />
           </div>
@@ -147,7 +138,10 @@ export default class HubStoriesPage extends MapHubsComponent<Props, State> {
                 stories={this.props.stories} limit={6} />
             </div>
           </div>
-          {editButton}
+          {canEdit &&
+            <HubEditButton editing={this.state.editing}
+              startEditing={this.startEditing} stopEditing={this.stopEditing} />
+          }
           <Footer {...this.props.footerConfig} />
         </main>
         <Notification />

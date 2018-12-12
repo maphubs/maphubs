@@ -41,6 +41,7 @@ export default class HubResources extends MapHubsComponent<Props, HubStoreState>
   }
 
   render () {
+    const {t} = this
     let resources = ''
     if (this.props.editing) {
       resources = (
@@ -52,7 +53,7 @@ export default class HubResources extends MapHubsComponent<Props, HubStoreState>
             options={{
               buttonLabels: 'fontawesome',
               delay: 100,
-              placeholder: {text: this.__('Enter text, links to webpages, links to documents (from Dropbox, Google Docs, etc.)')},
+              placeholder: {text: t('Enter text, links to webpages, links to documents (from Dropbox, Google Docs, etc.)')},
               buttons: ['bold', 'italic', 'underline', 'anchor', 'h5', 'justifyLeft', 'justifyCenter', 'justifyRight', 'quote', 'orderedlist', 'unorderedlist', 'pre', 'removeFormat']
             }}
           />

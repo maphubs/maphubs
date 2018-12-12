@@ -52,15 +52,15 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
   }
 
   onCrop = (data: Object) => {
-    const _this = this
+    const {t} = this
     // send data to server
     GroupActions.setGroupImage(data, this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+        MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
         NotificationActions.showNotification(
           {
-            message: _this.__('Image Saved'),
+            message: t('Image Saved'),
             position: 'bottomright',
             dismissAfter: 3000
           })
@@ -70,6 +70,7 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     // hide if not active
     let className = classNames('row')
     if (!this.props.active) {
@@ -80,7 +81,7 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
     if (this.props.showPrev) {
       prevButton = (
         <div className='left'>
-          <button className='waves-effect waves-light btn' onClick={this.props.onPrev}>{this.__('Previous Step')}</button>
+          <button className='waves-effect waves-light btn' onClick={this.props.onPrev}>{t('Previous Step')}</button>
         </div>
       )
     }
@@ -109,15 +110,15 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
               {groupImage}
             </div>
             <div className='col s12 m6 l6'>
-              <button className='waves-effect waves-light btn' onClick={this.showImageCrop}>{this.__('Add Image')}</button>
-              <p>{this.__('Upload an Image or Logo for Your Group (Optional)')}</p>
+              <button className='waves-effect waves-light btn' onClick={this.showImageCrop}>{t('Add Image')}</button>
+              <p>{t('Upload an Image or Logo for Your Group (Optional)')}</p>
             </div>
 
           </div>
           <div className='row'>
             {prevButton}
             <div className='right'>
-              <button className='waves-effect waves-light btn' onClick={this.submit}>{this.__('Save')}</button>
+              <button className='waves-effect waves-light btn' onClick={this.submit}>{t('Save')}</button>
             </div>
           </div>
         </div>

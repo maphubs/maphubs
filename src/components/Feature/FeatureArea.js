@@ -152,7 +152,7 @@ export default class FeatureArea extends MapHubsPureComponent<Props, void> {
               (or &nbsp;
               <IntlProvider locale={this.state.locale}>
                 <FormattedNumber value={comparison.val} />
-              </IntlProvider>&nbsp;{this._o_(comparison.name)})
+              </IntlProvider>&nbsp;{this.t(comparison.name)})
             </span>
           </div>
         </div>

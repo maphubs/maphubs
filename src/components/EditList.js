@@ -26,6 +26,7 @@ export default class EditList extends MapHubsComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     const _this = this
 
     return (
@@ -53,7 +54,7 @@ export default class EditList extends MapHubsComponent<Props, void> {
             action = (
               <Tooltip title={item.actionLabel} position='bottom' inertia followCursor>
                 <a>
-                  <i className='material-icons' onClick={function () {
+                  <i className='material-icons' onClick={() => {
                     _this.onAction(item)
                   }} style={{cursor: 'pointer'}}>{item.actionIcon}</i>
                 </a>
@@ -77,9 +78,9 @@ export default class EditList extends MapHubsComponent<Props, void> {
               {type}
               <div className='secondary-content'>
                 {action}
-                <Tooltip title={_this.__('Remove')} position='bottom' inertia followCursor>
+                <Tooltip title={t('Remove')} position='bottom' inertia followCursor>
                   <a>
-                    <i className='material-icons' onClick={function () {
+                    <i className='material-icons' onClick={() => {
                       _this.onDelete(item)
                     }} style={{
                       cursor: 'pointer'

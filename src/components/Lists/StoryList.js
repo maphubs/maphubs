@@ -27,13 +27,14 @@ export default class StoryList extends MapHubsComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     let title = ''
     let className = 'collection'
     if (this.props.showTitle) {
       className = 'collection with-header'
       title = (
         <li className='collection-header'>
-          <h4>{this.__('Stories')}</h4>
+          <h4>{t('Stories')}</h4>
         </li>
       )
     }

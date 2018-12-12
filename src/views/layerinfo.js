@@ -403,7 +403,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
 
     if (layer.description) {
       // regex for detecting links
-      const localizedDescription = this._o_(layer.description)
+      const localizedDescription = this.t(layer.description)
       const regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig
       descriptionWithLinks = localizedDescription.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>")
     }
@@ -430,7 +430,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
 
                 <div className='row no-margin' style={{height: '100%'}}>
                   <ul ref='tabs' className='tabs' style={{overflowX: 'auto'}}>
-                    <li className='tab'><a className='active' href='#info'>{this.__('Info')}</a></li>
+                    <li className='tab'><a className='active' href='#info'>{t('Info')}</a></li>
                     <li className='tab'><a href='#notes'>{t('Notes')}</a></li>
                     {MAPHUBS_CONFIG.enableComments &&
                       <li className='tab'><a href='#discuss'>{t('Discuss')}</a></li>
@@ -445,7 +445,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                       >
                         <h5 className='word-wrap' style={{marginTop: 0}}>{t(layer.name)}</h5>
                         <GroupTag group={layer.owned_by_group_id} size={25} fontSize={12} />
-                        <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{t('Data Source:')}</b> {this._o_(layer.source)}</p>
+                        <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{t('Data Source:')}</b> {this.t(layer.source)}</p>
                         <p style={{fontSize: '16px'}}><b>{t('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
                         <ExternalLink layer={layer} t={t} />
                       </Col>

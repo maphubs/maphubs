@@ -146,14 +146,15 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   onDelete = () => {
+    const {t} = this
     const _this = this
     ConfirmationActions.showConfirmation({
-      title: _this.__('Confirm Delete'),
-      message: _this.__('Please confirm removal of ') + this._o_(this.props.map.title),
+      title: t('Confirm Delete'),
+      message: t('Please confirm removal of ') + t(this.props.map.title),
       onPositiveResponse () {
         MapMakerActions.deleteMap(_this.props.map.map_id, _this.state._csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+            MessageActions.showMessage({title: t('Server Error'), message: err})
           } else {
             window.location = '/maps'
           }
@@ -218,7 +219,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   onCopyMap = (formData: Object, cb: Function) => {
-    const _this = this
+    const {t} = this
     const data = {
       map_id: this.props.map.map_id,
       title: formData.title,
@@ -232,12 +233,12 @@ export default class UserMap extends MapHubsComponent<Props, State> {
       .end((err, res) => {
         checkClientError(res, err, (err) => {
           if (err || !res.body || !res.body.map_id) {
-            MessageActions.showMessage({title: _this.__('Error'), message: err})
+            MessageActions.showMessage({title: t('Error'), message: err})
           } else {
             const mapId = res.body.map_id
             const url = '/map/edit/' + mapId
             NotificationActions.showNotification({
-              message: _this.__('Map Copied'),
+              message: t('Map Copied'),
               dismissAfter: 2000,
               onDismiss () {
                 cb()
@@ -318,7 +319,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
         <Provider inject={[this.BaseMapState]}>
           <Header {...this.props.headerConfig} />
           <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
-            <Progress id='load-data-progess' title={this.__('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading} />
+            <Progress id='load-data-progess' title={t('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading} />
             <InteractiveMap height='calc(100vh - 50px)'
               {...map}
               layers={this.props.layers}

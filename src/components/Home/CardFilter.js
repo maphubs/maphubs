@@ -45,6 +45,7 @@ export default class CardFilter extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const activeClass = 'omh-accent-text'
     let featuredClass = ''
     let popularClass = ''
@@ -58,9 +59,9 @@ export default class CardFilter extends MapHubsComponent<Props, State> {
     }
     return (
       <div className='valign right-align' style={{width: '100%'}}>
-        <span className={featuredClass} onClick={this.onFeatured} style={{cursor: 'pointer'}}>{this.__('Featured')}</span> |&nbsp;
-        <span className={popularClass} onClick={this.onPopular} style={{cursor: 'pointer'}}>{this.__('Popular')}</span> |&nbsp;
-        <span className={recentClass} onClick={this.onRecent} style={{cursor: 'pointer'}}>{this.__('Recent')}</span>
+        <span className={featuredClass} onClick={this.onFeatured} style={{cursor: 'pointer'}}>{t('Featured')}</span> |&nbsp;
+        <span className={popularClass} onClick={this.onPopular} style={{cursor: 'pointer'}}>{t('Popular')}</span> |&nbsp;
+        <span className={recentClass} onClick={this.onRecent} style={{cursor: 'pointer'}}>{t('Recent')}</span>
       </div>
     )
   }

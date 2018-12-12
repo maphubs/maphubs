@@ -47,12 +47,13 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
   }
 
   createIndex = () => {
+    const {t} = this
     const _this = this
     ConfirmationActions.showConfirmation({
-      title: this.__('Confirm'),
-      postitiveButtonText: this.__('Confirm'),
-      negativeButtonText: this.__('Cancel'),
-      message: this.__('Warning!'),
+      title: t('Confirm'),
+      postitiveButtonText: t('Confirm'),
+      negativeButtonText: t('Cancel'),
+      message: t('Warning!'),
       onPositiveResponse () {
         request.post('/admin/searchindex/create')
           .type('json').accept('json')
@@ -62,11 +63,11 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
           .end((err, res) => {
             checkClientError(res, err, () => {}, (cb) => {
               if (err) {
-                MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+                MessageActions.showMessage({title: t('Server Error'), message: err})
               } else {
                 NotificationActions.showNotification(
                   {
-                    message: _this.__('Success'),
+                    message: t('Success'),
                     position: 'topright',
                     dismissAfter: 3000
                   })
@@ -79,12 +80,13 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
   }
 
   deleteIndex = () => {
+    const {t} = this
     const _this = this
     ConfirmationActions.showConfirmation({
-      title: this.__('Confirm Delete'),
-      postitiveButtonText: this.__('Confirm'),
-      negativeButtonText: this.__('Cancel'),
-      message: this.__('Warning!'),
+      title: t('Confirm Delete'),
+      postitiveButtonText: t('Confirm'),
+      negativeButtonText: t('Cancel'),
+      message: t('Warning!'),
       onPositiveResponse () {
         request.post('/admin/searchindex/delete')
           .type('json').accept('json')
@@ -94,11 +96,11 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
           .end((err, res) => {
             checkClientError(res, err, () => {}, (cb) => {
               if (err) {
-                MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+                MessageActions.showMessage({title: t('Server Error'), message: err})
               } else {
                 NotificationActions.showNotification(
                   {
-                    message: _this.__('Success'),
+                    message: t('Success'),
                     position: 'topright',
                     dismissAfter: 3000
                   })
@@ -111,12 +113,13 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
   }
 
   rebuildFeatures = () => {
+    const {t} = this
     const _this = this
     ConfirmationActions.showConfirmation({
-      title: this.__('Confirm'),
-      postitiveButtonText: this.__('Confirm'),
-      negativeButtonText: this.__('Cancel'),
-      message: this.__('Warning this may take a long time, monitor the logs!'),
+      title: t('Confirm'),
+      postitiveButtonText: t('Confirm'),
+      negativeButtonText: t('Cancel'),
+      message: t('Warning this may take a long time, monitor the logs!'),
       onPositiveResponse () {
         request.post('/admin/searchindex/rebuild/features')
           .type('json').accept('json')
@@ -126,11 +129,11 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
           .end((err, res) => {
             checkClientError(res, err, () => {}, (cb) => {
               if (err) {
-                MessageActions.showMessage({title: _this.__('Server Error'), message: err})
+                MessageActions.showMessage({title: t('Server Error'), message: err})
               } else {
                 NotificationActions.showNotification(
                   {
-                    message: _this.__('Success'),
+                    message: t('Success'),
                     position: 'topright',
                     dismissAfter: 3000
                   })
@@ -143,24 +146,25 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     return (
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main className='container' style={{height: 'calc(100% - 100px)'}}>
           <div>
-            <p><b>{this.__('Connection Status:')}</b> {this.props.connectionStatus}</p>
+            <p><b>{t('Connection Status:')}</b> {this.props.connectionStatus}</p>
           </div>
           <div>
-            <p><b>{this.__('Index Status:')}</b> {this.props.indexStatus}</p>
+            <p><b>{t('Index Status:')}</b> {this.props.indexStatus}</p>
           </div>
           <div>
-            <button className='btn' onClick={this.createIndex}>{this.__('Create Index')}</button>
+            <button className='btn' onClick={this.createIndex}>{t('Create Index')}</button>
           </div>
           <div>
-            <button className='btn' onClick={this.deleteIndex}>{this.__('Delete Index')}</button>
+            <button className='btn' onClick={this.deleteIndex}>{t('Delete Index')}</button>
           </div>
           <div>
-            <button className='btn' onClick={this.rebuildFeatures}>{this.__('Rebuild Feature Index')}</button>
+            <button className='btn' onClick={this.rebuildFeatures}>{t('Rebuild Feature Index')}</button>
           </div>
         </main>
         <Footer {...this.props.footerConfig} />

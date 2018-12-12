@@ -36,12 +36,13 @@ export default class Privacy extends MapHubsComponent<Props, void> {
   }
 
   render () {
+    const {t} = this
     return (
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main className='container' lang='en'>
           <div className='row'>
-            <h4>{MAPHUBS_CONFIG.productName + ' ' + this.__('Privacy Policy')}</h4>
+            <h4>{MAPHUBS_CONFIG.productName + ' ' + t('Privacy Policy')}</h4>
             <p>
   We respect your privacy and will not share your information other than in the circumstances outlined below.
             </p>

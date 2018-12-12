@@ -50,23 +50,24 @@ export default class PublicShareModal extends MapHubsComponent<Props, State> {
    }
 
   onChange = (model: Object) => {
+    const {t} = this
     const _this = this
     if (model.public) {
       ConfirmationActions.showConfirmation({
-        title: this.__('Share Map'),
-        postitiveButtonText: this.__('Create Public Share Link'),
-        negativeButtonText: this.__('Cancel'),
-        message: this.__('Please confirm that you wish to publicly share this map and the data in the associated map layers publicly with anyone who has the link.'),
+        title: t('Share Map'),
+        postitiveButtonText: t('Create Public Share Link'),
+        negativeButtonText: t('Cancel'),
+        message: t('Please confirm that you wish to publicly share this map and the data in the associated map layers publicly with anyone who has the link.'),
         onPositiveResponse () {
           _this.props.onChange(model.public)
         }
       })
     } else {
       ConfirmationActions.showConfirmation({
-        title: this.__('Deactivate Map Sharing'),
-        postitiveButtonText: this.__('Stop Sharing'),
-        negativeButtonText: this.__('Cancel'),
-        message: this.__('Warning! The shared link will be destroyed and all shared/embedded maps will no longer work. For security reasons, sharing this map again will generate a new link and will not reactivate the current link.'),
+        title: t('Deactivate Map Sharing'),
+        postitiveButtonText: t('Stop Sharing'),
+        negativeButtonText: t('Cancel'),
+        message: t('Warning! The shared link will be destroyed and all shared/embedded maps will no longer work. For security reasons, sharing this map again will generate a new link and will not reactivate the current link.'),
         onPositiveResponse () {
           _this.props.onChange(model.public)
         }
@@ -80,32 +81,33 @@ export default class PublicShareModal extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     let shareLink = ''
     let shareMessage = ''
     if (this.props.share_id && this.state.sharing) {
       const shareUrl = urlUtil.getBaseUrl() + `/map/share/${this.props.share_id}`
       shareLink = (
         <div>
-          <p style={{fontSize: '16px'}}><b>{this.__('Share Link: ')}</b>
+          <p style={{fontSize: '16px'}}><b>{t('Share Link: ')}</b>
           &nbsp;-&nbsp;
             <a href={shareUrl} target='_blank' rel='noopener noreferrer'>{shareUrl}</a>
             <i className='material-icons omh-accent-text' style={{cursor: 'pointer'}} onClick={this.writeToClipboard}>launch</i>
           </p>
-          <button onClick={this.writeToClipboard} className='btn'>{this.__('Copy Link')}</button>
-          <p className='no-margin'>{this.__('Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.')}</p>
+          <button onClick={this.writeToClipboard} className='btn'>{t('Copy Link')}</button>
+          <p className='no-margin'>{t('Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.')}</p>
         </div>
       )
 
       shareMessage = (
-        <p style={{fontSize: '16px'}}><b>{this.__('Sharing')}</b>&nbsp;-&nbsp;<span>{this.__('Anyone can use this link to view the map.')}</span></p>
+        <p style={{fontSize: '16px'}}><b>{t('Sharing')}</b>&nbsp;-&nbsp;<span>{t('Anyone can use this link to view the map.')}</span></p>
       )
     } else {
       shareMessage = (
-        <p style={{fontSize: '16px'}}><b>{this.__('Protected')}</b>&nbsp;-&nbsp;<span>{this.__('Only authorized users can see this map.')}</span></p>
+        <p style={{fontSize: '16px'}}><b>{t('Protected')}</b>&nbsp;-&nbsp;<span>{t('Only authorized users can see this map.')}</span></p>
       )
       shareLink = (
         <div>
-          <p>{this.__('Create a public link to this map and associated map layers that can be viewed by anyone with the link without needing a MapHubs account or permissions on this site.')}</p>
+          <p>{t('Create a public link to this map and associated map layers that can be viewed by anyone with the link without needing a MapHubs account or permissions on this site.')}</p>
         </div>
       )
     }
@@ -125,7 +127,7 @@ export default class PublicShareModal extends MapHubsComponent<Props, State> {
             </div>
             <div className='row'>
               <Formsy ref='form' onChange={this.onChange}>
-                <Toggle name='public' labelOff={this.__('Off')} labelOn={this.__('Share')} checked={this.state.sharing} className='col s12' />
+                <Toggle name='public' labelOff={t('Off')} labelOn={t('Share')} checked={this.state.sharing} className='col s12' />
               </Formsy>
             </div>
             <div className='row'>
