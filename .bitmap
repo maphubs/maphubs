@@ -125,5 +125,27 @@
         "trackDir": "src/services/client-error-response",
         "origin": "AUTHORED"
     },
+    "types/layer": {
+        "files": [
+            {
+                "relativePath": "src/types/layer.js",
+                "test": false,
+                "name": "layer.js"
+            }
+        ],
+        "mainFile": "src/types/layer.js",
+        "origin": "AUTHORED"
+    },
+    "types/mapbox-gl-style": {
+        "files": [
+            {
+                "relativePath": "src/types/mapbox-gl-style.js",
+                "test": false,
+                "name": "mapbox-gl-style.js"
+            }
+        ],
+        "mainFile": "src/types/mapbox-gl-style.js",
+        "origin": "AUTHORED"
+    },
     "version": "13.0.4"
 }
