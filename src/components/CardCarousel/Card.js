@@ -81,7 +81,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
     if (showAddButton) {
       addButton = (
         <a className='btn-floating halfway-fab waves-effect waves-light red'
-          style={{bottom: '5px', right: '10px'}}>
+          style={{top: '10px', right: '10px'}}>
           <i className='material-icons'>add</i>
         </a>
       )
