@@ -10,6 +10,7 @@ import { Provider, Subscribe } from 'unstated'
 import { Tabs, Row, Col } from 'antd'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import MapContainer from '../components/Map/containers/MapContainer'
+import FRContainer from '../components/Feature/containers/FRContainer'
 import MessageActions from '../actions/MessageActions'
 import NotificationActions from '../actions/NotificationActions'
 import FeatureNotesActions from '../actions/FeatureNotesActions'
@@ -25,6 +26,7 @@ import type {FeatureNotesStoreState} from '../stores/FeatureNotesStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
+import {getLayer} from '../components/Feature/Map/layer-feature'
 
 const TabPane = Tabs.TabPane
 
@@ -46,7 +48,6 @@ type Props = {
   type State = {
     editingNotes: boolean,
     tab: string,
-    feature: Object,
     frActive?: boolean
   } & LocaleStoreState & FeaturePhotoStoreState & FeatureNotesStoreState
 
@@ -79,11 +80,27 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
       baseMapContainerInit = {baseMapOptions: mapConfig.baseMapOptions}
     }
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
+    this.MapState = new MapContainer()
+
+    const layer = getLayer(props.layer, feature)
+
+    let glStyle = {}
+    if (layer.style) {
+      glStyle = JSON.parse(JSON.stringify(layer.style))
+    }
+
+    this.FRState = new FRContainer({
+      geoJSON: feature,
+      featureLayer: layer,
+      glStyle,
+      mapLayers: [layer],
+      mapConfig,
+      FRRemainingThreshold: mapConfig ? mapConfig.FRRemainingThreshold : undefined
+    })
 
     this.state = {
       editingNotes: false,
-      tab: 'data',
-      feature: props.feature
+      tab: 'data'
     }
   }
 
@@ -161,8 +178,8 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
   render () {
     const {openEditor, selectTab, t} = this
-    const {canEdit, layer, mapConfig, headerConfig} = this.props
-    const {feature} = this.state
+    const {canEdit, layer, feature, headerConfig} = this.props
+    const {frActive} = this.state
     let geojsonFeature
 
     if (feature && layer && feature.features) {
@@ -194,7 +211,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState]}>
+        <Provider inject={[this.BaseMapState, this.MapState, this.FRState]}>
           <Header {...headerConfig} />
           <Subscribe to={[MapContainer]}>
             {MapState => (
@@ -221,7 +238,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                               <FeaturePhoto photo={this.state.photo} canEdit={canEdit} t={t} />
                               <div style={{marginLeft: '5px', overflowY: 'auto'}}>
                                 <p style={{fontSize: '16px'}}><b>{t('Layer:')} </b><a href={layerUrl}>{this.t(layer.name)}</a></p>
-                                <FeatureLocation geojson={geojsonFeature} t={t} />
+                                <FeatureLocation geojson={geojsonFeature} t={t} locale={this.state.locale} />
                                 {isPolygon &&
                                   <FeatureArea geojson={geojsonFeature} t={t} />
                                 }
@@ -236,14 +253,9 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                         </TabPane>
                         {(MAPHUBS_CONFIG.FR_ENABLE && this.state.user) &&
                           <TabPane tab={t('Forest Report')} key='forestreport' style={{height: '100%', overflow: 'hidden', padding: 0}}>
-                            {(this.state.frActive) &&
+                            {frActive &&
                               <ForestReportEmbed
-                                geoJSON={feature}
-                                onLoad={(config: Object) => { this.map.activateFR(config, feature) }}
                                 onModuleToggle={this.map.frToggle}
-                                onAlertClick={(alert) => { this.map.onAlertClick(alert, MapState.state.map) }}
-                                remainingThreshold={mapConfig ? mapConfig.FRRemainingThreshold : undefined}
-                                onGeoJSONChange={this.changeGeoJSONFeature}
                               />
                             }
                           </TabPane>
@@ -268,8 +280,8 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                     </Row>
                   </Col>
                   <Col span={12} style={{height: '100%'}}>
-                    <FeatureMap ref={(map) => { this.map = map }}
-                      layer={layer} geojson={feature} gpxLink={gpxLink} mapConfig={mapConfig} />
+                    <FeatureMap ref={(el) => { this.map = el }}
+                      geojson={feature} gpxLink={gpxLink} />
                   </Col>
                 </Row>
                 {canEdit &&
