@@ -15,6 +15,7 @@ import type {LocaleStoreState} from '../stores/LocaleStore'
 import HelpButton from './Header/HelpButton'
 import SearchButton from './Header/SearchButton'
 import ExploreDropdown from './Header/ExploreDropdown'
+import AddDropdown from './Header/AddDropdown'
 
 if (process.env.NODE_ENV !== 'production') {
   require('unstated-debug')
@@ -35,6 +36,7 @@ type Props = {
   showMakeAMap: boolean,
   showExplore: boolean,
   showOSM: boolean,
+  showAdd: boolean,
   customLinks: Array<Link>
 }
 
@@ -50,6 +52,7 @@ export default class Header extends MapHubsComponent<Props, State> {
     showMakeAMap: true,
     showExplore: true,
     showOSM: false,
+    showAdd: true,
     customLinks: []
   }
 
@@ -158,7 +161,7 @@ export default class Header extends MapHubsComponent<Props, State> {
     const defaultLinkClasses = 'nav-link-item'
     const activeLinkClasses = 'nav-link-item active'
 
-    const {customHelpLink, showHelp, activePage, logoLinkUrl, customLinks, showMakeAMap, showSearch, customSearchLink, showExplore} = this.props
+    const {customHelpLink, showHelp, activePage, logoLinkUrl, customLinks, showMakeAMap, showSearch, customSearchLink, showExplore, showAdd} = this.props
 
     let mapClasses = defaultLinkClasses
     if (activePage && activePage === 'map') {
@@ -183,7 +186,7 @@ export default class Header extends MapHubsComponent<Props, State> {
                 </li>
               }
               {showExplore &&
-                <ExploreDropdown />
+                <ExploreDropdown t={t} />
               }
               {
                 this.props.customLinks.map((link, i) => {
@@ -195,6 +198,9 @@ export default class Header extends MapHubsComponent<Props, State> {
                 })
               }
               <LocaleChooser />
+              {showAdd &&
+                <AddDropdown t={t} />
+              }
               {showSearch &&
                 <SearchButton t={t} searchLink={customSearchLink || '/search'} />
               }
@@ -205,7 +211,7 @@ export default class Header extends MapHubsComponent<Props, State> {
             </ul>
             <ul ref={(el) => { this.sidenav = el }} className='sidenav' id='side-nav-menu'>
               {showExplore &&
-                <ExploreDropdown sidenav id='explore-sidnav' />
+                <ExploreDropdown sidenav id='explore-sidnav' t={t} />
               }
               {showMakeAMap &&
                 <li className='nav-link-wrapper'>

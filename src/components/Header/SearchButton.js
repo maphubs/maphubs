@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import {Tooltip} from 'react-tippy'
+import Search from '@material-ui/icons/Search'
 
 type Props = {
   t: any,
@@ -15,8 +16,8 @@ export default ({t, searchLink}: Props) => (
       inertia
       followCursor
     >
-      <a className='nav-link-item' style={{padding: 0, margin: 'auto', textAlign: 'center'}} href={searchLink}>
-        <i className='material-icons'>search</i>
+      <a className='nav-link-item' style={{padding: 0, marginTop: '6px', textAlign: 'center'}} href={searchLink}>
+        <Search />
       </a>
     </Tooltip>
   </li>

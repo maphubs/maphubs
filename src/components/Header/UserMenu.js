@@ -113,7 +113,7 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
       } else {
         userMenu = (
           <li className='nav-link-wrapper' style={{backgroundColor: 'inherit'}}>
-            <div ref={(el) => { this.userButton = el }} className='chip user-dropdown-button omh-btn dropdown-trigger' style={{marginRight: '5px', marginLeft: '5px', backgroundColor: '#FFF'}} data-target={this.props.id}>
+            <div ref={(el) => { this.userButton = el }} className='chip user-dropdown-button omh-btn dropdown-trigger' style={{marginRight: '5px', marginLeft: '5px', marginTop: '9px', backgroundColor: '#FFF'}} data-target={this.props.id}>
               {userIcon}
               {displayName}
               <i className='material-icons right' style={{marginLeft: 0, color: '#212121', height: '30px', lineHeight: '30px', width: '15px'}}>arrow_drop_down</i>
