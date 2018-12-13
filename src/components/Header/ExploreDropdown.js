@@ -53,7 +53,7 @@ export default class ExploreDropdown extends React.PureComponent<Props, void> {
         </Menu>
       )
       return (
-        <li className='nav-link-wrapper'>
+        <li className='nav-link-wrapper' style={{height: '50px', overflow: 'hidden'}}>
           <Dropdown overlay={menu} trigger={['click']}>
             <a className='nav-link-item' href='#'>
               {t('Explore')} <Icon type='down' />

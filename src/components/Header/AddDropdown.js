@@ -34,7 +34,7 @@ export default class AddDropdown extends React.PureComponent<Props, void> {
       </Menu>
     )
     return (
-      <li className='nav-link-wrapper' style={{width: '30px'}}>
+      <li className='nav-link-wrapper' style={{height: '50px', overflow: 'hidden', width: '30px'}} >
         <Dropdown overlay={menu} trigger={['click']}>
           <a className='nav-link-item' style={{padding: '0px', marginTop: '6px', textAlign: 'center'}} href='#'>
             <AddCircle />

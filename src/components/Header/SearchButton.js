@@ -9,7 +9,7 @@ type Props = {
 }
 
 export default ({t, searchLink}: Props) => (
-  <li className='nav-link-wrapper' style={{width: '30px'}}>
+  <li className='nav-link-wrapper' style={{height: '50px', overflow: 'hidden', width: '30px'}}>
     <Tooltip
       title={t('Search')}
       position='bottom'

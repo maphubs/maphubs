@@ -46,7 +46,7 @@ export default class LocaleChooser extends MapHubsComponent<Props, State> {
       </Menu>
     )
     return (
-      <li className='nav-link-wrapper'>
+      <li className='nav-link-wrapper' style={{height: '50px', overflow: 'hidden'}}>
         <Dropdown overlay={menu} trigger={['click']}>
           <a className='nav-link-item' href='#'>
             {label} <Icon type='down' />
