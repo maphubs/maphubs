@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.19.4](https://github.com/maphubs/maphubs/tree/v0.19.4) (2018-12-13)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.3...v0.19.4)
+
+**Implemented enhancements:**
+
+- add create menu in top nav [\#502](https://github.com/maphubs/maphubs/issues/502)
+
 ## [v0.19.3](https://github.com/maphubs/maphubs/tree/v0.19.3) (2018-11-21)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.2...v0.19.3)
 
