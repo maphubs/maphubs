@@ -75,6 +75,12 @@ class LayerList extends React.Component<Props, State> {
     let empty = layers && layers.length === 0
     return (
       <div style={{height: '100%', padding: 0, margin: 0, border: '1px solid #eeeeee'}}>
+        <style jsx global>{`
+          .ant-list-item-content {
+            width: 100%;
+          }
+        `}
+        </style>
         {!empty &&
           <List
             dataSource={layers}

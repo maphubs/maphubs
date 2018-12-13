@@ -80,7 +80,7 @@ class LayerListItem extends React.Component<Props, void> {
           opacity: isDragging ? 0.75 : 1,
           borderBottom: '1px solid #ddd',
           height: '65px',
-          width: '240px',
+          width: '100%',
           padding: '5px 10px 5px 5px',
           position: 'relative',
           backgroundColor: active ? 'white' : '#eeeeee'
