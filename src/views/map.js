@@ -71,7 +71,7 @@ export default class Map extends MapHubsComponent<Props, void> {
       <ErrorBoundary>
         <Provider inject={[this.BaseMapState, this.MapState]}>
           <Header activePage='map' {...this.props.headerConfig} />
-          <main style={{height: 'calc(100% - 52px)', overflow: 'hidden'}}>
+          <main style={{height: 'calc(100% - 52px)', width: '100%', overflow: 'hidden'}}>
             <MapMaker
               mapConfig={this.props.mapConfig}
               onCreate={this.mapCreated}

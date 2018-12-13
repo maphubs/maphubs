@@ -67,7 +67,7 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
       <ErrorBoundary>
         <Provider inject={[this.BaseMapState, this.MapState]}>
           <Header {...this.props.headerConfig} />
-          <main style={{height: 'calc(100% - 52px)', overflow: 'hidden'}}>
+          <main style={{height: 'calc(100% - 52px)', width: '100%', overflow: 'hidden'}}>
             <MapMaker onCreate={this.mapCreated}
               mapConfig={this.props.mapConfig}
               mapLayers={this.props.layers}
