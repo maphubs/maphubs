@@ -20,12 +20,13 @@ const openLocationCode = new OpenLocationCode()
 
 type Props = {
   geojson?: Object,
-  t: Function
+  t: Function,
+  locale: string
 }
 
 export default class FeatureLocation extends React.PureComponent<Props, void> {
   render () {
-    const {geojson, t} = this.props
+    const {geojson, t, locale} = this.props
     if (!geojson) {
       return (
         <div className='row'>
@@ -45,13 +46,13 @@ export default class FeatureLocation extends React.PureComponent<Props, void> {
         <div className='row no-margin'>
           <span>
             <b>{t('Latitude:')}</b>&nbsp;
-            <IntlProvider locale={this.state.locale}>
+            <IntlProvider locale={locale}>
               <FormattedNumber value={lat} />
             </IntlProvider>&nbsp;
           </span>
           <span>
             <b>{t('Longitude:')}</b>&nbsp;
-            <IntlProvider locale={this.state.locale}>
+            <IntlProvider locale={locale}>
               <FormattedNumber value={lon} />
             </IntlProvider>&nbsp;
           </span>
@@ -66,10 +67,10 @@ export default class FeatureLocation extends React.PureComponent<Props, void> {
           <span>
             <b>{t('UTM:')}</b>&nbsp;
             {utm.properties.zoneNumber}{utm.properties.zoneLetter}&nbsp;
-            <IntlProvider locale={this.state.locale}>
+            <IntlProvider locale={locale}>
               <FormattedNumber value={utm.geometry.coordinates[0]} />
             </IntlProvider>m E&nbsp;
-            <IntlProvider locale={this.state.locale}>
+            <IntlProvider locale={locale}>
               <FormattedNumber value={utm.geometry.coordinates[1]} />
             </IntlProvider>m N
           </span>
