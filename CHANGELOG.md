@@ -1,5 +1,13 @@
 # Change Log
 
+## [v0.19.5](https://github.com/maphubs/maphubs/tree/v0.19.5) (2018-12-14)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.4...v0.19.5)
+
+**Fixed bugs:**
+
+- error when viewing hub pages [\#504](https://github.com/maphubs/maphubs/issues/504)
+- group card images not centered [\#503](https://github.com/maphubs/maphubs/issues/503)
+
 ## [v0.19.4](https://github.com/maphubs/maphubs/tree/v0.19.4) (2018-12-13)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.3...v0.19.4)
 
