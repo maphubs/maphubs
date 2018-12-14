@@ -40,7 +40,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
   }
 
   render () {
-    const {group, showAddButton, type, t} = this.props
+    const {group, showAddButton, type, t, image_url} = this.props
 
     let iconName = ''
     let toolTipText = ''
@@ -89,44 +89,44 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
     let image = ''
     if (type === 'hub') {
       image = (
-        <div className='card-image valign-wrapper' style={{borderBottom: '1px solid #757575', height: '150px'}}>
+        <div className='card-image valign-wrapper' style={{height: '150px'}}>
           <img className='responsive-img' style={{position: 'absolute', objectFit: 'cover', height: '150px'}} src={this.props.background_image_url} />
-          <img className='valign' width='75' height='75' style={{position: 'relative', width: '75px', borderRadius: '15px', margin: 'auto'}} src={this.props.image_url} />
+          <img className='valign' width='75' height='75' style={{position: 'relative', width: '75px', borderRadius: '15px', margin: 'auto'}} src={image_url} />
           {addButton}
         </div>
       )
-    } else if (type === 'story' && !this.props.image_url) {
+    } else if (type === 'story' && !image_url) {
       image = (
-        <div className='card-image valign-wrapper' style={{borderBottom: '1px solid #757575', width: '200px', height: '150px'}}>
+        <div className='card-image valign-wrapper' style={{width: '200px', height: '150px'}}>
           <i className='material-icons omh-accent-text valign center-align' style={{fontSize: '80px', margin: 'auto'}}>library_books</i>
           {addButton}
         </div>
       )
-    } else if (type === 'story' && this.props.image_url) {
+    } else if (type === 'story' && image_url) {
       image = (
-        <div style={{height: '150px', width: '200px', backgroundImage: 'url(' + this.props.image_url + ')', backgroundSize: 'cover', backgroundPosition: 'center'}} >
+        <div style={{height: '150px', width: '200px', backgroundImage: 'url(' + image_url + ')', backgroundSize: 'cover', backgroundPosition: 'center'}} >
           {addButton}
         </div>
 
       )
-    } else if (type === 'group' && !this.props.image_url) {
+    } else if (type === 'group' && !image_url) {
       image = (
-        <div className='card-image valign-wrapper' style={{borderBottom: '1px solid #757575', width: '200px', height: '150px'}}>
+        <div className='card-image valign-wrapper' style={{width: '200px', height: '150px'}}>
           <i className='material-icons omh-accent-text valign center-align' style={{fontSize: '80px', margin: 'auto'}}>supervisor_account</i>
           {addButton}
         </div>
       )
-    } else if (type === 'group' && this.props.image_url) {
+    } else if (type === 'group' && image_url) {
       image = (
-        <div className='card-image' style={{borderBottom: '1px solid #757575'}}>
-          <img className='responsive-img' style={{height: '150px', width: 'auto', margin: 'auto'}} src={this.props.image_url} />
+        <div className='card-image'>
+          <img className='responsive-img' style={{height: '150px', width: 'auto', margin: 'auto'}} src={image_url} />
           {addButton}
         </div>
       )
     } else {
       image = (
         <div className='card-image'>
-          <img width='200' height='150' style={{borderBottom: '1px solid #757575'}} src={this.props.image_url} />
+          <img width='200' height='150' src={image_url} />
           {addButton}
         </div>
       )
@@ -139,6 +139,13 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
         onClick={this.onClick}
         bodyStyle={{height: '100%', padding: '0'}}
       >
+        <style jsx global>{`
+          .card-image {
+            border-bottom: 1px solid #757575;
+            display: flex;
+          }
+        `}
+        </style>
         {image}
 
         {this.props.private &&
