@@ -24,6 +24,9 @@ import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {HubStoreState} from '../stores/HubStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import { Provider } from 'unstated'
+import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
+import MapContainer from '../components/Map/containers/MapContainer'
 
 type Props = {
   hub: Object,
@@ -77,6 +80,13 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
     Reflux.rehydrate(HubStore, {hub: this.props.hub, map: this.props.map, layers: this.props.layers, stories: this.props.stories, canEdit: this.props.canEdit})
+
+    let baseMapContainerInit = {}
+    if (props.mapConfig && props.mapConfig.baseMapOptions) {
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
+    }
+    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
+    this.MapState = new MapContainer()
   }
 
   componentDidMount () {
@@ -160,11 +170,13 @@ export default class HubInfo extends MapHubsComponent<Props, State> {
           <div className='row'>
 
             <div className='row' style={{height: 'calc(100vh - 65px)'}}>
-              <HubMap editing={this.state.editing} height='calc(100vh - 65px)'
-                map={this.state.map} layers={this.state.layers}
-                hub={this.state.hub} myMaps={this.props.myMaps} popularMaps={this.props.popularMaps}
-                mapConfig={this.props.mapConfig}
-                border />
+              <Provider inject={[this.BaseMapState, this.MapState]}>
+                <HubMap editing={this.state.editing} height='calc(100vh - 65px)'
+                  map={this.state.map} layers={this.state.layers}
+                  hub={this.state.hub} myMaps={this.props.myMaps} popularMaps={this.props.popularMaps}
+                  mapConfig={this.props.mapConfig}
+                  border />
+              </Provider>
             </div>
             <div className='row no-margin'>
               <HubDescription editing={this.state.editing} hubid={this.props.hub.hub_id} />
