@@ -17,7 +17,7 @@ touch ./node_modules/reactcss/.babelrc
 rm ./node_modules/reactcss/.babelrc
 
 #run any pending database migrations
-node --max-old-space-size=$NODE_MEM_SIZE node_modules/knex/bin/cli.js --knexfile=src/knexfile.js migrate:latest --env production
+cd ./src && node --max-old-space-size=$NODE_MEM_SIZE ../node_modules/knex/bin/cli.js --knexfile=./knexfile.js migrate:latest --env production
 
 #start server
-node --max-old-space-size=$NODE_MEM_SIZE server.js
+cd /app && node --max-old-space-size=$NODE_MEM_SIZE server.js
