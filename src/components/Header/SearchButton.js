@@ -17,7 +17,15 @@ export default ({t, searchLink}: Props) => (
       followCursor
     >
       <a className='nav-link-item' style={{padding: 0, marginTop: '6px', textAlign: 'center'}} href={searchLink}>
-        <Search />
+        <Search
+          style={{
+            fill: 'currentColor',
+            width: '1em',
+            height: '1em',
+            display: 'inline-block',
+            fontSize: '24px'
+          }}
+        />
       </a>
     </Tooltip>
   </li>

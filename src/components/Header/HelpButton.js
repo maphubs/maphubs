@@ -17,7 +17,14 @@ export default ({t, helpLink}: Props) => (
       followCursor
     >
       <a className='nav-link-item' style={{padding: 0, marginTop: '6px', textAlign: 'center'}} target='_blank' rel='noopener noreferrer' href={helpLink}>
-        <HelpOutline />
+        <HelpOutline style={{
+          fill: 'currentColor',
+          width: '1em',
+          height: '1em',
+          display: 'inline-block',
+          fontSize: '24px'
+        }}
+        />
       </a>
     </Tooltip>
   </li>
