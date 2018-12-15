@@ -349,7 +349,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
               <LayerList layers={this.props.layers} />
             </div>
             <div className='row'>
-              <MapList maps={this.props.maps} />
+              <MapList maps={this.props.maps} t={t} />
             </div>
             <div className='row'>
               <HubList hubs={this.props.hubs} />
