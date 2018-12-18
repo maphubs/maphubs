@@ -10,6 +10,9 @@ import FileUpload from '../components/forms/FileUpload'
 import Progress from '../components/Progress'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import { Steps, Row } from 'antd'
+
+const Step = Steps.Step
 
 type Props = {|
   groups: Array,
@@ -98,7 +101,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
         </ErrorBoundary>
       )
     }
-
+    let step = 0
     let groupSelection
     if (!this.state.group_id) {
       groupSelection = (
@@ -112,6 +115,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
 
     let importComplete
     if (this.state.layer_id) {
+      step = 2
       importComplete = (
         <div className='row'>
           <p>{t('Import Complete')}</p>
@@ -122,6 +126,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
 
     let uploadBox
     if (this.state.group_id && !this.state.layer_id) {
+      step = 1
       const url = `/api/import/layer/${this.state.group_id}/upload`
       uploadBox = (
         <div className='row'>
@@ -135,11 +140,19 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main>
-          <h4>{t('Import Layer')}</h4>
-          <div className='container center'>
-            {groupSelection}
-            {uploadBox}
-            {importComplete}
+          <div className='container' style={{paddingTop: '20px'}}>
+            <Row>
+              <Steps size='small' current={step}>
+                <Step title='Group' />
+                <Step title='Upload' />
+                <Step title='Finished' />
+              </Steps>
+            </Row>
+            <Row style={{textAlign: 'center', paddingTop: '20px'}}>
+              {groupSelection}
+              {uploadBox}
+              {importComplete}
+            </Row>
           </div>
           <Progress id='load-data-progess' title={t('Loading Data')} subTitle={t('Data Loading: This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.processing} />
         </main>
