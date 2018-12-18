@@ -1,5 +1,18 @@
 # Change Log
 
+## [v0.19.6](https://github.com/maphubs/maphubs/tree/v0.19.6) (2018-12-18)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.5...v0.19.6)
+
+**Implemented enhancements:**
+
+- import/export support for external/remote layer types [\#507](https://github.com/maphubs/maphubs/issues/507)
+
+**Fixed bugs:**
+
+- header flashing on load [\#506](https://github.com/maphubs/maphubs/issues/506)
+- error on group admin page [\#505](https://github.com/maphubs/maphubs/issues/505)
+- issue importing certain layers exported from other MapHubs [\#439](https://github.com/maphubs/maphubs/issues/439)
+
 ## [v0.19.5](https://github.com/maphubs/maphubs/tree/v0.19.5) (2018-12-14)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.4...v0.19.5)
 
