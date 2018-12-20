@@ -6,6 +6,13 @@ module.exports = (oldId: string, newId: string, style: GLStyle) => {
   if (style.sources[`omh-${oldId}`]) {
     style.sources[`omh-${newId}`] = style.sources[`omh-${oldId}`]
     delete style.sources[`omh-${oldId}`]
+    if (style.sources[`omh-${newId}`].type === 'vector' &&
+      style.sources[`omh-${newId}`].url &&
+      style.sources[`omh-${newId}`].url.endsWith('tile.json') &&
+      style.sources[`omh-${newId}`].url.startsWith('{MAPHUBS_DOMAIN}')
+    ) {
+      style.sources[`omh-${newId}`].url = `{MAPHUBS_DOMAIN}/api/lyr/${newId}/tile.json`
+    }
   }
 
   if (style.layers) {
