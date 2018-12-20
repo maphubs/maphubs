@@ -49,9 +49,10 @@ export default class MapSearchPanel extends React.Component<Props, State> {
     this.setState({ open })
   }
 
-  onSearch = (query: string) => {
+  onSearch = async (e: Event) => {
+    const query = e.target.value
     if (this.state.tab === 'data') {
-      const results = this.props.onSearch(query)
+      const results = await this.props.onSearch(query)
       this.setState({results, query})
     } else if (this.state.tab === 'location') {
       this.runLocationSearch(query)
@@ -134,7 +135,7 @@ export default class MapSearchPanel extends React.Component<Props, State> {
             this.state.results.list.map(result => {
               return (
                 <a key={result.id} href='#!' className='collection-item'
-                  onClick={() => { _this.onClickResult(result.geoJSON) }}>
+                  onClick={() => { _this.onClickResult(result) }}>
                   {result.name}
                 </a>
               )

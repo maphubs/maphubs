@@ -9,17 +9,14 @@ import DebugService from '../../../services/debug'
 const debug = DebugService('MapSearchMixin')
 
 const uuid = require('uuid').v1
-const MapboxGLRegexSearch = require('mapbox-gl-regex-query/dist/mapbox-gl-regex-query')
 
 export default {
 
-  getSearchFilters (query: string) {
-    const _this = this
-    query = `/.*${query}.*/ig`
-    const sourceIDs = []
-    const queries = []
-    if (_this.overlayMapStyle) {
-      _this.overlayMapStyle.layers.forEach((layer) => {
+  getActiveLayerIds () {
+    const layerIds = []
+    const sourceIds = []
+    if (this.overlayMapStyle) {
+      this.overlayMapStyle.layers.forEach((layer) => {
         if (layer.metadata &&
           (layer.metadata['maphubs:interactive'] ||
             (layer.metadata['maphubs:markers'] &&
@@ -28,28 +25,19 @@ export default {
           ) &&
           (layer.id.startsWith('omh') || layer.id.startsWith('osm'))
         ) {
-          const source = _this.overlayMapStyle.sources[layer.source]
-
           const sourceId = layer.source
-          if (!_includes(sourceIDs, sourceId)) {
-            if (source.metadata && source.metadata['maphubs:presets']) {
-              const filter = ['any']
-              const presets = source.metadata['maphubs:presets']
-              presets.forEach(preset => {
-                if (preset.type === 'text') {
-                  filter.push(['~=', preset.tag, query])
-                }
-              })
-              queries.push({source: sourceId, filter})
-            } else {
-              debug.log('presets not found for source: ' + layer.source)
-            }
-            sourceIDs.push(sourceId)
+          if (!_includes(sourceIds, sourceId)) {
+            sourceIds.push(sourceId)
           }
+          layerIds.push(layer.id)
         }
       })
     }
-    return queries
+    debug.log(`active layers: ${layerIds.length} active sources: ${sourceIds.length}`)
+    return {
+      layerIds,
+      sourceIds
+    }
   },
 
   getFirstLabelLayer () {
@@ -69,108 +57,130 @@ export default {
     return firstLayer
   },
 
-  onSearch (queryText: string) {
-    const _this = this
+  async initIndex () {
+    const {layerIds, sourceIds} = this.getActiveLayerIds()
+    this.searchSourceIds = sourceIds
+    const features = this.map.queryRenderedFeatures({layers: layerIds})
+    this.searchFeatures = {}
+    const searchFeatures = this.searchFeatures
+    debug.log(`initializing index for ${features && features.length} features`)
+    debug.log(features)
+    return new Promise((resolve) => {
+      this.idx = this.lunr(function () {
+        this.ref('id')
+        this.field('properties')
+        if (features) {
+          features.forEach(feature => {
+            const id = feature.properties.mhid
+            const properties = Object.values(feature.properties).join(' ')
+            this.add({ id, properties })
+            searchFeatures[id] = feature
+          })
+        }
+        debug.log('***search index initialized***')
+        resolve()
+      })
+    })
+  },
+
+  getNameFieldForResult (result: Object) {
     const {t} = this.props
+
+    const source = this.overlayMapStyle.sources[result.source]
+    const presets = source.metadata['maphubs:presets']
+    const nameFieldPreset = _find(presets, {isName: true})
+    let nameField = nameFieldPreset ? nameFieldPreset.tag : undefined
+
+    if (!nameField) {
+      const matchNameArr = []
+      if (presets && presets.length > 0) {
+        presets.forEach(preset => {
+          if (preset && preset.label) {
+            const label = t(preset.label).toString()
+            if (label.match(/.*[N,n]ame.*/g)) {
+              matchNameArr.push(preset.tag)
+            }
+          }
+        })
+        if (matchNameArr.length > 0) {
+          // found something that matches Name
+          nameField = matchNameArr[0]
+        } else {
+          // otherwise just take the first preset
+          nameField = presets[0].tag
+        }
+      } else if (result) {
+        // use props of first feature
+        const propNames = Object.keys(result.properties)
+        propNames.forEach(propName => {
+          if (propName.match(/.*[N,n]ame.*/g)) {
+            matchNameArr.push(propName)
+          }
+        })
+        if (matchNameArr.length > 0) {
+          // found something that matches Name
+          nameField = matchNameArr[0]
+        } else {
+          // otherwise just take the first prop
+          nameField = propNames[0]
+        }
+      }
+    }
+    return nameField
+  },
+
+  async onSearch (queryText: string) {
+    const _this = this
     // clear prev display layers
     this.onSearchReset()
 
     const results = {
-      bbox: [],
-      geoJSON: {type: 'FeatureCollection', features: []},
       list: []
     }
 
     let searchDisplayLayers = []
 
-    this.getSearchFilters(queryText).forEach(query => {
-      const queryResults = MapboxGLRegexSearch.querySourceFeatures(
-        query.source,
-        {
-          sourceLayer: 'data',
-          filter: query.filter
-        },
-        _this.map)
+    if (!this.idx) await this.initIndex()
+    const searchResults = this.idx.search(queryText)
+    const queryResults = searchResults.map(r => this.searchFeatures[r.ref])
+    debug.log(queryResults)
 
-      const source = _this.overlayMapStyle.sources[query.source]
-
-      const presets = source.metadata['maphubs:presets']
-      const nameFieldPreset = _find(presets, {isName: true})
-      let nameField
-      if (nameFieldPreset) {
-        nameField = nameFieldPreset.tag
+    const mhids = []
+    queryResults.forEach(result => {
+      const nameField = this.getNameFieldForResult(result)
+      const name = result.properties[nameField]
+      const data = {
+        id: result.properties.mhid,
+        name
       }
-
-      if (!nameField) {
-        const matchNameArr = []
-        if (presets && presets.length > 0) {
-          presets.forEach(preset => {
-            if (preset && preset.label) {
-              const label = t(preset.label).toString()
-              if (label.match(/.*[N,n]ame.*/g)) {
-                matchNameArr.push(preset.tag)
-              }
-            }
-          })
-          if (matchNameArr.length > 0) {
-            // found something that matches Name
-            nameField = matchNameArr[0]
-          } else {
-            // otherwise just take the first preset
-            nameField = presets[0].tag
-          }
-        } else if (queryResults.length > 0) {
-          // use props of first feature
-          const propNames = Object.keys(queryResults[0].properties)
-          propNames.forEach(propName => {
-            if (propName.match(/.*[N,n]ame.*/g)) {
-              matchNameArr.push(propName)
-            }
-          })
-          if (matchNameArr.length > 0) {
-            // found something that matches Name
-            nameField = matchNameArr[0]
-          } else {
-            // otherwise just take the first prop
-            nameField = propNames[0]
-          }
-        }
-      }
-
-      const mhids = []
-      queryResults.forEach(result => {
-        const name = result.properties[nameField]
-        const data = {
-          id: result.properties.mhid,
-          name,
-          geoJSON: result,
-          source: query.source
-        }
-        if (result.properties.mhid) {
-          // dedupe by mhid since mapbox-gl can return duplicates
-          if (!_includes(mhids, result.properties.mhid)) {
-            results.list.push(data)
-            mhids.push(result.properties.mhid)
-          }
-        } else {
-          // otherwise just add everything
-          data.id = uuid()
+      if (result.properties.mhid) {
+        // dedupe by mhid since mapbox-gl can return duplicates
+        if (!_includes(mhids, result.properties.mhid)) {
           results.list.push(data)
+          mhids.push(result.properties.mhid)
         }
-        results.geoJSON.features.push(result)
-      })
-
-      // set display layers
-      if (queryResults && queryResults.length > 0) {
-        searchDisplayLayers = searchDisplayLayers.concat(_this.getSearchDisplayLayers(query.source, source, mhids))
+      } else {
+        // otherwise just add everything
+        data.id = uuid()
+        results.list.push(data)
       }
     })
+
+    // set display layers for each source
+    if (this.searchSourceIds) {
+      this.searchSourceIds.map(sourceId => {
+        if (queryResults && queryResults.length > 0) {
+          const source = _this.overlayMapStyle.sources[sourceId]
+          searchDisplayLayers = searchDisplayLayers.concat(_this.getSearchDisplayLayers(sourceId, source, mhids))
+        }
+      })
+    }
 
     // calculate bounds of results
     if (results.list.length > 0) {
       // getting a weird effect from larger polygon layers if they are zoomed inside of their boundaries
       if (_this.map.getZoom() < 10) {
-        const bbox = _bbox(results.geoJSON)
+        const bbox = _bbox({type: 'FeatureCollection', features: queryResults})
         _this.map.fitBounds(bbox, {padding: 25, curve: 3, speed: 0.6, maxZoom: 16})
         results.bbox = bbox
       }
@@ -187,6 +197,24 @@ export default {
   },
 
   onSearchResultClick (result: Object) {
+    const _this = this
+
+    if ((!result.geometry || !result._geometry) && this.searchSourceIds) {
+      const feature = this.searchFeatures[result.id]
+      if (feature) {
+        result = feature
+      } else {
+        // try to retrieve geometry from mapboxgl
+        this.searchSourceIds.map(sourceId => {
+          // query sources in case map has moved from original search area
+          const results = _this.map.querySourceFeatures(sourceId, {filter: ['in', 'mhid', result.id]})
+          if (results && results.length > 0) {
+            result = results[0]
+          }
+        })
+      }
+    }
+
     if (result.bbox || result.boundingbox) {
       const bbox = result.bbox ? result.bbox : result.boundingbox
       this.map.fitBounds(bbox, {padding: 25, curve: 3, speed: 0.6, maxZoom: 16})

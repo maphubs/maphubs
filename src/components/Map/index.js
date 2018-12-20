@@ -123,6 +123,9 @@ class Map extends React.Component<Props, State> {
   overlayMapStyle: Object
   mapboxPopup: any
   glStyle: Object
+  lunr: any
+  idx: any
+  searchSourceIds: any
 
   constructor (props: Props) {
     super(props)
@@ -152,6 +155,7 @@ class Map extends React.Component<Props, State> {
     mapboxgl = require('mapbox-gl')
     ArcGISTiledMapServiceSource = require('mapbox-gl-arcgis-tiled-map-service')
     ScalePositionControl = require('mapbox-gl-dual-scale-control')
+    this.lunr = require('lunr')
     this.createMap()
   }
 
@@ -814,8 +818,16 @@ class Map extends React.Component<Props, State> {
     return MapSearchMixin.onSearchReset.bind(this)()
   }
 
-  getSearchFilters = (query: string) => {
-    return MapSearchMixin.getSearchFilters.bind(this)(query)
+  getNameFieldForResult = (result: Object) => {
+    return MapSearchMixin.getNameFieldForResult.bind(this)(result)
+  }
+
+  getActiveLayerIds = () => {
+    return MapSearchMixin.getActiveLayerIds.bind(this)()
+  }
+
+  initIndex = async () => {
+    return MapSearchMixin.initIndex.bind(this)()
   }
 
   // MapboxGLHelperMixin
