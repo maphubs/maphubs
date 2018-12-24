@@ -13,18 +13,6 @@
         "trackDir": "src/services/file-encoding-utils",
         "origin": "AUTHORED"
     },
-    "kriscarle.maphubs-utils/services/log@1.0.0": {
-        "files": [
-            {
-                "relativePath": "src/services/log/index.js",
-                "test": false,
-                "name": "index.js"
-            }
-        ],
-        "mainFile": "src/services/log/index.js",
-        "trackDir": "src/services/log",
-        "origin": "AUTHORED"
-    },
     "kriscarle.maphubs-utils/services/debug@1.0.0": {
         "files": [
             {
@@ -37,7 +25,43 @@
         "trackDir": "src/services/debug",
         "origin": "AUTHORED"
     },
-    "kriscarle.maphubs-utils/services/importers@1.0.1": {
+    "kriscarle.maphubs-utils/services/url-util@1.0.0": {
+        "files": [
+            {
+                "relativePath": "src/services/url-util/index.js",
+                "test": false,
+                "name": "index.js"
+            }
+        ],
+        "mainFile": "src/services/url-util/index.js",
+        "trackDir": "src/services/url-util",
+        "origin": "AUTHORED"
+    },
+    "kriscarle.maphubs-utils/services/client-error-response@1.0.0": {
+        "files": [
+            {
+                "relativePath": "src/services/client-error-response/index.js",
+                "test": false,
+                "name": "index.js"
+            }
+        ],
+        "mainFile": "src/services/client-error-response/index.js",
+        "trackDir": "src/services/client-error-response",
+        "origin": "AUTHORED"
+    },
+    "kriscarle.maphubs-utils/services/log@1.0.2": {
+        "files": [
+            {
+                "relativePath": "src/services/log/index.js",
+                "test": false,
+                "name": "index.js"
+            }
+        ],
+        "mainFile": "src/services/log/index.js",
+        "trackDir": "src/services/log",
+        "origin": "AUTHORED"
+    },
+    "kriscarle.maphubs-utils/services/importers@1.0.2": {
         "files": [
             {
                 "relativePath": "src/services/importers/README.md",
@@ -89,7 +113,7 @@
         "trackDir": "src/services/importers",
         "origin": "AUTHORED"
     },
-    "kriscarle.maphubs-utils/services/terraformer-gl@1.0.0": {
+    "kriscarle.maphubs-utils/services/terraformer-gl@1.0.2": {
         "files": [
             {
                 "relativePath": "src/services/terraformerGL/index.js",
@@ -101,31 +125,29 @@
         "trackDir": "src/services/terraformerGL",
         "origin": "AUTHORED"
     },
-    "kriscarle.maphubs-utils/services/url-util@1.0.0": {
+    "kriscarle.maphubs-utils/types/mapbox-gl-style@1.0.2": {
         "files": [
             {
-                "relativePath": "src/services/url-util/index.js",
+                "relativePath": "src/types/mapbox-gl-style.js",
                 "test": false,
-                "name": "index.js"
+                "name": "mapbox-gl-style.js"
             }
         ],
-        "mainFile": "src/services/url-util/index.js",
-        "trackDir": "src/services/url-util",
+        "mainFile": "src/types/mapbox-gl-style.js",
         "origin": "AUTHORED"
     },
-    "kriscarle.maphubs-utils/services/client-error-response@1.0.0": {
+    "kriscarle.maphubs-utils/services/email-util@1.0.2": {
         "files": [
             {
-                "relativePath": "src/services/client-error-response/index.js",
+                "relativePath": "src/services/email-util.js",
                 "test": false,
-                "name": "index.js"
+                "name": "email-util.js"
             }
         ],
-        "mainFile": "src/services/client-error-response/index.js",
-        "trackDir": "src/services/client-error-response",
+        "mainFile": "src/services/email-util.js",
         "origin": "AUTHORED"
     },
-    "types/layer": {
+    "kriscarle.maphubs-utils/types/layer@1.0.2": {
         "files": [
             {
                 "relativePath": "src/types/layer.js",
@@ -136,15 +158,533 @@
         "mainFile": "src/types/layer.js",
         "origin": "AUTHORED"
     },
-    "types/mapbox-gl-style": {
+    "kriscarle.maphubs-components/components/share-buttons@1.0.0": {
         "files": [
             {
-                "relativePath": "src/types/mapbox-gl-style.js",
+                "relativePath": "src/components/ShareButtons/index.js",
                 "test": false,
-                "name": "mapbox-gl-style.js"
+                "name": "index.js"
             }
         ],
-        "mainFile": "src/types/mapbox-gl-style.js",
+        "mainFile": "src/components/ShareButtons/index.js",
+        "trackDir": "src/components/ShareButtons",
+        "origin": "AUTHORED"
+    },
+    "kriscarle.maphubs-components/components/map@1.0.0": {
+        "files": [
+            {
+                "relativePath": "src/components/Map/Attributes.js",
+                "test": false,
+                "name": "Attributes.js"
+            },
+            {
+                "relativePath": "src/components/Map/BaseMaps/base-map-options.json",
+                "test": false,
+                "name": "base-map-options.json"
+            },
+            {
+                "relativePath": "src/components/Map/FeaturePopup.js",
+                "test": false,
+                "name": "FeaturePopup.js"
+            },
+            {
+                "relativePath": "src/components/Map/FeaturePopup/ActionPanel.js",
+                "test": false,
+                "name": "ActionPanel.js"
+            },
+            {
+                "relativePath": "src/components/Map/Helpers/DataEditorMixin.js",
+                "test": false,
+                "name": "DataEditorMixin.js"
+            },
+            {
+                "relativePath": "src/components/Map/Helpers/IsochroneMixin.js",
+                "test": false,
+                "name": "IsochroneMixin.js"
+            },
+            {
+                "relativePath": "src/components/Map/Helpers/MapGeoJSONMixin.js",
+                "test": false,
+                "name": "MapGeoJSONMixin.js"
+            },
+            {
+                "relativePath": "src/components/Map/Helpers/MapInteractionMixin.js",
+                "test": false,
+                "name": "MapInteractionMixin.js"
+            },
+            {
+                "relativePath": "src/components/Map/Helpers/MapboxGLHelperMixin.js",
+                "test": false,
+                "name": "MapboxGLHelperMixin.js"
+            },
+            {
+                "relativePath": "src/components/Map/Helpers/MeasurementToolMixin.js",
+                "test": false,
+                "name": "MeasurementToolMixin.js"
+            },
+            {
+                "relativePath": "src/components/Map/Helpers/StyleMixin.js",
+                "test": false,
+                "name": "StyleMixin.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/boat.js",
+                "test": false,
+                "name": "boat.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/campfire.js",
+                "test": false,
+                "name": "campfire.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/cargo-ship.js",
+                "test": false,
+                "name": "cargo-ship.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/chainsaw.js",
+                "test": false,
+                "name": "chainsaw.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/chipmunk.js",
+                "test": false,
+                "name": "chipmunk.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/clearcutting.js",
+                "test": false,
+                "name": "clearcutting.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/clinic.js",
+                "test": false,
+                "name": "clinic.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/clipboard.js",
+                "test": false,
+                "name": "clipboard.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/dam.js",
+                "test": false,
+                "name": "dam.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/dolphin.js",
+                "test": false,
+                "name": "dolphin.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/elephant.js",
+                "test": false,
+                "name": "elephant.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/eye.js",
+                "test": false,
+                "name": "eye.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/factory.js",
+                "test": false,
+                "name": "factory.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/farmer-family.js",
+                "test": false,
+                "name": "farmer-family.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/farmer-wife.js",
+                "test": false,
+                "name": "farmer-wife.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/farmer.js",
+                "test": false,
+                "name": "farmer.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/fox.js",
+                "test": false,
+                "name": "fox.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/gorilla.js",
+                "test": false,
+                "name": "gorilla.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/hand-one.js",
+                "test": false,
+                "name": "hand-one.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/hummingbird.js",
+                "test": false,
+                "name": "hummingbird.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/index.js",
+                "test": false,
+                "name": "index.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/log-pile.js",
+                "test": false,
+                "name": "log-pile.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/magnifier.js",
+                "test": false,
+                "name": "magnifier.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/mining.js",
+                "test": false,
+                "name": "mining.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/money.js",
+                "test": false,
+                "name": "money.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/oil.js",
+                "test": false,
+                "name": "oil.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/palm-oil.js",
+                "test": false,
+                "name": "palm-oil.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/play.js",
+                "test": false,
+                "name": "play.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/sawblade.js",
+                "test": false,
+                "name": "sawblade.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/star.js",
+                "test": false,
+                "name": "star.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/tractor.js",
+                "test": false,
+                "name": "tractor.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/truck.js",
+                "test": false,
+                "name": "truck.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/tug-boat.js",
+                "test": false,
+                "name": "tug-boat.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/turtle.js",
+                "test": false,
+                "name": "turtle.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/turtle2.js",
+                "test": false,
+                "name": "turtle2.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/video.js",
+                "test": false,
+                "name": "video.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/village.js",
+                "test": false,
+                "name": "village.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/whale.js",
+                "test": false,
+                "name": "whale.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/wifi.js",
+                "test": false,
+                "name": "wifi.js"
+            },
+            {
+                "relativePath": "src/components/Map/Icons/wolf.js",
+                "test": false,
+                "name": "wolf.js"
+            },
+            {
+                "relativePath": "src/components/Map/InsetMap.js",
+                "test": false,
+                "name": "InsetMap.js"
+            },
+            {
+                "relativePath": "src/components/Map/InteractiveMap.js",
+                "test": false,
+                "name": "InteractiveMap.js"
+            },
+            {
+                "relativePath": "src/components/Map/IsochroneLegendHelper.js",
+                "test": false,
+                "name": "IsochroneLegendHelper.js"
+            },
+            {
+                "relativePath": "src/components/Map/LayerList.js",
+                "test": false,
+                "name": "LayerList.js"
+            },
+            {
+                "relativePath": "src/components/Map/LayerListDropDown.js",
+                "test": false,
+                "name": "LayerListDropDown.js"
+            },
+            {
+                "relativePath": "src/components/Map/LayerListItem.js",
+                "test": false,
+                "name": "LayerListItem.js"
+            },
+            {
+                "relativePath": "src/components/Map/LayerListItemStatic.js",
+                "test": false,
+                "name": "LayerListItemStatic.js"
+            },
+            {
+                "relativePath": "src/components/Map/LayerListStatic.js",
+                "test": false,
+                "name": "LayerListStatic.js"
+            },
+            {
+                "relativePath": "src/components/Map/LegendItem.js",
+                "test": false,
+                "name": "LegendItem.js"
+            },
+            {
+                "relativePath": "src/components/Map/MapLayerMenu.js",
+                "test": false,
+                "name": "MapLayerMenu.js"
+            },
+            {
+                "relativePath": "src/components/Map/MapToolButton.js",
+                "test": false,
+                "name": "MapToolButton.js"
+            },
+            {
+                "relativePath": "src/components/Map/MapToolPanel.js",
+                "test": false,
+                "name": "MapToolPanel.js"
+            },
+            {
+                "relativePath": "src/components/Map/Marker.js",
+                "test": false,
+                "name": "Marker.js"
+            },
+            {
+                "relativePath": "src/components/Map/MiniLegend.js",
+                "test": false,
+                "name": "MiniLegend.js"
+            },
+            {
+                "relativePath": "src/components/Map/README.md",
+                "test": false,
+                "name": "README.md"
+            },
+            {
+                "relativePath": "src/components/Map/Search/MapSearchMixin.js",
+                "test": false,
+                "name": "MapSearchMixin.js"
+            },
+            {
+                "relativePath": "src/components/Map/Search/MapSearchPanel.js",
+                "test": false,
+                "name": "MapSearchPanel.js"
+            },
+            {
+                "relativePath": "src/components/Map/Sources/AGSFeatureServerQuery.js",
+                "test": false,
+                "name": "AGSFeatureServerQuery.js"
+            },
+            {
+                "relativePath": "src/components/Map/Sources/AGSMapServerQuery.js",
+                "test": false,
+                "name": "AGSMapServerQuery.js"
+            },
+            {
+                "relativePath": "src/components/Map/Sources/AGSRaster.js",
+                "test": false,
+                "name": "AGSRaster.js"
+            },
+            {
+                "relativePath": "src/components/Map/Sources/EarthEngineSource.js",
+                "test": false,
+                "name": "EarthEngineSource.js"
+            },
+            {
+                "relativePath": "src/components/Map/Sources/GenericSource.js",
+                "test": false,
+                "name": "GenericSource.js"
+            },
+            {
+                "relativePath": "src/components/Map/Sources/MapHubsSource.js",
+                "test": false,
+                "name": "MapHubsSource.js"
+            },
+            {
+                "relativePath": "src/components/Map/Sources/MapboxSource.js",
+                "test": false,
+                "name": "MapboxSource.js"
+            },
+            {
+                "relativePath": "src/components/Map/Sources/RasterSource.js",
+                "test": false,
+                "name": "RasterSource.js"
+            },
+            {
+                "relativePath": "src/components/Map/Sources/index.js",
+                "test": false,
+                "name": "index.js"
+            },
+            {
+                "relativePath": "src/components/Map/Styles/color.js",
+                "test": false,
+                "name": "color.js"
+            },
+            {
+                "relativePath": "src/components/Map/Styles/get-name-field.js",
+                "test": false,
+                "name": "get-name-field.js"
+            },
+            {
+                "relativePath": "src/components/Map/Styles/index.js",
+                "test": false,
+                "name": "index.js"
+            },
+            {
+                "relativePath": "src/components/Map/Styles/labels.js",
+                "test": false,
+                "name": "labels.js"
+            },
+            {
+                "relativePath": "src/components/Map/Styles/legend.js",
+                "test": false,
+                "name": "legend.js"
+            },
+            {
+                "relativePath": "src/components/Map/Styles/line.js",
+                "test": false,
+                "name": "line.js"
+            },
+            {
+                "relativePath": "src/components/Map/Styles/markers.js",
+                "test": false,
+                "name": "markers.js"
+            },
+            {
+                "relativePath": "src/components/Map/Styles/point.js",
+                "test": false,
+                "name": "point.js"
+            },
+            {
+                "relativePath": "src/components/Map/Styles/polygon.js",
+                "test": false,
+                "name": "polygon.js"
+            },
+            {
+                "relativePath": "src/components/Map/Styles/raster.js",
+                "test": false,
+                "name": "raster.js"
+            },
+            {
+                "relativePath": "src/components/Map/Styles/replaceShortID.js",
+                "test": false,
+                "name": "replaceShortID.js"
+            },
+            {
+                "relativePath": "src/components/Map/Styles/settings.js",
+                "test": false,
+                "name": "settings.js"
+            },
+            {
+                "relativePath": "src/components/Map/Styles/style.js",
+                "test": false,
+                "name": "style.js"
+            },
+            {
+                "relativePath": "src/components/Map/ToolPanels/AreaComparisonPanel.js",
+                "test": false,
+                "name": "AreaComparisonPanel.js"
+            },
+            {
+                "relativePath": "src/components/Map/ToolPanels/BaseMapSelection.js",
+                "test": false,
+                "name": "BaseMapSelection.js"
+            },
+            {
+                "relativePath": "src/components/Map/ToolPanels/EditBaseMapBox.js",
+                "test": false,
+                "name": "EditBaseMapBox.js"
+            },
+            {
+                "relativePath": "src/components/Map/ToolPanels/IsochronePanel.js",
+                "test": false,
+                "name": "IsochronePanel.js"
+            },
+            {
+                "relativePath": "src/components/Map/ToolPanels/MeasurementToolPanel.js",
+                "test": false,
+                "name": "MeasurementToolPanel.js"
+            },
+            {
+                "relativePath": "src/components/Map/UI/DragItemConfig.js",
+                "test": false,
+                "name": "DragItemConfig.js"
+            },
+            {
+                "relativePath": "src/components/Map/UI/DraggableIndicator.js",
+                "test": false,
+                "name": "DraggableIndicator.js"
+            },
+            {
+                "relativePath": "src/components/Map/containers/BaseMapContainer.js",
+                "test": false,
+                "name": "BaseMapContainer.js"
+            },
+            {
+                "relativePath": "src/components/Map/containers/DataEditorContainer.js",
+                "test": false,
+                "name": "DataEditorContainer.js"
+            },
+            {
+                "relativePath": "src/components/Map/containers/MapContainer.js",
+                "test": false,
+                "name": "MapContainer.js"
+            },
+            {
+                "relativePath": "src/components/Map/containers/MarkerContainer.js",
+                "test": false,
+                "name": "MarkerContainer.js"
+            },
+            {
+                "relativePath": "src/components/Map/index.js",
+                "test": false,
+                "name": "index.js"
+            }
+        ],
+        "mainFile": "src/components/Map/index.js",
+        "trackDir": "src/components/Map",
         "origin": "AUTHORED"
     },
     "version": "13.0.4"

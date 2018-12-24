@@ -1,6 +1,6 @@
 {
     "env": {
-        "compiler": "bit.envs/compilers/flow@0.0.10"
+        "compiler": "bit.envs/compilers/react@0.0.14"
     },
     "dependencies": {},
     "componentsDefaultDirectory": "components/{namespace}/{name}",
