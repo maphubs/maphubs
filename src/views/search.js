@@ -222,7 +222,6 @@ export default class Search extends MapHubsComponent<Props, State> {
                 )}
               </Subscribe>
             </div>
-              )}
             <div className='row no-margin' style={{height: 'calc(75vh - 55px)', minHeight: '200px'}}>
               <Map ref='map'
                 id='global-search-map'
