@@ -61,58 +61,6 @@
         "trackDir": "src/services/log",
         "origin": "AUTHORED"
     },
-    "kriscarle.maphubs-utils/services/importers@1.0.2": {
-        "files": [
-            {
-                "relativePath": "src/services/importers/README.md",
-                "test": false,
-                "name": "README.md"
-            },
-            {
-                "relativePath": "src/services/importers/csv/index.js",
-                "test": false,
-                "name": "index.js"
-            },
-            {
-                "relativePath": "src/services/importers/geobuf/index.js",
-                "test": false,
-                "name": "index.js"
-            },
-            {
-                "relativePath": "src/services/importers/geojson/index.js",
-                "test": false,
-                "name": "index.js"
-            },
-            {
-                "relativePath": "src/services/importers/gpx/index.js",
-                "test": false,
-                "name": "index.js"
-            },
-            {
-                "relativePath": "src/services/importers/index.js",
-                "test": false,
-                "name": "index.js"
-            },
-            {
-                "relativePath": "src/services/importers/kml/index.js",
-                "test": false,
-                "name": "index.js"
-            },
-            {
-                "relativePath": "src/services/importers/shapefile/index.js",
-                "test": false,
-                "name": "index.js"
-            },
-            {
-                "relativePath": "src/services/importers/shapefile/shapefile-fairy.js",
-                "test": false,
-                "name": "shapefile-fairy.js"
-            }
-        ],
-        "mainFile": "src/services/importers/index.js",
-        "trackDir": "src/services/importers",
-        "origin": "AUTHORED"
-    },
     "kriscarle.maphubs-utils/services/terraformer-gl@1.0.2": {
         "files": [
             {
@@ -170,7 +118,60 @@
         "trackDir": "src/components/ShareButtons",
         "origin": "AUTHORED"
     },
-    "kriscarle.maphubs-components/components/map@1.0.0": {
+    "kriscarle.maphubs-utils/services/importers@1.0.3": {
+        "files": [
+            {
+                "relativePath": "src/services/importers/README.md",
+                "test": false,
+                "name": "README.md"
+            },
+            {
+                "relativePath": "src/services/importers/csv/index.js",
+                "test": false,
+                "name": "index.js"
+            },
+            {
+                "relativePath": "src/services/importers/geobuf/index.js",
+                "test": false,
+                "name": "index.js"
+            },
+            {
+                "relativePath": "src/services/importers/geojson/index.js",
+                "test": false,
+                "name": "index.js"
+            },
+            {
+                "relativePath": "src/services/importers/gpx/index.js",
+                "test": false,
+                "name": "index.js"
+            },
+            {
+                "relativePath": "src/services/importers/index.js",
+                "test": false,
+                "name": "index.js"
+            },
+            {
+                "relativePath": "src/services/importers/kml/index.js",
+                "test": false,
+                "name": "index.js"
+            },
+            {
+                "relativePath": "src/services/importers/shapefile/index.js",
+                "test": false,
+                "name": "index.js"
+            },
+            {
+                "relativePath": "src/services/importers/shapefile/shapefile-fairy.js",
+                "test": false,
+                "name": "shapefile-fairy.js"
+            }
+        ],
+        "mainFile": "src/services/importers/index.js",
+        "trackDir": "src/services/importers",
+        "origin": "AUTHORED",
+        "mainDistFile": "dist/src/services/importers/index.js"
+    },
+    "kriscarle.maphubs-components/components/map@1.0.1": {
         "files": [
             {
                 "relativePath": "src/components/Map/Attributes.js",
