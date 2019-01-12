@@ -1,6 +1,6 @@
 // @flow
 import request from 'superagent'
-import log from '../../services/log'
+import log from '@bit/kriscarle.maphubs-utils.services.log'
 import {apiDataError, apiError} from '../../services/error-response'
 
 module.exports = function (app: any) {

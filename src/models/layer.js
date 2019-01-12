@@ -4,7 +4,7 @@ import type {Layer} from '../types/layer'
 const knex = require('../connection')
 const dbgeo = require('dbgeo')
 const Promise = require('bluebird')
-const log = require('../services/log')
+const log = require('@bit/kriscarle.maphubs-utils.services.log')
 const _find = require('lodash.find')
 const Presets = require('./presets')
 const DataLoadUtils = require('../services/data-load-utils')

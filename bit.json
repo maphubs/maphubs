@@ -1,6 +1,6 @@
 {
     "env": {
-        "compiler": "bit.envs/compilers/react@0.0.14"
+        "compiler": "kriscarle.maphubs-utils/bundlers/webpack@0.1.6"
     },
     "dependencies": {},
     "componentsDefaultDirectory": "components/{namespace}/{name}",

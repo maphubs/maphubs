@@ -2,7 +2,7 @@
 import Locales from '../../services/locales'
 const Layer = require('../../models/layer')
 const Group = require('../../models/group')
-// var log = require('../../services/log');
+// var log = require('@bit/kriscarle.maphubs-utils.services.log');
 // var debug = require('../../services/debug')('routes/layers');
 const urlUtil = require('../../services/url-util')
 const apiError = require('../../services/error-response').apiError

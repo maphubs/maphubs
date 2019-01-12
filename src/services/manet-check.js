@@ -1,5 +1,5 @@
 // @flow
-const log = require('./log')
+const log = require('@bit/kriscarle.maphubs-utils.services.log')
 const local = require('../local')
 const debug = require('../services/debug')('manet-check')
 const Layer = require('../models/layer')

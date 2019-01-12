@@ -6,7 +6,7 @@ const nextError = require('../../services/error-response').nextError
 const apiDataError = require('../../services/error-response').apiDataError
 const knex = require('../../connection')
 const pageOptions = require('../../services/page-options-helper')
-// var log = require('../../services/log');
+// var log = require('@bit/kriscarle.maphubs-utils.services.log');
 
 module.exports = function (app: any) {
   app.get('/admin/manage', csrfProtection, async (req, res, next) => {

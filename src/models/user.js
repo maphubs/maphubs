@@ -1,6 +1,6 @@
 // @flow
 const knex = require('../connection')
-const log = require('../services/log')
+const log = require('@bit/kriscarle.maphubs-utils.services.log')
 const debug = require('../services/debug')('models/user')
 
 module.exports = {

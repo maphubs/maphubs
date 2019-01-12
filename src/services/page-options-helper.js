@@ -1,4 +1,4 @@
-const log = require('./log')
+const log = require('@bit/kriscarle.maphubs-utils.services.log')
 const Raven = require('raven')
 
 const Page = require('../models/page')

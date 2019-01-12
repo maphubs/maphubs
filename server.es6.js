@@ -22,7 +22,7 @@ const pageOptions = require('./src/services/page-options-helper')
 const session = require('express-session')
 const KnexSessionStore = require('connect-session-knex')(session)
 const knex = require('./src/connection')
-const log = require('./src/services/log')
+const log = require('@bit/kriscarle.maphubs-utils.services.log')
 
 const Promise = require('bluebird')
 // promise config needs to be here so it runs before anything else uses bluebird.

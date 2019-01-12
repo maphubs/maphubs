@@ -7,7 +7,7 @@ aws.config.update({region: 'us-east-1'})
 const transporter = nodemailer.createTransport({
   SES: new aws.SES({apiVersion: '2010-12-01'})
 })
-const log = require('./log')
+const log = require('@bit/kriscarle.maphubs-utils.services.log')
 const debug = require('./debug')('email-util')
 
 module.exports = {

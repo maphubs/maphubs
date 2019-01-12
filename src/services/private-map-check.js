@@ -1,5 +1,5 @@
 const Map = require('../models/map')
-const log = require('./log')
+const log = require('@bit/kriscarle.maphubs-utils.services.log')
 const nextError = require('./error-response').nextError
 const apiDataError = require('./error-response').apiDataError
 const asyncHandler = require('express-async-handler')

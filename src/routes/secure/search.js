@@ -2,7 +2,7 @@
 import turf_bbox from '@turf/bbox'
 const knex = require('../../connection')
 const Promise = require('bluebird')
-const log = require('../../services/log')
+const log = require('@bit/kriscarle.maphubs-utils.services.log')
 // var debug = require('../../services/debug')('routes/search');
 const csrfProtection = require('csurf')({cookie: false})
 const SearchIndex = require('../../models/search-index')

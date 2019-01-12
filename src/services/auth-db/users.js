@@ -1,6 +1,6 @@
 // @flow
 const knex = require('../../connection')
-const log = require('../log')
+const log = require('@bit/kriscarle.maphubs-utils.services.log')
 const debug = require('../debug')('oauth-db/users')
 
 function translateUserObject (data: Object) {

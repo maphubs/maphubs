@@ -2,7 +2,7 @@
 import MapStyles from '../components/Map/Styles'
 const knex = require('../connection')
 const Promise = require('bluebird')
-const log = require('../services/log')
+const log = require('@bit/kriscarle.maphubs-utils.services.log')
 
 module.exports = {
 

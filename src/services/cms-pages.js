@@ -3,7 +3,7 @@ const Page = require('../models/page')
 const nextError = require('./error-response').nextError
 const csrfProtection = require('csurf')({cookie: false})
 const renderCMSPage = require('./render-cms-page')
-const log = require('./log')
+const log = require('@bit/kriscarle.maphubs-utils.services.log')
 
 module.exports = async function (app: any) {
   const pageConfigs = await Page.getPageConfigs(['config'])

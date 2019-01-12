@@ -3,7 +3,7 @@
 const knex = require('../connection')
 const Promise = require('bluebird')
 const debug = require('./debug')('layer-views')
-const log = require('./log')
+const log = require('@bit/kriscarle.maphubs-utils.services.log')
 
 module.exports = {
 

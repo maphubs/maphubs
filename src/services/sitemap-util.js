@@ -7,7 +7,7 @@ const Map = require('../models/map')
 const Group = require('../models/group')
 const urlUtil = require('./url-util')
 const Promise = require('bluebird')
-const log = require('./log')
+const log = require('@bit/kriscarle.maphubs-utils.services.log')
 
 module.exports = {
 
