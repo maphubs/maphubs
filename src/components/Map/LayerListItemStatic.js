@@ -1,9 +1,8 @@
 // @flow
 import React from 'react'
-import { Switch, Row, Col, Icon } from 'antd'
+import { Switch, Row, Col, Tooltip } from 'antd'
 import Info from '@material-ui/icons/Info'
 import MapStyles from '../Map/Styles'
-import {Tooltip} from 'react-tippy'
 
 type Props = {|
   item: Object,
@@ -36,7 +35,7 @@ export default class LayerListItemStatic extends React.Component<Props, void> {
           <Col span={4}>
             <Tooltip
               title={t('Layer Info')}
-              position='right' inertia followCursor>
+              placement='right' >
               <a href={'/lyr/' + layer_id} target='_blank' rel='noopener noreferrer'>
                 <Info style={{fontSize: '20px'}} />
               </a>
@@ -45,7 +44,7 @@ export default class LayerListItemStatic extends React.Component<Props, void> {
           <Col span={4}>
             <Tooltip
               title={t('Show/Hide Layer')}
-              position='right' inertia followCursor>
+              placement='right' >
               <Switch size='small' style={{marginBottom: '5px'}} checked={active}
                 onChange={() => { toggleVisibility(layer_id) }} />
             </Tooltip>

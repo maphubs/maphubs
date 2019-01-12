@@ -1,7 +1,6 @@
 // @flow
 import React from 'react'
-import {Tooltip} from 'react-tippy'
-import {Row, Col} from 'antd'
+import {Row, Col, Tooltip} from 'antd'
 import Info from '@material-ui/icons/Info'
 import InsertPhoto from '@material-ui/icons/InsertPhoto'
 import Launch from '@material-ui/icons/Launch'
@@ -73,9 +72,7 @@ export default function ActionPanel ({ layer, selectedFeature, featureName, enab
   if (enableToggle) {
     if (toggled) {
       dataToggle = (
-        <Tooltip
-          title={t('Back to Summary')}
-          position='bottom' inertia followCursor>
+        <Tooltip title={t('Back to Summary')} placement='bottom'>
           <a href='#' onClick={toggleData} style={{margin: 0}}>
             <InsertPhoto />
           </a>
@@ -85,7 +82,7 @@ export default function ActionPanel ({ layer, selectedFeature, featureName, enab
       dataToggle = (
         <Tooltip
           title={t('View Details')}
-          position='bottom' inertia followCursor>
+          placement='bottom'>
           <a href='#' onClick={toggleData} style={{margin: 0}}>
             <Info />
           </a>
@@ -100,7 +97,7 @@ export default function ActionPanel ({ layer, selectedFeature, featureName, enab
         <div style={{textAlign: 'left'}}>
           <Tooltip
             title={t('Open Layer')}
-            position='bottom' inertia followCursor>
+            placement='bottom'>
             <b>
               <a className='truncate omh-accent-text' target='_blank' rel='noopener noreferrer'
                 style={{
@@ -122,7 +119,7 @@ export default function ActionPanel ({ layer, selectedFeature, featureName, enab
           <Col span={12} style={{textAlign: 'right'}}>
             <Tooltip
               title={t('Open Feature Page')}
-              position='bottom' inertia followCursor>
+              placement='bottom'>
               <a href={featureLink} target='_blank' rel='noopener noreferrer'
                 style={{margin: 0}}>
                 <Launch />

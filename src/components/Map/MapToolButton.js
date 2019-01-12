@@ -1,5 +1,5 @@
 import React from 'react'
-import {Tooltip} from 'react-tippy'
+import {Tooltip} from 'antd'
 import NearMe from '@material-ui/icons/NearMe'
 import Close from '@material-ui/icons/Close'
 import Undo from '@material-ui/icons/Undo'
@@ -56,7 +56,7 @@ export default class MapToolButton extends React.PureComponent<Props, void> {
         <Tooltip
           disabled={!tooltipText}
           title={tooltipText}
-          position='bottom' inertia followCursor>
+          placement='bottom'>
           <a ref='mapToolButton'
             onClick={this.onClick}
             onMouseDown={this.onMouseDown}

@@ -4,8 +4,7 @@ import type {Layer} from '../../types/layer'
 import _isEqual from 'lodash.isequal'
 import flow from 'lodash.flow'
 import MapStyles from './Styles'
-import {Tooltip} from 'react-tippy'
-import { Popconfirm, Switch, Row, Col } from 'antd'
+import { Popconfirm, Switch, Row, Col, Tooltip } from 'antd'
 import Delete from '@material-ui/icons/Delete'
 import Palette from '@material-ui/icons/Palette'
 import Info from '@material-ui/icons/Info'
@@ -101,7 +100,7 @@ class LayerListItem extends React.Component<Props, void> {
           <Col span={4}>
             <Tooltip
               title={t('Layer Info')}
-              position='right' inertia followCursor>
+              placement='right' >
               <a href={'/lyr/' + layer_id} target='_blank' rel='noopener noreferrer'>
                 <Info style={{fontSize: '20px'}} />
               </a>
@@ -111,7 +110,7 @@ class LayerListItem extends React.Component<Props, void> {
             <Col span={4}>
               <Tooltip
                 title={t('Remove from Map')}
-                position='top' inertia followCursor>
+                placement='top' >
                 <Popconfirm
                   title={t('Remove Layer') + ' ' + t(layer.name)}
                   onConfirm={this.removeFromMap} onCancel={() => {}}
@@ -128,7 +127,7 @@ class LayerListItem extends React.Component<Props, void> {
             <Col span={4}>
               <Tooltip
                 title={t('Edit Layer Style')}
-                position='top' inertia followCursor>
+                placement='top'>
                 <a onClick={this.showLayerDesigner}>
                   <Palette style={{fontSize: '20px'}} />
                 </a>
@@ -139,7 +138,7 @@ class LayerListItem extends React.Component<Props, void> {
             <Col span={4}>
               <Tooltip
                 title={t('Edit Layer Data')}
-                position='top' inertia followCursor>
+                placement='top' >
                 <a onClick={this.editLayer}>
                   <Edit style={{fontSize: '20px'}} />
                 </a>
@@ -150,7 +149,7 @@ class LayerListItem extends React.Component<Props, void> {
             <Col span={4}>
               <Tooltip
                 title={t('Show/Hide Layer')}
-                position='right' inertia followCursor>
+                placement='right' >
                 <Switch size='small' style={{marginBottom: '5px'}} checked={active} onChange={this.toggleVisibility} />
               </Tooltip>
             </Col>
