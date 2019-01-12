@@ -81,7 +81,12 @@ export default class HubMap extends MapHubsComponent<Props, void> {
           <InteractiveMap {...this.props.map}
             mapConfig={this.props.mapConfig}
             height={this.props.height} showTitle={false}
-            layers={this.props.layers} t={this.t} />
+            layers={this.props.layers} t={this.t}
+            primaryColor={MAPHUBS_CONFIG.primaryColor}
+            logoSmall={MAPHUBS_CONFIG.logoSmall}
+            logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+            logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+          />
 
           {mapEditButton}
 

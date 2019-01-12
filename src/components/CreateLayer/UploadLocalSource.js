@@ -158,6 +158,10 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
             mapConfig={mapConfig}
             glStyle={style}
             fitBounds={bbox}
+            primaryColor={MAPHUBS_CONFIG.primaryColor}
+            logoSmall={MAPHUBS_CONFIG.logoSmall}
+            logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+            logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
             t={this.t}
           />
         </div>

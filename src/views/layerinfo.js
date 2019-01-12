@@ -547,6 +547,10 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                   showTitle={false}
                   hideInactive={false}
                   disableScrollZoom={false}
+                  primaryColor={MAPHUBS_CONFIG.primaryColor}
+                  logoSmall={MAPHUBS_CONFIG.logoSmall}
+                  logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+                  logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
                   t={this.t}
                 />
 

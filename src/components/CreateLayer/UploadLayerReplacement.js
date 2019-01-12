@@ -150,6 +150,10 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
             id='upload-preview-map' t={this.t}
             showFeatureInfoEditButtons={false}
             mapConfig={this.props.mapConfig}
+            primaryColor={MAPHUBS_CONFIG.primaryColor}
+            logoSmall={MAPHUBS_CONFIG.logoSmall}
+            logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+            logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
             data={this.state.geoJSON} />
         </div>
       )

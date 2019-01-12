@@ -251,6 +251,10 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
           showLogo={this.props.showLogo}
           showScale={this.props.showScale}
           preserveDrawingBuffer
+          primaryColor={MAPHUBS_CONFIG.primaryColor}
+          logoSmall={MAPHUBS_CONFIG.logoSmall}
+          logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+          logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
           t={this.t}
           {...this.props.map.settings}
         />

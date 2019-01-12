@@ -45,7 +45,11 @@ type Props = {
   basemap: string,
   gpxLink?: Object,
   preserveDrawingBuffer?: boolean,
-  t: Function
+  t: Function,
+  primaryColor: string,
+  logoSmall?: string,
+  logoSmallWidth?: number,
+  logoSmallHeight?: number
 }
 
 type State = {
@@ -73,7 +77,8 @@ export default class InteractiveMap extends React.Component<Props, State> {
     showScale: true,
     insetMap: true,
     showLegendLayersButton: true,
-    preserveDrawingBuffer: false
+    preserveDrawingBuffer: false,
+    primaryColor: 'black'
   }
 
   mobileMapLegend: any
@@ -213,7 +218,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
   }
 
   render () {
-    const {fitBounds, showShareButtons, t} = this.props
+    const {fitBounds, showShareButtons, t, primaryColor, logoSmall, logoSmallHeight, logoSmallWidth} = this.props
     const {position, width} = this.state
     let border = 'none'
     if (this.props.border) {
@@ -280,7 +285,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
             onClick={() => this.onSetOpenMobileMapLegend(true)}
             top={mobileLegendButtonTop}
             left='10px'
-            color={MAPHUBS_CONFIG.primaryColor}
+            color={primaryColor}
             icon='info'
           />
         }
@@ -307,6 +312,9 @@ export default class InteractiveMap extends React.Component<Props, State> {
           disableScrollZoom={this.props.disableScrollZoom}
           gpxLink={this.props.gpxLink}
           preserveDrawingBuffer={this.props.preserveDrawingBuffer}
+          logoSmall={logoSmall}
+          logoSmallHeight={logoSmallHeight}
+          logoSmallWidth={logoSmallWidth}
           t={t}
         >
           {legend}

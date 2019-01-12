@@ -325,6 +325,10 @@ export default class UserMap extends MapHubsComponent<Props, State> {
               layers={this.props.layers}
               mapConfig={this.props.mapConfig}
               disableScrollZoom={false}
+              primaryColor={MAPHUBS_CONFIG.primaryColor}
+              logoSmall={MAPHUBS_CONFIG.logoSmall}
+              logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+              logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
               {...map.settings}
               t={this.t}
             />

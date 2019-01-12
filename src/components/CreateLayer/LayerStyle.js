@@ -169,6 +169,10 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
                       showLogo={false}
                       mapConfig={this.props.mapConfig}
                       fitBounds={mapExtent}
+                      primaryColor={MAPHUBS_CONFIG.primaryColor}
+                      logoSmall={MAPHUBS_CONFIG.logoSmall}
+                      logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+                      logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
                       t={t}
                     />
                   </div>

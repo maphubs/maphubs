@@ -51,6 +51,10 @@ export default class FeatureMap extends MapHubsComponent<Props, void> {
               showLegendLayersButton={false}
               gpxLink={gpxLink}
               t={this.t}
+              primaryColor={MAPHUBS_CONFIG.primaryColor}
+              logoSmall={MAPHUBS_CONFIG.logoSmall}
+              logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+              logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
             />
           )
         }}

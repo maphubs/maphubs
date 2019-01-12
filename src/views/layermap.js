@@ -60,6 +60,10 @@ export default class LayerMap extends MapHubsComponent<Props, void> {
               title={this.props.layer.name}
               hideInactive={false}
               showTitle={false}
+              primaryColor={MAPHUBS_CONFIG.primaryColor}
+              logoSmall={MAPHUBS_CONFIG.logoSmall}
+              logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+              logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
               t={this.t}
             />
           </main>

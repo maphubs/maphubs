@@ -229,6 +229,10 @@ export default class Search extends MapHubsComponent<Props, State> {
                 disableScrollZoom hoverInteraction={false} showLogo={false} attributionControl
                 mapConfig={this.props.mapConfig}
                 data={this.state.searchResult}
+                primaryColor={MAPHUBS_CONFIG.primaryColor}
+                logoSmall={MAPHUBS_CONFIG.logoSmall}
+                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
                 t={this.t}
               />
             </div>

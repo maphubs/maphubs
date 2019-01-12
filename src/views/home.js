@@ -168,6 +168,10 @@ export default class HomePro extends MapHubsComponent<Props, State> {
             {...this.props.map}
             mapConfig={this.props.mapConfig}
             layers={this.props.layers} showTitle={false}
+            primaryColor={MAPHUBS_CONFIG.primaryColor}
+            logoSmall={MAPHUBS_CONFIG.logoSmall}
+            logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+            logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
             {...this.props.map.settings}
             t={this.t}
           />

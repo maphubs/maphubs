@@ -201,6 +201,10 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                 mapConfig={this.props.mapConfig}
                 glStyle={this.state.layer.style}
                 fitBounds={this.state.layer.preview_position.bbox}
+                primaryColor={MAPHUBS_CONFIG.primaryColor}
+                logoSmall={MAPHUBS_CONFIG.logoSmall}
+                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
                 t={t}
               >
                 <MiniLegend

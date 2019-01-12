@@ -502,6 +502,10 @@ class MapMaker extends MapHubsComponent<Props, State> {
                 mapConfig={this.props.mapConfig}
                 onLoad={this.initEditLayer}
                 hash
+                primaryColor={MAPHUBS_CONFIG.primaryColor}
+                logoSmall={MAPHUBS_CONFIG.logoSmall}
+                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
                 t={this.t}
               >
                 {editingLayer &&
