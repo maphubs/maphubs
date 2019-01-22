@@ -101,9 +101,11 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
                 <p style={{margin: '5px'}}>{t('Satellite Data')}</p>
                 {planetSource}
                 <div className='col s6'>
-                  <SourceSelectionBox name={t('Sentinel-2')} value={'sentinel'}
-                    selected={source === 'sentinel'} icon='satellite'
-                    onSelect={this.selectSource} />
+                  {false &&
+                    <SourceSelectionBox name={t('Sentinel-2')} value={'sentinel'}
+                      selected={source === 'sentinel'} icon='satellite'
+                      onSelect={this.selectSource} />
+                  }
                 </div>
                 <div className='col s6'>
                   <SourceSelectionBox name={t('Digital Globe')} value={'dgwms'}
