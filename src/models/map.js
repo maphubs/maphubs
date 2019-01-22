@@ -1,7 +1,7 @@
 // @flow
 import MapStyles from '../components/Map/Styles'
 const knex = require('../connection')
-const debug = require('../services/debug')('models/map')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('models/map')
 const Group = require('./group')
 
 const shortid = require('shortid')

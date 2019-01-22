@@ -1,5 +1,5 @@
 // @flow
-// var debug = require('../../services/debug')('routes/stories');
+// var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/stories');
 const login = require('connect-ensure-login')
 const User = require('../../models/user')
 const Story = require('../../models/story')
@@ -8,7 +8,7 @@ const Map = require('../../models/map')
 const nextError = require('../../services/error-response').nextError
 const apiDataError = require('../../services/error-response').apiDataError
 const csrfProtection = require('csurf')({cookie: false})
-const urlUtil = require('../../services/url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {

@@ -4,7 +4,7 @@ import Header from '../components/header'
 import Footer from '../components/footer'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
-import urlUtil from '../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import cardUtil from '../services/card-util'
 import MessageActions from '../actions/MessageActions'
 import NotificationActions from '../actions/NotificationActions'
@@ -17,7 +17,7 @@ import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
 
 const checkClientError = require('../services/client-error-response').checkClientError
-const debug = require('../services/debug')('views/hubs')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/hubs')
 
 type Props = {
   featuredHubs: Array<Object>,

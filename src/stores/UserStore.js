@@ -2,7 +2,7 @@
 import Reflux from 'reflux'
 import Actions from '../actions/UserActions'
 const request = require('superagent')
-const debug = require('../services/debug')('stores/user-store')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('stores/user-store')
 const checkClientError = require('../services/client-error-response').checkClientError
 
 export type User = {

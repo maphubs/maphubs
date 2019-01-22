@@ -2,7 +2,7 @@
 import Reflux from 'reflux'
 import Actions from '../actions/GroupActions'
 const request = require('superagent')
-const debug = require('../services/debug')('stores/group-store')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('stores/group-store')
 const checkClientError = require('../services/client-error-response').checkClientError
 
 export type Group = {

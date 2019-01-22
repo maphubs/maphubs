@@ -1,6 +1,6 @@
 // @flow
 const proxy = require('express-http-proxy')
-const debug = require('../../services/debug')('proxy')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('proxy')
 const local = require('../../local')
 
 module.exports = function (app: any) {

@@ -12,8 +12,8 @@ import type {Layer} from '../../types/layer'
 import 'react-image-lightbox/style.css'
 
 const checkClientError = require('../../services/client-error-response').checkClientError
-const urlUtil = require('../../services/url-util')
-const debug = require('../../services/debug')('map/featurepopup')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('map/featurepopup')
 
 let Lightbox
 

@@ -1,6 +1,6 @@
 import Reflux from 'reflux'
 import Actions from '../actions/MessageActions'
-const debug = require('../services/debug')('stores/message-store')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('stores/message-store')
 const $ = require('jquery')
 
 export type MessageStoreState = {

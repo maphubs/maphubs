@@ -16,8 +16,8 @@ import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
 import cardUtil from '../services/card-util'
 
-const debug = require('../services/debug')('views/layers')
-const urlUtil = require('../services/url-util')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/layers')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const checkClientError = require('../services/client-error-response').checkClientError
 
 type Props = {

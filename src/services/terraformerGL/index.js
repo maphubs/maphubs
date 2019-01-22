@@ -1,7 +1,7 @@
 // @flow
 import _bbox from '@turf/bbox'
 const request = require('superagent')
-const debug = require('../debug')('terraformerGL')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('terraformerGL')
 const arcgis = require('terraformer-arcgis-parser')
 
 const jsonp = require('superagent-jsonp')

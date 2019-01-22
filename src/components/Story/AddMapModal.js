@@ -7,10 +7,10 @@ import NotificationActions from '../../actions/NotificationActions'
 import MessageActions from '../../actions/MessageActions'
 import MapHubsComponent from '../../components/MapHubsComponent'
 import cardUtil from '../../services/card-util'
-import urlUtil from '../../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import request from 'superagent'
 import {checkClientError} from '../../services/client-error-response'
-import DebugService from '../../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('AddMapToStory')
 
 type Props = {

@@ -1,7 +1,7 @@
 // @flow
 import Shortid from 'shortid'
 import type {GLStyle} from '../../../types/mapbox-gl-style'
-import DebugService from '../../../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('map-styles-color')
 
 export default {

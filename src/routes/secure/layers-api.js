@@ -3,11 +3,11 @@ const knex = require('../../connection')
 const Layer = require('../../models/layer')
 const LayerData = require('../../models/layer-data')
 const Group = require('../../models/group')
-// var log = require('@bit/kriscarle.maphubs-utils.services.log');
+// var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
 const DataLoadUtils = require('../../services/data-load-utils')
-const debug = require('../../services/debug')('routes/layers')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/layers')
 const layerViews = require('../../services/layer-views')
-const urlUtil = require('../../services/url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 
 const PhotoAttachment = require('../../models/photo-attachment')
 // var Tag = require('../../models/tag');

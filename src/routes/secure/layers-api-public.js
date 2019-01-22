@@ -2,9 +2,9 @@
 import Locales from '../../services/locales'
 const Layer = require('../../models/layer')
 const Group = require('../../models/group')
-// var log = require('@bit/kriscarle.maphubs-utils.services.log');
-// var debug = require('../../services/debug')('routes/layers');
-const urlUtil = require('../../services/url-util')
+// var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
+// var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/layers');
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const apiError = require('../../services/error-response').apiError
 const privateLayerCheck = require('../../services/private-layer-check').middleware
 

@@ -1,4 +1,4 @@
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 module.exports = function (req, res, next) {
   if (!req.isAuthenticated || !req.isAuthenticated() ||
       !req.session || !req.session.user) {

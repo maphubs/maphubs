@@ -8,7 +8,7 @@ import HubStore from '../../stores/HubStore'
 import HubActions from '../../actions/HubActions'
 import MapHubsPureComponent from '../../components/MapHubsPureComponent'
 // import _isequal from 'lodash.isequal';
-import urlUtil from '../../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import type {HubStoreState} from '../../stores/HubStore'
 
 type Props = {|

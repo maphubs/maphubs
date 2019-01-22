@@ -1,7 +1,7 @@
 // @flow
-const debug = require('../services/debug')('layer-data')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('layer-data')
 const SearchIndex = require('./search-index')
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 /**
  * Provides CRUD methods for updating layer data in PostGIS
  */

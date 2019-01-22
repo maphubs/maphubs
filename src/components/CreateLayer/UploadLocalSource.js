@@ -12,7 +12,7 @@ import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
 import superagent from 'superagent'
-// import DebugService from '../../services/debug'
+// import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 // const debug = DebugService('UploadLocalSource')
 
 let scrollToComponent

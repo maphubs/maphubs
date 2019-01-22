@@ -3,7 +3,7 @@ import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import CardCarousel from '../components/CardCarousel/CardCarousel'
-// var debug = require('../services/debug')('usermaps');
+// var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('usermaps');
 import cardUtil from '../services/card-util'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'

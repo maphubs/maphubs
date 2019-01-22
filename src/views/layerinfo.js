@@ -48,8 +48,8 @@ import LocaleStore from '../stores/LocaleStore'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 
-const debug = require('../services/debug')('layerinfo')
-const urlUtil = require('../services/url-util')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('layerinfo')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 
 const $ = require('jquery')
 const moment = require('moment-timezone')

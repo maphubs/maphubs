@@ -1,5 +1,5 @@
 // @flow
-import DebugService from '../../../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('mapboxGLHelperMixin')
 
 /**

@@ -1,5 +1,5 @@
 // @flow
-const debug = require('../debug')('clientError')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('clientError')
 
 module.exports = {
 

@@ -7,10 +7,10 @@ const Hub = require('../../models/hub')
 const Map = require('../../models/map')
 const Account = require('../../models/account')
 const login = require('connect-ensure-login')
-// var log = require('@bit/kriscarle.maphubs-utils.services.log');
-const debug = require('../../services/debug')('routes/groups')
+// var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/groups')
 const nextError = require('../../services/error-response').nextError
-const urlUtil = require('../../services/url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const pageOptions = require('../../services/page-options-helper')
 
 const csrfProtection = require('csurf')({cookie: false})

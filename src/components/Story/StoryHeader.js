@@ -10,7 +10,7 @@ import id from 'react-intl/locale-data/id'
 import pt from 'react-intl/locale-data/pt'
 import MapHubsComponent from '../../components/MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
-import urlUtil from '../../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import moment from 'moment-timezone'
 
 addLocaleData(en)

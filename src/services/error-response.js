@@ -1,5 +1,5 @@
 // @flow
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 const Raven = require('raven')
 module.exports = {
 

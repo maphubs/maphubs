@@ -1,7 +1,7 @@
 // @flow
 import _area from '@turf/area'
 import turf_length from '@turf/length'
-const debug = require('../../../services/debug')('Map/MeasureArea')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('Map/MeasureArea')
 let MapboxDraw = {}
 if (typeof window !== 'undefined') {
   MapboxDraw = require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js')

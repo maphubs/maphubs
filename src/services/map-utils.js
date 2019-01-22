@@ -2,8 +2,8 @@
 import Locales from '../services/locales'
 const Map = require('../models/map')
 const nextError = require('./error-response').nextError
-const urlUtil = require('../services/url-util')
-const debug = require('./debug')('map-utils')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('map-utils')
 const local = require('../local')
 const pageOptions = require('./page-options-helper')
 

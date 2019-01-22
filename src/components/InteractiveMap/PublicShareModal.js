@@ -6,7 +6,7 @@ import Toggle from '../forms/toggle'
 import ConfirmationActions from '../../actions/ConfirmationActions'
 import Formsy from 'formsy-react'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
-import urlUtil from '../../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 
 type Props = {|
   share_id: string,

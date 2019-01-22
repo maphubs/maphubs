@@ -2,7 +2,7 @@
 import React from 'react'
 import MapHubsComponent from '../components/MapHubsComponent'
 import LocaleActions from '../actions/LocaleActions'
-import debugFactory from '../services/debug'
+import debugFactory from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import localeUtil from '../locales/util'
 import { Menu, Dropdown, Icon } from 'antd'
 const debug = debugFactory('MapHubsComponent')

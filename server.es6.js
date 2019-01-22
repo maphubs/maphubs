@@ -22,7 +22,7 @@ const pageOptions = require('./src/services/page-options-helper')
 const session = require('express-session')
 const KnexSessionStore = require('connect-session-knex')(session)
 const knex = require('./src/connection')
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 
 const Promise = require('bluebird')
 // promise config needs to be here so it runs before anything else uses bluebird.
@@ -33,7 +33,7 @@ Promise.config({
 
 const CMSPages = require('./src/services/cms-pages')
 nextApp.prepare()
-  .then(() => {
+  .then(async () => {
     const server = express()
     server.next = nextApp // needed for routes to render with NextJS
     // settings flags
@@ -149,98 +149,99 @@ nextApp.prepare()
     // load secure routes
     consign().include('./src/routes/secure').into(server)
 
-    return CMSPages(server).then(() => {
-
-      server.use((err, req, res, next) => {
-        if (req.session && req.session.user) {
-          let username = req.session.user.username || req.session.user.display_name
-          let email = req.session.user._json.email || req.session.user.email
-
-          Raven.mergeContext({
-            user: {
-              id: req.session.user.id,
-              username,
-              email
-            }
-          })
-        }
-        next(err)
-      })
-
-      server.use(Raven.errorHandler())
-
-      if (process.env.NODE_ENV !== 'production') {
-        server.get('/errortest', (req, res) => {
-          throw new Error('TEST')
-        })
-      }
-
-      server.use(async (err, req, res, next) => {
-        // bypass for dynamically created tile URLs
-        if (req.url.includes('/api/tiles/')) {
-          next()
-        } else {
-          // curl https://localhost:4000/error/403 -vk
-          // curl https://localhost:4000/error/403 -vkH "Accept: application/json"
-          const statusCode = err.status || 500
-          let statusText = ''
-          const errorDetail = (process.env.NODE_ENV === 'production') ? req.__('Looks like we have a problem. A message was automatically sent to our team.') : err.stack
-
-          switch (statusCode) {
-            case 400:
-              statusText = 'Bad Request'
-              break
-            case 401:
-              statusText = 'Unauthorized'
-              break
-            case 403:
-              statusText = 'Forbidden'
-              break
-            case 500:
-              statusText = 'Internal Server Error'
-              break
-          }
-
-          log.error(err.stack)
-
-          if (req.accepts('html')) {
-            const title = statusCode + ': ' + statusText
-            return nextApp.render(req, res, '/error', await pageOptions(req, {
-              title,
-              props: {
-                title,
-                error: errorDetail,
-                url: req.url,
-                eventId: res.sentry
-              }
-            }))
-          }
-
-          if (req.accepts('json')) {
-            res.status(statusCode).send({
-              title: statusCode + ': ' + statusText,
-              error: errorDetail,
-              url: req.url
-            })
-          }
-        }
-      })
-
-      // Fall-back on other next.js assets.
-      server.get('*', (req, res) => {
-        return handle(req, res)
-      })
-
-      const http = require('http')
-      const httpServer = http.createServer(server)
-      httpServer.setTimeout(10 * 60 * 1000) // 10 * 60 seconds * 1000 msecs
-      httpServer.listen(local.internal_port, () => {
-        log.info('**** STARTING SERVER ****')
-        log.info('Server Running on port: ' + local.internal_port)
-      })
-    }).catch((err) => {
+    try {
+      await CMSPages(server)
+    } catch (err) {
       log.error(err)
       Raven.captureException(err)
+    }
+
+    server.use((err, req, res, next) => {
+      if (req.session && req.session.user) {
+        let username = req.session.user.username || req.session.user.display_name
+        let email = req.session.user._json.email || req.session.user.email
+
+        Raven.mergeContext({
+          user: {
+            id: req.session.user.id,
+            username,
+            email
+          }
+        })
+      }
+      next(err)
+    })
+
+    server.use(Raven.errorHandler())
+
+    if (process.env.NODE_ENV !== 'production') {
+      server.get('/errortest', (req, res) => {
+        throw new Error('TEST')
+      })
+    }
+
+    server.use(async (err, req, res, next) => {
+      // bypass for dynamically created tile URLs
+      if (req.url.includes('/api/tiles/')) {
+        next()
+      } else {
+        // curl https://localhost:4000/error/403 -vk
+        // curl https://localhost:4000/error/403 -vkH "Accept: application/json"
+        const statusCode = err.status || 500
+        let statusText = ''
+        const errorDetail = (process.env.NODE_ENV === 'production') ? req.__('Looks like we have a problem. A message was automatically sent to our team.') : err.stack
+
+        switch (statusCode) {
+          case 400:
+            statusText = 'Bad Request'
+            break
+          case 401:
+            statusText = 'Unauthorized'
+            break
+          case 403:
+            statusText = 'Forbidden'
+            break
+          case 500:
+            statusText = 'Internal Server Error'
+            break
+        }
+
+        log.error(err.stack)
+
+        if (req.accepts('html')) {
+          const title = statusCode + ': ' + statusText
+          return nextApp.render(req, res, '/error', await pageOptions(req, {
+            title,
+            props: {
+              title,
+              error: errorDetail,
+              url: req.url,
+              eventId: res.sentry
+            }
+          }))
+        }
+
+        if (req.accepts('json')) {
+          res.status(statusCode).send({
+            title: statusCode + ': ' + statusText,
+            error: errorDetail,
+            url: req.url
+          })
+        }
+      }
+    })
+
+    // Fall-back on other next.js assets.
+    server.get('*', (req, res) => {
+      return handle(req, res)
+    })
+
+    const http = require('http')
+    const httpServer = http.createServer(server)
+    httpServer.setTimeout(10 * 60 * 1000) // 10 * 60 seconds * 1000 msecs
+    httpServer.listen(local.internal_port, () => {
+      log.info('**** STARTING SERVER ****')
+      log.info('Server Running on port: ' + local.internal_port)
     })
   }).catch((err) => {
     console.error(err)

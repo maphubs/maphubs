@@ -2,8 +2,8 @@ import Locales from '../../services/locales'
 const Map = require('../../models/map')
 const User = require('../../models/user')
 const libxml = require('libxmljs')
-const debug = require('../../services/debug')('oembed')
-const urlUtil = require('../../services/url-util')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('oembed')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const apiError = require('../../services/error-response').apiError
 
 module.exports = function (app) {

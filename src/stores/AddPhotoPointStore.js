@@ -6,7 +6,7 @@ import type {Layer} from '../types/layer'
 import _bbox from '@turf/bbox'
 
 const request = require('superagent')
-const debug = require('../services/debug')('stores/hub-store')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('stores/hub-store')
 const checkClientError = require('../services/client-error-response').checkClientError
 const dms2dec = require('dms2dec')
 const moment = require('moment')

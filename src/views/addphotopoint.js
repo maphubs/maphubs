@@ -21,7 +21,7 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {AddPhotoPointStoreState} from '../stores/AddPhotoPointStore'
 
-const debug = require('../services/debug')('addphotopoint')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('addphotopoint')
 
 type Props = {
   layer: Object,

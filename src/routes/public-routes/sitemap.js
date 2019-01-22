@@ -1,8 +1,8 @@
 const local = require('../../local')
-const urlUtil = require('../../services/url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const siteMapUtil = require('../../services/sitemap-util')
 const Promise = require('bluebird')
-// var log = require('@bit/kriscarle.maphubs-utils.services.log');
+// var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
 const nextError = require('../../services/error-response').nextError
 const knex = require('../../connection')
 

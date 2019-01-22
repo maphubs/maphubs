@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import MapHubsComponent from './MapHubsComponent'
-import DebugService from '../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import type {Element} from 'react'
 const debug = DebugService('react-error-boundary')
 

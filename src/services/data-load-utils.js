@@ -4,9 +4,9 @@ import _buffer from '@turf/buffer'
 import _bbox from '@turf/bbox'
 const knex = require('../connection')
 const GJV = require('geojson-validation')
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 const local = require('../local')
-const debug = require('./debug')('data-load-utils')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('data-load-utils')
 const fs = require('fs')
 const LayerViews = require('./layer-views')
 const Promise = require('bluebird')

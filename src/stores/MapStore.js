@@ -3,7 +3,7 @@ import MapStyles from '../components/Map/Styles'
 import Reflux from 'reflux'
 import Actions from '../actions/MapActions'
 import type {Layer} from '../types/layer'
-const debug = require('../services/debug')('stores/map-store')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('stores/map-store')
 const findIndex = require('lodash.findindex')
 
 export type MapStoreState = {

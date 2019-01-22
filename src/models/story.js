@@ -2,7 +2,7 @@
 const knex = require('../connection')
 const Promise = require('bluebird')
 const Group = require('./group')
-const debug = require('../services/debug')('model/story')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('model/story')
 
 module.exports = {
 

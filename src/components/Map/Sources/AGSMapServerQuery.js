@@ -2,7 +2,7 @@
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
 
 import TerraformerGL from '../../../services/terraformerGL'
-const debug = require('../../../services/debug')('AGSFeatureServerQuery')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('AGSFeatureServerQuery')
 
 const AGSMapServerQuery = {
   load (key: string, source: GLSource, mapComponent: any) {

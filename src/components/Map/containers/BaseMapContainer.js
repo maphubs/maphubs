@@ -7,7 +7,7 @@ import _intersect from '@turf/intersect'
 import _debounce from 'lodash.debounce'
 import _distance from '@turf/distance'
 import _find from 'lodash.find'
-const debug = require('../../../services/debug')('BaseMapContainer')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('BaseMapContainer')
 const request = require('superagent')
 
 const defaultBaseMapOptions = require('../BaseMaps/base-map-options.json')

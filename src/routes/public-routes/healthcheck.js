@@ -1,6 +1,6 @@
 // @flow
 const knex = require('../../connection')
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 module.exports = function (app: any) {
   app.get('/healthcheck', (req, res) => {
     if (knex) {

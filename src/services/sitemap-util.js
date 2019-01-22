@@ -5,9 +5,9 @@ const Hub = require('../models/hub')
 const Story = require('../models/story')
 const Map = require('../models/map')
 const Group = require('../models/group')
-const urlUtil = require('./url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const Promise = require('bluebird')
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 
 module.exports = {
 

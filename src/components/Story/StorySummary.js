@@ -4,7 +4,7 @@ import slugify from 'slugify'
 import StoryHeader from './StoryHeader'
 import MapHubsComponent from '../../components/MapHubsComponent'
 import ShareButtons from '../../components/ShareButtons'
-import urlUtil from '../../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 
 type Props = {|
   story: Object,

@@ -1,6 +1,6 @@
 // @flow
 const knex = require('../connection')
-const debug = require('../services/debug')('model/image')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('model/image')
 const ImageUtils = require('../services/image-utils')
 const Promise = require('bluebird')
 

@@ -6,7 +6,7 @@ import Polygon from './polygon'
 import type {Layer} from '../../../types/layer'
 import type {GLStyle, GLSource} from '../../../types/mapbox-gl-style'
 import _forEachRight from 'lodash.foreachright'
-import DebugService from '../../../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('MapStyles/style')
 
 export default {

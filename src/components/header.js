@@ -8,7 +8,7 @@ import Notification from '../components/Notification'
 import Message from '../components/message'
 import MessageActions from '../actions/MessageActions'
 import Confirmation from '../components/confirmation'
-// var debug = require('../services/debug')('header');
+// var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('header');
 import LocaleChooser from './LocaleChooser'
 import _isequal from 'lodash.isequal'
 import type {LocaleStoreState} from '../stores/LocaleStore'

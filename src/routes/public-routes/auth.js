@@ -1,7 +1,7 @@
 // @flow
 const passport = require('passport')
 const local = require('../../local')
-// var log = require('@bit/kriscarle.maphubs-utils.services.log');
+// var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
 const urlencode = require('urlencode')
 const pageOptions = require('../../services/page-options-helper')
 

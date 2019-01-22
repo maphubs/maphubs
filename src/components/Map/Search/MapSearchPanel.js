@@ -6,7 +6,7 @@ import Close from '@material-ui/icons/Close'
 import Drawer from 'rc-drawer'
 import 'rc-drawer/assets/index.css'
 import MapToolButton from '../MapToolButton'
-import DebugService from '../../../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('MapSearchPanel')
 const TabPane = Tabs.TabPane
 const Search = Input.Search

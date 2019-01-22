@@ -8,7 +8,7 @@ import Shortid from 'shortid'
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
 import urlUtil from '../../../services/url-util'
 import GJV from 'geojson-validation'
-import DebugService from '../../../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('MapHubsSource')
 
 GJV.define('Position', (position: Array<number>) => {

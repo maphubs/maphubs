@@ -4,7 +4,7 @@ import Actions from '../actions/HubActions'
 import type {Layer} from '../types/layer'
 
 const request = require('superagent')
-const debug = require('../services/debug')('stores/hub-store')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('stores/hub-store')
 const checkClientError = require('../services/client-error-response').checkClientError
 
 export type Hub = {

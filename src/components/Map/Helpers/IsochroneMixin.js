@@ -3,7 +3,7 @@
 import shortid from 'shortid'
 import request from 'superagent'
 import type {GeoJSONObject} from 'geojson-flow'
-import DebugService from '../../../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('isochrone-mixin')
 
 export default {

@@ -2,7 +2,7 @@
 import slugify from 'slugify'
 import Locales from '../../services/locales'
 const Layer = require('../../models/layer')
-const urlUtil = require('../../services/url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 
 const apiError = require('../../services/error-response').apiError
 const manetCheck = require('../../services/manet-check')

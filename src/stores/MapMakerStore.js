@@ -4,12 +4,12 @@ import Reflux from 'reflux'
 import Actions from '../actions/MapMakerActions'
 import type {Layer} from '../types/layer'
 const request = require('superagent')
-const debug = require('../services/debug')('stores/MapMakerStore')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('stores/MapMakerStore')
 const _findIndex = require('lodash.findindex')
 const _reject = require('lodash.reject')
 const _find = require('lodash.find')
 // var $ = require('jquery');
-// var urlUtil = require('../services/url-util');
+// var urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util');
 const checkClientError = require('../services/client-error-response').checkClientError
 
 export type MapMakerStoreState = {

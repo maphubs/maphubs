@@ -1,11 +1,11 @@
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 const Raven = require('raven')
 
 const Page = require('../models/page')
 const User = require('../models/user')
 const Group = require('../models/group')
 const Admin = require('../models/admin')
-const urlUtil = require('./url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 
 const version = require('../../version.json').version
 

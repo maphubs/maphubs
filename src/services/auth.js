@@ -7,7 +7,7 @@ const User = require('../models/user')
 const Admin = require('../models/admin')
 const Auth0Helper = require('../services/auth0-helper')
 const Promise = require('bluebird')
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 const shortid = require('shortid')
 
 const saveMapHubsIDToAuth0 = async function (profile, maphubs_user_id) {

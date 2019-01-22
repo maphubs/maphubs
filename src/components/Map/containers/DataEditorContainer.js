@@ -3,7 +3,7 @@ import type {Layer} from '../../../types/layer'
 import type {GeoJSONObject} from 'geojson-flow'
 import {Container} from 'unstated'
 import request from 'superagent'
-import Debug from '../../../services/debug'
+import Debug from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import _assignIn from 'lodash.assignin'
 import _forEachRight from 'lodash.foreachright'
 const checkClientError = require('../../../services/client-error-response').checkClientError

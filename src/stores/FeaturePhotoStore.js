@@ -1,7 +1,7 @@
 import Reflux from 'reflux'
 import Actions from '../actions/FeaturePhotoActions'
 const request = require('superagent')
-const debug = require('../services/debug')('stores/hub-store')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('stores/hub-store')
 const checkClientError = require('../services/client-error-response').checkClientError
 
 export type FeaturePhotoStoreState = {

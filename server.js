@@ -9,9 +9,10 @@ let babelConfig = {
     '@babel/preset-flow'
   ],
   plugins: [
-    '@babel/plugin-proposal-export-default-from'
+    '@babel/plugin-proposal-export-default-from',
+    '@babel/plugin-transform-runtime'
   ],
-  ignore: [/assets.*|node_modules\/(?!(medium-editor|mapbox-gl)).*/]
+  ignore: [/assets.*|node_modules\/(?!(medium-editor|mapbox-gl|@bit\/kriscarle.maphubs-utils.maphubs-utils.importers)).*/]
 }
 
 require('@babel/register')(babelConfig)

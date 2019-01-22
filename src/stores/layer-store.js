@@ -11,7 +11,7 @@ import {OrderedSet} from 'immutable'
 import MapStyles from '../components/Map/Styles'
 import request from 'superagent'
 import {checkClientError} from '../services/client-error-response'
-import DebugService from '../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('layer-store')
 
 export type LayerStoreState = {

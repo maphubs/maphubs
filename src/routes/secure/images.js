@@ -1,10 +1,10 @@
 // @flow
 const Image = require('../../models/image')
-const debug = require('../../services/debug')('routes/images')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/images')
 const apiError = require('../../services/error-response').apiError
 const nextError = require('../../services/error-response').nextError
 const imageUtils = require('../../services/image-utils')
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 
 module.exports = function (app: any) {
   app.get('/image/:id.*', (req, res, next) => {

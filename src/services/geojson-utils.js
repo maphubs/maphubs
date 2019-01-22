@@ -1,5 +1,5 @@
 
-// var debug = require('./debug')('geojson-utils');
+// var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('geojson-utils');
 module.exports = {
 
   convertTagsToProps (features) {

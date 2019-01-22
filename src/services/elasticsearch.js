@@ -1,7 +1,7 @@
 // @flow
 const elasticsearch = require('elasticsearch')
 const local = require('../local')
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 const Bluebird = require('bluebird')
 
 /**

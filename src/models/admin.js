@@ -1,9 +1,9 @@
 // @flow
 const knex = require('../connection')
-const debug = require('../services/debug')('models/user')
-const Email = require('../services/email-util.js')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('models/user')
+const Email = require('@bit/kriscarle.maphubs-utils.maphubs-utils.email-util')
 const uuid = require('uuid').v4
-const urlUtil = require('../services/url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const local = require('../local')
 
 module.exports = {

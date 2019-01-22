@@ -3,8 +3,8 @@ const Promise = require('bluebird')
 const fs: typeof fs = Promise.promisifyAll(require('fs'))
 const uuid = require('uuid').v4
 const local = require('../local')
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
-const debug = require('./debug')('image-utils')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('image-utils')
 const easyimg = require('easyimage')
 
 module.exports = {

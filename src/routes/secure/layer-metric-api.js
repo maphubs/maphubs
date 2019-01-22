@@ -4,7 +4,7 @@ const Layer = require('../../models/layer')
 const apiError = require('../../services/error-response').apiError
 const apiDataError = require('../../services/error-response').apiDataError
 const turfArea = require('@turf/area')
-const debug = require('../../services/debug')('layer-metrics')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('layer-metrics')
 
 module.exports = function (app: any) {
   app.post('/metricapi/', async (req, res) => {

@@ -3,7 +3,7 @@ import type {Layer} from '../../../types/layer'
 import theme from '@mapbox/mapbox-gl-draw/src/lib/theme'
 import 'jquery'
 
-const debug = require('../../../services/debug')('Map/DataEditorMixin')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('Map/DataEditorMixin')
 
 let MapboxDraw = {}
 if (typeof window !== 'undefined') {

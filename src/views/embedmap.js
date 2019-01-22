@@ -14,7 +14,7 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import {Tooltip} from 'react-tippy'
 
-const urlUtil = require('../services/url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const checkClientError = require('../services/client-error-response').checkClientError
 
 type Props = {

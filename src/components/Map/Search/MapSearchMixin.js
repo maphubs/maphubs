@@ -5,7 +5,7 @@ import _buffer from '@turf/buffer'
 import _bbox from '@turf/bbox'
 import type {GLSource, GLLayer} from '../../../types/mapbox-gl-style'
 
-import DebugService from '../../../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('MapSearchMixin')
 
 const uuid = require('uuid').v1

@@ -4,7 +4,7 @@ import {withFormsy} from 'formsy-react'
 import MapHubsComponent from '../MapHubsComponent'
 import {Tooltip} from 'react-tippy'
 import classNames from 'classnames'
-import DebugService from '../../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('Toggle')
 
 type Props = {|

@@ -3,7 +3,7 @@ import _debounce from 'lodash.debounce'
 import MapStyles from '../Styles'
 import type {GLStyle} from '../../../types/mapbox-gl-style'
 import $ from 'jquery'
-import DebugService from '../../../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('MapInteractionMixin')
 
 /**

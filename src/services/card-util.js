@@ -2,7 +2,7 @@
 import slugify from 'slugify'
 import type {Layer} from '../types/layer'
 import type {CardConfig} from '../components/CardCarousel/Card'
-const urlUtil = require('./url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 
 type CardConfigArray = Array<CardConfig>
 

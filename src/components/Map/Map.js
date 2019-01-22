@@ -29,7 +29,7 @@ import type {Layer} from '../../types/layer'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import $ from 'jquery'
-import DebugService from '@bit/kriscarle.maphubs-utils.services.debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('map')
 
 let mapboxgl = {}

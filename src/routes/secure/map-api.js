@@ -3,8 +3,8 @@ import Locales from '../../services/locales'
 const Map = require('../../models/map')
 const Group = require('../../models/group')
 const ScreenshotUtil = require('../../services/screenshot-utils')
-// var debug = require('../../services/debug')('routes/map');
-// var log = require('@bit/kriscarle.maphubs-utils.services.log');
+// var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/map');
+// var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
 const apiError = require('../../services/error-response').apiError
 const apiDataError = require('../../services/error-response').apiDataError
 const notAllowedError = require('../../services/error-response').notAllowedError

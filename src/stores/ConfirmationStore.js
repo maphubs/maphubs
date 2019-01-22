@@ -3,7 +3,7 @@ import Reflux from 'reflux'
 import Actions from '../actions/ConfirmationActions'
 import LocaleActions from '../actions/LocaleActions'
 import Locales from '../services/locales'
-const debug = require('../services/debug')('stores/confirmation-store')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('stores/confirmation-store')
 const $ = require('jquery')
 
 export type ConfirmationStoreState = {

@@ -21,7 +21,7 @@ import UserStore from '../stores/UserStore'
 import cardUtil from '../services/card-util'
 import MapContainer from '../components/Map/containers/MapContainer'
 
-const debug = require('../services/debug')('home')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('home')
 const $ = require('jquery')
 
 type Props = {

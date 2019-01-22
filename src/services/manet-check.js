@@ -1,7 +1,7 @@
 // @flow
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 const local = require('../local')
-const debug = require('../services/debug')('manet-check')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('manet-check')
 const Layer = require('../models/layer')
 const Map = require('../models/map')
 const compare = require('secure-compare')

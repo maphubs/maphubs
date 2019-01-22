@@ -16,7 +16,7 @@ import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import {Tooltip} from 'react-tippy'
-import urlUtil from '../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 
 const checkClientError = require('../services/client-error-response').checkClientError
 

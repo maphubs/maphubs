@@ -18,7 +18,7 @@ import type {HubStoreState} from '../stores/HubStore'
 import UserStore from '../stores/UserStore'
 
 const $ = require('jquery')
-const urlUtil = require('../services/url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 
 type Props = {
    onSubmit: Function,

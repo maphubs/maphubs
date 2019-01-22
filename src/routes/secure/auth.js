@@ -1,6 +1,6 @@
 // @flow
 const local = require('../../local')
-const urlUtil = require('../../services/url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const urlencode = require('urlencode')
 module.exports = function (app: any) {
   app.get('/logout', (req, res) => {

@@ -6,7 +6,7 @@ import { Subscribe } from 'unstated'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
 
 import MapStyles from '../Map/Styles'
-import DebugService from '../../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('editLayerPanel')
 
 type Props = {

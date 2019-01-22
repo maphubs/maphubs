@@ -9,7 +9,7 @@ import type {MapHubsField} from '../../types/maphubs-field'
 
 import request from 'superagent'
 import {checkClientError} from '../../services/client-error-response'
-import DebugService from '../../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import _assignIn from 'lodash.assignin'
 
 const debug = DebugService('EditAttributeModal')

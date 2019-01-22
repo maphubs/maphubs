@@ -22,7 +22,7 @@ import {Tooltip} from 'react-tippy'
 import $ from 'jquery'
 import debounce from 'lodash.debounce'
 import _isequal from 'lodash.isequal'
-import urlUtil from '../../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 
 type Props = {|
   story: Story,

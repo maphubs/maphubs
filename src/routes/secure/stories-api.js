@@ -1,6 +1,6 @@
 // @flow
 const knex = require('../../connection')
-// const debug = require('../../services/debug')('routes/stories');
+// const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/stories');
 const Story = require('../../models/story')
 const Image = require('../../models/image')
 const apiError = require('../../services/error-response').apiError

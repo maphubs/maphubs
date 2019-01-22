@@ -10,7 +10,7 @@ import $ from 'jquery'
 // import Cropper from 'react-cropper';
 
 import EXIF from 'exif-js'
-import DebugService from '../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('ImageCrop')
 
 type Props = {

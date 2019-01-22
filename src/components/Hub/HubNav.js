@@ -8,7 +8,7 @@ import MessageActions from '../../actions/MessageActions'
 import HubActions from '../../actions/HubActions'
 import MapHubsPureComponent from '../../components/MapHubsPureComponent'
 
-import urlUtil from '../../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 
 type Props = {
   hubid: string,

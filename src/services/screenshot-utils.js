@@ -1,10 +1,10 @@
 // @flow
 const request = require('superagent')
-const debug = require('../services/debug')('screenshot-utils')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('screenshot-utils')
 const local = require('../local')
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 const knex = require('../connection')
-const urlUtil = require('../services/url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 
 const screenshotOptions = {
   url: '',

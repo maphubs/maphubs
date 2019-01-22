@@ -2,7 +2,7 @@
 import React from 'react'
 import request from 'superagent'
 import SearchBar from './SearchBar/SearchBar'
-import DebugService from '../services/debug'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('SearchBox')
 
 type Props = {

@@ -1,5 +1,5 @@
 var connection = process.env.DATABASE_URL || require('./local').connection.url;
-var log = require('@bit/kriscarle.maphubs-utils.services.log');
+var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
 var knex = require('knex')({
   client: 'pg',
   connection: connection,

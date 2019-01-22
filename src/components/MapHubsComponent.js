@@ -22,7 +22,7 @@ export default class MapHubsComponent<P, S> extends Reflux.Component<P, S> {
 
   __ = (val: any) => {
     if (typeof val === 'string') {
-      if (this.state.locale) {
+      if (this.state && this.state.locale) {
         return Locales.getLocaleString(this.state.locale, val)
       } else {
         return val

@@ -27,7 +27,7 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
 
-const debug = require('../services/debug')('views/GroupAdmin')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/GroupAdmin')
 
 type Props = {
   group: Group,

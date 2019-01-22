@@ -3,7 +3,7 @@ import React from 'react'
 import {Modal, Switch, Row, message, Alert} from 'antd'
 import {Tooltip} from 'react-tippy'
 import {htmlEncode} from 'js-htmlencode'
-import urlUtil from '../../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 
 type Props = {
   show?: boolean,

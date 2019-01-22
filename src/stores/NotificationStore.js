@@ -1,7 +1,7 @@
 // @flow
 import Reflux from 'reflux'
 import Actions from '../actions/NotificationActions'
-const debug = require('../services/debug')('stores/notification-store')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('stores/notification-store')
 const $ = require('jquery')
 
 export type NotificationStoreState = {

@@ -2,7 +2,7 @@
 import Reflux from 'reflux'
 import Actions from '../actions/LocaleActions'
 const request = require('superagent')
-const debug = require('../services/debug')('stores/local-store')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('stores/local-store')
 const checkClientError = require('../services/client-error-response').checkClientError
 // var _assignIn = require('lodash.assignin');
 

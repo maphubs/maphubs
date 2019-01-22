@@ -4,7 +4,7 @@ import Header from '../components/header'
 import Footer from '../components/footer'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
-import urlUtil from '../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import request from 'superagent'
 import MessageActions from '../actions/MessageActions'
 import NotificationActions from '../actions/NotificationActions'
@@ -21,7 +21,7 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
 
-const debug = require('../services/debug')('views/groups')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/groups')
 const checkClientError = require('../services/client-error-response').checkClientError
 
 type Props = {

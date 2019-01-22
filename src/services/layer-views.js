@@ -2,8 +2,8 @@
 // Note: do not enable flow so we can use this in knex migrations for now without involving babel
 const knex = require('../connection')
 const Promise = require('bluebird')
-const debug = require('./debug')('layer-views')
-const log = require('@bit/kriscarle.maphubs-utils.services.log')
+const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('layer-views')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 
 module.exports = {
 

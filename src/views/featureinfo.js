@@ -30,7 +30,7 @@ import {getLayer} from '../components/Feature/Map/layer-feature'
 
 const TabPane = Tabs.TabPane
 
-const urlUtil = require('../services/url-util')
+const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 
 type Props = {
     feature: Object,

@@ -25,9 +25,11 @@
         "style": true
       }
     ],
-    "@babel/plugin-proposal-export-default-from"
+    "@babel/plugin-proposal-export-default-from",
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-runtime"
   ],
   "ignore": [
-    "/assets.*|node_modules/(?!(medium-editor|mapbox-gl|@google/earthengine)).*/"
+    "/assets.*|node_modules/(?!(medium-editor|mapbox-gl|@google/earthengine|@bit/kriscarle.maphubs-utils.maphubs-utils.importers)).*/"
   ]
 }
