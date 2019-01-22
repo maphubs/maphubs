@@ -31,16 +31,12 @@ type State = {
 }
 
 export default class PresetForm extends MapHubsComponent<Props, State> {
-  props: Props
-
   static defaultProps = {
     showOnMap: true,
     isRequired: false,
     isName: false,
     isDescription: false
   }
-
-  state: State
 
   constructor (props: Props) {
     super(props)

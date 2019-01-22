@@ -72,11 +72,16 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(GroupStore)
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-    Reflux.rehydrate(GroupStore, {group: this.props.group, layers: this.props.layers, hubs: this.props.hubs, members: this.props.members})
+    Reflux.rehydrate(GroupStore, {
+      group: props.group,
+      layers: props.layers,
+      hubs: props.hubs,
+      members: props.members
+    })
   }
 
   enableButton = () => {

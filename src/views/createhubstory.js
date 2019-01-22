@@ -45,12 +45,12 @@ export default class CreateHubStory extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(HubStore)
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-    Reflux.rehydrate(HubStore, {hub: this.props.hub})
-    HubActions.loadHub(this.props.hub)
+    Reflux.rehydrate(HubStore, {hub: props.hub})
+    HubActions.loadHub(props.hub)
   }
 
   render () {

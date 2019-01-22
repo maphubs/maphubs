@@ -22,8 +22,6 @@ type State = {
 } & LocaleStoreState & LayerStoreState
 
 export default class AGOLSource extends MapHubsComponent<Props, State> {
-  props: Props
-
   state: State = {
     canSubmit: false,
     selectedOption: 'mapserverquery'

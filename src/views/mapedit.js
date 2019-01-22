@@ -46,7 +46,7 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
 
   constructor (props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }

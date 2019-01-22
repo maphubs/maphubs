@@ -26,19 +26,13 @@ type Props = {|
   waitForTileInit: boolean
 |}
 
-type DefaultProps = {
-  waitForTileInit: boolean
-}
-
 type State = {
   rasterOpacity: number,
   saving: boolean
 } & LayerStoreState & LocaleStoreState
 
 export default class LayerStyle extends MapHubsComponent<Props, State> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     waitForTileInit: false // wait for tile service before showing map
   }
 

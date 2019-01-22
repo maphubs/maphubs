@@ -25,10 +25,6 @@ type Props = {
   containers: Array<Object>
 }
 
-type DefaultProps = {
-  dataLoadingMsg: string
-}
-
 type Column = {
   key: string,
   name: string,
@@ -61,7 +57,7 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
   CheckboxEditor: any
   DropDownFormatter: any
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     dataLoadingMsg: 'Data Loading'
   }
 

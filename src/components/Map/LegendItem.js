@@ -10,14 +10,8 @@ type Props = {
   t: Function
 }
 
-type DefaultProps = {
-  style: Object
-}
-
 export default class LegendItem extends React.Component<Props, void> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     style: {padding: '2px', width: '100%', margin: 'auto', position: 'relative', minHeight: '25px', borderBottom: '1px solid #F1F1F1'}
   }
 

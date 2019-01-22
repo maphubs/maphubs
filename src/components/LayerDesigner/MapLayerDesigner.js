@@ -16,19 +16,12 @@ type Props = {|
   showAdvanced: boolean
 |}
 
-type DefaultProps = {
-  id: string,
-  showAdvanced: boolean
-}
-
 type State = {
   rasterOpacity: number
 }
 
 export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     id: 'map-layer-designer',
     showAdvanced: true
   }

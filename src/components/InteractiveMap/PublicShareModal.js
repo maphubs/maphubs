@@ -22,7 +22,7 @@ export default class PublicShareModal extends MapHubsComponent<Props, State> {
     super(props)
 
     this.state = {
-      sharing: !!this.props.share_id
+      sharing: !!props.share_id
     }
   }
 

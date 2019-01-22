@@ -88,10 +88,10 @@ class MapMaker extends MapHubsComponent<Props, State> {
     this.stores.push(MapMakerStore)
     this.stores.push(UserStore)
     Reflux.rehydrate(MapMakerStore, {
-      position: this.props.position,
-      title: this.props.title,
-      map_id: this.props.map_id,
-      owned_by_group_id: this.props.owned_by_group_id
+      position: props.position,
+      title: props.title,
+      map_id: props.map_id,
+      owned_by_group_id: props.owned_by_group_id
     })
   }
 

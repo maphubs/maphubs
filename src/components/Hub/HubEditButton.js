@@ -10,18 +10,12 @@ type Props = {
   style: Object
 }
 
-type DefaultProps = {
-  style: Object
-}
-
 type State = {
 
 }
 
 export default class HubEditButton extends MapHubsComponent<Props, State> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     style: {}
   }
 

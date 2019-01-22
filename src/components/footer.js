@@ -11,16 +11,8 @@ type Props = {
   links: Array<Object>
 }
 
-type DefaultProps = {
-  showPoweredByMapHubs: boolean,
-  showMapForEnvironmentMoabiLogo: boolean,
-  showContactUs: boolean,
-}
-
 export default class Footer extends MapHubsComponent<Props, void> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     showPoweredByMapHubs: true,
     showMapForEnvironmentMoabiLogo: false,
     showContactUs: true,

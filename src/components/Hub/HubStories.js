@@ -12,18 +12,10 @@ type Props = {|
   editing: boolean
 |}
 
-type DefaultProps = {
-  stories: Array<Object>,
-  limit: number,
-  editing: boolean
-}
-
 type State = {}
 
 export default class HubStories extends MapHubsComponent<Props, State> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     stories: [],
     limit: 0,
     editing: false

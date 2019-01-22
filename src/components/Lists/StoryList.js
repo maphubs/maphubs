@@ -9,12 +9,8 @@ type Props = {|
   showTitle: boolean
 |}
 
-type DefaultProps = {
-  showTitle: boolean
-}
-
 export default class StoryList extends MapHubsComponent<Props, void> {
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     showTitle: true
   }
 

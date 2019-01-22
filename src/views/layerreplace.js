@@ -52,11 +52,11 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(LayerStore)
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-    Reflux.rehydrate(LayerStore, this.props.layer)
+    Reflux.rehydrate(LayerStore, props.layer)
     let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}

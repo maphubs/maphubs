@@ -10,12 +10,8 @@ type Props = {|
   showTitle: boolean
 |}
 
-type DefaultProps = {
-  showTitle: boolean
-}
-
 export default class LayerList extends MapHubsComponent<Props, void> {
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     showTitle: true
   }
 

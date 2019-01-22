@@ -120,11 +120,11 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(LayerNotesStore)
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-    Reflux.rehydrate(LayerNotesStore, {notes: this.props.notes})
+    Reflux.rehydrate(LayerNotesStore, {notes: props.notes})
     let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}

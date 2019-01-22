@@ -30,8 +30,8 @@ export default class DataCollectionForm extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     let submitText = ''
-    if (this.props.submitText) {
-      submitText = this.props.submitText
+    if (props.submitText) {
+      submitText = props.submitText
     } else if (this.state && this.state.locale) {
       submitText = Locales.getLocaleString(this.state.locale, 'Submit')
     } else {

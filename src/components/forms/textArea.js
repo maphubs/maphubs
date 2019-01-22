@@ -38,11 +38,11 @@ class TextArea extends MapHubsComponent<Props, State> {
     dataDelay: 100
   }
 
-  constructor (props) {
+  constructor (props: Props) {
     super(props)
     this.state = {
-      value: this.props.value,
-      charCount: this.props.value ? this.props.value.length : 0
+      value: props.value,
+      charCount: props.value ? props.value.length : 0
     }
   }
 

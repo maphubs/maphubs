@@ -7,18 +7,12 @@ type Props = {|
   onChange: Function
 |}
 
-type DefaultProps = {
-  defaultValue: string
-}
-
 type State = {
   value: string
 }
 
 export default class CardFilter extends MapHubsComponent<Props, State> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     defaultValue: 'featured'
   }
 

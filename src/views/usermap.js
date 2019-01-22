@@ -81,7 +81,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(UserStore)
     this.stores.push(MapMakerStore)
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
@@ -90,8 +90,8 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-    if (this.props.map.share_id) {
-      this.state.share_id = this.props.map.share_id
+    if (props.map.share_id) {
+      this.state.share_id = props.map.share_id
     }
   }
 

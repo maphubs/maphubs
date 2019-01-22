@@ -90,7 +90,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
       style: props.style,
       position: props.position,
       basemap: props.basemap,
-      layers: this.props.layers
+      layers: props.layers
     }
   }
 

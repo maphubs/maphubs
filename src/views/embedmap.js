@@ -67,7 +67,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
 
   constructor (props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
 
     let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
@@ -79,20 +79,20 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
 
-    const glStyle = this.props.map.style
-    const layers = this.props.layers
-    if (this.props.geoJSONUrl) {
+    const glStyle = props.map.style
+    const layers = props.layers
+    if (props.geoJSONUrl) {
       glStyle.sources['geojson-overlay'] = {
         type: 'geojson',
-        data: this.props.geoJSONUrl
+        data: props.geoJSONUrl
       }
 
-      glStyle.layers.push(this.getStyleLayer())
-      layers.push(this.getLayerConfig())
+      glStyle.layers.push(this.getStyleLayer(props))
+      layers.push(this.getLayerConfig(props))
     }
 
     this.state = {
-      interactive: this.props.interactive,
+      interactive: props.interactive,
       bounds: null,
       layers,
       glStyle
@@ -123,7 +123,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
       })
   }
 
-  getStyleLayer = () => {
+  getStyleLayer = (props: Props) => {
     return {
       'id': 'omh-data-point-geojson-overlay',
       'type': 'circle',
@@ -136,13 +136,13 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
           'size': '32',
           'width': 32,
           'height': 32,
-          'shapeFill': this.props.markerColor,
+          'shapeFill': props.markerColor,
           'shapeFillOpacity': 0.75,
           'shapeStroke': '#FFFFFF',
           'shapeStrokeWidth': 2,
           'inverted': false,
           'enabled': true,
-          'dataUrl': this.props.geoJSONUrl,
+          'dataUrl': props.geoJSONUrl,
           'interactive': true
         }
       },
@@ -153,12 +153,12 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
         'Point'
       ],
       'paint': {
-        'circle-color': this.props.markerColor
+        'circle-color': props.markerColor
       }
     }
   }
 
-  getLayerConfig = (): Layer => {
+  getLayerConfig = (props: Props): Layer => {
     const emptyLocalizedString: LocalizedString = {en: '', fr: '', es: '', it: ''}
 
     const style: GLStyle = {
@@ -166,16 +166,16 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
       sources: {
         'geojson-overlay': {
           type: 'geojson',
-          data: this.props.geoJSONUrl
+          data: props.geoJSONUrl
         }
       },
-      layers: [this.getStyleLayer()]
+      layers: [this.getStyleLayer(props)]
     }
 
     return {
       active: true,
       layer_id: -2,
-      name: this.props.overlayName,
+      name: props.overlayName,
       source: emptyLocalizedString,
       description: emptyLocalizedString,
       owned_by_group_id: '',

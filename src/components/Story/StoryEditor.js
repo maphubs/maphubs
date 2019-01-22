@@ -60,7 +60,11 @@ export default class StoryEditor extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(StoryStore)
-    Reflux.rehydrate(StoryStore, {story: this.props.story, storyType: this.props.storyType, hub_id: this.props.hub_id})
+    Reflux.rehydrate(StoryStore, {
+      story: props.story,
+      storyType: props.storyType,
+      hub_id: props.hub_id
+    })
   }
 
   componentDidMount () {

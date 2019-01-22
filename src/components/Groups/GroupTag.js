@@ -16,22 +16,12 @@ type Props = {|
   className: string
 |}
 
-type DefaultProps = {
-  size: number,
-  chipWidth: number,
-  fontSize: number,
-  showTooltip: boolean,
-  className: string
-}
-
 type State = {
 
 }
 
 export default class GroupTag extends MapHubsComponent<Props, State> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     size: 20,
     chipWidth: 100,
     fontSize: 10,

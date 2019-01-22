@@ -28,13 +28,9 @@ type State = {
 }
 
 export default class MapSearchPanel extends React.Component<Props, State> {
-  props: Props
-
   static defaultProps = {
     show: false
   }
-
-  state: State
 
   constructor (props: Props) {
     super(props)

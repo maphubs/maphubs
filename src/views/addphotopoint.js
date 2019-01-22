@@ -56,8 +56,8 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(AddPhotoPointStore)
 
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
-    Reflux.rehydrate(AddPhotoPointStore, {layer: this.props.layer})
+    Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
+    Reflux.rehydrate(AddPhotoPointStore, {layer: props.layer})
     let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}

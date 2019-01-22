@@ -74,7 +74,7 @@ export default class Home extends MapHubsComponent<Props, State> {
 
   constructor (props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
@@ -85,25 +85,25 @@ export default class Home extends MapHubsComponent<Props, State> {
       groupMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
       layerMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
 
-      featuredStoryCards: _shuffle(this.props.featuredStories.map(cardUtil.getStoryCard)),
-      popularStoryCards: _shuffle(this.props.popularStories.map(cardUtil.getStoryCard)),
-      recentStoryCards: _shuffle(this.props.recentStories.map(cardUtil.getStoryCard)),
+      featuredStoryCards: _shuffle(props.featuredStories.map(cardUtil.getStoryCard)),
+      popularStoryCards: _shuffle(props.popularStories.map(cardUtil.getStoryCard)),
+      recentStoryCards: _shuffle(props.recentStories.map(cardUtil.getStoryCard)),
 
-      featuredMapCards: _shuffle(this.props.featuredMaps.map(cardUtil.getMapCard)),
-      popularMapCards: _shuffle(this.props.popularMaps.map(cardUtil.getMapCard)),
-      recentMapCards: _shuffle(this.props.recentMaps.map(cardUtil.getMapCard)),
+      featuredMapCards: _shuffle(props.featuredMaps.map(cardUtil.getMapCard)),
+      popularMapCards: _shuffle(props.popularMaps.map(cardUtil.getMapCard)),
+      recentMapCards: _shuffle(props.recentMaps.map(cardUtil.getMapCard)),
 
-      featuredHubCards: _shuffle(this.props.featuredHubs.map(cardUtil.getHubCard)),
-      popularHubCards: _shuffle(this.props.popularHubs.map(cardUtil.getHubCard)),
-      recentHubCards: _shuffle(this.props.recentHubs.map(cardUtil.getHubCard)),
+      featuredHubCards: _shuffle(props.featuredHubs.map(cardUtil.getHubCard)),
+      popularHubCards: _shuffle(props.popularHubs.map(cardUtil.getHubCard)),
+      recentHubCards: _shuffle(props.recentHubs.map(cardUtil.getHubCard)),
 
-      featuredGroupCards: _shuffle(this.props.featuredGroups.map(cardUtil.getGroupCard)),
-      popularGroupCards: _shuffle(this.props.popularGroups.map(cardUtil.getGroupCard)),
-      recentGroupCards: _shuffle(this.props.recentGroups.map(cardUtil.getGroupCard)),
+      featuredGroupCards: _shuffle(props.featuredGroups.map(cardUtil.getGroupCard)),
+      popularGroupCards: _shuffle(props.popularGroups.map(cardUtil.getGroupCard)),
+      recentGroupCards: _shuffle(props.recentGroups.map(cardUtil.getGroupCard)),
 
-      featuredLayerCards: _shuffle(this.props.featuredLayers.map(cardUtil.getLayerCard)),
-      popularLayerCards: _shuffle(this.props.popularLayers.map(cardUtil.getLayerCard)),
-      recentLayerCards: _shuffle(this.props.recentLayers.map(cardUtil.getLayerCard))
+      featuredLayerCards: _shuffle(props.featuredLayers.map(cardUtil.getLayerCard)),
+      popularLayerCards: _shuffle(props.popularLayers.map(cardUtil.getLayerCard)),
+      recentLayerCards: _shuffle(props.recentLayers.map(cardUtil.getLayerCard))
     }
   }
 

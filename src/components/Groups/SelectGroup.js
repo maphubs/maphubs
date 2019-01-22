@@ -23,8 +23,6 @@ type State = {
 }
 
 export default class SelectGroup extends MapHubsComponent<Props, State> {
-  props: Props
-
   static defaultProps = {
     canChangeGroup: true,
     private: true,
@@ -34,8 +32,8 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.state = {
-      group_id: this.props.group_id,
-      private: this.props.private
+      group_id: props.group_id,
+      private: props.private
     }
   }
 

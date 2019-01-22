@@ -30,15 +30,6 @@ type Props = {|
   getErrorMessage: Function
 |}
 
-type DefaultProps = {
-  startEmpty: boolean,
-  emptyText: string,
-  name: string,
-  id: string,
-  options: Array<Object>,
-  dataDelay: number
-}
-
 type State = {
   note: string
 }
@@ -46,7 +37,7 @@ type State = {
 class Select extends MapHubsComponent<Props, State> {
   props: Props
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     startEmpty: true,
     emptyText: 'Choose an Option',
     name: 'select-box',

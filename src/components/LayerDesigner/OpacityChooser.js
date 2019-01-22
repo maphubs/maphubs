@@ -19,18 +19,12 @@ type Props = {|
   showAdvanced: boolean
 |}
 
-type DefaultProps = {
-  value: number
-}
-
 type State = {
   opacity: number
 }
 
 export default class OpacityChooser extends MapHubsComponent<Props, State> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     value: 100
   }
 

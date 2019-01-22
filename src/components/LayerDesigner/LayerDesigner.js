@@ -27,20 +27,13 @@ type Props = {|
   showAdvanced: boolean
 |}
 
-type DefaultProps = {
-  alpha: number,
-  showAdvanced: boolean
-}
-
 type State = {
   color: string,
   markers?: Object
 }
 
 export default class LayerDesigner extends MapHubsComponent<Props, State> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     alpha: 0.5,
     showAdvanced: true
   }

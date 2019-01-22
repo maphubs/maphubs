@@ -19,10 +19,6 @@ type Props = {|
   labels: Labels
 |}
 
-type DefaultProps = {
-  labels: Labels
-}
-
 type State = {
   style: Object,
   enabled: boolean,
@@ -30,16 +26,12 @@ type State = {
 }
 
 export default class LabelSettings extends MapHubsComponent<Props, State> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     labels: {
       enabled: false,
       field: ''
     }
   }
-
-  state: State
 
   constructor (props: Props) {
     super(props)

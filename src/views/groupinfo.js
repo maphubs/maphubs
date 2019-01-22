@@ -53,14 +53,14 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
 
   constructor (props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
     this.state = {
-      mapCards: this.props.maps.map(cardUtil.getMapCard),
-      layerCards: this.props.layers.map(cardUtil.getLayerCard),
-      hubCards: this.props.hubs.map(cardUtil.getHubCard)
+      mapCards: props.maps.map(cardUtil.getMapCard),
+      layerCards: props.layers.map(cardUtil.getLayerCard),
+      hubCards: props.hubs.map(cardUtil.getHubCard)
     }
   }
 

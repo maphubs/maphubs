@@ -85,8 +85,6 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     }
   }
 
-  props: Props
-
   static defaultProps = {
     featuredLayers: [],
     featuredGroups: [],
@@ -107,7 +105,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
 
   constructor (props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
@@ -119,21 +117,21 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
 
     this.state = {
-      featuredLayersCards: _shuffle(this.props.featuredLayers.map(cardUtil.getLayerCard)),
-      featuredGroupsCards: _shuffle(this.props.featuredGroups.map(cardUtil.getGroupCard)),
-      featuredHubsCards: _shuffle(this.props.featuredHubs.map(cardUtil.getHubCard)),
-      featuredMapsCards: _shuffle(this.props.featuredMaps.map(cardUtil.getMapCard)),
-      featuredStoriesCards: _shuffle(this.props.featuredStories.map(cardUtil.getStoryCard)),
-      popularLayersCards: _shuffle(this.props.popularLayers.map(cardUtil.getLayerCard)),
-      popularGroupsCards: _shuffle(this.props.popularGroups.map(cardUtil.getGroupCard)),
-      popularHubsCards: _shuffle(this.props.popularHubs.map(cardUtil.getHubCard)),
-      popularMapsCards: _shuffle(this.props.popularMaps.map(cardUtil.getMapCard)),
-      popularStoriesCards: _shuffle(this.props.popularStories.map(cardUtil.getStoryCard)),
-      recentLayersCards: _shuffle(this.props.recentLayers.map(cardUtil.getLayerCard)),
-      recentGroupsCards: _shuffle(this.props.recentGroups.map(cardUtil.getGroupCard)),
-      recentHubsCards: _shuffle(this.props.recentHubs.map(cardUtil.getHubCard)),
-      recentMapsCards: _shuffle(this.props.recentMaps.map(cardUtil.getMapCard)),
-      recentStoriesCards: _shuffle(this.props.recentStories.map(cardUtil.getStoryCard)),
+      featuredLayersCards: _shuffle(props.featuredLayers.map(cardUtil.getLayerCard)),
+      featuredGroupsCards: _shuffle(props.featuredGroups.map(cardUtil.getGroupCard)),
+      featuredHubsCards: _shuffle(props.featuredHubs.map(cardUtil.getHubCard)),
+      featuredMapsCards: _shuffle(props.featuredMaps.map(cardUtil.getMapCard)),
+      featuredStoriesCards: _shuffle(props.featuredStories.map(cardUtil.getStoryCard)),
+      popularLayersCards: _shuffle(props.popularLayers.map(cardUtil.getLayerCard)),
+      popularGroupsCards: _shuffle(props.popularGroups.map(cardUtil.getGroupCard)),
+      popularHubsCards: _shuffle(props.popularHubs.map(cardUtil.getHubCard)),
+      popularMapsCards: _shuffle(props.popularMaps.map(cardUtil.getMapCard)),
+      popularStoriesCards: _shuffle(props.popularStories.map(cardUtil.getStoryCard)),
+      recentLayersCards: _shuffle(props.recentLayers.map(cardUtil.getLayerCard)),
+      recentGroupsCards: _shuffle(props.recentGroups.map(cardUtil.getGroupCard)),
+      recentHubsCards: _shuffle(props.recentHubs.map(cardUtil.getHubCard)),
+      recentMapsCards: _shuffle(props.recentMaps.map(cardUtil.getMapCard)),
+      recentStoriesCards: _shuffle(props.recentStories.map(cardUtil.getStoryCard)),
       loaded: false
     }
   }

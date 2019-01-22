@@ -61,7 +61,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(LayerStore)
 
-    Reflux.rehydrate(LocaleStore, {locale: this.props.locale, _csrf: this.props._csrf})
+    Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
 
     let baseMapContainerInit = {}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
@@ -74,7 +74,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
 
-    Reflux.rehydrate(LayerStore, this.props.layer)
+    Reflux.rehydrate(LayerStore, props.layer)
   }
 
   componentDidMount () {
