@@ -8,8 +8,7 @@ import FRContainer from './containers/FRContainer'
 import MapContainer from '../Map/containers/MapContainer'
 
 type Props = {|
-  onModuleToggle: Function,
-  remainingThreshold?: number
+  onModuleToggle: Function
 |}
 
 type State = {
@@ -36,7 +35,7 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
       )
     }
 
-    const {onModuleToggle, remainingThreshold} = this.props
+    const {onModuleToggle} = this.props
 
     let marks = {
       1: '1km',
@@ -56,7 +55,7 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
       return (
         <Subscribe to={[FRContainer, MapContainer]}>
           {(FRState, MapState) => {
-            const {geoJSON, bufferFeature, isBuffered} = FRState.state
+            const {geoJSON, bufferFeature, isBuffered, FRRemainingThreshold} = FRState.state
             const dimensions = {width: '100%', height: isBuffered ? 'calc(100% - 75px)' : '100%'}
             if (!geoJSON || !geoJSON.features ||
                   geoJSON.features.length === 0
@@ -90,7 +89,7 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
                       style: {width: '100%', height: '100%'}
                     }}
                     dimensions={{width: '100%', height: '100%'}}
-                    remainingThreshold={remainingThreshold || 80}
+                    remainingThreshold={FRRemainingThreshold || 80}
                     geom={geom}
                     onLoad={(config: Object) => {
                       FRState.activateFR(config, MapState.state.map)
