@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.19.8](https://github.com/maphubs/maphubs/tree/v0.19.8) (2019-01-26)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.7...v0.19.8)
+
+**Fixed bugs:**
+
+- legend layer list extends beyond right side of the screen in Firefox [\#508](https://github.com/maphubs/maphubs/issues/508)
+
 ## [v0.19.7](https://github.com/maphubs/maphubs/tree/v0.19.7) (2018-12-20)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.6...v0.19.7)
 
