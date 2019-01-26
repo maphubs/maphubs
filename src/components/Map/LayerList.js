@@ -78,6 +78,7 @@ class LayerList extends React.Component<Props, State> {
         <style jsx global>{`
           .ant-list-item-content {
             width: 100%;
+            overflow: hidden;
           }
         `}
         </style>
