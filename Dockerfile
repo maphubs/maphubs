@@ -14,7 +14,8 @@ WORKDIR /app
 FROM base AS dependencies
 COPY package.json package-lock.json .snyk /app/
 
-RUN npm install --production && \
+RUN npm config set '@bit:registry' https://node.bitsrc.io && \
+    npm install --production && \
     npm install -g snyk && \
     npm run snyk-protect
 
