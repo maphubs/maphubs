@@ -4,7 +4,7 @@ import {Row, Col, Tooltip} from 'antd'
 import Info from '@material-ui/icons/Info'
 import InsertPhoto from '@material-ui/icons/InsertPhoto'
 import Launch from '@material-ui/icons/Launch'
-import urlUtil from '../../../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 
 type Props = {
   layer?: Object,

@@ -1,5 +1,5 @@
 // @flow
-import urlUtil from '../../../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
 
 const RasterSource = {

@@ -6,7 +6,7 @@ import superagent from 'superagent'
 import Promise from 'bluebird'
 import Shortid from 'shortid'
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
-import urlUtil from '../../../services/url-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import GJV from 'geojson-validation'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('MapHubsSource')
