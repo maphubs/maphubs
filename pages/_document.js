@@ -201,7 +201,7 @@ export default class MyDocument extends Document {
           {!options.hideFeedback &&
           <script dangerouslySetInnerHTML={{__html: `
             Userback = window.Userback || {};
-            Userback.access_token = '1543|2037|tb9c1TOxoFcMIA834eVabMRUqZaUgieJunWvgL3Fqfr9PAcTO8';
+            Userback.access_token = '4787|6504|RgiVFuqtlpoFGgSIaXOnXXCwp21uxY9nDFXK8dnA6eNxb4jfph';
         
             Userback.email = '${email}';
             Userback.custom_data = {
