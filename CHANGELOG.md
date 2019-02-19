@@ -1,5 +1,8 @@
 # Change Log
 
+## [v0.19.10](https://github.com/maphubs/maphubs/tree/v0.19.10) (2019-02-19)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.9...v0.19.10)
+
 ## [v0.19.9](https://github.com/maphubs/maphubs/tree/v0.19.9) (2019-01-27)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.8...v0.19.9)
 
