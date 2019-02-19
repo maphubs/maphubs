@@ -239,7 +239,10 @@ export default class MiniLegend extends React.Component<Props, State> {
             width: '100%',
             boxShadow: 'none',
             pointerEvents: 'none',
-            border: 'none'}}>
+            border: 'none',
+            paddingLeft: '0px',
+            listStyleType: 'none'
+          }}>
           <li className='z-depth-1 active'
             style={{
               backgroundColor: '#FFF',

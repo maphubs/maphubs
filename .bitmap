@@ -36,7 +36,7 @@
         "origin": "AUTHORED",
         "mainDistFile": "dist/src/components/ShareButtons/index.js"
     },
-    "kriscarle.maphubs-utils/services/client-error-response@1.0.5": {
+    "kriscarle.maphubs-utils/services/client-error-response@1.1.0": {
         "files": [
             {
                 "relativePath": "src/services/client-error-response/index.js",
@@ -48,7 +48,7 @@
         "trackDir": "src/services/client-error-response",
         "origin": "AUTHORED"
     },
-    "kriscarle.maphubs-utils/services/terraformer-gl@1.0.7": {
+    "kriscarle.maphubs-utils/services/terraformer-gl@1.1.0": {
         "files": [
             {
                 "relativePath": "src/services/terraformerGL/index.js",
@@ -60,7 +60,7 @@
         "trackDir": "src/services/terraformerGL",
         "origin": "AUTHORED"
     },
-    "kriscarle.maphubs-components/components/map@1.0.13": {
+    "kriscarle.maphubs-components/components/map@1.1.0": {
         "files": [
             {
                 "relativePath": "src/components/Map/Attributes.js",
@@ -580,8 +580,7 @@
         ],
         "mainFile": "src/components/Map/index.js",
         "trackDir": "src/components/Map",
-        "origin": "AUTHORED",
-        "mainDistFile": "dist/src/components/Map/index.js"
+        "origin": "AUTHORED"
     },
     "version": "13.0.4"
 }
