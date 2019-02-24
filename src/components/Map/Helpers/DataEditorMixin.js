@@ -227,6 +227,7 @@ export default {
     const sourceCache = this.map.style.sourceCaches[sourceID]
     if (sourceCache) {
       sourceCache.reload()
+      this.reloadStyle()
     }
   }
 
