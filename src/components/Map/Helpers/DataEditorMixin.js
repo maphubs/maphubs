@@ -131,8 +131,10 @@ export default {
    *
    */
   updateMapLayerFilters () {
-    const layerId = this.state.editingLayer.layer_id
-    const shortid = this.state.editingLayer.shortid
+    const containers: Array<Object> = this.props.containers
+    const [, DataEditor] = containers
+    const layerId = DataEditor.state.editingLayer.layer_id
+    const shortid = DataEditor.state.editingLayer.shortid
 
     // build a new filter
     const uniqueIds = []
@@ -219,7 +221,9 @@ export default {
   },
 
   reloadEditingSourceCache () {
-    const sourceID = Object.keys(this.state.editingLayer.style.sources)[0]
+    const containers: Array<Object> = this.props.containers
+    const [, DataEditor] = containers
+    const sourceID = Object.keys(DataEditor.state.editingLayer.style.sources)[0]
     const sourceCache = this.map.style.sourceCaches[sourceID]
     if (sourceCache) {
       sourceCache.reload()
