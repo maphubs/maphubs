@@ -38,6 +38,13 @@ export default class AddLayerPanel extends React.Component<Props, State> {
     selectedGroupId: undefined
   }
 
+  shouldComponentUpdate (nextProps: Props, nextState: State) {
+    if (nextState.searchActive !== this.state.searchActive) return true
+    if (nextState.selectedGroupId !== this.state.selectedGroupId) return true
+    if (nextState.searchResults.length > 0 || this.state.searchResults.length > 0) return true
+    return false
+  }
+
   handleSearch = (input: string) => {
     const {t} = this.props
     const _this = this
