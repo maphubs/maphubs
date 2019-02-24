@@ -170,6 +170,10 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
                 mapConfig={this.props.mapConfig}
                 data={this.state.geoJSON}
                 t={this.t}
+                primaryColor={MAPHUBS_CONFIG.primaryColor}
+                logoSmall={MAPHUBS_CONFIG.logoSmall}
+                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
               />
             </div>
           </div>

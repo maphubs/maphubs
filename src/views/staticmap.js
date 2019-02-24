@@ -157,7 +157,12 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
         glStyle={this.props.style}
         mapConfig={this.props.mapConfig}
         preserveDrawingBuffer
-        baseMap={this.props.basemap} navPosition='top-right'
+        baseMap={this.props.basemap}
+        navPosition='top-right'
+        primaryColor={MAPHUBS_CONFIG.primaryColor}
+        logoSmall={MAPHUBS_CONFIG.logoSmall}
+        logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+        logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
         t={this.t}
       >
         {legend}
