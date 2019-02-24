@@ -39,6 +39,10 @@ export default {
     const containers: Array<Object> = this.props.containers
     const [, DataEditor] = containers
 
+    if (this.state.enableMeasurementTools) {
+      this.stopMeasurementTool() // close measurement tool if open
+    }
+
     const draw = new MapboxDraw({
       displayControlsDefault: false,
       controls: {

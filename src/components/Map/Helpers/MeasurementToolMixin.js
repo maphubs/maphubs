@@ -1,6 +1,7 @@
 // @flow
 import _area from '@turf/area'
 import turf_length from '@turf/length'
+import {message} from 'antd'
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('Map/MeasureArea')
 let MapboxDraw = {}
 if (typeof window !== 'undefined') {
@@ -21,6 +22,15 @@ export default {
 
   startMeasurementTool () {
     const {t} = this.props
+
+    const containers: Array<Object> = this.props.containers
+    const [, DataEditor] = containers
+
+    if (DataEditor && DataEditor.state && DataEditor.state.editing) {
+      message.warning(t('Please stop editing before enabling the measurement tool'), 3)
+      return
+    }
+
     const draw = new MapboxDraw({
       displayControlsDefault: false,
       controls: {
