@@ -2,6 +2,7 @@
 import React from 'react'
 import MiniLegend from '../components/Map/MiniLegend'
 import Map from '../components/Map'
+import { Row, Col, Switch, Modal, message } from 'antd'
 import _debounce from 'lodash.debounce'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -10,8 +11,11 @@ import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import fireResizeEvent from '../services/fire-resize-event'
 
 const $ = require('jquery')
+
+const confirm = Modal.confirm
 
 type Props = {
   name: LocalizedString,
@@ -32,7 +36,11 @@ type Props = {
 
 type State = {
   width: number,
-  height: number
+  height: number,
+  userShowLegend: boolean,
+  userShowScale: boolean,
+  userShowInset: boolean,
+  showSettings: boolean
 }
 
 // A reponsive full window map used to render screenshots
@@ -71,6 +79,12 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
     }
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
+    this.state = {
+      userShowInset: props.insetMap,
+      userShowLegend: props.showLegend,
+      userShowScale: props.showScale,
+      showSettings: true
+    }
   }
 
   componentDidMount () {
@@ -91,13 +105,61 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
       }, 2500).bind(this)
       debounced()
     })
+
+    window.addEventListener('keydown', (e) => {
+      if (e.keyCode === 83) {
+        this.showSettings()
+      }
+    })
+  }
+
+  setShowInset = (userShowInset) => {
+    this.setState({userShowInset})
+  }
+
+  setShowScale = (userShowScale) => {
+    this.setState({userShowScale})
+  }
+
+  setShowLegend = (userShowLegend) => {
+    const _this = this
+    const {t} = this
+    if (!userShowLegend) {
+      confirm({
+        title: t('Attribution Required'),
+        content: t('If you remove the legend you must include the attribution "OpenStreetMap contributors" for the base map, as well as attributions for any data layers in your map. I agree to attribute the data when I share or publish this map.'),
+        okText: t('I agree'),
+        onOk () {
+          _this.setState({userShowLegend})
+        },
+        onCancel () {}
+      })
+    } else {
+      _this.setState({userShowLegend})
+    }
+  }
+
+  hideSettings = () => {
+    const {t} = this
+    this.setState({showSettings: false})
+    fireResizeEvent()
+    message.info(t('press the "s" key to reopen settings'), 3)
+      .then(() => fireResizeEvent())
+  }
+
+  showSettings = () => {
+    if (!this.state.showSettings) {
+      this.setState({showSettings: true})
+      fireResizeEvent()
+    }
   }
 
   render () {
     let map, legend, bottomLegend
-    const {t} = this
-    const {name, layers, showLegend, position, settings} = this.props
-    if (showLegend) {
+    const {t, setShowLegend, setShowScale, setShowInset, hideSettings} = this
+    const {name, layers, position, settings} = this.props
+    const {userShowInset, userShowLegend, userShowScale, showSettings} = this.state
+    if (userShowLegend) {
       if (this.state.width < 600) {
         bottomLegend = (
           <MiniLegend
@@ -153,7 +215,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
         insetConfig={insetConfig}
         showLogo={this.props.showLogo}
         showScale={this.props.showScale}
-        style={{width: '100vw', height: '100vh'}}
+        style={{width: '100vw', height: showSettings ? 'calc(100vh - 25px)' : '100vh'}}
         glStyle={this.props.style}
         mapConfig={this.props.mapConfig}
         preserveDrawingBuffer
@@ -172,10 +234,40 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     return (
       <ErrorBoundary>
         <Provider inject={[this.BaseMapState]}>
-          <div className='embed-map'>
-            {map}
-            {bottomLegend}
-          </div>
+          <style jsx global>{`
+            .map-position {
+              display: none;
+            }
+            .maphubs-ctrl-scale {
+              display: ${userShowScale ? 'inherit' : 'none'}
+            }
+            .maphubs-inset {
+              display: ${userShowInset ? 'inherit' : 'none'}
+            }
+          `}</style>
+          {showSettings &&
+            <Row style={{height: '25px', paddingLeft: '20px', paddingRight: '20px'}}>
+              <Col span={4}>
+                <span style={{marginRight: '10px'}}>{t('Legend')}</span>
+                <Switch defaultChecked={userShowLegend} onChange={setShowLegend} size='small' />
+              </Col>
+              <Col span={4}>
+                <span style={{marginRight: '10px'}}>{t('Scale Bar')}</span>
+                <Switch defaultChecked={userShowScale} onChange={setShowScale} size='small' />
+              </Col>
+              <Col span={4}>
+                <span style={{marginRight: '10px'}}>{t('Inset')}</span>
+                <Switch defaultChecked={userShowInset} onChange={setShowInset} size='small' />
+              </Col>
+              <a onClick={hideSettings} style={{color: '#212121', textDecoration: 'underline', position: 'absolute', right: '10px'}}>{t('hide')}</a>
+            </Row>
+          }
+          <Row>
+            <div className='embed-map'>
+              {map}
+              {bottomLegend}
+            </div>
+          </Row>
         </Provider>
       </ErrorBoundary>
     )

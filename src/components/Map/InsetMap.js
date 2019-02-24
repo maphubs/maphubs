@@ -314,7 +314,7 @@ class InsetMap extends React.Component<Props, State> {
     const {collapsible, id} = this.props
     if (collapsed) {
       return (
-        <div style={{
+        <div className='maphubs-inset' style={{
           position: 'absolute', bottom: this.props.bottom, left: '5px'
         }}>
 
@@ -332,17 +332,18 @@ class InsetMap extends React.Component<Props, State> {
       )
     } else {
       return (
-        <div style={{
-          position: 'absolute',
-          bottom: this.props.bottom,
-          left: '5px',
-          minHeight: this.props.minHeight,
-          maxHeight: this.props.maxHeight,
-          minWidth: this.props.minWidth,
-          maxWidth: this.props.maxWidth,
-          height: this.props.height,
-          width: this.props.width
-        }}>
+        <div className='maphubs-inset'
+          style={{
+            position: 'absolute',
+            bottom: this.props.bottom,
+            left: '5px',
+            minHeight: this.props.minHeight,
+            maxHeight: this.props.maxHeight,
+            minWidth: this.props.minWidth,
+            maxWidth: this.props.maxWidth,
+            height: this.props.height,
+            width: this.props.width
+          }}>
           <div id={this.props.id + '_inset'}
             ref={(c) => { this.insetMapComponent = c }}
             className='map'
