@@ -33,34 +33,30 @@ export default class IsochronePanel extends React.Component<Props, State> {
 
   render () {
     const {t, isochroneResult} = this.props
-    let message, clearButton, selectButton
+    const {selectingLocation} = this.state
+    let message
     if (isochroneResult) {
       message = (
         <p>
           {t('Displaying Result')}
         </p>
       )
-
-      clearButton = (
-        <Button type='primary' onClick={this.clear}>{t('Clear Results')}</Button>
-      )
-    } else if (this.state.selectingLocation) {
+    } else if (selectingLocation) {
       message = (
         <p>
           {t('Click a location on the map.')}
         </p>
       )
-    } else {
-      selectButton = (
-        <Button type='primary' onClick={this.selectLocation}>{t('Select Location')}</Button>
-      )
     }
-
     return (
       <div style={{width: '100%', textAlign: 'center'}}>
-        {selectButton}
+        {!isochroneResult &&
+          <Button type='primary' onClick={this.selectLocation}>{t('Select Location')}</Button>
+        }
         {message}
-        {clearButton}
+        {(isochroneResult || selectingLocation) &&
+          <Button type='primary' onClick={this.clear}>{t('Reset')}</Button>
+        }
       </div>
     )
   }

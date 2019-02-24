@@ -2,6 +2,7 @@
 // @flow
 import shortid from 'shortid'
 import request from 'superagent'
+import {notification, message} from 'antd'
 import type {GeoJSONObject} from 'geojson-flow'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('isochrone-mixin')
@@ -62,22 +63,23 @@ export default {
     const _this = this
 
     const disableClick = function () {
-      map.off('click', onClick)
+      map.off('click', _this.onIsochroneClick)
     }
 
-    var onClick = function (e) {
+    this.onIsochroneClick = function (e) {
       e.originalEvent.stopPropagation()
       _this.runIsochroneQuery(e.lngLat)
       disableClick()
     }
 
-    map.on('click', onClick)
+    map.on('click', this.onIsochroneClick)
   },
 
   runIsochroneQuery (point: {lng: number, lat: number}) {
     const _this = this
     const map = this.map
-
+    const {t} = this.props
+    message.loading(t('Running travel time query...'), 5)
     request.post('/api/isochrone')
       .send({
         point
@@ -100,11 +102,18 @@ export default {
         _this.props.onToggleIsochroneLayer(true)
       }).catch((err) => {
         debug.error(err)
+        notification.error({
+          message: 'Error',
+          description: t('Travel time service failed at this location')
+        })
       })
   },
 
   clearIsochroneLayers () {
     const map = this.map
+
+    map.off('click', this.onIsochroneClick)
+
     this.isochroneLayerStyle.layers.forEach((layer) => {
       map.removeLayer(layer.id)
     })
