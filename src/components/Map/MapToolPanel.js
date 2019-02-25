@@ -21,6 +21,7 @@ type Props = {|
   enableMeasurementTools: boolean,
   getIsochronePoint: Function,
   clearIsochroneLayers: Function,
+  measureFeatureClick: Function,
   isochroneResult?: Object,
   t: Function
 |}
@@ -93,7 +94,13 @@ export default class MapToolPanel extends React.Component<Props, State> {
                 <BaseMapSelection onChange={this.onChangeBaseMap} t={t} />
               </Panel>
               <Panel header={t('Measurement Tools')} key='measurement'>
-                <MeasurementToolPanel enableMeasurementTools={this.props.enableMeasurementTools} toggleMeasurementTools={this.props.toggleMeasurementTools} closePanel={() => { this.onSetOpen(false) }} t={t} />
+                <MeasurementToolPanel
+                  enableMeasurementTools={this.props.enableMeasurementTools}
+                  toggleMeasurementTools={this.props.toggleMeasurementTools}
+                  measureFeatureClick={this.props.measureFeatureClick}
+                  closePanel={() => { this.onSetOpen(false) }}
+                  t={t}
+                />
               </Panel>
               <Panel header={t('Travel Time')} key='traveltime'>
                 <IsochronePanel getIsochronePoint={this.props.getIsochronePoint} clearIsochroneLayers={this.props.clearIsochroneLayers} isochroneResult={this.props.isochroneResult} t={t} />

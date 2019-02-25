@@ -20,6 +20,34 @@ export default {
     }
   },
 
+  measureFeatureClick () {
+    const map = this.map
+    const _this = this
+
+    const disableClick = function () {
+      map.off('click', _this.onMeasureFeatureClick)
+    }
+
+    this.onMeasureFeatureClick = function (e) {
+      e.originalEvent.stopPropagation()
+
+      const features = map.queryRenderedFeatures(
+        [
+          [e.point.x - _this.props.interactionBufferSize / 2, e.point.y - _this.props.interactionBufferSize / 2],
+          [e.point.x + _this.props.interactionBufferSize / 2, e.point.y + _this.props.interactionBufferSize / 2]
+        ], {layers: _this.state.interactiveLayers})
+
+      if (features && features.length > 0) {
+        const feature = features[0]
+        _this.setState({enableMeasurementTools: true})
+        _this.updateMeasurement([feature])
+        disableClick()
+      }
+    }
+
+    map.on('click', this.onMeasureFeatureClick)
+  },
+
   startMeasurementTool () {
     const {t} = this.props
 
@@ -44,12 +72,14 @@ export default {
 
     this.map.on('draw.create', (e) => {
       debug.log('draw create')
-      this.updateMeasurement(e)
+      const data = this.draw.getAll()
+      this.updateMeasurement(data.features)
     })
 
     this.map.on('draw.update', (e) => {
       debug.log('draw update')
-      this.updateMeasurement(e)
+      const data = this.draw.getAll()
+      this.updateMeasurement(data.features)
     })
 
     this.map.on('draw.delete', () => {
@@ -70,10 +100,9 @@ export default {
     })
   },
 
-  updateMeasurement () {
+  updateMeasurement (features) {
     const {t} = this.props
-    const data = this.draw.getAll()
-    if (data.features.length > 0) {
+    if (features.length > 0) {
       const lines = {
         'type': 'FeatureCollection',
         'features': []
@@ -82,7 +111,7 @@ export default {
         'type': 'FeatureCollection',
         'features': []
       }
-      data.features.forEach((feature) => {
+      features.forEach((feature) => {
         if (feature.geometry.type === 'Polygon') {
           polygons.features.push(feature)
         } else if (feature.geometry.type === 'LineString') {

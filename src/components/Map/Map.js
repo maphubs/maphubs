@@ -706,6 +706,7 @@ class Map extends React.Component<Props, State> {
             gpxLink={this.props.gpxLink}
             toggleMeasurementTools={this.toggleMeasurementTools}
             enableMeasurementTools={this.state.enableMeasurementTools}
+            measureFeatureClick={this.measureFeatureClick}
             onChangeBaseMap={this.changeBaseMap}
             getIsochronePoint={this.getIsochronePoint}
             clearIsochroneLayers={this.clearIsochroneLayers}
@@ -857,10 +858,13 @@ class Map extends React.Component<Props, State> {
     return MeasurementToolMixin.stopMeasurementTool.bind(this)()
   }
 
-  updateMeasurement = () => {
-    return MeasurementToolMixin.updateMeasurement.bind(this)()
+  updateMeasurement = (features: Array<Object>) => {
+    return MeasurementToolMixin.updateMeasurement.bind(this)(features)
   }
 
+  measureFeatureClick = () => {
+    return MeasurementToolMixin.measureFeatureClick.bind(this)()
+  }
   // MapSearchMixin
   onSearch = (queryText: string) => {
     return MapSearchMixin.onSearch.bind(this)(queryText)

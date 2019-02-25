@@ -1,11 +1,12 @@
 // @flow
 import React from 'react'
-import { Switch } from 'antd'
+import { Switch, Button } from 'antd'
 
 type Props = {|
   enableMeasurementTools: boolean,
   closePanel: Function,
   toggleMeasurementTools: Function,
+  measureFeatureClick: Function,
   t: Function
 |}
 
@@ -24,6 +25,9 @@ export default class MeasurementToolPanel extends React.PureComponent<Props, voi
         <b>{t('Show Measurement Tools')}</b>
         <div>
           <Switch checked={enableMeasurementTools} onChange={this.toggleMeasurementTools} />
+        </div>
+        <div style={{marginTop: '20px'}}>
+          <Button type='primary' onClick={this.props.measureFeatureClick}>{t('Select a Feature')}</Button>
         </div>
       </div>
     )
