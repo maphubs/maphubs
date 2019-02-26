@@ -131,6 +131,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     }
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
     this.MapState = new MapContainer()
+    this.DataEditorState = new DataEditorContainer()
   }
 
   componentDidMount () {
@@ -413,7 +414,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
 
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState, this.MapState]}>
+        <Provider inject={[this.BaseMapState, this.MapState, this.DataEditorState]}>
           <Header {...this.props.headerConfig} />
           <main style={{height: 'calc(100% - 51px)', marginTop: 0}}>
             <div className='row' style={{height: '100%', margin: 0}}>
