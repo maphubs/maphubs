@@ -6,6 +6,7 @@ import _remove from 'lodash.remove'
 import _differenceBy from 'lodash.differenceby'
 import type {MapHubsField} from '../types/maphubs-field'
 import type {Layer} from '../types/Layer'
+import slugify from 'slugify'
 
 import {OrderedSet} from 'immutable'
 import MapStyles from '../components/Map/Styles'
@@ -602,6 +603,23 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       } else {
         presets = this.state.presets.toArray()
       }
+      presets.forEach(preset => {
+        if (!preset.tag) {
+          let label
+          if (preset.label.en) {
+            // tags default to english if present
+            label = preset.label.en
+          } else {
+            // otherwise set to first populated value in Localized String object
+            Object.values(preset.label).map(val => {
+              if (!label && val) label = val
+            })
+          }
+          let tag = slugify(label)
+          tag = tag.toLowerCase()
+          preset.tag = tag
+        }
+      })
       request.post('/api/layer/presets/save')
         .type('json').accept('json')
         .send({
