@@ -1,5 +1,28 @@
 # Change Log
 
+## [v0.19.11](https://github.com/maphubs/maphubs/tree/v0.19.11) (2019-02-26)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.10...v0.19.11)
+
+**Implemented enhancements:**
+
+- hide mouse location display on print/screenshot view [\#511](https://github.com/maphubs/maphubs/issues/511)
+- layer request form [\#173](https://github.com/maphubs/maphubs/issues/173)
+- add point location to hubs with API map service [\#86](https://github.com/maphubs/maphubs/issues/86)
+
+**Fixed bugs:**
+
+- new edits missing after saving [\#520](https://github.com/maphubs/maphubs/issues/520)
+- logo missing from map in screenshot view [\#518](https://github.com/maphubs/maphubs/issues/518)
+- error viewing all stories page before first story created [\#516](https://github.com/maphubs/maphubs/issues/516)
+- travel time tool not activating on click [\#515](https://github.com/maphubs/maphubs/issues/515)
+- unable to select existing features for editing [\#514](https://github.com/maphubs/maphubs/issues/514)
+- error editing data table [\#510](https://github.com/maphubs/maphubs/issues/510)
+- error adding new field to layer [\#509](https://github.com/maphubs/maphubs/issues/509)
+
+**Closed issues:**
+
+- map maker error editing with measurement tool open [\#489](https://github.com/maphubs/maphubs/issues/489)
+
 ## [v0.19.10](https://github.com/maphubs/maphubs/tree/v0.19.10) (2019-02-19)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.9...v0.19.10)
 
