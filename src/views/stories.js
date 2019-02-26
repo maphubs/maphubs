@@ -57,13 +57,15 @@ export default class Stories extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     const {recentStories, popularStories} = this.props
+    const hasRecent = recentStories && recentStories.length > 0
+    const hasPopular = popularStories && popularStories.length > 0
     return (
       <ErrorBoundary>
         <Header activePage='stories' {...this.props.headerConfig} />
         <main>
           <div>
             <div className='row'>
-              {(recentStories && recentStories.length > 0) &&
+              {hasRecent &&
                 <div className='col s12 m12 l6'>
                   <h4>{t('Recent Stories')}</h4>
                   {recentStories.map((story) => {
@@ -77,18 +79,25 @@ export default class Stories extends MapHubsComponent<Props, State> {
                   })}
                 </div>
               }
-              <div className='col s12 m12 l6'>
-                <h4>{t('Popular Stories')}</h4>
-                {popularStories.map((story) => {
-                  return (
-                    <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
-                      <div className='card-content'>
-                        <StorySummary story={story} />
+              {hasPopular &&
+                <div className='col s12 m12 l6'>
+                  <h4>{t('Popular Stories')}</h4>
+                  {popularStories.map((story) => {
+                    return (
+                      <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
+                        <div className='card-content'>
+                          <StorySummary story={story} />
+                        </div>
                       </div>
-                    </div>
-                  )
-                })}
-              </div>
+                    )
+                  })}
+                </div>
+              }
+              {(!hasRecent && !hasPopular) &&
+                <div className='col s12' style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
+                  <b>{t('No Stories Found')}</b>
+                </div>
+              }
             </div>
           </div>
           <div className='fixed-action-btn action-button-bottom-right'>
@@ -96,9 +105,11 @@ export default class Stories extends MapHubsComponent<Props, State> {
               onClick={this.onCreateStory} icon='add'
               tooltip={t('Create New Story')} tooltipPosition='top' />
           </div>
-          <div className='row center-align'>
-            <a className='btn' href='/stories/all'>{t('View All Stories')}</a>
-          </div>
+          {(hasRecent || hasPopular) &&
+            <div className='row center-align'>
+              <a className='btn' href='/stories/all'>{t('View All Stories')}</a>
+            </div>
+          }
         </main>
         <Footer {...this.props.footerConfig} />
       </ErrorBoundary>

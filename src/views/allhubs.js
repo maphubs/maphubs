@@ -119,7 +119,13 @@ export default class Hubs extends MapHubsComponent<Props, State> {
     }
 
     let hubs = ''
-    if (this.state.showList) {
+    if (!this.props.hubs || this.props.hubs.length === 0) {
+      hubs = (
+        <div className='col s12' style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
+          <b>{t('No Hubs Found')}</b>
+        </div>
+      )
+    } else if (this.state.showList) {
       hubs = (
         <div className='container'>
           <HubList showTitle={false} hubs={this.props.hubs} />

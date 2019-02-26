@@ -117,10 +117,9 @@ export default class Hubs extends MapHubsComponent<Props, State> {
       }
     }
 
-    let featured = ''
-    if (featuredCards.length > 0) {
-      featured = (<CardCollection cards={featuredCards} title={t('Featured')} viewAllLink='/hubs/all' />)
-    }
+    const hasFeatured = featuredCards && featuredCards.length > 0
+    const hasPopular = popularCards && popularCards.length > 0
+    const hasRecent = recentCards && recentCards.length > 0
 
     return (
       <ErrorBoundary>
@@ -137,9 +136,20 @@ export default class Hubs extends MapHubsComponent<Props, State> {
           </div>
 
           {searchResults}
-          {featured}
-          <CardCollection cards={popularCards} title={t('Popular')} viewAllLink='/hubs/all' />
-          <CardCollection cards={recentCards} title={t('Recent')} viewAllLink='/hubs/all' />
+          {hasFeatured &&
+            <CardCollection cards={featuredCards} title={t('Featured')} viewAllLink='/hubs/all' />
+          }
+          {hasPopular &&
+            <CardCollection cards={popularCards} title={t('Popular')} viewAllLink='/hubs/all' />
+          }
+          {hasRecent &&
+            <CardCollection cards={recentCards} title={t('Recent')} viewAllLink='/hubs/all' />
+          }
+          {(!hasFeatured && !hasRecent && !hasPopular) &&
+            <div className='col s12' style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
+              <b>{t('No Hubs Found')}</b>
+            </div>
+          }
 
           <div className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton
@@ -148,9 +158,11 @@ export default class Hubs extends MapHubsComponent<Props, State> {
               tooltipPosition='top'
               icon='add' />
           </div>
-          <div className='row center-align'>
-            <a className='btn' href='/hubs/all'>{t('View All Hubs')}</a>
-          </div>
+          {(hasFeatured || hasRecent || hasPopular) &&
+            <div className='row center-align'>
+              <a className='btn' href='/hubs/all'>{t('View All Hubs')}</a>
+            </div>
+          }
         </main>
         <Footer {...this.props.footerConfig} />
       </ErrorBoundary>

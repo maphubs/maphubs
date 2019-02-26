@@ -40,6 +40,10 @@ export default class AllStories extends MapHubsComponent<Props, State> {
     }
   }
 
+  static defaultProps = {
+    stories: []
+  }
+
   constructor (props: Props) {
     super(props)
     this.stores.push(UserStore)
@@ -70,7 +74,7 @@ export default class AllStories extends MapHubsComponent<Props, State> {
     const {t} = this
     const {stories} = this.props
     const {showList} = this.state
-
+    const hasStories = stories && stories.length > 0
     return (
       <ErrorBoundary>
         <Header activePage='stories' {...this.props.headerConfig} />
@@ -87,16 +91,23 @@ export default class AllStories extends MapHubsComponent<Props, State> {
                   <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={showList} />
                 </Formsy>
               </div>
-              <div className='row'>
-                {showList &&
-                  <div className='container'>
-                    <StoryList showTitle={false} stories={stories} />
-                  </div>
-                }
-                {!showList &&
-                  <CardGrid cards={stories.map(cardUtil.getStoryCard)} t={t} />
-                }
-              </div>
+              {hasStories &&
+                <div className='row'>
+                  {showList &&
+                    <div className='container'>
+                      <StoryList showTitle={false} stories={stories} />
+                    </div>
+                  }
+                  {!showList &&
+                    <CardGrid cards={stories.map(cardUtil.getStoryCard)} t={t} />
+                  }
+                </div>
+              }
+              {!hasStories &&
+                <div className='col s12' style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
+                  <b>{t('No Stories Found')}</b>
+                </div>
+              }
             </div>
           </div>
           <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
