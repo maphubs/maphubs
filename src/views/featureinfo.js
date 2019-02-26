@@ -5,15 +5,11 @@ import slugify from 'slugify'
 import Comments from '../components/Comments'
 import FeatureProps from '../components/Feature/FeatureProps'
 import FeatureNotes from '../components/Feature/FeatureNotes'
-import HubEditButton from '../components/Hub/HubEditButton'
 import { Provider, Subscribe } from 'unstated'
 import { Tabs, Row, Col } from 'antd'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import MapContainer from '../components/Map/containers/MapContainer'
 import FRContainer from '../components/Feature/containers/FRContainer'
-import MessageActions from '../actions/MessageActions'
-import NotificationActions from '../actions/NotificationActions'
-import FeatureNotesActions from '../actions/FeatureNotesActions'
 import FeatureNotesStore from '../stores/FeatureNotesStore'
 import FeaturePhotoStore from '../stores/FeaturePhotoStore'
 import {FeatureMap, FeatureArea, FeatureLocation, FeatureExport, FeaturePhoto, ForestReportEmbed} from '../components/Feature'
@@ -99,50 +95,12 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     })
 
     this.state = {
-      editingNotes: false,
       tab: 'data'
     }
   }
 
   componentDidMount () {
     M.Tabs.init(this.refs.tabs, {})
-    const {t} = this
-    const {editingNotes} = this.state
-    window.addEventListener('beforeunload', (e) => {
-      if (editingNotes) {
-        const msg = t('You have not saved your edits, your changes will be lost.')
-        e.returnValue = msg
-        return msg
-      }
-    })
-    if (this.props.canEdit) {
-      M.FloatingActionButton.init(this.refs.editButton, {})
-    }
-  }
-
-  componentDidUpdate (prevProps: Props, prevState: State) {
-    if (!prevProps.canEdit && this.props.canEdit) {
-      M.FloatingActionButton.init(this.refs.editButton, {})
-    }
-  }
-
-  startEditingNotes = () => {
-    this.setState({editingNotes: true})
-  }
-
-  stopEditingNotes = () => {
-    const _this = this
-    const {t} = this
-    const geoJSONProps: Object = this.props.feature.features[0].properties
-
-    FeatureNotesActions.saveNotes(this.props.layer.layer_id, geoJSONProps.mhid, this.state._csrf, (err) => {
-      if (err) {
-        MessageActions.showMessage({title: t('Server Error'), message: err})
-      } else {
-        NotificationActions.showNotification({message: t('Notes Saved')})
-        _this.setState({editingNotes: false})
-      }
-    })
   }
 
   // Build edit link
@@ -181,11 +139,12 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     const {canEdit, layer, feature, headerConfig} = this.props
     const {frActive} = this.state
     let geojsonFeature
+    let geoJSONProps
 
     if (feature && layer && feature.features) {
       if (feature.features && feature.features.length > 0) {
         geojsonFeature = feature.features[0]
-        var geoJSONProps = feature.features[0].properties
+        geoJSONProps = feature.features[0].properties
       }
     }
 
@@ -266,12 +225,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                           </TabPane>
                         }
                         <TabPane tab={t('Notes')} key='notes' style={{position: 'relative', height: '100%'}}>
-                          <FeatureNotes editing={this.state.editingNotes} t={t} />
-                          {canEdit &&
-                            <HubEditButton editing={this.state.editingNotes}
-                              style={{position: 'absolute'}}
-                              startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
-                          }
+                          <FeatureNotes canEdit={canEdit} layer_id={layer.layer_id} mhid={geoJSONProps.mhid} />
                         </TabPane>
                         <TabPane tab={t('Export')} key='export' style={{position: 'relative', height: '100%', padding: '10px'}}>
                           <FeatureExport t={t} mhid={mhid} {...layer} />
