@@ -18,7 +18,7 @@ import ExploreDropdown from './Header/ExploreDropdown'
 import AddDropdown from './Header/AddDropdown'
 
 if (process.env.NODE_ENV !== 'production') {
-  require('unstated-debug')
+  // require('unstated-debug')
 }
 
 type Link = {
