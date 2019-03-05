@@ -29,6 +29,7 @@ type Props = {
   insetMap: boolean,
   locale: string,
   _csrf: string,
+  showToolbar?: boolean,
   settings: Object,
   mapConfig: Object,
   user: Object
@@ -83,7 +84,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
       userShowInset: props.insetMap,
       userShowLegend: props.showLegend,
       userShowScale: props.showScale,
-      showSettings: true
+      showSettings: props.showToolbar
     }
   }
 
@@ -113,15 +114,15 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     })
   }
 
-  setShowInset = (userShowInset) => {
+  setShowInset = (userShowInset: boolean) => {
     this.setState({userShowInset})
   }
 
-  setShowScale = (userShowScale) => {
+  setShowScale = (userShowScale: boolean) => {
     this.setState({userShowScale})
   }
 
-  setShowLegend = (userShowLegend) => {
+  setShowLegend = (userShowLegend: boolean) => {
     const _this = this
     const {t} = this
     if (!userShowLegend) {

@@ -58,6 +58,11 @@ module.exports = function (app: any) {
     if (req.query.hideInset) {
       showInset = false
     }
+
+    let showToolbar = false
+    if (req.query.showToolbar) {
+      showToolbar = true
+    }
     try {
       const map = await Map.getMap(map_id)
       if (!map) {
@@ -83,6 +88,7 @@ module.exports = function (app: any) {
             showLegend,
             showLogo,
             showScale,
+            showToolbar,
             insetMap: showInset
           }
         }))

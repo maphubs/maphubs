@@ -169,7 +169,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   onFullScreen = () => {
-    let fullScreenLink = `/api/map/${this.props.map.map_id}/static/render`
+    let fullScreenLink = `/api/map/${this.props.map.map_id}/static/render?showToolbar=1`
     if (window.location.hash) {
       fullScreenLink = fullScreenLink += window.location.hash
     }
