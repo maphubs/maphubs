@@ -1,5 +1,12 @@
 # Change Log
 
+## [v0.19.12](https://github.com/maphubs/maphubs/tree/v0.19.12) (2019-03-05)
+[Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.11...v0.19.12)
+
+**Fixed bugs:**
+
+- toolbar shows in layer/map screenshots [\#521](https://github.com/maphubs/maphubs/issues/521)
+
 ## [v0.19.11](https://github.com/maphubs/maphubs/tree/v0.19.11) (2019-02-26)
 [Full Changelog](https://github.com/maphubs/maphubs/compare/v0.19.10...v0.19.11)
 
