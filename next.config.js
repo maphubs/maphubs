@@ -47,9 +47,8 @@ module.exports = withCSS(withLess({
       }
     }
 
-    config.node = {
-      fs: 'empty'
-    }
+    if (!config.node) config.node = {}
+    config.node.fs = 'empty'
 
     config.module.rules.push({
       test: /\.(woff|svg|ttf|eot|gif)([\?]?.*)$/,
