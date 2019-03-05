@@ -8,7 +8,7 @@ node --max_old_space_size=8124 node_modules/next/dist/bin/next-build
 node node_modules/next/dist/bin/next-export -o .next-export
 
 #docker build
-docker pull node:8
+docker pull node:10
 docker build . --compress -t quay.io/maphubs/web:latest
 
 #commit version tag
