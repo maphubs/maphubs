@@ -423,6 +423,18 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     return textPanel
   }
 
+  renderHtml = (config: Object, key: string) => {
+    let html = config.html[this.state.locale]
+    if (!html) html = config.html.en
+    const textPanel = (
+      <div key={key} className='row' style={{height: config.height || '100px'}}>
+        <div dangerouslySetInnerHTML={{__html: html}} />
+      </div>
+    )
+
+    return textPanel
+  }
+
   renderButton = (config: Object, key: string) => {
     let label = config.label[this.state.locale]
     if (!label) label = config.label.en
@@ -463,6 +475,8 @@ export default class HomePro extends MapHubsComponent<Props, State> {
                     return _this.renderStories(component, key)
                   } else if (component.type === 'text') {
                     return _this.renderText(component, key)
+                  } else if (component.type === 'html') {
+                    return _this.renderHtml(component, key)
                   } else if (component.type === 'links') {
                     return _this.renderLinks(component, key)
                   } else if (component.type === 'onboarding-links') {
