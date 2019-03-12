@@ -10,7 +10,8 @@
             }
         ],
         "mainFile": "src/types/mapbox-gl-style.js",
-        "origin": "AUTHORED"
+        "origin": "AUTHORED",
+        "exported": true
     },
     "kriscarle.maphubs-utils/types/layer@1.0.2": {
         "files": [
@@ -21,20 +22,8 @@
             }
         ],
         "mainFile": "src/types/layer.js",
-        "origin": "AUTHORED"
-    },
-    "kriscarle.maphubs-components/components/share-buttons@1.0.1": {
-        "files": [
-            {
-                "relativePath": "src/components/ShareButtons/index.js",
-                "test": false,
-                "name": "index.js"
-            }
-        ],
-        "mainFile": "src/components/ShareButtons/index.js",
-        "trackDir": "src/components/ShareButtons",
         "origin": "AUTHORED",
-        "mainDistFile": "dist/src/components/ShareButtons/index.js"
+        "exported": true
     },
     "kriscarle.maphubs-utils/services/client-error-response@1.1.0": {
         "files": [
@@ -46,7 +35,8 @@
         ],
         "mainFile": "src/services/client-error-response/index.js",
         "trackDir": "src/services/client-error-response",
-        "origin": "AUTHORED"
+        "origin": "AUTHORED",
+        "exported": true
     },
     "kriscarle.maphubs-utils/services/terraformer-gl@1.1.0": {
         "files": [
@@ -58,9 +48,24 @@
         ],
         "mainFile": "src/services/terraformerGL/index.js",
         "trackDir": "src/services/terraformerGL",
-        "origin": "AUTHORED"
+        "origin": "AUTHORED",
+        "exported": true
     },
-    "kriscarle.maphubs-components/components/map@1.1.0": {
+    "kriscarle.maphubs-components/components/share-buttons@1.0.2": {
+        "files": [
+            {
+                "relativePath": "src/components/ShareButtons/index.js",
+                "test": false,
+                "name": "index.js"
+            }
+        ],
+        "mainFile": "src/components/ShareButtons/index.js",
+        "trackDir": "src/components/ShareButtons",
+        "origin": "AUTHORED",
+        "mainDistFile": "dist/src/components/ShareButtons/index.js",
+        "exported": true
+    },
+    "kriscarle.maphubs-components/components/map@1.1.2": {
         "files": [
             {
                 "relativePath": "src/components/Map/Attributes.js",
@@ -580,7 +585,9 @@
         ],
         "mainFile": "src/components/Map/index.js",
         "trackDir": "src/components/Map",
-        "origin": "AUTHORED"
+        "origin": "AUTHORED",
+        "mainDistFile": "dist/src/components/Map/index.js",
+        "exported": true
     },
-    "version": "13.0.4"
+    "version": "14.0.1"
 }
