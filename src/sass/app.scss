@@ -72,11 +72,12 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 
 .nav-hover-menu-item {
   color: $navbar-font-color !important;
+  background-color: $nav-background-color !important;
 }
 
 .nav-hover-menu-item:hover {
-  color: $navbar-hover-font-color !important;
-  background-color: $primary-color !important;
+  color: $nav-background-color !important;
+  background-color: $navbar-font-color !important;
 }
 
 .nav-link-wrapper a.active {
