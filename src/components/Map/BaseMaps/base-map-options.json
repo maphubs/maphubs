@@ -17,7 +17,7 @@
     },
     "attribution": "<a href=\"https://www.maptiler.com/license/maps/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; MapTiler</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
     "updateWithMapPosition": false,
-    "tilehostingUrl": "https://maps.tilehosting.com/styles/darkmatter/style.json?key="
+    "tilehostingUrl": "https://maps.tilehosting.com/c/e7fa06aa-e484-45af-b28a-58237136750e/styles/darkv2/style.json?key="
   },
   {
     "value": "streets", 
