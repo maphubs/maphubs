@@ -7,7 +7,7 @@ function getLossLayer (active: boolean): Layer {
     layer_id: 99999905,
     short_id: 'fr-tree-cover-loss',
     name: {
-      en: 'Tree Cover Loss 2000 - 2017'
+      en: 'Tree Cover Loss 2000 - 2018'
     },
     source: {
       en: 'Hansen/UMD/Google/USGS/NASA'
@@ -18,7 +18,7 @@ function getLossLayer (active: boolean): Layer {
         'fr-tree-cover-loss': {
           type: 'raster',
           tiles: [
-            'https://qzxvv33134iutzy.belugacdn.link/lossramp/2/{z}/{x}/{y}'
+            'https://qzxvv33134iutzy.belugacdn.link/lossramp2018/2/{z}/{x}/{y}'
           ],
           tileSize: 256
         }
@@ -71,7 +71,7 @@ function getLossLayer (active: boolean): Layer {
     external_layer_type: 'raster',
     external_layer_config: {
       type: 'raster',
-      url: 'https://qzxvv33134iutzy.belugacdn.link/lossramp/2/{z}/{x}/{y}'
+      url: 'https://qzxvv33134iutzy.belugacdn.link/lossramp2018/2/{z}/{x}/{y}'
     }
   }
 }
