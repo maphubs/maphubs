@@ -223,7 +223,7 @@
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-unicorn": "^7.1.0",
-    "flow-bin": "^0.93.0",
+    "flow-bin": "^0.95.1",
     "geojson-flow": "^1.0.1",
     "semver": "^5.5.0",
     "snyk": "^1.117.1",
