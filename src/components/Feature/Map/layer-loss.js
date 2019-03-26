@@ -61,7 +61,7 @@ function getLossLayer (active: boolean): Layer {
         <td colspan="2">
           <div class="waterLegendGradient" style="clear: both;"></div>
           <div style="color: #656565; font-size: 8px; float: left">2000</div>
-          <div style="color: #656565; font-size: 8px; float: right">2017</div>
+          <div style="color: #656565; font-size: 8px; float: right">2018</div>
         </td>
       </tr>
     </tbody>
