@@ -15,7 +15,11 @@ type Props = {
   note: string,
   onComplete: Function,
   onError: Function,
-  maxHeight: number
+  maxHeight: number,
+  maxFileSize?: number,
+  allowedFileTypes?: Array<string>,
+  meta?: Object,
+  headers?: Object
 }
 
 type State = {
@@ -24,24 +28,30 @@ type State = {
 
 export default class UppyFileUpload extends MapHubsComponent<Props, State> {
   static defaultProps = {
-    maxHeight: 300
+    maxHeight: 150
   }
   componentDidMount () {
+    const {maxFileSize, allowedFileTypes, meta, headers, endpoint} = this.props
     this.uppy = Uppy({
       id: 'uppy',
       autoProceed: true,
       debug: false,
       restrictions: {
-        maxFileSize: false,
+        maxFileSize,
         maxNumberOfFiles: 1,
         minNumberOfFiles: false,
-        allowedFileTypes: false
+        allowedFileTypes
       },
-      thumbnailGeneration: false
+      thumbnailGeneration: false,
+      meta
     })
     // this.uppy.use(GoogleDrive, { host: 'http://localhost:3020' });
     // this.uppy.use(Dropbox, { host: 'http://localhost:3020' });
-    this.uppy.use(Tus, { endpoint: this.props.endpoint })
+    const config = {
+      endpoint,
+      headers: headers || {}
+    }
+    this.uppy.use(Tus, config)
 
     this.uppy.on('complete', (result) => {
       if (result.successful && result.successful.length === 1) {
@@ -64,7 +74,10 @@ export default class UppyFileUpload extends MapHubsComponent<Props, State> {
           uppy={this.uppy}
           // plugins={['GoogleDrive', 'Dropbox']}
           inline
-          maxHeight={maxHeight}
+          height={maxHeight}
+          showProgressDetails
+          showLinkToFileUploadResult={false}
+          proudlyDisplayPoweredByUppy={false}
           note={note}
           locale={{
             strings: {

@@ -34,6 +34,8 @@ declare class MapHubsConfig {
   DG_WMS_CONNECT_ID: string;
   enableUserExport: boolean;
   EARTHENGINE_CLIENTID: string;
+  RASTER_UPLOAD_API: string;
+  RASTER_UPLOAD_API_KEY: string;
   BING_KEY: string;
   requireLogin: boolean;
 }

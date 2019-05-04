@@ -177,6 +177,8 @@ export default class MyDocument extends Document {
                 enableUserExport: "${local.enableUserExport}",
                 OPENROUTESERVICE_API_KEY:  "${local.OPENROUTESERVICE_API_KEY}",
                 EARTHENGINE_CLIENTID: "${local.EARTHENGINE_CLIENTID}",
+                RASTER_UPLOAD_API: "${local.RASTER_UPLOAD_API}",
+                RASTER_UPLOAD_API_KEY: "${local.RASTER_UPLOAD_API_KEY}",
                 requireLogin: ${local.requireLogin}
               }
           `}}

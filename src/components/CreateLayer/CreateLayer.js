@@ -33,13 +33,18 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
      scrollToComponent = require('react-scroll-to-component')
    }
 
+   componentDidUpdate () {
+     if (this.sourceDisplay) {
+       scrollToComponent(this.sourceDisplay, {align: 'bottom'})
+     }
+   }
+
   getSource = LayerSourceHelper.getSource.bind(this)
 
   sourceDisplay: any
 
   selectSource = (source: string) => {
     this.setState({source})
-    scrollToComponent(this.sourceDisplay, {align: 'bottom'})
   }
 
   onCancel = () => {
@@ -99,14 +104,12 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
               </div>
               <div className='row no-margin'>
                 <p style={{margin: '5px'}}>{t('Satellite Data')}</p>
-                {planetSource}
                 <div className='col s6'>
-                  {false &&
-                    <SourceSelectionBox name={t('Sentinel-2')} value={'sentinel'}
-                      selected={source === 'sentinel'} icon='satellite'
-                      onSelect={this.selectSource} />
-                  }
+                  <SourceSelectionBox name={t('Upload Raster')} value={'raster-upload'}
+                    selected={source === 'raster-upload'} icon='file_upload'
+                    onSelect={this.selectSource} />
                 </div>
+                {planetSource}
                 <div className='col s6'>
                   <SourceSelectionBox name={t('Digital Globe')} value={'dgwms'}
                     selected={source === 'dgwms'} icon='satellite'

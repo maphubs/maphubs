@@ -12,6 +12,7 @@ import SentinelSource from './SentinelSource'
 import WMSSource from './WMSSource'
 import DGWMSSource from './DGWMSSource'
 import EarthEngineSource from './EarthEngineSource'
+import UploadRasterSource from './UploadRasterSource'
 
 export default {
 
@@ -24,6 +25,8 @@ export default {
       return (<MapboxSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'raster') {
       return (<RasterTileSource onSubmit={this.onSubmit} t={t} />)
+    } else if (type === 'raster-upload') {
+      return (<UploadRasterSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'vector') {
       return (<VectorTileSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'ags') {

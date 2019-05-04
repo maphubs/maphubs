@@ -35,7 +35,9 @@ if (process.env.APP_ENV !== 'browser') {
     themeUrl: local.themeUrl,
     enableUserExport: local.enableUserExport,
     OPENROUTESERVICE_API_KEY: local.OPENROUTESERVICE_API_KEY,
-    EARTHENGINE_CLIENTID: local.EARTHENGINE_CLIENTID
+    EARTHENGINE_CLIENTID: local.EARTHENGINE_CLIENTID,
+    RASTER_UPLOAD_API: local.RASTER_UPLOAD_API,
+    RASTER_UPLOAD_API_KEY: local.RASTER_UPLOAD_API_KEY
   }
   console.log(global.MAPHUBS_CONFIG)
 }
