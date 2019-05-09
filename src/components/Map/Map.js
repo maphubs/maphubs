@@ -606,9 +606,9 @@ class Map extends React.Component<Props, State> {
             right: -7px !important;
             z-index: 201 !important;
             background-color: rgba(255, 255, 255, 0.75) !important;
-            color: $maphubs-accent-color !important;
+            color: black !important;
             border-radius: 25px !important;
-            border: 1px solid $maphubs-accent-color !important;
+            border: 1px solid black !important;
             width: 14px !important;
             height: 14px !important;
             line-height: 5px !important;
