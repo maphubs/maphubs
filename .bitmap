@@ -65,7 +65,7 @@
         "mainDistFile": "dist/src/components/ShareButtons/index.js",
         "exported": true
     },
-    "kriscarle.maphubs-components/components/map@1.1.3": {
+    "kriscarle.maphubs-components/components/map@1.1.5": {
         "files": [
             {
                 "relativePath": "src/components/Map/Attributes.js",
@@ -323,9 +323,14 @@
                 "name": "wolf.js"
             },
             {
-                "relativePath": "src/components/Map/InsetMap.js",
+                "relativePath": "src/components/Map/InsetMap/README.md",
                 "test": false,
-                "name": "InsetMap.js"
+                "name": "README.md"
+            },
+            {
+                "relativePath": "src/components/Map/InsetMap/index.js",
+                "test": false,
+                "name": "index.js"
             },
             {
                 "relativePath": "src/components/Map/InteractiveMap.js",
@@ -589,5 +594,5 @@
         "mainDistFile": "dist/src/components/Map/index.js",
         "exported": true
     },
-    "version": "14.0.1"
+    "version": "14.1.0"
 }
