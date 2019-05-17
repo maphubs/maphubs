@@ -42,6 +42,7 @@ type Props = {|
     maxBounds?: Object,
     maxZoom?: number,
     minZoom?: number,
+    zoom?: number,
     height: string,
     style: Object,
     glStyle?: GLStyle,
@@ -98,8 +99,6 @@ type Props = {|
 
 class Map extends React.Component<Props, State> {
   static defaultProps = {
-    maxZoom: 18,
-    minZoom: 5,
     className: '',
     interactive: true,
     showFeatureInfoEditButtons: true,
@@ -228,7 +227,21 @@ class Map extends React.Component<Props, State> {
     this.debugLog('Creating MapboxGL Map')
     mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
     const {debugLog} = this
-    const {preserveDrawingBuffer, enableRotation, hash, fitBounds, fitBoundsOptions, data, glStyle, attributionControl, t, locale} = this.props
+    const {
+      preserveDrawingBuffer,
+      enableRotation,
+      hash,
+      fitBounds,
+      fitBoundsOptions,
+      data,
+      glStyle,
+      attributionControl,
+      zoom,
+      minZoom,
+      maxZoom,
+      t,
+      locale
+    } = this.props
     const {interactive, mapLoaded} = this.state
     const [BaseMapState, , MapState] = this.props.containers
     BaseMapState.getBaseMapFromName(this.props.baseMap, (baseMap) => {
@@ -242,7 +255,9 @@ class Map extends React.Component<Props, State> {
       const map = new mapboxgl.Map({
         container: _this.state.id,
         style: _this.glStyle,
-        zoom: 0,
+        zoom: zoom || 0,
+        minZoom: minZoom || 0,
+        maxZoom: maxZoom || 22,
         interactive,
         dragRotate: !!enableRotation,
         touchZoomRotate: !!enableRotation,
