@@ -151,6 +151,7 @@ export default class MiniLegend extends React.Component<Props, State> {
           <h6 className='black-text valign' style={{
             padding: '0.2rem',
             marginLeft: '2px',
+            marginBottom: '2px',
             fontWeight: '500',
             fontSize: titleFontSize
           }}>{titleText}</h6>

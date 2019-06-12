@@ -271,6 +271,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
           showLayersButton={this.props.showLegendLayersButton}
           layers={this.state.layers}
           title={title}
+          collapsible={this.props.interactive}
           openLayersPanel={() => { this.onSetOpenMapLayersList(true) }}
         />
       )
