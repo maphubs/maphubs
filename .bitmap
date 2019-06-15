@@ -65,7 +65,7 @@
         "mainDistFile": "dist/src/components/ShareButtons/index.js",
         "exported": true
     },
-    "kriscarle.maphubs-components/components/map@1.1.7": {
+    "kriscarle.maphubs-components/components/map@1.1.8": {
         "files": [
             {
                 "relativePath": "src/components/Map/Attributes.js",

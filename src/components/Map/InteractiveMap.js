@@ -44,6 +44,7 @@ type Props = {
   children?: any,
   basemap: string,
   gpxLink?: Object,
+  hash?: booean,
   preserveDrawingBuffer?: boolean,
   t: Function,
   primaryColor: string,
@@ -218,7 +219,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
   }
 
   render () {
-    const {fitBounds, showShareButtons, t, primaryColor, logoSmall, logoSmallHeight, logoSmallWidth} = this.props
+    const {fitBounds, showShareButtons, t, primaryColor, logoSmall, logoSmallHeight, logoSmallWidth, hash} = this.props
     const {position, width} = this.state
     let border = 'none'
     if (this.props.border) {
@@ -316,6 +317,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
           logoSmall={logoSmall}
           logoSmallHeight={logoSmallHeight}
           logoSmallWidth={logoSmallWidth}
+          hash={hash}
           t={t}
         >
           {legend}
