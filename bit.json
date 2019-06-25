@@ -2,7 +2,6 @@
     "env": {
         "compiler": "kriscarle.maphubs-utils/bundlers/webpack@0.1.7"
     },
-    "dependencies": {},
     "componentsDefaultDirectory": "components/{namespace}/{name}",
     "packageManager": "npm"
 }

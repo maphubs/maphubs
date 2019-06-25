@@ -265,7 +265,8 @@ export default class InteractiveMap extends React.Component<Props, State> {
             top: '5px',
             left: '5px',
             minWidth: '200px',
-            width: '20%'
+            width: '20%',
+            zIndex: 2
           }}
           maxHeight={`calc(${this.props.height} - ${legendMaxHeight}px)`}
           hideInactive={this.props.hideInactive}
