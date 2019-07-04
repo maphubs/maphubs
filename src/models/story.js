@@ -85,7 +85,7 @@ module.exports = {
   },
 
   getStoryById (story_id: number) {
-    debug.log('get user story: ' + story_id)
+    debug.log('get story: ' + story_id)
     const query = this.getStoriesBaseQuery()
       .where({
         'omh.stories.story_id': story_id
@@ -124,13 +124,14 @@ module.exports = {
     return trx('omh.stories').where({story_id}).del()
   },
 
-  async createStory (user_id: number) {
+  async createStory (owned_by_group_id: string, user_id: number) {
     return knex.transaction(async (trx) => {
       let story_id = await trx('omh.stories').insert({
-        user_id,
+        owned_by_group_id,
         published: false,
         created_at: knex.raw('now()'),
-        updated_at: knex.raw('now()')
+        updated_at: knex.raw('now()'),
+        updated_by: user_id
       }).returning('story_id')
 
       story_id = parseInt(story_id)

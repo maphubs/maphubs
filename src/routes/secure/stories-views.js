@@ -36,11 +36,12 @@ module.exports = function (app: any) {
     } catch (err) { nextError(next)(err) }
   })
 
-  app.get('/createstory', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
+  app.get('/createstory/', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
     try {
       const username = req.session.user.maphubsUser.display_name
       const user_id = req.session.user.maphubsUser.id
-      const story_id = await Story.createStory(user_id)
+
+      // const story_id = await Story.createStory(user_id)
 
       return app.next.render(req, res, '/createstory', await pageOptions(req, {
         title: 'Create Story',
@@ -49,14 +50,13 @@ module.exports = function (app: any) {
         props: {
           username,
           myMaps: await Map.getUserMaps(req.session.user.maphubsUser.id),
-          popularMaps: await Map.getPopularMaps(),
-          story_id
+          popularMaps: await Map.getPopularMaps()
         }
       }))
     } catch (err) { nextError(next)(err) }
   })
 
-  app.get('/story/:story_id/edit/*', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
+  app.get('/editstory/:story_id/*', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
     try {
       const username = req.params.username
       const user_id = req.session.user.maphubsUser.id
@@ -82,7 +82,7 @@ module.exports = function (app: any) {
     } catch (err) { nextError(next)(err) }
   })
 
-  app.get('/story/:story_id/*', (req, res, next) => {
+  app.get('/story/:title/:story_id', (req, res, next) => {
     const story_id = parseInt(req.params.story_id || '', 10)
     const username = req.params.username
 

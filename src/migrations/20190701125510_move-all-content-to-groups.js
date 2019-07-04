@@ -1,6 +1,8 @@
 
 exports.up = async (knex, Promise) => {
   await knex.raw(`ALTER TABLE omh.stories ADD COLUMN owned_by_group_id text;`)
+  await knex.raw(`ALTER TABLE omh.stories ADD COLUMN updated_by bigint;`)
+  await knex.raw(`UPDATE omh.stories SET updated_by = user_id;`)
   // move hub stories to group
   const hubs = await knex('omh.hubs').select('hub_id', 'owned_by_group_id')
   await Promise.all(hubs.map(async (hub) => {

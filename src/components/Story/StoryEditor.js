@@ -460,9 +460,7 @@ publish = () => {
                 },
                 onClick () {
                   const storyTitle = (_this.state.story && _this.state.story.title) ? slugify(_this.state.story.title) : ''
-                  if (_this.props.storyType === 'user') {
-                    window.location = `/user/${_this.props.username}/story/${_this.state.story.story_id}/${storyTitle}`
-                  }
+                  window.location = `/story/${storyTitle}/${_this.state.story.story_id}`  
                 }
               })
             }
