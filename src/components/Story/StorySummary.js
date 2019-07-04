@@ -23,16 +23,8 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
     if (story.title) {
       title = story.title.replace('&nbsp;', '')
     }
-    let linkUrl = ''
     const baseUrl = urlUtil.getBaseUrl()
-    if (story.display_name) {
-      linkUrl = `${baseUrl}/user/${story.display_name}`
-    } else if (story.hub_id) {
-      const hubUrl = `${baseUrl}/hub/${story.hub_id}`
-      linkUrl = hubUrl
-    }
-
-    linkUrl += `/story/${story.story_id}/${slugify(title)}`
+    const linkUrl = `${baseUrl}/story/${slugify(title)}/${story.story_id}`
 
     let imageUrl
     if (story.firstimage) {

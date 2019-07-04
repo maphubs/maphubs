@@ -121,12 +121,10 @@ export default class Search extends MapHubsComponent<Props, State> {
 
       const layerRes = await request.get(`/api/layers/search?q=${input}`).type('json').accept('json')
       const groupRes = await request.get(`/api/groups/search?q=${input}`).type('json').accept('json')
-      const hubRes = await request.get(`/api/hubs/search?q=${input}`).type('json').accept('json')
       const mapRes = await request.get(`/api/maps/search?q=${input}`).type('json').accept('json')
 
       let layerResults = []
       let groupResults = []
-      let hubResults = []
       let mapResults = []
       const storyResults = []
 
@@ -142,19 +140,13 @@ export default class Search extends MapHubsComponent<Props, State> {
         groupResults = groupRes.body.groups
       }
 
-      // hubs
-      if (hubRes.body && hubRes.body.hubs && hubRes.body.hubs.length > 0) {
-        totalResults += hubRes.body.hubs.length
-        hubResults = hubRes.body.hubs
-      }
-
       // map
       if (mapRes.body && mapRes.body.maps && mapRes.body.maps.length > 0) {
         totalResults += mapRes.body.maps.length
         mapResults = mapRes.body.maps
       }
 
-      const searchCards = this.getMixedCardSet(layerResults, groupResults, hubResults, mapResults, storyResults)
+      const searchCards = this.getMixedCardSet(layerResults, groupResults, mapResults, storyResults)
       this.setState({
         searchCards
       })
@@ -186,10 +178,9 @@ export default class Search extends MapHubsComponent<Props, State> {
     }
   }
 
-  getMixedCardSet (layers: Array<Object>, groups: Array<Object>, hubs: Array<Object>, maps: Array<Object>, stories: Array<Object>) {
+  getMixedCardSet (layers: Array<Object>, groups: Array<Object>, maps: Array<Object>, stories: Array<Object>) {
     return _shuffle(layers.map(cardUtil.getLayerCard)
       .concat(groups.map(cardUtil.getGroupCard))
-      .concat(hubs.map(cardUtil.getHubCard))
       .concat(maps.map(cardUtil.getMapCard))
       .concat(stories.map(cardUtil.getStoryCard))
     )

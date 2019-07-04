@@ -35,30 +35,15 @@ export default {
     }
   },
 
-  getHubCard (hub: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig {
-    const title = hub.name.replace('&nbsp;', '')
-    const hubUrl = urlUtil.getBaseUrl() + '/hub/' + hub.hub_id
-    return {
-      id: `hub-${hub.hub_id}`,
-      title,
-      description: hub.description,
-      group: hub.owned_by_group_id,
-      image_url: `/img/resize/150?url=/hub/${hub.hub_id}/images/logo`,
-      background_image_url: `/img/resize/400?url=/hub/${hub.hub_id}/images/banner/thumbnail`,
-      link: hubUrl,
-      type: 'hub',
-      data: hub,
-      private: hub.private,
-      onClick
-    }
-  },
-
   getMapCard (map: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig {
     const image_url = `/img/resize/400?url=/api/screenshot/map/thumbnail/${map.map_id}.jpg`
     return {
       id: `map-${map.map_id.toString()}`,
       title: map.title, // LocalizedString
-      group: map.owned_by_group_id,
+      group: {
+        group_id: map.owned_by_group_id,
+        name: map.groupname
+      },
       image_url,
       link: '/map/view/' + map.map_id + '/',
       type: 'map',
@@ -89,15 +74,8 @@ export default {
 
   getStoryCard (story: Object, id: number, arr: Array<Object>, onClick?: Function) {
     const title = story.title.replace('&nbsp;', '')
-    let story_url = ''
     const baseUrl = urlUtil.getBaseUrl()
-    if (story.display_name) {
-      story_url = baseUrl + '/user/' + story.display_name
-    } else if (story.hub_id) {
-      const hubUrl = baseUrl + '/hub/' + story.hub_id
-      story_url = hubUrl
-    }
-    story_url += '/story/' + story.story_id + '/' + slugify(title)
+    const story_url = `${baseUrl}/story/${slugify(title)}/${story.story_id}`
 
     let image_url
     if (story.firstimage) {

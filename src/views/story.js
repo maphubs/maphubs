@@ -1,11 +1,9 @@
 // @flow
 import React from 'react'
-import HubNav from '../components/Hub/HubNav'
-import HubBanner from '../components/Hub/HubBanner'
-import HubStore from '../stores/HubStore'
-import StoryHeader from '../components/Story/StoryHeader'
+import Header from '../components/header'
 import Comments from '../components/Comments'
 import slugify from 'slugify'
+import StoryHeader from '../components/Story/StoryHeader'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
@@ -16,14 +14,15 @@ import FloatingButton from '../components/FloatingButton'
 
 type Props = {
   story: Object,
-  hub: Object,
+  username: string,
   canEdit: boolean,
   locale: string,
   _csrf: string,
+  headerConfig: Object,
   user: Object
 }
 
-export default class HubStory extends MapHubsComponent<Props, void> {
+export default class Story extends MapHubsComponent<Props, void> {
   static async getInitialProps ({ req, query }: {req: any, query: Object}) {
     const isServer = !!req
 
@@ -36,48 +35,48 @@ export default class HubStory extends MapHubsComponent<Props, void> {
 
   static defaultProps = {
     story: {},
-    hub: {},
     canEdit: false
   }
 
   constructor (props: Props) {
     super(props)
-    this.stores.push(HubStore)
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-    Reflux.rehydrate(HubStore, {hub: props.hub, canEdit: props.canEdit})
   }
 
   render () {
     const {t} = this
     const story = this.props.story
-    const title = story.title.replace('&nbsp;', '')
+
     let button = ''
-    const baseUrl = '/hub/' + this.props.hub.hub_id
     if (this.props.canEdit) {
       button = (
         <div className='fixed-action-btn action-button-bottom-right'>
-          <FloatingButton icon='mode_edit'
-            href={`${baseUrl}/story/${this.props.story.story_id}/edit/${slugify(title)}`}
-            tooltip={t('Edit')} tooltipPosition='left' />
+          <FloatingButton
+            href={`/user/${this.props.username}/story/${this.props.story.story_id}/edit/${slugify(this.props.story.title)}`}
+            tooltip={t('Edit')}
+            tooltipPosition='left'
+            icon='mode_edit' />
         </div>
       )
     }
+    const title = story.title.replace('&nbsp;', '')
 
-    let discuss = ''
-    let shareButtons = ''
+    let shareAndDiscuss = ''
     if (MAPHUBS_CONFIG.enableComments) {
-      shareButtons = (
-        <ShareButtons
-          title={story.title} t={this.t}
-          style={{width: '70px', position: 'absolute', right: '10px'}}
-        />
-      )
-      discuss = (
-        <div className='row'>
-          <Comments />
+      shareAndDiscuss = (
+        <div className='story-share-comments'>
+          <div className='row' style={{height: '32px', position: 'relative'}}>
+            <ShareButtons
+              title={story.title} t={this.t}
+              style={{width: '70px', position: 'absolute', left: '0px'}}
+            />
+          </div>
+          <div className='row'>
+            <Comments />
+          </div>
         </div>
       )
     }
@@ -85,18 +84,18 @@ export default class HubStory extends MapHubsComponent<Props, void> {
     /* eslint-disable react/no-danger */
     return (
       <ErrorBoundary>
-        <HubNav hubid={this.props.hub.hub_id} />
+        <Header {...this.props.headerConfig} />
         <main>
-          <div className='row'>
-            <HubBanner subPage />
-          </div>
           <div className='container'>
             <div className='row' style={{marginTop: '20px'}}>
               <div className='col s12 m19 l9'>
                 <StoryHeader story={story} />
               </div>
               <div className='col s12 m3 l3'>
-                {shareButtons}
+                <ShareButtons
+                  title={story.title} t={this.t}
+                  style={{width: '70px', position: 'absolute', right: '10px'}}
+                />
               </div>
             </div>
             <div className='row'>
@@ -104,7 +103,8 @@ export default class HubStory extends MapHubsComponent<Props, void> {
               <div className='story-content' dangerouslySetInnerHTML={{__html: story.body}} />
             </div>
             <hr />
-            {discuss}
+            {shareAndDiscuss}
+
           </div>
           {button}
         </main>

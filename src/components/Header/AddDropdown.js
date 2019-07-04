@@ -23,9 +23,6 @@ export default class AddDropdown extends React.PureComponent<Props, void> {
           <a href='/user/createstory' className='nav-hover-menu-item'>{t('New Story')}</a>
         </Menu.Item>
         <Menu.Item>
-          <a href='/createhub' className='nav-hover-menu-item'>{t('New Hub')}</a>
-        </Menu.Item>
-        <Menu.Item>
           <a href='/createremotelayer' className='nav-hover-menu-item'>{t('Remote Layer')}</a>
         </Menu.Item>
         <Menu.Item>

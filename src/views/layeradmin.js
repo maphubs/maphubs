@@ -142,7 +142,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
       title: t('Confirm Delete'),
       message: t('Please confirm removal of') + ' ' +
       t(this.props.layer.name) + '. ' +
-      t('All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, stories, and hubs.'),
+      t('All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, and stories.'),
       onPositiveResponse () {
         _this.setState({saving: true})
         LayerActions.deleteLayer(_this.state._csrf, (err) => {

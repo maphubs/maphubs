@@ -8,7 +8,7 @@ import FeatureNotesActions from '../../actions/FeatureNotesActions'
 import MessageActions from '../../actions/MessageActions'
 import NotificationActions from '../../actions/NotificationActions'
 import type {FeatureNotesStoreState} from '../../stores/FeatureNotesStore'
-import HubEditButton from '../Hub/HubEditButton'
+import EditButton from '../EditButton'
 import MapHubsComponent from '../MapHubsComponent'
 
 type Props = {|
@@ -107,7 +107,7 @@ export default class FeatureNotes extends MapHubsComponent<Props, State> {
       <div className='row' style={{marginLeft: '0px', padding: '20px', height: '100%'}}>
         {resources}
         {canEdit &&
-          <HubEditButton editing={editingNotes}
+          <EditButton editing={editingNotes}
             style={{position: 'absolute'}}
             startEditing={startEditingNotes} stopEditing={stopEditingNotes} />
         }

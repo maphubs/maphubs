@@ -101,7 +101,6 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
               <li className='nav-link-wrapper'><a href={`/user/${displayName}/maps`}>{t('My Maps')}</a></li>
               <li className='nav-link-wrapper'><a href={`/user/${displayName}/stories`}>{t('My Stories')}</a></li>
               <li className='nav-link-wrapper'><a href={`/user/${displayName}/groups`}>{t('My Groups')}</a></li>
-              <li className='nav-link-wrapper'><a href={`/user/${displayName}/hubs`}>{t('My Hubs')}</a></li>
               <li className='nav-link-wrapper'><a href='/user/profile'>{t('Settings')}</a></li>
               {admin &&
                 <li className='nav-link-wrapper'><a href='/admin/manage'>{t('Manage Users')}</a></li>
@@ -124,8 +123,6 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
               <li className='usermenu-wrapper'><a href={`/user/${displayName}/stories`}>{t('My Stories')}</a></li>
               <li className='divider' />
               <li className='usermenu-wrapper'><a href={`/user/${displayName}/groups`}>{t('My Groups')}</a></li>
-              <li className='divider' />
-              <li className='usermenu-wrapper'><a href={`/user/${displayName}/hubs`}>{t('My Hubs')}</a></li>
               <li className='divider' />
               <li className='usermenu-wrapper'><a href='/user/profile'>{t('Settings')}</a></li>
               {admin &&

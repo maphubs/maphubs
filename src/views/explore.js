@@ -18,17 +18,14 @@ import UserStore from '../stores/UserStore'
 type Props = {
   featuredLayers: Array<Object>,
   featuredGroups: Array<Object>,
-  featuredHubs: Array<Object>,
   featuredMaps: Array<Object>,
   featuredStories: Array<Object>,
   popularLayers: Array<Object>,
   popularGroups: Array<Object>,
-  popularHubs: Array<Object>,
   popularMaps: Array<Object>,
   popularStories: Array<Object>,
   recentLayers: Array<Object>,
   recentGroups: Array<Object>,
-  recentHubs: Array<Object>,
   recentMaps: Array<Object>,
   recentStories: Array<Object>,
   locale: string,
@@ -41,7 +38,6 @@ type Props = {
 type State = {
   storyMode: string,
   mapMode: string,
-  hubMode: string,
   groupMode: string,
   layerMode: string,
   featuredStoryCards: Array<CardConfig>,
@@ -50,9 +46,6 @@ type State = {
   featuredMapCards: Array<CardConfig>,
   popularMapCards: Array<CardConfig>,
   recentMapCards: Array<CardConfig>,
-  featuredHubCards: Array<CardConfig>,
-  popularHubCards: Array<CardConfig>,
-  recentHubCards: Array<CardConfig>,
   featuredGroupCards: Array<CardConfig>,
   popularGroupCards: Array<CardConfig>,
   recentGroupCards: Array<CardConfig>,
@@ -81,7 +74,6 @@ export default class Home extends MapHubsComponent<Props, State> {
     this.state = {
       storyMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
       mapMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
-      hubMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
       groupMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
       layerMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
 
@@ -92,10 +84,6 @@ export default class Home extends MapHubsComponent<Props, State> {
       featuredMapCards: _shuffle(props.featuredMaps.map(cardUtil.getMapCard)),
       popularMapCards: _shuffle(props.popularMaps.map(cardUtil.getMapCard)),
       recentMapCards: _shuffle(props.recentMaps.map(cardUtil.getMapCard)),
-
-      featuredHubCards: _shuffle(props.featuredHubs.map(cardUtil.getHubCard)),
-      popularHubCards: _shuffle(props.popularHubs.map(cardUtil.getHubCard)),
-      recentHubCards: _shuffle(props.recentHubs.map(cardUtil.getHubCard)),
 
       featuredGroupCards: _shuffle(props.featuredGroups.map(cardUtil.getGroupCard)),
       popularGroupCards: _shuffle(props.popularGroups.map(cardUtil.getGroupCard)),
@@ -114,7 +102,7 @@ export default class Home extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     const _this = this
-    const {storyMode, mapMode, hubMode, groupMode, layerMode, featuredStoryCards, popularStoryCards, recentStoryCards} = this.state
+    const {storyMode, mapMode, groupMode, layerMode, featuredStoryCards, popularStoryCards, recentStoryCards} = this.state
     let storyCards = []
     if (storyMode === 'featured') {
       storyCards = featuredStoryCards
@@ -131,15 +119,6 @@ export default class Home extends MapHubsComponent<Props, State> {
       mapCards = this.state.popularMapCards
     } else if (mapMode === 'recent') {
       mapCards = this.state.recentMapCards
-    }
-
-    let hubCards = []
-    if (hubMode === 'featured') {
-      hubCards = this.state.featuredHubCards
-    } else if (hubMode === 'popular') {
-      hubCards = this.state.popularHubCards
-    } else if (hubMode === 'recent') {
-      hubCards = this.state.recentHubCards
     }
 
     let groupCards = []
@@ -167,7 +146,7 @@ export default class Home extends MapHubsComponent<Props, State> {
           <SubPageBanner locale={this.props.locale}
             img='https://hpvhe47439ygwrt.belugacdn.link/maphubs/assets/home/Moabi-Canoe.jpg' backgroundPosition='50% 15%'
             title={t('Explore')} subTitle={t(`
-               Browse Stories, Maps, Groups, Hubs, and Layers
+               Browse Stories, Maps, Groups, and Layers
               `)} />
           <div className='row' style={{marginTop: '20px', marginBottom: 0, marginRight: '5px'}}>
             <div className='col s12' style={{paddingLeft: '25%', paddingRight: '25%'}}>
@@ -215,28 +194,6 @@ export default class Home extends MapHubsComponent<Props, State> {
             </div>
             <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
               <a href='/maps' className='btn'>{t('More Maps')}</a>
-            </div>
-          </div>
-          <div className='divider' />
-          <div className='row no-margin'>
-            <div className='row no-margin' style={{height: '50px'}}>
-              <div className='col s12 m2 l1'>
-                <a href='/hubs'>
-                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Hubs')}</h5>
-                </a>
-              </div>
-              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
-              <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
-                <CardFilter defaultValue={this.state.hubMode} onChange={(value) => { _this.setState({hubMode: value}) }} />
-              </div>
-            </div>
-            <div className='row'>
-              <div className='col s12'>
-                <CardCarousel cards={hubCards} infinite={false} t={this.t} />
-              </div>
-            </div>
-            <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
-              <a href='/hubs' className='btn'>{t('More Hubs')}</a>
             </div>
           </div>
           <div className='divider' />

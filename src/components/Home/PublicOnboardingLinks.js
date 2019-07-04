@@ -50,11 +50,11 @@ export default class PublicOnboardingLinks extends React.PureComponent<Props, vo
           {storyDemoText}
         </div>
         <div className='col s12 m3 l3 home-onboarding-icon-wrapper' style={{margin: 'auto'}}>
-          <a href='/hubs' style={{margin: 'auto'}}>
+          <a href='/groups' style={{margin: 'auto'}}>
             <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
               <i className='material-icons valign center-align' style={{fontSize: '80px', margin: 'auto'}}>web</i>
             </div>
-            <h5 className='center-align'>{t('Hubs')}</h5>
+            <h5 className='center-align'>{t('Groups')}</h5>
           </a>
           {hubDemoText}
         </div>

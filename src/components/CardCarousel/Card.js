@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import GroupTag from '../Groups/GroupTag'
-import MapCardUserTag from './MapCardUserTag'
+import MapCardGroupTag from './MapCardGroupTag'
 import StoryHeader from '../Story/StoryHeader'
 import Lock from '@material-ui/icons/Lock'
 import LockOpen from '@material-ui/icons/LockOpenTwoTone'
@@ -15,7 +15,10 @@ export type CardConfig = {|
   image_url?: string,
   background_image_url?: string,
   link: string,
-  group?: string,
+  group?: {
+    group_id: string,
+    name: LocalizedString
+  },
   data: Object,
   type: string,
   private?: boolean,
@@ -44,7 +47,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
 
     let iconName = ''
     let toolTipText = ''
-    let mapCardUserTag = ''
+    let mapCardGroupTag = ''
     let storyTag = ''
     if (type) {
       if (type === 'layer') {
@@ -53,9 +56,6 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
       } else if (type === 'group') {
         iconName = 'supervisor_account'
         toolTipText = t('Group')
-      } else if (type === 'hub') {
-        iconName = 'web'
-        toolTipText = 'Hub'
       } else if (type === 'story') {
         iconName = 'library_books'
         toolTipText = t('Story')
@@ -68,9 +68,9 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
         iconName = 'map'
         toolTipText = t('Map')
         if (!this.props.group) {
-          mapCardUserTag = (
+          mapCardGroupTag = (
             <div style={{position: 'absolute', bottom: 1, left: 1, width: '200px'}}>
-              <MapCardUserTag map={this.props.data} />
+              <MapCardGroupTag map={this.props.data} group={this.props.group} />
             </div>
           )
         }
@@ -87,15 +87,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
       )
     }
     let image = ''
-    if (type === 'hub') {
-      image = (
-        <div className='card-image valign-wrapper' style={{height: '150px'}}>
-          <img className='responsive-img' style={{position: 'absolute', objectFit: 'cover', height: '150px'}} src={this.props.background_image_url} />
-          <img className='valign' width='75' height='75' style={{position: 'relative', width: '75px', borderRadius: '15px', margin: 'auto'}} src={image_url} />
-          {addButton}
-        </div>
-      )
-    } else if (type === 'story' && !image_url) {
+    if (type === 'story' && !image_url) {
       image = (
         <div className='card-image valign-wrapper' style={{width: '200px', height: '150px'}}>
           <i className='material-icons omh-accent-text valign center-align' style={{fontSize: '80px', margin: 'auto'}}>library_books</i>
@@ -177,7 +169,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
           <b>{t(this.props.title)}</b> <br />
 
           <p className='fade' style={{fontSize: '12px'}}> {t(this.props.description)}</p>
-          {mapCardUserTag}
+          {mapCardGroupTag}
           {storyTag}
           {group &&
             <div className='valign-wrapper' style={{position: 'absolute', bottom: 1, left: 1}}>

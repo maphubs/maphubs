@@ -3,7 +3,6 @@ import Locales from '../../services/locales'
 const Group = require('../../models/group')
 const User = require('../../models/user')
 const Layer = require('../../models/layer')
-const Hub = require('../../models/hub')
 const Map = require('../../models/map')
 const Account = require('../../models/account')
 const login = require('connect-ensure-login')
@@ -61,7 +60,6 @@ module.exports = function (app: any) {
       const group = await Group.getGroupByID(group_id)
       const maps = await Map.getGroupMaps(group_id, canEdit)
       const layers = await Layer.getGroupLayers(group_id, canEdit)
-      const hubs = await Hub.getGroupHubs(group_id, canEdit)
       const members = await Group.getGroupMembers(group_id)
 
       if (!group) {
@@ -75,7 +73,7 @@ module.exports = function (app: any) {
         title: name + ' - ' + MAPHUBS_CONFIG.productName,
         description,
         props: {
-          group, maps, layers, hubs, members, canEdit
+          group, maps, layers, members, canEdit
         },
         twitterCard: {
           card: 'summary',
@@ -107,7 +105,6 @@ module.exports = function (app: any) {
               group,
               maps: await Map.getGroupMaps(group_id, true),
               layers: await Layer.getGroupLayers(group_id, true),
-              hubs: await Hub.getGroupHubs(group_id, true),
               members: await Group.getGroupMembers(group_id),
               account: await Account.getStatus(group_id)
             }

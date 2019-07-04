@@ -24,7 +24,6 @@ export default class ExploreDropdown extends React.PureComponent<Props, void> {
           <li><a href='/maps' className='nav-hover-menu-item'>{t('Maps')}</a></li>
           <li><a href='/stories' className='nav-hover-menu-item'>{t('Stories')}</a></li>
           <li><a href='/layers' className='nav-hover-menu-item'>{t('Layers')}</a></li>
-          <li><a href='/hubs' className='nav-hover-menu-item'>{t('Hubs')}</a></li>
           <li><a href='/groups' className='nav-hover-menu-item'>{t('Groups')}</a></li>
           <li className='divider' />
         </ul>
@@ -43,9 +42,6 @@ export default class ExploreDropdown extends React.PureComponent<Props, void> {
           </Menu.Item>
           <Menu.Item>
             <a href='/layers' className='nav-hover-menu-item'>{t('Layers')}</a>
-          </Menu.Item>
-          <Menu.Item>
-            <a href='/hubs' className='nav-hover-menu-item'>{t('Hubs')}</a>
           </Menu.Item>
           <Menu.Item>
             <a href='/groups' className='nav-hover-menu-item'>{t('Groups')}</a>

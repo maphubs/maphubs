@@ -11,7 +11,7 @@ import Licenses from '../components/CreateLayer/licenses'
 import MessageActions from '../actions/MessageActions'
 import NotificationActions from '../actions/NotificationActions'
 import LayerNotes from '../components/CreateLayer/LayerNotes'
-import HubEditButton from '../components/Hub/HubEditButton'
+import EditButton from '../components/EditButton'
 import LayerNotesActions from '../actions/LayerNotesActions'
 import LayerNotesStore from '../stores/LayerNotesStore'
 import LayerDataGrid from '../components/DataGrid/LayerDataGrid'
@@ -105,7 +105,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   static defaultProps: DefaultProps = {
-    stats: {maps: 0, stories: 0, hubs: 0},
+    stats: {maps: 0, stories: 0},
     canEdit: false
   }
 
@@ -482,14 +482,14 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                         {this.state.length > 0 &&
                           <p style={{fontSize: '16px'}}><b>{t('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>
                         }
-                      </Col>                  
+                      </Col>
                     </Row>
                     <Stats views={layer.views} stats={this.props.stats} t={t} />
                   </div>
                   <div id='notes' className='col s12' style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
                     <LayerNotes editing={this.state.editingNotes} />
                     {canEdit &&
-                      <HubEditButton editing={editingNotes}
+                      <EditButton editing={editingNotes}
                         style={{position: 'absolute'}}
                         startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
                     }
@@ -523,7 +523,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                             }
                           </div>
                           {canEdit &&
-                            <HubEditButton editing={editingData}
+                            <EditButton editing={editingData}
                               style={{position: 'absolute', bottom: '10px'}}
                               startEditing={startEditingData} stopEditing={() => { stopEditingData(DataEditor) }} />
                           }

@@ -1,7 +1,6 @@
 // @flow
 const Layer = require('../../models/layer')
 const Group = require('../../models/group')
-const Hub = require('../../models/hub')
 const Map = require('../../models/map')
 const Page = require('../../models/page')
 const Story = require('../../models/story')
@@ -25,17 +24,14 @@ module.exports = function (app: any) {
         props: {
           featuredLayers: await Layer.getFeaturedLayers(10),
           featuredGroups: await Group.getFeaturedGroups(10),
-          featuredHubs: await Hub.getFeaturedHubs(10),
           featuredMaps: await Map.getFeaturedMaps(10),
           featuredStories: await Story.getFeaturedStories(10),
           popularLayers: await Layer.getPopularLayers(10),
           popularGroups: await Group.getPopularGroups(10),
-          popularHubs: await Hub.getPopularHubs(10),
           popularMaps: await Map.getPopularMaps(10),
           popularStories: await Story.getPopularStories(10),
           recentLayers: await Layer.getRecentLayers(10),
           recentGroups: await Group.getRecentGroups(10),
-          recentHubs: await Hub.getRecentHubs(10),
           recentMaps: await Map.getRecentMaps(10),
           recentStories: await Story.getRecentStories(10)
         }

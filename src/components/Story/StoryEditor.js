@@ -157,8 +157,8 @@ save = () => {
     return
   }
 
-  // if this is a hub story, require an author
-  if (this.props.storyType === 'hub' && !this.state.story.author) {
+  // require an author
+  if (!this.state.story.author) {
     NotificationActions.showNotification({message: t('Please Add an Author'), dismissAfter: 5000, position: 'bottomleft'})
     return
   }
@@ -205,11 +205,7 @@ save = () => {
             if (_this.state.story.title) {
               title = slugify(_this.state.story.title)
             }
-            if (_this.props.storyType === 'user') {
-              window.location = `/user/${_this.props.username}/story/${_this.state.story.story_id}/${title}`
-            } else if (_this.props.hub_id) {
-              window.location = `/hub/${_this.props.hub_id}/story/${_this.state.story.story_id}/${title}`
-            }
+            window.location = `/story/${title}/${_this.state.story.story_id}`
           }
         })
       }
@@ -430,7 +426,7 @@ publish = () => {
       }
 
       // if this is a hub story, require an author
-      if (_this.props.storyType === 'hub' && !_this.state.story.author) {
+      if (!_this.state.story.author) {
         NotificationActions.showNotification({message: t('Please Add an Author'), dismissAfter: 5000, position: 'bottomleft'})
         return
       }
@@ -466,11 +462,6 @@ publish = () => {
                   const storyTitle = (_this.state.story && _this.state.story.title) ? slugify(_this.state.story.title) : ''
                   if (_this.props.storyType === 'user') {
                     window.location = `/user/${_this.props.username}/story/${_this.state.story.story_id}/${storyTitle}`
-                  } else {
-                    const hubId = _this.props.hub_id ? _this.props.hub_id : 'unknown'
-                    const baseUrl = `/hub/${hubId}`
-
-                    window.location = `${baseUrl}/story/${_this.state.story.story_id}/${storyTitle}`
                   }
                 }
               })
@@ -529,23 +520,6 @@ showImageCrop = () => {
 
 render () {
   const {t} = this
-  let author = ''
-  if (this.props.storyType === 'hub') {
-    author = (
-      <div className='story-author' style={{height: '30px'}}>
-        <Editor
-          tag='b'
-          text={this.state.story.author}
-          onChange={Actions.handleAuthorChange}
-          options={{buttonLabels: false,
-            placeholder: {text: t('Enter the Author')},
-            disableReturn: true,
-            imageDragging: false,
-            toolbar: {buttons: []}}}
-        />
-      </div>
-    )
-  }
 
   let deleteButton = ''
   if (this.state.story.story_id) {
@@ -589,7 +563,18 @@ render () {
             }}
           />
         </div>
-        {author}
+        <div className='story-author' style={{height: '30px'}}>
+          <Editor
+            tag='b'
+            text={this.state.story.author}
+            onChange={Actions.handleAuthorChange}
+            options={{buttonLabels: false,
+              placeholder: {text: t('Enter the Author')},
+              disableReturn: true,
+              imageDragging: false,
+              toolbar: {buttons: []}}}
+          />
+        </div>
         <div className='story-content'>
           <Editor
             className='storybody'

@@ -1,6 +1,6 @@
 # MapHubs
 
-MapHubs is a collaborative platform for sharing mapping data, organizing data into hubs, and telling stories with maps.
+MapHubs is a collaborative platform for sharing and organzing mapping data, and telling stories with maps.
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmaphubs%2Fmaphubs.svg?type=shield)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmaphubs%2Fmaphubs?ref=badge_shield)
 

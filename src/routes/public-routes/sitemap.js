@@ -76,12 +76,10 @@ Disallow: /xml/map/*
       {url: baseUrl + '/layers', changefreq: 'daily'},
       {url: baseUrl + '/maps', changefreq: 'daily'},
       {url: baseUrl + '/stories', changefreq: 'daily'},
-      {url: baseUrl + '/hubs', changefreq: 'daily'},
       {url: baseUrl + '/groups', changefreq: 'daily'}
     ]
 
     knex.transaction(async (trx) => {
-      await siteMapUtil.addHubsToSiteMap(sm, trx)
       await siteMapUtil.addStoriesToSiteMap(sm, trx)
       await siteMapUtil.addMapsToSiteMap(sm, trx)
       await siteMapUtil.addLayersToSiteMap(sm, trx)

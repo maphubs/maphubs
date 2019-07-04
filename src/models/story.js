@@ -1,87 +1,52 @@
 // @flow
 const knex = require('../connection')
-const Promise = require('bluebird')
 const Group = require('./group')
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('model/story')
 
 module.exports = {
 
-  getAllStories (trx: any) {
+  getStoriesBaseQuery (trx) {
     const db = trx || knex
     return db.select(
       'omh.stories.story_id', 'omh.stories.title',
-      'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
+      'omh.stories.body', 'omh.stories.language',
+      'omh.stories.firstline', 'omh.stories.firstimage',
       'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
-      db.raw(`timezone('UTC', omh.stories.updated_at) as updated_at`),
-      'omh.user_stories.user_id', 'public.users.display_name',
-      'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name',
-      db.raw('md5(lower(trim(public.users.email))) as emailhash')
+      knex.raw(`timezone('UTC', omh.stories.updated_at) as updated_at`),
+      'omh.stories.owned_by_group_id',
+      'omh.groups.name as groupname'
     )
-      .table('omh.stories')
-    // .where('omh.stories.published', true)
-      .whereRaw(`omh.stories.published = true AND (omh.hubs.hub_id IS NULL OR omh.hubs.published = true )`)
-      .leftJoin('omh.user_stories', 'omh.stories.story_id', 'omh.user_stories.story_id')
-      .leftJoin('public.users', 'public.users.id', 'omh.user_stories.user_id')
-      .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
-      .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id')
+      .from('omh.stories')
+      .leftJoin('omh.groups', 'omh.stories.owned_by_group_id', 'omh.groups.group_id')
+  },
+
+  getAllStories (trx: any) {
+    const query = this.getStoriesBaseQuery(trx)
+    return query
+      .where('omh.stories.published', true)
   },
 
   getRecentStories (number: number = 10) {
-    return knex.select(
-      'omh.stories.story_id', 'omh.stories.title',
-      'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
-      'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
-      knex.raw(`timezone('UTC', omh.stories.updated_at) as updated_at`),
-      'omh.user_stories.user_id', 'public.users.display_name',
-      'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name',
-      knex.raw('md5(lower(trim(public.users.email))) as emailhash')
-    )
-      .table('omh.stories')
-      .leftJoin('omh.user_stories', 'omh.stories.story_id', 'omh.user_stories.story_id')
-      .leftJoin('public.users', 'public.users.id', 'omh.user_stories.user_id')
-      .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
-      .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id')
-      .whereRaw('omh.stories.published=true AND (omh.hubs.hub_id IS NULL OR omh.hubs.published = true)')
+    const query = this.getStoriesBaseQuery()
+    return query
+      .where('omh.stories.published', true)
       .orderBy('omh.stories.updated_at', 'desc')
       .limit(number)
   },
 
   getPopularStories (number: number = 10) {
-    return knex.select(
-      'omh.stories.story_id', 'omh.stories.title',
-      'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
-      'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
-      knex.raw(`timezone('UTC', omh.stories.updated_at) as updated_at`),
-      'omh.user_stories.user_id', 'public.users.display_name',
-      'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name',
-      knex.raw('md5(lower(trim(public.users.email))) as emailhash')
-    )
-      .table('omh.stories')
-      .leftJoin('omh.user_stories', 'omh.stories.story_id', 'omh.user_stories.story_id')
-      .leftJoin('public.users', 'public.users.id', 'omh.user_stories.user_id')
-      .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
-      .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id')
-      .whereRaw('omh.stories.published=true AND omh.stories.views IS NOT NULL AND (omh.hubs.hub_id IS NULL OR omh.hubs.published = true)')
+    const query = this.getStoriesBaseQuery()
+    return query
+      .where('omh.stories.published', true)
       .orderBy('omh.stories.views', 'desc')
       .limit(number)
   },
 
   getFeaturedStories (number: number = 10) {
-    return knex.select(
-      'omh.stories.story_id', 'omh.stories.title',
-      'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
-      'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
-      knex.raw(`timezone('UTC', omh.stories.updated_at) as updated_at`),
-      'omh.user_stories.user_id', 'public.users.display_name',
-      'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name',
-      knex.raw('md5(lower(trim(public.users.email))) as emailhash')
-    )
-      .table('omh.stories')
-      .leftJoin('omh.user_stories', 'omh.stories.story_id', 'omh.user_stories.story_id')
-      .leftJoin('public.users', 'public.users.id', 'omh.user_stories.user_id')
-      .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
-      .leftJoin('omh.hubs', 'omh.hubs.hub_id', 'omh.hub_stories.hub_id')
-      .whereRaw('omh.stories.published=true AND omh.stories.featured=true AND (omh.hubs.hub_id IS NULL OR omh.hubs.published = true)')
+    const query = this.getStoriesBaseQuery()
+    return query
+      .where('omh.stories.published', true)
+      .andWhere('omh.stories.featured', true)
       .orderBy('omh.stories.updated_at', 'desc')
       .limit(number)
   },
@@ -90,40 +55,6 @@ module.exports = {
     input = input.toLowerCase()
     return knex.select('title').table('omh.stories')
       .where(knex.raw('lower(title)'), 'like', '%' + input + '%')
-  },
-
-  async getStoryByID (story_id: number) {
-    const userStoryResult = await this.getUserStoryById(story_id)
-    if (userStoryResult && userStoryResult.length > 0) {
-      return userStoryResult[0]
-    } else {
-      const hubStoryResult = await this.getHubStoryById(story_id)
-      if (hubStoryResult && hubStoryResult.length > 0) {
-        return hubStoryResult[0]
-      } else {
-        return Promise.resolve()
-      }
-    }
-  },
-
-  getHubStoryById (story_id: number) {
-    debug.log('get hub story: ' + story_id)
-    const query = knex.select(
-      'omh.stories.story_id', 'omh.stories.title',
-      'omh.stories.body', 'omh.stories.language',
-      'omh.stories.firstline', 'omh.stories.firstimage',
-      'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
-      knex.raw(`timezone('UTC', omh.stories.updated_at) as updated_at`),
-      'omh.hub_stories.hub_id', 'omh.hubs.name as hub_name'
-    )
-      .from('omh.stories')
-      .leftJoin('omh.hub_stories', 'omh.stories.story_id', 'omh.hub_stories.story_id')
-      .leftJoin('omh.hubs', 'omh.hub_stories.hub_id', 'omh.hubs.hub_id')
-      .where({
-        'omh.hub_stories.story_id': story_id
-      })
-
-    return query
   },
 
   getUserStories (user_id: number, includeDrafts: boolean = false) {
@@ -153,21 +84,9 @@ module.exports = {
     return query
   },
 
-  getUserStoryById (story_id: number) {
+  getStoryById (story_id: number) {
     debug.log('get user story: ' + story_id)
-    const query = knex.select(
-      'omh.stories.story_id', 'omh.stories.title',
-      'omh.stories.body', 'omh.stories.language',
-      'omh.stories.firstline', 'omh.stories.firstimage',
-      'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
-      knex.raw(`timezone('UTC', omh.stories.updated_at) as updated_at`),
-      knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
-      'omh.user_stories.user_id', 'public.users.display_name'
-    )
-      .from('omh.stories')
-      .leftJoin('omh.user_stories', 'omh.stories.story_id', 'omh.user_stories.story_id')
-      .leftJoin('public.users', 'omh.user_stories.user_id', 'public.users.id')
-      .whereNotNull('omh.user_stories.story_id')
+    const query = this.getStoriesBaseQuery()
       .where({
         'omh.stories.story_id': story_id
       })
@@ -201,26 +120,11 @@ module.exports = {
   async delete (story_id: number, trx: any) {
     await trx('omh.story_views').where({story_id}).del()
     await trx('omh.story_maps').where({story_id}).del()
-    await trx('omh.hub_stories').where({story_id}).del()
-    await trx('omh.user_stories').where({story_id}).del()
+    await trx('omh.user_stories').where({story_id}).del() // leave until we delete the user_stories table
     return trx('omh.stories').where({story_id}).del()
   },
 
-  async createHubStory (hub_id: string, user_id: number) {
-    return knex.transaction(async (trx) => {
-      let story_id = await trx('omh.stories').insert({
-        user_id,
-        published: false,
-        created_at: knex.raw('now()'),
-        updated_at: knex.raw('now()')
-      }).returning('story_id')
-      story_id = parseInt(story_id)
-      await trx('omh.hub_stories').insert({hub_id, story_id})
-      return story_id
-    })
-  },
-
-  async createUserStory (user_id: number) {
+  async createStory (user_id: number) {
     return knex.transaction(async (trx) => {
       let story_id = await trx('omh.stories').insert({
         user_id,
@@ -230,51 +134,12 @@ module.exports = {
       }).returning('story_id')
 
       story_id = parseInt(story_id)
-      await trx('omh.user_stories').insert({user_id, story_id})
       return story_id
     })
   },
 
   async allowedToModify (story_id: number, user_id: number) {
-    // look in both hub stories and user Stories
-    const hubStories = await knex('omh.hub_stories').where({story_id})
-    const userStories = await knex('omh.user_stories').where({story_id})
-
-    if (hubStories && hubStories.length > 0) {
-      // check if user is allow to modify the hub
-      const hub_id = hubStories[0].hub_id
-      debug.log('found a hub story in hub: ' + hub_id)
-      return this.allowedToModifyHub(hub_id, user_id)
-    } else if (userStories && userStories.length > 0) {
-      debug.log('found a user story')
-      // the story must belong to the requesting user
-      if (parseInt(userStories[0].user_id) === parseInt(user_id)) {
-        debug.log('user: ' + user_id + ' is the owner of story: ' + story_id)
-        return true
-      } else {
-        debug.log('user: ' + user_id + ' is not the owner of story: ' + story_id)
-        return false
-      }
-    } else {
-      // story not found
-      throw new Error('Story not found: ' + story_id)
-    }
-  },
-
-  async getHubByID (hub_id: string) {
-    debug.log('get hub: ' + hub_id)
-    const hubResult = await knex('omh.hubs')
-      .whereRaw('lower(hub_id) = ?', hub_id.toLowerCase())
-
-    if (hubResult && hubResult.length === 1) {
-      return hubResult[0]
-    }
-    return null
-  },
-
-  async allowedToModifyHub (hub_id: string, user_id: number) {
-    debug.log('checking if user: ' + user_id + ' is allowed to modify hub: ' + hub_id)
-    const hub = await this.getHubByID(hub_id)
-    return Group.allowedToModify(hub.owned_by_group_id, user_id)
+    const map = await this.getStoryById(story_id)
+    return Group.allowedToModify(map.owned_by_group_id, user_id)
   }
 }

@@ -17,7 +17,6 @@ type Props = {
   group: Group,
   maps: Array<Object>,
   layers: Array<Object>,
-  hubs: Array<Object>,
   members: Array<Object>,
   canEdit: boolean,
   headerConfig: Object,
@@ -46,7 +45,6 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
   static defaultProps = {
     maps: [],
     layers: [],
-    hubs: [],
     members: [],
     canEdit: false
   }
@@ -98,7 +96,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
         <div className='valign-wrapper'>
           <a className='btn valign' style={{margin: 'auto'}} href={'/map/new?group_id=' + groupId}>{t('Make a Map')}</a>
           <a className='btn valign' style={{margin: 'auto'}} href={'/createlayer?group_id=' + groupId}>{t('Add a Layer')}</a>
-          <a className='btn valign' style={{margin: 'auto'}} href={'/createhub?group_id=' + groupId}>{t('Create a Hub')}</a>
+          <a className='btn valign' style={{margin: 'auto'}} href={'/createstory?group_id=' + groupId}>{t('Write a Story')}</a>
         </div>
       )
     }

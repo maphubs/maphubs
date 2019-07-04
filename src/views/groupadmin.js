@@ -22,7 +22,6 @@ import type {Group, GroupStoreState} from '../stores/GroupStore'
 import Locales from '../services/locales'
 import LayerList from '../components/Lists/LayerList'
 import MapList from '../components/Lists/MapList'
-import HubList from '../components/Lists/HubList'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
@@ -33,7 +32,6 @@ type Props = {
   group: Group,
   layers: Array<Object>,
   maps: Array<Object>,
-  hubs: Array<Object>,
   members: Array<Object>,
   locale: string,
   _csrf: string,
@@ -59,7 +57,6 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   static defaultProps = {
     layers: [],
     maps: [],
-    hubs: [],
     members: []
   }
 
@@ -79,7 +76,6 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     Reflux.rehydrate(GroupStore, {
       group: props.group,
       layers: props.layers,
-      hubs: props.hubs,
       members: props.members
     })
   }
@@ -355,9 +351,6 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
             </div>
             <div className='row'>
               <MapList maps={this.props.maps} t={t} />
-            </div>
-            <div className='row'>
-              <HubList hubs={this.props.hubs} />
             </div>
             <div className='fixed-action-btn action-button-bottom-right'>
               <FloatingButton

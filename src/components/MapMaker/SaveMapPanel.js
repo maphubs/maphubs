@@ -6,7 +6,6 @@ import Formsy from 'formsy-react'
 import MultiTextInput from '../forms/MultiTextInput'
 import NotificationActions from '../../actions/NotificationActions'
 import SelectGroup from '../Groups/SelectGroup'
-import Toggle from '../forms/toggle'
 import MapHubsComponent from '../MapHubsComponent'
 import Locales from '../../services/locales'
 
@@ -21,7 +20,6 @@ type Props = {|
 
 type State = {
   canSave: boolean,
-  ownedByGroup?: boolean,
   saving?: boolean
 } & UserStoreState
 
@@ -76,48 +74,13 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
     })
   }
 
-  onOwnedByGroup = (ownedByGroup: boolean) => {
-    this.setState({ownedByGroup})
-  }
-
   render () {
     const {t} = this
     const {title, editing, owned_by_group_id} = this.props
-    const {canSave, saving, ownedByGroup, user} = this.state
+    const {canSave, saving, user} = this.state
     let groups = []
     if (user && user.groups) {
       groups = user.groups
-    }
-
-    let ownedByGroupChecked
-    if (typeof ownedByGroup === 'undefined' && groups.length > 0) {
-      // suggest a group by default if user is member of groups
-      ownedByGroupChecked = true
-    } else {
-      ownedByGroupChecked = ownedByGroup
-    }
-
-    let groupToggle
-    if (groups.length > 0 && !editing) {
-      // if the user is in a group, show group options
-      groupToggle = (
-        <div className='row no-margin' style={{width: '100%'}}>
-          <Toggle name='ownedByGroup' labelOff={t('Owned by Me')} labelOn={t('Owned by My Group')}
-            checked={ownedByGroupChecked} className='col s12'
-            onChange={this.onOwnedByGroup}
-            dataPosition='right' dataTooltip={t('Select who should own this map')}
-          />
-        </div>
-      )
-    }
-
-    let selectGroup
-    if (ownedByGroupChecked) {
-      selectGroup = (
-        <div className='row no-margin' style={{width: '100%'}}>
-          <SelectGroup groups={groups} group_id={owned_by_group_id} type='map' canChangeGroup={!editing} editing={editing} />
-        </div>
-      )
     }
 
     if (user) {
@@ -135,8 +98,9 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
               }} length={100}
               required />
           </div>
-          {groupToggle}
-          {selectGroup}
+          <div className='row no-margin' style={{width: '100%'}}>
+            <SelectGroup groups={groups} group_id={owned_by_group_id} type='map' canChangeGroup={!editing} editing={editing} />
+          </div>
           <div className='row no-margin' style={{width: '100%'}}>
             <div className='col s12 valign-wrapper'>
               <button type='submit' className='valign waves-effect waves-light btn' style={{margin: 'auto'}}

@@ -1,7 +1,5 @@
 // @flow
 import React from 'react'
-import _isequal from 'lodash.isequal'
-import MapHubsComponent from '../../components/MapHubsComponent'
 
 type Props = {
   editing: boolean,
@@ -10,11 +8,7 @@ type Props = {
   style: Object
 }
 
-type State = {
-
-}
-
-export default class HubEditButton extends MapHubsComponent<Props, State> {
+export default class EditButton extends React.Component<Props, void> {
   static defaultProps = {
     style: {}
   }
@@ -23,12 +17,8 @@ export default class HubEditButton extends MapHubsComponent<Props, State> {
     M.FloatingActionButton.init(this.refs.button, {})
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
-    // only update if something changes
-    if (!_isequal(this.props, nextProps)) {
-      return true
-    }
-    if (!_isequal(this.state, nextState)) {
+  shouldComponentUpdate (nextProps: Props) {
+    if (this.props.editing !== nextProps.editing) {
       return true
     }
     return false

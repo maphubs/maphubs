@@ -1,4 +1,4 @@
-import View from '../src/views/hubbuilder'
+import View from '../src/views/editstory'
 
 import 'jquery'
 import 'react-tippy/dist/tippy.css'

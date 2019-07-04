@@ -15,26 +15,18 @@ module.exports = function (app: any) {
   app.post('/api/map/create', csrfProtection, isAuthenticated, async (req, res) => {
     try {
       const data = req.body
-      if (data && data.basemap && data.position && data.settings && data.title && data.private !== undefined) {
-        let createMap
-        if (data.group_id) {
-          createMap = Group.allowedToModify(data.group_id, req.user_id)
-            .then((allowed) => {
-              if (allowed) {
-                return Map.createGroupMap(data.layers, data.style, data.basemap, data.position, data.title, data.settings, req.user_id, data.group_id, data.private)
-              } else {
-                throw new Error('Unauthorized')
-              }
-            })
-        } else {
-          createMap = Map.createUserMap(data.layers, data.style, data.basemap, data.position, data.title, data.settings, req.user_id, data.private)
-        }
-        const map_id = await createMap
-        // intentionally not returning here since we don't want to wait for the reload
-        ScreenshotUtil.reloadMapThumbnail(map_id)
-        ScreenshotUtil.reloadMapImage(map_id)
+      if (data && data.group_id && data.basemap && data.position && data.settings && data.title && data.private !== undefined) {
+        if (await Group.allowedToModify(data.group_id, req.user_id)) {
+          const map_id = await Map.createGroupMap(data.layers, data.style, data.basemap, data.position, data.title, data.settings, req.user_id, data.group_id, data.private)
 
-        return res.status(200).send({success: true, map_id})
+          // intentionally not returning here since we don't want to wait for the reload
+          ScreenshotUtil.reloadMapThumbnail(map_id)
+          ScreenshotUtil.reloadMapImage(map_id)
+
+          return res.status(200).send({success: true, map_id})
+        } else {
+          throw new Error('Unauthorized')
+        }
       } else {
         apiDataError(res)
       }
@@ -59,15 +51,6 @@ module.exports = function (app: any) {
               } else {
                 return notAllowedError(res, 'group')
               }
-            } else {
-              // copy to the requesting user
-              const map_id = await Map.copyMapToUser(data.map_id, req.user_id, data.title)
-
-              // don't wait for screenshot
-              ScreenshotUtil.reloadMapThumbnail(map_id)
-              ScreenshotUtil.reloadMapImage(map_id)
-
-              return res.status(200).send({success: true, map_id})
             }
           } else {
             return notAllowedError(res, 'map')
@@ -85,13 +68,6 @@ module.exports = function (app: any) {
             } else {
               return notAllowedError(res, 'group')
             }
-          } else {
-            // copy to the requesting user
-            const map_id = await Map.copyMapToUser(data.map_id, req.user_id, data.title)
-            // don't wait for screenshot
-            ScreenshotUtil.reloadMapThumbnail(map_id)
-            ScreenshotUtil.reloadMapImage(map_id)
-            return res.status(200).send({success: true, map_id})
           }
         }
       } else {

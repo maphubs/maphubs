@@ -57,46 +57,6 @@ module.exports = function (app: any) {
       })
   })
 
-  app.get('/hub/:id/images/logo', (req, res) => {
-    const hub_id = req.params.id
-    Image.getHubImage(hub_id, 'logo')
-      .then((result) => {
-        return imageUtils.processImage(result.image, req, res)
-      }).catch(apiError(res, 404))
-  })
-
-  app.get('/hub/:id/images/logo/thumbnail', (req, res) => {
-    const hub_id = req.params.id
-    Image.getHubThumbnail(hub_id, 'logo')
-      .then((result) => {
-        if (result && result.thumbnail) {
-          return imageUtils.processImage(result.thumbnail, req, res)
-        } else {
-          return res.status(404).send()
-        }
-      }).catch(apiError(res, 404))
-  })
-
-  app.get('/hub/:id/images/banner', (req, res) => {
-    const hub_id = req.params.id
-    Image.getHubImage(hub_id, 'banner')
-      .then((result) => {
-        return imageUtils.processImage(result.image, req, res)
-      }).catch(apiError(res, 404))
-  })
-
-  app.get('/hub/:id/images/banner/thumbnail', (req, res) => {
-    const hub_id = req.params.id
-    Image.getHubThumbnail(hub_id, 'banner')
-      .then((result) => {
-        if (result && result.thumbnail) {
-          return imageUtils.processImage(result.thumbnail, req, res)
-        } else {
-          return res.status(404).send()
-        }
-      }).catch(apiError(res, 404))
-  })
-
   app.get('/images/story/:storyid/image/:imageid.jpg', (req, res) => {
     const story_id = req.params.storyid
     const image_id = req.params.imageid

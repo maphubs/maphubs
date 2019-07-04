@@ -36,54 +36,13 @@ module.exports = function (app: any) {
     } catch (err) { nextError(next)(err) }
   })
 
-  app.get('/user/:username/stories', (req, res, next) => {
-    const username: string = req.params.username
-    if (!username) { apiDataError(res) }
-    let myStories: boolean = false
-
-    function completeRequest () {
-      User.getUserByName(username)
-        .then((user) => {
-          if (user) {
-            return Story.getUserStories(user.id, myStories)
-              .then(async (stories) => {
-                return app.next.render(req, res, '/userstories', await pageOptions(req, {
-                  title: 'Stories - ' + username,
-                  props: {user, stories, myStories, username}
-                }))
-              })
-          } else {
-            return res.redirect('/notfound?path=' + req.path)
-          }
-        }).catch(nextError(next))
-    }
-
-    if (!req.isAuthenticated || !req.isAuthenticated() ||
-        !req.session || !req.session.user) {
-      completeRequest()
-    } else {
-      // get user id
-      const user_id = req.session.user.maphubsUser.id
-
-      // get user for logged in user
-      User.getUser(user_id)
-        .then((user) => {
-        // flag if requested user is logged in user
-          if (user.display_name === username) {
-            myStories = true
-          }
-          return completeRequest()
-        }).catch(nextError(next))
-    }
-  })
-
-  app.get('/user/createstory', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
+  app.get('/createstory', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
     try {
       const username = req.session.user.maphubsUser.display_name
       const user_id = req.session.user.maphubsUser.id
-      const story_id = await Story.createUserStory(user_id)
+      const story_id = await Story.createStory(user_id)
 
-      return app.next.render(req, res, '/createuserstory', await pageOptions(req, {
+      return app.next.render(req, res, '/createstory', await pageOptions(req, {
         title: 'Create Story',
         fontawesome: true,
         rangy: true,
@@ -97,16 +56,16 @@ module.exports = function (app: any) {
     } catch (err) { nextError(next)(err) }
   })
 
-  app.get('/user/:username/story/:story_id/edit/*', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
+  app.get('/story/:story_id/edit/*', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
     try {
       const username = req.params.username
       const user_id = req.session.user.maphubsUser.id
       const story_id = parseInt(req.params.story_id || '', 10)
 
       if (await Story.allowedToModify(story_id, user_id)) {
-        const story = await Story.getStoryByID(story_id)
+        const story = await Story.getStoryById(story_id)
 
-        return app.next.render(req, res, '/edituserstory', await pageOptions(req, {
+        return app.next.render(req, res, '/editstory', await pageOptions(req, {
           title: 'Editing: ' + story.title,
           fontawesome: true,
           rangy: true,
@@ -123,7 +82,7 @@ module.exports = function (app: any) {
     } catch (err) { nextError(next)(err) }
   })
 
-  app.get('/user/:username/story/:story_id/*', (req, res, next) => {
+  app.get('/story/:story_id/*', (req, res, next) => {
     const story_id = parseInt(req.params.story_id || '', 10)
     const username = req.params.username
 
@@ -132,7 +91,7 @@ module.exports = function (app: any) {
           req.session && req.session.user) {
       user_id = req.session.user.maphubsUser.id
     }
-    Story.getStoryByID(story_id)
+    Story.getStoryById(story_id)
       .then(async (story) => {
         if (!story) {
           return res.redirect('/notfound?path=' + req.path)
@@ -165,7 +124,7 @@ module.exports = function (app: any) {
             // guest users never see draft stories
             return res.status(401).send('Unauthorized')
           } else {
-            return app.next.render(req, res, '/userstory', await pageOptions(req, {
+            return app.next.render(req, res, '/story', await pageOptions(req, {
               title: story.title,
               description,
               props: {
@@ -195,7 +154,7 @@ module.exports = function (app: any) {
               if (!story.published && !canEdit) {
                 return res.status(401).send('Unauthorized')
               } else {
-                return app.next.render(req, res, '/userstory', await pageOptions(req, {
+                return app.next.render(req, res, '/story', await pageOptions(req, {
                   title: story.title,
                   description,
                   props: {

@@ -3,7 +3,6 @@
     "Groups": "Grupos",
     "Layers": "Capas",
     "Stories": "Historias",
-    "Hubs": "Centros",
     "Login": "Inicio de sesión",
     "Search Layers": "Búsqueda de capas",
     "Featured": "Destacados",
@@ -87,12 +86,7 @@
     "Include in Public Group Listings": "Incluir en Listados Públicos",
     "Add Image": "Añadir imagen",
     "Upload an Image or Logo for Your Group (Optional)": "Cargar una Imagen o Logo para su Grupo (opcional)",
-    "Search Hubs": "Buscar Centros",
-    "Create New Hub": "Crear nuevo centro",
-    "Create a Hub": "Crear un centro",
-    "Hub ID": "ID de centro",
     "ID is Available": "ID está disponible",
-    "Short Descriptive Name for the Hub": "Nombre corto descriptivo para el centro",
     "Enter a Map Title": "Introduzca un título del mapa",
     "Save Map": "Guardar mapa",
     "Add Map": "Agregar mapa",
@@ -152,23 +146,11 @@
     "Profile": "Perfil",
     "Password": "Contraseña",
     "User Name": "Nombre de usuario",
-   
     "More user profile settings coming soon!": "Configuración del perfil usuario más muy pronto!",
-   
-  
-   
-    
-    
-    
-    
     "Resources": "Recursos",
     "Home": "Página de inicio",
     "About": "Acerca de",
-    "Contact Us": "Contáctenos",
-   
-    "Manage Hub": "Gestión de centro",
-    "Hub Photo": "Centro foto",
-   
+    "Contact Us": "Contáctenos",   
     "Text": "Texto",
     "Radio": "Radio",
     "Combo": "Combinación",
@@ -296,7 +278,6 @@
     
     "Author:": "Autor:",
     "Updated:": "Última actualización:",
-    "Hub:": "Centro:",
     "Recent Stories": "Historias recientes",
     "No License Provided": "No se proporcionó una licencia",
     
@@ -366,7 +347,6 @@
   
     "More Stories": "Más historias",
     "More Maps": "Más mapas",
-    "More Hubs": "Más centros",
     "More Groups": "Más grupos",
     "More Layers": "Más capas",
     "Popular Stories": "Historias populares",
@@ -385,7 +365,7 @@
     "Start Interactive Map": "Inicio mapa interactivo",
     "Please confirm removal of": "Por favor confirmar eliminación de",
     "Confirm Delete": "Confirmar borrar",
-    "All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, stories, and hubs.": "All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, stories, and hubs.",
+    "All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, and stories.": "All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, and stories.",
     "Server Error": "Error del servidor",
     "Layer Saved": "Capa guardado",
     "Confirm Removal": "Confirmar eliminación",
@@ -430,9 +410,6 @@
     "Notes Saved": "Notas guardadas",
     "Results": "Resultados",
     "No Results Found": "No se encontraron resultados",
-    "Hub Saved": "Centro de guardado",
-    "Hub Created": "Centro creado",
-    "Hub Published": "Centro publicado",
     
     "Results Found": "Se han encontrado resultados",
     
@@ -532,7 +509,7 @@
    
     "Create Hub": "Crear un centro",
     "Back to ": "Volver a",
-    "\n               Browse Stories, Maps, Groups, Hubs, and Layers\n              ": "Browse Stories, Maps, Groups, Hubs, and Layers",
+    "\n               Browse Stories, Maps, Groups, and Layers\n              ": "Browse Stories, Maps, Groups, and Layers",
     "Data Loading: This may take a few minutes for larger datasets.": "Data Loading: This may take a few minutes for larger datasets.",
     "OpenStreetMap": "OpenStreetMap",
     
@@ -541,15 +518,10 @@
     " by ": "por",
     "Created:": "Creado:",
     "by": "por",
-    "My Hubs": "My Hubs",
-    "Draft Hubs": "Draft Hubs",
-    "MyHubs": "MyHubs",
-    "Published Hubs": "Published Hubs",
    
     "My Groups": "Mis grupos",
     "Can only contain letters, numbers, or dashes.": "Can only contain letters, numbers, or dashes.",
     "Popular Maps": "Mapas populares",
-    "Creating Hub": "Creating Hub",
     "Submitting": "Submitting",
    
    
@@ -606,7 +578,6 @@
     "Status: ": "Status:",
     "Location: ": "Location:",
  
-    "All Hubs": "All Hubs",
     "Option to hide this field in the map popup. It will still display in the data table.": "Option to hide this field in the map popup. It will still display in the data table.",
     "Save Draft": "Save Draft",
    
@@ -766,7 +737,6 @@
     "View All": "Ver Todo",
     "View All Maps": "Ver todos los mapas",
     "View All Groups": "Ver todos los grupos",
-    "View All Hubs": "Ver todos los hubs",
     "View All Layers": "Ver todas las capas",
     "Geobuf:": "Geobuf:",
     "SVG:": "SVG:",

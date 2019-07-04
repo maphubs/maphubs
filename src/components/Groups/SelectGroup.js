@@ -134,16 +134,6 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
             }
             itemName = t('private layers')
           }
-        } else if (this.props.type === 'hub') {
-          if (owner.account.tier.private_hub_limit > 0) {
-            privateAllowed = true
-            itemCount = owner.account.numPrivateHubs
-            itemLimit = owner.account.tier.private_hub_limit
-            if ((itemCount + 1) > itemLimit) {
-              overLimit = true
-            }
-            itemName = t('private hubs')
-          }
         } else if (this.props.type === 'map') {
           if (owner.account.tier.private_map_limit > 0) {
             privateAllowed = true

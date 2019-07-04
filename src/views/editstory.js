@@ -8,18 +8,18 @@ import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 
-type Props = {
-  story_id: number,
-  username: string,
+type Props = {|
+  story: Object,
   myMaps: Array<Object>,
   popularMaps: Array<Object>,
+  username: string,
   locale: string,
   _csrf: string,
   headerConfig: Object,
   user: Object
-}
+|}
 
-export default class CreateUserStory extends MapHubsComponent<Props, void> {
+export default class EditStory extends MapHubsComponent<Props, void> {
   static async getInitialProps ({ req, query }: {req: any, query: Object}) {
     const isServer = !!req
 
@@ -28,6 +28,10 @@ export default class CreateUserStory extends MapHubsComponent<Props, void> {
     } else {
       console.error('getInitialProps called on client')
     }
+  }
+
+  static defaultProps = {
+    story: {}
   }
 
   constructor (props: Props) {
@@ -43,13 +47,13 @@ export default class CreateUserStory extends MapHubsComponent<Props, void> {
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main>
-          <StoryEditor storyType='user'
-            story={{story_id: this.props.story_id, published: false}}
+          <StoryEditor
+            story={this.props.story}
             myMaps={this.props.myMaps}
             popularMaps={this.props.popularMaps}
-            username={this.props.username} />
+            username={this.props.username}
+            storyType='user' />
         </main>
-
       </ErrorBoundary>
     )
   }

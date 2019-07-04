@@ -1,7 +1,6 @@
 // @flow
 const Layer = require('../models/layer')
 const Group = require('../models/group')
-const Hub = require('../models/hub')
 const Map = require('../models/map')
 const Story = require('../models/story')
 const Promise = require('bluebird')
@@ -67,17 +66,6 @@ module.exports = function (app: any, config: Object, req: any, res: any) {
               } else if (filter === 'recent') {
                 dataRequests.push(Group.getRecentGroups(number))
                 dataRequestNames.push('recentGroups')
-              }
-            } else if (type === 'hub') {
-              if (filter === 'featured') {
-                dataRequests.push(Hub.getFeaturedHubs(number))
-                dataRequestNames.push('featuredHubs')
-              } else if (filter === 'popular') {
-                dataRequests.push(Hub.getPopularHubs(number))
-                dataRequestNames.push('popularHubs')
-              } else if (filter === 'recent') {
-                dataRequests.push(Hub.getRecentHubs(number))
-                dataRequestNames.push('recentHubs')
               }
             } else if (type === 'map') {
               if (filter === 'featured') {

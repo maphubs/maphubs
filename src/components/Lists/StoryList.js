@@ -39,7 +39,7 @@ export default class StoryList extends MapHubsComponent<Props, void> {
         {title}
         {this.props.stories.map((story, i) => {
           const title = story.title
-          const storyUrl = '/story/' + story.story_id + '/' + slugify(title)
+          const storyUrl = `/story/${slugify(title)}/${story.story_id}`
           return (
             <li className='collection-item' key={story.story_id}>
               <div>{title}

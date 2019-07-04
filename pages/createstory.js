@@ -1,4 +1,4 @@
-import View from '../src/views/userhubs'
+import View from '../src/views/createstory'
 
 import 'jquery'
 import 'react-tippy/dist/tippy.css'

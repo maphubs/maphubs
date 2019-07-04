@@ -31,17 +31,14 @@ import UserStore from '../stores/UserStore'
 type Props = {
     featuredLayers: Array<Layer>,
     featuredGroups: Array<Group>,
-    featuredHubs: Array<Object>,
     featuredMaps: Array<Object>,
     featuredStories: Array<Object>,
     popularLayers: Array<Layer>,
     popularGroups: Array<Group>,
-    popularHubs: Array<Object>,
     popularMaps: Array<Object>,
     popularStories: Array<Object>,
     recentLayers: Array<Layer>,
     recentGroups: Array<Group>,
-    recentHubs: Array<Object>,
     recentMaps: Array<Object>,
     recentStories: Array<Object>,
     locale: string,
@@ -58,17 +55,14 @@ type Props = {
   type State = {
     featuredLayersCards: Array<CardConfig>,
     featuredGroupsCards: Array<CardConfig>,
-    featuredHubsCards: Array<CardConfig>,
     featuredMapsCards: Array<CardConfig>,
     featuredStoriesCards: Array<CardConfig>,
     popularLayersCards: Array<CardConfig>,
     popularGroupsCards: Array<CardConfig>,
-    popularHubsCards: Array<CardConfig>,
     popularMapsCards: Array<CardConfig>,
     popularStoriesCards: Array<CardConfig>,
     recentLayersCards: Array<CardConfig>,
     recentGroupsCards: Array<CardConfig>,
-    recentHubsCards: Array<CardConfig>,
     recentMapsCards: Array<CardConfig>,
     recentStoriesCards: Array<CardConfig>,
     loaded: boolean
@@ -88,17 +82,14 @@ export default class HomePro extends MapHubsComponent<Props, State> {
   static defaultProps = {
     featuredLayers: [],
     featuredGroups: [],
-    featuredHubs: [],
     featuredMaps: [],
     featuredStories: [],
     popularLayers: [],
     popularGroups: [],
-    popularHubs: [],
     popularMaps: [],
     popularStories: [],
     recentLayers: [],
     recentGroups: [],
-    recentHubs: [],
     recentMaps: [],
     recentStories: []
   }
@@ -119,17 +110,14 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     this.state = {
       featuredLayersCards: _shuffle(props.featuredLayers.map(cardUtil.getLayerCard)),
       featuredGroupsCards: _shuffle(props.featuredGroups.map(cardUtil.getGroupCard)),
-      featuredHubsCards: _shuffle(props.featuredHubs.map(cardUtil.getHubCard)),
       featuredMapsCards: _shuffle(props.featuredMaps.map(cardUtil.getMapCard)),
       featuredStoriesCards: _shuffle(props.featuredStories.map(cardUtil.getStoryCard)),
       popularLayersCards: _shuffle(props.popularLayers.map(cardUtil.getLayerCard)),
       popularGroupsCards: _shuffle(props.popularGroups.map(cardUtil.getGroupCard)),
-      popularHubsCards: _shuffle(props.popularHubs.map(cardUtil.getHubCard)),
       popularMapsCards: _shuffle(props.popularMaps.map(cardUtil.getMapCard)),
       popularStoriesCards: _shuffle(props.popularStories.map(cardUtil.getStoryCard)),
       recentLayersCards: _shuffle(props.recentLayers.map(cardUtil.getLayerCard)),
       recentGroupsCards: _shuffle(props.recentGroups.map(cardUtil.getGroupCard)),
-      recentHubsCards: _shuffle(props.recentHubs.map(cardUtil.getHubCard)),
       recentMapsCards: _shuffle(props.recentMaps.map(cardUtil.getMapCard)),
       recentStoriesCards: _shuffle(props.recentStories.map(cardUtil.getStoryCard)),
       loaded: false
@@ -300,10 +288,6 @@ export default class HomePro extends MapHubsComponent<Props, State> {
           if (filter === 'featured') return state.featuredGroupsCards
           if (filter === 'popular') return state.popularGroupsCards
           if (filter === 'recent') return state.recentGroupsCards
-        } else if (type === 'hub') {
-          if (filter === 'featured') return state.featuredHubsCards
-          if (filter === 'popular') return state.popularHubsCards
-          if (filter === 'recent') return state.recentHubsCards
         } else if (type === 'map') {
           if (filter === 'featured') return state.featuredMapsCards
           if (filter === 'popular') return state.popularMapsCards
@@ -319,17 +303,14 @@ export default class HomePro extends MapHubsComponent<Props, State> {
       collectionCards = cardUtil.combineCards([
         state.featuredLayersCards,
         state.featuredGroupsCards,
-        state.featuredHubsCards,
         state.featuredMapsCards,
         state.featuredStoriesCards,
         state.popularLayersCards,
         state.popularGroupsCards,
-        state.popularHubsCards,
         state.popularMapsCards,
         state.popularStoriesCards,
         state.recentLayersCards,
         state.recentGroupsCards,
-        state.recentHubsCards,
         state.recentMapsCards,
         state.recentStoriesCards
       ])

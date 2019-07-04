@@ -1,7 +1,6 @@
 // @flow
 import slugify from 'slugify'
 const Layer = require('../models/layer')
-const Hub = require('../models/hub')
 const Story = require('../models/story')
 const Map = require('../models/map')
 const Group = require('../models/group')
@@ -55,36 +54,12 @@ module.exports = {
       .then((stories) => {
         stories.forEach((story) => {
           const title = story.title.replace('&nbsp;', '')
-          let story_url = ''
-          if (story.display_name) {
-            const baseUrl = urlUtil.getBaseUrl()
-            story_url = baseUrl + '/user/' + story.display_name
-          } else if (story.hub_id) {
-            story_url = '/hub/' + story.hub_id
-          }
-          story_url += '/story/' + story.story_id + '/' + slugify(title)
+          const baseUrl = urlUtil.getBaseUrl()
+          const story_url = `${baseUrl}/story/${slugify(title)}/${story.story_id}`
           let lastmodISO = null
           if (story.updated_at) lastmodISO = story.updated_at.toISOString()
           sm.add({
             url: story_url,
-            changefreq: 'daily',
-            lastmodISO
-          })
-        })
-        return sm
-      })
-  },
-
-  addHubsToSiteMap (sm: any, trx: any) {
-    return Hub.getAllHubs(trx)
-      .then((hubs) => {
-        hubs.forEach((hub) => {
-          const baseUrl = urlUtil.getBaseUrl()
-          const hubUrl = baseUrl + '/hub/' + hub.hub_id
-          let lastmodISO = null
-          if (hub.updated_at_withTZ) lastmodISO = hub.updated_at_withTZ.toISOString()
-          sm.add({
-            url: hubUrl,
             changefreq: 'daily',
             lastmodISO
           })
