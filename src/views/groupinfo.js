@@ -17,6 +17,7 @@ type Props = {
   group: Group,
   maps: Array<Object>,
   layers: Array<Object>,
+  stories: Array<Object>,
   members: Array<Object>,
   canEdit: boolean,
   headerConfig: Object,
@@ -28,7 +29,7 @@ type Props = {
 type State = {
   mapCards: Array<CardConfig>,
   layerCards: Array<CardConfig>,
-  hubCards: Array<CardConfig>
+  storyCards: Array<CardConfig>
 }
 
 export default class GroupInfo extends MapHubsComponent<Props, State> {
@@ -45,6 +46,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
   static defaultProps = {
     maps: [],
     layers: [],
+    stories: [],
     members: [],
     canEdit: false
   }
@@ -58,7 +60,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
     this.state = {
       mapCards: props.maps.map(cardUtil.getMapCard),
       layerCards: props.layers.map(cardUtil.getLayerCard),
-      hubCards: props.hubs.map(cardUtil.getHubCard)
+      storyCards: props.stories.map(cardUtil.getStoryCard)
     }
   }
 
@@ -123,7 +125,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
       status = t('Published')
     }
 
-    const allCards = cardUtil.combineCards([this.state.mapCards, this.state.layerCards, this.state.hubCards])
+    const allCards = cardUtil.combineCards([this.state.mapCards, this.state.layerCards, this.state.storyCards])
 
     return (
       <ErrorBoundary>

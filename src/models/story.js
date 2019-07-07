@@ -26,6 +26,12 @@ module.exports = {
       .where('omh.stories.published', true)
   },
 
+  getGroupStories (group_id: string, trx?: any) {
+    const query = this.getStoriesBaseQuery(trx)
+    return query
+      .where('omh.stories.owned_by_group_id', group_id)
+  },
+
   getRecentStories (number: number = 10) {
     const query = this.getStoriesBaseQuery()
     return query

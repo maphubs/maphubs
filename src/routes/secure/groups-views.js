@@ -4,6 +4,7 @@ const Group = require('../../models/group')
 const User = require('../../models/user')
 const Layer = require('../../models/layer')
 const Map = require('../../models/map')
+const Story = require('../../models/story')
 const Account = require('../../models/account')
 const login = require('connect-ensure-login')
 // var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
@@ -56,24 +57,27 @@ module.exports = function (app: any) {
       if (req.isAuthenticated && req.isAuthenticated() && req.session.user) {
         user_id = req.session.user.maphubsUser.id
       }
-      const canEdit = await Group.allowedToModify(group_id, user_id)
-      const group = await Group.getGroupByID(group_id)
-      const maps = await Map.getGroupMaps(group_id, canEdit)
-      const layers = await Layer.getGroupLayers(group_id, canEdit)
-      const members = await Group.getGroupMembers(group_id)
 
+      const group = await Group.getGroupByID(group_id)
       if (!group) {
         return res.redirect('/notfound?path=' + req.path)
       }
 
-      const image = urlUtil.getBaseUrl() + `/group/${group_id}/image`
+      const canEdit = await Group.allowedToModify(group_id, user_id)
+
+      const image = `${urlUtil.getBaseUrl()}/group/${group_id}/image`
       const name = Locales.getLocaleStringObject(req.locale, group.name)
       const description = Locales.getLocaleStringObject(req.locale, group.description)
       return app.next.render(req, res, '/groupinfo', await pageOptions(req, {
-        title: name + ' - ' + MAPHUBS_CONFIG.productName,
+        title: `${name} - ${MAPHUBS_CONFIG.productName}`,
         description,
         props: {
-          group, maps, layers, members, canEdit
+          group,
+          maps: await Map.getGroupMaps(group_id, canEdit),
+          layers: await Layer.getGroupLayers(group_id, canEdit),
+          stories: await Story.getGroupStories(group_id),
+          members: await Group.getGroupMembers(group_id),
+          canEdit
         },
         twitterCard: {
           card: 'summary',

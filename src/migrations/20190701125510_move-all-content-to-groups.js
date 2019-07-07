@@ -37,6 +37,13 @@ exports.up = async (knex, Promise) => {
         tier_id: 'public'
       })
 
+      // add user as admin of the group
+      await knex('omh.group_memberships').insert({
+        group_id: targetGroup,
+        user_id: user.id,
+        role: 'Administrator'
+      })
+
       // move user stories to group
       await Promise.all(userStories.map(async (story) => {
         return knex('omh.stories').update({owned_by_group_id: targetGroup}).where({story_id: story.story_id})
