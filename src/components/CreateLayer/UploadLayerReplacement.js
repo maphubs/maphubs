@@ -154,7 +154,10 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
             logoSmall={MAPHUBS_CONFIG.logoSmall}
             logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
             logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-            data={this.state.geoJSON} />
+            data={this.state.geoJSON}
+            locale={this.state.locale}
+            mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+          />
         </div>
       )
     }

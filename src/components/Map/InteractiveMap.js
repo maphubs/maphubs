@@ -50,7 +50,9 @@ type Props = {
   primaryColor: string,
   logoSmall?: string,
   logoSmallWidth?: number,
-  logoSmallHeight?: number
+  logoSmallHeight?: number,
+  locale: string,
+  mapboxAccessToken: string
 }
 
 type State = {
@@ -320,6 +322,8 @@ export default class InteractiveMap extends React.Component<Props, State> {
           logoSmallWidth={logoSmallWidth}
           hash={hash}
           t={t}
+          locale={this.props.locale}
+          mapboxAccessToken={this.props.mapboxAccessToken}
         >
           {legend}
 

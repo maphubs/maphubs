@@ -36,7 +36,8 @@ type Props = {
     zoom: number
   },
   baseMap?: string,
-  containers: Array<Object>
+  containers: Array<Object>,
+  mapboxAccessToken: string
 }
 
 type State = {|
@@ -113,7 +114,7 @@ class InsetMap extends React.Component<Props, State> {
         currentBaseMapStyle = baseMapStyleResult
       })
     }
-
+    mapboxgl.accessToken = this.props.mapboxAccessToken
     const insetMap = new mapboxgl.Map({
       container: this.props.id + '_inset',
       style: currentBaseMapStyle,

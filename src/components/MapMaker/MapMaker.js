@@ -508,6 +508,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
                 logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
                 t={this.t}
                 locale={this.state.locale}
+                mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
               >
                 {editingLayer &&
                   <EditorToolButtons stopEditingLayer={this.stopEditingLayer} onFeatureUpdate={MapState.state.map.onFeatureUpdate} />

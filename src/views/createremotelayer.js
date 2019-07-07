@@ -206,6 +206,8 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                 logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
                 logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
                 t={t}
+                locale={this.state.locale}
+                mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
               >
                 <MiniLegend
                   t={this.t}

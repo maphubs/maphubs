@@ -168,6 +168,8 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
                       logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
                       logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
                       t={t}
+                      locale={this.state.locale}
+                      mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
                     />
                   </div>
                   <div className='row' style={{width: '400px', position: 'relative', margin: 'auto'}}>

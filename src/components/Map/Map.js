@@ -82,7 +82,8 @@ type Props = {|
     locale: string,
     logoSmall?: string,
     logoSmallWidth?: number,
-    logoSmallHeight?: number
+    logoSmallHeight?: number,
+    mapboxAccessToken: string
   |}
 
   type State = {
@@ -227,7 +228,7 @@ class Map extends React.Component<Props, State> {
   createMap = () => {
     const _this = this
     this.debugLog('Creating MapboxGL Map')
-    mapboxgl.accessToken = MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
+    mapboxgl.accessToken = this.props.mapboxAccessToken
     const {debugLog} = this
     const {
       preserveDrawingBuffer,
@@ -715,7 +716,7 @@ class Map extends React.Component<Props, State> {
         `}</style>
         <div id={this.state.id} className={className} style={{width: '100%', height: '100%'}}>
           {insetMap &&
-            <InsetMap id={this.state.id} bottom={showLogo ? '30px' : '25px'} {...this.props.insetConfig} />
+            <InsetMap id={this.state.id} bottom={showLogo ? '30px' : '25px'} mapboxAccessToken={this.props.mapboxAccessToken} {...this.props.insetConfig} />
           }
           <MapToolPanel show={this.state.interactive && this.state.mapLoaded}
             height={this.props.height}

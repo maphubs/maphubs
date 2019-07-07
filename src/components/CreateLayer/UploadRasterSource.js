@@ -151,6 +151,8 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
                   logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
                   logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
                   t={this.t}
+                  locale={this.state.locale}
+                  mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
                 />
               </div>
             }
