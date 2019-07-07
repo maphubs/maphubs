@@ -1,1 +1,25 @@
-{}
+{
+  "Accessing this site requires an invitation. Please contact us at ": "Acessar este site requer um convite. Por favor entre em contato conosco em",
+  "Account Invite": "Convite da conta",
+  "Edit Map": "Modificar mapa",
+  "Explore": "Explorar",
+  "Explore Data": "Explore os dados",
+  "Explore Maps": "Explorar mapas",
+  "Interactive": "Interativo",
+  "Layer": "Camada",
+  "Layers": "Camadas",
+  "Login": "Entrar",
+  "Logout": "Sair",
+  "Make a Map": "Faça um mapa",
+  "Map": "Mapa",
+  "Maps": "Mapas",
+  "OpenStreetMap": "OpenStreetMap",
+  "Popular Maps": "Mapas populares",
+  "Save Map": "Salvar Mapa",
+  "Search": "Procurar",
+  "Search Maps": "Pesquisar mapas",
+  "Signup": "Inscrever-se",
+  "Start Interactive Map": "Iniciar mapa interativo",
+  "View All Layers": "Visualizar todas as camadas",
+  "View interactive map on ": "Ver mapa interativo em"
+}
