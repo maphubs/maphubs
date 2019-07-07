@@ -89,22 +89,23 @@ export default class MapSearchPanel extends React.Component<Props, State> {
   runLocationSearch (query: string) {
     const _this = this
     // run autocomplete search
-    const url = `https://geocoder.tilehosting.com/q/${query}.js?key=${MAPHUBS_CONFIG.TILEHOSTING_GEOCODING_API_KEY}`
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}&autocomplete=true`
 
     request.get(url)
       .then((res) => {
-        const { count, results } = res.body
-        if (count > 0 && results) {
-          const features = results.map((feature) => {
+        const { features } = res.body
+        if (features && features.length > 0) {
+          const featuresCleaned = features.map((feature) => {
             /* eslint-disable camelcase */
-            const { id, name, display_name } = feature
-            return {
-              key: `${id}`,
-              value: display_name || name,
-              feature
+            if (feature) {
+              return {
+                key: `${feature.id}`,
+                value: feature.matching_place_name || feature.place_name || feature.text,
+                feature
+              }
             }
           })
-          return _this.setState({locationSearchResults: features, query})
+          return _this.setState({locationSearchResults: featuresCleaned, query})
         } // elsefeatures
       })
       .catch(err => {

@@ -44,66 +44,26 @@ export default {
     this.map.fitBounds(bounds, {padding, curve: 1, speed: 0.6, maxZoom, animate})
   },
 
-  changeLocale (locale: string, map: any) {
-    if (!locale || !map) {
+  changeLocale (language: string, map: any) {
+    if (!language || !map) {
       debug.log('missing required args')
     }
 
-    debug.log(`(${this.state.id}) changing map language to: ${locale}`)
+    const [BaseMapState] = this.props.containers
+
+    debug.log(`(${this.state.id}) changing map language to: ${language}`)
     try {
-      const name = `{name:${locale}}`
-      if (this.state.baseMap === 'streets') {
-        map.setLayoutProperty('continent', 'text-field', name)
-        map.setLayoutProperty('state', 'text-field', name)
-        map.setLayoutProperty('country_1', 'text-field', name)
-        map.setLayoutProperty('country_2', 'text-field', name)
-        map.setLayoutProperty('country_3', 'text-field', name)
-        map.setLayoutProperty('country_other', 'text-field', name)
-        map.setLayoutProperty('place_other', 'text-field', name)
-        map.setLayoutProperty('place_city', 'text-field', name)
-        map.setLayoutProperty('place_town', 'text-field', name)
-        map.setLayoutProperty('place_village', 'text-field', name)
-        map.setLayoutProperty('water_name_line', 'text-field', name)
-        map.setLayoutProperty('water_name_point', 'text-field', name)
-        map.setLayoutProperty('airport-label-major', 'text-field', name)
-        map.setLayoutProperty('road_label', 'text-field', name)
-      } else if (this.state.baseMap === 'default' || this.state.baseMap === 'dark') {
-        map.setLayoutProperty('place_country_major', 'text-field', name)
-        map.setLayoutProperty('place_country_other', 'text-field', name)
-        map.setLayoutProperty('place_state', 'text-field', name)
-        map.setLayoutProperty('place_city_large', 'text-field', name)
-        map.setLayoutProperty('place_capital', 'text-field', name)
-        map.setLayoutProperty('place_city', 'text-field', name)
-        map.setLayoutProperty('place_town', 'text-field', name)
-        map.setLayoutProperty('place_village', 'text-field', name)
-        map.setLayoutProperty('place_suburb', 'text-field', name)
-        map.setLayoutProperty('place_other', 'text-field', name)
-        map.setLayoutProperty('water_name', 'text-field', name)
-      } else if (this.state.baseMap === 'topo') {
-        map.setLayoutProperty('continent', 'text-field', name)
-        map.setLayoutProperty('state', 'text-field', name)
-        map.setLayoutProperty('country_1', 'text-field', name)
-        map.setLayoutProperty('country_2', 'text-field', name)
-        map.setLayoutProperty('country_3', 'text-field', name)
-        map.setLayoutProperty('country_other', 'text-field', name)
-        map.setLayoutProperty('place_city_capital', 'text-field', name)
-        map.setLayoutProperty('place_city', 'text-field', name)
-        map.setLayoutProperty('place_town', 'text-field', name)
-        map.setLayoutProperty('place_village', 'text-field', name)
-        map.setLayoutProperty('place_other', 'text-field', name)
-        map.setLayoutProperty('mountain_peak', 'text-field', name)
-        map.setLayoutProperty('waterway-name', 'text-field', name)
-        map.setLayoutProperty('water_name_point', 'text-field', name)
-        map.setLayoutProperty('road_label', 'text-field', name)
-        map.setLayoutProperty('road_label_track', 'text-field', name)
-      } else if (this.state.baseMap === 'satellite') {
-        map.setLayoutProperty('country_label', 'text-field', name)
-        map.setLayoutProperty('country_other_label', 'text-field', name)
-        map.setLayoutProperty('place_label_city', 'text-field', name)
-        map.setLayoutProperty('place_label_other', 'text-field', name)
-        map.setLayoutProperty('road_major_label', 'text-field', name)
-        map.setLayoutProperty('airport-label', 'text-field', name)
-        map.setLayoutProperty('poi_label', 'text-field', name)
+      if (
+        BaseMapState.state.baseMap === 'default' ||
+        BaseMapState.state.baseMap === 'dark' ||
+        BaseMapState.state.baseMap === 'streets' ||
+        BaseMapState.state.baseMap === 'satellite-streets' ||
+        BaseMapState.state.baseMap === 'topo'
+      ) {
+        if (this.languageControl) {
+          this.glStyle = this.languageControl.setLanguage(this.glStyle, language)
+          map.setStyle(this.glStyle)
+        }
       }
     } catch (err) {
       debug.error(err)

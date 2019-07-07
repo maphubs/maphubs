@@ -217,7 +217,7 @@ export default class Search extends MapHubsComponent<Props, State> {
               <Map ref='map'
                 id='global-search-map'
                 style={{width: '100%', height: '100%'}}
-                disableScrollZoom hoverInteraction={false} showLogo={false} attributionControl
+                disableScrollZoom hoverInteraction={false} showLogo attributionControl
                 mapConfig={this.props.mapConfig}
                 data={this.state.searchResult}
                 primaryColor={MAPHUBS_CONFIG.primaryColor}

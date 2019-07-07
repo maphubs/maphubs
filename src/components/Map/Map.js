@@ -35,6 +35,7 @@ const debug = DebugService('map')
 let mapboxgl = {}
 let ArcGISTiledMapServiceSource
 let ScalePositionControl
+let MapboxLanguage
 
 type Props = {|
     className: string,
@@ -157,6 +158,7 @@ class Map extends React.Component<Props, State> {
     mapboxgl = require('mapbox-gl')
     ArcGISTiledMapServiceSource = require('mapbox-gl-arcgis-tiled-map-service')
     ScalePositionControl = require('mapbox-gl-dual-scale-control')
+    MapboxLanguage = require('@mapbox/mapbox-gl-language')
     this.lunr = require('lunr')
     this.createMap()
   }
@@ -322,18 +324,6 @@ class Map extends React.Component<Props, State> {
           // do stuff that needs to happen after data loads
           debugLog('finished adding map data')
 
-          // set locale
-          if (locale) {
-            try {
-              _this.changeLocale(locale, _this.map)
-              if (MapState.state.insetMap) {
-                _this.changeLocale(locale, MapState.state.insetMap.getInsetMap())
-              }
-            } catch (err) {
-              debug.error(err)
-            }
-          }
-
           _this.setState({mapLoaded: true})
           if (_this.props.onLoad) _this.props.onLoad()
         })
@@ -367,11 +357,20 @@ class Map extends React.Component<Props, State> {
         }), 'bottom-right')
       }
 
+      try {
+        var languageControl = new MapboxLanguage()
+        map.addControl(locale)
+      } catch (err) {
+        console.error('failed to add langauge control')
+        console.error(err)
+      }
+
       if (_this.props.disableScrollZoom) {
         map.scrollZoom.disable()
       }
 
       _this.map = map
+      _this.languageControl = languageControl
     })
   }
 
@@ -596,14 +595,10 @@ class Map extends React.Component<Props, State> {
             left: 0 !important;
           }
           
-          .mapboxgl-ctrl {
+          .mapboxgl-ctrl-maphubs {
             -moz-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
             -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
             box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
-          }
-
-          .mapboxgl-ctrl-bottom-left .mapboxgl-ctrl {
-            margin: 0 !important;
           }
 
           .mapboxgl-popup {
@@ -643,7 +638,13 @@ class Map extends React.Component<Props, State> {
           }
 
           .mapboxgl-ctrl-logo {
-            display: none !important;
+            position: absolute !important;
+            bottom: -5px !important;
+            left: 80px !important;
+          }
+
+          .maphubs-inset .mapboxgl-ctrl-logo {
+            display: none;
           }
 
           .mapboxgl-ctrl-top-right {

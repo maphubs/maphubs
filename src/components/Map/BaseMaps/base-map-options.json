@@ -5,9 +5,9 @@
       "en": "Default (Light)",
       "fr": ""
     },
-    "attribution": "<a href=\"https://www.maptiler.com/license/maps/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; MapTiler</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "&copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
-    "tilehostingUrl": "https://maps.tilehosting.com/styles/positron/style.json?key="
+    "mapboxUrl": "mapbox://styles/mapbox/light-v9"
   },
   {
     "value": "dark", 
@@ -15,39 +15,51 @@
       "en": "Dark",
       "fr": "Dark"
     },
-    "attribution": "<a href=\"https://www.maptiler.com/license/maps/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; MapTiler</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "&copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
-    "tilehostingUrl": "https://maps.tilehosting.com/c/e7fa06aa-e484-45af-b28a-58237136750e/styles/darkv2/style.json?key="
+    "mapboxUrl": "mapbox://styles/mapbox/dark-v9?optimize=true"
   },
   {
-    "value": "streets", 
+    "value": "streets",
     "label": {
       "en": "Streets",
-      "fr": "Streets"
+      "fr": "Rues"
     },
-    "attribution": "<a href=\"https://www.maptiler.com/license/maps/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; MapTiler</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "&copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
-    "tilehostingUrl": "https://maps.tilehosting.com/styles/streets/style.json?key="
+    "mapboxUrl": "mapbox://styles/mapbox/streets-v10?optimize=true"
   },
   {
-    "value": "topo", 
-    "label": {
-      "en": "Topo",
-      "fr": "Topo"
-    },
-    "attribution": "<a href=\"https://www.maptiler.com/license/maps/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; MapTiler</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
-    "updateWithMapPosition": false,
-    "tilehostingUrl": "https://maps.tilehosting.com/styles/topo/style.json?key="
-  },
-  {
-    "value": "satellite", 
+    "value": "satellite",
     "label": {
       "en": "Satellite",
       "fr": "Satellite"
     },
-    "attribution": "<a href=\"https://www.maptiler.com/license/maps/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; MapTiler</a> <a href=\"http://www.openstreetmap.org/about/\" target=\"_blank\" rel=\"noopener noreferrer\">&copy; OpenStreetMap contributors</a>",
+    "attribution": "&copy; Mapbox",
     "updateWithMapPosition": false,
-    "tilehostingUrl": "https://maps.tilehosting.com/styles/hybrid/style.json?key="
+    "mapboxUrl": "mapbox://styles/mapbox/satellite-v9"
+  },
+  {
+    "value": "satellite-streets",
+    "label": {
+      "en": "Satellite w/Streets",
+      "fr": "Satellite w/Streets"
+    },
+    "attribution": "&copy; Mapbox &copy; OpenStreetMap",
+    "updateWithMapPosition": false,
+    "mapboxUrl": "mapbox://styles/mapbox/satellite-streets-v9"
+  },
+
+
+  {
+    "value": "topo", 
+    "label": {
+      "en": "Outdoors / Topo",
+      "fr": "Outdoors / Topo"
+    },
+    "attribution": "&copy; Mapbox &copy; OpenStreetMap",
+    "updateWithMapPosition": false,
+    "mapboxUrl": "mapbox://styles/mapbox/outdoors-v10"
   },
   {
     "value": "bing-satellite", 
@@ -81,60 +93,24 @@
     }
   },
   {
-    "value": "landsat-2016", 
+    "value": "moonlight", 
     "label": {
-      "en": "Landsat - 2016",
-      "fr": "Landsat - 2016"
+      "en": "Moonlight",
+      "fr": "Moonlight"
     },
-    "attribution": "Landsat 7",
+    "attribution": "Moonlight by Rasagy Sharma &copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
-    "style": {
-        "version": 8,
-        "sources": {
-            "landsat-2016": {
-                "type": "raster",
-                "tiles":[  
-                  "https://mapforenvironment.org/raster/congo-landsat-2016/{z}/{x}/{y}.png"
-                ],
-                "tileSize": 256,
-                "minzoom": 3,
-                "maxzoom": 12
-            }
-        },
-        "layers": [{
-            "id": "landsat-2016",
-            "type": "raster",
-            "source": "landsat-2016"
-        }]
-    }
+    "mapboxUrl": "mapbox://styles/maphubs/cjxtegwf405hy1cpb6hh1fbuo"
   },
   {
-    "value": "landsat-2014", 
+    "value": "northstar", 
     "label": {
-      "en": "Landsat - 2014",
-      "fr": "Landsat - 2014"
+      "en": "North Star",
+      "fr": "North Star"
     },
-    "attribution": "Landsat 7",
+    "attribution": "North Star by Nat Slaughter &copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
-    "style": {
-        "version": 8,
-        "sources": {
-            "landsat-2014": {
-                "type": "raster",
-                "tiles":[  
-                  "https://mapforenvironment.org/raster/congo-landsat-2014/{z}/{x}/{y}.png"
-                ],
-                "tileSize": 256,
-                "minzoom": 3,
-                "maxzoom": 12
-            }
-        },
-        "layers": [{
-            "id": "landsat-2014",
-            "type": "raster",
-            "source": "landsat-2014"
-        }]
-    }
+    "mapboxUrl": "mapbox://styles/maphubs/cjxteofio89o11cmpmgrnwyzc"
   },
   {
     "value": "stamen-toner", 
@@ -227,6 +203,99 @@
             "minzoom": 0,
             "maxzoom": 22
         }]
+    }
+  },
+  {
+    "value": "osm-tiles",
+    "label": {
+      "en": "OpenStreetMap",
+      "fr": "OpenStreetMap"
+    },
+    "attribution": "&copy; OpenStreetMap contributors",
+    "updateWithMapPosition": false,
+    "style": {
+      "version": 8,
+      "sources": {
+        "openstreetmap-tiles": {
+          "type": "raster",
+          "tiles": [
+            "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "https://b.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "https://c.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          ],
+          "tileSize": 256
+        }
+      },
+      "layers": [
+        {
+          "id": "openstreetmap-tiles",
+          "type": "raster",
+          "source": "openstreetmap-tiles",
+          "minzoom": 0,
+          "maxzoom": 22
+        }
+      ]
+    }
+  },
+  {
+    "value": "hot-tiles",
+    "label": {
+      "en": "OSM Humanitarian",
+      "fr": "OSM Humanitarian"
+    },
+    "attribution": "&copy; OpenStreetMap contributors",
+    "updateWithMapPosition": false,
+    "style": {
+      "version": 8,
+      "sources": {
+        "hot-tiles": {
+          "type": "raster",
+          "tiles": [
+            "https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+            "https://b.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+          ],
+          "tileSize": 256
+        }
+      },
+      "layers": [
+        {
+          "id": "hot-tiles",
+          "type": "raster",
+          "source": "hot-tiles",
+          "minzoom": 0,
+          "maxzoom": 22
+        }
+      ]
+    }
+  },
+  {
+    "value": "wikimedia-tiles",
+    "label": {
+      "en": "Wikimedia Maps",
+      "fr": "Wikimedia Maps"
+    },
+    "attribution": "&copy; Wikimedia Maps &copy; OpenStreetMap contributors",
+    "updateWithMapPosition": false,
+    "style": {
+      "version": 8,
+      "sources": {
+        "wikimedia-tiles": {
+          "type": "raster",
+          "tiles": [
+            "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png"
+          ],
+          "tileSize": 256
+        }
+      },
+      "layers": [
+        {
+          "id": "wikimedia-tiles",
+          "type": "raster",
+          "source": "wikimedia-tiles",
+          "minzoom": 0,
+          "maxzoom": 22
+        }
+      ]
     }
   }
 ]

@@ -496,7 +496,9 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                   </div>
                   {MAPHUBS_CONFIG.enableComments &&
                   <div id='discuss' className='col s12' style={{display: tabContentDisplay}}>
-                    <Comments />
+                    <ErrorBoundary>
+                      <Comments />
+                    </ErrorBoundary>
                   </div>
                   }
                   <Subscribe to={[DataEditorContainer]}>

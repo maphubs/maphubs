@@ -160,7 +160,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
                   <div className='row no-margin'>
                     <Map id='layer-style-map' className='z-depth-2' insetMap={false} style={{height: '300px', width: '400px', margin: 'auto'}}
                       glStyle={style}
-                      showLogo={false}
+                      showLogo
                       mapConfig={this.props.mapConfig}
                       fitBounds={mapExtent}
                       primaryColor={MAPHUBS_CONFIG.primaryColor}

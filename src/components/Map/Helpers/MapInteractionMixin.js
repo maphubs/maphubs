@@ -144,6 +144,7 @@ export default {
   mousemoveHandler (e: any) {
     const map = this.map
     const _this = this
+    if (!map) return
 
     if (_this.state.enableMeasurementTools) {
 

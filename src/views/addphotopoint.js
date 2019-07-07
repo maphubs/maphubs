@@ -166,7 +166,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
                 id='add-photo-point-map'
                 style={{width: '100%', height: '400px'}}
                 showFeatureInfoEditButtons={false}
-                showLogo={false}
+                showLogo
                 mapConfig={this.props.mapConfig}
                 data={this.state.geoJSON}
                 t={this.t}
