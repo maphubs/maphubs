@@ -19,7 +19,8 @@
     "deploy": "/bin/sh deploy.sh",
     "upgrade-rancher": "cd ../maphubs-rancher-catalog && /bin/sh new_version.sh",
     "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "prepublish": "npm run snyk-protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -204,7 +205,8 @@
     "uuid": "^3.3.0",
     "webpack": "^4.28.4",
     "wgs84-util": "3.0.0",
-    "xcomponent": "6.0.62"
+    "xcomponent": "6.0.62",
+    "snyk": "^1.192.4"
   },
   "optionalDependencies": {
     "fsevents": "^1.2.4",
@@ -228,7 +230,6 @@
     "flow-bin": "^0.95.1",
     "geojson-flow": "^1.0.1",
     "semver": "^5.5.0",
-    "snyk": "^1.117.1",
     "unstated-debug": "^0.3.2",
     "webpack-bundle-analyzer": "^3.0.3"
   },
