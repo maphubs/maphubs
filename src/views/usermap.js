@@ -82,9 +82,10 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     this.stores.push(UserStore)
     this.stores.push(MapMakerStore)
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
-    let baseMapContainerInit = {}
+    let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+    
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
     }
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
     if (props.user) {
@@ -329,6 +330,9 @@ export default class UserMap extends MapHubsComponent<Props, State> {
               logoSmall={MAPHUBS_CONFIG.logoSmall}
               logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
               logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+              mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+              DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+              earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
               {...map.settings}
               t={this.t}
             />

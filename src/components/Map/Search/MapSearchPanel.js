@@ -16,7 +16,8 @@ type Props = {
   onSearch: Function,
   onSearchResultClick: Function,
   onSearchReset: Function,
-  t: Function
+  t: Function,
+  mapboxAccessToken: string
 }
 
 type State = {
@@ -89,7 +90,7 @@ export default class MapSearchPanel extends React.Component<Props, State> {
   runLocationSearch (query: string) {
     const _this = this
     // run autocomplete search
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}&autocomplete=true`
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${this.props.mapboxAccessToken}&autocomplete=true`
 
     request.get(url)
       .then((res) => {

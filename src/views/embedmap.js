@@ -69,9 +69,10 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
 
-    let baseMapContainerInit = {}
+    let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+    
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
     }
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
 
@@ -256,6 +257,9 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
           logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
           logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
           t={this.t}
+          mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+          DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+          earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
           {...this.props.map.settings}
         />
       )

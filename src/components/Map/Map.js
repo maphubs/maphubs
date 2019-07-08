@@ -83,7 +83,9 @@ type Props = {|
     logoSmall?: string,
     logoSmallWidth?: number,
     logoSmallHeight?: number,
-    mapboxAccessToken: string
+    mapboxAccessToken: string,
+    DGWMSConnectID?: string,
+    earthEngineClientID?: string
   |}
 
   type State = {
@@ -770,6 +772,7 @@ class Map extends React.Component<Props, State> {
             onSearchResultClick={this.onSearchResultClick}
             onSearchReset={this.onSearchReset}
             t={t}
+            mapboxAccessToken={this.props.mapboxAccessToken}
           />
         </div>
       </div>

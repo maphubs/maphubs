@@ -37,7 +37,14 @@ const EarthEngineSource = {
         }
       }
 
-      ee.data.authenticate(MAPHUBS_CONFIG.EARTHENGINE_CLIENTID, getEEMap, null, null, () => {
+      let clientID
+      if (MAPHUBS_CONFIG && MAPHUBS_CONFIG.EARTHENGINE_CLIENTID) {
+        clientID = MAPHUBS_CONFIG.EARTHENGINE_CLIENTID
+      } else {
+        clientID = mapComponent.props.earthEngineClientID
+      }
+
+      ee.data.authenticate(clientID, getEEMap, null, null, () => {
         ee.data.authenticateViaPopup(() => {
           getEEMap()
         })

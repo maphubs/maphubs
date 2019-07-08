@@ -62,9 +62,10 @@ export default class Search extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-    let baseMapContainerInit = {}
+    let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+    
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions}
+      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
     }
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
   }

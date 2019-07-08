@@ -52,7 +52,9 @@ type Props = {
   logoSmallWidth?: number,
   logoSmallHeight?: number,
   locale: string,
-  mapboxAccessToken: string
+  mapboxAccessToken: string,
+  DGWMSConnectID?: string,
+  earthEngineClientID?: string
 }
 
 type State = {
@@ -324,6 +326,8 @@ export default class InteractiveMap extends React.Component<Props, State> {
           t={t}
           locale={this.props.locale}
           mapboxAccessToken={this.props.mapboxAccessToken}
+          DGWMSConnectID={this.props.DGWMSConnectID}
+          earthEngineClientID={this.props.earthEngineClientID}
         >
           {legend}
 

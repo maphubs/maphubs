@@ -8,10 +8,17 @@ const RasterSource = {
       source.url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
     }
 
+    let connectID
+    if (MAPHUBS_CONFIG && MAPHUBS_CONFIG.DG_WMS_CONNECT_ID) {
+      connectID = MAPHUBS_CONFIG.DG_WMS_CONNECT_ID
+    } else {
+      connectID = mapComponent.props.DGWMSConnectID
+    }
+
     if (source.tiles && source.tiles.length > 0) {
       source.tiles = source.tiles.map((tile) => {
         tile = tile.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
-        tile = tile.replace('{DG_WMS_CONNECT_ID}', MAPHUBS_CONFIG.DG_WMS_CONNECT_ID)
+        tile = tile.replace('{DG_WMS_CONNECT_ID}', connectID)
         return tile
       })
     }

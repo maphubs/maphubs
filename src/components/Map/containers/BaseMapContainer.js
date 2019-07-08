@@ -7,6 +7,7 @@ import _intersect from '@turf/intersect'
 import _debounce from 'lodash.debounce'
 import _distance from '@turf/distance'
 import _find from 'lodash.find'
+
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('BaseMapContainer')
 const request = require('superagent')
 
@@ -27,7 +28,10 @@ export type BaseMapState = {
   attribution: string,
   bingImagerySet: ?string,
   updateWithMapPosition: boolean,
-  baseMapOptions: Array<BaseMapOption>
+  baseMapOptions: Array<BaseMapOption>,
+  bingKey?: string,
+  tileHostingKey?: string,
+  mapboxAccessToken: string
 }
 
 export default class BaseMapContainer extends Container<BaseMapState> {
@@ -89,7 +93,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
     const lat = position.lat
     const lng = position.lng
     const zoom = Math.round(position.zoom)
-    const url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${this.state.bingImagerySet}/${lat},${lng}?zl=${zoom}&include=ImageryProviders&key=${MAPHUBS_CONFIG.BING_KEY}`
+    const url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${this.state.bingImagerySet}/${lat},${lng}?zl=${zoom}&include=ImageryProviders&key=${bingKey}`
     let attributionString = '© Bing Maps'
     request.get(url)
       .end((err, res) => {
@@ -132,12 +136,12 @@ export default class BaseMapContainer extends Container<BaseMapState> {
   updateMapPosition = (position: any, bbox: any) => {
     // ignore unless using a service that needs this... like Bing
     if (this.state.updateWithMapPosition) {
-      this.debouncedUpdateMapPosition(position, bbox)
+      this.debouncedUpdateMapPosition(position, bbox, this.state.bingKey)
     }
   }
 
   getBingSource = (type: string, cb: Function) => {
-    const url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${type}?key=${MAPHUBS_CONFIG.BING_KEY}&include=ImageryProviders`
+    const url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${type}?key=${this.state.bingKey}&include=ImageryProviders`
     request.get(url)
       .end((err, res) => {
         if (err) {
@@ -149,15 +153,6 @@ export default class BaseMapContainer extends Container<BaseMapState> {
         }
       })
   }
-
-  /*
-  setTileHostingKey (style) {
-    style.sources.openmaptiles.tiles = style.sources.openmaptiles.tiles.map((tile) => {
-      return tile.replace('{key}', MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY)
-    })
-    return style
-  }
-  */
 
   /*
   loadFromFile (name, cb) {
@@ -178,7 +173,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
 
   getBaseMapFromName = (mapName: string, cb: Function) => {
     const config = _find(this.state.baseMapOptions, {value: mapName})
-
+    const { mapboxAccessToken, tileHostingKey } = this.state
     if (config) {
       this.setState({
         attribution: config.attribution,
@@ -191,7 +186,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
           })
           const style = config.style
           if (!style.glyphs) {
-            style.glyphs = `https://maps.tilehosting.com/fonts/{fontstack}/{range}.pbf.pict?key=${MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY}`
+            style.glyphs = `mapbox://fonts/mapbox/{fontstack}/{range}.pbf`
           }
           if (!style.sprite) {
             style.sprite = ''
@@ -204,7 +199,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
         const style = config.style
         if (typeof style !== 'string') {
           if (!style.glyphs) {
-            style.glyphs = `https://maps.tilehosting.com/fonts/{fontstack}/{range}.pbf.pict?key=${MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY}`
+            style.glyphs = `mapbox://fonts/mapbox/{fontstack}/{range}.pbf`
           }
           if (!style.sprite) {
             style.sprite = ''
@@ -219,7 +214,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
             } else {
               const style = res.body
               if (!style.glyphs) {
-                style.glyphs = `https://maps.tilehosting.com/fonts/{fontstack}/{range}.pbf.pict?key=${MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY}`
+                style.glyphs = `mapbox://fonts/mapbox/{fontstack}/{range}.pbf`
               }
               if (!style.sprite) {
                 style.sprite = ''
@@ -228,7 +223,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
             }
           })
       } else if (config.tilehostingUrl) {
-        const url = config.tilehostingUrl + MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY
+        const url = config.tilehostingUrl + tileHostingKey
         request.get(url)
           .end((err, res) => {
             if (err) {
@@ -236,7 +231,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
             } else {
               const style = res.body
               if (!style.glyphs) {
-                style.glyphs = `https://maps.tilehosting.com/fonts/{fontstack}/{range}.pbf.pict?key=${MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY}`
+                style.glyphs = `https://maps.tilehosting.com/fonts/{fontstack}/{range}.pbf.pict?key=${tileHostingKey}`
               }
               if (!style.sprite) {
                 style.sprite = ''
@@ -249,9 +244,9 @@ export default class BaseMapContainer extends Container<BaseMapState> {
         // converted to: //https://api.mapbox.com/styles/v1/mapbox/streets-v9?access_token=
         let url = config.mapboxUrl.replace('mapbox://styles/', 'https://api.mapbox.com/styles/v1/')
         if (config.mapboxUrl.endsWith('?optimize=true')) {
-          url = url + '&access_token=' + MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
+          url = url + '&access_token=' + mapboxAccessToken
         } else {
-          url = url + '?access_token=' + MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
+          url = url + '?access_token=' + mapboxAccessToken
         }
 
         request.get(url)
@@ -266,27 +261,22 @@ export default class BaseMapContainer extends Container<BaseMapState> {
         debug.log(`map style not found for base map: ${mapName}`)
       }
     } else {
-      debug.log(`unknown base map: ${mapName}`)
+      console.error(`unknown base map: ${mapName} using default instead`)
       // load the  default basemap
       const defaultConfig = _find(defaultBaseMapOptions, {value: 'default'})
-      this.setState({
-        attribution: defaultConfig.attribution,
-        updateWithMapPosition: defaultConfig.updateWithMapPosition
-      })
-      const url = defaultConfig.tilehostingUrl + MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY
+      let url = defaultConfig.mapboxUrl.replace('mapbox://styles/', 'https://api.mapbox.com/styles/v1/')
+      if (defaultConfig.mapboxUrl.endsWith('?optimize=true')) {
+        url = url + '&access_token=' + mapboxAccessToken
+      } else {
+        url = url + '?access_token=' + mapboxAccessToken
+      }
+
       request.get(url)
         .end((err, res) => {
           if (err) {
             debug.error(err)
           } else {
-            const style = res.body
-            if (!style.glyphs) {
-              style.glyphs = `https://maps.tilehosting.com/fonts/{fontstack}/{range}.pbf.pict?key=${MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY}`
-            }
-            if (!style.sprite) {
-              style.sprite = ''
-            }
-            cb(style)
+            cb(res.body)
           }
         })
     }

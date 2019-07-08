@@ -7,7 +7,7 @@
     },
     "attribution": "&copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
-    "mapboxUrl": "mapbox://styles/mapbox/light-v9"
+    "mapboxUrl": "mapbox://styles/mapbox/light-v9?optimize=true"
   },
   {
     "value": "dark", 
@@ -27,7 +27,7 @@
     },
     "attribution": "&copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
-    "mapboxUrl": "mapbox://styles/mapbox/streets-v10?optimize=true"
+    "mapboxUrl": "mapbox://styles/mapbox/streets-v11?optimize=true"
   },
   {
     "value": "satellite",

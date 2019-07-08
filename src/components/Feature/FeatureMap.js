@@ -55,6 +55,9 @@ export default class FeatureMap extends MapHubsComponent<Props, void> {
               logoSmall={MAPHUBS_CONFIG.logoSmall}
               logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
               logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+              mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+              DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+              earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
             />
           )
         }}
