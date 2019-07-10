@@ -41,7 +41,8 @@
     "camelcase": "off",
     "object-curly-spacing": "off",
     "standard/object-curly-even-spacing": [2, "either"],
-    "unicorn/catch-error-name": ["error", {"name": "err"}]
+    "unicorn/catch-error-name": ["error", {"name": "err"}],
+    "unicorn/prevent-abbreviations": "off"
   },
 
   "env": {

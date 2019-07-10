@@ -1,12 +1,14 @@
 // @flow
 import React from 'react'
 import {withFormsy} from 'formsy-react'
+import { Select, Row } from 'antd'
 import find from 'lodash.find'
 import result from 'lodash.result'
-import ReactSelect from 'react-select'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
 import {Tooltip} from 'react-tippy'
+
+const { Option } = Select
 
 type Props = {|
   emptyText: string,
@@ -34,7 +36,7 @@ type State = {
   note: string
 }
 
-class Select extends MapHubsComponent<Props, State> {
+class SelectFormItem extends MapHubsComponent<Props, State> {
   props: Props
 
   static defaultProps = {
@@ -109,50 +111,50 @@ class Select extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const { id, name, options, icon, label, className, dataTooltip, dataPosition, getErrorMessage, successText, emptyText } = this.props
+    const { note } = this.state
     const value = this.props.getValue()
 
-    let note = ''
-    if (this.state.note) {
-      /* eslint-disable react/no-danger */
-      note = (<div dangerouslySetInnerHTML={{__html: this.state.note}} />)
-      /* eslint-enable react/no-danger */
-    }
-
-    let icon = ''
-    if (this.props.icon) {
-      icon = (<i className='material-icons prefix'>{this.props.icon}</i>)
-    }
+    /* eslint-disable react/no-danger */
 
     return (
-      <div className={this.props.className}>
+      <div className={className}>
         <Tooltip
-          disabled={!this.props.dataTooltip}
-          title={this.props.dataTooltip}
-          position={this.props.dataPosition}
+          disabled={!dataTooltip}
+          title={dataTooltip}
+          position={dataPosition}
           inertia
           followCursor
         >
-          <div ref='selectwrapper' className='input-field no-margin' id={this.props.id} >
-            {icon}
-            {this.props.label &&
+          <div ref='selectwrapper' className='input-field no-margin' id={id} >
+            {icon &&
+              <i className='material-icons prefix'>{icon}</i>
+            }
+            {label &&
               <div className='row' style={{height: '10px'}}>
-                <label htmlFor={this.props.name} data-error={this.props.getErrorMessage()} data-success={this.props.successText}>{this.props.label}</label>
+                <label htmlFor={name} data-error={getErrorMessage()} data-success={successText}>{label}</label>
               </div>
             }
-            <div className='row no-margin'>
-              <ReactSelect
-                name={this.props.name}
-                value={value}
-                placeholder={this.props.emptyText}
-                options={this.props.options}
+            <Row>
+              <Select
+                defaultValue={value}
                 onChange={this.handleSelectChange}
-              />
-            </div>
+                allowClear
+                placeholder={emptyText}
+                style={{ width: '100%' }}
+              >
+                {options.map((option) =>
+                  <Option key={option.value} value={option.value}>{option.label}</Option>
+                )}
+              </Select>
+            </Row>
           </div>
-          {note}
+          {note &&
+            <div dangerouslySetInnerHTML={{__html: note}} />
+          }
         </Tooltip>
       </div>
     )
   }
 }
-export default withFormsy(Select)
+export default withFormsy(SelectFormItem)

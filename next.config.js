@@ -1,6 +1,7 @@
 const withCSS = require('@zeit/next-css')
 const withLess = require('@zeit/next-less')
 const path = require('path')
+const withTM = require('next-transpile-modules')
 const MAPHUBS_CONFIG = require('./src/local')
 
 // fix: prevents error when .less files are required by node
@@ -19,7 +20,8 @@ const useCDN = (ASSET_CDN_PREFIX && process.env.NODE_ENV === 'production')
 const pathToMapboxGL = path.resolve(__dirname, './node_modules/mapbox-gl/dist/mapbox-gl.js')
 const assetPrefix = useCDN ? ASSET_CDN_PREFIX : ''
 console.log(`assetPrefix: ${assetPrefix}`)
-module.exports = withCSS(withLess({
+module.exports = withTM(withCSS(withLess({
+  transpileModules: ['react-dnd', 'react-dnd-html5-backend'],
   lessLoaderOptions: {
     modifyVars: {
       'primary-color': 'black'
@@ -78,4 +80,4 @@ module.exports = withCSS(withLess({
 
     return config
   }
-}))
+})))
