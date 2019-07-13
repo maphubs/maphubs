@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
+import { Row } from 'antd'
 import _isequal from 'lodash.isequal'
-import Toggle from '../forms/toggle'
 import Select from '../forms/select'
 import MapHubsComponent from '../../components/MapHubsComponent'
 
@@ -73,120 +73,42 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
+    const { groups, canChangeGroup } = this.props
+    const { group_id } = this.state
     let startEmpty = true
     let owner
-    if (this.state.group_id) {
+    if (group_id) {
       startEmpty = false
-    }
-    let groups = ''
-    if (this.props.groups.length > 1 && this.props.canChangeGroup) {
-      const groupOptions = []
-      const _this = this
-      this.props.groups.map((group) => {
-        groupOptions.push({
-          value: group.group_id,
-          label: _this.t(group.name)
-        })
-      })
-
-      groups = (
-        <div className='row'>
-          <p style={{padding: '10px'}}>{t('Since you are in multiple groups, please select the group that should own this item.')}</p>
-          <Select name='group' id='group-select' label={t('Group')} startEmpty={startEmpty}
-            value={this.state.group_id} onChange={this.onGroupChange}
-            emptyText={t('Choose a Group')} options={groupOptions} className='col s12'
-            dataPosition='right' dataTooltip={t('Owned by Group')}
-            required
-          />
-        </div>
-      )
-    } else if (this.state.group_id) {
-      owner = this.getOwnerGroup(this.state.group_id)
-      groups = (
-        <div className='row'>
-          <b>{t('Group:')} </b>{this.t(owner.name)}
-        </div>
-      )
-    } else {
-      groups = (
-        <div className='row'>
-          <b>{t('Group:')} </b>{this.t(this.props.groups[0].name)}
-        </div>
-      )
+      owner = this.getOwnerGroup(group_id)
     }
 
-    let privateToggle = ''
-
-    if (this.state.group_id) {
-      // check if allowed to have private content
-      owner = this.getOwnerGroup(this.state.group_id)
-      let privateAllowed = false
-      let overLimit = false
-      let itemCount, itemLimit, itemName
-      if (owner.account.tier.tier_id !== 'public') {
-        if (this.props.type === 'layer') {
-          if (owner.account.tier.private_layer_limit > 0) {
-            privateAllowed = true
-            itemCount = owner.account.numPrivateLayers
-            itemLimit = owner.account.tier.private_layer_limit
-            if ((itemCount + 1) > itemLimit) {
-              overLimit = true
-            }
-            itemName = t('private layers')
-          }
-        } else if (this.props.type === 'map') {
-          if (owner.account.tier.private_map_limit > 0) {
-            privateAllowed = true
-            itemCount = owner.account.numPrivateMaps
-            itemLimit = owner.account.tier.private_map_limit
-            if ((itemCount + 1) > itemLimit) {
-              overLimit = true
-            }
-            itemName = t('private maps')
-          }
-        }
+    const groupOptions = groups.map((group) => {
+      return {
+        value: group.group_id,
+        label: t(group.name)
       }
-      if (privateAllowed) {
-        const tooltipMessage = t('Private layers are only accessible to members of the same group')
-
-        let checked = false
-        let disablePrivate = false
-        let overLimitMessage = ''
-        if (overLimit) {
-          disablePrivate = true
-          // keep previous settings even if over the limit
-          if (this.props.editing) {
-            checked = this.state.private
-          } else {
-            overLimitMessage = (
-              <p>{t('Upgrade your account to add additional ')} {itemName}</p>
-            )
-          }
-        } else {
-          checked = this.state.private
-        }
-
-        privateToggle = (
-          <div className='row'>
-            <p style={{padding: '10px'}}>{t('Account Level:')} <b>{owner.account.tier.name}</b>&nbsp;
-              <span>
-                {t('You are currently using ')} {itemCount} {t('of')} {itemLimit} {itemName}
-              </span>
-            </p>
-            <Toggle name='private' labelOff={t('Public')} disabled={disablePrivate} labelOn={t('Private')} checked={checked} className='col s12'
-              dataPosition='right' dataTooltip={tooltipMessage}
-            />
-            {overLimitMessage}
-          </div>
-        )
-      }
-    }
+    })
 
     return (
-      <div>
-        {groups}
-        {privateToggle}
-      </div>
+      <>
+        {(groups.length > 1 && canChangeGroup) &&
+          <Row>
+            <p style={{padding: '10px'}}>{t('Since you are in multiple groups, please select the group that should own this item.')}</p>
+            <Select name='group' id='group-select' label={t('Group')} startEmpty={startEmpty}
+              value={this.state.group_id} onChange={this.onGroupChange}
+              emptyText={t('Choose a Group')} options={groupOptions} className='col s12'
+              dataPosition='right' dataTooltip={t('Owned by Group')}
+              required
+            />
+          </Row>
+        }
+        {((groups.length === 1 || !canChangeGroup) && owner) &&
+          <p><b>{t('Group:')} </b>{this.t(owner.name)}</p>
+        }
+        {(groups.length === 1 && !group_id) &&
+          <p><b>{t('Group:')} </b>{this.t(this.props.groups[0].name)}</p>
+        }
+      </>
     )
   }
 }

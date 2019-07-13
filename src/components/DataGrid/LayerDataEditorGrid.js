@@ -16,7 +16,7 @@ import turf_bbox from '@turf/bbox'
 type Props = {
   geoJSON: Object,
   presets: Object,
-  gridHeight: number,
+  height: number,
   layer: Layer,
 
   dataLoadingMsg: string,
@@ -36,9 +36,6 @@ type Column = {
 
 type State = {
   geoJSON?: Object,
-  gridHeight: number,
-  gridWidth: number,
-  gridHeightOffset: number,
   rows: Array<Object>,
   selectedIndexes: Array<number>,
   columns: Array<Column>,
@@ -58,13 +55,11 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
   DropDownFormatter: any
 
   static defaultProps = {
-    dataLoadingMsg: 'Data Loading'
+    dataLoadingMsg: 'Data Loading',
+    height: 300
   }
 
   state: State = {
-    gridHeight: 100,
-    gridWidth: 100,
-    gridHeightOffset: 48,
     rows: [],
     selectedIndexes: [],
     columns: [],
@@ -91,9 +86,6 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
   componentWillReceiveProps (nextProps: Props) {
     if (nextProps.geoJSON && !this.state.geoJSON) {
       this.processGeoJSON(nextProps.geoJSON, nextProps.presets)
-    }
-    if (nextProps.gridHeight && nextProps.gridHeight !== this.state.gridHeight) {
-      this.setState({gridHeight: nextProps.gridHeight})
     }
   }
 
@@ -342,6 +334,7 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
 
    render () {
      const {t} = this
+     const { height } = this.props
      const _this = this
 
      if (this.state.rows.length > 0 && typeof window !== 'undefined') {
@@ -354,7 +347,7 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
            rowKey={this.state.rowKey}
            rowGetter={this.rowGetter}
            rowsCount={this.getSize()}
-           minHeight={this.state.gridHeight}
+           minHeight={height - 49}
            onGridSort={this.handleGridSort}
            onRowSelect={this.onRowSelect}
            enableCellSelect

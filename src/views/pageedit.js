@@ -2,10 +2,9 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
+import { message, notification } from 'antd'
 import CodeEditor from '../components/LayerDesigner/CodeEditor'
 import request from 'superagent'
-import MessageActions from '../actions/MessageActions'
-import NotificationActions from '../actions/NotificationActions'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
@@ -71,14 +70,13 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
         checkClientError(res, err, () => {}, (cb) => {
           _this.setState({pageConfig: JSON.parse(pageConfig)})
           if (err) {
-            MessageActions.showMessage({title: t('Server Error'), message: err})
+            notification.error({
+              message: t('Server Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
-            NotificationActions.showNotification(
-              {
-                message: t('Page Saved'),
-                position: 'topright',
-                dismissAfter: 3000
-              })
+            message.success(t('Page Saved'), 3)
           }
           cb()
         })

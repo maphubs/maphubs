@@ -94,24 +94,5 @@ module.exports = {
     })
     debug.log('story: ' + story_id + ' now has ' + views + ' views!')
     return knex('omh.stories').update({views}).where({story_id})
-  },
-
-  async addHubView (hub_id: string, user_id: any) {
-    if (user_id <= 0) {
-      user_id = null
-    }
-    const viewsResult = await knex('omh.hub_views').select(knex.raw('count(view_id)')).where({hub_id})
-
-    let views: number = parseInt(viewsResult[0].count)
-    if (views === undefined || isNaN(views)) {
-      views = 1
-    } else {
-      views = views + 1
-    }
-    await knex('omh.hub_views').insert({
-      hub_id, user_id, time: knex.raw('now()')
-    })
-    debug.log('hub: ' + hub_id + ' now has ' + views + ' views!')
-    return knex('omh.hubs').update({views}).where({hub_id})
   }
 }

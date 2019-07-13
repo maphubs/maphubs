@@ -3,13 +3,11 @@ import React from 'react'
 import InteractiveMap from '../components/Map/InteractiveMap'
 import Header from '../components/header'
 import _find from 'lodash.find'
-import {Row, Col} from 'antd'
+import { Row, Col, notification, message, Tabs } from 'antd'
 import Comments from '../components/Comments'
 import TerraformerGL from '../services/terraformerGL'
 import GroupTag from '../components/Groups/GroupTag'
 import Licenses from '../components/CreateLayer/licenses'
-import MessageActions from '../actions/MessageActions'
-import NotificationActions from '../actions/NotificationActions'
 import LayerNotes from '../components/CreateLayer/LayerNotes'
 import EditButton from '../components/EditButton'
 import LayerNotesActions from '../actions/LayerNotesActions'
@@ -28,6 +26,7 @@ import numeral from 'numeral'
 import slugify from 'slugify'
 import UserStore from '../stores/UserStore'
 import {Tooltip} from 'react-tippy'
+import AutoSizer from 'react-virtualized-auto-sizer'
 import LayerExport from '../components/LayerInfo/LayerExport'
 import Stats from '../components/LayerInfo/Stats'
 import ExternalLink from '../components/LayerInfo/ExternalLink'
@@ -47,6 +46,8 @@ import fireResizeEvent from '../services/fire-resize-event'
 import LocaleStore from '../stores/LocaleStore'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+
+const TabPane = Tabs.TabPane
 
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('layerinfo')
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
@@ -114,7 +115,8 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     editingData: false,
     gridHeight: 100,
     gridHeightOffset: 48,
-    length: 0
+    length: 0,
+    dataMsg: this.t('Data Loading')
   }
 
   constructor (props: Props) {
@@ -134,7 +136,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     this.DataEditorState = new DataEditorContainer()
   }
 
-  componentDidMount () {
+  async componentDidMount () {
     const _this = this
     const {t} = this
     M.Tabs.init(this.refs.tabs, {})
@@ -144,42 +146,32 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     const {layer} = this.props
     const {editingNotes, editingData} = this.state
     const elc = layer.external_layer_config
-    if (layer.is_external) {
-      // retreive geoJSON data for layers
-      if (elc.type === 'ags-mapserver-query') {
-        TerraformerGL.getArcGISGeoJSON(elc.url)
-          .then((geoJSON) => {
-            return _this.setState({geoJSON})
-          }).catch(err => {
-            debug.error(err)
-          })
-        _this.setState({dataMsg: t('Data Loading')})
-      } else if (elc.type === 'ags-featureserver-query') {
-        TerraformerGL.getArcGISFeatureServiceGeoJSON(elc.url)
-          .then((geoJSON) => {
-            return _this.setState({geoJSON})
-          }).catch(err => {
-            debug.error(err)
-          })
-        _this.setState({dataMsg: t('Data Loading')})
-      } else if (elc.type === 'geojson') {
-        request.get(elc.data)
-          .type('json').accept('json')
-          .end((err, res) => {
-            if (err) {
-              MessageActions.showMessage({title: t('Server Error'), message: err})
-            } else {
-              const geoJSON = res.body
-              _this.setState({geoJSON})
-            }
-          })
-        _this.setState({dataMsg: t('Data Loading')})
+    try {
+      if (layer.is_external) {
+        let geoJSON
+        // retreive geoJSON data for layers
+        if (elc.type === 'ags-mapserver-query') {
+          geoJSON = await TerraformerGL.getArcGISGeoJSON(elc.url)
+        } else if (elc.type === 'ags-featureserver-query') {
+          geoJSON = await TerraformerGL.getArcGISFeatureServiceGeoJSON(elc.url)
+        } else if (elc.type === 'geojson') {
+          const res = await request.get(elc.data).type('json').accept('json')
+          geoJSON = res.body
+        } else {
+          this.setState({dataMsg: t('Data table not support for this layer.')})
+        }
+        if (geoJSON) this.setState({geoJSON})
       } else {
-        _this.setState({dataMsg: t('Data table not support for this layer.')})
+        this.getGeoJSON()
+        _this.setState({dataMsg: t('Data Loading')})
       }
-    } else {
-      this.getGeoJSON()
-      _this.setState({dataMsg: t('Data Loading')})
+    } catch (err) {
+      debug.error(err)
+      notification.error({
+        message: t('Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
     }
 
     window.addEventListener('beforeunload', (e) => {
@@ -200,8 +192,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     }
   }
 
-  getGeoJSON = () => {
-    const _this = this
+  getGeoJSON = async () => {
     const {layer} = this.props
     let baseUrl, dataUrl
     if (layer.remote) {
@@ -211,47 +202,45 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
       baseUrl = urlUtil.getBaseUrl()
       dataUrl = `${baseUrl}/api/layer/${layer.layer_id}/export/geobuf/data.pbf`
     }
+    try {
+      const res = await request.get(dataUrl)
+        .responseType('blob')
+        .parse(request.parse.image)
 
-    request.get(dataUrl)
-      .buffer(true)
-      .responseType('arraybuffer')
-      .parse(request.parse.image)
-      .end((err, res) => {
-        if (err) {
-          debug.error(err)
-        } else {
-          const geoJSON = geobuf.decode(new Pbf(new Uint8Array(res.body)))
-          const count = geoJSON.features.length
-          let area
-          let length = 0
-          if (layer.data_type === 'polygon') {
-            const areaM2 = turf_area(geoJSON)
-            if (areaM2 && areaM2 > 0) {
-              area = areaM2 / 10000.00
-            }
-          } else if (layer.data_type === 'line') {
-            geoJSON.features.forEach(feature => {
-              if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
-                length += turf_length(feature.geometry, {units: 'kilometers'})
-              }
-            })
-          }
-
-          _this.setState({geoJSON, count, area, length})
+      const arrayBuffer = await new Response(res.body).arrayBuffer()
+      const geoJSON = geobuf.decode(new Pbf(arrayBuffer))
+      const count = geoJSON.features.length
+      let area
+      let length = 0
+      if (layer.data_type === 'polygon') {
+        const areaM2 = turf_area(geoJSON)
+        if (areaM2 && areaM2 > 0) {
+          area = areaM2 / 10000
         }
-      })
+      } else if (layer.data_type === 'line') {
+        geoJSON.features.forEach(feature => {
+          if (feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString') {
+            length += turf_length(feature.geometry, {units: 'kilometers'})
+          }
+        })
+      }
+      this.setState({geoJSON, count, area, length})
+    } catch (err) {
+      debug.error(err)
+    }
   }
 
-  onTabSelect = () => {
+  onTabSelect = (tab) => {
     const _this = this
-
-    const gridHeight = $('#data').height() - _this.state.gridHeightOffset
-    this.setState({gridHeight})
-
-    $(window).resize(() => {
+    if (tab === 'data') {
       const gridHeight = $('#data').height() - _this.state.gridHeightOffset
-      _this.setState({gridHeight, userResize: true})
-    })
+      this.setState({gridHeight})
+
+      $(window).resize(() => {
+        const gridHeight = $('#data').height() - _this.state.gridHeightOffset
+        _this.setState({gridHeight, userResize: true})
+      })
+    }
   }
 
   openEditor = () => {
@@ -268,9 +257,13 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     const {layer} = this.props
     LayerNotesActions.saveNotes(layer.layer_id, this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Server Error'), message: err})
+        notification.error({
+          message: t('Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
-        NotificationActions.showNotification({message: t('Notes Saved')})
+        message.success(t('Notes Saved'))
         setState({editingNotes: false})
       }
     })
@@ -285,17 +278,17 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     const {t} = this
     DataEditor.saveEdits(this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Server Error'), message: err})
-      } else {
-        NotificationActions.showNotification({
-          message: t('Data Saved - Reloading Page...'),
-          dismissAfter: 1000,
-          onDismiss () {
-            location.reload()
-          }
+        notification.error({
+          message: t('Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
         })
+      } else {
         _this.setState({editingData: false})
         DataEditor.stopEditing()
+        message.success(t('Data Saved - Reloading Page...'), 1, () => {
+          location.reload()
+        })
       }
     })
   }
@@ -305,15 +298,10 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const {startEditingData, stopEditingData, openEditor, t} = this
+    const {startEditingData, stopEditingData, openEditor, onTabSelect, t} = this
     const {layer, canEdit} = this.props
     const {editingNotes, editingData} = this.state
     const glStyle = layer.style
-
-    let tabContentDisplay = 'none'
-    if (typeof window !== 'undefined') {
-      tabContentDisplay = 'inherit'
-    }
 
     let editButton = ''
     const showMapEditButton = canEdit && !layer.is_external && !layer.remote
@@ -417,8 +405,8 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
         <Provider inject={[this.BaseMapState, this.MapState, this.DataEditorState]}>
           <Header {...this.props.headerConfig} />
           <main style={{height: 'calc(100% - 51px)', marginTop: 0}}>
-            <div className='row' style={{height: '100%', margin: 0}}>
-              <div className='col s12 m6 l6 no-padding' style={{height: '100%', position: 'relative'}}>
+            <Row style={{height: '100%', margin: 0}}>
+              <Col sm={24} md={12} style={{height: '100%'}}>
                 {layer.private &&
                   <div style={{position: 'absolute', top: '15px', right: '10px'}}>
                     <Tooltip
@@ -429,17 +417,26 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                   </div>
                 }
 
-                <div className='row no-margin' style={{height: '100%'}}>
-                  <ul ref='tabs' className='tabs' style={{overflowX: 'auto'}}>
-                    <li className='tab'><a className='active' href='#info'>{t('Info')}</a></li>
-                    <li className='tab'><a href='#notes'>{t('Notes')}</a></li>
-                    {MAPHUBS_CONFIG.enableComments &&
-                      <li className='tab'><a href='#discuss'>{t('Discuss')}</a></li>
-                    }
-                    <li className='tab'><a href='#data' onClick={this.onTabSelect}>{t('Data')}</a></li>
-                    <li className='tab'><a href='#export'>{t('Export')}</a></li>
-                  </ul>
-                  <div id='info' className='col s12 no-padding' style={{height: 'calc(100% - 47px)', position: 'relative'}}>
+                <style jsx global>{`
+                  .ant-tabs-content {
+                    height: calc(100% - 44px)
+                  }
+                  .ant-tabs-tabpane {
+                    height: 100%;
+                  }
+
+                  .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
+                    display: none;
+                  }
+                `}
+                </style>
+                <Tabs
+                  defaultActiveKey='info'
+                  style={{height: '100%'}}
+                  tabBarStyle={{marginBottom: 0}}
+                  animated={false}
+                >
+                  <TabPane tab={t('Info')} key='info' style={{position: 'relative'}}>
                     <Row style={{height: '50%', overflowY: 'auto', overflowX: 'hidden'}}>
                       <Col sm={24} md={12}
                         style={{height: '100%', padding: '5px', border: '1px solid #ddd', minHeight: '200px', overflowY: 'auto'}}
@@ -485,61 +482,66 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                       </Col>
                     </Row>
                     <Stats views={layer.views} stats={this.props.stats} t={t} />
-                  </div>
-                  <div id='notes' className='col s12' style={{height: 'calc(100% - 47px)', display: tabContentDisplay, position: 'relative'}}>
+                  </TabPane>
+                  <TabPane tab={t('Notes')} key='notes' >
                     <LayerNotes editing={this.state.editingNotes} />
                     {canEdit &&
                       <EditButton editing={editingNotes}
                         style={{position: 'absolute'}}
                         startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
                     }
-                  </div>
+                  </TabPane>
                   {MAPHUBS_CONFIG.enableComments &&
-                  <div id='discuss' className='col s12' style={{display: tabContentDisplay}}>
-                    <ErrorBoundary>
-                      <Comments />
-                    </ErrorBoundary>
-                  </div>
+                    <TabPane tab={t('Discuss')} key='discuss' >
+                      <ErrorBoundary>
+                        <Comments />
+                      </ErrorBoundary>
+                    </TabPane>
                   }
-                  <Subscribe to={[DataEditorContainer]}>
-                    {DataEditor => {
-                      return (
-                        <div id='data' className='col s12 no-padding' style={{height: 'calc(100% - 47px)', display: tabContentDisplay}}>
-                          <div className='row no-margin'>
-                            {editingData &&
-                              <LayerDataEditorGrid
-                                layer={layer}
-                                gridHeight={this.state.gridHeight}
-                                geoJSON={this.state.geoJSON}
-                                presets={presets}
-                                canEdit
-                              />
+                  <TabPane tab={t('Data')} key='data' >
+                    <Subscribe to={[DataEditorContainer]}>
+                      {DataEditor => {
+                        return (
+                          <Row style={{height: '100%'}}>
+                            <AutoSizer disableWidth>
+                              {({ height }) => (
+                                <>
+                                  {editingData &&
+                                    <LayerDataEditorGrid
+                                      layer={layer}
+                                      height={height}
+                                      geoJSON={this.state.geoJSON}
+                                      presets={presets}
+                                      canEdit
+                                    />
+                                  }
+                                  {!editingData &&
+                                    <LayerDataGrid
+                                      layer_id={layer.layer_id}
+                                      height={height}
+                                      geoJSON={this.state.geoJSON}
+                                      presets={presets}
+                                      canEdit={canEdit} />
+                                  }
+                                </>
+                              )}
+                            </AutoSizer>
+                            {canEdit &&
+                              <EditButton editing={editingData}
+                                style={{position: 'absolute', bottom: '10px'}}
+                                startEditing={startEditingData} stopEditing={() => { stopEditingData(DataEditor) }} />
                             }
-                            {!editingData &&
-                              <LayerDataGrid
-                                layer_id={layer.layer_id}
-                                gridHeight={this.state.gridHeight}
-                                geoJSON={this.state.geoJSON}
-                                presets={presets}
-                                canEdit={this.props.canEdit} />
-                            }
-                          </div>
-                          {canEdit &&
-                            <EditButton editing={editingData}
-                              style={{position: 'absolute', bottom: '10px'}}
-                              startEditing={startEditingData} stopEditing={() => { stopEditingData(DataEditor) }} />
-                          }
-                        </div>
-                      )
-                    }}
-                  </Subscribe>
-                  <div id='export' className='col s12' style={{display: tabContentDisplay}}>
+                          </Row>
+                        )
+                      }}
+                    </Subscribe>
+                  </TabPane>
+                  <TabPane tab={t('Export')} key='export' >
                     <LayerExport layer={layer} />
-                  </div>
-                </div>
-
-              </div>
-              <div className='col hide-on-small-only m6 l6 no-padding' style={{height: '100%'}}>
+                  </TabPane>
+                </Tabs>
+              </Col>
+              <Col sm={24} md={12} className='hide-on-small-only' style={{height: '100%'}}>
                 <InteractiveMap ref='interactiveMap' height='100vh - 50px'
                   fitBounds={layer.preview_position.bbox}
                   style={glStyle}
@@ -559,9 +561,8 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                   earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
                   t={this.t}
                 />
-
-              </div>
-            </div>
+              </Col>
+            </Row>
             {editButton}
           </main>
         </Provider>

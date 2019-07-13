@@ -80,7 +80,7 @@ export default class UserStories extends MapHubsComponent<Props, void> {
             <div>
               <div className='fixed-action-btn action-button-bottom-right'>
                 <FloatingButton
-                  href='/user/createstory' icon='add'
+                  href='/createstory' icon='add'
                   tooltip={t('Create New Story')} tooltipPosition='top' />
               </div>
             </div>

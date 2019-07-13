@@ -227,6 +227,9 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
         logoSmall={MAPHUBS_CONFIG.logoSmall}
         logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
         logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+        mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+        DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+        earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
         t={this.t}
       >
         {legend}
@@ -245,6 +248,9 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
             }
             .maphubs-inset {
               display: ${userShowInset ? 'inherit' : 'none'}
+            }
+            .mapboxgl-ctrl-logo {
+              display: ${!this.props.showLogo ? 'none !important' : 'block'};
             }
           `}</style>
           {showSettings &&

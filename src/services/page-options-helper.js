@@ -39,6 +39,7 @@ module.exports = async (req, options) => {
       options.props.footerConfig = pageConfigs.footer
       options.props.mapConfig = pageConfigs.map
     } catch (err) {
+      log.error('Error loading page config')
       console.error(err)
     }
     try {
@@ -60,6 +61,7 @@ module.exports = async (req, options) => {
         options.props.user = user
       }
     } catch (err) {
+      log.error('Error adding user session content')
       log.error(err)
       Raven.captureException(err)
     }

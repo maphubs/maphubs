@@ -209,6 +209,8 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                 t={t}
                 locale={this.state.locale}
                 mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+                DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+                earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
               >
                 <MiniLegend
                   t={this.t}

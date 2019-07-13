@@ -173,7 +173,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
           {storyTag}
           {group &&
             <div className='valign-wrapper' style={{position: 'absolute', bottom: 1, left: 1}}>
-              <GroupTag group={group} />
+              <GroupTag group={group.group_id} />
             </div>
           }
           <Tooltip

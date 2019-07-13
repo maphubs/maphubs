@@ -15,7 +15,7 @@ type Props = {
   note: string,
   onComplete: Function,
   onError: Function,
-  maxHeight: number,
+  height: number,
   maxFileSize?: number,
   allowedFileTypes?: Array<string>,
   meta?: Object,
@@ -28,7 +28,7 @@ type State = {
 
 export default class UppyFileUpload extends MapHubsComponent<Props, State> {
   static defaultProps = {
-    maxHeight: 150
+    height: 300
   }
   componentDidMount () {
     const {maxFileSize, allowedFileTypes, meta, headers, endpoint} = this.props
@@ -67,14 +67,14 @@ export default class UppyFileUpload extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const {note, maxHeight} = this.props
+    const {note, height} = this.props
     if (this.uppy) {
       return (
         <Dashboard
           uppy={this.uppy}
           // plugins={['GoogleDrive', 'Dropbox']}
           inline
-          height={maxHeight}
+          height={height}
           showProgressDetails
           showLinkToFileUploadResult={false}
           proudlyDisplayPoweredByUppy={false}

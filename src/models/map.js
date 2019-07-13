@@ -150,8 +150,8 @@ module.exports = {
     const query = this.getMapsBaseQuery()
     return query
       .where('omh.maps.private', false)
-      .whereNotNull('views')
-      .orderBy('views', 'desc')
+      .whereNotNull('omh.maps.views')
+      .orderBy('omh.maps.views', 'desc')
       .limit(number)
   },
 

@@ -73,8 +73,8 @@ module.exports = {
       'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
       .table('omh.layers')
       .where({private: false, status: 'published'})
-      .whereNotNull('views')
-      .orderBy('views', 'desc')
+      .whereNotNull('omh.layers.views')
+      .orderBy('omh.layers.views', 'desc')
       .limit(number)
   },
 

@@ -1,12 +1,11 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
+import { Row, message, notification } from 'antd'
 import MultiTextArea from '../forms/MultiTextArea'
 import TextInput from '../forms/textInput'
 import MultiTextInput from '../forms/MultiTextInput'
 import Toggle from '../forms/toggle'
-import MessageActions from '../../actions/MessageActions'
-import NotificationActions from '../../actions/NotificationActions'
 import GroupStore from '../../stores/GroupStore'
 import GroupActions from '../../actions/GroupActions'
 import MapHubsComponent from '../../components/MapHubsComponent'
@@ -79,7 +78,11 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
           }
         },
         error (msg) {
-          MessageActions.showMessage({title: t('Server Error'), message: msg})
+          notification.error({
+            message: t('Server Error'),
+            description: msg.message || msg.toString(),
+            duration: 0
+          })
         },
         complete () {
         }
@@ -112,29 +115,25 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
     if (this.state.group.created) {
       GroupActions.updateGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, (err) => {
         if (err) {
-          MessageActions.showMessage({title: t('Server Error'), message: err})
+          notification.error({
+            message: t('Server Error'),
+            description: err.message || err.toString(),
+            duration: 0
+          })
         } else {
-          NotificationActions.showNotification(
-            {
-              message: t('Group Saved'),
-              position: 'bottomright',
-              dismissAfter: 3000,
-              onDismiss: _this.props.onSubmit
-            })
+          message.success(t('Group Saved'), 3, _this.props.onSubmit)
         }
       })
     } else {
       GroupActions.createGroup(model.group_id, model.name, model.description, model.location, model.published, _this.state._csrf, (err) => {
         if (err) {
-          MessageActions.showMessage({title: t('Server Error'), message: err})
+          notification.error({
+            message: t('Server Error'),
+            description: err.message || err.toString(),
+            duration: 0
+          })
         } else {
-          NotificationActions.showNotification(
-            {
-              message: t('Group Created'),
-              position: 'bottomright',
-              dismissAfter: 3000,
-              onDismiss: _this.props.onSubmit
-            })
+          message.success(t('Group Created'), 3, _this.props.onSubmit)
         }
       })
     }
@@ -146,29 +145,21 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
     if (_this.state.group.created) {
       GroupActions.deleteGroup(_this.state._csrf, (err) => {
         if (err) {
-          MessageActions.showMessage({title: t('Server Error'), message: err})
+          notification.error({
+            message: t('Server Error'),
+            description: err.message || err.toString(),
+            duration: 0
+          })
         } else {
-          NotificationActions.showNotification(
-            {
-              message: t('Group Cancelled'),
-              position: 'bottomright',
-              dismissAfter: 3000,
-              onDismiss () {
-                window.location = '/groups'
-              }
-            })
+          message.success(t('Group Cancelled'), 3, () => {
+            window.location = '/groups'
+          })
         }
       })
     } else {
-      NotificationActions.showNotification(
-        {
-          message: t('Group Cancelled'),
-          position: 'bottomright',
-          dismissAfter: 3000,
-          onDismiss () {
-            window.location = '/groups'
-          }
-        })
+      message.success(t('Group Cancelled'), 3, () => {
+        window.location = '/groups'
+      })
     }
   }
 
@@ -183,9 +174,9 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
     return (
       <div className={className}>
         <div className='container'>
-          <div className='row'>
+          <Row>
             <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
-              <div className='row'>
+              <Row>
                 <TextInput name='group_id' label={t('Group ID')} icon='group_work' className='col s6'
                   disabled={this.state.group.created}
                   validations={{matchRegexp: /^[a-zA-Z0-9-]*$/, maxLength: 25, isAvailable: true}} validationErrors={{
@@ -196,8 +187,8 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   successText='ID is Available'
                   dataPosition='right' dataTooltip={t("Identifier for the Group. This will be used in links and URLs for your group's content.")}
                   required />
-              </div>
-              <div className='row'>
+              </Row>
+              <Row>
                 <MultiTextInput name='name' id='name'
                   label={{
                     en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
@@ -207,8 +198,8 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   }} length={100}
                   dataPosition='top' dataTooltip={t('Short Descriptive Name for the Group')}
                   required />
-              </div>
-              <div className='row'>
+              </Row>
+              <Row>
                 <MultiTextArea name='description'
                   label={{
                     en: 'Description',
@@ -221,30 +212,28 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   }} length={500}
                   dataPosition='top' dataTooltip={t('Brief Description of the Group')}
                   required />
-              </div>
-              <div className='row'>
+              </Row>
+              <Row>
                 <TextInput
                   name='location' label='Location' icon='navigation' className='col s12' validations='maxLength:100' validationErrors={{
                     maxLength: t('Location must be 100 characters or less.')
                   }} length={100}
                   dataPosition='top' dataTooltip={t('Country or City Where the Group is Located')}
                   required />
-              </div>
-              <div className='row'>
+              </Row>
+              <Row>
                 <Toggle name='published' labelOff={t('Draft')} labelOn={t('Published')} defaultChecked className='col s12'
                   dataPosition='top' dataTooltip={t('Include in Public Group Listings')}
                 />
-              </div>
+              </Row>
               <div className='left'>
                 <a className='waves-effect waves-light redirect btn' onClick={this.handleCancel}><i className='material-icons left'>delete</i>{t('Cancel')}</a>
               </div>
               <div className='right'>
                 <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
               </div>
-
             </Formsy>
-
-          </div>
+          </Row>
         </div>
       </div>
     )

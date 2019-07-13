@@ -86,11 +86,7 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
     }
   }
 
-  handleSelectChange = (selected) => {
-    let val
-    if (selected) {
-      val = selected.value
-    }
+  handleSelectChange = (val) => {
     this.props.setValue(val)
     this.setNote(val)
     if (this.props.onChange) {
@@ -147,6 +143,11 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
                   <Option key={option.value} value={option.value}>{option.label}</Option>
                 )}
               </Select>
+              <style jsx global>{`
+                .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
+                  color: #FFF;
+                }
+              `}</style>
             </Row>
           </div>
           {note &&

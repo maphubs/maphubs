@@ -136,7 +136,8 @@ module.exports = function (app: any) {
             style: map.style,
             showLegend: false,
             insetMap: false,
-            showLogo: false
+            showLogo: false,
+            showScale: false
           }
         }))
       }

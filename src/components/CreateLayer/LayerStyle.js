@@ -170,6 +170,8 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
                       t={t}
                       locale={this.state.locale}
                       mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+                      DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+                      earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
                     />
                   </div>
                   <div className='row' style={{width: '400px', position: 'relative', margin: 'auto'}}>

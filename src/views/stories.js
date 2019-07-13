@@ -2,8 +2,8 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
+import { Row, Col } from 'antd'
 import StorySummary from '../components/Story/StorySummary'
-import MessageActions from '../actions/MessageActions'
 import UserStore from '../stores/UserStore'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -44,16 +44,6 @@ export default class Stories extends MapHubsComponent<Props, State> {
     }
   }
 
-  onCreateStory = () => {
-    const {t} = this
-    const {user} = this.state
-    if (user && user.display_name) {
-      window.location = `/user/${user.display_name}/stories`
-    } else {
-      MessageActions.showMessage({title: 'Login Required', message: t('Please login to your account or register for an account.')})
-    }
-  }
-
   render () {
     const {t} = this
     const {recentStories, popularStories} = this.props
@@ -63,52 +53,51 @@ export default class Stories extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header activePage='stories' {...this.props.headerConfig} />
         <main>
-          <div>
-            <div className='row'>
-              {hasRecent &&
-                <div className='col s12 m12 l6'>
-                  <h4>{t('Recent Stories')}</h4>
-                  {recentStories.map((story) => {
-                    return (
-                      <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
-                        <div className='card-content'>
-                          <StorySummary story={story} />
-                        </div>
+          <Row>
+            {hasRecent &&
+              <Col sm={24} med={12}>
+                <h4>{t('Recent Stories')}</h4>
+                {recentStories.map((story) => {
+                  return (
+                    <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
+                      <div className='card-content'>
+                        <StorySummary story={story} />
                       </div>
-                    )
-                  })}
-                </div>
-              }
-              {hasPopular &&
-                <div className='col s12 m12 l6'>
-                  <h4>{t('Popular Stories')}</h4>
-                  {popularStories.map((story) => {
-                    return (
-                      <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
-                        <div className='card-content'>
-                          <StorySummary story={story} />
-                        </div>
+                    </div>
+                  )
+                })}
+              </Col>
+            }
+            {hasPopular &&
+              <Col sm={24} med={12}>
+                <h4>{t('Popular Stories')}</h4>
+                {popularStories.map((story) => {
+                  return (
+                    <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
+                      <div className='card-content'>
+                        <StorySummary story={story} />
                       </div>
-                    )
-                  })}
-                </div>
-              }
-              {(!hasRecent && !hasPopular) &&
-                <div className='col s12' style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
-                  <b>{t('No Stories Found')}</b>
-                </div>
-              }
-            </div>
-          </div>
+                    </div>
+                  )
+                })}
+              </Col>
+            }
+            {(!hasRecent && !hasPopular) &&
+              <div className='col s12' style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
+                <b>{t('No Stories Found')}</b>
+              </div>
+            }
+          </Row>
           <div className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton
-              onClick={this.onCreateStory} icon='add'
+              href='/createstory'
+              icon='add'
               tooltip={t('Create New Story')} tooltipPosition='top' />
           </div>
           {(hasRecent || hasPopular) &&
-            <div className='row center-align'>
+            <Row style={{texhAlign: 'center'}}>
               <a className='btn' href='/stories/all'>{t('View All Stories')}</a>
-            </div>
+            </Row>
           }
         </main>
         <Footer {...this.props.footerConfig} />

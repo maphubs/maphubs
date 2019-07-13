@@ -182,6 +182,13 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                       .ant-tabs-content {
                         height: calc(100% - 44px)
                       }
+                      .ant-tabs-tabpane {
+                        height: 100%;
+                      }
+
+                      .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
+                        display: none;
+                      }
                     `}
                     </style>
                     <Row style={{height: '100%', overflowY: 'hidden'}}>
@@ -222,7 +229,9 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                         }
                         {MAPHUBS_CONFIG.enableComments &&
                           <TabPane tab={t('Discussion')} key='discussion'>
-                            <Comments />
+                            <ErrorBoundary>
+                              <Comments />
+                            </ErrorBoundary>
                           </TabPane>
                         }
                         <TabPane tab={t('Notes')} key='notes' style={{position: 'relative', height: '100%'}}>

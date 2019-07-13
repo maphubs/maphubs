@@ -14,7 +14,7 @@ import MapContainer from '../Map/containers/MapContainer'
 type Props = {
   geoJSON: Object,
   presets: Object,
-  gridHeight: number,
+  height: number,
   onRowSelected: Function,
   layer_id: number,
   dataLoadingMsg: string,
@@ -35,9 +35,6 @@ type Column = {
 
 type State = {
   geoJSON: ?Object,
-  gridHeight: number,
-  gridWidth: number,
-  gridHeightOffset: number,
   rows: Array<Object>,
   selectedIndexes: Array<number>,
   columns: Array<Column>,
@@ -52,14 +49,12 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
   Selectors: null
 
   static defaultProps = {
-    dataLoadingMsg: 'Data Loading'
+    dataLoadingMsg: 'Data Loading',
+    height: 200
   }
 
   state: State = {
     geoJSON: null,
-    gridHeight: 100,
-    gridWidth: 100,
-    gridHeightOffset: 48,
     rows: [],
     selectedIndexes: [],
     columns: [],
@@ -78,9 +73,6 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
   componentWillReceiveProps (nextProps: Props) {
     if (nextProps.geoJSON && !this.state.geoJSON) {
       this.processGeoJSON(nextProps.geoJSON, nextProps.presets)
-    }
-    if (nextProps.gridHeight && nextProps.gridHeight !== this.state.gridHeight) {
-      this.setState({gridHeight: nextProps.gridHeight})
     }
   }
 
@@ -282,7 +274,7 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     const _this = this
-    const {canEdit, presets, layer_id} = this.props
+    const {canEdit, presets, layer_id, height} = this.props
     if (this.state.rows.length > 0 && typeof window !== 'undefined') {
       const ReactDataGrid = require('react-data-grid')
       const {Toolbar, Data: {Selectors}} = require('react-data-grid-addons')
@@ -295,7 +287,7 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
           rowKey={this.state.rowKey}
           rowGetter={this.rowGetter}
           rowsCount={this.getSize()}
-          minHeight={this.state.gridHeight}
+          minHeight={height - 49}
           onGridSort={this.handleGridSort}
           rowSelection={{
             showCheckbox: true,

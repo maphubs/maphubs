@@ -1,11 +1,10 @@
 // @flow
 import React from 'react'
 import UppyFileUpload from '../forms/UppyFileUpload'
+import { Row, notification, message } from 'antd'
 import Map from '../Map'
-import NotificationActions from '../../actions/NotificationActions'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
-import MessageActions from '../../actions/MessageActions'
 import RadioModal from '../RadioModal'
 import Progress from '../Progress'
 import MapHubsComponent from '../MapHubsComponent'
@@ -69,9 +68,13 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
 
     LayerActions.saveDataSettings(data, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString(),
+          duration: 0
+        })
       } else {
-        NotificationActions.showNotification({message: t('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit})
+        message.success(t('Layer Saved'), 1, _this.props.onSubmit)
       }
     })
   }
@@ -101,7 +104,11 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
             if (result.code === 'MULTIPLESHP') {
               this.setState({multipleShapefiles: result.shapefiles, processing: false})
             } else {
-              MessageActions.showMessage({title: t('Error'), message: result.error || 'Unknown Error'})
+              notification.error({
+                message: t('Error'),
+                description: result.error || 'Unknown Error',
+                duration: 0
+              })
             }
           }
         }
@@ -110,7 +117,11 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
 
   onUploadError = (err: string) => {
     const {t} = this
-    MessageActions.showMessage({title: t('Error'), message: err})
+    notification.error({
+      message: t('Server Error'),
+      description: err,
+      duration: 0
+    })
   }
 
   finishUpload = (shapefileName: string) => {
@@ -118,13 +129,21 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     const {t} = this
     LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else if (result.success) {
         LayerActions.setDataType(result.data_type)
         LayerActions.setImportedTags(result.uniqueProps, true)
         _this.setState({canSubmit: true, multipleShapefiles: null})
       } else {
-        MessageActions.showMessage({title: t('Error'), message: result.error})
+        notification.error({
+          message: t('Error'),
+          description: result.error || 'Unknown Error',
+          duration: 0
+        })
       }
     })
   }
@@ -165,6 +184,8 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
             t={this.t}
             locale={this.state.locale}
             mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+            DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+            earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
           />
         </div>
       )
@@ -183,35 +204,33 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <div className='row'>
+      <Row>
         <style jsx>{`
           #upload-process-progess {
             z-index: 9999 !important;
           }
         `}</style>
         <Progress id='upload-process-progess' title={t('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />
-        <div>
-          <div className='row'>
-            <div style={{margin: 'auto auto', maxWidth: '750px'}}>
-              <UppyFileUpload
-                endpoint='/api/layer/upload'
-                note='Supported files: Shapefile (Zip), GeoJSON, KML,  GPX (tracks or waypoints), or CSV (with Lat/Lon fields), and MapHubs format'
-                layer_id={layer_id}
-                onProcessingStart={this.onProcessingStart}
-                onComplete={this.onUpload}
-                onError={this.onUploadError}
-              />
-            </div>
+        <Row>
+          <div style={{margin: 'auto auto', maxWidth: '750px'}}>
+            <UppyFileUpload
+              endpoint='/api/layer/upload'
+              note='Supported files: Shapefile (Zip), GeoJSON, KML,  GPX (tracks or waypoints), or CSV (with Lat/Lon fields), and MapHubs format'
+              layer_id={layer_id}
+              onProcessingStart={this.onProcessingStart}
+              onComplete={this.onUpload}
+              onError={this.onUploadError}
+            />
           </div>
-          <div className='row'>
-            {map}
-          </div>
-          {multipleShapefilesDisplay}
-        </div>
+        </Row>
+        <Row>
+          {map}
+        </Row>
+        {multipleShapefilesDisplay}
         <div className='right'>
           <button className='waves-effect waves-light btn' disabled={!canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
         </div>
-      </div>
+      </Row>
     )
   }
 }

@@ -3,7 +3,7 @@ import React from 'react'
 import LayerListItem from './LayerListItem'
 import _isEqual from 'lodash.isequal'
 import {List} from 'antd'
-import {DragDropContext} from 'react-dnd'
+import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import update from 'react-addons-update'
 
@@ -25,9 +25,7 @@ type State = {
   layers: Array<Object>
 }
 
-class LayerList extends React.Component<Props, State> {
-  props: Props
-
+export default class LayerList extends React.Component<Props, State> {
   static defaultProps = {
     showVisibility: false,
     showDesign: false,
@@ -83,25 +81,27 @@ class LayerList extends React.Component<Props, State> {
         `}
         </style>
         {!empty &&
-          <List
-            dataSource={layers}
-            renderItem={(item, i) => (
-              <List.Item key={item.layer_id} style={{padding: 0}}>
-                <LayerListItem id={item.layer_id} item={item} index={i}
-                  toggleVisibility={toggleVisibility}
-                  showVisibility={showVisibility}
-                  showRemove={showRemove}
-                  showDesign={showDesign}
-                  showEdit={showEdit}
-                  moveItem={_this.moveLayer}
-                  removeFromMap={removeFromMap}
-                  showLayerDesigner={showLayerDesigner}
-                  editLayer={editLayer}
-                  t={t}
-                />
-              </List.Item>
-            )}
-          />
+          <DndProvider backend={HTML5Backend}>
+            <List
+              dataSource={layers}
+              renderItem={(item, i) => (
+                <List.Item key={item.layer_id} style={{padding: 0}}>
+                  <LayerListItem id={item.layer_id} item={item} index={i}
+                    toggleVisibility={toggleVisibility}
+                    showVisibility={showVisibility}
+                    showRemove={showRemove}
+                    showDesign={showDesign}
+                    showEdit={showEdit}
+                    moveItem={_this.moveLayer}
+                    removeFromMap={removeFromMap}
+                    showLayerDesigner={showLayerDesigner}
+                    editLayer={editLayer}
+                    t={t}
+                  />
+                </List.Item>
+              )}
+            />
+          </DndProvider>
         }
         {empty &&
           <div style={{height: '100%', padding: 0, margin: 0}}>
@@ -112,4 +112,3 @@ class LayerList extends React.Component<Props, State> {
     )
   }
 }
-export default DragDropContext(HTML5Backend)(LayerList)

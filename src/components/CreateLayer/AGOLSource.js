@@ -1,11 +1,10 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
+import { message, notification } from 'antd'
 import TextInput from '../forms/textInput'
 import Radio from '../forms/radio'
 import LayerActions from '../../actions/LayerActions'
-import NotificationActions from '../../actions/NotificationActions'
-import MessageActions from '../../actions/MessageActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
 
@@ -89,18 +88,18 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
     }
     LayerActions.saveDataSettings(dataSettings, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString(),
+          duration: 0
+        })
       } else {
-        NotificationActions.showNotification({
-          message: t('Layer Saved'),
-          dismissAfter: 1000,
-          onDismiss () {
-            // reset style to load correct source
-            LayerActions.resetStyle()
-            // tell the map that the data is initialized
-            LayerActions.tileServiceInitialized()
-            _this.props.onSubmit()
-          }
+        message.success(t('Layer Saved'), 1, () => {
+          // reset style to load correct source
+          LayerActions.resetStyle()
+          // tell the map that the data is initialized
+          LayerActions.tileServiceInitialized()
+          _this.props.onSubmit()
         })
       }
     })

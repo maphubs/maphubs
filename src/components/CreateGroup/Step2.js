@@ -1,7 +1,6 @@
 // @flow
 import React from 'react'
-import MessageActions from '../../actions/MessageActions'
-import NotificationActions from '../../actions/NotificationActions'
+import { Row, Col, Button, message, notification } from 'antd'
 import ImageCrop from '../ImageCrop'
 import GroupStore from '../../stores/GroupStore'
 import GroupActions from '../../actions/GroupActions'
@@ -50,41 +49,32 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
     // send data to server
     GroupActions.setGroupImage(data, this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Server Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString(),
+          duration: 0
+        })
       } else {
-        NotificationActions.showNotification(
-          {
-            message: t('Image Saved'),
-            position: 'bottomright',
-            dismissAfter: 3000
-          })
+        message.success(t('Image Saved'), 3)
       }
     })
-    // this.pasteHtmlAtCaret('<img class="responsive-img" src="' + data + '" />');
   }
 
   render () {
     const {t} = this
+    const { showPrev } = this.props
+    const { group } = this.state
     // hide if not active
     let className = classNames('row')
     if (!this.props.active) {
       className = classNames('row', 'hidden')
     }
 
-    let prevButton = ''
-    if (this.props.showPrev) {
-      prevButton = (
-        <div className='left'>
-          <button className='waves-effect waves-light btn' onClick={this.props.onPrev}>{t('Previous Step')}</button>
-        </div>
-      )
-    }
-
     let groupImage = ''
     // if group has an image use link,
-    if (this.state.group && this.state.group.group_id && this.state.group.hasImage) {
+    if (group && group.group_id && group.hasImage) {
       groupImage = (
-        <img className='responsive-img' width={200} height={200} src={'/group/' + this.state.group.group_id + '/image?' + new Date().getTime()} />
+        <img className='responsive-img' width={200} height={200} src={'/group/' + group.group_id + '/image?' + new Date().getTime()} />
       )
     } else {
     // else show default image
@@ -99,22 +89,25 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
     return (
       <div className={className}>
         <div className='container'>
-          <div className='row'>
-            <div className='col s12 m6 l6'>
+          <Row>
+            <Col span={12}>
               {groupImage}
-            </div>
-            <div className='col s12 m6 l6'>
-              <button className='waves-effect waves-light btn' onClick={this.showImageCrop}>{t('Add Image')}</button>
+            </Col>
+            <Col span={12}>
+              <Button type='primary' onClick={this.showImageCrop}>{t('Add Image')}</Button>
               <p>{t('Upload an Image or Logo for Your Group (Optional)')}</p>
-            </div>
-
-          </div>
-          <div className='row'>
-            {prevButton}
+            </Col>
+          </Row>
+          <Row>
+            {showPrev &&
+              <div className='left'>
+                <Button type='primary' onClick={this.props.onPrev}>{t('Previous Step')}</Button>
+              </div>
+            }
             <div className='right'>
-              <button className='waves-effect waves-light btn' onClick={this.submit}>{t('Save')}</button>
+              <Button type='primary' onClick={this.submit}>{t('Save')}</Button>
             </div>
-          </div>
+          </Row>
         </div>
         <ImageCrop ref='imagecrop' aspectRatio={1} lockAspect resize_width={600} resize_height={600} onCrop={this.onCrop} />
       </div>
