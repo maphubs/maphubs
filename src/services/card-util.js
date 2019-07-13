@@ -26,7 +26,10 @@ export default {
       title: layer.name, // LocalizedString
       description: layer.description, // LocalizedString
       image_url,
-      group: layer.owned_by_group_id,
+      group: {
+        group_id: layer.owned_by_group_id,
+        name: layer.groupname
+      },
       type: 'layer',
       link: '/lyr/' + layer_id,
       data: layer,

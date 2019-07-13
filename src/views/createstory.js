@@ -13,6 +13,7 @@ type Props = {
   username: string,
   myMaps: Array<Object>,
   popularMaps: Array<Object>,
+  groups: Array<Object>,
   locale: string,
   _csrf: string,
   headerConfig: Object,
@@ -47,7 +48,10 @@ export default class CreateStory extends MapHubsComponent<Props, void> {
             story={{story_id: this.props.story_id, published: false}}
             myMaps={this.props.myMaps}
             popularMaps={this.props.popularMaps}
-            username={this.props.username} />
+            groups={this.props.groups}
+            username={this.props.username}
+            create
+          />
         </main>
 
       </ErrorBoundary>

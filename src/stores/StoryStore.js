@@ -9,13 +9,12 @@ export type Story ={
   author?: string,
   body?: string,
   story_id: number,
-  published?: boolean
+  published?: boolean,
+  owned_by_group_id?: string
 }
 
 export type StoryStoreState = {
   story: Story,
-  storyType?: string,
-  hub_id?: ?string,
   unsavedChanges?: boolean
 }
 
@@ -27,8 +26,6 @@ export default class StoryStore extends Reflux.Store {
       body: '',
       story_id: -1
     },
-    storyType: 'unknown',
-    hub_id: null,
     unsavedChanges: false
   }
 
@@ -52,6 +49,12 @@ export default class StoryStore extends Reflux.Store {
   handleAuthorChange (author: string) {
     const story = this.state.story
     story.author = author
+    this.setState({story, unsavedChanges: true})
+  }
+
+  handleGroupChange (group_id: string) {
+    const story = this.state.story
+    story.owned_by_group_id = group_id
     this.setState({story, unsavedChanges: true})
   }
 

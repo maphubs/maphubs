@@ -5,8 +5,7 @@ import MapCardGroupTag from './MapCardGroupTag'
 import StoryHeader from '../Story/StoryHeader'
 import Lock from '@material-ui/icons/Lock'
 import LockOpen from '@material-ui/icons/LockOpenTwoTone'
-import {Tooltip} from 'react-tippy'
-import {Card} from 'antd'
+import { Card, Tooltip } from 'antd'
 
 export type CardConfig = {|
   id: string,
@@ -142,12 +141,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
 
         {this.props.private &&
           <div style={{position: 'absolute', top: '5px', right: '5px'}}>
-            <Tooltip
-              title={t('Private')}
-              position='bottom'
-              inertia
-              followCursor
-            >
+            <Tooltip title={t('Private')} placement='bottom'>
               <Lock style={{color: '#212121'}} />
             </Tooltip>
           </div>
@@ -172,16 +166,11 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
           {mapCardGroupTag}
           {storyTag}
           {group &&
-            <div className='valign-wrapper' style={{position: 'absolute', bottom: 1, left: 1}}>
+            <div className='valign-wrapper' style={{position: 'absolute', bottom: 5, left: 5}}>
               <GroupTag group={group.group_id} />
             </div>
           }
-          <Tooltip
-            title={toolTipText}
-            position='bottom'
-            inertia
-            followCursor
-          >
+          <Tooltip title={toolTipText} placement='top'>
             <i className='material-icons grey-text text-darken-3'
               style={{position: 'absolute', bottom: '6px', right: '6px'}}
             >

@@ -90,25 +90,29 @@ module.exports = {
     return query
   },
 
-  getStoryById (story_id: number) {
+  async getStoryById (story_id: number) {
     debug.log('get story: ' + story_id)
     const query = this.getStoriesBaseQuery()
       .where({
         'omh.stories.story_id': story_id
       })
 
-    return query
+    const result = await query
+    if (result && result.length === 1) {
+      return result[0]
+    }
+    return null
   },
 
-  updateStory (story_id: number, title: string, body: string, author: string, firstline: string, firstimage: any) {
+  updateStory (story_id: number, data: {title: string, body: string, author: string, firstline: string, firstimage: any}) {
     return knex('omh.stories')
-      .where('story_id', story_id)
+      .where({story_id})
       .update({
-        title,
-        body,
-        author,
-        firstline,
-        firstimage,
+        title: data.title,
+        body: data.body,
+        author: data.author,
+        firstline: data.firstline,
+        firstimage: data.firstimage,
         updated_at: knex.raw('now()')
       })
   },
@@ -131,22 +135,21 @@ module.exports = {
   },
 
   async createStory (owned_by_group_id: string, user_id: number) {
-    return knex.transaction(async (trx) => {
-      let story_id = await trx('omh.stories').insert({
-        owned_by_group_id,
-        published: false,
-        created_at: knex.raw('now()'),
-        updated_at: knex.raw('now()'),
-        updated_by: user_id
-      }).returning('story_id')
+    let story_id = await knex('omh.stories').insert({
+      owned_by_group_id,
+      published: false,
+      created_at: knex.raw('now()'),
+      updated_at: knex.raw('now()'),
+      updated_by: user_id
+    }).returning('story_id')
 
-      story_id = parseInt(story_id)
-      return story_id
-    })
+    story_id = parseInt(story_id)
+    return story_id
   },
 
   async allowedToModify (story_id: number, user_id: number) {
-    const map = await this.getStoryById(story_id)
-    return Group.allowedToModify(map.owned_by_group_id, user_id)
+    const story = await this.getStoryById(story_id)
+    console.log(story)
+    return Group.allowedToModify(story.owned_by_group_id, user_id)
   }
 }

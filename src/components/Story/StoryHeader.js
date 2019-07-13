@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Avatar } from 'antd'
 import {addLocaleData, IntlProvider, FormattedRelative, FormattedDate} from 'react-intl'
 import en from 'react-intl/locale-data/en'
 import es from 'react-intl/locale-data/es'
@@ -26,7 +27,9 @@ type Props = {
   short: boolean
 }
 
-type State = LocaleStoreState;
+type State = {
+  groupLogoFailed?: boolean
+} & LocaleStoreState
 
 export default class StoryHeader extends MapHubsComponent<Props, State> {
   props: Props
@@ -36,16 +39,17 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
     short: false
   }
 
-  componentDidMount () {
-    $(this.refs.groupimg).on('error', function () {
-      $(this).attr('src', 'https://hpvhe47439ygwrt.belugacdn.link/maphubs/assets/missing_group.png')
-    })
+  shouldComponentUpdate (nextProps: Props, nextState: State) {
+    if (nextState.groupLogoFailed) {
+      return true
+    }
+    return false
   }
 
   render () {
     const { t } = this
     const { story, short } = this.props
-    const { locale } = this.state
+    const { locale, groupLogoFailed } = this.state
     const guessedTz = moment.tz.guess()
     const updatedTime = moment.tz(story.updated_at, guessedTz).format()
 
@@ -97,13 +101,16 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
           <div className='valign-wrapper' style={{width: '36px', float: 'left'}}>
             <a className='valign' style={{marginTop: '4px'}}
               href={groupUrl}>
-              <img
-                className='circle valign'
-                height='36' width='36'
-                style={{height: '36px', width: '36px', border: '1px solid #bbbbbb'}}
-                src={groupLogoUrl}
-                alt='Group Logo'
-              />
+              {!groupLogoFailed &&
+              <Avatar alt={story.owned_by_group_id} size={36} src={`/img/resize/64?url=/group/${story.owned_by_group_id}/thumbnail`} onError={() => {
+                this.setState({groupLogoFailed: true})
+              }} />
+              }
+              {groupLogoFailed &&
+                <Avatar size={36} style={{ color: '#FFF' }}>
+                  {story.owned_by_group_id.charAt(0).toUpperCase()}
+                </Avatar>
+              }
             </a>
           </div>
           <div style={{marginLeft: '46px'}}>

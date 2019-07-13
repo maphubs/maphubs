@@ -5,7 +5,8 @@ import CardCarousel from '../CardCarousel/CardCarousel'
 import SearchBox from '../SearchBox'
 import NotificationActions from '../../actions/NotificationActions'
 import MessageActions from '../../actions/MessageActions'
-import MapHubsComponent from '../../components/MapHubsComponent'
+import MapHubsComponent from '../MapHubsComponent'
+import ErrorBoundary from '../ErrorBoundary'
 import cardUtil from '../../services/card-util'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import request from 'superagent'
@@ -28,14 +29,12 @@ type State = {
 }
 
 export default class AddMapModal extends MapHubsComponent<Props, State> {
-  props: Props
-
   static defaultProps = {
     myMaps: [],
     popularMaps: []
   }
 
-  state: State = {
+  state = {
     show: false,
     searchActive: false,
     modalReady: false,
@@ -149,30 +148,31 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
 
     return (
       <Modal show={this.state.show} ready={this.modalReady} className='create-map-modal' dismissible={false} fixedFooter={false}>
-        <ModalContent style={{padding: 0, margin: 0, height: '100%', overflow: 'hidden', width: '100%'}}>
-          <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close}>
-            <i className='material-icons selected-feature-close' style={{fontSize: '35px'}}>close</i>
-          </a>
-          <div className='row' style={{marginTop: '10px', marginBottom: '10px', marginRight: '35px', marginLeft: '0px'}}>
-            <div className='col s12'>
-              <SearchBox label={t('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
+        <ErrorBoundary>
+          <ModalContent style={{padding: 0, margin: 0, height: '100%', overflow: 'hidden', width: '100%'}}>
+            <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close}>
+              <i className='material-icons selected-feature-close' style={{fontSize: '35px'}}>close</i>
+            </a>
+            <div className='row' style={{marginTop: '10px', marginBottom: '10px', marginRight: '35px', marginLeft: '0px'}}>
+              <div className='col s12'>
+                <SearchBox label={t('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
+              </div>
             </div>
-          </div>
-          <div className='row' style={{height: 'calc(100% - 55px)', width: '100%', overflow: 'auto', paddingRight: '3%', paddingLeft: '3%'}}>
-            <div className='col s12 no-padding' style={{height: '100%', width: '100%'}}>
-              {searchResults}
-              {myMaps}
-              <div className='row'>
-                <div className='col s12 no-padding'>
-                  <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('Popular Maps')}</h5>
-                  <div className='divider' />
-                  <CardCarousel cards={popularCards} infinite={false} t={this.t} />
+            <div className='row' style={{height: 'calc(100% - 55px)', width: '100%', overflow: 'auto', paddingRight: '3%', paddingLeft: '3%'}}>
+              <div className='col s12 no-padding' style={{height: '100%', width: '100%'}}>
+                {searchResults}
+                {myMaps}
+                <div className='row'>
+                  <div className='col s12 no-padding'>
+                    <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('Popular Maps')}</h5>
+                    <div className='divider' />
+                    <CardCarousel cards={popularCards} infinite={false} t={this.t} />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-
-        </ModalContent>
+          </ModalContent>
+        </ErrorBoundary>
       </Modal>
     )
   }

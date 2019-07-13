@@ -91,7 +91,6 @@ export default class Footer extends MapHubsComponent<Props, void> {
     if (links) {
       linkSection = (
         <ul>
-          <li>{t('Learn More')}</li>
           {_this.props.links.map((link, i) => {
             return (
               <li key={`footer-link-${i}`}>

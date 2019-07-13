@@ -1,11 +1,9 @@
 // @flow
 import React from 'react'
+import { Avatar, Tooltip } from 'antd'
 import MapHubsComponent from '../../components/MapHubsComponent'
-import {Tooltip} from 'react-tippy'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import $ from 'jquery'
 import _isequal from 'lodash.isequal'
-import classNames from 'classnames'
 
 type Props = {|
   group: string,
@@ -17,8 +15,10 @@ type Props = {|
 |}
 
 type State = {
-
+  failed?: boolean
 }
+
+const colorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae']
 
 export default class GroupTag extends MapHubsComponent<Props, State> {
   static defaultProps = {
@@ -29,72 +29,37 @@ export default class GroupTag extends MapHubsComponent<Props, State> {
     className: ''
   }
 
-  componentDidMount () {
-    $(this.refs.groupimg).on('error', function () {
-      $(this).attr('src', 'https://hpvhe47439ygwrt.belugacdn.link/maphubs/assets/missing_group.png')
-    })
-  }
-
   shouldComponentUpdate (nextProps: Props, nextState: State) {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
     }
-    if (!_isequal(this.state, nextState)) {
+    if (nextState.failed) {
       return true
     }
     return false
   }
 
   render () {
-    const {group, size, fontSize, chipWidth} = this.props
+    const { group } = this.props
+    const { failed } = this.state
     const baseUrl = urlUtil.getBaseUrl()
-    const sizeStr = size + 'px'
-    const fontSizeStr = fontSize + 'px'
-    const imgWidth = size.toString() + 'px'
-    const chipWidthStr = chipWidth.toString() + 'px'
-    const className = classNames(['chip', 'truncate', this.props.className])
 
     return (
-      <div className={className}
-        style={{height: sizeStr,
-          width: chipWidthStr,
-          minWidth: '75px',
-          marginBottom: '2px',
-          border: '0.25pt solid #E4E4E4',
-          lineHeight: sizeStr,
-          fontSize: fontSizeStr}}>
-        <a target='_blank' className='no-padding' rel='noopener noreferrer' href={`${baseUrl}/group/${group}`} style={{height: 'initial'}}>
-          <div className='valign-wrapper'
-            style={{
-              height: sizeStr,
-              width: imgWidth,
-              backgroundColor: 'white',
-              marginRight: '0px',
-              marginLeft: '-12px',
-              float: 'left'
-            }}>
-            <img ref='groupimg' className='valign' src={`/img/resize/40?url=/group/${group}/thumbnail`}
-              style={{
-                height: sizeStr,
-                width: 'auto',
-                marginRight: 0,
-                marginLeft: 0,
-                borderRadius: 0
-              }}
-              alt={'Group Photo'} />
-          </div>
-
-        </a>
-        <Tooltip
-          title={group}
-          position='top'
-          inertia
-          followCursor
-        >
-          <a target='_blank' rel='noopener noreferrer' className='omh-accent-text no-padding'
-            style={{height: sizeStr, width: 'auto', display: 'inherit', lineHeight: sizeStr, fontSize: fontSizeStr}}
-            href={`${baseUrl}/group/${group}`}>{group}</a>
+      <div>
+        <Tooltip title={group} placement='top' >
+          <a target='_blank' className='no-padding' rel='noopener noreferrer' href={`${baseUrl}/group/${group}`} style={{height: 'initial'}}>
+            {!failed &&
+              <Avatar alt={group} size={24} src={`/img/resize/40?url=/group/${group}/thumbnail`} onError={() => {
+                this.setState({failed: true})
+              }} />
+            }
+            {failed &&
+              <Avatar size={24} style={{ color: '#FFF' }}>
+                {group.charAt(0).toUpperCase()}
+              </Avatar>
+            }
+          </a>
         </Tooltip>
       </div>
     )

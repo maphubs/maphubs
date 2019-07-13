@@ -7,5 +7,6 @@ export default Reflux.createActions([
   'handleBodyChange',
   'handleTitleChange',
   'handleAuthorChange',
+  'handleGroupChange',
   'publish'
 ])

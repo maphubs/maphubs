@@ -75,7 +75,9 @@ export default class Story extends MapHubsComponent<Props, void> {
             />
           </div>
           <div className='row'>
-            <Comments />
+            <ErrorBoundary>
+              <Comments />
+            </ErrorBoundary>
           </div>
         </div>
       )

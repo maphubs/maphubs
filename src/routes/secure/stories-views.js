@@ -5,8 +5,8 @@ const User = require('../../models/user')
 const Story = require('../../models/story')
 const Stats = require('../../models/stats')
 const Map = require('../../models/map')
+const Group = require('../../models/group')
 const nextError = require('../../services/error-response').nextError
-const apiDataError = require('../../services/error-response').apiDataError
 const csrfProtection = require('csurf')({cookie: false})
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const pageOptions = require('../../services/page-options-helper')
@@ -36,12 +36,9 @@ module.exports = function (app: any) {
     } catch (err) { nextError(next)(err) }
   })
 
-  app.get('/createstory/', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
+  app.get('/createstory', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
     try {
       const username = req.session.user.maphubsUser.display_name
-      const user_id = req.session.user.maphubsUser.id
-
-      // const story_id = await Story.createStory(user_id)
 
       return app.next.render(req, res, '/createstory', await pageOptions(req, {
         title: 'Create Story',
@@ -50,7 +47,8 @@ module.exports = function (app: any) {
         props: {
           username,
           myMaps: await Map.getUserMaps(req.session.user.maphubsUser.id),
-          popularMaps: await Map.getPopularMaps()
+          popularMaps: await Map.getPopularMaps(),
+          groups: await Group.getAllGroups()
         }
       }))
     } catch (err) { nextError(next)(err) }
@@ -73,7 +71,7 @@ module.exports = function (app: any) {
             story,
             myMaps: await Map.getUserMaps(user_id),
             popularMaps: await Map.getPopularMaps(),
-            username
+            groups: await Group.getAllGroups()
           }
         }))
       } else {

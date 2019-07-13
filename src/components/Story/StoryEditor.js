@@ -1,6 +1,8 @@
 // @flow
 import React from 'react'
+import Formsy from 'formsy-react'
 import slugify from 'slugify'
+import { Row, message } from 'antd'
 import Actions from '../../actions/StoryActions'
 import MessageActions from '../../actions/MessageActions'
 import NotificationActions from '../../actions/NotificationActions'
@@ -18,6 +20,7 @@ import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {Story, StoryStoreState} from '../../stores/StoryStore'
 import FloatingButton from '../FloatingButton'
 import {Tooltip} from 'react-tippy'
+import SelectGroup from '../Groups/SelectGroup'
 
 import $ from 'jquery'
 import debounce from 'lodash.debounce'
@@ -26,11 +29,11 @@ import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 
 type Props = {|
   story: Story,
-  hub_id?: string,
-  storyType: string,
   username: string,
   myMaps: Array<Object>,
-  popularMaps: Array<Object>
+  popularMaps: Array<Object>,
+  groups: Array<Object>,
+  create?: boolean
 |}
 
 type StoryEditorState = {|
@@ -61,18 +64,12 @@ export default class StoryEditor extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(StoryStore)
     Reflux.rehydrate(StoryStore, {
-      story: props.story,
-      storyType: props.storyType,
-      hub_id: props.hub_id
+      story: props.story
     })
   }
 
   componentDidMount () {
     const _this = this
-
-    $('.storybody').on('focus', () => {
-      NotificationActions.dismissNotification()
-    })
 
     $('.storybody').on('click', function () {
       const debounced = debounce(() => {
@@ -153,6 +150,7 @@ save = () => {
   const _this = this
 
   if (!this.state.story.title || this.state.story.title === '') {
+    
     NotificationActions.showNotification({message: t('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'})
     return
   }
@@ -183,32 +181,11 @@ save = () => {
       _this.addMapCloseButtons() // put back the close buttons
       _this.addImageButtons()
       if (!_this.state.story.published) {
-        NotificationActions.showNotification({message: t('Story Saved'),
-          action: t('Publish'),
-          dismissAfter: 10000,
-          onDismiss () {
-
-          },
-          onClick () {
-            _this.publish()
-          }
+        NotificationActions.showNotification({
+          message: t('Story Saved'),
+          dismissAfter: 10000
         })
-      } else {
-        NotificationActions.showNotification({message: t('Story Saved'),
-          action: t('View Story'),
-          dismissAfter: 10000,
-          onDismiss () {
-
-          },
-          onClick () {
-            let title = ''
-            if (_this.state.story.title) {
-              title = slugify(_this.state.story.title)
-            }
-            window.location = `/story/${title}/${_this.state.story.story_id}`
-          }
-        })
-      }
+      } 
     }
   })
 }
@@ -420,14 +397,14 @@ publish = () => {
     title: t('Publish story?'),
     message: t('Please confirm that you want to publish this story'),
     onPositiveResponse () {
-      if (!_this.state.story.title || _this.state.story.title === '') {
-        NotificationActions.showNotification({message: t('Please Add a Title'), dismissAfter: 5000, position: 'bottomleft'})
+      if (!_this.state.story.title) {
+        message.error(t('Please Add a Title'), 5)
         return
       }
 
-      // if this is a hub story, require an author
+      // require an author
       if (!_this.state.story.author) {
-        NotificationActions.showNotification({message: t('Please Add an Author'), dismissAfter: 5000, position: 'bottomleft'})
+        message.error(t('Please Add an Author'), 5)
         return
       }
 
@@ -543,9 +520,18 @@ render () {
 
   return (
     <div style={{position: 'relative'}}>
-      <div className='edit-header omh-color' style={{opacity: 0.5}}>
-        <p style={{textAlign: 'center', color: '#FFF'}}>{t('Editing Story')}</p>
-      </div>
+      <Row>
+        <Formsy>
+          <SelectGroup
+            groups={this.props.groups}
+            type='layer'
+            group_id={this.state.story.owned_by_group_id}
+            onGroupChange={(group_id) => {
+              Actions.handleGroupChange(group_id)
+            }}
+            canChangeGroup={this.props.create || false} />
+        </Formsy>
+      </Row>
       {publishButton}
       <div className='container editor-container'>
         <div className='story-title'>
