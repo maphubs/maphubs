@@ -19,8 +19,8 @@ module.exports = {
 
   async sendInviteEmail (email: string, __: Function, resendKey?: string) {
     // create confirm link
+    email = email.toLowerCase()
     debug.log('sending email invite to: ' + email)
-
     let key
     if (resendKey) {
       key = resendKey
@@ -84,6 +84,7 @@ module.exports = {
    * @param {*} email
    */
   async checkInviteConfirmed (email: string) {
+    email = email.toLowerCase()
     const results = await knex('omh.account_invites').where({email, used: true})
 
     if (results && Array.isArray(results) && results.length >= 1) {
