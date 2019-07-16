@@ -59,7 +59,6 @@ export default class MyDocument extends Document {
       <html lang={options.locale}>
         <Head>
           <meta name='viewport' content='width=device-width, initial-scale=1' />
-          <title>{data.query.title || 'MapHubs'}</title>
           {options.description &&
             <meta name='description' content={options.description} />
           }
