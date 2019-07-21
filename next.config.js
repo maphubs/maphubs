@@ -2,7 +2,10 @@ const withCSS = require('@zeit/next-css')
 const withLess = require('@zeit/next-less')
 const path = require('path')
 const withTM = require('next-transpile-modules')
-const MAPHUBS_CONFIG = require('./src/local')
+const lessToJS = require('less-vars-to-js')
+const config = require('./src/local')
+const fs = require('fs')
+const {styles} = require('@ckeditor/ckeditor5-dev-utils')
 
 // fix: prevents error when .less files are required by node
 if (typeof require !== 'undefined') {
@@ -20,14 +23,68 @@ const useCDN = (ASSET_CDN_PREFIX && process.env.NODE_ENV === 'production')
 const pathToMapboxGL = path.resolve(__dirname, './node_modules/mapbox-gl/dist/mapbox-gl.js')
 const assetPrefix = useCDN ? ASSET_CDN_PREFIX : ''
 console.log(`assetPrefix: ${assetPrefix}`)
-module.exports = withTM(withCSS(withLess({
+
+const postCSSConfig = styles.getPostCssConfig({
+  themeImporter: {
+    themePath: require.resolve('@ckeditor/ckeditor5-theme-lark')
+  },
+  minify: true
+})
+
+const themeVariables = lessToJS(
+  fs.readFileSync(path.resolve(__dirname, './theme.less'), 'utf8')
+)
+
+// fix: prevents error when .less files are required by node
+if (typeof require !== 'undefined') {
+  require.extensions['.less'] = file => {}
+}
+
+module.exports = withLess(withCSS(withTM({
+  publicRuntimeConfig: {
+    host: config.host,
+    port: config.port,
+    https: config.https,
+    productName: config.productName,
+    logo: config.logo,
+    logoSmall: config.logoSmall,
+    logoWidth: config.logoWidth,
+    logoHeight: config.logoHeight,
+    logoSmallWidth: config.logoSmallWidth,
+    logoSmallHeight: config.logoSmallHeight,
+    primaryColor: config.primaryColor,
+    betaText: config.betaText,
+    twitter: config.twitter,
+    contactEmail: config.contactEmail,
+    mapHubsPro: config.mapHubsPro,
+    enableComments: config.enableComments,
+    CORAL_TALK_ID: config.CORAL_TALK_ID,
+    CORAL_TALK_HOST: config.CORAL_TALK_HOST,
+    FR_ENABLE: config.FR_ENABLE,
+    FR_API: config.FR_API,
+    FR_API_KEY: config.FR_API_KEY,
+    tileServiceUrl: config.tileServiceUrl,
+    MAPBOX_ACCESS_TOKEN: config.MAPBOX_ACCESS_TOKEN,
+    TILEHOSTING_GEOCODING_API_KEY: config.TILEHOSTING_GEOCODING_API_KEY,
+    TILEHOSTING_MAPS_API_KEY: config.TILEHOSTING_MAPS_API_KEY,
+    PLANET_LABS_API_KEY: config.PLANET_LABS_API_KEY,
+    DG_WMS_CONNECT_ID: config.DG_WMS_CONNECT_ID,
+    BING_KEY: config.BING_KEY,
+    SENTRY_DSN_PUBLIC: config.SENTRY_DSN_PUBLIC,
+    theme: config.theme,
+    themeUrl: config.themeUrl,
+    enableUserExport: config.enableUserExport,
+    OPENROUTESERVICE_API_KEY: config.OPENROUTESERVICE_API_KEY,
+    EARTHENGINE_CLIENTID: config.EARTHENGINE_CLIENTID,
+    RASTER_UPLOAD_API: config.RASTER_UPLOAD_API,
+    RASTER_UPLOAD_API_KEY: config.RASTER_UPLOAD_API_KEY
+  },
   transpileModules: ['react-dnd', 'react-dnd-html5-backend'],
   lessLoaderOptions: {
-    modifyVars: {
-      'primary-color': 'black'
-    },
+    modifyVars: themeVariables,
     javascriptEnabled: true
   },
+  postcssLoaderOptions: postCSSConfig,
   exportPathMap: () => {
     return {}
   },
@@ -53,7 +110,12 @@ module.exports = withTM(withCSS(withLess({
     config.node.fs = 'empty'
 
     config.module.rules.push({
-      test: /\.(woff|svg|ttf|eot|gif)([\?]?.*)$/,
+      test: /ckeditor5-[^/]+\/theme\/icons\/[^/]+\.svg$/,
+      use: [ 'raw-loader' ]
+    })
+
+    config.module.rules.push({
+      test: /\.(woff|ttf|eot|gif)([\?]?.*)$/,
       use: [{
         loader: 'file-loader',
         options: { publicPath: '/_next/static/', outputPath: 'static/' }

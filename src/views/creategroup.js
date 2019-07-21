@@ -59,22 +59,21 @@ export default class CreateGroup extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     const stepText = t('Step') + ' ' + this.state.step
-    let progressWidth = ''
+    let progressWidth = '25%'
     let step1 = false
     let step2 = false
     switch (this.state.step) {
       case 1:
-        progressWidth = 'width-50'
+        progressWidth = '50%'
         step1 = true
         break
       case 2:
-        progressWidth = 'width-full'
+        progressWidth = '100%'
         step2 = true
         break
       default:
         break
     }
-    const progressClassName = classNames('determinate', progressWidth)
 
     return (
       <ErrorBoundary>
@@ -85,7 +84,7 @@ export default class CreateGroup extends MapHubsComponent<Props, State> {
             <b>{stepText}</b>
 
             <div className='progress'>
-              <div className={progressClassName} />
+              <div className='determinate' style={{width: progressWidth}} />
             </div>
           </div>
           <Step1 active={step1} onSubmit={this.nextStep} />
