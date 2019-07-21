@@ -30,7 +30,7 @@ module.exports = function (app: any) {
         const layer = await Layer.getLayerByID(layer_id)
         if (layer) {
           app.next.render(req, res, '/layerreplace', await pageOptions(req, {
-            title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
+            title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + local.productName,
             props: {layer}
           }))
         } else {

@@ -100,7 +100,7 @@ export default {
     })
   },
 
-  updateMeasurement (features) {
+  updateMeasurement (features: Array<Object>) {
     const {t} = this.props
     if (features.length > 0) {
       const lines = {
@@ -123,7 +123,7 @@ export default {
         // restrict to area to 2 decimal points
         const areaM2 = Math.round(area * 100) / 100
         const areaKM2 = area * 0.000001
-        const areaHA = areaM2 / 10000.00
+        const areaHA = areaM2 / 10000
 
         let areaMessage = t('Total area: ')
 

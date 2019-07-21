@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import NotificationActions from '../../actions/NotificationActions'
+import { message } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import MessageActions from '../../actions/MessageActions'
 import CreateLayer from './CreateLayer'
@@ -40,11 +40,8 @@ export default class Step1 extends MapHubsComponent<Props, State> {
   cancelCallback = () => {
     const {t} = this
     this.setState({warnIfUnsaved: false})
-    NotificationActions.showNotification({
-      message: t('Layer Cancelled'),
-      onDismiss () {
-        window.location = '/layers'
-      }
+    message.info(t('Layer Cancelled'), 1, () => {
+      window.location = '/layers'
     })
   }
 

@@ -1,10 +1,9 @@
 // @flow
 import React from 'react'
-
+import { message } from 'antd'
 import Formsy from 'formsy-react'
 import TextInput from '../forms/textInput'
 import UserActions from '../../actions/UserActions'
-import NotificationActions from '../../actions/NotificationActions'
 import MessageActions from '../../actions/MessageActions'
 import _isequal from 'lodash.isequal'
 import MapHubsComponent from '../MapHubsComponent'
@@ -65,19 +64,11 @@ export default class MailingList extends MapHubsComponent<Props, State> {
           MessageActions.showMessage({title: err.title, message: err.detail})
         } else {
           _this.setState({email: _this.state.email, placeholder: t('Thanks for signing up!')})
-          NotificationActions.showNotification(
-            {
-              message: t('Added ' + model.email + ' to the list. Thanks for joining!'),
-              position: 'topright'
-            })
+          message.info(t('Added ' + model.email + ' to the list. Thanks for joining!'))
         }
       })
     } else {
-      NotificationActions.showNotification(
-        {
-          message: t('Please enter a valid email address'),
-          position: 'topright'
-        })
+      message.error(t('Please enter a valid email address'))
     }
   }
 
@@ -122,6 +113,29 @@ export default class MailingList extends MapHubsComponent<Props, State> {
             </div>
           </Formsy>
         </div>
+        <style jsx global>{`
+          .mailing-list-text-input {
+            width: 75%;
+          }
+
+          .mailing-list-text-input input {
+            margin: 0 !important;
+            height: 38px !important;
+            border: 1px solid #aaa !important;
+            border-bottom-left-radius: 25px !important;
+            border-bottom-right-radius: 0px !important;
+            border-top-left-radius: 25px !important;
+            border-top-right-radius: 0px !important;
+            padding-left: 10px !important;
+            width: 100% !important;
+            background-color: white !important;
+            }
+
+          .mailing-list-text-input input:focus {
+            border: 1px solid #aaa !important;
+            box-shadow: none !important;
+          }
+        `}</style>
       </div>
     )
   }

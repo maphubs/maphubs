@@ -33,14 +33,14 @@ module.exports = {
     const url = baseUrl + '/signup/invite/' + key
 
     const text =
-      __('You have been invited to') + ' ' + MAPHUBS_CONFIG.productName + '!\n\n' +
+      __('You have been invited to') + ' ' + local.productName + '!\n\n' +
       __('Please go to this link in your browser to sign up:') + url + '\n\n' +
 
       __('This invite is only valid for the email address:') + '\n' + email + '\n\n' +
       __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.')
 
     const html =
-      '<br />' + __('You have been invited to') + ' ' + MAPHUBS_CONFIG.productName + '!' +
+      '<br />' + __('You have been invited to') + ' ' + local.productName + '!' +
       '<br />' +
       '<br />' + __('Please go to this link in your browser to sign up:') + url +
       '<br />' +
@@ -50,9 +50,9 @@ module.exports = {
       __('If you need to contact us you are welcome to reply to this email, or use the help button on the website.')
 
     await Email.send({
-      from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
+      from: local.productName + ' <' + local.fromEmail + '>',
       to: email,
-      subject: __('Account Invite') + ' - ' + MAPHUBS_CONFIG.productName,
+      subject: __('Account Invite') + ' - ' + local.productName,
       text,
       html
     })
@@ -155,9 +155,9 @@ module.exports = {
         '<br />'
 
       await Email.send({
-        from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
+        from: local.productName + ' <' + local.fromEmail + '>',
         to: admin.email,
-        subject: 'New User Signup' + ' - ' + MAPHUBS_CONFIG.productName,
+        subject: 'New User Signup' + ' - ' + local.productName,
         text,
         html
       })

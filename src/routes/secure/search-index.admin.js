@@ -7,6 +7,7 @@ const nextError = require('../../services/error-response').nextError
 const apiError = require('../../services/error-response').apiError
 const isAuthenticated = require('../../services/auth-check')
 const pageOptions = require('../../services/page-options-helper')
+const local = require('../../local')
 
 module.exports = (app: any) => {
   app.get('/admin/searchindex', csrfProtection, isAuthenticated, async (req, res, next) => {
@@ -18,7 +19,7 @@ module.exports = (app: any) => {
           let connectionStatus = 'Active'
           if (error) connectionStatus = error
           app.next.render(req, res, '/searchindexadmin', await pageOptions(req, {
-            title: req.__('Search Index Admin') + ' - ' + MAPHUBS_CONFIG.productName,
+            title: req.__('Search Index Admin') + ' - ' + local.productName,
             props: {connectionStatus, indexStatus}
           }))
         })

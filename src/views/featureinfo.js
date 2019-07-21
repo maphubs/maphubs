@@ -10,7 +10,6 @@ import { Tabs, Row, Col } from 'antd'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import MapContainer from '../components/Map/containers/MapContainer'
 import FRContainer from '../components/Feature/containers/FRContainer'
-import FeatureNotesStore from '../stores/FeatureNotesStore'
 import FeaturePhotoStore from '../stores/FeaturePhotoStore'
 import {FeatureMap, FeatureArea, FeatureLocation, FeatureExport, FeaturePhoto, ForestReportEmbed} from '../components/Feature'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -18,11 +17,12 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {FeaturePhotoStoreState} from '../stores/FeaturePhotoStore'
-import type {FeatureNotesStoreState} from '../stores/FeatureNotesStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
 import {getLayer} from '../components/Feature/Map/layer-feature'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const TabPane = Tabs.TabPane
 
@@ -42,10 +42,9 @@ type Props = {
   }
 
   type State = {
-    editingNotes: boolean,
     tab: string,
     frActive?: boolean
-  } & LocaleStoreState & FeaturePhotoStoreState & FeatureNotesStoreState
+  } & LocaleStoreState & FeaturePhotoStoreState
 
 export default class FeatureInfo extends MapHubsComponent<Props, State> {
   static async getInitialProps ({ req, query }: {req: any, query: Object}) {
@@ -60,19 +59,17 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
   constructor (props: Props) {
     super(props)
-    this.stores.push(FeatureNotesStore)
     this.stores.push(FeaturePhotoStore)
     this.stores.push(UserStore)
-    const {locale, _csrf, user, feature, photo, notes, mapConfig} = props
+    const {locale, _csrf, user, feature, photo, mapConfig} = props
     Reflux.rehydrate(LocaleStore, {locale, _csrf})
     if (user) {
       Reflux.rehydrate(UserStore, {user})
     }
-    Reflux.rehydrate(FeatureNotesStore, {notes})
     Reflux.rehydrate(FeaturePhotoStore, {feature, photo})
 
     let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-    
+
     if (mapConfig && mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: mapConfig.baseMapOptions}
     }
@@ -137,7 +134,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
 
   render () {
     const {openEditor, selectTab, t} = this
-    const {canEdit, layer, feature, headerConfig} = this.props
+    const {canEdit, layer, feature, headerConfig, notes} = this.props
     const {frActive} = this.state
     let geojsonFeature
     let geoJSONProps
@@ -235,7 +232,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                           </TabPane>
                         }
                         <TabPane tab={t('Notes')} key='notes' style={{position: 'relative', height: '100%'}}>
-                          <FeatureNotes canEdit={canEdit} layer_id={layer.layer_id} mhid={geoJSONProps.mhid} />
+                          <FeatureNotes notes={notes} canEdit={canEdit} layer_id={layer.layer_id} mhid={geoJSONProps.mhid} t={t} _csrf={this.props._csrf} />
                         </TabPane>
                         <TabPane tab={t('Export')} key='export' style={{position: 'relative', height: '100%', padding: '10px'}}>
                           <FeatureExport t={t} mhid={mhid} {...layer} />

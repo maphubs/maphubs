@@ -10,13 +10,14 @@ const notAllowedError = require('../../services/error-response').notAllowedError
 const request = require('superagent')
 const isAuthenticated = require('../../services/auth-check')
 const pageOptions = require('../../services/page-options-helper')
+const local = require('../../local')
 
 module.exports = function (app: any) {
   app.get('/createremotelayer', login.ensureLoggedIn(), async (req, res, next) => {
     try {
       const user_id = req.session.user.maphubsUser.id
       return app.next.render(req, res, '/createremotelayer', await pageOptions(req, {
-        title: req.__('Remote Layer') + ' - ' + MAPHUBS_CONFIG.productName,
+        title: req.__('Remote Layer') + ' - ' + local.productName,
         props: {
           groups: await Group.getGroupsForUser(user_id)
         }

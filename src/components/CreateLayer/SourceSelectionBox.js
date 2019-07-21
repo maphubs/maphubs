@@ -1,6 +1,8 @@
 // @flow
 import React from 'react'
 import MapHubsPureComponent from '../MapHubsPureComponent'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {|
   onSelect: Function,

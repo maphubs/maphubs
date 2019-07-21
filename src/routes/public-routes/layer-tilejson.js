@@ -100,7 +100,7 @@ module.exports = function (app: any) {
       const centerX = Math.floor((bounds[2] - bounds[0]) / 2)
       const centerY = Math.floor((bounds[3] - bounds[1]) / 2)
 
-      const uri = MAPHUBS_CONFIG.tileServiceUrl + '/tiles/lyr/' + layer.shortid + '/{z}/{x}/{y}.pbf'
+      const uri = local.tileServiceUrl + '/tiles/lyr/' + layer.shortid + '/{z}/{x}/{y}.pbf'
 
       const tileJSON = {
         attribution: source,

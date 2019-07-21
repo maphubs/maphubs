@@ -2,7 +2,7 @@
 import React from 'react'
 import FileUpload from '../forms/FileUpload'
 import Map from '../Map'
-import NotificationActions from '../../actions/NotificationActions'
+import { message } from 'antd'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
 import MessageActions from '../../actions/MessageActions'
@@ -12,6 +12,8 @@ import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
 import type {GeoJSONObject} from 'geojson-flow'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 let scrollToComponent
 
@@ -81,7 +83,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
           if (err) {
             MessageActions.showMessage({title: t('Error'), message: err})
           } else {
-            NotificationActions.showNotification({message: t('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit})
+            message.success(t('Layer Saved'), 1, _this.props.onSubmit)
           }
         })
       }

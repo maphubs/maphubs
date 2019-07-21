@@ -4,6 +4,7 @@ const apiError = require('../../services/error-response').apiError
 const apiDataError = require('../../services/error-response').apiDataError
 const pageOptions = require('../../services/page-options-helper')
 const csrfProtection = require('csurf')({cookie: false})
+const local = require('../../local')
 
 module.exports = function (app: any) {
   app.get('/user/profile', csrfProtection, async (req, res) => {
@@ -17,7 +18,7 @@ module.exports = function (app: any) {
       picture: req.session.user._json.picture
     }
     app.next.render(req, res, '/auth0profile', await pageOptions(req, {
-      title: req.__('User Profile') + ' - ' + MAPHUBS_CONFIG.productName, props: {user}
+      title: req.__('User Profile') + ' - ' + local.productName, props: {user}
     }))
   })
 

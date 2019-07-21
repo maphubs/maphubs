@@ -5,6 +5,7 @@ const Map = require('../../models/map')
 const nextError = require('../../services/error-response').nextError
 const manetCheck = require('../../services/manet-check').middleware
 const pageOptions = require('../../services/page-options-helper')
+const local = require('../../local')
 
 module.exports = function (app: any) {
   // create a map view that we will use to screenshot the layer
@@ -16,7 +17,7 @@ module.exports = function (app: any) {
     Layer.getLayerByID(layer_id).then(async (layer) => {
       if (layer) {
         const name = Locales.getLocaleStringObject(req.locale, layer.name)
-        const title = name + ' - ' + MAPHUBS_CONFIG.productName
+        const title = name + ' - ' + local.productName
         return app.next.render(req, res, '/staticmap', await pageOptions(req, {
           title,
           hideFeedback: true,
@@ -75,7 +76,7 @@ module.exports = function (app: any) {
           title = Locales.getLocaleStringObject(req.locale, map.title)
         }
         return app.next.render(req, res, '/staticmap', await pageOptions(req, {
-          title: title + ' - ' + MAPHUBS_CONFIG.productName,
+          title: title + ' - ' + local.productName,
           hideFeedback: true,
           disableGoogleAnalytics: true,
           props: {
@@ -125,7 +126,7 @@ module.exports = function (app: any) {
           title = Locales.getLocaleStringObject(req.locale, map.title)
         }
         return app.next.render(req, res, '/staticmap', await pageOptions(req, {
-          title: title + ' - ' + MAPHUBS_CONFIG.productName,
+          title: title + ' - ' + local.productName,
           hideFeedback: true,
           disableGoogleAnalytics: true,
           props: {

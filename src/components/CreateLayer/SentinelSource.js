@@ -1,9 +1,7 @@
 // @flow
 import React from 'react'
-import Formsy from 'formsy-react'
-import TextArea from '../forms/textArea'
+import { message } from 'antd'
 import LayerActions from '../../actions/LayerActions'
-import NotificationActions from '../../actions/NotificationActions'
 import MessageActions from '../../actions/MessageActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
@@ -48,11 +46,11 @@ export default class SentinelSource extends MapHubsComponent<Props, State> {
   }
 
   getAPIUrl = (selected: string) => {
-    const selectedArr = selected.split(':')
-    const selectedType = selectedArr[0].trim()
-    const selectedScene = selectedArr[1].trim()
+    // const selectedArr = selected.split(':')
+    // const selectedType = selectedArr[0].trim()
+    // const selectedScene = selectedArr[1].trim()
 
-    return url
+    // return url
   }
 
   submit = (model: Object) => {
@@ -84,16 +82,12 @@ export default class SentinelSource extends MapHubsComponent<Props, State> {
       if (err) {
         MessageActions.showMessage({title: t('Error'), message: err})
       } else {
-        NotificationActions.showNotification({
-          message: t('Layer Saved'),
-          dismissAfter: 1000,
-          onDismiss () {
-            // reset style to load correct source
-            LayerActions.resetStyle()
-            // tell the map that the data is initialized
-            LayerActions.tileServiceInitialized()
-            _this.props.onSubmit()
-          }
+        message.success(t('Layer Saved'), 1, () => {
+          // reset style to load correct source
+          LayerActions.resetStyle()
+          // tell the map that the data is initialized
+          LayerActions.tileServiceInitialized()
+          _this.props.onSubmit()
         })
       }
     })

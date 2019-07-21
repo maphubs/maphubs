@@ -44,7 +44,7 @@ module.exports = {
         if (map.title) {
           title = Locales.getLocaleStringObject(req.locale, map.title)
         }
-        title += ' - ' + MAPHUBS_CONFIG.productName
+        title += ' - ' + local.productName
 
         const baseUrl = urlUtil.getBaseUrl()
         let imageUrl
@@ -73,7 +73,7 @@ module.exports = {
           oembed: 'map',
           twitterCard: {
             title,
-            description: req.__('View interactive map on ') + MAPHUBS_CONFIG.productName,
+            description: req.__('View interactive map on ') + local.productName,
             image: imageUrl,
             imageWidth: 1200,
             imageHeight: 630,
@@ -98,7 +98,7 @@ module.exports = {
         if (map.title) {
           title = Locales.getLocaleStringObject(req.locale, map.title)
         }
-        title += ' - ' + MAPHUBS_CONFIG.productName
+        title += ' - ' + local.productName
         const baseUrl = urlUtil.getBaseUrl()
 
         let imageUrl
@@ -116,13 +116,13 @@ module.exports = {
         map.showShareButtons = showShareButtons
 
         return app.next.render(req, res, '/usermap', await pageOptions(req, {
-          title: `${title} - ${MAPHUBS_CONFIG.productName}`,
+          title: `${title} - ${local.productName}`,
           props: {map, layers, canEdit},
           hideFeedback: true,
           oembed: 'map',
           twitterCard: {
             title,
-            description: req.__('View interactive map on ') + MAPHUBS_CONFIG.productName,
+            description: req.__('View interactive map on ') + local.productName,
             image: imageUrl,
             imageWidth: 1200,
             imageHeight: 630,

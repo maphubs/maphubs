@@ -8,6 +8,8 @@ import UserIcon from '../user/UserIcon'
 import _isequal from 'lodash.isequal'
 import urlencode from 'urlencode'
 import type {UserStoreState} from '../../stores/UserStore'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {
     id: string,

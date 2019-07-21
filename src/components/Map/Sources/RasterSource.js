@@ -1,6 +1,8 @@
 // @flow
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const RasterSource = {
   async load (key: string, source: GLSource, mapComponent: any) {

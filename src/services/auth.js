@@ -98,7 +98,7 @@ const strategy = new Auth0Strategy({
   // extraParams.id_token has the JSON Web Token
   // profile has all the information from the user
   log.info('Auth0 login')
-  console.log(profile)
+  // console.log(profile)
   // check if user has a local user object
   let hosts = []
 

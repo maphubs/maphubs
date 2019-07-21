@@ -7,11 +7,12 @@ const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 const csrfProtection = require('csurf')({cookie: false})
 const SearchIndex = require('../../models/search-index')
 const pageOptions = require('../../services/page-options-helper')
+const local = require('../../local')
 
 module.exports = (app: any) => {
   app.get('/search', csrfProtection, async (req, res) => {
     return app.next.render(req, res, '/search', await pageOptions(req, {
-      title: req.__('Search') + ' - ' + MAPHUBS_CONFIG.productName,
+      title: req.__('Search') + ' - ' + local.productName,
       props: {}
     }))
   })

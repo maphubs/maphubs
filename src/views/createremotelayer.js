@@ -13,14 +13,16 @@ import MiniLegend from '../components/Map/MiniLegend'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
+import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-
 import type {Layer} from '../types/layer'
-
 import request from 'superagent'
 import $ from 'jquery'
 import {checkClientError} from '../services/client-error-response'
+
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {|
   groups: Array<Object>,
@@ -37,7 +39,7 @@ type State = {
   remote_host?: string,
   group_id?: string,
   complete: boolean
-}
+} & LocaleStoreState
 
 export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
   static async getInitialProps ({ req, query }: {req: any, query: Object}) {
@@ -67,7 +69,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
     }
 
     let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-    
+
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
     }

@@ -150,9 +150,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
           <div style={{position: 'absolute', top: '5px', right: '5px'}}>
             <Tooltip
               title={t('Public Sharing Enabled')}
-              position='bottom'
-              inertia
-              followCursor
+              placement='bottom'
             >
               <LockOpen style={{color: 'green'}} />
             </Tooltip>

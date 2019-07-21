@@ -2,8 +2,8 @@
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import TextInput from '../forms/textInput'
+import { message } from 'antd'
 import LayerActions from '../../actions/LayerActions'
-import NotificationActions from '../../actions/NotificationActions'
 import MessageActions from '../../actions/MessageActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
@@ -71,7 +71,7 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
 
     const urlParts = model.rasterTileUrl.split('?')
     let baseUrl
-    let layers
+    let layers = ''
     let url
     if (urlParts && urlParts.length > 0) {
       baseUrl = urlParts[0]
@@ -103,16 +103,12 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
         if (err) {
           MessageActions.showMessage({title: t('Error'), message: err})
         } else {
-          NotificationActions.showNotification({
-            message: t('Layer Saved'),
-            dismissAfter: 1000,
-            onDismiss () {
-              // reset style to load correct source
-              LayerActions.resetStyle()
-              // tell the map that the data is initialized
-              LayerActions.tileServiceInitialized()
-              _this.props.onSubmit()
-            }
+          message.success(t('Layer Saved'), 1, () => {
+            // reset style to load correct source
+            LayerActions.resetStyle()
+            // tell the map that the data is initialized
+            LayerActions.tileServiceInitialized()
+            _this.props.onSubmit()
           })
         }
       })

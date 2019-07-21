@@ -13,13 +13,15 @@ import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import Actions from '../actions/AddPhotoPointActions'
 import MessageActions from '../actions/MessageActions'
-import NotificationActions from '../actions/NotificationActions'
 import ConfirmationActions from '../actions/ConfirmationActions'
 import Progress from '../components/Progress'
 import GetNameField from '../components/Map/Styles/get-name-field'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {AddPhotoPointStoreState} from '../stores/AddPhotoPointStore'
+import {message} from 'antd'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('addphotopoint')
 
@@ -59,7 +61,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     Reflux.rehydrate(AddPhotoPointStore, {layer: props.layer})
     let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-    
+
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
     }
@@ -99,7 +101,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
           message: t('An error occurred while processing this photo. Please confirm that the photo has valid GPS location information. Error Message: ') + err
         })
       } else {
-        NotificationActions.showNotification({message: t('Photo Added')})
+        message.info(t('Photo Added'))
       }
     })
   }

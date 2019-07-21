@@ -1,10 +1,10 @@
 // @flow
 import React from 'react'
 import { Subscribe } from 'unstated'
+import { message } from 'antd'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapToolButton from '../Map/MapToolButton'
 import MessageActions from '../../actions/MessageActions'
-import NotificationActions from '../../actions/NotificationActions'
 import ConfirmationActions from '../../actions/ConfirmationActions'
 import Progress from '../Progress'
 import MapHubsComponent from '../MapHubsComponent'
@@ -38,9 +38,7 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
       if (err) {
         MessageActions.showMessage({title: t('Error'), message: err})
       } else {
-        NotificationActions.showNotification({
-          message: t('Edits Saved')
-        })
+        message.success(t('Edits Saved'))
       }
     })
   }

@@ -3,6 +3,8 @@ import React from 'react'
 import MapHubsComponent from './MapHubsComponent'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import type {Element} from 'react'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const debug = DebugService('react-error-boundary')
 
 type Props = {

@@ -18,6 +18,7 @@ const csrfProtection = require('csurf')({cookie: false})
 const privateLayerCheck = require('../../services/private-layer-check')
 const isAuthenticated = require('../../services/auth-check')
 const pageOptions = require('../../services/page-options-helper')
+const local = require('../../local')
 
 module.exports = function (app: any) {
   app.get('/feature/:layer_id/:id/*', csrfProtection, privateLayerCheck.middlewareView, async (req, res, next) => {
@@ -69,7 +70,7 @@ module.exports = function (app: any) {
 
             if (!req.isAuthenticated || !req.isAuthenticated()) {
               return app.next.render(req, res, '/featureinfo', await pageOptions(req, {
-                title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
+                title: featureName + ' - ' + local.productName,
                 fontawesome: true,
                 talkComments: true,
                 hideFeedback: true,
@@ -80,7 +81,7 @@ module.exports = function (app: any) {
               const allowed = await Layer.allowedToModify(layer_id, user_id)
               if (allowed) {
                 return app.next.render(req, res, '/featureinfo', await pageOptions(req, {
-                  title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
+                  title: featureName + ' - ' + local.productName,
                   fontawesome: true,
                   talkComments: true,
                   hideFeedback: true,
@@ -88,7 +89,7 @@ module.exports = function (app: any) {
                 }))
               } else {
                 return app.next.render(req, res, '/featureinfo', await pageOptions(req, {
-                  title: featureName + ' - ' + MAPHUBS_CONFIG.productName,
+                  title: featureName + ' - ' + local.productName,
                   fontawesome: true,
                   talkComments: true,
                   props: {feature, notes, photo, layer, canEdit: false}

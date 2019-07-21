@@ -1,6 +1,8 @@
 // @flow
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
 import ee from '@google/earthengine'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const EarthEngineSource = {
   async load (key: string, source: GLSource, mapComponent: any) {

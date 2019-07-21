@@ -132,6 +132,7 @@ class Map extends React.Component<Props, State> {
   lunr: any
   idx: any
   searchSourceIds: any
+  languageControl: any
 
   constructor (props: Props) {
     super(props)

@@ -3,7 +3,7 @@ import React from 'react'
 import {Modal, ModalContent} from '../Modal/Modal'
 import CardCarousel from '../CardCarousel/CardCarousel'
 import SearchBox from '../SearchBox'
-import NotificationActions from '../../actions/NotificationActions'
+import { message } from 'antd'
 import MessageActions from '../../actions/MessageActions'
 import MapHubsComponent from '../MapHubsComponent'
 import ErrorBoundary from '../ErrorBoundary'
@@ -71,10 +71,9 @@ export default class AddMapModal extends MapHubsComponent<Props, State> {
           } else {
             if (res.body.maps && res.body.maps.length > 0) {
               _this.setState({searchActive: true, searchResults: res.body.maps})
-              NotificationActions.showNotification({message: res.body.maps.length + ' ' + t('Results'), position: 'bottomleft'})
+              message.info(`${res.body.layers.length} ${t('Results')}`)
             } else {
-            // show error message
-              NotificationActions.showNotification({message: t('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
+              message.info(t('No Results Found'), 5)
             }
           }
         },

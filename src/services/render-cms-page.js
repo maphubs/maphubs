@@ -5,6 +5,7 @@ const Map = require('../models/map')
 const Story = require('../models/story')
 const Promise = require('bluebird')
 const pageOptions = require('./page-options-helper')
+const local = require('../local')
 
 module.exports = function (app: any, config: Object, req: any, res: any) {
   const dataRequests = []
@@ -104,8 +105,8 @@ module.exports = function (app: any, config: Object, req: any, res: any) {
       results.forEach((result, i) => {
         props[dataRequestNames[i]] = result
       })
-      let title = MAPHUBS_CONFIG.productName
-      let description = MAPHUBS_CONFIG.productName
+      let title = local.productName
+      let description = local.productName
       if (config.title && config.title[req.locale]) {
         title = config.title[req.locale]
       } else if (config.title && config.title.en) {

@@ -12,14 +12,14 @@ const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('route
 const nextError = require('../../services/error-response').nextError
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const pageOptions = require('../../services/page-options-helper')
-
+const local = require('../../local')
 const csrfProtection = require('csurf')({cookie: false})
 
 module.exports = function (app: any) {
   app.get('/groups', csrfProtection, async (req, res, next) => {
     try {
       return app.next.render(req, res, '/groups', await pageOptions(req, {
-        title: req.__('Groups') + ' - ' + MAPHUBS_CONFIG.productName,
+        title: req.__('Groups') + ' - ' + local.productName,
         props: {
           featuredGroups: await Group.getFeaturedGroups(),
           recentGroups: await Group.getRecentGroups(),
@@ -34,7 +34,7 @@ module.exports = function (app: any) {
       const locale = req.locale ? req.locale : 'en'
       const groups = await Group.getAllGroups().orderByRaw(`omh.groups.name -> '${locale}'`)
       return app.next.render(req, res, '/allgroups', await pageOptions(req, {
-        title: req.__('Groups') + ' - ' + MAPHUBS_CONFIG.productName,
+        title: req.__('Groups') + ' - ' + local.productName,
         props: {
           groups
         }
@@ -44,7 +44,7 @@ module.exports = function (app: any) {
 
   app.get('/creategroup', csrfProtection, login.ensureLoggedIn(), async (req, res) => {
     app.next.render(req, res, '/creategroup', await pageOptions(req, {
-      title: req.__('Create Group') + ' - ' + MAPHUBS_CONFIG.productName,
+      title: req.__('Create Group') + ' - ' + local.productName,
       props: {}
     }))
   })
@@ -69,7 +69,7 @@ module.exports = function (app: any) {
       const name = Locales.getLocaleStringObject(req.locale, group.name)
       const description = Locales.getLocaleStringObject(req.locale, group.description)
       return app.next.render(req, res, '/groupinfo', await pageOptions(req, {
-        title: `${name} - ${MAPHUBS_CONFIG.productName}`,
+        title: `${name} - ${local.productName}`,
         description,
         props: {
           group,
@@ -104,7 +104,7 @@ module.exports = function (app: any) {
         if (group) {
           const name = Locales.getLocaleStringObject(req.locale, group.name)
           return app.next.render(req, res, '/groupadmin', await pageOptions(req, {
-            title: name + ' ' + req.__('Settings') + ' - ' + MAPHUBS_CONFIG.productName,
+            title: name + ' ' + req.__('Settings') + ' - ' + local.productName,
             props: {
               group,
               maps: await Map.getGroupMaps(group_id, true),

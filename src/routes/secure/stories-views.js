@@ -10,13 +10,14 @@ const nextError = require('../../services/error-response').nextError
 const csrfProtection = require('csurf')({cookie: false})
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const pageOptions = require('../../services/page-options-helper')
+const local = require('../../local')
 
 module.exports = function (app: any) {
   // Views
   app.get('/stories', async (req, res, next) => {
     try {
       return app.next.render(req, res, '/stories', await pageOptions(req, {
-        title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
+        title: req.__('Stories') + ' - ' + local.productName,
         props: {
           popularStories: await Story.getPopularStories(10),
           recentStories: await Story.getRecentStories(10)
@@ -28,7 +29,7 @@ module.exports = function (app: any) {
   app.get('/stories/all', async (req, res, next) => {
     try {
       return app.next.render(req, res, '/allstories', await pageOptions(req, {
-        title: req.__('Stories') + ' - ' + MAPHUBS_CONFIG.productName,
+        title: req.__('Stories') + ' - ' + local.productName,
         props: {
           stories: await Story.getAllStories().orderBy('omh.stories.title')
         }

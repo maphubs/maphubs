@@ -1,9 +1,9 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
+import { message } from 'antd'
 import TextInput from '../forms/textInput'
 import LayerActions from '../../actions/LayerActions'
-import NotificationActions from '../../actions/NotificationActions'
 import MessageActions from '../../actions/MessageActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
@@ -61,16 +61,11 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
       if (err) {
         MessageActions.showMessage({title: t('Error'), message: err})
       } else {
-        NotificationActions.showNotification({
-          message: t('Layer Saved'),
-          dismissAfter: 1000,
-          onDismiss () {
-            // reset style to load correct source
-            LayerActions.resetStyle()
-            // tell the map that the data is initialized
-            LayerActions.tileServiceInitialized()
-            _this.props.onSubmit()
-          }
+        message.success(t('Layer Saved'), 1, () => {
+          LayerActions.resetStyle()
+          // tell the map that the data is initialized
+          LayerActions.tileServiceInitialized()
+          _this.props.onSubmit()
         })
       }
     })

@@ -48,7 +48,7 @@ module.exports = function (app: any) {
 
   app.get('/login/failed', async (req, res) => {
     return app.next.render(req, res, '/auth0error', await pageOptions(req, {
-      title: req.__('Login Failed') + ' - ' + MAPHUBS_CONFIG.productName,
+      title: req.__('Login Failed') + ' - ' + local.productName,
       props: {
         requireInvite: local.requireInvite,
         adminEmail: local.adminEmail

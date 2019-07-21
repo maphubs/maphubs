@@ -2,14 +2,15 @@
 import React from 'react'
 import Formsy from 'formsy-react'
 import TextArea from '../forms/textArea'
+import { message } from 'antd'
 import LayerActions from '../../actions/LayerActions'
-import NotificationActions from '../../actions/NotificationActions'
 import MessageActions from '../../actions/MessageActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
-
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {|
   onSubmit: Function
@@ -87,16 +88,12 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
       if (err) {
         MessageActions.showMessage({title: t('Error'), message: err})
       } else {
-        NotificationActions.showNotification({
-          message: t('Layer Saved'),
-          dismissAfter: 1000,
-          onDismiss () {
-            // reset style to load correct source
-            LayerActions.resetStyle()
-            // tell the map that the data is initialized
-            LayerActions.tileServiceInitialized()
-            _this.props.onSubmit()
-          }
+        message.success(t('Layer Saved'), 1, () => {
+          // reset style to load correct source
+          LayerActions.resetStyle()
+          // tell the map that the data is initialized
+          LayerActions.tileServiceInitialized()
+          _this.props.onSubmit()
         })
       }
     })

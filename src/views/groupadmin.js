@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
+import { message } from 'antd'
 import EditList from '../components/EditList'
 import Header from '../components/header'
 import MultiTextArea from '../components/forms/MultiTextArea'
@@ -11,7 +12,6 @@ import MessageActions from '../actions/MessageActions'
 import AddItem from '../components/AddItem'
 import GroupStore from '../stores/GroupStore'
 import GroupActions from '../actions/GroupActions'
-import NotificationActions from '../actions/NotificationActions'
 import ConfirmationActions from '../actions/ConfirmationActions'
 import ImageCrop from '../components/ImageCrop'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -108,15 +108,9 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
       if (err) {
         MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
-        NotificationActions.showNotification(
-          {
-            message: t('Group Saved'),
-            position: 'bottomright',
-            dismissAfter: 3000,
-            onDismiss () {
-              window.location = `/group/${group_id || ''}`
-            }
-          })
+        message.info(t('Group Saved'), 3, () => {
+          window.location = `/group/${group_id || ''}`
+        })
       }
     })
   }
@@ -133,7 +127,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
           if (err) {
             MessageActions.showMessage({title: t('Error'), message: err})
           } else {
-            NotificationActions.showNotification({message: t('Member Removed')})
+            message.info(t('Member Removed'))
           }
         })
       }
@@ -151,11 +145,8 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
           if (err) {
             MessageActions.showMessage({title: t('Error'), message: err})
           } else {
-            NotificationActions.showNotification({
-              message: t('Group Deleted'),
-              onDismiss () {
-                window.location = '/groups'
-              }
+            message.info(t('Group Deleted'), 3, () => {
+              window.location = '/groups'
             })
           }
         })
@@ -177,7 +168,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
             if (err) {
               MessageActions.showMessage({title: t('Error'), message: err})
             } else {
-              NotificationActions.showNotification({message: t('Member is now an Administrator'), dismissAfter: 7000})
+              message.info(t('Member is now an Administrator'), 7)
             }
           })
         }
@@ -196,7 +187,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
           if (err) {
             MessageActions.showMessage({title: t('Error'), message: err})
           } else {
-            NotificationActions.showNotification({message: t('Member is no longer an Administrator'), dismissAfter: 7000})
+            message.info(t('Member is no longer an Administrator'), 7)
           }
         })
       }
@@ -211,7 +202,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
       if (err) {
         MessageActions.showMessage({title: t('Error'), message: err})
       } else {
-        NotificationActions.showNotification({message: t('Member Added'), dismissAfter: 7000})
+        message.info(t('Member Added'), 7)
       }
     })
   }
@@ -228,12 +219,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
       if (err) {
         MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
-        NotificationActions.showNotification(
-          {
-            message: t('Image Saved'),
-            position: 'bottomright',
-            dismissAfter: 3000
-          })
+        message.info(t('Image Saved'), 3)
       }
     })
     // this.pasteHtmlAtCaret('<img class="responsive-img" src="' + data + '" />');

@@ -13,6 +13,8 @@ import superagent from 'superagent'
 import { message } from 'antd'
 // import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 // const debug = DebugService('UploadLocalSource')
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 let scrollToComponent
 

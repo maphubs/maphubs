@@ -3,8 +3,9 @@ import React from 'react'
 import { Subscribe } from 'unstated'
 import MapHubsComponent from '../MapHubsComponent'
 import InteractiveMap from '../Map/InteractiveMap'
-
 import FRContainer from './containers/FRContainer'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {
   mapConfig: Object,

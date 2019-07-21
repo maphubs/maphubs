@@ -1,7 +1,6 @@
 // @flow
 import React from 'react'
-
-import NotificationActions from '../../actions/NotificationActions'
+import { message } from 'antd'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
 import MessageActions from '../../actions/MessageActions'
@@ -37,7 +36,7 @@ export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStor
       if (err) {
         MessageActions.showMessage({title: t('Error'), message: err})
       } else {
-        NotificationActions.showNotification({message: t('Layer Saved'), dismissAfter: 1000, onDismiss: _this.props.onSubmit})
+        message.success(t('Layer Saved'), 1, _this.props.onSubmit)
       }
     })
   }

@@ -10,6 +10,8 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import 'jquery'
 import 'react-tippy/dist/tippy.css'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 if (typeof window !== 'undefined') {
   require('materialize-css')
 }

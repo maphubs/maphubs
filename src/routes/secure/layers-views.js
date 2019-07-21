@@ -13,13 +13,14 @@ const csrfProtection = require('csurf')({cookie: false})
 const privateLayerCheck = require('../../services/private-layer-check').middlewareView
 const knex = require('../../connection')
 const pageOptions = require('../../services/page-options-helper')
+const local = require('../../local')
 
 module.exports = function (app: any) {
   // Views
   app.get('/layers', csrfProtection, async (req, res, next) => {
     try {
       return app.next.render(req, res, '/layers', await pageOptions(req, {
-        title: req.__('Layers') + ' - ' + MAPHUBS_CONFIG.productName,
+        title: req.__('Layers') + ' - ' + local.productName,
         props: {
           featuredLayers: await Layer.getFeaturedLayers(),
           recentLayers: await Layer.getRecentLayers(),
@@ -32,7 +33,7 @@ module.exports = function (app: any) {
   app.get('/layers/all', csrfProtection, async (req, res, next) => {
     try {
       return app.next.render(req, res, '/alllayers', await pageOptions(req, {
-        title: req.__('Layers') + ' - ' + MAPHUBS_CONFIG.productName,
+        title: req.__('Layers') + ' - ' + local.productName,
         props: {
           layers: await Layer.getAllLayers(false)
         }
@@ -47,7 +48,7 @@ module.exports = function (app: any) {
       layer_id = parseInt(layer_id)
 
       return app.next.render(req, res, '/createlayer', await pageOptions(req, {
-        title: req.__('Create Layer') + ' - ' + MAPHUBS_CONFIG.productName,
+        title: req.__('Create Layer') + ' - ' + local.productName,
         props: {
           groups: await Group.getGroupsForUser(user_id, trx),
           layer: await Layer.getLayerByID(layer_id, trx)
@@ -89,7 +90,7 @@ module.exports = function (app: any) {
           notes = notesObj.notes
         }
         return app.next.render(req, res, '/layerinfo', await pageOptions(req, {
-          title: name + ' - ' + MAPHUBS_CONFIG.productName,
+          title: name + ' - ' + local.productName,
           description,
           props: {
             layer,
@@ -157,7 +158,7 @@ module.exports = function (app: any) {
         const name = Locales.getLocaleStringObject(req.locale, layer.name)
         const description = Locales.getLocaleStringObject(req.locale, layer.description)
         return app.next.render(req, res, '/layermap', await pageOptions(req, {
-          title: name + ' - ' + MAPHUBS_CONFIG.productName,
+          title: name + ' - ' + local.productName,
           description,
           props: {
             layer,
@@ -195,7 +196,7 @@ module.exports = function (app: any) {
       if (layer && (allowed || layer.allowPublicSubmission)) { // placeholder for public submission flag on layers
         if (layer.data_type === 'point' && !layer.is_external) {
           return app.next.render(req, res, '/addphotopoint', await pageOptions(req, {
-            title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
+            title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + local.productName,
             props: {layer}
           }))
         } else {
@@ -219,7 +220,7 @@ module.exports = function (app: any) {
         const layer = await Layer.getLayerByID(layer_id)
         if (layer) {
           return app.next.render(req, res, '/layeradmin', await pageOptions(req, {
-            title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + MAPHUBS_CONFIG.productName,
+            title: Locales.getLocaleStringObject(req.locale, layer.name) + ' - ' + local.productName,
             props: {
               layer,
               groups: await Group.getGroupsForUser(user_id)

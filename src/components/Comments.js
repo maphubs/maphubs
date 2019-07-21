@@ -1,5 +1,7 @@
 // @flow
 import React from 'react'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {
 

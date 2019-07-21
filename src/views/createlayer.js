@@ -19,8 +19,9 @@ import type {LayerStoreState} from '../stores/layer-store'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-
 import $ from 'jquery'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const classNames = require('classnames')
 const debug = debugFactory('CreateLayer')
 
@@ -64,7 +65,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
 
     let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-    
+
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
     }
@@ -140,26 +141,26 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
     }
 
     const stepText = t('Step') + ' ' + this.state.step
-    let progressWidth = ''
+    let progressWidth = '0%'
 
-    const progressClassName = classNames('determinate', progressWidth)
+    const progressClassName = classNames('determinate')
     let step1 = ''
     if (this.state.step === 1) {
-      progressWidth = 'width-25'
+      progressWidth = '25%'
       step1 = (
         <Step1 onSubmit={this.nextStep} mapConfig={this.props.mapConfig} />
       )
     }
     let step2 = ''
     if (this.state.step === 2) {
-      progressWidth = 'width-50'
+      progressWidth = '50%'
       step2 = (
         <Step2 groups={this.props.groups} showPrev onPrev={this.prevStep} onSubmit={this.nextStep} />
       )
     }
     let step3 = ''
     if (this.state.step === 3) {
-      progressWidth = 'width-75'
+      progressWidth = '75%'
       step3 = (
         <Step5 onPrev={this.prevStep} onSubmit={this.submit} mapConfig={this.props.mapConfig} />
       )
@@ -176,7 +177,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
                 <b>{stepText}</b>
 
                 <div className='progress'>
-                  <div className={progressClassName} />
+                  <div className='determinate' style={{width: progressWidth}} />
                 </div>
               </div>
               {step1}

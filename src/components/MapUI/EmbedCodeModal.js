@@ -4,6 +4,8 @@ import {Modal, Switch, Row, message, Alert} from 'antd'
 import {Tooltip} from 'react-tippy'
 import {htmlEncode} from 'js-htmlencode'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {
   show?: boolean,

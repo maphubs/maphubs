@@ -8,6 +8,7 @@ const nextError = require('../../services/error-response').nextError
 const csrfProtection = require('csurf')({cookie: false})
 const renderCMSPage = require('../../services/render-cms-page')
 const pageOptions = require('../../services/page-options-helper')
+const local = require('../../local')
 
 module.exports = function (app: any) {
   app.get('/', csrfProtection, async (req, res, next) => {
@@ -20,7 +21,7 @@ module.exports = function (app: any) {
   app.get('/explore', csrfProtection, async (req, res, next) => {
     try {
       return app.next.render(req, res, '/explore', await pageOptions(req, {
-        title: req.__('Explore') + ' - ' + MAPHUBS_CONFIG.productName,
+        title: req.__('Explore') + ' - ' + local.productName,
         props: {
           featuredLayers: await Layer.getFeaturedLayers(10),
           featuredGroups: await Group.getFeaturedGroups(10),
@@ -41,14 +42,14 @@ module.exports = function (app: any) {
 
   app.get('/terms', csrfProtection, async (req, res) => {
     return app.next.render(req, res, '/terms', await pageOptions(req, {
-      title: req.__('Terms') + ' - ' + MAPHUBS_CONFIG.productName,
+      title: req.__('Terms') + ' - ' + local.productName,
       props: {beep: 'boop'}
     }))
   })
 
   app.get('/privacy', csrfProtection, async (req, res) => {
     return app.next.render(req, res, '/privacy', await pageOptions(req, {
-      title: req.__('Privacy') + ' - ' + MAPHUBS_CONFIG.productName,
+      title: req.__('Privacy') + ' - ' + local.productName,
       props: {}
     }))
   })

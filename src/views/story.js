@@ -11,6 +11,8 @@ import ShareButtons from '../components/ShareButtons'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {
   story: Object,
@@ -55,7 +57,7 @@ export default class Story extends MapHubsComponent<Props, void> {
       button = (
         <div className='fixed-action-btn action-button-bottom-right'>
           <FloatingButton
-            href={`/user/${this.props.username}/story/${this.props.story.story_id}/edit/${slugify(this.props.story.title)}`}
+            href={`/editstory/${slugify(this.props.story.title)}/${this.props.story.story_id}`}
             tooltip={t('Edit')}
             tooltipPosition='left'
             icon='mode_edit' />

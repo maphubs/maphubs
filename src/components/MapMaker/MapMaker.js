@@ -28,8 +28,9 @@ import connect from 'unstated-connect'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapContainer from '../Map/containers/MapContainer'
 import BaseMapContainer from '../Map/containers/BaseMapContainer'
-
 import $ from 'jquery'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {
     edit: boolean,

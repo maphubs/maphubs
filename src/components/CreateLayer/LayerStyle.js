@@ -16,6 +16,8 @@ import MapContainer from '../Map/containers/MapContainer'
 import type {LayerStoreState} from '../../stores/layer-store'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {GLStyle} from '../../types/mapbox-gl-style'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {|
   onSubmit: Function,

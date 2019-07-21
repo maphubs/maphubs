@@ -3,6 +3,8 @@ import React from 'react'
 import LayerSourceHelper from './LayerSourceHelper'
 import SourceSelectionBox from './SourceSelectionBox'
 import MapHubsComponent from '../MapHubsComponent'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 let scrollToComponent
 
@@ -65,7 +67,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
     const sourceDisplay = this.getSource(source, this.props.mapConfig, t)
 
     let planetSource = ''
-    if (MAPHUBS_CONFIG.mapHubsPro) {
+    if (MAPHUBS_CONFIG.PLANET_LABS_API_KEY) {
       planetSource = (
         <div className='col s6'>
           <SourceSelectionBox name={t('Planet API')} value={'planet'}

@@ -44,7 +44,7 @@ type Props = {
   children?: any,
   basemap: string,
   gpxLink?: Object,
-  hash?: booean,
+  hash?: boolean,
   preserveDrawingBuffer?: boolean,
   t: Function,
   primaryColor: string,

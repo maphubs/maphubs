@@ -27,7 +27,7 @@ module.exports = function (app: any) {
     try {
       const user_id = req.session.user.maphubsUser.id
       return app.next.render(req, res, '/importlayer', await pageOptions(req, {
-        title: req.__('Import Layer') + ' - ' + MAPHUBS_CONFIG.productName,
+        title: req.__('Import Layer') + ' - ' + local.productName,
         props: {
           groups: await Group.getGroupsForUser(user_id)
         }

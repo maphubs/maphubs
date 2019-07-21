@@ -1,10 +1,10 @@
 // @flow
 import React from 'react'
+import { message } from 'antd'
 import UserStore from '../../stores/UserStore'
 import UserActions from '../../actions/UserActions'
 import Formsy from 'formsy-react'
 import MultiTextInput from '../forms/MultiTextInput'
-import NotificationActions from '../../actions/NotificationActions'
 import SelectGroup from '../Groups/SelectGroup'
 import MapHubsComponent from '../MapHubsComponent'
 import Locales from '../../services/locales'
@@ -50,7 +50,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
     const {t} = this
     UserActions.getUser((err) => {
       if (err) {
-        NotificationActions.showNotification({message: t('Not Logged In - Please Login Again'), dismissAfter: 3000, position: 'topright'})
+        message.error(t('Not Logged In - Please Login Again'))
       }
     })
   }
@@ -60,7 +60,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
     const _this = this
     model.title = Locales.formModelToLocalizedString(model, 'title')
     if (!model.title || this.t(model.title) === '') {
-      NotificationActions.showNotification({message: t('Please Add a Title'), dismissAfter: 5000, position: 'topright'})
+      message.error(t('Please Add a Title'))
       return
     }
 

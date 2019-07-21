@@ -1,40 +1,46 @@
 // @flow
 import React from 'react'
+import { message } from 'antd'
 import Editor from 'react-medium-editor'
 import 'medium-editor/dist/css/medium-editor.css'
 import 'medium-editor/dist/css/themes/flat.css'
-import FeatureNotesStore from '../../stores/FeatureNotesStore'
-import FeatureNotesActions from '../../actions/FeatureNotesActions'
 import MessageActions from '../../actions/MessageActions'
-import NotificationActions from '../../actions/NotificationActions'
-import type {FeatureNotesStoreState} from '../../stores/FeatureNotesStore'
 import EditButton from '../EditButton'
-import MapHubsComponent from '../MapHubsComponent'
+import request from 'superagent'
 
 type Props = {|
+  notes: string,
   canEdit: boolean,
   layer_id: number,
-  mhid: string
+  mhid: string,
+  _csrf: string,
+  t: Function
 |}
 
 type State = {
-  editingNotes: boolean
-} & LocaleStoreState & FeatureNotesStoreState
+  editingNotes: boolean,
+  notes: string,
+  unsavedChanges?: boolean,
+  saving?: boolean
+}
 
-export default class FeatureNotes extends MapHubsComponent<Props, State> {
+export default class FeatureNotes extends React.Component<Props, State> {
   static defaultProps = {
     canEdit: false
   }
 
-  editButton: any
-
   constructor (props: Props) {
     super(props)
-    this.stores.push(FeatureNotesStore)
+    this.state = {
+      notes: props.notes || '',
+      editingNotes: false
+    }
   }
 
+  editButton: any
+
   componentDidMount () {
-    const {t} = this
+    const {t} = this.props
     const {editingNotes} = this.state
     window.addEventListener('beforeunload', (e) => {
       if (editingNotes) {
@@ -45,31 +51,37 @@ export default class FeatureNotes extends MapHubsComponent<Props, State> {
     })
   }
 
-  handleNotesChange = (notes: string) => {
-    FeatureNotesActions.setNotes(notes)
+  saveNotes = async () => {
+    const { mhid, layer_id, _csrf, t } = this.props
+    this.setState({saving: true})
+    try {
+      await request.post('/api/feature/notes/save')
+        .type('json').accept('json')
+        .send({
+          layer_id,
+          mhid,
+          notes: this.state.notes,
+          _csrf
+        })
+      this.setState({saving: false, editingNotes: false})
+      message.info(t('Notes Saved'))
+    } catch (err) {
+      this.setState({saving: false})
+      MessageActions.showMessage({title: t('Server Error'), message: err.message || err.toString()})
+    }
+  }
+
+  setNotes = (notes: string) => {
+    this.setState({notes, unsavedChanges: true})
   }
 
   startEditingNotes = () => {
     this.setState({editingNotes: true})
   }
 
-  stopEditingNotes = () => {
-    const _this = this
-    const {t} = this
-
-    FeatureNotesActions.saveNotes(this.props.layer_id, this.props.mhid, this.state._csrf, (err) => {
-      if (err) {
-        MessageActions.showMessage({title: t('Server Error'), message: err})
-      } else {
-        NotificationActions.showNotification({message: t('Notes Saved')})
-        _this.setState({editingNotes: false})
-      }
-    })
-  }
-
   render () {
-    const {t, handleNotesChange, startEditingNotes, stopEditingNotes} = this
-    const {canEdit} = this.props
+    const {setNotes, startEditingNotes, saveNotes} = this
+    const {canEdit, t} = this.props
     const {editingNotes, notes} = this.state
     let resources = ''
     if (editingNotes) {
@@ -78,7 +90,7 @@ export default class FeatureNotes extends MapHubsComponent<Props, State> {
           className='feature-notes'
           text={notes}
           style={{height: '100%'}}
-          onChange={handleNotesChange}
+          onChange={setNotes}
           options={{
             buttonLabels: 'fontawesome',
             delay: 100,
@@ -109,7 +121,7 @@ export default class FeatureNotes extends MapHubsComponent<Props, State> {
         {canEdit &&
           <EditButton editing={editingNotes}
             style={{position: 'absolute'}}
-            startEditing={startEditingNotes} stopEditing={stopEditingNotes} />
+            startEditing={startEditingNotes} stopEditing={saveNotes} />
         }
       </div>
     )

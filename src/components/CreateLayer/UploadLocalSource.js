@@ -13,6 +13,8 @@ import type {LayerStoreState} from '../../stores/layer-store'
 import superagent from 'superagent'
 // import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 // const debug = DebugService('UploadLocalSource')
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 let scrollToComponent
 

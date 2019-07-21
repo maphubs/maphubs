@@ -2,8 +2,8 @@
 import React from 'react'
 import InteractiveMap from '../components/Map/InteractiveMap'
 import Header from '../components/header'
+import { message } from 'antd'
 import ConfirmationActions from '../actions/ConfirmationActions'
-import NotificationActions from '../actions/NotificationActions'
 import MessageActions from '../actions/MessageActions'
 import MapMakerActions from '../actions/MapMakerActions'
 import Progress from '../components/Progress'
@@ -25,6 +25,8 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import {Tooltip} from 'react-tippy'
 import FloatingButton from '../components/FloatingButton'
 import EmbedCodeModal from '../components/MapUI/EmbedCodeModal'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const $ = require('jquery')
 const checkClientError = require('../services/client-error-response').checkClientError
@@ -238,13 +240,9 @@ export default class UserMap extends MapHubsComponent<Props, State> {
           } else {
             const mapId = res.body.map_id
             const url = '/map/edit/' + mapId
-            NotificationActions.showNotification({
-              message: t('Map Copied'),
-              dismissAfter: 2000,
-              onDismiss () {
-                cb()
-                window.location = url
-              }
+            message.info(t('Map Copied'), 3, () => {
+              cb()
+              window.location = url
             })
           }
         },

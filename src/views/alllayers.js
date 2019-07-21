@@ -2,11 +2,11 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
+import { message } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
 import MessageActions from '../actions/MessageActions'
-import NotificationActions from '../actions/NotificationActions'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
@@ -80,10 +80,9 @@ export default class Layers extends MapHubsComponent<Props, State> {
           } else {
             if (res.body.layers && res.body.layers.length > 0) {
               _this.setState({searchActive: true, searchResults: res.body.layers})
-              NotificationActions.showNotification({message: res.body.layers.length + ' ' + t('Results'), position: 'bottomleft'})
+              message.info(`${res.body.layers.length} ${t('Results')}`)
             } else {
-            // show error message
-              NotificationActions.showNotification({message: t('No Results Found'), dismissAfter: 5000, position: 'bottomleft'})
+              message.info(t('No Results Found'), 5)
             }
           }
         },

@@ -3,12 +3,12 @@ import React from 'react'
 import Map from '../components/Map'
 import Header from '../components/header'
 import Footer from '../components/footer'
+import { message } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
 import _shuffle from 'lodash.shuffle'
 import MessageActions from '../actions/MessageActions'
-import NotificationActions from '../actions/NotificationActions'
 import Progress from '../components/Progress'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -20,6 +20,8 @@ import type {CardConfig} from '../components/CardCarousel/Card'
 import UserStore from '../stores/UserStore'
 import cardUtil from '../services/card-util'
 import MapContainer from '../components/Map/containers/MapContainer'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('home')
 const $ = require('jquery')
@@ -63,7 +65,7 @@ export default class Search extends MapHubsComponent<Props, State> {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
     let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-    
+
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
     }
@@ -155,22 +157,11 @@ export default class Search extends MapHubsComponent<Props, State> {
       this.setState({searching: false})
 
       if (totalResults > 0) {
-        NotificationActions.showNotification(
-          {
-            message: totalResults +
-             ' ' + t('Results Found'),
-            position: 'bottomright',
-            dismissAfter: 3000
-          })
+        message.info(`${totalResults} ${t('Results Found')}`)
       } else {
         // clear Map
         // tell user no results found
-        NotificationActions.showNotification(
-          {
-            message: t('No Results Found'),
-            position: 'bottomright',
-            dismissAfter: 3000
-          })
+        message.info(t('No Results Found'))
       }
     } catch (err) {
       this.setState({searching: false})
@@ -226,7 +217,7 @@ export default class Search extends MapHubsComponent<Props, State> {
                 logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
                 logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
                 t={this.t}
-                locale={this.state.locale}
+                locale={this.props.locale}
                 mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
               />
             </div>

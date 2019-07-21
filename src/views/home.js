@@ -25,6 +25,8 @@ import type {CardConfig} from '../components/CardCarousel/Card'
 import ErrorBoundary from '../components/ErrorBoundary'
 import XComponentReact from '../components/XComponentReact'
 import UserStore from '../stores/UserStore'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 // import Perf from 'react-addons-perf';
 
@@ -102,7 +104,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     }
 
     let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-    
+
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
     }

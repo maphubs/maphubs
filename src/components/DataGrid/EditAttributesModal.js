@@ -98,7 +98,7 @@ export default class EditAttributesModal extends MapHubsComponent<Props, State> 
   render () {
     const {t} = this
     return (
-      <Modal ref='modal' className='edit-attributes-modal' dismissible={false} fixedFooter>
+      <Modal ref='modal' style={{maxWidth: '400px', overflow: 'hidden'}} dismissible={false} fixedFooter>
         <ModalContent style={{padding: 0, margin: 0, height: 'calc(100% - 60px)', overflow: 'hidden'}}>
           <div className='row no-margin' style={{height: '35px'}}>
             <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close}>

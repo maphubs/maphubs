@@ -2,10 +2,10 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
+import { message } from 'antd'
 import request from 'superagent'
 import ConfirmationActions from '../actions/ConfirmationActions'
 import MessageActions from '../actions/MessageActions'
-import NotificationActions from '../actions/NotificationActions'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
@@ -65,12 +65,7 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
               if (err) {
                 MessageActions.showMessage({title: t('Server Error'), message: err})
               } else {
-                NotificationActions.showNotification(
-                  {
-                    message: t('Success'),
-                    position: 'topright',
-                    dismissAfter: 3000
-                  })
+                message.success(t('Success'))
               }
               cb()
             })
@@ -98,12 +93,7 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
               if (err) {
                 MessageActions.showMessage({title: t('Server Error'), message: err})
               } else {
-                NotificationActions.showNotification(
-                  {
-                    message: t('Success'),
-                    position: 'topright',
-                    dismissAfter: 3000
-                  })
+                message.success(t('Success'))
               }
               cb()
             })
@@ -131,12 +121,7 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
               if (err) {
                 MessageActions.showMessage({title: t('Server Error'), message: err})
               } else {
-                NotificationActions.showNotification(
-                  {
-                    message: t('Success'),
-                    position: 'topright',
-                    dismissAfter: 3000
-                  })
+                message.success(t('Success'))
               }
               cb()
             })

@@ -3,8 +3,8 @@ import React from 'react'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 import ImageCrop from '../ImageCrop'
 import {Tooltip} from 'react-tippy'
+import { message } from 'antd'
 import MessageActions from '../../actions/MessageActions'
-import NotificationActions from '../../actions/NotificationActions'
 import ConfirmationActions from '../../actions/ConfirmationActions'
 import FeaturePhotoActions from '../../actions/FeaturePhotoActions'
 
@@ -26,15 +26,9 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
       if (err) {
         MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
-        NotificationActions.showNotification(
-          {
-            message: t('Image Saved'),
-            position: 'bottomright',
-            dismissAfter: 3000,
-            onDismiss () {
-              location.reload()
-            }
-          })
+        message.success(t('Image Saved (reloading...)'), 1, () => {
+          location.reload()
+        })
       }
     })
   }
@@ -50,12 +44,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
           if (err) {
             MessageActions.showMessage({title: t('Server Error'), message: err})
           } else {
-            NotificationActions.showNotification(
-              {
-                message: t('Image Removed'),
-                position: 'bottomright',
-                dismissAfter: 3000
-              })
+            message.info(t('Image Removed'))
           }
         })
       }

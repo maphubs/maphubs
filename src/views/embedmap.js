@@ -13,6 +13,8 @@ import type {GLStyle} from '../types/mapbox-gl-style'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import {Tooltip} from 'react-tippy'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const checkClientError = require('../services/client-error-response').checkClientError
@@ -70,7 +72,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
 
     let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-    
+
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
     }

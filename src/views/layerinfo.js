@@ -46,13 +46,13 @@ import fireResizeEvent from '../services/fire-resize-event'
 import LocaleStore from '../stores/LocaleStore'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const TabPane = Tabs.TabPane
 
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('layerinfo')
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-
-const $ = require('jquery')
 const moment = require('moment-timezone')
 
 addLocaleData(en)
@@ -230,19 +230,6 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     }
   }
 
-  onTabSelect = (tab) => {
-    const _this = this
-    if (tab === 'data') {
-      const gridHeight = $('#data').height() - _this.state.gridHeightOffset
-      this.setState({gridHeight})
-
-      $(window).resize(() => {
-        const gridHeight = $('#data').height() - _this.state.gridHeightOffset
-        _this.setState({gridHeight, userResize: true})
-      })
-    }
-  }
-
   openEditor = () => {
     const baseUrl = urlUtil.getBaseUrl()
     window.location = `${baseUrl}/map/new?editlayer=${this.props.layer.layer_id}${window.location.hash}`
@@ -298,7 +285,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const {startEditingData, stopEditingData, openEditor, onTabSelect, t} = this
+    const {startEditingData, stopEditingData, openEditor, t} = this
     const {layer, canEdit} = this.props
     const {editingNotes, editingData} = this.state
     const glStyle = layer.style
@@ -560,6 +547,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                   DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
                   earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
                   t={this.t}
+                  locale={this.props.locale}
                 />
               </Col>
             </Row>

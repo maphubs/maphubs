@@ -6,7 +6,6 @@ import Header from '../components/header'
 import Footer from '../components/footer'
 import {message, notification} from 'antd'
 import ConfirmationActions from '../actions/ConfirmationActions'
-import NotificationActions from '../actions/NotificationActions'
 import Progress from '../components/Progress'
 import request from 'superagent'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -127,16 +126,10 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
               duration: 0
             })
           } else {
-            NotificationActions.showNotification(
-              {
-                message: t('Invite Sent'),
-                position: 'topright',
-                dismissAfter: 3000,
-                onDismiss () {
-                  _this.state.members.push({email: user.email, invite_email: user.email, key, used: false})
-                  _this.setState({members: _this.state.members})
-                }
-              })
+            message.info(t('Invite Sent'), 3, () => {
+              _this.state.members.push({email: user.email, invite_email: user.email, key, used: false})
+              _this.setState({members: _this.state.members})
+            })
           }
         },
         (cb) => {
@@ -163,12 +156,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
               duration: 0
             })
           } else {
-            NotificationActions.showNotification(
-              {
-                message: t('Resent Sent'),
-                position: 'topright',
-                dismissAfter: 3000
-              })
+            message.info(t('Resent Invite'), 3)
           }
         },
         (cb) => {
@@ -226,21 +214,14 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
               duration: 0
             })
           } else {
-            NotificationActions.showNotification(
-              {
-                message: t('User Removed'),
-                position: 'topright',
-                dismissAfter: 3000,
-                onDismiss () {
-                  const members = []
-                  _this.state.members.forEach((member) => {
-                    if (member.key !== user.key) {
-                      members.push(member)
-                    }
-                  })
-                  _this.setState({members})
-                }
-              })
+            message.info(t('User Removed'), 3)
+            const members = []
+            _this.state.members.forEach((member) => {
+              if (member.key !== user.key) {
+                members.push(member)
+              }
+            })
+            _this.setState({members})
           }
         },
         (cb) => {

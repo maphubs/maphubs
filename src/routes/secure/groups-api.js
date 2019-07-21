@@ -206,9 +206,9 @@ module.exports = function (app: any) {
               await Group.addGroupMember(data.group_id, user.id, role)
               debug.log('Added ' + data.display_name + ' to ' + data.group_id)
               Email.send({
-                from: MAPHUBS_CONFIG.productName + ' <info@maphubs.com>',
+                from: local.productName + ' <info@maphubs.com>',
                 to: user.email,
-                subject: req.__('Welcome to Group:') + ' ' + data.group_id + ' - ' + MAPHUBS_CONFIG.productName,
+                subject: req.__('Welcome to Group:') + ' ' + data.group_id + ' - ' + local.productName,
                 text: user.display_name + ',\n' +
                 req.__('You have been added to the group') + ' ' + data.group_id,
                 html: user.display_name + ',<br />' +
@@ -270,9 +270,9 @@ module.exports = function (app: any) {
             await Group.removeGroupMember(data.group_id, user.id)
             debug.log('Removed ' + data.display_name + ' from ' + data.group_id)
             Email.send({
-              from: MAPHUBS_CONFIG.productName + ' <' + local.fromEmail + '>',
+              from: local.productName + ' <' + local.fromEmail + '>',
               to: user.email,
-              subject: req.__('Removed from Group:') + ' ' + data.group_id + ' - ' + MAPHUBS_CONFIG.productName,
+              subject: req.__('Removed from Group:') + ' ' + data.group_id + ' - ' + local.productName,
               text: user.display_name + ',\n' +
                   req.__('You have been removed from the group') + ' ' + data.group_id + '\n',
               html: user.display_name + ',' +

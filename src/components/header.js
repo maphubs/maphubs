@@ -4,7 +4,6 @@ import React from 'react'
 import UserMenu from './Header/UserMenu'
 import MapHubsComponent from './MapHubsComponent'
 import UserStore from '../stores/UserStore'
-import Notification from '../components/Notification'
 import Message from '../components/message'
 import MessageActions from '../actions/MessageActions'
 import Confirmation from '../components/confirmation'
@@ -16,6 +15,8 @@ import HelpButton from './Header/HelpButton'
 import SearchButton from './Header/SearchButton'
 import ExploreDropdown from './Header/ExploreDropdown'
 import AddDropdown from './Header/AddDropdown'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 if (process.env.NODE_ENV !== 'production') {
   // require('unstated-debug')
@@ -239,7 +240,6 @@ export default class Header extends MapHubsComponent<Props, State> {
             </ul>
           </div>
         </nav>
-        <Notification />
         <Message />
         <Confirmation />
       </header>

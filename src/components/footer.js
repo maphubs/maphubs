@@ -1,6 +1,8 @@
 // @flow
 import React from 'react'
 import MapHubsComponent from './MapHubsComponent'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {
   copyrightText: string,
@@ -54,7 +56,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
       )
     } else {
       copyright = (
-        <small>&copy; 2018 {MAPHUBS_CONFIG.productName}</small>
+        <small>&copy; 2019 {MAPHUBS_CONFIG.productName}</small>
       )
     }
 

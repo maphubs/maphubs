@@ -4,6 +4,8 @@ import Error from 'next/error'
 
 import 'jquery'
 import 'react-tippy/dist/tippy.css'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 if (typeof window !== 'undefined') {
   require('materialize-css')
@@ -14,7 +16,7 @@ type Props = {
 }
 
 export default class ErrorPage extends React.Component<Props, void> {
-  static getInitialProps ({res, err}) {
+  static getInitialProps ({res, err}: {res: any, err: any}) {
     const statusCode = res ? res.statusCode : err ? err.statusCode : null
     return { statusCode }
   }

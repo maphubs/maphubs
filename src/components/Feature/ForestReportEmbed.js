@@ -6,6 +6,8 @@ import Slider from 'rc-slider'
 import { Subscribe } from 'unstated'
 import FRContainer from './containers/FRContainer'
 import MapContainer from '../Map/containers/MapContainer'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {|
   onModuleToggle: Function

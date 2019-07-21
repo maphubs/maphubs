@@ -13,6 +13,7 @@ const apiDataError = require('../../services/error-response').apiDataError
 const privateMapCheck = require('../../services/private-map-check').middlewareView
 const csrfProtection = require('csurf')({cookie: false})
 const pageOptions = require('../../services/page-options-helper')
+const local = require('../../local')
 
 module.exports = function (app: any) {
   const recordMapView = function (session: Object, map_id: number, user_id: number, next: any) {
@@ -85,7 +86,7 @@ module.exports = function (app: any) {
   app.get('/maps', csrfProtection, async (req, res, next) => {
     try {
       return app.next.render(req, res, '/maps', await pageOptions(req, {
-        title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName,
+        title: req.__('Maps') + ' - ' + local.productName,
         props: {
           featuredMaps: await Map.getFeaturedMaps(),
           recentMaps: await Map.getRecentMaps(),
@@ -100,7 +101,7 @@ module.exports = function (app: any) {
       const locale = req.locale ? req.locale : 'en'
       const maps = await Map.getAllMaps().orderByRaw(`omh.maps.title -> '${locale}'`)
       return app.next.render(req, res, '/allmaps', await pageOptions(req, {
-        title: req.__('Maps') + ' - ' + MAPHUBS_CONFIG.productName,
+        title: req.__('Maps') + ' - ' + local.productName,
         props: {maps}
       }))
     } catch (err) { nextError(next)(err) }
@@ -227,7 +228,7 @@ module.exports = function (app: any) {
             title = Locales.getLocaleStringObject(req.locale, map.title)
           }
           return app.next.render(req, res, '/mapedit', await pageOptions(req, {
-            title: title + ' - ' + MAPHUBS_CONFIG.productName,
+            title: title + ' - ' + local.productName,
             props: {
               map,
               layers,

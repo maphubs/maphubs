@@ -1,12 +1,12 @@
 // @flow
 import React from 'react'
 import Header from '../components/header'
+import { message } from 'antd'
 import LayerSettings from '../components/CreateLayer/LayerSettings'
 import LayerAdminSettings from '../components/CreateLayer/LayerAdminSettings'
 import PresetEditor from '../components/CreateLayer/PresetEditor'
 import LayerStyle from '../components/CreateLayer/LayerStyle'
 import MessageActions from '../actions/MessageActions'
-import NotificationActions from '../actions/NotificationActions'
 import ConfirmationActions from '../actions/ConfirmationActions'
 import Progress from '../components/Progress'
 import request from 'superagent'
@@ -29,6 +29,8 @@ import type {LayerStoreState} from '../stores/layer-store'
 import type {Group} from '../stores/GroupStore'
 import type {UserStoreState} from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const checkClientError = require('../services/client-error-response').checkClientError
 
@@ -75,7 +77,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
     Reflux.rehydrate(LayerStore, props.layer)
 
     let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-    
+
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
     }
@@ -96,13 +98,14 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
       if (err) {
         MessageActions.showMessage({title: t('Server Error'), message: err})
       } else {
-        NotificationActions.showNotification({message: t('Layer Saved'), dismissAfter: 2000})
+        message.success(t('Layer Saved'))
       }
     })
   }
 
   onSave = () => {
-    NotificationActions.showNotification({message: this.t('Layer Saved'), dismissAfter: 2000})
+    const {t} = this
+    message.success(t('Layer Saved'))
   }
 
   savePresets = () => {
@@ -151,12 +154,8 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
           if (err) {
             MessageActions.showMessage({title: t('Server Error'), message: err})
           } else {
-            NotificationActions.showNotification({
-              message: t('Layer Deleted'),
-              dismissAfter: 1000,
-              onDismiss () {
-                window.location = '/'
-              }
+            message.success(t('Layer Deleted'), 1, () => {
+              window.location = '/'
             })
           }
         })
@@ -176,7 +175,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
           if (err) {
             MessageActions.showMessage({title: t('Server Error'), message: err})
           } else {
-            NotificationActions.showNotification({message: t('Layer Updated'), dismissAfter: 2000})
+            message.success(t('Layer Updated'))
           }
           cb()
         })
