@@ -139,7 +139,6 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   async componentDidMount () {
     const _this = this
     const {t} = this
-    M.Tabs.init(this.refs.tabs, {})
     M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
     this.clipboard = require('clipboard-polyfill').default
 

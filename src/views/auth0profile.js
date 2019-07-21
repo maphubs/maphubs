@@ -36,10 +36,6 @@ export default class Auth0Profile extends MapHubsComponent<Props, void> {
     }
   }
 
-  componentDidMount () {
-    // M.Tabs.init(this.refs.tabs, {})
-  }
-
   render () {
     const {t} = this
     return (

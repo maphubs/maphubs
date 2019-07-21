@@ -97,10 +97,6 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentDidMount () {
-    M.Tabs.init(this.refs.tabs, {})
-  }
-
   // Build edit link
   getEditLink = (map?: Object) => {
     // get map position
