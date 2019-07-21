@@ -93,13 +93,13 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
       <>
         {(groups.length > 1 && canChangeGroup) &&
           <Row>
-            <p style={{padding: '10px'}}>{t('Since you are in multiple groups, please select the group that should own this item.')}</p>
             <Select name='group' id='group-select' label={t('Group')} startEmpty={startEmpty}
               value={this.state.group_id} onChange={this.onGroupChange}
               emptyText={t('Choose a Group')} options={groupOptions} className='col s12'
               dataPosition='right' dataTooltip={t('Owned by Group')}
               required
             />
+            <p style={{padding: '10px', fontSize: '12px', marginTop: '10px'}}>{t('Since you are in multiple groups, please select the group that should own this item.')}</p>
           </Row>
         }
         {((groups.length === 1 || !canChangeGroup) && owner) &&

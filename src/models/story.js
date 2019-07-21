@@ -5,7 +5,7 @@ const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('model
 
 module.exports = {
 
-  getStoriesBaseQuery (trx) {
+  getStoriesBaseQuery (trx: any) {
     const db = trx || knex
     return db.select(
       'omh.stories.story_id', 'omh.stories.title',
@@ -104,7 +104,17 @@ module.exports = {
     return null
   },
 
-  updateStory (story_id: number, data: {title: string, body: string, author: string, firstline: string, firstimage: any}) {
+  updateStory (
+    story_id: number,
+    data: {
+      title: string,
+      body: string,
+      author: string,
+      firstline: string,
+      firstimage: any,
+      published: boolean,
+      publishDate: string
+      }) {
     return knex('omh.stories')
       .where({story_id})
       .update({
@@ -113,17 +123,9 @@ module.exports = {
         author: data.author,
         firstline: data.firstline,
         firstimage: data.firstimage,
+        published: data.published,
+        publishDate: data.publishDate,
         updated_at: knex.raw('now()')
-      })
-  },
-
-  publishStory (story_id: number, trx: any = null) {
-    const db = trx || knex
-    return db('omh.stories')
-      .where('story_id', story_id)
-      .update({
-        published: true,
-        updated_at: db.raw('now()')
       })
   },
 
@@ -149,7 +151,6 @@ module.exports = {
 
   async allowedToModify (story_id: number, user_id: number) {
     const story = await this.getStoryById(story_id)
-    console.log(story)
     return Group.allowedToModify(story.owned_by_group_id, user_id)
   }
 }

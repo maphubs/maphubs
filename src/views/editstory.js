@@ -7,11 +7,15 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import type {LocaleStoreState} from '../stores/LocaleStore'
+import { Provider } from 'unstated'
+import StoryContainer from '../components/Story/StoryContainer'
 
 type Props = {|
   story: Object,
   myMaps: Array<Object>,
   popularMaps: Array<Object>,
+  groups: Array<Object>,
   username: string,
   locale: string,
   _csrf: string,
@@ -19,7 +23,9 @@ type Props = {|
   user: Object
 |}
 
-export default class EditStory extends MapHubsComponent<Props, void> {
+type State = LocaleStoreState
+
+export default class EditStory extends MapHubsComponent<Props, State> {
   static async getInitialProps ({ req, query }: {req: any, query: Object}) {
     const isServer = !!req
 
@@ -34,12 +40,18 @@ export default class EditStory extends MapHubsComponent<Props, void> {
     story: {}
   }
 
+  StoryContainer: any
+
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
+    this.StoryContainer = new StoryContainer({
+      _csrf: props._csrf,
+      ...props.story
+    })
   }
 
   render () {
@@ -47,12 +59,18 @@ export default class EditStory extends MapHubsComponent<Props, void> {
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main>
-          <StoryEditor
-            story={this.props.story}
-            myMaps={this.props.myMaps}
-            popularMaps={this.props.popularMaps}
-            username={this.props.username}
-            storyType='user' />
+          <Provider inject={[this.StoryContainer]} >
+            <StoryEditor
+              story={this.props.story}
+              myMaps={this.props.myMaps}
+              popularMaps={this.props.popularMaps}
+              username={this.props.username}
+              groups={this.props.groups}
+              t={this.t}
+              locale={this.state.locale}
+              _csrf={this.props._csrf}
+            />
+          </Provider>
         </main>
       </ErrorBoundary>
     )

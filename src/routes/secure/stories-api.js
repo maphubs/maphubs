@@ -52,24 +52,6 @@ module.exports = function (app: any) {
     }
   })
 
-  app.post('/api/story/publish', csrfProtection, isAuthenticated, async (req, res) => {
-    try {
-      const data = req.body
-      if (!data || !data.story_id) return apiDataError(res)
-
-      if (await Story.allowedToModify(data.story_id, req.user_id)) {
-        return knex.transaction(async (trx) => {
-          await Story.publishStory(data.story_id, trx)
-          return res.send({
-            success: true
-          })
-        })
-      } else {
-        return notAllowedError(res, 'story')
-      }
-    } catch (err) { apiError(res, 500)(err) }
-  })
-
   app.post('/api/story/delete', csrfProtection, isAuthenticated, async (req, res) => {
     try {
       const data = req.body
