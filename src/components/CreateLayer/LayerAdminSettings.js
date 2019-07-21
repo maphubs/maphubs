@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
+import { Row, Col } from 'antd'
 import SelectGroup from '../Groups/SelectGroup'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
@@ -135,36 +136,36 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
     return (
       <div style={{marginRight: '2%', marginLeft: '2%', marginTop: '10px'}}>
         <Formsy onValidSubmit={this.onSubmit} onChange={this.onFormChange} onValid={this.onValid} onInvalid={this.onInValid}>
-          <div className='row'>
-            <div className='col s12 m6'>
-              <div className='row'>
+          <Row>
+            <Col span={12}>
+              <Row>
                 <Toggle
                   name='disableExport'
                   labelOff={t('Allow Export')}
                   labelOn={t('Disable Export')}
                   checked={disable_export}
                 />
-              </div>
-              <div className='row'>
+              </Row>
+              <Row>
                 <Toggle
                   name='allowPublicSubmit'
                   labelOff={t('Disabled')}
                   labelOn={t('Allow Public Data Submission')}
                   checked={allow_public_submit}
                 />
-              </div>
+              </Row>
               {elcEditor}
-            </div>
-            <div className='col s12 m6'>
-              <div className='row'>
+            </Col>
+            <Col span={12}>
+              <Row>
                 <SelectGroup
                   groups={this.props.groups}
                   type='layer'
                   group_id={owned_by_group_id}
                   canChangeGroup editing={false} />
-              </div>
-            </div>
-          </div>
+              </Row>
+            </Col>
+          </Row>
           <div className='container'>
             <div className='right'>
               <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}>{this.props.submitText}</button>

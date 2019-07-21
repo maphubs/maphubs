@@ -10,7 +10,7 @@ import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
 import superagent from 'superagent'
-import { message } from 'antd'
+import { Row, message } from 'antd'
 // import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 // const debug = DebugService('UploadLocalSource')
 import getConfig from 'next/config'
@@ -115,7 +115,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
     const {mapConfig} = this.props
 
     return (
-      <div className='row'>
+      <Row>
         <style jsx>{`
           #upload-process-progess {
             z-index: 9999 !important;
@@ -123,7 +123,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
         `}</style>
         <Progress id='upload-process-progess' title={t('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />
         <div>
-          <div className='row'>
+          <Row>
             <div style={{margin: 'auto auto', maxWidth: '750px'}}>
               <UppyFileUpload
                 endpoint={`${MAPHUBS_CONFIG.RASTER_UPLOAD_API}/upload/save`}
@@ -137,8 +137,8 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
                 onError={this.onUploadError}
               />
             </div>
-          </div>
-          <div className='row'>
+          </Row>
+          <Row>
             {(canSubmit && style) &&
               <div ref='mapSection'>
                 <p>{t('Please review the data on the map to confirm the upload was successful.')}</p>
@@ -160,12 +160,12 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
                 />
               </div>
             }
-          </div>
+          </Row>
         </div>
         <div className='right'>
           <button className='waves-effect waves-light btn' disabled={!canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
         </div>
-      </div>
+      </Row>
     )
   }
 }

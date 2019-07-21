@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { message } from 'antd'
+import { Row, message } from 'antd'
 import UserStore from '../../stores/UserStore'
 import UserActions from '../../actions/UserActions'
 import Formsy from 'formsy-react'
@@ -86,7 +86,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
     if (user) {
       return (
         <Formsy onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
-          <div className='row no-margin' style={{width: '100%'}}>
+          <Row style={{width: '100%'}}>
             <MultiTextInput name='title' id='title'
               value={title}
               label={{
@@ -97,31 +97,31 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
                 maxLength: t('Name must be 100 characters or less.')
               }} length={100}
               required />
-          </div>
-          <div className='row no-margin' style={{width: '100%'}}>
+          </Row>
+          <Row style={{width: '100%'}}>
             <SelectGroup groups={groups} group_id={owned_by_group_id} type='map' canChangeGroup={!editing} editing={editing} />
-          </div>
-          <div className='row no-margin' style={{width: '100%'}}>
+          </Row>
+          <Row style={{width: '100%'}}>
             <div className='col s12 valign-wrapper'>
               <button type='submit' className='valign waves-effect waves-light btn' style={{margin: 'auto'}}
                 disabled={(!canSave || saving)}>{t('Save Map')}</button>
             </div>
-          </div>
+          </Row>
 
         </Formsy>
       )
     } else {
       return (
         <div>
-          <div className='row center-align'>
+          <Row style={{textAlign: 'center'}}>
             <p>{t('You must login or sign up before saving a map.')}</p>
-          </div>
-          <div className='row center-align'>
+          </Row>
+          <Row style={{textAlign: 'center'}}>
             <a className='btn' href='/login' target='_blank' rel='noopener noreferrer'>{t('Login')}</a>
-          </div>
-          <div className='row center-align'>
+          </Row>
+          <Row style={{textAlign: 'center'}}>
             <a className='btn' onClick={this.recheckLogin}>{t('Retry')}</a>
-          </div>
+          </Row>
         </div>
       )
     }

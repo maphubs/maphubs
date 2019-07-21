@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
-import { message } from 'antd'
+import { Row, message } from 'antd'
 import TextInput from '../forms/textInput'
 import LayerActions from '../../actions/LayerActions'
 import MessageActions from '../../actions/MessageActions'
@@ -78,30 +78,30 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     return (
-      <div className='row'>
+      <Row>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div>
             <p>Raster Tile Source</p>
-            <div className='row'>
+            <Row>
               <TextInput
                 name='image_id' label={t('Image ID/Asset ID')} icon='info' className='col s12' validations='maxLength:200' validationErrors={{
                   maxLength: t('Must be 200 characters or less.')
                 }} length={200}
                 dataPosition='top' dataTooltip={t('EarthEngine Image ID or Asset ID')}
                 required />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <TextInput name='min' label={t('Min (Optional)')} icon='info' className='col s12' />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <TextInput name='max' label={t('Max (Optional)')} icon='info' className='col s12' />
-            </div>
+            </Row>
           </div>
           <div className='right'>
             <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
           </div>
         </Formsy>
-      </div>
+      </Row>
     )
   }
 }

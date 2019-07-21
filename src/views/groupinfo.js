@@ -12,6 +12,7 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
 import {Tooltip} from 'react-tippy'
+import { Row, Col } from 'antd'
 
 type Props = {
   group: Group,
@@ -103,15 +104,6 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
       )
     }
 
-    let unofficial = ''
-    if (this.props.group.unofficial) {
-      unofficial = (
-        <div className='row'>
-          <p><b>{t('Unofficial Group')}</b> - {t('This group is maintained by Maphubs using public data and is not intended to represent the listed organization. If you represent this group and would like to take ownership please contact us.')}</p>
-        </div>
-      )
-    }
-
     let descriptionWithLinks = ''
 
     if (this.props.group.description) {
@@ -132,31 +124,34 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
         <Header {...this.props.headerConfig} />
         <div style={{marginLeft: '10px', marginRight: '10px'}}>
           <h4>{this.t(this.props.group.name)}</h4>
-          <div className='row'>
-            <div className='col s6'>
+          <Row>
+            <Col span={12}>
               <img alt={t('Group Photo')} width='300' className='' src={'/img/resize/600?url=/group/' + groupId + '/image'} />
-            </div>
-            <div className='col s6'>
-              <div className='row'>
+            </Col>
+            <Col span={12}>
+              <Row>
                 <p><b>{t('Description: ')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
-              </div>
-              <div className='row'>
+              </Row>
+              <Row>
                 <p><b>{t('Status: ')}</b>{status}</p>
-              </div>
-              <div className='row'>
+              </Row>
+              <Row>
                 <p><b>{t('Location: ')}</b>{this.props.group.location}</p>
-              </div>
-              {unofficial}
-            </div>
-
-          </div>
+              </Row>
+              {this.props.group.unofficial &&
+                <Row>
+                  <p><b>{t('Unofficial Group')}</b> - {t('This group is maintained by Maphubs using public data and is not intended to represent the listed organization. If you represent this group and would like to take ownership please contact us.')}</p>
+                </Row>
+              }
+            </Col>
+          </Row>
           <div className='divider' />
-          <div className='row'>
-            <div className='row'>
+          <Row>
+            <Row>
               <CardCarousel cards={allCards} infinite={false} t={this.t} />
-            </div>
+            </Row>
             {addButtons}
-          </div>
+          </Row>
         </div>
         <div className='divider' />
         <div className='container'>

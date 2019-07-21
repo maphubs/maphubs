@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row } from 'antd'
 import Formsy from 'formsy-react'
 import TextInput from '../forms/textInput'
 import LayerStore from '../../stores/layer-store'
@@ -58,25 +59,25 @@ export default class GithubSource extends MapHubsComponent<Props, State> {
 
   render () {
     return (
-      <div className='row'>
+      <Row>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
 
           <div>
             <p>Github GeoJSON Source</p>
-            <div className='row'>
+            <Row>
               <TextInput
                 name='githuburl' label='Github GeoJSON URL' icon='info' className='col s12' validations='maxLength:100' validationErrors={{
                   maxLength: 'Must be 100 characters or less.'
                 }} length={100}
                 dataPosition='top' dataTooltip='Github GeoJSON URL'
                 required />
-            </div>
+            </Row>
           </div>
           <div className='right'>
             <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>Save and Continue</button>
           </div>
         </Formsy>
-      </div>
+      </Row>
     )
   }
 }

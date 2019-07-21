@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { message, notification } from 'antd'
+import { Row, message, notification } from 'antd'
 import TextInput from '../forms/textInput'
 import Radio from '../forms/radio'
 import LayerActions from '../../actions/LayerActions'
@@ -139,7 +139,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
       msqForm = (
         <div>
           <p>{t('ArcGIS MapServer Query Source')}</p>
-          <div className='row'>
+          <Row>
             <TextInput
               name='mapServiceUrl' label={t('Map Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
                 maxLength: t('Must be 250 characters or less.'),
@@ -147,7 +147,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
               }} length={250}
               dataPosition='top' dataTooltip={t('Map Service URL: ex: http://myserver/arcgis/rest/services/MyMap/MapServer/0')}
               required />
-          </div>
+          </Row>
         </div>
       )
     }
@@ -157,7 +157,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
       fsqForm = (
         <div>
           <p>{t('ArcGIS FeatureService Query Source')}</p>
-          <div className='row'>
+          <Row>
             <TextInput
               name='featureServiceUrl' label={t('Feature Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
                 maxLength: t('Must be 250 characters or less.'),
@@ -165,7 +165,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
               }} length={250}
               dataPosition='top' dataTooltip={t('Feature Service URL ex: http://myserver/arcgis/rest/services/MyMap/FeatureServer/0')}
               required />
-          </div>
+          </Row>
         </div>
       )
     }
@@ -175,7 +175,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
       tilesForm = (
         <div>
           <p>{t('ArcGIS MapServer Tiles')}</p>
-          <div className='row'>
+          <Row>
             <TextInput
               name='tileServiceUrl' label={t('MapServer Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
                 maxLength: t('Must be 250 characters or less.'),
@@ -183,22 +183,22 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
               }} length={250}
               dataPosition='top' dataTooltip={t('MapServer URL ex: http://myserver/arcgis/rest/services/MyMap/MapServer')}
               required />
-          </div>
+          </Row>
         </div>
       )
     }
 
     return (
-      <div className='row'>
+      <Row>
         <Formsy>
           <b>{t('Choose an Option')}</b>
-          <div className='row'>
+          <Row>
             <Radio name='type' label=''
               defaultValue={this.state.selectedOption}
               options={agolOptions} onChange={this.optionChange}
               className='col s10'
             />
-          </div>
+          </Row>
           <hr />
         </Formsy>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
@@ -209,7 +209,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
             <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
           </div>
         </Formsy>
-      </div>
+      </Row>
     )
   }
 }

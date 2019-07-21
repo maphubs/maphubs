@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { message } from 'antd'
+import { Row, message } from 'antd'
 import TextInput from '../forms/textInput'
 import LayerActions from '../../actions/LayerActions'
 import MessageActions from '../../actions/MessageActions'
@@ -97,12 +97,12 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
     ]
 
     return (
-      <div className='row'>
+      <Row>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
 
           <div>
             <p>{t('GeoJSON URL')}</p>
-            <div className='row'>
+            <Row>
               <TextInput
                 name='geojsonUrl' label={t('GeoJSON URL')} icon='info' className='col s12' validations='maxLength:500,isHttps' validationErrors={{
                   maxLength: t('Must be 500 characters or less.'),
@@ -110,27 +110,25 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
                 }} length={500}
                 dataPosition='top' dataTooltip={t('Vector Tile URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.pbf'}
                 required />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <TextInput name='id' label={t('ID Property (Optional)')} icon='info' className='col s12'
                 dataPosition='top' dataTooltip={t('Some features require idenify a unique identifier that can be used to select features')}
                 required />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <Radio name='data_type' label=''
                 defaultValue='point'
                 options={dataTypeOptions}
                 className='col s10'
               />
-            </div>
+            </Row>
           </div>
-
           <div className='right'>
             <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
           </div>
         </Formsy>
-
-      </div>
+      </Row>
     )
   }
 }
