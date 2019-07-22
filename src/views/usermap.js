@@ -2,9 +2,8 @@
 import React from 'react'
 import InteractiveMap from '../components/Map/InteractiveMap'
 import Header from '../components/header'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import ConfirmationActions from '../actions/ConfirmationActions'
-import MessageActions from '../actions/MessageActions'
 import MapMakerActions from '../actions/MapMakerActions'
 import Progress from '../components/Progress'
 import UserStore from '../stores/UserStore'
@@ -157,7 +156,11 @@ export default class UserMap extends MapHubsComponent<Props, State> {
       onPositiveResponse () {
         MapMakerActions.deleteMap(_this.props.map.map_id, _this.state._csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: t('Server Error'), message: err})
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             window.location = '/maps'
           }
@@ -236,7 +239,11 @@ export default class UserMap extends MapHubsComponent<Props, State> {
       .end((err, res) => {
         checkClientError(res, err, (err) => {
           if (err || !res.body || !res.body.map_id) {
-            MessageActions.showMessage({title: t('Error'), message: err})
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             const mapId = res.body.map_id
             const url = '/map/edit/' + mapId

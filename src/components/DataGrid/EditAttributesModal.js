@@ -1,9 +1,9 @@
 // @flow
 import React from 'react'
 import {Modal, ModalContent, ModalFooter} from '../Modal/Modal.js'
+import { notification } from 'antd'
 import MapHubsComponent from '../MapHubsComponent'
 import DataCollectionForm from '../DataCollection/DataCollectionForm'
-import MessageActions from '../../actions/MessageActions'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {MapHubsField} from '../../types/maphubs-field'
 
@@ -84,7 +84,11 @@ export default class EditAttributesModal extends MapHubsComponent<Props, State> 
           if (err) {
           // show error message
             debug.error(err)
-            MessageActions.showMessage({title: 'Error', message: err})
+            notification.error({
+              message: 'Error',
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             _this.close()
             if (_this.props.onSave) {

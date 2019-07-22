@@ -2,10 +2,9 @@
 import React from 'react'
 import FileUpload from '../forms/FileUpload'
 import Map from '../Map'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
-import MessageActions from '../../actions/MessageActions'
 import RadioModal from '../RadioModal'
 import Progress from '../Progress'
 import MapHubsComponent from '../MapHubsComponent'
@@ -77,11 +76,19 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
 
     LayerActions.submitPresets(false, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         LayerActions.replaceData(_this.state._csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: t('Error'), message: err})
+            notification.error({
+              message: t('Server Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             message.success(t('Layer Saved'), 1, _this.props.onSubmit)
           }
@@ -102,7 +109,11 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
       if (result.code === 'MULTIPLESHP') {
         this.setState({multipleShapefiles: result.shapefiles})
       } else {
-        MessageActions.showMessage({title: t('Error'), message: result.error})
+        notification.error({
+          message: t('Server Error'),
+          description: result.error,
+          duration: 0
+        })
       }
     }
     this.setState({processing: false})
@@ -110,7 +121,11 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
 
   onUploadError = (err: string) => {
     const {t} = this
-    MessageActions.showMessage({title: t('Error'), message: err})
+    notification.error({
+      message: t('Server Error'),
+      description: err,
+      duration: 0
+    })
   }
 
   finishUpload = (shapefileName: string) => {
@@ -118,13 +133,21 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
     const _this = this
     LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else if (result.success) {
         _this.setState({geoJSON: result.geoJSON, canSubmit: true, multipleShapefiles: null})
         LayerActions.setDataType(result.data_type)
         LayerActions.setImportedTags(result.uniqueProps, true)
       } else {
-        MessageActions.showMessage({title: t('Error'), message: result.error})
+        notification.error({
+          message: t('Error'),
+          description: result.error,
+          duration: 0
+        })
       }
     })
   }

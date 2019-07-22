@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
+import { notification } from 'antd'
 import MultiTextArea from '../forms/MultiTextArea'
 import MultiTextInput from '../forms/MultiTextInput'
 import SelectGroup from '../Groups/SelectGroup'
@@ -8,7 +9,6 @@ import Select from '../forms/select'
 import Licenses from './licenses'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
-import MessageActions from '../../actions/MessageActions'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
@@ -122,7 +122,11 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
 
     LayerActions.saveSettings(model, _this.state._csrf, initLayer, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         _this.setState({pendingChanges: false})
         _this.props.onSubmit()

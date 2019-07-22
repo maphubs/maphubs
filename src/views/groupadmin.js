@@ -1,14 +1,13 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import EditList from '../components/EditList'
 import Header from '../components/header'
 import MultiTextArea from '../components/forms/MultiTextArea'
 import TextInput from '../components/forms/textInput'
 import MultiTextInput from '../components/forms/MultiTextInput'
 import Toggle from '../components/forms/toggle'
-import MessageActions from '../actions/MessageActions'
 import AddItem from '../components/AddItem'
 import GroupStore from '../stores/GroupStore'
 import GroupActions from '../actions/GroupActions'
@@ -93,7 +92,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   }
 
   onError = (msg: string) => {
-    MessageActions.showMessage({title: this.t('Error'), message: msg})
+    notification.error({
+      message: 'Error',
+      description: msg,
+      duration: 0
+    })
   }
 
   submit = (model: Object) => {
@@ -106,7 +109,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
 
     GroupActions.updateGroup(group_id, model.name, model.description, model.location, model.published, _csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Server Error'), message: err})
+        notification.error({
+          message: t('Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         message.info(t('Group Saved'), 3, () => {
           window.location = `/group/${group_id || ''}`
@@ -125,7 +132,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
       onPositiveResponse () {
         GroupActions.removeMember(user.key, _csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: t('Error'), message: err})
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             message.info(t('Member Removed'))
           }
@@ -143,7 +154,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
       onPositiveResponse () {
         GroupActions.deleteGroup(_this.state._csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: t('Error'), message: err})
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             message.info(t('Group Deleted'), 3, () => {
               window.location = '/groups'
@@ -166,7 +181,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
         onPositiveResponse () {
           GroupActions.setMemberAdmin(user.key, _csrf, (err) => {
             if (err) {
-              MessageActions.showMessage({title: t('Error'), message: err})
+              notification.error({
+                message: t('Error'),
+                description: err.message || err.toString() || err,
+                duration: 0
+              })
             } else {
               message.info(t('Member is now an Administrator'), 7)
             }
@@ -185,7 +204,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
       onPositiveResponse () {
         GroupActions.removeMemberAdmin(user.key, _csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: t('Error'), message: err})
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             message.info(t('Member is no longer an Administrator'), 7)
           }
@@ -200,7 +223,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     debug.log(user.value.value + ' as Admin:' + user.option)
     GroupActions.addMember(user.value.value, user.option, _csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         message.info(t('Member Added'), 7)
       }
@@ -217,7 +244,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     // send data to server
     GroupActions.setGroupImage(data, _csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Server Error'), message: err})
+        notification.error({
+          message: t('Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         message.info(t('Image Saved'), 3)
       }

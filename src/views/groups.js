@@ -2,12 +2,11 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import request from 'superagent'
-import MessageActions from '../actions/MessageActions'
 import cardUtil from '../services/card-util'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -72,7 +71,11 @@ export default class Groups extends MapHubsComponent<Props, State> {
       .end((err, res) => {
         checkClientError(res, err, (err) => {
           if (err) {
-            MessageActions.showMessage({title: t('Error'), message: err})
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             if (res.body.groups && res.body.groups.length > 0) {
               _this.setState({searchActive: true, searchResults: res.body.groups})

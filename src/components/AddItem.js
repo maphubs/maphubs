@@ -2,7 +2,7 @@
 import React from 'react'
 import Formsy from 'formsy-react'
 import Toggle from './forms/toggle'
-import MessageActions from '../actions/MessageActions'
+import { notification } from 'antd'
 import Suggestions from './SearchBar/Suggestions'
 import LocaleStore from '../stores/LocaleStore'
 
@@ -89,7 +89,11 @@ export default class AddItem extends React.Component<Props, State> {
          }
        },
        error (msg) {
-         MessageActions.showMessage({title: 'Error', message: msg})
+         notification.error({
+           message: 'Server Error',
+           description: msg,
+           duration: 0
+         })
        },
        complete () {
        }

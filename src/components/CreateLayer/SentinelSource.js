@@ -1,8 +1,7 @@
 // @flow
 import React from 'react'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import LayerActions from '../../actions/LayerActions'
-import MessageActions from '../../actions/MessageActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
 
@@ -80,7 +79,11 @@ export default class SentinelSource extends MapHubsComponent<Props, State> {
 
     }, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         message.success(t('Layer Saved'), 1, () => {
           // reset style to load correct source

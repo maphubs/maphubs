@@ -1,11 +1,10 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
-import { Row, Col } from 'antd'
+import { Row, Col, notification } from 'antd'
 import SelectGroup from '../Groups/SelectGroup'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
-import MessageActions from '../../actions/MessageActions'
 import MapHubsComponent from '../MapHubsComponent'
 import Toggle from '../forms/toggle'
 
@@ -97,7 +96,11 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
 
     LayerActions.saveAdminSettings(model, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         _this.setState({pendingChanges: false})
         _this.props.onSubmit()
@@ -110,7 +113,11 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
     const _this = this
     LayerActions.saveExternalLayerConfig(config, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })        
       } else {
         _this.setState({pendingChanges: false})
         _this.props.onSubmit()

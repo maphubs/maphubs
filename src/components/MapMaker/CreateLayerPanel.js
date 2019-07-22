@@ -1,8 +1,8 @@
 // @flow
 import React from 'react'
+import { notification } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
-import MessageActions from '../../actions/MessageActions'
 import MapHubsComponent from '../MapHubsComponent'
 
 import type {LocaleStoreState} from '../../stores/LocaleStore'
@@ -25,7 +25,11 @@ export default class CreateLayerPanel extends MapHubsComponent<Props, State> {
     const _this = this
     LayerActions.createLayer(this.state._csrf, err => {
       if (err) {
-        MessageActions.showMessage({title: _this.t('Error'), message: err})
+        notification.error({
+          message: _this.t('Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         _this.setState({pendingChanges: false})
         if (_this.props.onSubmit) {

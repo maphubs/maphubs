@@ -12,14 +12,13 @@ import AddPhotoPointStore from '../stores/AddPhotoPointStore'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import Actions from '../actions/AddPhotoPointActions'
-import MessageActions from '../actions/MessageActions'
 import ConfirmationActions from '../actions/ConfirmationActions'
 import Progress from '../components/Progress'
 import GetNameField from '../components/Map/Styles/get-name-field'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {AddPhotoPointStoreState} from '../stores/AddPhotoPointStore'
-import {message} from 'antd'
+import { message, notification } from 'antd'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -96,9 +95,10 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
     const {t} = this
     Actions.setImage(data, info, function (err) {
       if (err) {
-        MessageActions.showMessage({
-          title: t('Failed to Save Photo'),
-          message: t('An error occurred while processing this photo. Please confirm that the photo has valid GPS location information. Error Message: ') + err
+        notification.error({
+          message: t('Failed to Save Photo'),
+          description: t('An error occurred while processing this photo. Please confirm that the photo has valid GPS location information. Error Message: ') + err,
+          duration: 0
         })
       } else {
         message.info(t('Photo Added'))
@@ -113,7 +113,11 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
     Actions.submit(model, this.state._csrf, (err) => {
       _this.setState({saving: false})
       if (err) {
-        MessageActions.showMessage({title: t('Server Error'), message: err})
+        notification.error({
+          message: t('Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         ConfirmationActions.showConfirmation({
           title: t('Photo Saved'),

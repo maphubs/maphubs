@@ -2,10 +2,9 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import request from 'superagent'
 import ConfirmationActions from '../actions/ConfirmationActions'
-import MessageActions from '../actions/MessageActions'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
@@ -63,7 +62,11 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
           .end((err, res) => {
             checkClientError(res, err, () => {}, (cb) => {
               if (err) {
-                MessageActions.showMessage({title: t('Server Error'), message: err})
+                notification.error({
+                  message: t('Error'),
+                  description: err.message || err.toString() || err,
+                  duration: 0
+                })
               } else {
                 message.success(t('Success'))
               }
@@ -91,7 +94,11 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
           .end((err, res) => {
             checkClientError(res, err, () => {}, (cb) => {
               if (err) {
-                MessageActions.showMessage({title: t('Server Error'), message: err})
+                notification.error({
+                  message: t('Error'),
+                  description: err.message || err.toString() || err,
+                  duration: 0
+                })
               } else {
                 message.success(t('Success'))
               }
@@ -119,7 +126,11 @@ export default class SearchIndexAdmin extends MapHubsComponent<Props, State> {
           .end((err, res) => {
             checkClientError(res, err, () => {}, (cb) => {
               if (err) {
-                MessageActions.showMessage({title: t('Server Error'), message: err})
+                notification.error({
+                  message: t('Error'),
+                  description: err.message || err.toString() || err,
+                  duration: 0
+                })
               } else {
                 message.success(t('Success'))
               }

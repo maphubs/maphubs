@@ -1,11 +1,11 @@
 // @flow
 import React from 'react'
+import { notification } from 'antd'
 import MapStyles from '../Map/Styles'
 import Map from '../Map'
 import MiniLegend from '../Map/MiniLegend'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
-import MessageActions from '../../actions/MessageActions'
 import ConfirmationActions from '../../actions/ConfirmationActions'
 import Progress from '../Progress'
 import OpacityChooser from '../LayerDesigner/OpacityChooser'
@@ -64,7 +64,11 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     (err) => {
       _this.setState({saving: false})
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         _this.props.onSubmit(_this.state.layer_id, _this.state.name)
       }

@@ -1,10 +1,9 @@
 // @flow
 import React from 'react'
 import { Subscribe } from 'unstated'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapToolButton from '../Map/MapToolButton'
-import MessageActions from '../../actions/MessageActions'
 import ConfirmationActions from '../../actions/ConfirmationActions'
 import Progress from '../Progress'
 import MapHubsComponent from '../MapHubsComponent'
@@ -36,7 +35,11 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
     await DataEditor.saveEdits(this.state._csrf, (err) => {
       _this.setState({saving: false})
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         message.success(t('Edits Saved'))
       }

@@ -1,8 +1,7 @@
 // @flow
 import React from 'react'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import LayerActions from '../../actions/LayerActions'
-import MessageActions from '../../actions/MessageActions'
 import CreateLayer from './CreateLayer'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
@@ -52,7 +51,11 @@ export default class Step1 extends MapHubsComponent<Props, State> {
        // delete the layer
        LayerActions.cancelLayer(this.state._csrf, (err) => {
          if (err) {
-           MessageActions.showMessage({title: t('Error'), message: err})
+           notification.error({
+             message: t('Server Error'),
+             description: err.message || err.toString() || err,
+             duration: 0
+           })
          } else {
            _this.cancelCallback()
          }

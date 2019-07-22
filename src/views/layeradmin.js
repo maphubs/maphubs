@@ -1,12 +1,11 @@
 // @flow
 import React from 'react'
 import Header from '../components/header'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import LayerSettings from '../components/CreateLayer/LayerSettings'
 import LayerAdminSettings from '../components/CreateLayer/LayerAdminSettings'
 import PresetEditor from '../components/CreateLayer/PresetEditor'
 import LayerStyle from '../components/CreateLayer/LayerStyle'
-import MessageActions from '../actions/MessageActions'
 import ConfirmationActions from '../actions/ConfirmationActions'
 import Progress from '../components/Progress'
 import request from 'superagent'
@@ -96,7 +95,11 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
     const {t} = this
     LayerActions.saveStyle(this.state, this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Server Error'), message: err})
+        notification.error({
+          message: t('Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         message.success(t('Layer Saved'))
       }
@@ -117,12 +120,20 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
       const tags = _mapvalues(presets, 'tag')
       const uniqTags = _uniq(tags)
       if (tags.length > uniqTags.length) {
-        MessageActions.showMessage({title: t('Data Error'), message: t('Duplicate tag, please choose a unique tag for each field')})
+        notification.error({
+          message: t('Data Error'),
+          description: t('Duplicate tag, please choose a unique tag for each field'),
+          duration: 0
+        })
       } else {
         // save presets
         LayerActions.submitPresets(false, this.state._csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: t('Server Error'), message: err})
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             _this.saveStyle()
           }
@@ -152,7 +163,11 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
         LayerActions.deleteLayer(_this.state._csrf, (err) => {
           _this.setState({saving: false})
           if (err) {
-            MessageActions.showMessage({title: t('Server Error'), message: err})
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             message.success(t('Layer Deleted'), 1, () => {
               window.location = '/'
@@ -173,7 +188,11 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
       .end((err, res) => {
         checkClientError(res, err, () => {}, (cb) => {
           if (err) {
-            MessageActions.showMessage({title: t('Server Error'), message: err})
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             message.success(t('Layer Updated'))
           }

@@ -5,12 +5,11 @@ import SelectGroup from '../components/Groups/SelectGroup'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
-import MessageActions from '../actions/MessageActions'
 import FileUpload from '../components/forms/FileUpload'
 import Progress from '../components/Progress'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import { Steps, Row } from 'antd'
+import { Steps, Row, notification } from 'antd'
 
 const Step = Steps.Step
 
@@ -70,14 +69,22 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
     if (result.success) {
       this.setState({layer_id: result.layer_id, processing: false})
     } else {
-      MessageActions.showMessage({title: t('Error'), message: result.error})
+      notification.error({
+        message: t('Error'),
+        description: result.error,
+        duration: 0
+      })
       this.setState({processing: false})
     }
   }
 
   onUploadError = (err: string) => {
     const {t} = this
-    MessageActions.showMessage({title: t('Error'), message: err})
+    notification.error({
+      message: t('Error'),
+      description: err,
+      duration: 0
+    })
   }
 
   onProcessingStart = () => {

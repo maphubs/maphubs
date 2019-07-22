@@ -3,8 +3,7 @@ import React from 'react'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 import ImageCrop from '../ImageCrop'
 import {Tooltip} from 'react-tippy'
-import { message } from 'antd'
-import MessageActions from '../../actions/MessageActions'
+import { message, notification } from 'antd'
 import ConfirmationActions from '../../actions/ConfirmationActions'
 import FeaturePhotoActions from '../../actions/FeaturePhotoActions'
 
@@ -24,7 +23,11 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
     // send data to server
     FeaturePhotoActions.addPhoto(data, info, _csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Server Error'), message: err})
+        notification.error({
+          message: t('Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         message.success(t('Image Saved (reloading...)'), 1, () => {
           location.reload()
@@ -42,7 +45,11 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
       onPositiveResponse () {
         FeaturePhotoActions.removePhoto(_csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: t('Server Error'), message: err})
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             message.info(t('Image Removed'))
           }

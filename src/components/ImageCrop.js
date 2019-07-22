@@ -1,9 +1,9 @@
 // @flow
 import React from 'react'
 import MapHubsComponent from './MapHubsComponent'
+import { notification } from 'antd'
 import {Modal, ModalContent} from './Modal/Modal.js'
 import Promise from 'bluebird'
-import MessageActions from '../actions/MessageActions'
 import {Tooltip} from 'react-tippy'
 import 'cropperjs/dist/cropper.css'
 import $ from 'jquery'
@@ -256,7 +256,11 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
       const err = this.checkFile(file)
       if (err) {
         debug.error(err)
-        MessageActions.showMessage({title: 'Error', message: err})
+        notification.error({
+          message: t('Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
         return
       }
 
@@ -332,13 +336,21 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
           img.onerror = () => {
             const message = t('Bad Image:') + ' ' + file.name
             debug.log(message)
-            MessageActions.showMessage({title: 'Error', message})
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           }
 
           img.src = window.URL.createObjectURL(file)
         }).catch((err) => {
           debug.error(err)
-          MessageActions.showMessage({title: 'Error', message: err})
+          notification.error({
+            message: t('Error'),
+            description: err.message || err.toString() || err,
+            duration: 0
+          })
         })
     }
   }
@@ -370,7 +382,11 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
       _this.resetImageCrop()
     }).catch((err) => {
       debug.error(err)
-      MessageActions.showMessage({title: 'Error', message: err})
+      notification.error({
+        message: 'Error',
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
     })
   }
 

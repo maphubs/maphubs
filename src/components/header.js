@@ -1,11 +1,9 @@
 // @flow
 import React from 'react'
-
+import { notification } from 'antd'
 import UserMenu from './Header/UserMenu'
 import MapHubsComponent from './MapHubsComponent'
 import UserStore from '../stores/UserStore'
-import Message from '../components/message'
-import MessageActions from '../actions/MessageActions'
 import Confirmation from '../components/confirmation'
 // var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('header');
 import LocaleChooser from './LocaleChooser'
@@ -67,9 +65,10 @@ export default class Header extends MapHubsComponent<Props, State> {
     M.Sidenav.init(this.sidenav, {})
 
     if (this.detectIE()) {
-      MessageActions.showMessage({
-        title: t('Unsupported Browser'),
-        message: t('Unable to support Internet Explorer. Please use Firefox or Chrome.')
+      notification.error({
+        message: t('Unsupported Browser'),
+        description: t('Unable to support Internet Explorer. Please use Firefox or Chrome.'),
+        duration: 0
       })
     }
   }
@@ -240,7 +239,6 @@ export default class Header extends MapHubsComponent<Props, State> {
             </ul>
           </div>
         </nav>
-        <Message />
         <Confirmation />
       </header>
     )

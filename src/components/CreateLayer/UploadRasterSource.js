@@ -4,13 +4,12 @@ import UppyFileUpload from '../forms/UppyFileUpload'
 import Map from '../Map'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
-import MessageActions from '../../actions/MessageActions'
 import Progress from '../Progress'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
 import superagent from 'superagent'
-import { Row, message } from 'antd'
+import { Row, message, notification } from 'antd'
 // import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 // const debug = DebugService('UploadLocalSource')
 import getConfig from 'next/config'
@@ -86,7 +85,11 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
             }
           }, _this.state._csrf, (err) => {
             if (err) {
-              MessageActions.showMessage({title: t('Error'), message: err})
+              notification.error({
+                message: t('Error'),
+                description: err.message || err.toString() || err,
+                duration: 0
+              })
             } else {
               // reset style to load correct source
               LayerActions.resetStyle()
@@ -101,7 +104,11 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
 
   onUploadError = (err: string) => {
     const {t} = this
-    MessageActions.showMessage({title: t('Error'), message: err})
+    notification.error({
+      message: t('Error'),
+      description: err,
+      duration: 0
+    })
   }
 
   onProcessingStart = () => {

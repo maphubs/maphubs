@@ -3,12 +3,11 @@ import React from 'react'
 import Map from '../components/Map'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
 import _shuffle from 'lodash.shuffle'
-import MessageActions from '../actions/MessageActions'
 import Progress from '../components/Progress'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -166,7 +165,11 @@ export default class Search extends MapHubsComponent<Props, State> {
     } catch (err) {
       this.setState({searching: false})
       debug.error(err)
-      MessageActions.showMessage({title: 'Error', message: err.toString()})
+      notification.error({
+        message: t('Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
     }
   }
 

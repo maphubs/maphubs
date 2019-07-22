@@ -2,7 +2,7 @@
 import React from 'react'
 import LayerSettings from './LayerSettings'
 import LayerActions from '../../actions/LayerActions'
-import MessageActions from '../../actions/MessageActions'
+import { notification } from 'antd'
 import LayerStore from '../../stores/layer-store'
 import Progress from '../Progress'
 import MapHubsComponent from '../MapHubsComponent'
@@ -57,11 +57,19 @@ export default class Step2 extends MapHubsComponent<Props, State> {
     LayerActions.loadDefaultPresets()
     LayerActions.submitPresets(true, this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         LayerActions.initEmptyLayer(_this.state._csrf, (err) => {
           if (err) {
-            MessageActions.showMessage({title: t('Error'), message: err})
+            notification.error({
+              message: t('Server Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             LayerActions.tileServiceInitialized()
             if (_this.props.onSubmit) {
@@ -81,13 +89,21 @@ export default class Step2 extends MapHubsComponent<Props, State> {
     // save presets
     LayerActions.submitPresets(false, this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
         _this.setState({saving: false})
       } else {
         LayerActions.loadData(_this.state._csrf, (err) => {
           _this.setState({saving: false})
           if (err) {
-            MessageActions.showMessage({title: t('Error'), message: err})
+            notification.error({
+              message: t('Server Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             LayerActions.tileServiceInitialized()
             if (_this.props.onSubmit) {

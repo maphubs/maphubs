@@ -1,10 +1,9 @@
 // @flow
 import React from 'react'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import Editor from 'react-medium-editor'
 import 'medium-editor/dist/css/medium-editor.css'
 import 'medium-editor/dist/css/themes/flat.css'
-import MessageActions from '../../actions/MessageActions'
 import EditButton from '../EditButton'
 import request from 'superagent'
 
@@ -67,7 +66,11 @@ export default class FeatureNotes extends React.Component<Props, State> {
       message.info(t('Notes Saved'))
     } catch (err) {
       this.setState({saving: false})
-      MessageActions.showMessage({title: t('Server Error'), message: err.message || err.toString()})
+      notification.error({
+        message: t('Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
     }
   }
 

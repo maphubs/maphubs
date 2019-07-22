@@ -1,9 +1,8 @@
 // @flow
 import React from 'react'
-import { Row, message } from 'antd'
+import { Row, message, notification } from 'antd'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
-import MessageActions from '../../actions/MessageActions'
 import MapHubsComponent from '../MapHubsComponent'
 
 import type {LocaleStoreState} from '../../stores/LocaleStore'
@@ -34,7 +33,11 @@ export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStor
 
     LayerActions.saveDataSettings(data, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         message.success(t('Layer Saved'), 1, _this.props.onSubmit)
       }

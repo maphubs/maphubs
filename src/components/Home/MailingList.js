@@ -1,10 +1,9 @@
 // @flow
 import React from 'react'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import Formsy from 'formsy-react'
 import TextInput from '../forms/textInput'
 import UserActions from '../../actions/UserActions'
-import MessageActions from '../../actions/MessageActions'
 import _isequal from 'lodash.isequal'
 import MapHubsComponent from '../MapHubsComponent'
 
@@ -61,7 +60,11 @@ export default class MailingList extends MapHubsComponent<Props, State> {
     if (this.state.valid) {
       UserActions.joinMailingList(model.email, this.state._csrf, (err) => {
         if (err) {
-          MessageActions.showMessage({title: err.title, message: err.detail})
+          notification.error({
+            message: err.title || t('Error'),
+            description: err.detail || err.toString() || err,
+            duration: 0
+          })
         } else {
           _this.setState({email: _this.state.email, placeholder: t('Thanks for signing up!')})
           message.info(t('Added ' + model.email + ' to the list. Thanks for joining!'))

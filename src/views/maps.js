@@ -2,11 +2,10 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
-import MessageActions from '../actions/MessageActions'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
@@ -69,7 +68,11 @@ export default class Maps extends MapHubsComponent<Props, State> {
       .end((err, res) => {
         checkClientError(res, err, (err) => {
           if (err) {
-            MessageActions.showMessage({title: 'Error', message: err})
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             if (res.body.maps && res.body.maps.length > 0) {
               _this.setState({searchActive: true, searchResults: res.body.maps})

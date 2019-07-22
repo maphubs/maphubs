@@ -1,11 +1,10 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import TextInput from '../forms/textInput'
 import Radio from '../forms/radio'
 import LayerActions from '../../actions/LayerActions'
-import MessageActions from '../../actions/MessageActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
@@ -93,7 +92,11 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
     }
     LayerActions.saveDataSettings(dataSettings, _this.state._csrf, (err) => {
       if (err) {
-        MessageActions.showMessage({title: t('Error'), message: err})
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
       } else {
         message.success(t('Layer Saved'), 1, () => {
           // reset style to load correct source
