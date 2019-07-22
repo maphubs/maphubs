@@ -28,6 +28,7 @@ module.exports = function (app: any) {
       }
       try {
         if (story_id && await Story.allowedToModify(story_id, req.user_id)) {
+          data.updated_by = req.user_id
           const result = await Story.updateStory(story_id, data)
           if (result && result === 1) {
             return res.send({

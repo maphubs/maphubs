@@ -1,7 +1,6 @@
 // @flow
 // var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/stories');
 const login = require('connect-ensure-login')
-const User = require('../../models/user')
 const Story = require('../../models/story')
 const Stats = require('../../models/stats')
 const Map = require('../../models/map')
@@ -11,6 +10,7 @@ const csrfProtection = require('csurf')({cookie: false})
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const pageOptions = require('../../services/page-options-helper')
 const local = require('../../local')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 
 module.exports = function (app: any) {
   // Views
@@ -39,31 +39,25 @@ module.exports = function (app: any) {
 
   app.get('/createstory', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
     try {
-      const username = req.session.user.maphubsUser.display_name
-
-      return app.next.render(req, res, '/createstory', await pageOptions(req, {
-        title: 'Create Story',
-        fontawesome: true,
-        rangy: true,
-        props: {
-          username,
-          myMaps: await Map.getUserMaps(req.session.user.maphubsUser.id),
-          popularMaps: await Map.getPopularMaps(),
-          groups: await Group.getAllGroups()
-        }
-      }))
+      const user_id = req.session.user.maphubsUser.id
+      const story_id = await Story.createStory(user_id)
+      log.info(`created new story: ${story_id}`)
+      return res.redirect(`/editstory/${story_id}/New Story`)
     } catch (err) { nextError(next)(err) }
   })
 
   app.get('/editstory/:story_id/*', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
     try {
-      const username = req.params.username
       const user_id = req.session.user.maphubsUser.id
       const story_id = parseInt(req.params.story_id || '', 10)
-
-      if (await Story.allowedToModify(story_id, user_id)) {
-        const story = await Story.getStoryById(story_id)
-
+      const story = await Story.getStoryById(story_id)
+      let firstEdit
+      console.log(story)
+      if (!story.owned_by_group_id && story.updated_by === user_id) {
+        firstEdit = true
+        log.info(`first edit for story: ${story_id}`)
+      }
+      if (firstEdit || await Story.allowedToModify(story_id, user_id)) {
         return app.next.render(req, res, '/editstory', await pageOptions(req, {
           title: 'Editing: ' + story.title,
           fontawesome: true,

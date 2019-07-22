@@ -60,26 +60,33 @@ export default class StoryCKEditor extends React.Component<Props, void> {
     return (
       <AutoSizer disableWidth>
         {({ height }) => (
-          <div style={{height}}>
+          <div>
+            <style jsx global>{`
+              .ck.ck-editor__main>.ck-editor__editable {
+                height: ${height - 40}px;
+                overflow-y: scroll;
+              }
+            `}</style>
             <CKEditor
               editor={MapHubsEditor}
               config={editorConfiguration}
-              data={this.props.initialData}
+              data={initialData}
               onInit={editor => {
                 this.editorInstance = editor
                 console.log('Init.', editor)
               }}
               onChange={(event, editor) => {
                 const data = editor.getData()
+                // console.log(data)
                 if (this.props.onChange) this.props.onChange(data)
               }}
               onBlur={editor => {
-                console.log('Blur.', editor)
+                // console.log('Blur.', editor)
               }}
               onFocus={editor => {
-                console.log('Focus.', editor)
+                // console.log('Focus.', editor)
               }}
-            /> 
+            />
           </div>
         )}
       </AutoSizer>

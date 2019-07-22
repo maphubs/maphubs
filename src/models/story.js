@@ -13,6 +13,7 @@ module.exports = {
       'omh.stories.firstline', 'omh.stories.firstimage',
       'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
       knex.raw(`timezone('UTC', omh.stories.updated_at) as updated_at`),
+      'omh.stories.updated_by',
       'omh.stories.owned_by_group_id',
       'omh.groups.name as groupname'
     )
@@ -113,7 +114,8 @@ module.exports = {
       firstline: string,
       firstimage: any,
       published: boolean,
-      publishDate: string
+      publishDate: string,
+      updated_by: number
       }) {
     return knex('omh.stories')
       .where({story_id})
@@ -125,7 +127,8 @@ module.exports = {
         firstimage: data.firstimage,
         published: data.published,
         publishDate: data.publishDate,
-        updated_at: knex.raw('now()')
+        updated_at: knex.raw('now()'),
+        updated_by: data.updated_by
       })
   },
 
@@ -136,9 +139,9 @@ module.exports = {
     return trx('omh.stories').where({story_id}).del()
   },
 
-  async createStory (owned_by_group_id: string, user_id: number) {
+  async createStory (user_id: number) {
+    if (!user_id) throw new Error('User ID required')
     let story_id = await knex('omh.stories').insert({
-      owned_by_group_id,
       published: false,
       created_at: knex.raw('now()'),
       updated_at: knex.raw('now()'),

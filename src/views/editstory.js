@@ -55,20 +55,18 @@ export default class EditStory extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const { headerConfig, myMaps, popularMaps, groups } = this.props
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
-        <main>
+        <Header {...headerConfig} />
+        <main style={{height: 'calc(100% - 50px)'}}>
           <Provider inject={[this.StoryContainer]} >
             <StoryEditor
-              story={this.props.story}
-              myMaps={this.props.myMaps}
-              popularMaps={this.props.popularMaps}
-              username={this.props.username}
-              groups={this.props.groups}
+              myMaps={myMaps}
+              popularMaps={popularMaps}
+              groups={groups}
               t={this.t}
               locale={this.state.locale}
-              _csrf={this.props._csrf}
             />
           </Provider>
         </main>

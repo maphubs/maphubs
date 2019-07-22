@@ -4,7 +4,7 @@ import Formsy from 'formsy-react'
 import slugify from 'slugify'
 import dynamic from 'next/dynamic'
 import { Row, Col, message, notification, Button, Popconfirm, Switch, DatePicker } from 'antd'
-import AddMapModal from './AddMapModal'
+import AddMapDrawer from './AddMapDrawer'
 import ImageCrop from '../ImageCrop'
 import LocalizedInput from '../forms/ant/LocalizedInput'
 import moment from 'moment'
@@ -32,15 +32,19 @@ type Props = {|
 
 type State = {
   showAddMap: boolean,
-  getMapCallback?: Function,
+  getMapCallback: Function,
   showImageCrop: boolean,
-  imageData?: any
+  imageData: any,
+  imageCropCallback: Function,
 }
 
 class StoryEditor extends React.Component<Props, State> {
   state = {
     showAddMap: false,
-    showImageCrop: false
+    showImageCrop: false,
+    getMapCallback: () => {},
+    imageCropCallback: () => {},
+    imageData: ''
   }
 
   componentDidMount () {
@@ -132,23 +136,35 @@ delete = async () => {
     this.setState({showAddMap: true})
   }
 
+  onAddMap = (map) => {
+    // get the URL for the map
+    const url = `${urlUtil.getBaseUrl()}/map/view/${map.map_id}/`
+    this.setState({showAddMap: false})
+    this.state.getMapCallback(url)
+  }
+
   showImageCrop = (data: any) => {
     // this.refs.imagecrop.show()
     this.setState({showImageCrop: true, imageData: data})
   }
 
+  onMapCancel = () => {
+    this.setState({showAddMap: false})
+  }
+
   render () {
-    const { save } = this
-    const { t, containers } = this.props
-    const { showAddMap, showImageCrop } = this.state
+    const { save, onAddMap, onMapCancel } = this
+    const { t, containers, myMaps, popularMaps } = this.props
+    const { showAddMap, showImageCrop, imageData, imageCropCallback } = this.state
     const { story } = containers
     const { story_id, title, author, body, published, publishedDate, owned_by_group_id, modified } = story.state
 
     return (
-      <Row>
-        <Col span={18} style={{height: '400px'}}>
+      <Row style={{height: '100%'}}>
+        <Col span={18} style={{height: '100%'}}>
           <ErrorBoundary>
             <StoryCKEditor initialData={body} onChange={story.bodyChange} getMap={(cb) => {
+              message.info(t('Selecting a Map'))
               this.setState({showAddMap: true, getMapCallback: cb})
             }} />
           </ErrorBoundary>
@@ -192,7 +208,7 @@ delete = async () => {
             </Row>
           </ErrorBoundary>
           <ErrorBoundary>
-            <Row>
+            <Row style={{marginBottom: '10px'}}>
               <Formsy>
                 <SelectGroup
                   groups={this.props.groups}
@@ -204,7 +220,7 @@ delete = async () => {
                   canChangeGroup={this.props.create || false} />
               </Formsy>
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <Tags onChange={story.tagsChange} />
             </Row>
           </ErrorBoundary>
@@ -235,10 +251,15 @@ delete = async () => {
             }
           </Row>
         </Col>
-        <AddMapModal ref='addmap'
-          onAdd={this.onAddMap} onClose={this.onMapCancel}
-          myMaps={this.props.myMaps} popularMaps={this.props.popularMaps} />
-        <ImageCrop ref='imagecrop' onCrop={this.onAddImage} resize_max_width={1200} />
+        <AddMapDrawer visible={showAddMap}
+          onAdd={onAddMap} onClose={onMapCancel}
+          myMaps={myMaps} popularMaps={popularMaps} t={t} />
+        <ImageCrop
+          visible={showImageCrop}
+          imageData={imageData}
+          onCrop={imageCropCallback}
+          resize_max_width={1200}
+        />
       </Row>
     )
   }

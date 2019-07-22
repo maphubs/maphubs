@@ -1,7 +1,6 @@
 // @flow
 import { Container } from 'unstated'
-const request = require('superagent')
-const checkClientError = require('../../services/client-error-response').checkClientError
+import request from 'superagent'
 
 export type Story ={
   title?: string,
@@ -30,11 +29,11 @@ export default class StoryContainer extends Container<StoryContainerState> {
     }
     this.state = Object.assign(defaultState, initialState)
   }
-  bodyChange (body: string) {
+  bodyChange = (body: string) => {
     this.setState({body, modified: true})
   }
 
-  titleChange (title: string) {
+  titleChange = (title: string) => {
     this.setState({title, modified: true})
   }
 
@@ -46,19 +45,19 @@ export default class StoryContainer extends Container<StoryContainerState> {
     this.setState({published, modified: true})
   }
 
-  authorChange (author: string) {
+  authorChange = (author: string) => {
     this.setState({author, modified: true})
   }
 
-  groupChange (owned_by_group_id: string) {
+  groupChange = (owned_by_group_id: string) => {
     this.setState({owned_by_group_id, modified: true})
   }
 
-  tagsChange (tags: Array<string>) {
+  tagsChange = (tags: Array<string>) => {
     this.setState({tags, modified: true})
   }
 
-  async save (firstline: string, firstimage: any) {
+  save = async (firstline: string, firstimage: any) => {
     const { body, title, author, published, publishDate, tags, _csrf } = this.state
 
     const response = await request.post('/api/story/save')
@@ -80,23 +79,21 @@ export default class StoryContainer extends Container<StoryContainerState> {
     }
   }
 
-  addImage (data: string, info: Object, _csrf: string, cb: Function) {
-    request.post('/api/story/addimage')
+  addImage = async (data: string, info: Object) => {
+    const { story_id, _csrf } = this.state
+    return request.post('/api/story/addimage')
       .type('json').accept('json')
-      .send({story_id: this.state.story_id, image: data, info, _csrf})
-      .end((err, res) => {
-        checkClientError(res, err, cb, (cb) => {
-          cb(null, res)
-        })
+      .send({
+        story_id,
+        image: data,
+        info,
+        _csrf
       })
   }
 
-  delete (_csrf: string, cb: Function) {
-    request.post('/api/story/delete')
+  delete = async () => {
+    return request.post('/api/story/delete')
       .type('json').accept('json')
-      .send({story_id: this.state.story_id, _csrf})
-      .end((err, res) => {
-        checkClientError(res, err, cb, (cb) => { cb() })
-      })
+      .send({story_id: this.state.story_id, _csrf: this.state._csrf})
   }
 }
