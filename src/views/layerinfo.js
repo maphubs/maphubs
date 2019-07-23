@@ -10,8 +10,6 @@ import GroupTag from '../components/Groups/GroupTag'
 import Licenses from '../components/CreateLayer/licenses'
 import LayerNotes from '../components/CreateLayer/LayerNotes'
 import EditButton from '../components/EditButton'
-import LayerNotesActions from '../actions/LayerNotesActions'
-import LayerNotesStore from '../stores/LayerNotesStore'
 import LayerDataGrid from '../components/DataGrid/LayerDataGrid'
 import LayerDataEditorGrid from '../components/DataGrid/LayerDataEditorGrid'
 import MapStyles from '../components/Map/Styles'
@@ -82,7 +80,6 @@ type DefaultProps = {
 }
 
 type State = {
-  editingNotes: boolean,
   editingData: boolean,
   gridHeight: number,
   gridHeightOffset: number,
@@ -111,7 +108,6 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   state: State = {
-    editingNotes: false,
     editingData: false,
     gridHeight: 100,
     gridHeightOffset: 48,
@@ -121,12 +117,10 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
 
   constructor (props: Props) {
     super(props)
-    this.stores.push(LayerNotesStore)
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-    Reflux.rehydrate(LayerNotesStore, {notes: props.notes})
     let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
       baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
@@ -143,7 +137,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     this.clipboard = require('clipboard-polyfill').default
 
     const {layer} = this.props
-    const {editingNotes, editingData} = this.state
+    const {editingData} = this.state
     const elc = layer.external_layer_config
     try {
       if (layer.is_external) {
@@ -174,7 +168,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     }
 
     window.addEventListener('beforeunload', (e) => {
-      if (editingNotes || editingData) {
+      if (editingData) {
         const msg = t('You have not saved your edits, your changes will be lost.')
         e.returnValue = msg
         return msg
@@ -234,27 +228,6 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     window.location = `${baseUrl}/map/new?editlayer=${this.props.layer.layer_id}${window.location.hash}`
   }
 
-  startEditingNotes = () => {
-    this.setState({editingNotes: true})
-  }
-
-  stopEditingNotes = () => {
-    const {t, setState} = this
-    const {layer} = this.props
-    LayerNotesActions.saveNotes(layer.layer_id, this.state._csrf, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-      } else {
-        message.success(t('Notes Saved'))
-        setState({editingNotes: false})
-      }
-    })
-  }
-
   startEditingData = () => {
     this.setState({editingData: true})
   }
@@ -286,7 +259,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   render () {
     const {startEditingData, stopEditingData, openEditor, t} = this
     const {layer, canEdit} = this.props
-    const {editingNotes, editingData} = this.state
+    const { editingData } = this.state
     const glStyle = layer.style
 
     let editButton = ''
@@ -430,7 +403,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                         <div style={{width: '100%'}}>
                           <h5 className='word-wrap' style={{marginTop: 0}}>{t(layer.name)}</h5>
                           <GroupTag group={layer.owned_by_group_id} size={25} fontSize={12} />
-                          <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{t('Data Source:')}</b> {this.t(layer.source)}</p>
+                          <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{t('Data Source:')}</b> {t(layer.source)}</p>
                           <p style={{fontSize: '16px'}}><b>{t('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
                           <ExternalLink layer={layer} t={t} />
                         </div>
@@ -470,12 +443,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                     <Stats views={layer.views} stats={this.props.stats} t={t} />
                   </TabPane>
                   <TabPane tab={t('Notes')} key='notes' >
-                    <LayerNotes editing={this.state.editingNotes} />
-                    {canEdit &&
-                      <EditButton editing={editingNotes}
-                        style={{position: 'absolute'}}
-                        startEditing={this.startEditingNotes} stopEditing={this.stopEditingNotes} />
-                    }
+                    <LayerNotes canEdit={canEdit} notes={this.props.notes} layer_id={layer.layer_id} t={t} _csrf={this.state._csrf} />
                   </TabPane>
                   {MAPHUBS_CONFIG.enableComments &&
                     <TabPane tab={t('Discuss')} key='discuss' >
@@ -545,7 +513,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                   mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
                   DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
                   earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
-                  t={this.t}
+                  t={t}
                   locale={this.props.locale}
                 />
               </Col>
