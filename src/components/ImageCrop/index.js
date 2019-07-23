@@ -1,17 +1,17 @@
 // @flow
 import React from 'react'
-import MapHubsComponent from './MapHubsComponent'
-import { notification } from 'antd'
-import {Modal, ModalContent} from './Modal/Modal.js'
+import MapHubsComponent from '../MapHubsComponent'
+import { Row, Tooltip, Modal, Button, notification } from 'antd'
 import Promise from 'bluebird'
-import {Tooltip} from 'react-tippy'
 import 'cropperjs/dist/cropper.css'
 import $ from 'jquery'
-// import Cropper from 'react-cropper';
+import ImageCropToolbar from './ImageCropToolbar'
 
 import EXIF from 'exif-js'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('ImageCrop')
+
+let Cropper
 
 type Props = {
   onCrop: Function,
@@ -25,7 +25,9 @@ type Props = {
   resize_height?: number,
   resize_max_height?: number,
   resize_width?: number,
-  resize_max_width?: number
+  resize_max_width?: number,
+  visible?: boolean,
+  imageData?: any
 }
 
 type File = {
@@ -36,7 +38,7 @@ type File = {
 type State = {
   img: ?Object,
   file: ?File,
-  show: boolean,
+  visible: boolean,
   preview: ?Object,
   loading: boolean,
   autoCropArea: number,
@@ -66,7 +68,7 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
   state: State = {
     img: null,
     file: {size: 0, type: ''},
-    show: false,
+    visible: false,
     preview: null,
     loading: false,
     autoCropArea: 1,
@@ -83,10 +85,13 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
     if (props.aspectRatio) {
       this.state.aspectRatio = props.aspectRatio
     }
+    if (props.imageData) {
+      this.state.src = props.imageData
+    }
   }
 
   componentDidMount () {
-    M.FloatingActionButton.init(this.refs.saveButton, {})
+    Cropper = require('react-cropper').default
   }
 
   componentWillReceiveProps (nextProps: Props) {
@@ -99,11 +104,17 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
       debug.log('update autoCropArea to: ' + nextProps.autoCropArea)
       updateProps.autoCropArea = nextProps.autoCropArea
     }
+    if (nextProps.visible !== this.state.visible) {
+      updateProps.visible = nextProps.visible
+    }
+    if (nextProps.imageData && !this.state.src) {
+      this.state.src = nextProps.imageData
+    }
     this.setState(updateProps)
   }
 
   show = () => {
-    this.setState({show: true})
+    this.setState({visible: true})
   }
 
   checkFile = (file: Object) => {
@@ -141,7 +152,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
       resolve()
     })
   } else {
-    pica = require('../../node_modules/pica/dist/pica.min.js')()
+    pica = require('../../../node_modules/pica/dist/pica.min.js')()
   }
 
   const _this = this
@@ -371,7 +382,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
 
     // resize the image
     this.resizeImage(canvas).then((dataURL) => {
-      _this.setState({show: false})
+      _this.setState({visible: false})
 
       const info = {
         width: _this.state.cropWidth,
@@ -392,7 +403,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
 
   handleCloseSelected = () => {
     this.resetImageCrop()
-    this.setState({show: false})
+    this.setState({visible: false})
   }
 
   zoomIn = () => {
@@ -403,10 +414,10 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
     this.refs.cropper.zoom(-0.1)
   }
 
-   cropOriginal = () => {
-     this.resetCropPosition()
-     this.setState({autoCropArea: 1, aspectRatio: NaN})
-   }
+  cropOriginal = () => {
+    this.resetCropPosition()
+    this.setState({autoCropArea: 1, aspectRatio: NaN})
+  }
 
   aspect16by9 = () => {
     this.setState({aspectRatio: 16 / 9})
@@ -436,7 +447,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
       src: null,
       selectedFile: null,
       file: null,
-      show: false,
+      visible: false,
       preview: null,
       autoCropArea: this.props.autoCropArea,
       aspectRatio: this.props.aspectRatio
@@ -444,82 +455,37 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
   }
 
   render () {
-    const {t} = this
-    let cropper = ''
-    if (this.state.src) {
-      if (typeof window !== 'undefined') {
-        const Cropper = require('react-cropper').default
-        cropper = (
-          <Cropper
-            style={{height: 'calc(100% - 10px)', paddingBottom: '10px', width: '100%'}}
-            autoCropArea={this.state.autoCropArea}
-            aspectRatio={this.state.aspectRatio}
-            guides={false}
-            src={this.state.src}
-            ref='cropper'
-            crop={this._crop} />
-        )
-      }
-    } else {
-      cropper = (
-        <div className='valign-wrapper' style={{height: '75%'}}>
-          <h5 className='center-align valign' style={{margin: 'auto'}}>{t('Choose an image file')}</h5>
-        </div>
-      )
-    }
-
-    let toolButtons = ''
-    let saveButton = ''
-    let cropOriginalBtn = ''
-    let crop16by9Btn = ''
-    let crop3by2Btn = ''
-    let cropSquareBtn = ''
-    if (this.state.src) {
-      if (!this.props.lockAspect) {
-        cropOriginalBtn = (
-          <a className='btn-floating btn waves-effect waves-light' onClick={this.cropOriginal}><i className='material-icons'>crop_original</i></a>
-        )
-        crop16by9Btn = (
-          <a className='btn-floating btn waves-effect waves-light' onClick={this.aspect16by9}><i className='material-icons'>crop_16_9</i></a>
-        )
-        crop3by2Btn = (
-          <a className='btn-floating btn waves-effect waves-light' onClick={this.aspect3by2}><i className='material-icons'>crop_3_2</i></a>
-        )
-        cropSquareBtn = (
-          <a className='btn-floating btn waves-effect waves-light' onClick={this.aspectSquare}><i className='material-icons'>crop_square</i></a>
-        )
-      }
-
-      toolButtons = (
-        <div className='col s12'>
-          <a className='btn-floating btn waves-effect waves-light' onClick={this.zoomIn}><i className='material-icons'>zoom_in</i></a>
-          <a className='btn-floating btn waves-effect waves-light' onClick={this.zoomOut}><i className='material-icons'>zoom_out</i></a>
-          {cropOriginalBtn}{crop16by9Btn}{crop3by2Btn}{cropSquareBtn}
-          <a className='btn-floating btn waves-effect waves-light' onClick={this.resetCropPosition}><i className='material-icons'>restore</i></a>
-        </div>
-      )
-
-      saveButton = (
-        <div ref='saveButton' className='fixed-action-btn action-button-bottom-right'>
-          <Tooltip
-            title={t('Save')}
-            position='top' inertia followCursor>
-            <a onMouseDown={this.onSave} className='btn-floating btn-large omh-color'>
-              <i className='large material-icons'>save</i>
-            </a>
-          </Tooltip>
-        </div>
-      )
-    }
+    const { t, _crop } = this
+    const { lockAspect } = this.props
+    const { autoCropArea, aspectRatio, src } = this.state
 
     return (
-      <Modal show={this.state.show} id='image-crop-modal' className='image-crop-modal' dismissible={false} fixedFooter={false}>
-        <ModalContent style={{padding: 0, margin: 0, height: '100%', overflow: 'hidden'}}>
-          <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.handleCloseSelected}>
-            <i className='material-icons selected-feature-close' style={{fontSize: '35px'}}>close</i>
-          </a>
-          <div className='row no-padding' style={{height: '80px', marginRight: '35px', marginLeft: '0px', marginBottom: '0px'}}>
-            <div className='col s12'>
+      <div>
+        <style jsx global> {`
+          .ant-modal-content {
+            height: 100%;
+          }
+        `}</style>
+        <Modal
+          title={t('Select Image')}
+          visible={this.state.visible}
+          onOk={this.onSave}
+          centered
+          bodyStyle={{height: 'calc(100% - 110px)'}}
+          width='80vw'
+          height='90vh'
+          footer={[
+            <Button key='back' onClick={this.handleCancel}>
+              Cancel
+            </Button>,
+            <Button key='submit' type='primary' disabled={!src} onClick={this.handleOk}>
+              Save
+            </Button>
+          ]}
+          onCancel={this.handleCloseSelected}
+        >
+          {!src &&
+            <Row style={{height: '80px', marginRight: '35px', marginLeft: '0px', marginBottom: '0px'}}>
               <div className='file-field input-field'>
                 <div className='btn'>
                   <span>{t('Choose File')}</span>
@@ -529,22 +495,42 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
                   <input className='file-path validate' type='text' value={this.state.selectedFile} />
                 </div>
               </div>
-
-            </div>
-          </div>
-          <div className='row no-margin no-padding' style={{height: '50px'}}>
-            {toolButtons}
-          </div>
-          <div className='row' style={{height: 'calc(100% - 130px)'}}>
-            <div className='col s12' style={{height: '100%'}}>
-              {cropper}
-            </div>
-            <br style={{clear: 'both'}} />
-            {saveButton}
-          </div>
-        </ModalContent>
-      </Modal>
+            </Row>
+          }
+          {src &&
+            <ImageCropToolbar
+              lockAspect={lockAspect}
+              zoomIn={this.zoomIn}
+              zoomOut={this.zoomOut}
+              cropOriginal={this.cropOriginal}
+              aspect16by9={this.aspect16by9}
+              aspect3by2={this.aspect3by2}
+              aspectSquare={this.aspectSquare}
+              resetCropPosition={this.resetCropPosition}
+              t={t}
+            />
+          }
+          <Row style={{height: 'calc(100% - 50px)'}}>
+            {src &&
+              <Cropper
+                style={{height: 'calc(100% - 10px)', paddingBottom: '10px', width: '100%'}}
+                autoCropArea={autoCropArea}
+                aspectRatio={aspectRatio}
+                guides={false}
+                minContainerWidth='100%'
+                minContainerHeight='200'
+                src={src}
+                ref='cropper'
+                crop={_crop} />
+            }
+            {!src &&
+              <div className='valign-wrapper' style={{height: '75%'}}>
+                <h5 className='center-align valign' style={{margin: 'auto'}}>{t('Choose an image file')}</h5>
+              </div>
+            }
+          </Row>
+        </Modal>
+      </div>
     )
   }
-// <Progress id="imagecrop-loading" title={t('Loading')} subTitle="" dismissible={false} show={this.state.loading}/>
 }

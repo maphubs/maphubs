@@ -143,9 +143,18 @@ delete = async () => {
     this.state.getMapCallback(url)
   }
 
-  showImageCrop = (data: any) => {
+  onSelectImage = (data: any, cb: Function) => {
     // this.refs.imagecrop.show()
-    this.setState({showImageCrop: true, imageData: data})
+    message.info(this.props.t('Cropping Image'))
+    this.setState({showImageCrop: true, imageCropCallback: cb, imageData: data})
+  }
+
+  onCrop = (dataURL: string, info: Object) => {
+    message.info(this.props.t('Saving Image Crop'))
+    console.log(dataURL)
+    console.log(info)
+    this.setState({showImageCrop: false, imageData: null})
+    this.state.imageCropCallback(dataURL)
   }
 
   onMapCancel = () => {
@@ -153,9 +162,9 @@ delete = async () => {
   }
 
   render () {
-    const { save, onAddMap, onMapCancel } = this
+    const { save, onAddMap, onMapCancel, onSelectImage, onCrop } = this
     const { t, containers, myMaps, popularMaps } = this.props
-    const { showAddMap, showImageCrop, imageData, imageCropCallback } = this.state
+    const { showAddMap, showImageCrop, imageData } = this.state
     const { story } = containers
     const { story_id, title, author, body, published, publishedDate, owned_by_group_id, modified } = story.state
 
@@ -163,10 +172,14 @@ delete = async () => {
       <Row style={{height: '100%'}}>
         <Col span={18} style={{height: '100%'}}>
           <ErrorBoundary>
-            <StoryCKEditor initialData={body} onChange={story.bodyChange} getMap={(cb) => {
-              message.info(t('Selecting a Map'))
-              this.setState({showAddMap: true, getMapCallback: cb})
-            }} />
+            <StoryCKEditor
+              initialData={body}
+              onChange={story.bodyChange}
+              cropImage={onSelectImage}
+              getMap={(cb) => {
+                message.info(t('Selecting a Map'))
+                this.setState({showAddMap: true, getMapCallback: cb})
+              }} />
           </ErrorBoundary>
         </Col>
         <Col span={6} style={{padding: '10px'}}>
@@ -257,7 +270,7 @@ delete = async () => {
         <ImageCrop
           visible={showImageCrop}
           imageData={imageData}
-          onCrop={imageCropCallback}
+          onCrop={onCrop}
           resize_max_width={1200}
         />
       </Row>
