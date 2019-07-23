@@ -143,10 +143,12 @@ delete = async () => {
     this.state.getMapCallback(url)
   }
 
-  onSelectImage = (data: any, cb: Function) => {
+  onSelectImage = (data: any) => {
     // this.refs.imagecrop.show()
-    message.info(this.props.t('Cropping Image'))
-    this.setState({showImageCrop: true, imageCropCallback: cb, imageData: data})
+    return new Promise((resolve, reject) => {
+      message.info(this.props.t('Cropping Image'))
+      this.setState({showImageCrop: true, imageCropCallback: resolve, imageData: data})
+    })
   }
 
   onCrop = (dataURL: string, info: Object) => {
@@ -253,7 +255,7 @@ delete = async () => {
                   okText='Yes' cancelText='No'
                   onConfirm={this.delete}
                 >
-                  <Button type='primary' color='red' icon='delete'>{t('Delete')}</Button>
+                  <Button type='danger' icon='delete'>{t('Delete')}</Button>
                 </Popconfirm>
               </Col>
             }

@@ -478,7 +478,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
             <Button key='back' onClick={this.handleCancel}>
               Cancel
             </Button>,
-            <Button key='submit' type='primary' disabled={!src} onClick={this.handleOk}>
+            <Button key='submit' type='primary' disabled={!src} onClick={this.onSave}>
               Save
             </Button>
           ]}
