@@ -12,7 +12,7 @@ let babelConfig = {
     '@babel/plugin-proposal-export-default-from',
     '@babel/plugin-transform-runtime'
   ],
-  ignore: [/assets.*|node_modules\/(?!(medium-editor|mapbox-gl|@bit\/kriscarle.maphubs-utils.maphubs-utils.importers)).*/]
+  ignore: [/assets.*|node_modules\/(?!(mapbox-gl|@bit\/kriscarle.maphubs-utils.maphubs-utils.importers)).*/]
 }
 
 require('@babel/register')(babelConfig)

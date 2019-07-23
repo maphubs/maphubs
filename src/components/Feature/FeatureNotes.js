@@ -1,11 +1,12 @@
 // @flow
 import React from 'react'
-import { message, notification } from 'antd'
-import Editor from 'react-medium-editor'
-import 'medium-editor/dist/css/medium-editor.css'
-import 'medium-editor/dist/css/themes/flat.css'
-import EditButton from '../EditButton'
+import dynamic from 'next/dynamic'
+import { Row, Button, message, notification } from 'antd'
 import request from 'superagent'
+
+const NoteCKEditor = dynamic(() => import('../forms/NoteCKEditor.js'), {
+  ssr: false
+})
 
 type Props = {|
   notes: string,
@@ -17,32 +18,25 @@ type Props = {|
 |}
 
 type State = {
-  editingNotes: boolean,
+  editing: boolean,
   notes: string,
-  unsavedChanges?: boolean,
-  saving?: boolean
+  unsavedChanges?: boolean
 }
 
 export default class FeatureNotes extends React.Component<Props, State> {
-  static defaultProps = {
-    canEdit: false
-  }
-
   constructor (props: Props) {
     super(props)
     this.state = {
       notes: props.notes || '',
-      editingNotes: false
+      editing: false
     }
   }
 
-  editButton: any
-
   componentDidMount () {
     const {t} = this.props
-    const {editingNotes} = this.state
+    const {editing} = this.state
     window.addEventListener('beforeunload', (e) => {
-      if (editingNotes) {
+      if (editing) {
         const msg = t('You have not saved your edits, your changes will be lost.')
         e.returnValue = msg
         return msg
@@ -52,7 +46,7 @@ export default class FeatureNotes extends React.Component<Props, State> {
 
   saveNotes = async () => {
     const { mhid, layer_id, _csrf, t } = this.props
-    this.setState({saving: true})
+    const closeSavingMessage = message.loading(t('Saving'), 0)
     try {
       await request.post('/api/feature/notes/save')
         .type('json').accept('json')
@@ -62,10 +56,11 @@ export default class FeatureNotes extends React.Component<Props, State> {
           notes: this.state.notes,
           _csrf
         })
-      this.setState({saving: false, editingNotes: false})
+      closeSavingMessage()
+      this.setState({editing: false})
       message.info(t('Notes Saved'))
     } catch (err) {
-      this.setState({saving: false})
+      closeSavingMessage()
       notification.error({
         message: t('Error'),
         description: err.message || err.toString() || err,
@@ -79,54 +74,35 @@ export default class FeatureNotes extends React.Component<Props, State> {
   }
 
   startEditingNotes = () => {
-    this.setState({editingNotes: true})
+    this.setState({editing: true})
   }
 
   render () {
     const {setNotes, startEditingNotes, saveNotes} = this
     const {canEdit, t} = this.props
-    const {editingNotes, notes} = this.state
-    let resources = ''
-    if (editingNotes) {
-      resources = (
-        <Editor
-          className='feature-notes'
-          text={notes}
-          style={{height: '100%'}}
-          onChange={setNotes}
-          options={{
-            buttonLabels: 'fontawesome',
-            delay: 100,
-            placeholder: {text: t('Enter text, links to webpages, links to documents (from Dropbox, Google Docs, etc.)')},
-            toobar: {
-              buttons: ['bold', 'italic', 'underline', 'anchor', 'h5', 'quote', 'orderedlist', 'unorderedlist', 'pre', 'removeFormat']
-            },
-            paste: {
-              forcePlainText: false,
-              cleanPastedHTML: true
-            },
-            autoLink: true,
-            imageDragging: false
-          }}
-        />
-      )
-    } else {
-      /* eslint-disable react/no-danger */
-      resources = (
-        <div className='feature-notes-content col s12 no-padding' dangerouslySetInnerHTML={{__html: notes || ''}} />
-      )
-      /* eslint-enable react/no-danger */
-    }
+    const {editing, notes} = this.state
 
     return (
-      <div className='row' style={{marginLeft: '0px', padding: '20px', height: '100%'}}>
-        {resources}
-        {canEdit &&
-          <EditButton editing={editingNotes}
-            style={{position: 'absolute'}}
-            startEditing={startEditingNotes} stopEditing={saveNotes} />
-        }
-      </div>
+      <>
+        <Row style={{marginLeft: '0px', height: 'calc(100% - 50px)'}}>
+          {editing &&
+            <Row style={{height: '100%', overflow: 'auto'}}>
+              <NoteCKEditor initialData={notes} onChange={setNotes} />
+            </Row>
+          }
+          {!editing &&
+            <div className='notes-content' style={{height: '100%', overflow: 'auto', padding: '20px'}} dangerouslySetInnerHTML={{__html: notes}} />
+          }
+        </Row>
+        <Row style={{textAlign: 'right', marginRight: '20px', marginTop: '10px'}}>
+          {editing &&
+            <Button type='primary' onClick={saveNotes}>{t('Save')}</Button>
+          }
+          {(!editing && canEdit) &&
+            <Button type='primary' onClick={startEditingNotes}>{t('Edit')}</Button>
+          }
+        </Row>
+      </>
     )
   }
 }

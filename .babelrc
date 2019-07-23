@@ -30,6 +30,6 @@
     "@babel/plugin-transform-runtime"
   ],
   "ignore": [
-    "/assets.*|node_modules/(?!(medium-editor|mapbox-gl|@google/earthengine|@bit/kriscarle.maphubs-utils.maphubs-utils.importers)).*/"
+    "/assets.*|node_modules/(?!(mapbox-gl|@google/earthengine|@bit/kriscarle.maphubs-utils.maphubs-utils.importers)).*/"
   ]
 }
