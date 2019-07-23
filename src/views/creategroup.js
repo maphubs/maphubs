@@ -1,14 +1,16 @@
 // @flow
 import React from 'react'
+import { Steps } from 'antd'
 import Header from '../components/header'
 import Step1 from '../components/CreateGroup/Step1'
 import Step2 from '../components/CreateGroup/Step2'
-import classNames from 'classnames'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+
+const Step = Steps.Step
 
 type Props = {
   locale: string,
@@ -58,37 +60,20 @@ export default class CreateGroup extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
-    const stepText = t('Step') + ' ' + this.state.step
-    let progressWidth = '25%'
-    let step1 = false
-    let step2 = false
-    switch (this.state.step) {
-      case 1:
-        progressWidth = '50%'
-        step1 = true
-        break
-      case 2:
-        progressWidth = '100%'
-        step2 = true
-        break
-      default:
-        break
-    }
+    const { step } = this.state
 
     return (
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <div className='container'>
           <h4>{t('Create Group')}</h4>
-          <div className='row center'>
-            <b>{stepText}</b>
-
-            <div className='progress'>
-              <div className='determinate' style={{width: progressWidth}} />
-            </div>
-          </div>
-          <Step1 active={step1} onSubmit={this.nextStep} />
-          <Step2 active={step2} showPrev onPrev={this.prevStep} onSubmit={this.onComplete} />
+          <Steps size='small' current={step - 1}>
+            <Step title={t('Group Info')} />
+            <Step title={t('Group Logo')} />
+            <Step title={t('Complete')} />
+          </Steps>
+          <Step1 active={step === 1} onSubmit={this.nextStep} />
+          <Step2 active={step === 2} showPrev onPrev={this.prevStep} onSubmit={this.onComplete} />
         </div>
       </ErrorBoundary>
     )

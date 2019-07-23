@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import slugify from 'slugify'
+import { Steps, Row } from 'antd'
 import Header from '../components/header'
 import Step1 from '../components/CreateLayer/Step1'
 import Step2 from '../components/CreateLayer/Step2'
@@ -22,8 +23,9 @@ import UserStore from '../stores/UserStore'
 import $ from 'jquery'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
-const classNames = require('classnames')
 const debug = debugFactory('CreateLayer')
+
+const Step = Steps.Step
 
 type Props = {
   groups: Array<Group>,
@@ -124,10 +126,12 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
-    if (!this.props.groups || this.props.groups.length === 0) {
+    const { headerConfig, groups, mapConfig } = this.props
+    const { step } = this.state
+    if (!groups || groups.length === 0) {
       return (
         <div>
-          <Header {...this.props.headerConfig} />
+          <Header {...headerConfig} />
           <main>
             <div className='container'>
               <div className='row'>
@@ -140,49 +144,29 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
       )
     }
 
-    const stepText = t('Step') + ' ' + this.state.step
-    let progressWidth = '0%'
-
-    const progressClassName = classNames('determinate')
-    let step1 = ''
-    if (this.state.step === 1) {
-      progressWidth = '25%'
-      step1 = (
-        <Step1 onSubmit={this.nextStep} mapConfig={this.props.mapConfig} />
-      )
-    }
-    let step2 = ''
-    if (this.state.step === 2) {
-      progressWidth = '50%'
-      step2 = (
-        <Step2 groups={this.props.groups} showPrev onPrev={this.prevStep} onSubmit={this.nextStep} />
-      )
-    }
-    let step3 = ''
-    if (this.state.step === 3) {
-      progressWidth = '75%'
-      step3 = (
-        <Step5 onPrev={this.prevStep} onSubmit={this.submit} mapConfig={this.props.mapConfig} />
-      )
-    }
-
     return (
       <ErrorBoundary>
         <Provider inject={[this.BaseMapState, this.MapState]}>
-          <Header {...this.props.headerConfig} />
+          <Header {...headerConfig} />
           <main>
             <div style={{marginLeft: '10px', marginRight: '10px', marginTop: '10px'}}>
-              <div className='row center no-margin'>
-
-                <b>{stepText}</b>
-
-                <div className='progress'>
-                  <div className='determinate' style={{width: progressWidth}} />
-                </div>
-              </div>
-              {step1}
-              {step2}
-              {step3}
+              <Row style={{margin: '20px'}}>
+                <Steps size='small' current={step - 1}>
+                  <Step title={t('Data')} />
+                  <Step title={t('Metadata')} />
+                  <Step title={t('Style')} />
+                  <Step title={t('Complete')} />
+                </Steps>
+              </Row>
+              {step === 1 &&
+                <Step1 onSubmit={this.nextStep} mapConfig={mapConfig} />
+              }
+              {step === 2 &&
+                <Step2 groups={groups} showPrev onPrev={this.prevStep} onSubmit={this.nextStep} />
+              }
+              {step === 3 &&
+                <Step5 onPrev={this.prevStep} onSubmit={this.submit} mapConfig={mapConfig} />
+              }
             </div>
           </main>
         </Provider>

@@ -89,7 +89,7 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
     return (
       <div className={className}>
         <div className='container'>
-          <Row>
+          <Row style={{marginBottom: '20px', padding: '20px'}}>
             <Col span={12}>
               {groupImage}
             </Col>

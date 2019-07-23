@@ -176,7 +176,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
         <div className='container'>
           <Row>
             <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
-              <Row>
+              <Row style={{marginBottom: '20px'}}>
                 <TextInput name='group_id' label={t('Group ID')} icon='group_work' className='col s6'
                   disabled={this.state.group.created}
                   validations={{matchRegexp: /^[a-zA-Z0-9-]*$/, maxLength: 25, isAvailable: true}} validationErrors={{
@@ -188,7 +188,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   dataPosition='right' dataTooltip={t("Identifier for the Group. This will be used in links and URLs for your group's content.")}
                   required />
               </Row>
-              <Row>
+              <Row style={{marginBottom: '20px'}}>
                 <MultiTextInput name='name' id='name'
                   label={{
                     en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
@@ -199,7 +199,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   dataPosition='top' dataTooltip={t('Short Descriptive Name for the Group')}
                   required />
               </Row>
-              <Row>
+              <Row style={{marginBottom: '20px'}}>
                 <MultiTextArea name='description'
                   label={{
                     en: 'Description',
@@ -213,7 +213,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   dataPosition='top' dataTooltip={t('Brief Description of the Group')}
                   required />
               </Row>
-              <Row>
+              <Row style={{marginBottom: '20px'}}>
                 <TextInput
                   name='location' label='Location' icon='navigation' className='col s12' validations='maxLength:100' validationErrors={{
                     maxLength: t('Location must be 100 characters or less.')
@@ -221,7 +221,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   dataPosition='top' dataTooltip={t('Country or City Where the Group is Located')}
                   required />
               </Row>
-              <Row>
+              <Row style={{marginBottom: '20px'}}>
                 <Toggle name='published' labelOff={t('Draft')} labelOn={t('Published')} defaultChecked className='col s12'
                   dataPosition='top' dataTooltip={t('Include in Public Group Listings')}
                 />
