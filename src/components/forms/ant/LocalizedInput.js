@@ -26,11 +26,14 @@ export default class LocalizedInput extends React.Component<Props, State> {
     languages: ['en', 'fr', 'es', 'id', 'pt', 'it', 'de']
   }
 
-  componentWillReceiveProps (nextProps: Props) {
-    if ('value' in nextProps && !this.state.value) {
-      const value = nextProps.value
-      this.setState({value})
-    }
+  shouldComponentUpdate (nextProps, nextState) {
+    let shouldUpdate = false
+    this.props.languages.forEach(lang => {
+      if (nextState.value[lang] !== this.state.value[lang]) {
+        shouldUpdate = true
+      }
+    })
+    return shouldUpdate
   }
 
   handleChange = (lang: string, val: string) => {

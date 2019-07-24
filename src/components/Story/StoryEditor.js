@@ -35,7 +35,7 @@ type State = {
   getMapCallback: Function,
   showImageCrop: boolean,
   imageData: any,
-  imageCropCallback: Function,
+  imageCropCallback: Function
 }
 
 class StoryEditor extends React.Component<Props, State> {
@@ -103,6 +103,7 @@ class StoryEditor extends React.Component<Props, State> {
       await story.save(firstline, firstimage)
       closeSavingMessage()
       message.info(t('Story Saved'))
+      story.setModified(false)
     } catch (err) {
       closeSavingMessage()
       notification.error({
@@ -168,7 +169,7 @@ delete = async () => {
     const { t, containers, myMaps, popularMaps } = this.props
     const { showAddMap, showImageCrop, imageData } = this.state
     const { story } = containers
-    const { story_id, title, author, body, published, publishedDate, owned_by_group_id, modified } = story.state
+    const { story_id, title, author, body, published, published_at, owned_by_group_id, modified, canChangeGroup } = story.state
 
     return (
       <Row style={{height: '100%'}}>
@@ -193,7 +194,7 @@ delete = async () => {
             </Row>
             <Row style={{marginBottom: '10px'}}>
               <p><b>Published Date</b></p>
-              <DatePicker onChange={story.publishDateChange} defaultValue={publishedDate && moment(publishedDate)} format={'YYYY-MM-DD'} />
+              <DatePicker onChange={story.publishDateChange} defaultValue={published_at && moment(published_at)} format={'YYYY-MM-DD'} />
               <style jsx global>{`
                 .ant-calendar-input {
                   background-color: #fff !important;
@@ -229,14 +230,12 @@ delete = async () => {
                   groups={this.props.groups}
                   type='layer'
                   group_id={owned_by_group_id}
-                  onGroupChange={(group_id) => {
-                    story.handleGroupChange(group_id)
-                  }}
-                  canChangeGroup={this.props.create || false} />
+                  onGroupChange={story.groupChange}
+                  canChangeGroup={canChangeGroup} />
               </Formsy>
             </Row>
             <Row style={{marginBottom: '20px'}}>
-              <Tags onChange={story.tagsChange} />
+              <Tags initialTags={story.state.tags} onChange={story.tagsChange} />
             </Row>
           </ErrorBoundary>
           <Row type='flex' justify='left'>

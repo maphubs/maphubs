@@ -70,7 +70,7 @@ export default class StoryCKEditor extends React.Component<Props, void> {
             <CKEditor
               editor={MapHubsEditor}
               config={editorConfiguration}
-              data={initialData}
+              data={initialData ? initialData['en'] : ''}
               onInit={editor => {
                 this.editorInstance = editor
                 console.log('Init.', editor)
@@ -78,7 +78,7 @@ export default class StoryCKEditor extends React.Component<Props, void> {
               onChange={(event, editor) => {
                 const data = editor.getData()
                 // console.log(data)
-                if (this.props.onChange) this.props.onChange(data)
+                if (this.props.onChange) this.props.onChange({en: data})
               }}
               onBlur={editor => {
                 // console.log('Blur.', editor)

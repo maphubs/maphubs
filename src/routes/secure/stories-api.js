@@ -15,19 +15,20 @@ module.exports = function (app: any) {
   app.post('/api/story/save', csrfProtection, isAuthenticated, async (req, res) => {
     const data = req.body
     if (data && data.owned_by_group_id && data.title && data.body) {
-      data.title = data.title.replace('&nbsp;', '')
       let story_id = data.story_id
-      if (!story_id) {
-        // creating a new story
-        if (await Group.allowedToModify(data.owned_by_group_id, req.user_id)) {
-          story_id = await Story.createStory(data.owned_by_group_id, req.user_id)
-          log.info(`created new story: ${story_id}`)
-        } else {
-          return notAllowedError(res, 'group')
-        }
-      }
       try {
-        if (story_id && await Story.allowedToModify(story_id, req.user_id)) {
+        let firstEdit
+        let allowedToModifyGroup
+        const story = await Story.getStoryById(story_id)
+        if (!story.owned_by_group_id && story.updated_by === req.user_id) {
+          firstEdit = true
+          log.info(`first save for story: ${story_id}`)
+          allowedToModifyGroup = await Group.allowedToModify(data.owned_by_group_id, req.user_id)
+          if (!allowedToModifyGroup) {
+            log.info(`not allowed to modify group: ${data.owned_by_group_id}`)
+          }
+        }
+        if ((firstEdit && allowedToModifyGroup) || await Story.allowedToModify(story_id, req.user_id)) {
           data.updated_by = req.user_id
           const result = await Story.updateStory(story_id, data)
           if (result && result === 1) {

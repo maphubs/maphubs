@@ -3,19 +3,20 @@ import { Container } from 'unstated'
 import request from 'superagent'
 
 export type Story ={
-  title?: string,
-  author?: string,
-  body?: string,
+  title?: Object,
+  author?: Object,
+  body?: Object,
   story_id?: number,
   published?: boolean,
-  publishedDate?: string,
+  published_at?: string,
   owned_by_group_id?: string,
   tags?: Array<string>
 }
 
 type StoryContainerState = {
   modified?: boolean,
-  _csrf: string
+  _csrf: string,
+  canChangeGroup: boolean
 } & Story
 
 export default class StoryContainer extends Container<StoryContainerState> {
@@ -25,7 +26,8 @@ export default class StoryContainer extends Container<StoryContainerState> {
       title: '',
       author: '',
       body: '',
-      modified: false
+      modified: false,
+      canChangeGroup: !initialState.owned_by_group_id
     }
     this.state = Object.assign(defaultState, initialState)
   }
@@ -38,7 +40,7 @@ export default class StoryContainer extends Container<StoryContainerState> {
   }
 
   publishDateChange = (date: Object) => {
-    this.setState({publishedDate: date.format('YYYY-MM-DD'), modified: true})
+    this.setState({published_at: date.format('YYYY-MM-DD'), modified: true})
   }
 
   togglePublished = (published: boolean) => {
@@ -57,26 +59,28 @@ export default class StoryContainer extends Container<StoryContainerState> {
     this.setState({tags, modified: true})
   }
 
-  save = async (firstline: string, firstimage: any) => {
-    const { body, title, author, published, publishDate, tags, _csrf } = this.state
+  setModified = (modified: boolean) => {
+    this.setState({modified})
+  }
 
-    const response = await request.post('/api/story/save')
+  save = async (firstline: string, firstimage: any) => {
+    const { story_id, owned_by_group_id, body, title, author, published, published_at, tags, _csrf } = this.state
+
+    return request.post('/api/story/save')
       .type('json').accept('json')
       .send({
+        story_id,
+        owned_by_group_id,
         body,
         title,
         author,
         published,
-        publishDate,
+        published_at,
         tags,
         firstline,
         firstimage,
         _csrf
       })
-
-    if (response.body && response.success) {
-      this.setState({story_id: response.body.story_id, modified: false})
-    }
   }
 
   addImage = async (data: string, info: Object) => {

@@ -1,6 +1,7 @@
 // @flow
 const knex = require('../connection')
 const Group = require('./group')
+const Tags = require('./tags')
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('model/story')
 
 module.exports = {
@@ -13,12 +14,16 @@ module.exports = {
       'omh.stories.firstline', 'omh.stories.firstimage',
       'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
       knex.raw(`timezone('UTC', omh.stories.updated_at) as updated_at`),
+      'omh.stories.published_at',
       'omh.stories.updated_by',
       'omh.stories.owned_by_group_id',
-      'omh.groups.name as groupname'
+      'omh.groups.name as groupname',
+      knex.raw(`json_agg(omh.story_tags.tag) as tags`)
     )
       .from('omh.stories')
       .leftJoin('omh.groups', 'omh.stories.owned_by_group_id', 'omh.groups.group_id')
+      .leftJoin('omh.story_tags', 'omh.stories.story_id', 'omh.story_tags.story_id')
+      .groupBy('omh.stories.story_id', 'omh.groups.name')
   },
 
   getAllStories (trx: any) {
@@ -108,28 +113,36 @@ module.exports = {
   updateStory (
     story_id: number,
     data: {
-      title: string,
-      body: string,
-      author: string,
+      title: Object,
+      body: Object,
+      author: Object,
       firstline: string,
       firstimage: any,
       published: boolean,
-      publishDate: string,
-      updated_by: number
+      published_at: string,
+      updated_by: number,
+      owned_by_group_id: string,
+      tags?: Array<string>
       }) {
-    return knex('omh.stories')
-      .where({story_id})
-      .update({
-        title: data.title,
-        body: data.body,
-        author: data.author,
-        firstline: data.firstline,
-        firstimage: data.firstimage,
-        published: data.published,
-        publishDate: data.publishDate,
-        updated_at: knex.raw('now()'),
-        updated_by: data.updated_by
-      })
+    return knex.transaction(async (trx) => {
+      if (data.tags) {
+        await Tags.updateStoryTags(data.tags, story_id, trx)
+      }
+      return trx('omh.stories')
+        .where({story_id})
+        .update({
+          title: data.title,
+          body: data.body,
+          author: data.author,
+          firstline: data.firstline,
+          firstimage: data.firstimage,
+          published: data.published,
+          published_at: data.published_at,
+          owned_by_group_id: data.owned_by_group_id,
+          updated_at: knex.raw('now()'),
+          updated_by: data.updated_by
+        })
+    })
   },
 
   async delete (story_id: number, trx: any) {
