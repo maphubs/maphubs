@@ -86,7 +86,8 @@ var local = {
   elasticSearchPass: getenv('OMH_ELASTICSEARCH_PASS'),
   EARTHENGINE_CLIENTID: getenv('EARTHENGINE_CLIENTID'),
   RASTER_UPLOAD_API: getenv('RASTER_UPLOAD_API'),
-  RASTER_UPLOAD_API_KEY: getenv('RASTER_UPLOAD_API_KEY')
+  RASTER_UPLOAD_API_KEY: getenv('RASTER_UPLOAD_API_KEY'),
+  LANGUAGES: getenv('LANGUAGES', 'en,fr,es,pt,id,it,de')
 }
 
 module.exports = local

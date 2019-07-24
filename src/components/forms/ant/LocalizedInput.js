@@ -1,14 +1,30 @@
 //  @flow
 import * as React from 'react'
-import { Input, Tabs } from 'antd'
+import { Input, Tabs, Tooltip } from 'antd'
+import localeUtil from '../../../locales/util'
+
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
+let supportedLangs = localeUtil.getSupported()
+let languagesFromConfig
+const langs = []
+if (MAPHUBS_CONFIG.LANGUAGES) {
+  languagesFromConfig = MAPHUBS_CONFIG.LANGUAGES.split(',')
+  languagesFromConfig = languagesFromConfig.map(lang => lang.trim())
+  supportedLangs.map(lang => {
+    if (languagesFromConfig.includes(lang.value)) {
+      langs.push(lang)
+    }
+  })
+}
 
 const TabPane = Tabs.TabPane
 
 type Props = {
   value?: Object,
   onChange?: Function,
-  placeholder?: string,
-  languages: Array<string>
+  placeholder?: string
 }
 
 type State = {
@@ -22,14 +38,10 @@ export default class LocalizedInput extends React.Component<Props, State> {
     this.state = { value }
   }
 
-  static defaultProps = {
-    languages: ['en', 'fr', 'es', 'id', 'pt', 'it', 'de']
-  }
-
   shouldComponentUpdate (nextProps, nextState) {
     let shouldUpdate = false
-    this.props.languages.forEach(lang => {
-      if (nextState.value[lang] !== this.state.value[lang]) {
+    langs.forEach(lang => {
+      if (nextState.value[lang.value] !== this.state.value[lang.value]) {
         shouldUpdate = true
       }
     })
@@ -52,7 +64,7 @@ export default class LocalizedInput extends React.Component<Props, State> {
 
   render () {
     const {value} = this.state
-    const {placeholder, languages} = this.props
+    const {placeholder} = this.props
     const {handleChange} = this
     return (
       <div>
@@ -66,15 +78,18 @@ export default class LocalizedInput extends React.Component<Props, State> {
         </style>
         <div className='localized-input'>
           <Tabs animated={false} size='small' tabBarStyle={{margin: 0}} >
-            {languages.map(lang => {
+            {langs.map(locale => {
               return (
-                <TabPane tab={lang} key={lang}>
-                  <Input type='text' value={value[lang]}
+                <TabPane
+                  tab={<Tooltip title={locale.name}><span>{locale.label}</span></Tooltip>}
+                  key={locale.value}
+                >
+                  <Input type='text' value={value[locale.value]}
                     placeholder={placeholder}
                     onChange={
                       (e) => {
                         const val = e.target.value
-                        handleChange(lang, val)
+                        handleChange(locale.value, val)
                       }
                     }
                   />

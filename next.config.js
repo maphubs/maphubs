@@ -77,7 +77,8 @@ module.exports = withLess(withCSS(withTM({
     OPENROUTESERVICE_API_KEY: config.OPENROUTESERVICE_API_KEY,
     EARTHENGINE_CLIENTID: config.EARTHENGINE_CLIENTID,
     RASTER_UPLOAD_API: config.RASTER_UPLOAD_API,
-    RASTER_UPLOAD_API_KEY: config.RASTER_UPLOAD_API_KEY
+    RASTER_UPLOAD_API_KEY: config.RASTER_UPLOAD_API_KEY,
+    LANGUAGES: config.LANGUAGES
   },
   transpileModules: ['react-dnd', 'react-dnd-html5-backend'],
   lessLoaderOptions: {

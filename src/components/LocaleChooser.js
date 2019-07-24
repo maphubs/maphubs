@@ -5,7 +5,23 @@ import LocaleActions from '../actions/LocaleActions'
 import debugFactory from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import localeUtil from '../locales/util'
 import { Menu, Dropdown, Icon } from 'antd'
+import getConfig from 'next/config'
 const debug = debugFactory('MapHubsComponent')
+
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
+let supportedLangs = localeUtil.getSupported()
+let languagesFromConfig
+const langs = []
+if (MAPHUBS_CONFIG.LANGUAGES) {
+  languagesFromConfig = MAPHUBS_CONFIG.LANGUAGES.split(',')
+  languagesFromConfig = languagesFromConfig.map(lang => lang.trim())
+  supportedLangs.map(lang => {
+    if (languagesFromConfig.includes(lang.value)) {
+      langs.push(lang)
+    }
+  })
+}
 
 type Props = {
   id: string
@@ -36,7 +52,7 @@ export default class LocaleChooser extends MapHubsComponent<Props, State> {
     const label = localeUtil.getConfig(this.state.locale).label
     const menu = (
       <Menu>
-        {localeUtil.getSupported().map(l => {
+        {langs.map(l => {
           return (
             <Menu.Item key={`locale-${l.value}`}>
               <a href='#!' id={l.value} onClick={this.onChange} className='nav-hover-menu-item'>{`${l.name} (${l.label})`}</a>

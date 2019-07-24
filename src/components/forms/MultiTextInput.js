@@ -7,6 +7,22 @@ import {Tabs, Tooltip} from 'antd'
 
 import localeUtil from '../../locales/util'
 
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
+let supportedLangs = localeUtil.getSupported()
+let languagesFromConfig
+const langs = []
+if (MAPHUBS_CONFIG.LANGUAGES) {
+  languagesFromConfig = MAPHUBS_CONFIG.LANGUAGES.split(',')
+  languagesFromConfig = languagesFromConfig.map(lang => lang.trim())
+  supportedLangs.map(lang => {
+    if (languagesFromConfig.includes(lang.value)) {
+      langs.push(lang)
+    }
+  })
+}
+
 const TabPane = Tabs.TabPane
 
 type Props = {
@@ -111,7 +127,7 @@ export default class MultiTextInput extends MapHubsComponent<Props, State> {
         tabBarStyle={{marginBottom: 0}}
         animated={false}
       >
-        {localeUtil.getSupported().map(locale => {
+        {langs.map(locale => {
           return (
             <TabPane
               tab={<Tooltip title={locale.name}><span>{locale.label}</span></Tooltip>}
