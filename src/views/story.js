@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row, Col } from 'antd'
 import Header from '../components/header'
 import Comments from '../components/Comments'
 import slugify from 'slugify'
@@ -57,30 +58,29 @@ export default class Story extends MapHubsComponent<Props, void> {
       button = (
         <div className='fixed-action-btn action-button-bottom-right'>
           <FloatingButton
-            href={`/editstory/${slugify(this.props.story.title)}/${this.props.story.story_id}`}
+            href={`/editstory/${this.props.story.story_id}/${slugify(t(this.props.story.title))}`}
             tooltip={t('Edit')}
             tooltipPosition='left'
             icon='mode_edit' />
         </div>
       )
     }
-    const title = story.title.replace('&nbsp;', '')
 
     let shareAndDiscuss = ''
     if (MAPHUBS_CONFIG.enableComments) {
       shareAndDiscuss = (
         <div className='story-share-comments'>
-          <div className='row' style={{height: '32px', position: 'relative'}}>
+          <Row style={{height: '32px', position: 'relative'}}>
             <ShareButtons
-              title={story.title} t={this.t}
+              title={t(story.title)} t={t}
               style={{width: '70px', position: 'absolute', left: '0px'}}
             />
-          </div>
-          <div className='row'>
+          </Row>
+          <Row>
             <ErrorBoundary>
               <Comments />
             </ErrorBoundary>
-          </div>
+          </Row>
         </div>
       )
     }
@@ -91,26 +91,46 @@ export default class Story extends MapHubsComponent<Props, void> {
         <Header {...this.props.headerConfig} />
         <main>
           <div className='container'>
-            <div className='row' style={{marginTop: '20px'}}>
-              <div className='col s12 m19 l9'>
+            <Row style={{marginTop: '20px'}}>
+              <Col md={18} sm={24}>
                 <StoryHeader story={story} />
-              </div>
-              <div className='col s12 m3 l3'>
+              </Col>
+              <Col md={6} sm={24}>
                 <ShareButtons
-                  title={story.title} t={this.t}
+                  title={t(story.title)} t={t}
                   style={{width: '70px', position: 'absolute', right: '10px'}}
                 />
-              </div>
-            </div>
-            <div className='row'>
-              <h3 className='story-title'>{title}</h3>
-              <div className='story-content' dangerouslySetInnerHTML={{__html: story.body}} />
-            </div>
+              </Col>
+            </Row>
+            <Row>
+              <h3 className='story-title'>{t(story.title)}</h3>
+              <div className='story-content' dangerouslySetInnerHTML={{__html: t(story.body)}} />
+            </Row>
             <hr />
             {shareAndDiscuss}
-
           </div>
           {button}
+          <style jsx global>{`
+            body {
+              font-family: 'Roboto', sans-serif !important;
+              color: #323333;
+            }
+            
+            .story-content table {
+              width: 80%;
+              margin: auto auto;
+            }
+            .story-content table th{
+              border:1px solid #323333;
+              padding-left: 5px;
+              background-color: #d9d9d9;
+            }
+            .story-content table td{
+              border:1px solid #d9d9d9;
+              padding-left:5px;
+            }
+            
+          `}</style>
         </main>
       </ErrorBoundary>
     )

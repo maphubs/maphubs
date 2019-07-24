@@ -3,7 +3,7 @@ import React from 'react'
 import Formsy from 'formsy-react'
 import slugify from 'slugify'
 import dynamic from 'next/dynamic'
-import { Row, Col, message, notification, Button, Popconfirm, Switch, DatePicker } from 'antd'
+import { Row, Col, message, notification, Button, Popconfirm, Switch, DatePicker, Icon } from 'antd'
 import AddMapDrawer from './AddMapDrawer'
 import ImageCrop from '../ImageCrop'
 import LocalizedInput from '../forms/ant/LocalizedInput'
@@ -27,6 +27,7 @@ type Props = {|
   groups: Array<Object>,
   create?: boolean,
   t: Function,
+  locale: string,
   containers: any
 |}
 
@@ -48,10 +49,10 @@ class StoryEditor extends React.Component<Props, State> {
   }
 
   componentDidMount () {
-    const { t, containers } = this.props
+    const _this = this
     window.addEventListener('beforeunload', (e) => {
-      if (containers.story.state.modified) {
-        const msg = t('You have not saved the edits for your story, your changes will be lost.')
+      if (_this.props.containers.story.state.modified) {
+        const msg = _this.t('You have not saved the edits for your story, your changes will be lost.')
         e.returnValue = msg
         return msg
       }
@@ -166,7 +167,7 @@ delete = async () => {
 
   render () {
     const { save, onAddMap, onMapCancel, onSelectImage, onCrop } = this
-    const { t, containers, myMaps, popularMaps } = this.props
+    const { t, containers, myMaps, popularMaps, locale } = this.props
     const { showAddMap, showImageCrop, imageData } = this.state
     const { story } = containers
     const { story_id, title, author, body, published, published_at, owned_by_group_id, modified, canChangeGroup } = story.state
@@ -188,9 +189,16 @@ delete = async () => {
         <Col span={6} style={{padding: '10px'}}>
           <ErrorBoundary>
             <Row style={{textAlign: 'left', lineHeight: '32px', marginBottom: '10px'}}>
-              <span style={{marginRight: '5px', fontWeight: 'bold', fontSize: '12px'}}>Draft</span>
-              <Switch defaultChecked={published} onChange={story.togglePublished} />
-              <span style={{marginLeft: '5px', fontWeight: 'bold', fontSize: '12px'}}>Published</span>
+              <Col span={12}>
+                <span style={{marginRight: '5px', fontWeight: 'bold', fontSize: '12px'}}>Draft</span>
+                <Switch defaultChecked={published} onChange={story.togglePublished} />
+                <span style={{marginLeft: '5px', fontWeight: 'bold', fontSize: '12px'}}>Published</span>
+              </Col>
+              <Col span={12} style={{textAlign: 'right'}}>
+                <Button type='primary' ghost disabled={modified} onClick={() => {
+                  window.location = `/story/${slugify(title[locale])}/${story_id}`
+                }}>{t('View Story')}<Icon type='right' /></Button>
+              </Col>
             </Row>
             <Row style={{marginBottom: '10px'}}>
               <p><b>Published Date</b></p>
@@ -215,11 +223,11 @@ delete = async () => {
             <Row style={{marginBottom: '10px'}}>
               <Row style={{marginBottom: '10px'}}>
                 <p><b>Title</b></p>
-                <LocalizedInput value={title} placeholder={'Title'} onChange={story.titleChange} languages={['en', 'id']} />
+                <LocalizedInput value={title} placeholder={'Title'} onChange={story.titleChange} />
               </Row>
               <Row>
                 <p><b>Author</b></p>
-                <LocalizedInput value={author} placeholder={'Author'} onChange={story.authorChange} languages={['en', 'id']} />
+                <LocalizedInput value={author} placeholder={'Author'} onChange={story.authorChange} />
               </Row>
             </Row>
           </ErrorBoundary>

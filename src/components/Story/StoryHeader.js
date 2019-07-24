@@ -12,7 +12,6 @@ import MapHubsComponent from '../../components/MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import moment from 'moment-timezone'
-import $ from 'jquery'
 
 addLocaleData(en)
 addLocaleData(es)
@@ -37,13 +36,6 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
   static defaultProps = {
     baseUrl: '',
     short: false
-  }
-
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
-    if (nextState.groupLogoFailed) {
-      return true
-    }
-    return false
   }
 
   render () {
@@ -90,7 +82,7 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
     const groupLogoUrl = `/img/resize/72?url=/group/${story.owned_by_group_id}/thumbnail`
     let authorText = ''
     if (story.author) {
-      authorText = story.author + ' - '
+      authorText = t(story.author) + ' - '
     }
 
     const groupUrl = `${baseUrl}/group/${story.owned_by_group_id}`
@@ -103,6 +95,7 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
               href={groupUrl}>
               {!groupLogoFailed &&
               <Avatar alt={story.owned_by_group_id} size={36} src={`/img/resize/64?url=/group/${story.owned_by_group_id}/thumbnail`} onError={() => {
+                console.error('Group Logo Failed')
                 this.setState({groupLogoFailed: true})
               }} />
               }

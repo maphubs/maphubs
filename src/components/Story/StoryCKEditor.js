@@ -1,11 +1,28 @@
 // @flow
 
 import * as React from 'react'
+import { Tabs, Tooltip } from 'antd'
 import AutoSizer from 'react-virtualized-auto-sizer'
-
 import CKEditor from '@ckeditor/ckeditor5-react'
-
 import MapHubsEditor from '@maphubs/maphubs-story-editor'
+import localeUtil from '../../locales/util'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
+let supportedLangs = localeUtil.getSupported()
+let languagesFromConfig
+const langs = []
+if (MAPHUBS_CONFIG.LANGUAGES) {
+  languagesFromConfig = MAPHUBS_CONFIG.LANGUAGES.split(',')
+  languagesFromConfig = languagesFromConfig.map(lang => lang.trim())
+  supportedLangs.map(lang => {
+    if (languagesFromConfig.includes(lang.value)) {
+      langs.push(lang)
+    }
+  })
+}
+
+const TabPane = Tabs.TabPane
 
 type Props = {
   initialData?: string,
@@ -67,26 +84,43 @@ export default class StoryCKEditor extends React.Component<Props, void> {
                 overflow-y: scroll;
               }
             `}</style>
-            <CKEditor
-              editor={MapHubsEditor}
-              config={editorConfiguration}
-              data={initialData ? initialData['en'] : ''}
-              onInit={editor => {
-                this.editorInstance = editor
-                console.log('Init.', editor)
-              }}
-              onChange={(event, editor) => {
-                const data = editor.getData()
-                // console.log(data)
-                if (this.props.onChange) this.props.onChange({en: data})
-              }}
-              onBlur={editor => {
-                // console.log('Blur.', editor)
-              }}
-              onFocus={editor => {
-                // console.log('Focus.', editor)
-              }}
-            />
+            <Tabs size='small'
+              tabBarStyle={{marginBottom: 0}}
+              animated={false}
+            >
+              {langs.map(locale => {
+                const data = initialData[locale.value] || ''
+                return (
+                  <TabPane
+                    tab={<Tooltip title={locale.name}><span>{locale.label}</span></Tooltip>}
+                    key={locale.value}
+                  >
+                    <div style={{padding: '0px'}}>
+                      <CKEditor
+                        editor={MapHubsEditor}
+                        config={editorConfiguration}
+                        data={data}
+                        onInit={editor => {
+                          this.editorInstance = editor
+                          console.log('Init.', editor)
+                        }}
+                        onChange={(event, editor) => {
+                          const data = editor.getData()
+                          if (this.props.onChange) this.props.onChange(locale.value, data)
+                        }}
+                        onBlur={editor => {
+                          // console.log('Blur.', editor)
+                        }}
+                        onFocus={editor => {
+                          // console.log('Focus.', editor)
+                        }}
+                      />
+                    </div>
+                  </TabPane>
+                )
+              })
+              }
+            </Tabs>
           </div>
         )}
       </AutoSizer>

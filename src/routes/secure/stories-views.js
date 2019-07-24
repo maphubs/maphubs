@@ -78,6 +78,7 @@ module.exports = function (app: any) {
   app.get('/story/:title/:story_id', (req, res, next) => {
     const story_id = parseInt(req.params.story_id || '', 10)
     const username = req.params.username
+    const locale = req.session.locale || 'en'
 
     let user_id = -1
     if ((req.isAuthenticated || req.isAuthenticated()) &&
@@ -109,7 +110,7 @@ module.exports = function (app: any) {
           if (story.firstimage) {
             imageUrl = urlUtil.getBaseUrl() + story.firstimage
           }
-          let description = story.title
+          let description = story.title[locale]
           if (story.firstline) {
             description = story.firstline
           }
@@ -118,14 +119,14 @@ module.exports = function (app: any) {
             return res.status(401).send('Unauthorized')
           } else {
             return app.next.render(req, res, '/story', await pageOptions(req, {
-              title: story.title,
+              title: story.title[locale],
               description,
               props: {
                 story, username, canEdit: false
               },
               talkComments: true,
               twitterCard: {
-                title: story.title,
+                title: story.title[locale],
                 description,
                 image: imageUrl,
                 imageType: 'image/jpeg'
@@ -139,7 +140,7 @@ module.exports = function (app: any) {
               if (story.firstimage) {
                 imageUrl = story.firstimage
               }
-              let description = story.title
+              let description = story.title[locale]
               if (story.firstline) {
                 description = story.firstline
               }
@@ -148,14 +149,14 @@ module.exports = function (app: any) {
                 return res.status(401).send('Unauthorized')
               } else {
                 return app.next.render(req, res, '/story', await pageOptions(req, {
-                  title: story.title,
+                  title: story.title[locale],
                   description,
                   props: {
                     story, username, canEdit
                   },
                   talkComments: true,
                   twitterCard: {
-                    title: story.title,
+                    title: story.title[locale],
                     description,
                     image: imageUrl,
                     imageType: 'image/jpeg'
