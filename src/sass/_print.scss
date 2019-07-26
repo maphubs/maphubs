@@ -1,7 +1,18 @@
 @media print {
   nav {
-    display: none;
-    height: 0px;
+    box-shadow: none !important;
+  }
+
+  .nav-link-wrapper {
+    display: none !important;
+  }
+
+  .sidenav-trigger {
+    display: none !important;
+  }
+
+  .embed-map-btn {
+    display: none !important;
   }
 
   #user-map-button{

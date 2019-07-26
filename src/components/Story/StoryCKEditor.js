@@ -71,6 +71,9 @@ export default class StoryCKEditor extends React.Component<Props, void> {
         subfolderID: '', // an id for example a story id that can be used to bulk delete content later
         onUpload: onImageUpload,
         cropImage
+      },
+      mediaEmbed: {
+        previewsInData: true
       }
     }
 
