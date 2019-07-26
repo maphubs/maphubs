@@ -1,4 +1,38 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.12.0
+version: v1.13.5
 ignore: {}
-patch: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:debug:20170905':
+    - react-data-grid-addons > ron-react-autocomplete > socket.io-client > socket.io-parser > debug:
+        patched: '2019-07-26T02:13:18.431Z'
+    - react-data-grid-addons > ron-react-autocomplete > engine.io > debug:
+        patched: '2019-07-26T02:13:18.431Z'
+    - react-data-grid-addons > ron-react-autocomplete > socket.io-client > debug:
+        patched: '2019-07-26T02:13:18.431Z'
+    - react-data-grid-addons > ron-react-autocomplete > socket.io-client > engine.io-client > debug:
+        patched: '2019-07-26T02:13:18.431Z'
+  SNYK-JS-LODASH-450202:
+    - next > next-server > styled-jsx > babel-types > lodash:
+        patched: '2019-07-26T02:13:18.431Z'
+    - react-data-grid-addons > react-dnd > dnd-core > redux > lodash:
+        patched: '2019-07-26T02:13:18.431Z'
+    - react-data-grid-addons > ron-react-autocomplete > browser-sync > easy-extender > lodash:
+        patched: '2019-07-26T02:13:18.431Z'
+    - react-data-grid-addons > react-dnd-html5-backend > lodash:
+        patched: '2019-07-26T02:13:18.431Z'
+    - node-sass > lodash:
+        patched: '2019-07-26T02:13:18.431Z'
+    - react-data-grid-addons > react-dnd > lodash:
+        patched: '2019-07-26T02:13:18.431Z'
+    - react-data-grid-addons > react-dnd > dnd-core > lodash:
+        patched: '2019-07-26T02:13:18.431Z'
+  'npm:ms:20170412':
+    - react-data-grid-addons > ron-react-autocomplete > socket.io-client > socket.io-parser > debug > ms:
+        patched: '2019-07-26T02:13:18.431Z'
+    - react-data-grid-addons > ron-react-autocomplete > engine.io > debug > ms:
+        patched: '2019-07-26T02:13:18.431Z'
+    - react-data-grid-addons > ron-react-autocomplete > socket.io-client > debug > ms:
+        patched: '2019-07-26T02:13:18.431Z'
+    - react-data-grid-addons > ron-react-autocomplete > socket.io-client > engine.io-client > debug > ms:
+        patched: '2019-07-26T02:13:18.431Z'

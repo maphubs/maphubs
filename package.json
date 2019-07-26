@@ -206,7 +206,8 @@
     "uuid": "^3.3.0",
     "webpack": "^4.35.3",
     "wgs84-util": "3.0.0",
-    "xcomponent": "6.0.62"
+    "xcomponent": "6.0.62",
+    "snyk": "^1.199.2"
   },
   "optionalDependencies": {
     "fsevents": "^1.2.4",
@@ -230,7 +231,6 @@
     "flow-bin": "^0.102.0",
     "geojson-flow": "^1.0.1",
     "semver": "^6.2.0",
-    "snyk": "^1.192.4",
     "unstated-debug": "^0.3.2",
     "webpack-bundle-analyzer": "^3.3.2"
   },
