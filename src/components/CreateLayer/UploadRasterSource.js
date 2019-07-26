@@ -136,7 +136,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
                 endpoint={`${MAPHUBS_CONFIG.RASTER_UPLOAD_API}/upload/save`}
                 headers={{authorization: `Bearer ${MAPHUBS_CONFIG.RASTER_UPLOAD_API_KEY}`}}
                 note='Supports: GeoTiffs and MBTiles, GeoTiffs must have RGB visual bands'
-                maxFileSize={52428800}
+                maxFileSize={104857600}
                 allowedFileTypes={['.tif', '.tiff', '.mbtiles']}
                 meta={{layer_id}}
                 onProcessingStart={this.onProcessingStart}
