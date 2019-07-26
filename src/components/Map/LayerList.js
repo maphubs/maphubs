@@ -2,7 +2,7 @@
 import React from 'react'
 import LayerListItem from './LayerListItem'
 import _isEqual from 'lodash.isequal'
-import {List} from 'antd'
+import {List, Empty} from 'antd'
 import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import update from 'react-addons-update'
@@ -18,6 +18,7 @@ type Props = {
   showLayerDesigner?: Function,
   updateLayers: Function,
   editLayer?: Function,
+  openAddLayer?: Function,
   t: Function
 }
 
@@ -104,8 +105,12 @@ export default class LayerList extends React.Component<Props, State> {
           </DndProvider>
         }
         {empty &&
-          <div style={{height: '100%', padding: 0, margin: 0}}>
-            <p style={{margin: '20px 10px'}}>{t('No layers in map, use the tab to the right to add an overlay layer.')}</p>
+          <div style={{height: '100%', paddingTop: '50%', margin: 0}}>
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={
+              <span>
+                <a onClick={this.props.openAddLayer}>{t('Add a Layer')}</a>
+              </span>
+            } />
           </div>
         }
       </div>

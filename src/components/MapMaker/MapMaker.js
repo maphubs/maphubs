@@ -2,13 +2,12 @@
 import React from 'react'
 import LayerList from '../Map/LayerList'
 import _isEqual from 'lodash.isequal'
-import _debounce from 'lodash.debounce'
 import _find from 'lodash.find'
-import { Drawer, Button, Row, message, notification } from 'antd'
+import { Drawer, Button, Row, Col, Tabs, message, notification } from 'antd'
 import Map from '../Map'
 import MiniLegend from '../Map/MiniLegend'
 import AddLayerPanel from './AddLayerPanel'
-import SaveMapPanel from './SaveMapPanel'
+import SaveMapModal from './SaveMapModal'
 import MapSettingsPanel from './MapSettingsPanel'
 import MapMakerStore from '../../stores/MapMakerStore'
 import UserStore from '../../stores/UserStore'
@@ -28,9 +27,12 @@ import connect from 'unstated-connect'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapContainer from '../Map/containers/MapContainer'
 import BaseMapContainer from '../Map/containers/BaseMapContainer'
+import BaseMapSelection from '../Map/ToolPanels/BaseMapSelection'
 import $ from 'jquery'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
+const TabPane = Tabs.TabPane
 
 type Props = {
     edit: boolean,
@@ -57,8 +59,7 @@ type Props = {
     canSave: boolean,
     editLayerLoaded: boolean,
     saved: boolean,
-    height: number,
-    width: number,
+    activeTab: string,
     showAddLayer?: boolean
   } & LocaleStoreState & MapMakerStoreState & UserStoreState
 
@@ -79,8 +80,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
     canSave: false,
     editLayerLoaded: false,
     saved: false,
-    width: 800,
-    height: 600
+    activeTab: 'overlays'
   }
 
   constructor (props: Props) {
@@ -92,7 +92,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
       title: props.title,
       map_id: props.map_id,
       owned_by_group_id: props.owned_by_group_id,
-      showAddLayer: !props.edit
+      showAddLayer: false // if we want it to open on first load then !props.edit
     })
   }
 
@@ -107,32 +107,8 @@ class MapMaker extends MapHubsComponent<Props, State> {
   componentDidMount () {
     const _this = this
     const {t} = this
-    M.Collapsible.init(this.refs.mapMakerToolPanel, {})
 
-    function getSize () {
-      // Get the dimensions of the viewport
-      const width = Math.floor($(window).width())
-      const height = $(window).height()
-      return {width, height}
-    }
-
-    const size = getSize()
-    _this.setState({
-      width: size.width,
-      height: size.height
-    })
-
-    $(window).resize(function () {
-      const debounced = _debounce(() => {
-        const size = getSize()
-        _this.setState({
-          width: size.width,
-          height: size.height
-        })
-      }, 2500).bind(this)
-      debounced()
-    })
-
+/*
     window.addEventListener('beforeunload', (e) => {
       const {saved, mapLayers} = _this.state
       if (!saved && mapLayers && mapLayers.length > 0) {
@@ -141,6 +117,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
         return msg
       }
     })
+*/
   }
 
   componentWillReceiveProps (nextProps: Props) {
@@ -343,12 +320,30 @@ class MapMaker extends MapHubsComponent<Props, State> {
     Actions.startEditing()
     DataEditor.startEditing(layer)
     MapState.state.map.startEditingTool(layer)
+    this.setState({activeTab: 'editing'})
   }
 
   stopEditingLayer = () => {
     const [, MapState] = this.props.containers
     Actions.stopEditing()
     MapState.state.map.stopEditingTool()
+    this.setState({activeTab: 'overlays'})
+  }
+
+  changeBaseMap = async (mapName: string) => {
+    const _this = this
+    const [, MapState, BaseMapState] = this.props.containers
+    await BaseMapState.getBaseMapFromName(mapName, (baseMapStyle) => {
+      BaseMapState.setBaseMap(mapName)
+      _this.setState({allowLayersToMoveMap: false})
+      MapState.state.map.setBaseMapStyle(baseMapStyle, true)
+
+      if (MapState.state.insetMap) {
+        MapState.state.insetMap.reloadInset(baseMapStyle)
+        MapState.state.insetMap.sync(MapState.state.map)
+      }
+    })
+    Actions.setMapBasemap(mapName)
   }
 
   onToggleIsochroneLayer = (enabled: boolean) => {
@@ -380,37 +375,8 @@ class MapMaker extends MapHubsComponent<Props, State> {
   render () {
     const {editLayer, toggleVisibility, removeFromMap, showLayerDesigner, t} = this
     const {showVisibility} = this.props
-    const {showMapLayerDesigner, height, layerDesignerLayer, position, mapLayers, editingLayer, showAddLayer} = this.state
+    const {showMapLayerDesigner, layerDesignerLayer, position, mapLayers, editingLayer, showAddLayer, activeTab} = this.state
     const [, MapState] = this.props.containers
-    const headerHeight = 52
-    const collasibleHeaderHeight = 56
-    let panelHeight = height - headerHeight - (collasibleHeaderHeight * 3)
-
-    let mapLayerDesigner = ''
-    if (showMapLayerDesigner) {
-      mapLayerDesigner = (
-        <MapLayerDesigner ref='LayerDesigner'
-          layer={layerDesignerLayer}
-          onStyleChange={this.onLayerStyleChange}
-          onClose={this.closeLayerDesigner} />
-      )
-    }
-
-    let editLayerPanel = ''
-    if (editingLayer) {
-    // panelHeight = this.state.height - 241;
-      panelHeight = this.state.height - headerHeight - (collasibleHeaderHeight * 4)
-      editLayerPanel = (
-        <li ref='editLayerPanel'>
-          <div className='collapsible-header'><i className='material-icons'>edit</i>{t('Editing Layer')}</div>
-          <div className='collapsible-body' >
-            <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
-              <EditLayerPanel t={t} />
-            </div>
-          </div>
-        </li>
-      )
-    }
 
     let mapExtent
     if (position && position.bbox) {
@@ -421,57 +387,81 @@ class MapMaker extends MapHubsComponent<Props, State> {
     return (
       <div className='row no-margin' style={{width: '100%', height: '100%'}}>
         <div className='create-map-side-nav col s6 m4 l3 no-padding' style={{height: '100%'}}>
-          {mapLayerDesigner}
-          <ul ref='mapMakerToolPanel' className='collapsible no-margin' data-collapsible='accordion'
-            style={{
-              height: '100%',
-              borderTop: 'none',
-              display: showMapLayerDesigner ? 'none' : 'inherit'
-            }}
+          {showMapLayerDesigner &&
+            <Drawer
+              title={t(layerDesignerLayer.name)}
+              placement='left'
+              width={`300px`}
+              closable
+              destroyOnClose
+              bodyStyle={{ height: 'calc(100vh - 55px)', padding: '0px' }}
+              onClose={this.closeLayerDesigner}
+              visible
+            >
+              <MapLayerDesigner ref='LayerDesigner'
+                layer={layerDesignerLayer}
+                onStyleChange={this.onLayerStyleChange}
+                onClose={this.closeLayerDesigner} />
+            </Drawer>
+          }
+          <style jsx global>{`
+            .ant-tabs-content {
+              height: 100%;
+            }
+            .ant-tabs-tabpane {
+              height: 100%;
+            }
+
+            .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
+              display: none;
+            }
+          `}
+          </style>
+          <Tabs
+            defaultActiveKey={'overlays'}
+            style={{height: 'calc(100% - 50px)'}}
+            tabBarStyle={{marginBottom: 0}}
+            animated={false}
+            activeKey={activeTab}
+            onChange={(activeTab) => { this.setState({ activeTab }) }}
           >
-            {editLayerPanel}
-            <li ref='layersListPanel' className='active'>
-              <div className='collapsible-header'><i className='material-icons'>layers</i>{t('Overlay Layers')}</div>
-              <div className='collapsible-body' >
-                <div style={{height: (panelHeight).toString() + 'px', overflow: 'auto'}}>
-                  <Row style={{height: 'calc(100% - 72px'}}>
-                    <LayerList
-                      layers={mapLayers}
-                      showVisibility={showVisibility}
-                      showRemove showDesign showEdit={!editingLayer}
-                      toggleVisibility={toggleVisibility}
-                      removeFromMap={removeFromMap}
-                      showLayerDesigner={showLayerDesigner}
-                      updateLayers={Actions.setMapLayers}
-                      editLayer={editLayer}
-                      t={t}
-                    />
-                  </Row>
-                  <Row style={{height: '50px', textAlign: 'center'}}>
-                    <Button style={{margin: '15px'}} type='primary' onClick={() => { this.setState({showAddLayer: true}) }}>{t('Add Layer')}</Button>
-                  </Row>
-                </div>
-              </div>
-            </li>
-            <li ref='saveMapPanel'>
-              <div className='collapsible-header'><i className='material-icons'>save</i>{t('Save Map')}</div>
-              <div className='collapsible-body'>
-                <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
-                  <SaveMapPanel {...this.state} editing={this.props.edit} onSave={this.onSave} />
-                </div>
-
-              </div>
-            </li>
-            <li ref='settingsPanel'>
-              <div className='collapsible-header'><i className='material-icons'>settings</i>{t('Map Settings')}</div>
-              <div className='collapsible-body'>
-                <div style={{height: panelHeight.toString() + 'px', overflow: 'auto'}}>
-                  <MapSettingsPanel />
-                </div>
-
-              </div>
-            </li>
-          </ul>
+            <TabPane tab={t('Base Map')} key='basemap' style={{height: '100%'}}>
+              <BaseMapSelection onChange={this.changeBaseMap} t={t} />
+            </TabPane>
+            <TabPane tab={t('Layers')} key='overlays' style={{height: '100%'}}>
+              <Row style={{height: 'calc(100% - 100px'}}>
+                <LayerList
+                  layers={mapLayers}
+                  showVisibility={showVisibility}
+                  showRemove showDesign showEdit={!editingLayer}
+                  toggleVisibility={toggleVisibility}
+                  removeFromMap={removeFromMap}
+                  showLayerDesigner={showLayerDesigner}
+                  updateLayers={Actions.setMapLayers}
+                  editLayer={editLayer}
+                  openAddLayer={() => { this.setState({showAddLayer: true}) }}
+                  t={t}
+                />
+              </Row>
+              <Row style={{height: '50px', textAlign: 'center'}}>
+                <Button style={{marginTop: '9px'}} type='primary' onClick={() => { this.setState({showAddLayer: true}) }}>{t('Add Layer')}</Button>
+              </Row>
+            </TabPane>
+            {editingLayer &&
+              <TabPane tab={t('Editing')} key='editing' style={{height: '100%'}}>
+                <EditLayerPanel t={t} />
+              </TabPane>
+            }
+          </Tabs>
+          <hr style={{margin: 0}} />
+          <Row style={{padding: '10px'}}>
+            <Col span={12}>
+              <MapSettingsPanel />
+            </Col>
+            <Col span={12} style={{textAlign: 'right'}}>
+              <SaveMapModal {...this.state} editing={this.props.edit} onSave={this.onSave} />
+            </Col>
+          </Row>
         </div>
         <div className='col s6 m8 l9 no-padding' style={{height: '100%'}}>
           <div className='row' style={{height: '100%', width: '100%', margin: 0, position: 'relative'}}>

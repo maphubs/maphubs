@@ -72,7 +72,7 @@ export default class MapToolPanel extends React.Component<Props, State> {
           handler={false}
           level={null}
           placement='right'
-          width='240px'
+          width='320px'
         >
           <a
             className='omh-color'

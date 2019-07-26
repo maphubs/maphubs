@@ -61,12 +61,12 @@ export default class EditLayerPanel extends React.Component<Props, void> {
                 onChange={(data) => {
                   this.onChange(data, DataEditor)
                 }}
-                style={{padding: '10px'}}
+                style={{padding: '10px', height: '100%', overflow: 'auto'}}
                 showSubmit={false} />
             )
           }
           return (
-            <div>
+            <div style={{height: 'calc(100% - 75px'}}>
               {layerTitle}
               {featureAttributes}
             </div>

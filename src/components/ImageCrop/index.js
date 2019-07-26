@@ -475,7 +475,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
           width='80vw'
           height='90vh'
           footer={[
-            <Button key='back' onClick={this.handleCancel}>
+            <Button key='back' onClick={this.handleCloseSelected}>
               Cancel
             </Button>,
             <Button key='submit' type='primary' disabled={!src} onClick={this.onSave}>

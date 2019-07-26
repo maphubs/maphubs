@@ -12,7 +12,6 @@ type Props = {|
  id: string,
   layer: Layer,
   onStyleChange: Function,
-  onClose: Function,
   showAdvanced: boolean
 |}
 
@@ -105,10 +104,6 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
     this.props.onStyleChange(this.props.layer.layer_id, this.props.layer.style, this.props.layer.labels, legend)
   }
 
-  close = () => {
-    this.props.onClose()
-  }
-
   render () {
     const {t} = this
     const legendCode: string = (this.props.layer && this.props.layer.legend_html) ? this.props.layer.legend_html : ''
@@ -140,14 +135,12 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
         )
       } else {
         designer = (
-          <div>
-            <LayerDesigner onColorChange={this.onColorChange}
-              style={style} onStyleChange={this.setStyle}
-              labels={this.props.layer.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setMarkers}
-              layer={this.props.layer}
-              showAdvanced={this.props.showAdvanced}
-              legend={legendCode} onLegendChange={this.setLegend} />
-          </div>
+          <LayerDesigner onColorChange={this.onColorChange}
+            style={style} onStyleChange={this.setStyle}
+            labels={this.props.layer.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setMarkers}
+            layer={this.props.layer}
+            showAdvanced={this.props.showAdvanced}
+            legend={legendCode} onLegendChange={this.setLegend} />
         )
       }
     }
@@ -161,16 +154,9 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
   */
 
     return (
-      <div>
-        <div>
-          {designer}
-        </div>
-        <div>
-          <div className='center' style={{margin: '10px'}}>
-            <a className='waves-effect waves-light btn' style={{float: 'none'}} onClick={this.close}>{t('Close')}</a>
-          </div>
-        </div>
-      </div>
+      <>
+        {designer}
+      </>
     )
   }
 }

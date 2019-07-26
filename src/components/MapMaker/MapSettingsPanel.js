@@ -5,6 +5,7 @@ import MapMakerActions from '../../actions/MapMakerActions'
 import MapHubsComponent from '../MapHubsComponent'
 import CodeEditor from '../LayerDesigner/CodeEditor'
 import type {MapMakerStoreState} from '../../stores/MapMakerStore'
+import { Icon, Tooltip } from 'antd'
 
 type Props = {
 
@@ -31,7 +32,9 @@ export default class MapSettingsPanel extends MapHubsComponent<Props, MapMakerSt
     const {t} = this
     return (
       <div>
-        <button onClick={this.showSettingsEditor} className='btn' style={{margin: '10px'}}>{t('Advanced Settings')}</button>
+        <Tooltip title={t('Advanced Map Settings')} placement='right'>
+          <Icon type='setting' style={{fontSize: '24px', marginTop: '4px'}} onClick={this.showSettingsEditor} />
+        </Tooltip>
 
         <CodeEditor ref='settingsEditor' id='map-settings-editor' mode='json'
           code={JSON.stringify(this.state.settings, undefined, 2)}
