@@ -112,11 +112,11 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
     let groupSelection
     if (!this.state.group_id) {
       groupSelection = (
-        <div className='row'>
+        <Row style={{marginBottom: '10px', maxWidth: '400px'}}>
           <Formsy>
             <SelectGroup groups={this.props.groups} onGroupChange={this.onGroupChange} type='layer' />
           </Formsy>
-        </div>
+        </Row>
       )
     }
 
@@ -124,10 +124,10 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
     if (this.state.layer_id) {
       step = 2
       importComplete = (
-        <div className='row'>
+        <Row>
           <p>{t('Import Complete')}</p>
           <a className='btn' href={`/lyr/${this.state.layer_id}`}>{t('Go to Layer')}</a>
-        </div>
+        </Row>
       )
     }
 
@@ -136,10 +136,10 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
       step = 1
       const url = `/api/import/layer/${this.state.group_id}/upload`
       uploadBox = (
-        <div className='row'>
+        <Row>
           <p>{t('Please upload a MapHubs (.maphubs) file')}</p>
           <FileUpload onUpload={this.onUpload} onFinishTx={this.onProcessingStart} onError={this.onUploadError} action={url} />
-        </div>
+        </Row>
       )
     }
 
