@@ -2,7 +2,6 @@
 import React from 'react'
 import GroupTag from '../Groups/GroupTag'
 import MapCardGroupTag from './MapCardGroupTag'
-import StoryHeader from '../Story/StoryHeader'
 import Lock from '@material-ui/icons/Lock'
 import LockOpen from '@material-ui/icons/LockOpenTwoTone'
 import { Card, Tooltip } from 'antd'
@@ -47,7 +46,6 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
     let iconName = ''
     let toolTipText = ''
     let mapCardGroupTag = ''
-    let storyTag = ''
     if (type) {
       if (type === 'layer') {
         iconName = 'layers'
@@ -58,11 +56,6 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
       } else if (type === 'story') {
         iconName = 'library_books'
         toolTipText = t('Story')
-        storyTag = (
-          <div style={{position: 'absolute', bottom: 1, left: 1, width: '200px'}}>
-            <StoryHeader story={this.props.data} short />
-          </div>
-        )
       } else if (type === 'map') {
         iconName = 'map'
         toolTipText = t('Map')
@@ -162,7 +155,6 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
 
           <p className='fade' style={{fontSize: '12px'}}> {t(this.props.description)}</p>
           {mapCardGroupTag}
-          {storyTag}
           {group &&
             <div className='valign-wrapper' style={{position: 'absolute', bottom: 5, left: 5}}>
               <GroupTag group={group.group_id} />

@@ -27,11 +27,7 @@ type Props = {
   user: Object
 }
 
-type State = {
-  mapCards: Array<CardConfig>,
-  layerCards: Array<CardConfig>,
-  storyCards: Array<CardConfig>
-}
+type State = {}
 
 export default class GroupInfo extends MapHubsComponent<Props, State> {
   static async getInitialProps ({ req, query }: {req: any, query: Object}) {
@@ -58,11 +54,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-    this.state = {
-      mapCards: props.maps.map(cardUtil.getMapCard),
-      layerCards: props.layers.map(cardUtil.getLayerCard),
-      storyCards: props.stories.map(cardUtil.getStoryCard)
-    }
+    this.state = {}
   }
 
   componentDidMount () {
@@ -71,59 +63,28 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
-    const groupId = this.props.group.group_id ? this.props.group.group_id : ''
-    let editButton = ''
+    const { group, maps, layers, stories, canEdit } = this.props
+    const groupId = group.group_id ? group.group_id : ''
 
-    if (this.props.canEdit) {
-      editButton = (
-        <div ref={(el) => { this.menuButton = el }}className='fixed-action-btn action-button-bottom-right'>
-          <a className='btn-floating btn-large red red-text'>
-            <i className='large material-icons'>more_vert</i>
-          </a>
-          <ul>
-            <li>
-              <FloatingButton
-                href='/createlayer' icon='add' color='green'
-                tooltip={t('Add New Layer')} tooltipPosition='left' />
-            </li>
-            <li>
-              <FloatingButton
-                href={`/group/${groupId}/admin`} icon='settings' color='blue'
-                tooltip={t('Manage Group')} tooltipPosition='left' />
-            </li>
-          </ul>
-        </div>
-      )
-
-      var addButtons = (
-        <div className='valign-wrapper'>
-          <a className='btn valign' style={{margin: 'auto'}} href={'/map/new?group_id=' + groupId}>{t('Make a Map')}</a>
-          <a className='btn valign' style={{margin: 'auto'}} href={'/createlayer?group_id=' + groupId}>{t('Add a Layer')}</a>
-          <a className='btn valign' style={{margin: 'auto'}} href={'/createstory?group_id=' + groupId}>{t('Write a Story')}</a>
-        </div>
-      )
-    }
+    const mapCards = maps.map(cardUtil.getMapCard)
+    const layerCards = layers.map(cardUtil.getLayerCard)
+    const storyCards = stories.map(s => cardUtil.getStoryCard(s, this.t))
+    const allCards = cardUtil.combineCards([mapCards, layerCards, storyCards])
 
     let descriptionWithLinks = ''
 
-    if (this.props.group.description) {
-      const localizedDescription = this.t(this.props.group.description)
+    if (group.description) {
+      const localizedDescription = this.t(group.description)
       // regex for detecting links
       const regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig
       descriptionWithLinks = localizedDescription.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>")
     }
-    let status = t('DRAFT')
-    if (this.props.group.published) {
-      status = t('Published')
-    }
-
-    const allCards = cardUtil.combineCards([this.state.mapCards, this.state.layerCards, this.state.storyCards])
 
     return (
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <div style={{marginLeft: '10px', marginRight: '10px'}}>
-          <h4>{this.t(this.props.group.name)}</h4>
+          <h4>{t(group.name)}</h4>
           <Row>
             <Col span={12}>
               <img alt={t('Group Photo')} width='300' className='' src={'/img/resize/600?url=/group/' + groupId + '/image'} />
@@ -133,7 +94,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
                 <p><b>{t('Description: ')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
               </Row>
               <Row>
-                <p><b>{t('Status: ')}</b>{status}</p>
+                <p><b>{t('Status: ')}</b>{group.published ? t('Published') : t('DRAFT')}</p>
               </Row>
               <Row>
                 <p><b>{t('Location: ')}</b>{this.props.group.location}</p>
@@ -150,7 +111,13 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
             <Row>
               <CardCarousel cards={allCards} infinite={false} t={this.t} />
             </Row>
-            {addButtons}
+            {canEdit &&
+              <div className='valign-wrapper'>
+                <a className='btn valign' style={{margin: 'auto'}} href={'/map/new?group_id=' + groupId}>{t('Make a Map')}</a>
+                <a className='btn valign' style={{margin: 'auto'}} href={'/createlayer?group_id=' + groupId}>{t('Add a Layer')}</a>
+                <a className='btn valign' style={{margin: 'auto'}} href={'/createstory?group_id=' + groupId}>{t('Write a Story')}</a>
+              </div>
+            }
           </Row>
         </div>
         <div className='divider' />
@@ -161,35 +128,48 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
                 <h5>{t('Members')}</h5>
               </li>
               {this.props.members.map(function (user, i) {
-                let icon = ''
-                if (user.role === 'Administrator') {
-                  icon = (
-                    <Tooltip
-                      title={t('Group Administrator')}
-                      position='top' inertia followCursor>
-                      <i className='secondary-content material-icons'>
-                        supervisor_account
-                      </i>
-                    </Tooltip>
-                  )
-                }
-                let image = ''
-                if (user.image) {
-                  image = (<img alt={t('Profile Photo')} className='circle' src={user.image} />)
-                } else {
-                  image = (<i className='material-icons circle'>person</i>)
-                }
                 return (
                   <li className='collection-item avatar' key={user.id}>
-                    {image}
+                    {user.image &&
+                      <img alt={t('Profile Photo')} className='circle' src={user.image} />
+                    }
+                    {!user.image &&
+                      <i className='material-icons circle'>person</i>
+                    }
                     <span className='title'>{user.display_name}</span>
-                    {icon}
+                    {(user.role === 'Administrator') &&
+                      <Tooltip
+                        title={t('Group Administrator')}
+                        placement='top'>
+                        <i className='secondary-content material-icons'>
+                          supervisor_account
+                        </i>
+                      </Tooltip>
+                    }
                   </li>
                 )
               })}
             </ul>
           </div>
-          {editButton}
+          {canEdit &&
+            <div ref={(el) => { this.menuButton = el }}className='fixed-action-btn action-button-bottom-right'>
+              <a className='btn-floating btn-large red red-text'>
+                <i className='large material-icons'>more_vert</i>
+              </a>
+              <ul>
+                <li>
+                  <FloatingButton
+                    href='/createlayer' icon='add' color='green'
+                    tooltip={t('Add New Layer')} tooltipPosition='left' />
+                </li>
+                <li>
+                  <FloatingButton
+                    href={`/group/${groupId}/admin`} icon='settings' color='blue'
+                    tooltip={t('Manage Group')} tooltipPosition='left' />
+                </li>
+              </ul>
+            </div>
+          }
         </div>
       </ErrorBoundary>
     )

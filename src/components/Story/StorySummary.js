@@ -19,12 +19,8 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
   render () {
     const {t} = this
     const {story} = this.props
-    let title = ''
-    if (story.title) {
-      title = story.title.replace('&nbsp;', '')
-    }
     const baseUrl = urlUtil.getBaseUrl()
-    const linkUrl = `${baseUrl}/story/${slugify(title)}/${story.story_id}`
+    const linkUrl = `${baseUrl}/story/${slugify(t(story.title))}/${story.story_id}`
 
     let imageUrl
     if (story.firstimage) {
@@ -34,6 +30,13 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
       }
       imageUrl = '/img/resize/1200?url=' + imageUrl
     }
+
+    let title = t(story.title)
+    title = title
+      .replace('<br>', '')
+      .replace('<br />', '')
+      .replace('<p>', '')
+      .replace('</p>', '')
 
     return (
       <div>

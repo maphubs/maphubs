@@ -177,7 +177,7 @@ export default class Search extends MapHubsComponent<Props, State> {
     return _shuffle(layers.map(cardUtil.getLayerCard)
       .concat(groups.map(cardUtil.getGroupCard))
       .concat(maps.map(cardUtil.getMapCard))
-      .concat(stories.map(cardUtil.getStoryCard))
+      .concat(stories.map(s => cardUtil.getStoryCard(s, this.t)))
     )
   }
 

@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { Row, Col } from 'antd'
+import { Row, Col, Button } from 'antd'
 import StorySummary from '../components/Story/StorySummary'
 import UserStore from '../stores/UserStore'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -53,10 +53,17 @@ export default class Stories extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header activePage='stories' {...this.props.headerConfig} />
         <main>
-          <Row>
+          <Row style={{padding: '20px'}}>
+            {(hasRecent || hasPopular) &&
+              <Row style={{textAlign: 'right'}}>
+                <Button type='link' href='/stories/all'>{t('View All Stories')}</Button>
+              </Row>
+            }
             {hasRecent &&
-              <Col sm={24} med={12}>
-                <h4>{t('Recent Stories')}</h4>
+              <Col sm={24} med={12} style={{margin: '20px'}}>
+                <Row style={{textAlign: 'center'}}>
+                  <h4>{t('Recent Stories')}</h4>
+                </Row>
                 {recentStories.map((story) => {
                   return (
                     <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
@@ -69,8 +76,10 @@ export default class Stories extends MapHubsComponent<Props, State> {
               </Col>
             }
             {hasPopular &&
-              <Col sm={24} med={12}>
-                <h4>{t('Popular Stories')}</h4>
+              <Col sm={24} med={12} style={{margin: '20px'}}>
+                <Row style={{textAlign: 'center'}}>
+                  <h4>{t('Popular Stories')}</h4>
+                </Row>
                 {popularStories.map((story) => {
                   return (
                     <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
@@ -94,11 +103,7 @@ export default class Stories extends MapHubsComponent<Props, State> {
               icon='add'
               tooltip={t('Create New Story')} tooltipPosition='top' />
           </div>
-          {(hasRecent || hasPopular) &&
-            <Row style={{texhAlign: 'center'}}>
-              <a className='btn' href='/stories/all'>{t('View All Stories')}</a>
-            </Row>
-          }
+          
         </main>
         <Footer {...this.props.footerConfig} />
       </ErrorBoundary>

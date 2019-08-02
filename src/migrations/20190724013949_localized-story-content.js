@@ -17,7 +17,7 @@ exports.up = async (knex) => {
 
   await knex.raw(`ALTER TABLE omh.stories DROP COLUMN body;`)
   await knex.raw(`ALTER TABLE omh.stories ADD COLUMN body jsonb;`)
-  return knex.raw(`UPDATE omh.stories SET title = json_build_object('en', legacy_body);`)
+  return knex.raw(`UPDATE omh.stories SET body = json_build_object('en', legacy_body);`)
 }
 
 exports.down = (knex) => {

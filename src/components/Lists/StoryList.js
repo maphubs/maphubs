@@ -24,21 +24,22 @@ export default class StoryList extends MapHubsComponent<Props, void> {
 
   render () {
     const {t} = this
-    let title = ''
-    let className = 'collection'
-    if (this.props.showTitle) {
-      className = 'collection with-header'
-      title = (
-        <li className='collection-header'>
-          <h4>{t('Stories')}</h4>
-        </li>
-      )
-    }
+    const { showTitle } = this.props
+
     return (
-      <ul className={className}>
-        {title}
+      <ul className={showTitle ? 'collection with-header' : 'collection'}>
+        {showTitle &&
+          <li className='collection-header'>
+            <h4>{t('Stories')}</h4>
+          </li>
+        }
         {this.props.stories.map((story, i) => {
-          const title = story.title
+          let title = t(story.title)
+          title = title
+            .replace('<br>', '')
+            .replace('<br />', '')
+            .replace('<p>', '')
+            .replace('</p>', '')
           const storyUrl = `/story/${slugify(title)}/${story.story_id}`
           return (
             <li className='collection-item' key={story.story_id}>

@@ -53,7 +53,7 @@ module.exports = {
     return Story.getAllStories(trx).orderBy('omh.stories.updated_at', 'desc')
       .then((stories) => {
         stories.forEach((story) => {
-          const title = story.title.replace('&nbsp;', '')
+          const title = story.title['en']
           const baseUrl = urlUtil.getBaseUrl()
           const story_url = `${baseUrl}/story/${slugify(title)}/${story.story_id}`
           let lastmodISO = null

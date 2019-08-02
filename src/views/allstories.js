@@ -1,8 +1,8 @@
 // @flow
 import React from 'react'
+import {Row, Col} from 'antd'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import MessageActions from '../actions/MessageActions'
 import UserStore from '../stores/UserStore'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -71,35 +71,33 @@ export default class AllStories extends MapHubsComponent<Props, State> {
         <Header activePage='stories' {...this.props.headerConfig} />
         <main>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
-            <div className='row' style={{marginBottom: '0px'}}>
-              <div className='col l8 m7 s12'>
-                <h4 className='no-margin'>{t('Stories')}</h4>
-              </div>
-            </div>
-            <div className='row'>
+            <Row>
+              <h4 className='no-margin'>{t('Stories')}</h4>
+            </Row>
+            <Row>
               <div className='left-align' style={{marginLeft: '15px', marginTop: '25px'}}>
                 <Formsy>
                   <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={showList} />
                 </Formsy>
               </div>
               {hasStories &&
-                <div className='row'>
+                <Row>
                   {showList &&
                     <div className='container'>
                       <StoryList showTitle={false} stories={stories} />
                     </div>
                   }
                   {!showList &&
-                    <CardGrid cards={stories.map(cardUtil.getStoryCard)} t={t} />
+                    <CardGrid cards={stories.map(s => cardUtil.getStoryCard(s, t))} t={t} />
                   }
-                </div>
+                </Row>
               }
               {!hasStories &&
                 <div className='col s12' style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
                   <b>{t('No Stories Found')}</b>
                 </div>
               }
-            </div>
+            </Row>
           </div>
           <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton

@@ -69,6 +69,7 @@ export default class Home extends MapHubsComponent<Props, State> {
 
   constructor (props: Props) {
     super(props)
+    const {t} = this
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
@@ -79,9 +80,9 @@ export default class Home extends MapHubsComponent<Props, State> {
       groupMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
       layerMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
 
-      featuredStoryCards: _shuffle(props.featuredStories.map(cardUtil.getStoryCard)),
-      popularStoryCards: _shuffle(props.popularStories.map(cardUtil.getStoryCard)),
-      recentStoryCards: _shuffle(props.recentStories.map(cardUtil.getStoryCard)),
+      featuredStoryCards: _shuffle(props.featuredStories.map(s => cardUtil.getStoryCard(s, t))),
+      popularStoryCards: _shuffle(props.popularStories.map(s => cardUtil.getStoryCard(s, t))),
+      recentStoryCards: _shuffle(props.recentStories.map(s => cardUtil.getStoryCard(s, t))),
 
       featuredMapCards: _shuffle(props.featuredMaps.map(cardUtil.getMapCard)),
       popularMapCards: _shuffle(props.popularMaps.map(cardUtil.getMapCard)),

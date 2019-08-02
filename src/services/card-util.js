@@ -75,8 +75,13 @@ export default {
     }
   },
 
-  getStoryCard (story: Object, id: number, arr: Array<Object>, onClick?: Function) {
-    const title = story.title.replace('&nbsp;', '')
+  getStoryCard (story: Object, t: Function) {
+    let title = t(story.title)
+    title = title
+      .replace('<br>', '')
+      .replace('<br />', '')
+      .replace('<p>', '')
+      .replace('</p>', '')
     const baseUrl = urlUtil.getBaseUrl()
     const story_url = `${baseUrl}/story/${slugify(title)}/${story.story_id}`
 
@@ -95,8 +100,11 @@ export default {
       image_url,
       link: story_url,
       type: 'story',
-      data: story,
-      onClick
+      group: {
+        group_id: story.owned_by_group_id,
+        name: story.groupname
+      },
+      data: story
     }
   }
 

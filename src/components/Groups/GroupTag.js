@@ -44,7 +44,9 @@ export default class GroupTag extends MapHubsComponent<Props, State> {
     const { group } = this.props
     const { failed } = this.state
     const baseUrl = urlUtil.getBaseUrl()
-
+    if (!group) {
+      return ''
+    }
     return (
       <div>
         <Tooltip title={group} placement='top' >
