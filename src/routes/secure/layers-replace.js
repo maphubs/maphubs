@@ -89,7 +89,7 @@ module.exports = function (app: any) {
             await DataLoadUtils.removeLayerData(layer_id, trx)
             const layer = await Layer.getLayerByID(layer_id, trx)
             if (layer) {
-              await DataLoadUtils.loadTempData(layer_id, trx, layer.disable_feature_indexing)
+              await DataLoadUtils.loadTempData(layer_id, trx)
               await LayerViews.replaceViews(layer_id, layer.presets, trx)
               await Layer.setComplete(layer_id, trx)
               return res.send({success: true})

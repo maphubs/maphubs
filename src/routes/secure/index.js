@@ -21,7 +21,6 @@ module.exports = function (app: any) {
   require('./exports')(app)
   require('./layers-api')(app)
   require('./map-api')(app)
-  require('./search-index.admin')(app)
   require('./features')(app)
   require('./isochrone-service')(app)
   require('./layers-import')(app)

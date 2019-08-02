@@ -3,7 +3,6 @@ const Feature = require('../../models/feature')
 const Layer = require('../../models/layer')
 const LayerData = require('../../models/layer-data')
 const PhotoAttachment = require('../../models/photo-attachment')
-const SearchIndex = require('../../models/search-index')
 const knex = require('../../connection')
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const imageUtils = require('../../services/image-utils')
@@ -232,7 +231,6 @@ module.exports = function (app: any) {
         if (allowed) {
           return knex.transaction(async (trx) => {
             await Feature.saveFeatureNote(data.mhid, data.layer_id, req.user_id, data.notes, trx)
-            await SearchIndex.updateFeature(data.layer_id, data.mhid, true, trx)
             return res.send({success: true})
           })
         } else {

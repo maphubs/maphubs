@@ -11,7 +11,6 @@ const fs = require('fs')
 const LayerViews = require('./layer-views')
 const Promise = require('bluebird')
 const ogr2ogr = require('ogr2ogr')
-const SearchIndex = require('../models/search-index')
 
 module.exports = {
 
@@ -25,8 +24,6 @@ module.exports = {
     if (result && result.length > 0) {
       const status = result[0].status
       if (status === 'published' || status === 'loaded') {
-        debug.log('removing from search index')
-        await SearchIndex.deleteLayer(layer_id, trx)
         debug.log('dropping layer views')
         await LayerViews.dropLayerViews(layer_id, trx)
         debug.log('dropping layer data')
@@ -268,12 +265,7 @@ module.exports = {
     return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START 1`)
   },
 
-  async loadTempData (layer_id: number, trx: any, skipIndex?: boolean = false) {
-    // update search index
-    if (!skipIndex) {
-      await SearchIndex.updateLayer(layer_id, trx)
-    }
-
+  async loadTempData (layer_id: number, trx: any) {
     return trx('omh.layers').update({status: 'loaded'}).where({layer_id})
   }
 }

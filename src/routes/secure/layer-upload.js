@@ -19,7 +19,6 @@ const Importers = require('@bit/kriscarle.maphubs-utils.maphubs-utils.importers'
 const csrfProtection = require('csurf')({cookie: false})
 const isAuthenticated = require('../../services/auth-check')
 const layerViews = require('../../services/layer-views')
-const SearchIndex = require('../../models/search-index')
 
 const metadataStringToObject = (stringValue) => {
   const keyValuePairList = stringValue.split(',')
@@ -103,9 +102,6 @@ module.exports = function (app: any) {
         await knex.transaction(async (trx) => {
           const layer = await Layer.getLayerByID(layer_id, trx)
           if (layer) {
-            if (!layer.disable_feature_indexing) {
-              await SearchIndex.updateLayer(layer_id, trx)
-            }
             await trx('omh.layers').update({status: 'loaded'}).where({layer_id})
             debug.log('data load transaction complete')
             return res.status(200).send({success: true})

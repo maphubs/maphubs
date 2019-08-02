@@ -1,7 +1,6 @@
 // @flow
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('layer-data')
-const SearchIndex = require('./search-index')
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+// const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 /**
  * Provides CRUD methods for updating layer data in PostGIS
  */
@@ -30,15 +29,7 @@ module.exports = {
       const mhid = result[0]
       debug.log(`created: ${mhid}`)
       await _this.updateLayerExtent(layer_id, trx)
-      try {
-        await SearchIndex.updateFeature(layer_id, mhid, true, trx)
-        return mhid
-      } catch (err) {
-        log.error(err)
-        return mhid
-      }
-    } else {
-
+      return mhid
     }
   },
 
@@ -62,10 +53,7 @@ module.exports = {
       })
       .where({mhid})
 
-    await _this.updateLayerExtent(layer_id, trx)
-    return SearchIndex.updateFeature(layer_id, mhid, true, trx).catch(err => {
-      log.error(err)
-    })
+    return _this.updateLayerExtent(layer_id, trx)
   },
 
   /**
@@ -90,15 +78,11 @@ module.exports = {
       valStr = 'null'
     }
     const tagStr = `{${tag}}`
-    await trx(`layers.data_${layer_id}`)
+    return trx(`layers.data_${layer_id}`)
       .update({
         tags: trx.raw(`jsonb_set(tags, :tag , :val ::jsonb)`, {tag: tagStr, val: valStr})
       })
       .where({mhid})
-
-    return SearchIndex.updateFeature(layer_id, mhid, true, trx).catch(err => {
-      log.error(err)
-    })
   },
 
   /**
@@ -120,15 +104,11 @@ module.exports = {
       valStr = 'null'
     }
     const tagStr = `{${tag}}`
-    await trx(`layers.data_${layer_id}`)
+    return trx(`layers.data_${layer_id}`)
       .update({
         tags: trx.raw(`jsonb_set(tags, :tag , :val ::jsonb)`, {tag: tagStr, val: valStr})
       })
       .where({mhid})
-
-    return SearchIndex.updateFeature(layer_id, mhid, true, trx).catch(err => {
-      log.error(err)
-    })
   },
 
   /**
@@ -141,8 +121,7 @@ module.exports = {
    */
   async deleteFeature (layer_id: number, mhid: string, trx: any): Promise<Object> {
     debug.log('deleting feature: ' + mhid)
-    await trx(`layers.data_${layer_id}`).where({mhid}).del()
-    return SearchIndex.deleteFeature(mhid)
+    return trx(`layers.data_${layer_id}`).where({mhid}).del()
   },
 
   async updateLayerExtent (layer_id: number, trx: any) {
