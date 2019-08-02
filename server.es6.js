@@ -7,7 +7,6 @@ const dev = process.env.NODE_ENV !== 'production'
 const nextApp = next({dev})
 const handle = nextApp.getRequestHandler()
 
-const consign = require('consign')
 const passport = require('passport')
 const logger = require('morgan')
 const cors = require('cors')
@@ -129,7 +128,8 @@ nextApp.prepare()
     server.use(passport.session())
 
     // load public routes - routes that should always be public, for example login or signup
-    consign().include('./src/routes/public-routes').into(server)
+    console.log('loading public routes')
+    require('./src/routes/public-routes')(server)
 
     // option to require require login for everything after this point
     let checkLogin
@@ -144,11 +144,10 @@ nextApp.prepare()
       })
     }
 
-    // Public API endpoints, these will be secured if login required
-    // consign().include('./src/routes/public-api').into(app);
     // load secure routes
-    consign().include('./src/routes/secure').into(server)
-
+    console.log('loading secure routes')
+    require('./src/routes/secure')(server)
+  
     try {
       await CMSPages(server)
     } catch (err) {
