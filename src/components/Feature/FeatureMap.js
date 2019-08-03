@@ -4,6 +4,7 @@ import { Subscribe } from 'unstated'
 import MapHubsComponent from '../MapHubsComponent'
 import InteractiveMap from '../Map/InteractiveMap'
 import FRContainer from './containers/FRContainer'
+import type {LocaleStoreState} from '../../stores/LocaleStore'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -12,7 +13,9 @@ type Props = {
   gpxLink: Object
 }
 
-export default class FeatureMap extends MapHubsComponent<Props, void> {
+type State = {} & LocaleStoreState
+
+export default class FeatureMap extends MapHubsComponent<Props, State> {
   map: any
 
   frToggle = (id: string) => {
@@ -52,6 +55,7 @@ export default class FeatureMap extends MapHubsComponent<Props, void> {
               showLegendLayersButton={false}
               gpxLink={gpxLink}
               t={this.t}
+              locale={this.state.locale}
               primaryColor={MAPHUBS_CONFIG.primaryColor}
               logoSmall={MAPHUBS_CONFIG.logoSmall}
               logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}

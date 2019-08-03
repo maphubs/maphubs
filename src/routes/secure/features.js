@@ -70,7 +70,6 @@ module.exports = function (app: any) {
             if (!req.isAuthenticated || !req.isAuthenticated()) {
               return app.next.render(req, res, '/featureinfo', await pageOptions(req, {
                 title: featureName + ' - ' + local.productName,
-                fontawesome: true,
                 talkComments: true,
                 hideFeedback: true,
                 props: {feature, notes, photo, layer, canEdit: false},
@@ -81,7 +80,6 @@ module.exports = function (app: any) {
               if (allowed) {
                 return app.next.render(req, res, '/featureinfo', await pageOptions(req, {
                   title: featureName + ' - ' + local.productName,
-                  fontawesome: true,
                   talkComments: true,
                   hideFeedback: true,
                   props: {feature, notes, photo, layer, canEdit: true}
@@ -89,7 +87,6 @@ module.exports = function (app: any) {
               } else {
                 return app.next.render(req, res, '/featureinfo', await pageOptions(req, {
                   title: featureName + ' - ' + local.productName,
-                  fontawesome: true,
                   talkComments: true,
                   props: {feature, notes, photo, layer, canEdit: false}
                 }))

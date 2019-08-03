@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import MapHubsComponent from '../MapHubsComponent'
-import { Row, Tooltip, Modal, Button, notification } from 'antd'
+import { Row, Modal, Button, notification } from 'antd'
 import Promise from 'bluebird'
 import 'cropperjs/dist/cropper.css'
 import $ from 'jquery'

@@ -29,7 +29,6 @@ import MapContainer from '../Map/containers/MapContainer'
 import BaseMapContainer from '../Map/containers/BaseMapContainer'
 import BaseMapSelection from '../Map/ToolPanels/BaseMapSelection'
 import ErrorBoundary from '../ErrorBoundary'
-import $ from 'jquery'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -106,45 +105,24 @@ class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    const _this = this
-    const {t} = this
+    // const _this = this
+    // const {t} = this
 
-/*
-    window.addEventListener('beforeunload', (e) => {
-      const {saved, mapLayers} = _this.state
-      if (!saved && mapLayers && mapLayers.length > 0) {
-        const msg = t('Please save your map to avoid losing your work!')
-        e.returnValue = msg
-        return msg
-      }
-    })
-*/
+    /*
+        window.addEventListener('beforeunload', (e) => {
+          const {saved, mapLayers} = _this.state
+          if (!saved && mapLayers && mapLayers.length > 0) {
+            const msg = t('Please save your map to avoid losing your work!')
+            e.returnValue = msg
+            return msg
+          }
+        })
+    */
   }
 
   componentWillReceiveProps (nextProps: Props) {
     if (!_isEqual(nextProps.position, this.props.position)) {
       Actions.setMapPosition(nextProps.position)
-    }
-  }
-
-  componentDidUpdate (prevProps: Props, prevState: State) {
-    const {editLayerPanel, layersListPanel, saveMapPanel} = this.refs
-    if (this.state.editingLayer && !prevState.editingLayer) {
-      // starting editing
-      if (editLayerPanel) {
-        $(layersListPanel).removeClass('active')
-        $(layersListPanel).find('.collapsible-body').css('display', 'none')
-
-        $(saveMapPanel).removeClass('active')
-        $(saveMapPanel).find('.collapsible-body').css('display', 'none')
-
-        $(editLayerPanel).addClass('active')
-        $(editLayerPanel).find('.collapsible-body').css('display', 'block')
-      }
-    } else if (!this.state.editingLayer && prevState.editingLayer) {
-      // stopping editing
-      $(layersListPanel).addClass('active')
-      $(layersListPanel).find('.collapsible-body').css('display', 'block')
     }
   }
 

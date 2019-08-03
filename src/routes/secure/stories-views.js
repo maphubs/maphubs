@@ -60,8 +60,6 @@ module.exports = function (app: any) {
       if (firstEdit || await Story.allowedToModify(story_id, user_id)) {
         return app.next.render(req, res, '/editstory', await pageOptions(req, {
           title: 'Editing: ' + story.title,
-          fontawesome: true,
-          rangy: true,
           props: {
             story,
             myMaps: await Map.getUserMaps(user_id),

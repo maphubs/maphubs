@@ -38,7 +38,7 @@ export default class LocalizedInput extends React.Component<Props, State> {
     this.state = { value }
   }
 
-  shouldComponentUpdate (nextProps, nextState) {
+  shouldComponentUpdate (nextProps: Props, nextState: State) {
     let shouldUpdate = false
     langs.forEach(lang => {
       if (nextState.value[lang.value] !== this.state.value[lang.value]) {

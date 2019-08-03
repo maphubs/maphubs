@@ -25,8 +25,6 @@ import EmbedCodeModal from '../components/MapUI/EmbedCodeModal'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
-const $ = require('jquery')
-
 type Props = {
   map: Object,
   layers: Array<Object>,
@@ -39,13 +37,7 @@ type Props = {
   publicShare: boolean
 }
 
-type DefaultProps = {
-  canEdit: boolean
-}
-
 type UserMapState = {
-  width: number,
-  height: number,
   share_id?: string,
   showEmbedCode?: boolean
 }
@@ -63,21 +55,15 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     canEdit: false
-  }
-
-  state: State = {
-    width: 1024,
-    height: 600
   }
 
   constructor (props: Props) {
     super(props)
     this.stores.push(UserStore)
     this.stores.push(MapMakerStore)
+    this.state = {}
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
 
@@ -93,41 +79,8 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentWillMount () {
-    super.componentWillMount()
-    const _this = this
-
-    if (typeof window === 'undefined') return // only run this on the client
-
-    function getSize () {
-      // Get the dimensions of the viewport
-      const width = Math.floor($(window).width())
-      const height = $(window).height()
-      // var height = Math.floor(width * 0.75); //4:3 aspect ratio
-      // var height = Math.floor((width * 9)/16); //16:9 aspect ratio
-      return {width, height}
-    }
-
-    const size = getSize()
-    this.setState({
-      width: size.width,
-      height: size.height
-    })
-
-    $(window).resize(() => {
-      debounce(() => {
-        const size = getSize()
-        _this.setState({
-          width: size.width,
-          height: size.height
-        })
-      }, 300)
-    })
-  }
-
   componentDidMount () {
     M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
-    this.clipboard = require('clipboard-polyfill').default
   }
 
   componentDidUpdate (prevProps: Props, prevState: State) {
@@ -188,10 +141,6 @@ export default class UserMap extends MapHubsComponent<Props, State> {
       const closeMessage = message.loading(this.t('Downloading'), 0)
       setTimeout(() => { closeMessage() }, 15000)
     }
-  }
-
-  copyToClipboard = (val: string) => {
-    this.clipboard.writeText(val)
   }
 
   showEmbedCode = () => {

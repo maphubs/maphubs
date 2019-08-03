@@ -193,12 +193,6 @@ export default class MyDocument extends Document {
           {options.talkComments &&
             <script type='text/javascript' src='https://talk.maphubs.com/embed.js' />
           }
-          {options.rangy &&
-            <script src={`${assetHost}/assets/js/rangy-core.js`} />
-          }
-          {options.rangy &&
-            <script src={`${assetHost}/assets/js/rangy-cssclassapplier.js`} />
-          }
           {!options.hideFeedback &&
           <script dangerouslySetInnerHTML={{__html: `
             Userback = window.Userback || {};
@@ -237,11 +231,6 @@ export default class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
-          {options.fontawesome &&
-            <link href={assetHost + '/assets/css/font-awesome.css'} rel='stylesheet' />
-          }
-          <link href={assetHost + '/assets/css/raleway.css'} rel='stylesheet' type='text/css' />
-          <link href={assetHost + '/assets/css/opensans.css'} rel='stylesheet' type='text/css' />
 
           {(process.env.NODE_ENV === 'production' && !local.disableTracking && !options.disableGoogleAnalytics) &&
             <script dangerouslySetInnerHTML={{__html: `

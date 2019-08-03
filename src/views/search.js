@@ -18,7 +18,6 @@ import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('home')
-const $ = require('jquery')
 
 type Props = {
   locale: string,
@@ -73,15 +72,6 @@ export default class Search extends MapHubsComponent<Props, State> {
     const q = this.getParameterByName('q')
     if (q) {
       this.handleSearch(q)
-    }
-  }
-
-  componentDidUpdate () {
-    if (this.state.searchResult) {
-      const scrollTarget = $(this.refs.search)
-      $('html,body').animate({
-        scrollTop: scrollTarget.offset().top
-      }, 1000)
     }
   }
 
