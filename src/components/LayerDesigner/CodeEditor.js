@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import {Modal, ModalContent, ModalFooter} from '../Modal/Modal'
+import { Modal, Button } from 'antd'
 import _isequal from 'lodash.isequal'
 import MapHubsComponent from '../MapHubsComponent'
 
@@ -112,13 +112,14 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
+    const { title, modal } = this.props
+    const { show, canSave } = this.state
     let editor = ''
-    if (this.state.show) {
+    if (show) {
       let enableBasicAutocompletion
       if (this.props.mode !== 'json') {
         enableBasicAutocompletion = true
       }
-
       editor = (
         <AceEditor
           ref='ace'
@@ -135,34 +136,45 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
         />
       )
     }
-    if (this.props.modal) {
+    if (modal) {
       return (
-        <Modal id={this.props.id} show={this.state.show} className='code-edit-modal' fixedFooter dismissible={false}>
-          <ModalContent style={{padding: '0px'}}>
-
+        <>
+          <style jsx global> {`
+          .ant-modal-content {
+            height: 100%;
+          }
+        `}</style>
+          <Modal
+            title={title}
+            visible={show}
+            onOk={this.close}
+            centered
+            height='90vh'
+            width='60vw'
+            bodyStyle={{height: 'calc(100% - 110px)', padding: '0px'}}
+            onCancel={this.onCancel}
+            footer={[
+              <Button key='back' onClick={this.onCancel}>
+                {t('Cancel')}
+              </Button>,
+              <Button key='submit' type='primary' disabled={!canSave} onClick={this.onSave}>
+                {t('Save')}
+              </Button>
+            ]}
+          >
             <div className='left-align' style={{height: '100%'}}>
               {editor}
             </div>
-
-          </ModalContent>
-          <ModalFooter>
-
-            <p className='left no-padding'>{this.props.title}</p>
-            <div className='right'>
-              <a className='waves-effect waves-light btn' style={{float: 'none', marginRight: '15px'}} onClick={this.onCancel}>{t('Cancel')}</a>
-              <a className='waves-effect waves-light btn' style={{float: 'none'}} disabled={!this.state.canSave} onClick={this.onSave}>{t('Save')}</a>
-            </div>
-
-          </ModalFooter>
-        </Modal>
+          </Modal>
+        </>
       )
     } else {
       return (
         <div style={{height: 'calc(100% - 100px)', width: '100%'}}>
-          <p className='left no-padding'>{this.props.title}</p>
+          <p className='left no-padding'>{title}</p>
           {editor}
           <div className='right'>
-            <a className='waves-effect waves-light btn' style={{float: 'none', marginTop: '15px'}} disabled={!this.state.canSave} onClick={this.onSave}>{t('Save')}</a>
+            <Button type='primary' style={{float: 'none', marginTop: '15px'}} disabled={!canSave} onClick={this.onSave}>{t('Save')}</Button>
           </div>
         </div>
       )

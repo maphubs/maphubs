@@ -1,44 +1,81 @@
 // @flow
 import React from 'react'
-import {Modal, ModalContent} from '../Modal/Modal'
-import MapHubsComponent from '../MapHubsComponent'
-
+import { Modal, message, notification } from 'antd'
+import superagent from 'superagent'
 import SaveMapPanel from '../MapMaker/SaveMapPanel'
 
 type Props = {|
   title: string,
-  onSubmit: Function
+  map_id: string,
+  _csrf?: string,
+  t: Function
 |}
 
-export default class CopyMapModal extends MapHubsComponent<Props, void> {
-  /**
-   * Show the Modal
-   */
+type State = {
+  visible: boolean
+}
+
+export default class CopyMapModal extends React.Component<Props, State> {
+  constructor (props: Props) {
+    super()
+    this.state = {
+      visible: false
+    }
+  }
   show = () => {
-    this.refs.modal.show()
+    this.setState({visible: true})
   }
 
   close = () => {
-    this.refs.modal.close()
+    this.setState({visible: false})
+  }
+
+  onCopyMap = async (formData: Object) => {
+    const { map_id, _csrf, t } = this.props
+    const data = {
+      map_id,
+      title: formData.title,
+      group_id: formData.group,
+      _csrf
+    }
+    try {
+      const res = await superagent.post('/api/map/copy')
+        .type('json').accept('json')
+        .send(data)
+      const mapId = res.body.map_id
+      if (!res.body || !mapId) {
+        notification.error({
+          message: t('Error'),
+          description: res.body.error || 'Error saving map',
+          duration: 0
+        })
+      } else {
+        message.info(t('Map Copied'), 3, () => {
+          window.location = `/map/edit/${mapId}`
+        })
+      }
+    } catch (err) {
+      notification.error({
+        message: t('Error'),
+        description: err.message || err.toString(),
+        duration: 0
+      })
+    }
   }
 
   render () {
-    const {t} = this
+    const { title, t } = this.props
+    const { visible } = this.state
     return (
-      <Modal ref='modal' id='copy-map-modal' dismissible={false} fixedFooter={false}>
-        <ModalContent style={{padding: '10px', margin: 0, height: '500px', background: 'white', overflow: 'hidden'}}>
-          <div className='row no-margin' style={{height: '35px'}}>
-            <h4>{t('Copy Map')}</h4>
-            <a className='omh-color' style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer'}} onClick={this.close}>
-              <i className='material-icons selected-feature-close' style={{fontSize: '35px'}}>close</i>
-            </a>
-          </div>
-          <div className='row no-margin' style={{height: 'calc(100% - 35px)', overflow: 'auto', padding: '10px'}}>
-            <div className='row'>
-              <SaveMapPanel title={this.props.title} onSave={this.props.onSubmit} />
-            </div>
-          </div>
-        </ModalContent>
+      <Modal
+        title={t('Copy Map')}
+        visible={visible}
+        onOk={this.close}
+        centered
+        onCancel={this.close}
+        footer={[]}
+      >
+        <SaveMapPanel title={title} onSave={this.onCopyMap} />
       </Modal>
     )
   }

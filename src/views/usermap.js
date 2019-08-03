@@ -6,7 +6,6 @@ import { message, notification } from 'antd'
 import ConfirmationActions from '../actions/ConfirmationActions'
 import MapMakerActions from '../actions/MapMakerActions'
 import UserStore from '../stores/UserStore'
-import request from 'superagent'
 import MapMakerStore from '../stores/MapMakerStore'
 import debounce from 'lodash.debounce'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -27,7 +26,6 @@ import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const $ = require('jquery')
-const checkClientError = require('../services/client-error-response').checkClientError
 
 type Props = {
   map: Object,
@@ -184,10 +182,6 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     location.reload()
   }
 
-  postToMedium = () => {
-    alert('coming soon')
-  }
-
   download = () => {
     if (!this.props.map.has_screenshot) {
       // warn the user if we need to wait for the screenshot to be created
@@ -205,55 +199,11 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   showSharePublic = () => {
-    // show modal
     this.refs.publicShareModal.show()
   }
 
-  toggleSharePublic = (value: boolean) => {
-    const _this = this
-    MapMakerActions.setPublic(this.props.map.map_id, value, this.state._csrf, (shareId) => {
-      _this.setState({share_id: shareId})
-    })
-  }
-
   showCopyMap = () => {
-    // show modal
     this.refs.copyMapModal.show()
-  }
-
-  onCopyMap = (formData: Object, cb: Function) => {
-    const {t} = this
-    const data = {
-      map_id: this.props.map.map_id,
-      title: formData.title,
-      group_id: formData.group,
-      _csrf: this.state._csrf
-    }
-
-    request.post('/api/map/copy')
-      .type('json').accept('json')
-      .send(data)
-      .end((err, res) => {
-        checkClientError(res, err, (err) => {
-          if (err || !res.body || !res.body.map_id) {
-            notification.error({
-              message: t('Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            const mapId = res.body.map_id
-            const url = '/map/edit/' + mapId
-            message.info(t('Map Copied'), 3, () => {
-              cb()
-              window.location = url
-            })
-          }
-        },
-        (cb) => {
-          cb()
-        })
-      })
   }
 
   render () {
@@ -289,7 +239,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
           </li>
         )
         shareModal = (
-          <PublicShareModal ref='publicShareModal' share_id={share_id} onChange={this.toggleSharePublic} />
+          <PublicShareModal ref='publicShareModal' map_id={map.map_id} share_id={share_id} _csrf={this.state._csrf} t={t} />
         )
       }
     }
@@ -310,7 +260,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
       // TODO: change copied map title in other languages
 
       copyModal = (
-        <CopyMapModal ref='copyMapModal' title={copyMapTitle} onSubmit={this.onCopyMap} />
+        <CopyMapModal ref='copyMapModal' title={copyMapTitle} map_id={map.map_id} _csrf={this.state._csrf} t={t} />
       )
     }
 

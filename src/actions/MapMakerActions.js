@@ -22,6 +22,5 @@ export default Reflux.createActions([
   'deleteMap',
   'startEditing',
   'stopEditing',
-  'setSettings',
-  'setPublic'
+  'setSettings'
 ])

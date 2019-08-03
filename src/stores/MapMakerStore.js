@@ -255,22 +255,6 @@ export default class MapMakerStore extends Reflux.Store {
   }
   */
 
-  setPublic (map_id: number, isPublic: boolean, _csrf: string, cb: Function) {
-    request.post('/api/map/public')
-      .type('json').accept('json')
-      .send({
-        map_id,
-        isPublic,
-        _csrf
-      })
-      .end((err, res) => {
-        checkClientError(res, err, cb, (cb) => {
-          const share_id = res.body.share_id
-          cb(share_id)
-        })
-      })
-  }
-
   // helpers
   updateMap (mapLayers: Array<Layer>, rebuild: boolean = true) {
     // treat as immutable and clone
