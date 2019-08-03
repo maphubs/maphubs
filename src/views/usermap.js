@@ -5,7 +5,6 @@ import Header from '../components/header'
 import { message, notification } from 'antd'
 import ConfirmationActions from '../actions/ConfirmationActions'
 import MapMakerActions from '../actions/MapMakerActions'
-import Progress from '../components/Progress'
 import UserStore from '../stores/UserStore'
 import request from 'superagent'
 import MapMakerStore from '../stores/MapMakerStore'
@@ -48,7 +47,6 @@ type DefaultProps = {
 type UserMapState = {
   width: number,
   height: number,
-  downloading: boolean,
   share_id?: string,
   showEmbedCode?: boolean
 }
@@ -74,8 +72,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
 
   state: State = {
     width: 1024,
-    height: 600,
-    downloading: false
+    height: 600
   }
 
   constructor (props: Props) {
@@ -191,11 +188,10 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   }
 
   download = () => {
-    const _this = this
     if (!this.props.map.has_screenshot) {
       // warn the user if we need to wait for the screenshot to be created
-      this.setState({downloading: true})
-      setTimeout(() => { _this.setState({downloading: false}) }, 15000)
+      const closeMessage = message.loading(this.t('Downloading'), 0)
+      setTimeout(() => { closeMessage() }, 15000)
     }
   }
 
@@ -325,7 +321,6 @@ export default class UserMap extends MapHubsComponent<Props, State> {
         <Provider inject={[this.BaseMapState]}>
           <Header {...this.props.headerConfig} />
           <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
-            <Progress id='load-data-progess' title={t('Preparing Download')} subTitle={''} dismissible={false} show={this.state.downloading} />
             <InteractiveMap height='calc(100vh - 50px)'
               {...map}
               layers={this.props.layers}

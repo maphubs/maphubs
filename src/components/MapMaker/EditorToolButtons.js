@@ -5,7 +5,6 @@ import { message, notification } from 'antd'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapToolButton from '../Map/MapToolButton'
 import ConfirmationActions from '../../actions/ConfirmationActions'
-import Progress from '../Progress'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 
@@ -14,15 +13,12 @@ type Props = {
   onFeatureUpdate: Function
 }
 
-type State = {
-   saving: boolean
-} & LocaleStoreState
+type State = {} & LocaleStoreState
 
 export default class EditorToolButtons extends MapHubsComponent<Props, State> {
   props: Props
 
  state: State = {
-   saving: false,
    edits: [],
    redo: [],
    originals: []
@@ -30,10 +26,9 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
 
   saveEdits = async (DataEditor: Object) => {
     const {t} = this
-    const _this = this
-    this.setState({saving: true})
+    const closeMessage = message.loading(t('Saving'), 0)
     await DataEditor.saveEdits(this.state._csrf, (err) => {
-      _this.setState({saving: false})
+      closeMessage()
       if (err) {
         notification.error({
           message: t('Error'),
@@ -83,7 +78,6 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
 
   render () {
     const {undoEdit, redoEdit, saveEdits, stopEditing, t} = this
-    const {saving} = this.state
     return (
       <Subscribe to={[DataEditorContainer]}>
         {DataEditor => {
@@ -101,7 +95,6 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
                 onClick={() => { saveEdits(DataEditor) }} tooltipText={t('Save Edits')} />
               <MapToolButton top='265px' right='10px' icon='close' show color='#000'
                 onClick={() => { stopEditing(DataEditor) }} tooltipText={t('Stop Editing')} />
-              <Progress id='saving-edits' title={t('Saving')} subTitle='' dismissible={false} show={saving} />
             </div>
           )
         }}

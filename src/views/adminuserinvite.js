@@ -6,7 +6,6 @@ import Header from '../components/header'
 import Footer from '../components/footer'
 import {message, notification} from 'antd'
 import ConfirmationActions from '../actions/ConfirmationActions'
-import Progress from '../components/Progress'
 import request from 'superagent'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -40,7 +39,6 @@ type Props = {
 
 type State = {
   canSubmit: boolean,
-  saving: boolean,
   members: Array<User>
 } & LocaleStoreState
 
@@ -63,8 +61,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
     }
     this.state = {
       members: props.members,
-      canSubmit: false,
-      saving: false
+      canSubmit: false
     }
   }
 
@@ -111,14 +108,14 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
     const {t} = this
     const _this = this
     const email = user.email || user.invite_email
-    this.setState({saving: true})
+    const closeMessage = message.loading(t('Sending'), 0)
     request.post('/admin/invite/send')
       .type('json').accept('json')
       .send({email, _csrf: this.state._csrf})
       .end((err, res) => {
         checkClientError(res, err, (err) => {
           const key = res.body.key
-          _this.setState({saving: false})
+          closeMessage()
           if (err) {
             notification.error({
               message: t('Failed to Send Invite'),
@@ -140,15 +137,14 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
 
   resendInvite = (user: User) => {
     const {t} = this
-    const _this = this
     const key = user.key
-    this.setState({saving: true})
+    const closeMessage = message.loading(t('Sending'), 0)
     request.post('/admin/invite/resend')
       .type('json').accept('json')
       .send({key, _csrf: this.state._csrf})
       .end((err, res) => {
         checkClientError(res, err, (err) => {
-          _this.setState({saving: false})
+          closeMessage()
           if (err) {
             notification.error({
               message: t('Failed to Resend Invite'),
@@ -196,7 +192,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
   submitDeauthorize = (user: User) => {
     const {t} = this
     const _this = this
-    this.setState({saving: true})
+    const closeMessage = message.loading(t('Sending'), 0)
     request.post('/admin/invite/deauthorize')
       .type('json').accept('json')
       .send({
@@ -206,7 +202,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
       })
       .end((err, res) => {
         checkClientError(res, err, (err) => {
-          _this.setState({saving: false})
+          closeMessage()
           if (err) {
             notification.error({
               message: t('Failed to Deauthorize'),
@@ -347,7 +343,6 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
               {t('To delete a user please contact support@maphubs.com. Completely deleting a user may require deleting their content or reassigning their content to another user.')}
             </p>
           </div>
-          <Progress id='saving-user-invite' title={t('Sending')} subTitle='' dismissible={false} show={this.state.saving} />
         </main>
         <Footer {...this.props.footerConfig} />
       </ErrorBoundary>

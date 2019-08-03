@@ -7,7 +7,6 @@ import LayerAdminSettings from '../components/CreateLayer/LayerAdminSettings'
 import PresetEditor from '../components/CreateLayer/PresetEditor'
 import LayerStyle from '../components/CreateLayer/LayerStyle'
 import ConfirmationActions from '../actions/ConfirmationActions'
-import Progress from '../components/Progress'
 import request from 'superagent'
 import _uniq from 'lodash.uniq'
 import _mapvalues from 'lodash.mapvalues'
@@ -45,8 +44,7 @@ type Props = {
 
 type State = {
   tab: string,
-  canSavePresets: boolean,
-  saving?: boolean
+  canSavePresets: boolean
 } & LocaleStoreState & LayerStoreState & UserStoreState
 
 export default class LayerAdmin extends MapHubsComponent<Props, State> {
@@ -159,9 +157,9 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
       t(this.props.layer.name) + '. ' +
       t('All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, and stories.'),
       onPositiveResponse () {
-        _this.setState({saving: true})
+        const closeMessage = message.loading(t('Deleting'), 0)
         LayerActions.deleteLayer(_this.state._csrf, (err) => {
-          _this.setState({saving: false})
+          closeMessage()
           if (err) {
             notification.error({
               message: t('Error'),
@@ -338,7 +336,6 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                   </li>
                 </ul>
               </div>
-              <Progress id='saving-layer-admin' title={t('Sending')} subTitle='' dismissible={false} show={this.state.saving} />
             </main>
           </Provider>
         </ErrorBoundary>

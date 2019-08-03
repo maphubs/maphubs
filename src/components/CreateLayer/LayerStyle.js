@@ -1,13 +1,12 @@
 // @flow
 import React from 'react'
-import { notification } from 'antd'
+import { notification, message } from 'antd'
 import MapStyles from '../Map/Styles'
 import Map from '../Map'
 import MiniLegend from '../Map/MiniLegend'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
 import ConfirmationActions from '../../actions/ConfirmationActions'
-import Progress from '../Progress'
 import OpacityChooser from '../LayerDesigner/OpacityChooser'
 import LayerDesigner from '../LayerDesigner/LayerDesigner'
 import MapHubsComponent from '../MapHubsComponent'
@@ -29,8 +28,7 @@ type Props = {|
 |}
 
 type State = {
-  rasterOpacity: number,
-  saving: boolean
+  rasterOpacity: number
 } & LayerStoreState & LocaleStoreState
 
 export default class LayerStyle extends MapHubsComponent<Props, State> {
@@ -42,15 +40,14 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(LayerStore)
     this.state = {
-      rasterOpacity: 100,
-      saving: false
+      rasterOpacity: 100
     }
   }
 
   onSubmit = (MapState: Object) => {
     const _this = this
     const {t} = this
-    _this.setState({saving: true})
+    const closeSavingMessage = message.loading(t('Saving'), 0)
     const preview_position = MapState.state.map.getPosition()
     preview_position.bbox = MapState.state.map.getBounds()
     LayerActions.saveStyle({
@@ -62,7 +59,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     },
     this.state._csrf,
     (err) => {
-      _this.setState({saving: false})
+      closeSavingMessage()
       if (err) {
         notification.error({
           message: t('Server Error'),
@@ -156,7 +153,6 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
 
     return (
       <div>
-        <Progress id='save-style-progess' title={t('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
         <div className='row'>
           <div className='row center'>
             <div className='col s12 m6 l6'>

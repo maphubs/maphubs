@@ -13,7 +13,6 @@ import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import Actions from '../actions/AddPhotoPointActions'
 import ConfirmationActions from '../actions/ConfirmationActions'
-import Progress from '../components/Progress'
 import GetNameField from '../components/Map/Styles/get-name-field'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {LocaleStoreState} from '../stores/LocaleStore'
@@ -33,9 +32,7 @@ type Props = {
   user: Object
 }
 
-type State = {
-  saving: boolean
-} & LocaleStoreState & AddPhotoPointStoreState
+type State = {} & LocaleStoreState & AddPhotoPointStoreState
 
 export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
   static async getInitialProps ({ req, query }: {req: any, query: Object}) {
@@ -109,9 +106,9 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
   onSubmit = (model: Object) => {
     const {t} = this
     const _this = this
-    this.setState({saving: true})
+    const closeMessage = message.loading(t('Saving'), 0)
     Actions.submit(model, this.state._csrf, (err) => {
-      _this.setState({saving: false})
+      closeMessage()
       if (err) {
         notification.error({
           message: t('Error'),
@@ -220,7 +217,6 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
               </div>
             </div>
             <ImageCrop ref='imagecrop' aspectRatio={1} lockAspect resize_max_width={1000} resize_max_height={1000} onCrop={this.onCrop} />
-            <Progress id='saving' title={t('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
           </main>
         </Provider>
       </ErrorBoundary>

@@ -6,10 +6,9 @@ import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import FileUpload from '../components/forms/FileUpload'
-import Progress from '../components/Progress'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import { Steps, Row, notification } from 'antd'
+import { Steps, Row, notification, message } from 'antd'
 
 const Step = Steps.Step
 
@@ -66,15 +65,15 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
 
   onUpload = (result: Object) => {
     const {t} = this
+    this.closeProcessingMessage()
     if (result.success) {
-      this.setState({layer_id: result.layer_id, processing: false})
+      this.setState({layer_id: result.layer_id})
     } else {
       notification.error({
         message: t('Error'),
         description: result.error,
         duration: 0
       })
-      this.setState({processing: false})
     }
   }
 
@@ -88,7 +87,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
   }
 
   onProcessingStart = () => {
-    this.setState({processing: true})
+    this.closeProcessingMessage = message.loading(this.t('Loading Data'), 0)
   }
 
   render () {
@@ -161,7 +160,6 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
               {importComplete}
             </Row>
           </div>
-          <Progress id='load-data-progess' title={t('Loading Data')} subTitle={t('Data Loading: This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.processing} />
         </main>
       </ErrorBoundary>
     )

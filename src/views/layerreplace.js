@@ -8,7 +8,6 @@ import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import LayerActions from '../actions/LayerActions'
 import LayerStore from '../stores/layer-store'
-import Progress from '../components/Progress'
 import slugify from 'slugify'
 import UploadLayerReplacement from '../components/CreateLayer/UploadLayerReplacement'
 import type {LocaleStoreState} from '../stores/LocaleStore'
@@ -29,7 +28,6 @@ type Props = {
 
 type State = {
   downloaded: boolean,
-  saving: boolean,
   submitted: boolean
 } & LocaleStoreState & AddPhotoPointStoreState
 
@@ -46,7 +44,6 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
 
   state: State = {
     downloaded: false,
-    saving: false,
     submitted: false,
     layer: {}
   }
@@ -91,16 +88,9 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
-    const name = slugify(this.t(this.props.layer.name))
-    const layerId = this.props.layer.layer_id
-    const maphubsFileURL = `/api/layer/${layerId}/export/maphubs/${name}.maphubs`
-
-    let upload = ''
-    if (this.state.downloaded) {
-      upload = (
-        <UploadLayerReplacement showPrev={false} onSubmit={this.onDataSubmit} mapConfig={this.props.mapConfig} />
-      )
-    }
+    const { layer } = this.props
+    const { downloaded } = this.state
+    const maphubsFileURL = `/api/layer/${layer.layer_id}/export/maphubs/${slugify(t(layer.name))}.maphubs`
 
     return (
       <ErrorBoundary>
@@ -109,15 +99,16 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
           <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
             <div className='container'>
               <div className='row center-align'>
-                <h5>{t('Replace data in layer:') + ' ' + this.t(this.props.layer.name)}</h5>
+                <h5>{t('Replace data in layer:') + ' ' + t(layer.name)}</h5>
                 <p>{t('First you must download the backup file. This file can be used to restore the previous data if needed.')}</p>
                 <a className='btn' href={maphubsFileURL} target='_blank' onClick={this.onDownload}>{t('Download Backup File')}</a>
               </div>
               <div className='row'>
-                {upload}
+                {downloaded &&
+                  <UploadLayerReplacement showPrev={false} onSubmit={this.onDataSubmit} mapConfig={this.props.mapConfig} />
+                }
               </div>
             </div>
-            <Progress id='saving' title={t('Saving')} subTitle='' dismissible={false} show={this.state.saving} />
           </main>
         </Provider>
       </ErrorBoundary>

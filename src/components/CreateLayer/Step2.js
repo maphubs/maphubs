@@ -2,9 +2,8 @@
 import React from 'react'
 import LayerSettings from './LayerSettings'
 import LayerActions from '../../actions/LayerActions'
-import { notification } from 'antd'
+import { notification, message } from 'antd'
 import LayerStore from '../../stores/layer-store'
-import Progress from '../Progress'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
@@ -15,23 +14,11 @@ type Props = {
   onSubmit: Function
 }
 
-type DefaultProps = {
-  groups: Array<Group>
-}
-
-type State = {
-  saving: boolean
-} & LocaleStoreState & LayerStoreState
+type State = {} & LocaleStoreState & LayerStoreState
 
 export default class Step2 extends MapHubsComponent<Props, State> {
-  props: Props
-
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     groups: []
-  }
-
-  state: State = {
-    saving: false
   }
 
   constructor (props: Props) {
@@ -85,7 +72,7 @@ export default class Step2 extends MapHubsComponent<Props, State> {
     const {t} = this
     const _this = this
 
-    _this.setState({saving: true})
+    const closeMessage = message.loading(t('Saving'), 0)
     // save presets
     LayerActions.submitPresets(false, this.state._csrf, (err) => {
       if (err) {
@@ -94,10 +81,10 @@ export default class Step2 extends MapHubsComponent<Props, State> {
           description: err.message || err.toString() || err,
           duration: 0
         })
-        _this.setState({saving: false})
+        closeMessage()
       } else {
         LayerActions.loadData(_this.state._csrf, (err) => {
-          _this.setState({saving: false})
+          closeMessage()
           if (err) {
             notification.error({
               message: t('Server Error'),
@@ -126,8 +113,6 @@ export default class Step2 extends MapHubsComponent<Props, State> {
     const {t} = this
     return (
       <div className='row'>
-        <Progress id='load-data-progess' title={t('Loading Data')} subTitle={t('Data Loading: This may take a few minutes for larger datasets.')} dismissible={false} show={this.state.saving} />
-
         <p>{t('Provide Information About the Data Layer')}</p>
         <LayerSettings groups={this.props.groups}
           submitText={t('Save and Continue')} onSubmit={this.onSubmit}

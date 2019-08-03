@@ -4,7 +4,6 @@ import UppyFileUpload from '../forms/UppyFileUpload'
 import Map from '../Map'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
-import Progress from '../Progress'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
@@ -24,14 +23,12 @@ type Props = {|
 
 type State = {
   canSubmit: boolean,
-  processing: boolean,
   bbox?: Object
 } & LocaleStoreState & LayerStoreState
 
 export default class UploadRasterSource extends MapHubsComponent<Props, State> {
   state: State = {
     canSubmit: false,
-    processing: false,
     layer: {}
   }
 
@@ -59,7 +56,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
   onUpload = (file: Object) => {
     const {t} = this
     const _this = this
-    this.onProcessingStart()
+    const closeMessage = message.loading(t('Processing'), 0)
     superagent.post(`${MAPHUBS_CONFIG.RASTER_UPLOAD_API}/upload/complete`)
       .set({'Content-Type': 'application/json', 'Authorization': 'Bearer ' + MAPHUBS_CONFIG.RASTER_UPLOAD_API_KEY})
       .accept('json')
@@ -68,6 +65,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
         originalName: file.data.name
       })
       .end((err, res) => {
+        closeMessage()
         if (err) {
           _this.onUploadError(err)
         } else {
@@ -95,7 +93,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
               LayerActions.resetStyle()
               // tell the map that the data is initialized
               LayerActions.tileServiceInitialized()
-              this.setState({canSubmit: true, processing: false, bbox: result.bounds})
+              this.setState({canSubmit: true, bbox: result.bounds})
             }
           })
         }
@@ -111,10 +109,6 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
     })
   }
 
-  onProcessingStart = () => {
-    this.setState({processing: true})
-  }
-
   render () {
     const {t} = this
     const layer_id = this.state.layer_id ? this.state.layer_id : 0
@@ -128,7 +122,6 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
             z-index: 9999 !important;
           }
         `}</style>
-        <Progress id='upload-process-progess' title={t('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />
         <div>
           <Row>
             <div style={{margin: 'auto auto', maxWidth: '750px'}}>
@@ -139,7 +132,6 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
                 maxFileSize={104857600}
                 allowedFileTypes={['.tif', '.tiff', '.mbtiles']}
                 meta={{layer_id}}
-                onProcessingStart={this.onProcessingStart}
                 onComplete={this.onUpload}
                 onError={this.onUploadError}
               />

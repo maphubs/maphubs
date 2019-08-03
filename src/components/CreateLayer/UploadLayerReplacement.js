@@ -6,7 +6,6 @@ import { message, notification } from 'antd'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
 import RadioModal from '../RadioModal'
-import Progress from '../Progress'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
@@ -26,7 +25,6 @@ type State = {
   canSubmit: boolean,
   geoJSON?: GeoJSONObject,
   largeData: boolean,
-  processing: boolean,
   multipleShapefiles: any
 } & LocaleStoreState & LayerStoreState
 
@@ -36,7 +34,6 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
   state: State = {
     canSubmit: false,
     largeData: false,
-    processing: false,
     multipleShapefiles: null
   }
 
@@ -116,7 +113,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
         })
       }
     }
-    this.setState({processing: false})
+    this.closeMessage()
   }
 
   onUploadError = (err: string) => {
@@ -153,7 +150,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
   }
 
   onProcessingStart = () => {
-    this.setState({processing: true})
+    this.closeMessage = message.loading(this.t('Processing'), 0)
   }
 
   render () {
@@ -203,7 +200,6 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
 
     return (
       <div className='row'>
-        <Progress id='upload-process-progess' title={t('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />
         <div>
           <p>{t('Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)')}</p>
           <div className='row'>

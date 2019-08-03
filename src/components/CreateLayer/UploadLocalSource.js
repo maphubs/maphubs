@@ -6,7 +6,6 @@ import Map from '../Map'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
 import RadioModal from '../RadioModal'
-import Progress from '../Progress'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
@@ -26,7 +25,6 @@ type Props = {|
 type State = {
   canSubmit: boolean,
   largeData: boolean,
-  processing: boolean,
   multipleShapefiles?: any,
   bbox?: Object
 } & LocaleStoreState & LayerStoreState
@@ -37,7 +35,6 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
   state: State = {
     canSubmit: false,
     largeData: false,
-    processing: false,
     layer: {}
   }
 
@@ -85,7 +82,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     const {t} = this
     const _this = this
     const {layer_id} = this.state
-    this.onProcessingStart()
+    const closeMessage = message.loading(t('Processing'), 0)
     superagent.post('/api/layer/complete/upload')
       .type('json').accept('json')
       .send({
@@ -94,6 +91,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
         originalName: file.data.name
       })
       .end((err, res) => {
+        closeMessage()
         if (err) {
           _this.onUploadError(err)
         } else {
@@ -101,10 +99,10 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
           if (result.success) {
             LayerActions.setDataType(result.data_type)
             LayerActions.setImportedTags(result.uniqueProps, true)
-            this.setState({canSubmit: true, processing: false, bbox: result.bbox})
+            this.setState({canSubmit: true, bbox: result.bbox})
           } else {
             if (result.code === 'MULTIPLESHP') {
-              this.setState({multipleShapefiles: result.shapefiles, processing: false})
+              this.setState({multipleShapefiles: result.shapefiles})
             } else {
               notification.error({
                 message: t('Error'),
@@ -148,10 +146,6 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
         })
       }
     })
-  }
-
-  onProcessingStart = () => {
-    this.setState({processing: true})
   }
 
   render () {
@@ -212,14 +206,12 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
             z-index: 9999 !important;
           }
         `}</style>
-        <Progress id='upload-process-progess' title={t('Processing Data')} subTitle='' dismissible={false} show={this.state.processing} />
         <Row>
           <div style={{margin: 'auto auto', maxWidth: '750px'}}>
             <UppyFileUpload
               endpoint='/api/layer/upload'
               note='Supported files: Shapefile (Zip), GeoJSON, KML,  GPX (tracks or waypoints), or CSV (with Lat/Lon fields), and MapHubs format'
               layer_id={layer_id}
-              onProcessingStart={this.onProcessingStart}
               onComplete={this.onUpload}
               onError={this.onUploadError}
             />
