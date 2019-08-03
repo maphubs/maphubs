@@ -156,12 +156,12 @@ module.exports = function (app: any) {
 
     if (!req.isAuthenticated || !req.isAuthenticated() ||
         !req.session || !req.session.user) {
-      MapUtils.completeUserMapRequest(app, req, res, next, map_id, false, false)
+      MapUtils.completeMapRequest(app, req, res, next, map_id, false, false)
     } else {
       // get user id
       Map.allowedToModify(map_id, user_id)
         .then((allowed) => {
-          return MapUtils.completeUserMapRequest(app, req, res, next, map_id, allowed, false)
+          return MapUtils.completeMapRequest(app, req, res, next, map_id, allowed, false)
         }).catch(nextError(next))
     }
   })
@@ -169,30 +169,6 @@ module.exports = function (app: any) {
   app.get('/map/view/:map_id', (req, res, next) => {
     const map_id = req.params.map_id
     res.redirect(`/map/view/${map_id}/`)
-  })
-
-  app.get('/user/:username/map/:map_id/*', csrfProtection, privateMapCheck, (req, res, next) => {
-    const map_id = req.params.map_id
-    if (!map_id) {
-      apiDataError(res)
-    }
-
-    let user_id = -1
-    if (req.session.user) {
-      user_id = req.session.user.maphubsUser.id
-    }
-    recordMapView(req.session, map_id, user_id, next)
-
-    if (!req.isAuthenticated || !req.isAuthenticated() ||
-        !req.session || !req.session.user) {
-      MapUtils.completeUserMapRequest(app, req, res, next, map_id, false, false)
-    } else {
-      // get user id
-      Map.allowedToModify(map_id, user_id)
-        .then((allowed) => {
-          return MapUtils.completeUserMapRequest(app, req, res, next, map_id, allowed, false)
-        }).catch(nextError(next))
-    }
   })
 
   app.get('/map/edit/:map_id', csrfProtection, async (req, res, next) => {

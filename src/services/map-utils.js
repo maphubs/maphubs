@@ -67,7 +67,8 @@ module.exports = {
             showLogo,
             showScale,
             insetMap: showInset,
-            image: imageUrl
+            image: imageUrl,
+            publicShare: shared
           },
           hideFeedback: true,
           oembed: 'map',
@@ -85,8 +86,8 @@ module.exports = {
     } catch (err) { nextError(next)(err) }
   },
 
-  async completeUserMapRequest (app: any, req: any, res: any, next: any, map_id: number, canEdit: boolean, shared: boolean) {
-    debug.log('completeUserMapRequest')
+  async completeMapRequest (app: any, req: any, res: any, next: any, map_id: number, canEdit: boolean, shared: boolean) {
+    debug.log('completeMapRequest')
     try {
       const map = await Map.getMap(map_id)
       const layers = await Map.getMapLayers(map_id, canEdit)
@@ -109,7 +110,7 @@ module.exports = {
         }
 
         let showShareButtons = true
-        if (local.requireLogin && !shared) {
+        if (local.requireLogin) {
           showShareButtons = false
         }
         // inject into map config
@@ -117,7 +118,7 @@ module.exports = {
 
         return app.next.render(req, res, '/usermap', await pageOptions(req, {
           title: `${title} - ${local.productName}`,
-          props: {map, layers, canEdit},
+          props: {map, layers, canEdit, publicShare: shared},
           hideFeedback: true,
           oembed: 'map',
           twitterCard: {

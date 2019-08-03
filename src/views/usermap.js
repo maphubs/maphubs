@@ -37,7 +37,8 @@ type Props = {
   _csrf: string,
   headerConfig: Object,
   mapConfig: Object,
-  user: Object
+  user: Object,
+  publicShare: boolean
 }
 
 type DefaultProps = {
@@ -257,13 +258,13 @@ export default class UserMap extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
-    const {map} = this.props
+    const {map, publicShare} = this.props
     const {share_id, user, showEmbedCode} = this.state
     let deleteButton = ''
     let editButton = ''
     let shareButton = ''
     let shareModal = ''
-    if (this.props.canEdit) {
+    if (this.props.canEdit && !publicShare) {
       deleteButton = (
         <li>
           <FloatingButton color='red' icon='delete' large={false}
@@ -279,7 +280,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
         </li>
       )
 
-      if (MAPHUBS_CONFIG.mapHubsPro) {
+      if (MAPHUBS_CONFIG.mapHubsPro && !publicShare) {
         shareButton = (
           <li>
             <FloatingButton color='green' icon='share' large={false}
@@ -295,7 +296,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
 
     let copyButton = ''
     let copyModal = ''
-    if (user) {
+    if (user && !publicShare) {
       copyButton = (
         <li>
           <FloatingButton color='purple' icon='queue' large={false}
@@ -336,6 +337,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
               {...map.settings}
               t={this.t}
             />
+            {!publicShare &&
             <div ref={(ref) => { this.menuButton = ref }} id='user-map-button' className='fixed-action-btn' style={{bottom: '40px'}}
               onMouseEnter={this.onMouseEnterMenu}
             >
@@ -370,6 +372,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
                 </li>
               </ul>
             </div>
+            }
             {shareModal}
             {copyModal}
             {showEmbedCode &&
