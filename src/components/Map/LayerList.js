@@ -34,19 +34,18 @@ export default class LayerList extends React.Component<Props, State> {
     showEdit: false
   }
 
-  state: State = {
-    layers: []
-  }
-
-  constructor (props) {
+  constructor (props: Props) {
     super(props)
-    const layers = JSON.parse(JSON.stringify(props.layers))
+    let layers = []
+    if (props.layers) {
+      layers = JSON.parse(JSON.stringify(props.layers))
+    }
     this.state = {
       layers
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps (nextProps: Props) {
     if (!_isEqual(nextProps.layers, this.state.layers)) {
       const layers = JSON.parse(JSON.stringify(nextProps.layers))
       this.setState({layers})
@@ -71,7 +70,7 @@ export default class LayerList extends React.Component<Props, State> {
     const _this = this
     const {layers} = this.state
     const {toggleVisibility, showVisibility, showRemove, showDesign, showEdit, removeFromMap, showLayerDesigner, editLayer, t} = this.props
-    let empty = layers && layers.length === 0
+    let empty = !layers || layers.length === 0
     return (
       <div style={{height: '100%', padding: 0, margin: 0, border: '1px solid #eeeeee'}}>
         <style jsx global>{`
@@ -81,7 +80,7 @@ export default class LayerList extends React.Component<Props, State> {
           }
         `}
         </style>
-        {!empty &&
+        {(!empty && typeof window !== 'undefined') &&
           <DndProvider backend={HTML5Backend}>
             <List
               dataSource={layers}

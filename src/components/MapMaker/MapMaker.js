@@ -28,6 +28,7 @@ import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapContainer from '../Map/containers/MapContainer'
 import BaseMapContainer from '../Map/containers/BaseMapContainer'
 import BaseMapSelection from '../Map/ToolPanels/BaseMapSelection'
+import ErrorBoundary from '../ErrorBoundary'
 import $ from 'jquery'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
@@ -378,6 +379,8 @@ class MapMaker extends MapHubsComponent<Props, State> {
     const {showMapLayerDesigner, layerDesignerLayer, position, mapLayers, editingLayer, showAddLayer, activeTab} = this.state
     const [, MapState] = this.props.containers
 
+    if (!Array.isArray(mapLayers)) return 'bad maplayers array'
+
     let mapExtent
     if (position && position.bbox) {
       const bbox = position.bbox
@@ -426,23 +429,27 @@ class MapMaker extends MapHubsComponent<Props, State> {
             onChange={(activeTab) => { this.setState({ activeTab }) }}
           >
             <TabPane tab={t('Base Map')} key='basemap' style={{height: '100%'}}>
-              <BaseMapSelection onChange={this.changeBaseMap} t={t} />
+              <ErrorBoundary>
+                <BaseMapSelection onChange={this.changeBaseMap} t={t} />
+              </ErrorBoundary>
             </TabPane>
             <TabPane tab={t('Layers')} key='overlays' style={{height: '100%'}}>
-              <Row style={{height: 'calc(100% - 100px'}}>
-                <LayerList
-                  layers={mapLayers}
-                  showVisibility={showVisibility}
-                  showRemove showDesign showEdit={!editingLayer}
-                  toggleVisibility={toggleVisibility}
-                  removeFromMap={removeFromMap}
-                  showLayerDesigner={showLayerDesigner}
-                  updateLayers={Actions.setMapLayers}
-                  editLayer={editLayer}
-                  openAddLayer={() => { this.setState({showAddLayer: true}) }}
-                  t={t}
-                />
-              </Row>
+              <ErrorBoundary>
+                <Row style={{height: 'calc(100% - 100px'}}>
+                  <LayerList
+                    layers={mapLayers}
+                    showVisibility={showVisibility}
+                    showRemove showDesign showEdit={!editingLayer}
+                    toggleVisibility={toggleVisibility}
+                    removeFromMap={removeFromMap}
+                    showLayerDesigner={showLayerDesigner}
+                    updateLayers={Actions.setMapLayers}
+                    editLayer={editLayer}
+                    openAddLayer={() => { this.setState({showAddLayer: true}) }}
+                    t={t}
+                  />
+                </Row>
+              </ErrorBoundary>
               <Row style={{height: '50px', textAlign: 'center'}}>
                 <Button style={{marginTop: '9px'}} type='primary' onClick={() => { this.setState({showAddLayer: true}) }}>{t('Add Layer')}</Button>
               </Row>
