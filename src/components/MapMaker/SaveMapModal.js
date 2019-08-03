@@ -114,7 +114,9 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
               </Row>
               <Row>
                 <Formsy>
-                  <SelectGroup groups={groups} group_id={owned_by_group_id} type='map' canChangeGroup={!editing} editing={editing} onGroupChange={this.groupChange} />
+                  <SelectGroup groups={groups} group_id={owned_by_group_id} type='map' canChangeGroup={!editing} editing={editing}
+                    onGroupChange={this.groupChange}
+                  />
                 </Formsy>
               </Row>
             </>

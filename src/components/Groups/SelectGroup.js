@@ -1,9 +1,10 @@
 // @flow
 import React from 'react'
-import { Row } from 'antd'
+import { Row, Col } from 'antd'
 import _isequal from 'lodash.isequal'
 import Select from '../forms/select'
-import MapHubsComponent from '../../components/MapHubsComponent'
+import MapHubsComponent from '../MapHubsComponent'
+import CreateGroupModal from '../CreateGroup/CreateGroupModal'
 
 import type {Group} from '../../stores/GroupStore'
 
@@ -19,7 +20,8 @@ type Props = {
 
 type State = {
   group_id?: string,
-  private: boolean
+  private: boolean,
+  createdGroup?: Object
 }
 
 export default class SelectGroup extends MapHubsComponent<Props, State> {
@@ -54,14 +56,14 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
     return false
   }
 
-  getOwnerGroup = (group_id: string): Object => {
-    let owner = {}
+  getSelectedGroup = (group_id: string): Object => {
+    let selected = {}
     this.props.groups.forEach((group) => {
       if (group.group_id === group_id) {
-        owner = group
+        selected = group
       }
     })
-    return owner
+    return selected
   }
 
   onGroupChange = (group_id: string) => {
@@ -74,12 +76,12 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     const { groups, canChangeGroup } = this.props
-    const { group_id } = this.state
+    const { group_id, createdGroup } = this.state
     let startEmpty = true
-    let owner
+    let selectedGroup
     if (group_id) {
       startEmpty = false
-      owner = this.getOwnerGroup(group_id)
+      selectedGroup = this.getSelectedGroup(group_id)
     }
 
     const groupOptions = groups.map((group) => {
@@ -91,7 +93,7 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
 
     return (
       <>
-        {(groups.length > 1 && canChangeGroup) &&
+        {(canChangeGroup && !createdGroup) &&
           <Row>
             <Select name='group' id='group-select' label={t('Group')} startEmpty={startEmpty}
               value={this.state.group_id} onChange={this.onGroupChange}
@@ -99,14 +101,25 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
               dataPosition='right' dataTooltip={t('Owned by Group')}
               required
             />
-            <p style={{padding: '10px', fontSize: '12px', marginTop: '10px'}}>{t('Since you are in multiple groups, please select the group that should own this item.')}</p>
+            <Row style={{padding: '10px', marginTop: '10px'}}>
+              <Col span={18}>
+                <p style={{fontSize: '12px'}}>{t('Since you are in multiple groups, please select the group that should own this item.')}</p>
+              </Col>
+              <Col span={6} style={{padding: '10px'}}>
+                <CreateGroupModal t={t} onCreate={(createdGroup) => {
+                  this.setState({createdGroup, group_id: createdGroup.group_id})
+                  this.onGroupChange(createdGroup.group_id)
+                }}
+                />
+              </Col>
+            </Row>
           </Row>
         }
-        {((groups.length === 1 || !canChangeGroup) && owner) &&
-          <p><b>{t('Group:')} </b>{this.t(owner.name)}</p>
+        {(canChangeGroup && createdGroup) &&
+          <p><b>{t('Created Group:')} </b>{t(createdGroup.name)}</p>
         }
-        {(groups.length === 1 && !group_id) &&
-          <p><b>{t('Group:')} </b>{this.t(this.props.groups[0].name)}</p>
+        {(!canChangeGroup && selectedGroup) &&
+          <p><b>{t('Group:')} </b>{t(selectedGroup.name)}</p>
         }
       </>
     )
