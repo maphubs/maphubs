@@ -18,8 +18,6 @@ type State = {
   failed?: boolean
 }
 
-const colorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae']
-
 export default class GroupTag extends MapHubsComponent<Props, State> {
   static defaultProps = {
     size: 20,

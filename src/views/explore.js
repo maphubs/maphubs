@@ -7,14 +7,13 @@ import CardCarousel from '../components/CardCarousel/CardCarousel'
 import _shuffle from 'lodash.shuffle'
 import CardFilter from '../components/Home/CardFilter'
 import cardUtil from '../services/card-util'
-import SubPageBanner from '../components/Home/SubPageBanner'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
-import type {CardConfig} from '../components/CardCarousel/Card'
 import UserStore from '../stores/UserStore'
 import getConfig from 'next/config'
+import { Row, Button } from 'antd'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {
@@ -41,19 +40,7 @@ type State = {
   storyMode: string,
   mapMode: string,
   groupMode: string,
-  layerMode: string,
-  featuredStoryCards: Array<CardConfig>,
-  popularStoryCards: Array<CardConfig>,
-  recentStoryCards: Array<CardConfig>,
-  featuredMapCards: Array<CardConfig>,
-  popularMapCards: Array<CardConfig>,
-  recentMapCards: Array<CardConfig>,
-  featuredGroupCards: Array<CardConfig>,
-  popularGroupCards: Array<CardConfig>,
-  recentGroupCards: Array<CardConfig>,
-  featuredLayerCards: Array<CardConfig>,
-  popularLayerCards: Array<CardConfig>,
-  recentLayerCards: Array<CardConfig>
+  layerMode: string
 }
 
 export default class Home extends MapHubsComponent<Props, State> {
@@ -69,7 +56,6 @@ export default class Home extends MapHubsComponent<Props, State> {
 
   constructor (props: Props) {
     super(props)
-    const {t} = this
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
@@ -78,23 +64,7 @@ export default class Home extends MapHubsComponent<Props, State> {
       storyMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
       mapMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
       groupMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
-      layerMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
-
-      featuredStoryCards: _shuffle(props.featuredStories.map(s => cardUtil.getStoryCard(s, t))),
-      popularStoryCards: _shuffle(props.popularStories.map(s => cardUtil.getStoryCard(s, t))),
-      recentStoryCards: _shuffle(props.recentStories.map(s => cardUtil.getStoryCard(s, t))),
-
-      featuredMapCards: _shuffle(props.featuredMaps.map(cardUtil.getMapCard)),
-      popularMapCards: _shuffle(props.popularMaps.map(cardUtil.getMapCard)),
-      recentMapCards: _shuffle(props.recentMaps.map(cardUtil.getMapCard)),
-
-      featuredGroupCards: _shuffle(props.featuredGroups.map(cardUtil.getGroupCard)),
-      popularGroupCards: _shuffle(props.popularGroups.map(cardUtil.getGroupCard)),
-      recentGroupCards: _shuffle(props.recentGroups.map(cardUtil.getGroupCard)),
-
-      featuredLayerCards: _shuffle(props.featuredLayers.map(cardUtil.getLayerCard)),
-      popularLayerCards: _shuffle(props.popularLayers.map(cardUtil.getLayerCard)),
-      recentLayerCards: _shuffle(props.recentLayers.map(cardUtil.getLayerCard))
+      layerMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured'
     }
   }
 
@@ -103,146 +73,120 @@ export default class Home extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const {t} = this
+    const {t, props} = this
     const _this = this
-    const {storyMode, mapMode, groupMode, layerMode, featuredStoryCards, popularStoryCards, recentStoryCards} = this.state
+    const {storyMode, mapMode, groupMode, layerMode} = this.state
+
     let storyCards = []
     if (storyMode === 'featured') {
-      storyCards = featuredStoryCards
+      storyCards = _shuffle(props.featuredStories.map(s => cardUtil.getStoryCard(s, t)))
     } else if (storyMode === 'popular') {
-      storyCards = popularStoryCards
+      storyCards = _shuffle(props.popularStories.map(s => cardUtil.getStoryCard(s, t)))
     } else if (storyMode === 'recent') {
-      storyCards = recentStoryCards
+      storyCards = _shuffle(props.recentMaps.map(cardUtil.getMapCard))
     }
 
     let mapCards = []
     if (mapMode === 'featured') {
-      mapCards = this.state.featuredMapCards
+      mapCards = _shuffle(props.featuredMaps.map(cardUtil.getMapCard))
     } else if (mapMode === 'popular') {
-      mapCards = this.state.popularMapCards
+      mapCards = _shuffle(props.popularMaps.map(cardUtil.getMapCard))
     } else if (mapMode === 'recent') {
-      mapCards = this.state.recentMapCards
+      mapCards = _shuffle(props.recentMaps.map(cardUtil.getMapCard))
     }
 
     let groupCards = []
     if (groupMode === 'featured') {
-      groupCards = this.state.featuredGroupCards
+      groupCards = _shuffle(props.featuredGroups.map(cardUtil.getGroupCard))
     } else if (groupMode === 'popular') {
-      groupCards = this.state.popularGroupCards
+      groupCards = _shuffle(props.popularGroups.map(cardUtil.getGroupCard))
     } else if (groupMode === 'recent') {
-      groupCards = this.state.recentGroupCards
+      groupCards = _shuffle(props.recentGroups.map(cardUtil.getGroupCard))
     }
 
     let layerCards = []
     if (layerMode === 'featured') {
-      layerCards = this.state.featuredLayerCards
+      layerCards = _shuffle(props.featuredLayers.map(cardUtil.getLayerCard))
     } else if (layerMode === 'popular') {
-      layerCards = this.state.popularLayerCards
+      layerCards = _shuffle(props.popularLayers.map(cardUtil.getLayerCard))
     } else if (layerMode === 'recent') {
-      layerCards = this.state.recentLayerCards
+      layerCards = _shuffle(props.recentLayers.map(cardUtil.getLayerCard))
     }
 
     return (
       <ErrorBoundary>
         <Header activePage='explore' {...this.props.headerConfig} />
-        <main style={{margin: 0}}>
-          <SubPageBanner locale={this.props.locale}
-            img='https://hpvhe47439ygwrt.belugacdn.link/maphubs/assets/home/Moabi-Canoe.jpg' backgroundPosition='50% 15%'
-            title={t('Explore')} subTitle={t(`
-               Browse Stories, Maps, Groups, and Layers
-              `)} />
-          <div className='row' style={{marginTop: '20px', marginBottom: 0, marginRight: '5px'}}>
-            <div className='col s12' style={{paddingLeft: '25%', paddingRight: '25%'}}>
-              <SearchBox label={t('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} />
-            </div>
-          </div>
-          <div className='row no-margin'>
-            <div className='row no-margin' style={{height: '50px'}}>
-              <div className='col s12 m2 l1'>
-                <a href='/stories'>
-                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Stories')}</h5>
-                </a>
-              </div>
-              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
-              <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
+        <main style={{margin: 0, padding: '10px'}}>
+          <Row style={{marginTop: '20px', marginBottom: 0, marginRight: '5px', paddingLeft: '25%', paddingRight: '25%'}}>
+            <SearchBox label={t('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} />
+          </Row>
+          <Row>
+            <Row style={{height: '50px'}}>
+              <div style={{position: 'absolute', right: '10px', top: '5px'}}>
                 <CardFilter defaultValue={this.state.storyMode} onChange={(value) => { _this.setState({storyMode: value}) }} />
               </div>
-            </div>
-            <div className='row'>
-              <div className='col s12'>
-                <CardCarousel cards={storyCards} infinite={false} t={this.t} />
-              </div>
-            </div>
-            <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
-              <a href='/stories' className='btn'>{t('More Stories')}</a>
-            </div>
-          </div>
+              <a href='/stories'>
+                <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Stories')}</h5>
+              </a>
+            </Row>
+            <Row>
+              <CardCarousel cards={storyCards} infinite={false} t={t} />
+            </Row>
+            <Row style={{marginTop: '35px', marginBottom: '10px', textAlign: 'center'}}>
+              <Button type='primary' href='/stories' className='btn'>{t('More Stories')}</Button>
+            </Row>
+          </Row>
           <div className='divider' />
-          <div className='row no-margin'>
-            <div className='row no-margin' style={{height: '50px'}}>
-              <div className='col s12 m2 l1'>
-                <a href='/maps'>
-                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Maps')}</h5>
-                </a>
-              </div>
-              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
-              <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
+          <Row>
+            <Row style={{height: '50px'}}>
+              <div style={{position: 'absolute', right: '10px', top: '5px'}}>
                 <CardFilter defaultValue={this.state.mapMode} onChange={(value) => { _this.setState({mapMode: value}) }} />
               </div>
-            </div>
-            <div className='row'>
-              <div className='col s12'>
-                <CardCarousel cards={mapCards} infinite={false} t={this.t} />
-              </div>
-            </div>
-            <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
-              <a href='/maps' className='btn'>{t('More Maps')}</a>
-            </div>
-          </div>
+              <a href='/maps'>
+                <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Maps')}</h5>
+              </a>
+            </Row>
+            <Row>
+              <CardCarousel cards={mapCards} infinite={false} t={this.t} />
+            </Row>
+            <Row style={{marginTop: '35px', marginBottom: '10px', textAlign: 'center'}}>
+              <Button type='primary' href='/maps' className='btn'>{t('More Maps')}</Button>
+            </Row>
+          </Row>
           <div className='divider' />
           <div className='row no-margin'>
-            <div className='row no-margin' style={{height: '50px'}}>
-              <div className='col s12 m2 l1'>
-                <a href='/groups'>
-                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Groups')}</h5>
-                </a>
-              </div>
-              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
-              <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
+            <Row style={{height: '50px'}}>
+              <div style={{position: 'absolute', right: '10px', top: '5px'}}>
                 <CardFilter defaultValue={this.state.groupMode} onChange={(value) => { _this.setState({groupMode: value}) }} />
               </div>
-            </div>
-            <div className='row'>
-              <div className='col s12'>
-                <CardCarousel cards={groupCards} infinite={false} t={this.t} />
-              </div>
-            </div>
-            <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
-              <a href='/groups' className='btn'>{t('More Groups')}</a>
-            </div>
+              <a href='/groups'>
+                <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Groups')}</h5>
+              </a>
+            </Row>
+            <Row>
+              <CardCarousel cards={groupCards} infinite={false} t={this.t} />
+            </Row>
+            <Row style={{marginTop: '35px', marginBottom: '10px', textAlign: 'center'}}>
+              <Button type='primary' href='/groups' className='btn'>{t('More Groups')}</Button>
+            </Row>
           </div>
           <div className='divider' />
-          <div className='row no-margin'>
-            <div className='row no-margin' style={{height: '50px'}}>
-              <div className='col s12 m2 l1'>
-                <a href='/layers'>
-                  <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Layers')}</h5>
-                </a>
-              </div>
-              <div className='col s12 m6 l7 valign-wrapper' style={{height: '50px'}} />
-              <div className='col s12 m4 l4 valign-wrapper' style={{height: '100%'}}>
+          <Row>
+            <Row style={{height: '50px'}}>
+              <div style={{position: 'absolute', right: '10px', top: '5px'}}>
                 <CardFilter defaultValue={this.state.layerMode} onChange={(value) => { _this.setState({layerMode: value}) }} />
               </div>
-            </div>
-            <div className='row'>
-              <div className='col s12'>
-                <CardCarousel cards={layerCards} infinite={false} t={t} />
-              </div>
-            </div>
-            <div className='row center-align' style={{marginTop: '35px', marginBottom: '10px'}}>
-              <a href='/layers' className='btn'>{t('More Layers')}</a>
-            </div>
-          </div>
+              <a href='/layers'>
+                <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Layers')}</h5>
+              </a>
+            </Row>
+            <Row>
+              <CardCarousel cards={layerCards} infinite={false} t={t} />
+            </Row>
+            <Row style={{marginTop: '35px', marginBottom: '10px', textAlign: 'center'}}>
+              <Button type='primary' href='/layers' className='btn'>{t('More Layers')}</Button>
+            </Row>
+          </Row>
         </main>
         <Footer {...this.props.footerConfig} />
       </ErrorBoundary>

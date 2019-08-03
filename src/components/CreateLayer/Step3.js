@@ -13,7 +13,7 @@ type Props = {|
 
 type State = LocaleStoreState
 
-export default class Step5 extends MapHubsComponent<Props, State> {
+export default class Step3 extends MapHubsComponent<Props, State> {
   props: Props
 
   onSubmit = (layer_id: number, name: string) => {

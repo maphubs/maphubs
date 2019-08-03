@@ -1,24 +1,19 @@
 // @flow
 import React from 'react'
-import Map from '../components/Map'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification } from 'antd'
+import { Row, message, notification } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
 import _shuffle from 'lodash.shuffle'
-import Progress from '../components/Progress'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
-import { Provider, Subscribe } from 'unstated'
-import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {CardConfig} from '../components/CardCarousel/Card'
 import UserStore from '../stores/UserStore'
 import cardUtil from '../services/card-util'
-import MapContainer from '../components/Map/containers/MapContainer'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -36,8 +31,7 @@ type Props = {
 
 type State = {
   searchResult: any,
-  searchCards: Array<CardConfig>,
-  searching: boolean
+  searchCards: Array<CardConfig>
 }
 
 export default class Search extends MapHubsComponent<Props, State> {
@@ -53,8 +47,7 @@ export default class Search extends MapHubsComponent<Props, State> {
 
   state: State = {
     searchResult: null,
-    searchCards: [],
-    searching: false
+    searchCards: []
   }
 
   constructor (props: Props) {
@@ -63,12 +56,6 @@ export default class Search extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-    let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-
-    if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-    }
-    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
   }
 
   getParameterByName = (name: string, url: any) => {
@@ -98,28 +85,15 @@ export default class Search extends MapHubsComponent<Props, State> {
     }
   }
 
-  onResetSearch = (MapState: Object) => {
-    MapState.state.map.resetGeoJSON()
+  onResetSearch = () => {
     this.setState({searchResult: null, searchCards: []})
   }
 
   handleSearch = async (input: string) => {
     const {t} = this
-    this.setState({searching: true})
+    const closeSearchingMessage = message.loading(t('Searching'), 0)
     try {
       let totalResults = 0
-
-      try {
-        let featureRes = await request.get(`/api/global/search?q=${input}`).type('json').accept('json')
-        if (featureRes.body && featureRes.body.features && featureRes.body.features.length > 0) {
-          this.setState({
-            searchResult: featureRes.body
-          })
-          totalResults += featureRes.body.features.length
-        }
-      } catch (err) {
-        debug.error(err)
-      }
 
       const layerRes = await request.get(`/api/layers/search?q=${input}`).type('json').accept('json')
       const groupRes = await request.get(`/api/groups/search?q=${input}`).type('json').accept('json')
@@ -142,7 +116,7 @@ export default class Search extends MapHubsComponent<Props, State> {
         groupResults = groupRes.body.groups
       }
 
-      // map
+      // maps
       if (mapRes.body && mapRes.body.maps && mapRes.body.maps.length > 0) {
         totalResults += mapRes.body.maps.length
         mapResults = mapRes.body.maps
@@ -153,7 +127,7 @@ export default class Search extends MapHubsComponent<Props, State> {
         searchCards
       })
 
-      this.setState({searching: false})
+      closeSearchingMessage()
 
       if (totalResults > 0) {
         message.info(`${totalResults} ${t('Results Found')}`)
@@ -163,7 +137,7 @@ export default class Search extends MapHubsComponent<Props, State> {
         message.info(t('No Results Found'))
       }
     } catch (err) {
-      this.setState({searching: false})
+      closeSearchingMessage()
       debug.error(err)
       notification.error({
         message: t('Error'),
@@ -183,55 +157,27 @@ export default class Search extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
-    let cardsPanel = ''
-    if (this.state.searchCards && this.state.searchCards.length > 0) {
-      cardsPanel = (
-        <CardCollection cards={this.state.searchCards} />
-      )
-    }
 
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState]}>
-          <Header {...this.props.headerConfig} />
-          <main style={{margin: 0}}>
+        <Header {...this.props.headerConfig} />
+        <main style={{margin: 0}}>
+          <Row>
             <div ref='search' className='container' style={{height: '55px', paddingTop: '10px'}}>
-              <Subscribe to={[MapContainer]}>
-                {MapState => (
-                  <div className='row no-margin'>
-                    <SearchBox
-                      label={t('Search') + ' ' + MAPHUBS_CONFIG.productName}
-                      onSearch={this.handleSearch}
-                      onReset={() => { this.onResetSearch(MapState) }}
-                    />
-                  </div>
-                )}
-              </Subscribe>
-            </div>
-            <div className='row no-margin' style={{height: 'calc(75vh - 55px)', minHeight: '200px'}}>
-              <Map ref='map'
-                id='global-search-map'
-                style={{width: '100%', height: '100%'}}
-                disableScrollZoom hoverInteraction={false} showLogo attributionControl
-                mapConfig={this.props.mapConfig}
-                data={this.state.searchResult}
-                primaryColor={MAPHUBS_CONFIG.primaryColor}
-                logoSmall={MAPHUBS_CONFIG.logoSmall}
-                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-                t={this.t}
-                locale={this.props.locale}
-                mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+              <SearchBox
+                label={t('Search') + ' ' + MAPHUBS_CONFIG.productName}
+                onSearch={this.handleSearch}
+                onReset={() => { this.onResetSearch() }}
               />
             </div>
-            <div className='divider' />
-            <div className='row no-margin' style={{height: 'calc(50% - 50px)', minHeight: '200px'}}>
-              {cardsPanel}
-            </div>
-            <Progress id='searching' title={t('Searching')} subTitle='' dismissible={false} show={this.state.searching} />
-          </main>
-          <Footer {...this.props.footerConfig} />
-        </Provider>
+          </Row>
+          <Row style={{height: 'calc(100% - 50px)', minHeight: '200px'}}>
+            {(this.state.searchCards && this.state.searchCards.length > 0) &&
+              <CardCollection cards={this.state.searchCards} />
+            }
+          </Row>
+        </main>
+        <Footer {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

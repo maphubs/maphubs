@@ -5,7 +5,7 @@ import { Steps, Row } from 'antd'
 import Header from '../components/header'
 import Step1 from '../components/CreateLayer/Step1'
 import Step2 from '../components/CreateLayer/Step2'
-import Step5 from '../components/CreateLayer/Step5'
+import Step3 from '../components/CreateLayer/Step3'
 import debugFactory from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -165,7 +165,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
                 <Step2 groups={groups} showPrev onPrev={this.prevStep} onSubmit={this.nextStep} />
               }
               {step === 3 &&
-                <Step5 onPrev={this.prevStep} onSubmit={this.submit} mapConfig={mapConfig} />
+                <Step3 onPrev={this.prevStep} onSubmit={this.submit} mapConfig={mapConfig} />
               }
             </div>
           </main>
