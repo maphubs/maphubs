@@ -48,7 +48,7 @@ export default class BaseMapSelection extends React.Component<Props, void> {
                           <Avatar shape='square' size={64} icon='global' />
                         }
                       </Col>
-                      <Col span={18}>
+                      <Col span={18} style={{paddingLeft: '5px'}}>
                         <p style={{marginBottom: '0.5em'}}><b>{t(baseMapOption.label)}</b></p>
                         <p style={{fontSize: '12px'}}>
                           <span

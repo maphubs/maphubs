@@ -1,15 +1,12 @@
 // @flow
 import React from 'react'
-import Close from '@material-ui/icons/Close'
 import EditBaseMapBox from './ToolPanels/EditBaseMapBox'
 import BaseMapSelection from './ToolPanels/BaseMapSelection'
 import MeasurementToolPanel from './ToolPanels/MeasurementToolPanel'
 import IsochronePanel from './ToolPanels/IsochronePanel'
 // import AreaComparisonPanel from './ToolPanels/AreaComparisonPanel'
 import MapToolButton from './MapToolButton'
-import Drawer from 'rc-drawer'
-import { Collapse } from 'antd'
-import 'rc-drawer/assets/index.css'
+import { Drawer, Collapse } from 'antd'
 
 const Panel = Collapse.Panel
 
@@ -36,12 +33,12 @@ export default class MapToolPanel extends React.Component<Props, State> {
     this.state = {}
   }
 
+  drawerContainer: any
+
   static defaultProps = {
     show: false,
     enableMeasurementTools: false
   }
-
-  drawerContainer: any
 
   onSetOpen = (open: boolean) => {
     this.setState({ open })
@@ -67,27 +64,13 @@ export default class MapToolPanel extends React.Component<Props, State> {
         <div ref={(el) => { this.drawerContainer = el }} />
         <Drawer
           getContainer={() => this.drawerContainer}
-          open={this.state.open}
-          onMaskClick={() => { this.onSetOpen(false) }}
-          handler={false}
-          level={null}
+          title={t('Tools')}
+          visible={this.state.open}
+          onClose={() => { this.onSetOpen(false) }}
           placement='right'
+          bodyStyle={{padding: 0}}
           width='320px'
         >
-          <a
-            className='omh-color'
-            style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              cursor: 'pointer',
-              zIndex: '9999',
-              height: '20px'
-            }}
-            onClick={() => { this.onSetOpen(false) }}
-          >
-            <Close style={{fontSize: '20px', color: 'white'}} />
-          </a>
           <div style={{height: '100%', border: 'solid 1px #ddd'}}>
             <Collapse accordion>
               <Panel header={t('Change Base Map')} key='basemap'>

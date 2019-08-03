@@ -1,10 +1,7 @@
 // @flow
 import React from 'react'
 import request from 'superagent'
-import { Tabs, notification, Input, Button } from 'antd'
-import Close from '@material-ui/icons/Close'
-import Drawer from 'rc-drawer'
-import 'rc-drawer/assets/index.css'
+import { Tabs, notification, Input, Row, Drawer, List } from 'antd'
 import MapToolButton from '../MapToolButton'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('MapSearchPanel')
@@ -46,8 +43,12 @@ export default class MapSearchPanel extends React.Component<Props, State> {
     this.setState({ open })
   }
 
-  onSearch = async (e: Event) => {
+  onSearch = async (e: any) => {
     const query = e.target.value
+    if (!query) {
+      this.onReset()
+      return
+    }
     if (this.state.tab === 'data') {
       const results = await this.props.onSearch(query)
       this.setState({results, query})
@@ -122,55 +123,13 @@ export default class MapSearchPanel extends React.Component<Props, State> {
   render () {
     const _this = this
     const {t} = this.props
-    let results = ''
-
-    if (this.state.results &&
-      this.state.results.list &&
-      this.state.results.list.length > 0) {
-      results = (
-        <div className='collection'>
-          {
-            this.state.results.list.map(result => {
-              return (
-                <a key={result.id} href='#!' className='collection-item'
-                  onClick={() => { _this.onClickResult(result) }}>
-                  {result.name}
-                </a>
-              )
-            })
-          }
-        </div>
-      )
-    } else {
-      results = (
-        <p>{t('Use the box above to search')}</p>
-      )
-    }
+    const { tab, results, locationSearchResults } = this.state
 
     let searchLabel = ''
-    if (this.state.tab === 'data') {
+    if (tab === 'data') {
       searchLabel = t('Search Data')
-    } else if (this.state.tab === 'location') {
+    } else if (tab === 'location') {
       searchLabel = t('Find Place or Address')
-    }
-
-    let locationResults = ''
-    if (this.state.locationSearchResults &&
-      this.state.locationSearchResults.length > 0) {
-      locationResults = (
-        <div className='collection'>
-          {
-            this.state.locationSearchResults.map(result => {
-              return (
-                <a key={result.key} href='#!' className='collection-item'
-                  onClick={() => { _this.onClickResult(result.feature) }}>
-                  {result.value}
-                </a>
-              )
-            })
-          }
-        </div>
-      )
     }
 
     return (
@@ -186,43 +145,68 @@ export default class MapSearchPanel extends React.Component<Props, State> {
         <div ref={(el) => { this.drawerContainer = el }} />
         <Drawer
           getContainer={() => this.drawerContainer}
-          open={this.state.open}
-          onMaskClick={() => { this.onSetOpen(false) }}
-          handler={false}
-          level={null}
+          title={t('Search')}
+          visible={this.state.open}
+          onClose={() => { this.onSetOpen(false) }}
+          bodyStyle={{padding: '2px'}}
           placement='right'
           width='240px'
         >
-          <a className='omh-color'
-            style={{position: 'absolute', top: 0, right: 0, cursor: 'pointer', height: '20px'}}
-            onClick={() => { this.onSetOpen(false) }}>
-            <Close style={{fontSize: '20px', color: 'white'}} />
-          </a>
-          <div style={{padding: '20px 5px 0px 5px', height: '100%', border: 'solid 1px #ddd'}}>
-            <div style={{position: 'relative'}}>
-              <Search
-                placeholder={searchLabel}
-                onChange={this.onSearch}
-                onSearch={this.onSubmit}
-                style={{}}
-              />
-              {this.state.query &&
-                <Button
-                  shape='circle' icon='close'
-                  onClick={this.onReset}
-                  style={{position: 'absolute', top: '8px', right: '0px'}}
-                />
-              }
-            </div>
-            <Tabs defaultActiveKey='data' onChange={this.selectTab}>
+          <Row>
+            <Search
+              placeholder={searchLabel}
+              onChange={this.onSearch}
+              onSearch={this.onSubmit}
+              style={{}}
+              allowClear
+            />
+          </Row>
+          <Row>
+            <Tabs
+              animated={false}
+              defaultActiveKey='data'
+              onChange={this.selectTab}
+            >
               <TabPane tab={t('Data')} key='data'>
-                {results}
+                {(results && results.list.length > 0) &&
+                  <List
+                    size='small'
+                    bordered
+                    dataSource={results.list}
+                    renderItem={item => {
+                      return (
+                        <List.Item>
+                          <a key={item.id} href='#!'
+                            onClick={() => { _this.onClickResult(item) }}>
+                            {item.name}
+                          </a>
+                        </List.Item>
+                      )
+                    }}
+                  />
+                }
               </TabPane>
               <TabPane tab={t('Location')} key='location'>
-                {locationResults}
+                {(locationSearchResults && locationSearchResults.length > 0) &&
+                  <List
+                    size='small'
+                    bordered
+                    dataSource={locationSearchResults}
+                    renderItem={item => {
+                      return (
+                        <List.Item>
+                          <a key={item.key} href='#!' className='collection-item'
+                            onClick={() => { _this.onClickResult(item.feature) }}>
+                            {item.value}
+                          </a>
+                        </List.Item>
+                      )
+                    }}
+                  />
+                }
               </TabPane>
             </Tabs>
-          </div>
+          </Row>
         </Drawer>
       </div>
     )

@@ -7,11 +7,10 @@ import LayerList from './LayerList'
 import MiniLegend from './MiniLegend'
 import IsochroneLegendHelper from './IsochroneLegendHelper'
 import MapLayerMenu from './MapLayerMenu'
-import Drawer from 'rc-drawer'
+import {Drawer, Row} from 'antd'
 import _debounce from 'lodash.debounce'
 import _isEqual from 'lodash.isequal'
 import findIndex from 'lodash.findindex'
-import Close from '@material-ui/icons/Close'
 import MapToolButton from './MapToolButton'
 import ShareButtons from '../ShareButtons'
 import MapStyles from './Styles'
@@ -330,15 +329,13 @@ export default class InteractiveMap extends React.Component<Props, State> {
           earthEngineClientID={this.props.earthEngineClientID}
         >
           {legend}
-
           <div ref={(el) => { this.mobileMapLegend = el }} />
           <Drawer
             getContainer={() => this.mobileMapLegend}
-            open={this.state.mobileMapLegendOpen}
-            onMaskClick={() => { this.onSetOpenMobileMapLegend(false) }}
-            handler={false}
-            level={null}
+            visible={this.state.mobileMapLegendOpen}
+            onClose={() => { this.onSetOpenMobileMapLegend(false) }}
             placement='left'
+            bodyStyle={{paddingLeft: 0, paddingRight: 0, paddingTop: '50px'}}
             width='240px'
           >
             {(width && width < 600) &&
@@ -355,41 +352,24 @@ export default class InteractiveMap extends React.Component<Props, State> {
               />
             }
           </Drawer>
-
           <div ref={(el) => { this.mapLayersList = el }} />
           <Drawer
             getContainer={() => this.mapLayersList}
-            open={this.state.mapLayersListOpen}
-            onMaskClick={() => { this.onSetOpenMapLayersList(false) }}
-            handler={false}
-            level={null}
+            title={t('Map Layers')}
+            visible={this.state.mapLayersListOpen}
+            onClose={() => { this.onSetOpenMapLayersList(false) }}
             placement='right'
+            bodyStyle={{padding: 0}}
             width='240px'
           >
-            <a className='omh-color'
-              style={{
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                cursor: 'pointer',
-                zIndex: 99,
-                height: '20px'
-              }}
-              onClick={() => { this.onSetOpenMapLayersList(false) }}
-            >
-              <Close style={{fontSize: '20px', color: 'white'}} />
-            </a>
-            <div style={{height: '100%'}}>
-              <p style={{padding: '2px', marginBottom: 0, fontSize: '14px', fontWeight: 'bold'}}>{t('Map Layers')}</p>
-              <div style={{height: 'calc(100% - 25px)'}}>
-                <LayerList layers={this.state.layers}
-                  showDesign={false} showRemove={false} showVisibility
-                  toggleVisibility={this.toggleVisibility}
-                  updateLayers={this.updateLayers}
-                  t={t}
-                />
-              </div>
-            </div>
+            <Row style={{height: '100%'}}>
+              <LayerList layers={this.state.layers}
+                showDesign={false} showRemove={false} showVisibility
+                toggleVisibility={this.toggleVisibility}
+                updateLayers={this.updateLayers}
+                t={t}
+              />
+            </Row>
           </Drawer>
           {children}
           {showShareButtons &&
