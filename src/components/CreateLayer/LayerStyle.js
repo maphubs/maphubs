@@ -1,12 +1,11 @@
 // @flow
 import React from 'react'
-import { notification, message } from 'antd'
+import { notification, Modal, message } from 'antd'
 import MapStyles from '../Map/Styles'
 import Map from '../Map'
 import MiniLegend from '../Map/MiniLegend'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
-import ConfirmationActions from '../../actions/ConfirmationActions'
 import OpacityChooser from '../LayerDesigner/OpacityChooser'
 import LayerDesigner from '../LayerDesigner/LayerDesigner'
 import MapHubsComponent from '../MapHubsComponent'
@@ -17,6 +16,8 @@ import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {GLStyle} from '../../types/mapbox-gl-style'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
+const { confirm } = Modal
 
 type Props = {|
   onSubmit: Function,
@@ -115,12 +116,13 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
 
   resetStyle = () => {
     const {t} = this
-    ConfirmationActions.showConfirmation({
+    confirm({
       title: t('Confirm Reset'),
-      postitiveButtonText: t('Reset'),
-      negativeButtonText: t('Cancel'),
-      message: t('Warning! This will permanently delete all custom style settings from this layer.'),
-      onPositiveResponse () {
+      content: t('Warning! This will permanently delete all custom style settings from this layer.'),
+      okText: t('Reset'),
+      okType: 'danger',
+      cancelText: t('Cancel'),
+      onOk () {
         LayerActions.resetStyle()
       }
     })

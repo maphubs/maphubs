@@ -2,8 +2,7 @@
 import React from 'react'
 import InteractiveMap from '../components/Map/InteractiveMap'
 import Header from '../components/header'
-import { message, notification } from 'antd'
-import ConfirmationActions from '../actions/ConfirmationActions'
+import { Tooltip, Modal, message, notification } from 'antd'
 import MapMakerActions from '../actions/MapMakerActions'
 import UserStore from '../stores/UserStore'
 import MapMakerStore from '../stores/MapMakerStore'
@@ -19,11 +18,11 @@ import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import PublicShareModal from '../components/InteractiveMap/PublicShareModal'
 import CopyMapModal from '../components/InteractiveMap/CopyMapModal'
 import ErrorBoundary from '../components/ErrorBoundary'
-import {Tooltip} from 'react-tippy'
 import FloatingButton from '../components/FloatingButton'
 import EmbedCodeModal from '../components/MapUI/EmbedCodeModal'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+const { confirm } = Modal
 
 type Props = {
   map: Object,
@@ -99,10 +98,12 @@ export default class UserMap extends MapHubsComponent<Props, State> {
   onDelete = () => {
     const {t} = this
     const _this = this
-    ConfirmationActions.showConfirmation({
+    confirm({
       title: t('Confirm Delete'),
-      message: t('Please confirm removal of ') + t(this.props.map.title),
-      onPositiveResponse () {
+      content: t('Please confirm deletion of ') + t(this.props.map.title),
+      okText: t('Delete'),
+      okType: 'danger',
+      onOk () {
         MapMakerActions.deleteMap(_this.props.map.map_id, _this.state._csrf, (err) => {
           if (err) {
             notification.error({
@@ -251,7 +252,8 @@ export default class UserMap extends MapHubsComponent<Props, State> {
                 <li>
                   <Tooltip
                     title={t('Get Map as a PNG Image')}
-                    position='left' inertia followCursor>
+                    placement='left'
+                  >
                     <a onClick={this.download}
                       download={download} href={downloadHREF}
                       className='btn-floating green'>

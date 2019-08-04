@@ -1,12 +1,12 @@
 // @flow
 import React from 'react'
 import { Subscribe } from 'unstated'
-import { message, notification } from 'antd'
+import { Modal, message, notification } from 'antd'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapToolButton from '../Map/MapToolButton'
-import ConfirmationActions from '../../actions/ConfirmationActions'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
+const { confirm } = Modal
 
 type Props = {
   stopEditingLayer: Function,
@@ -45,17 +45,19 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
     const {t, saveEdits} = this
     const {stopEditingLayer} = this.props
     if (DataEditor.state.edits.length > 0) {
-      ConfirmationActions.showConfirmation({
+      confirm({
         title: t('Unsaved Edits'),
-        message: t('Do you want to save your edits before exiting?'),
-        postitiveButtonText: t('Save Edits'),
-        negativeButtonText: t('Discard Edits'),
-        onPositiveResponse () {
+        content: t('Do you want to save your edits before exiting?'),
+        okText: t('Save Edits'),
+        okType: 'primary',
+        cancelText: t('Discard Edits'),
+        cancelType: 'danger',
+        onOk () {
           saveEdits(DataEditor)
           DataEditor.stopEditing()
           stopEditingLayer()
         },
-        onNegativeResponse () {
+        onCancel () {
           DataEditor.stopEditing()
           stopEditingLayer()
         }

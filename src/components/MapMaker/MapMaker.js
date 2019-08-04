@@ -3,7 +3,7 @@ import React from 'react'
 import LayerList from '../Map/LayerList'
 import _isEqual from 'lodash.isequal'
 import _find from 'lodash.find'
-import { Drawer, Button, Row, Col, Tabs, message, notification } from 'antd'
+import { Drawer, Button, Row, Col, Tabs, Modal, message, notification } from 'antd'
 import Map from '../Map'
 import MiniLegend from '../Map/MiniLegend'
 import AddLayerPanel from './AddLayerPanel'
@@ -12,7 +12,6 @@ import MapSettingsPanel from './MapSettingsPanel'
 import MapMakerStore from '../../stores/MapMakerStore'
 import UserStore from '../../stores/UserStore'
 import Actions from '../../actions/MapMakerActions'
-import ConfirmationActions from '../../actions/ConfirmationActions'
 import EditLayerPanel from './EditLayerPanel'
 import MapLayerDesigner from '../LayerDesigner/MapLayerDesigner'
 import EditorToolButtons from './EditorToolButtons'
@@ -31,7 +30,7 @@ import BaseMapSelection from '../Map/ToolPanels/BaseMapSelection'
 import ErrorBoundary from '../ErrorBoundary'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
-
+const { confirm } = Modal
 const TabPane = Tabs.TabPane
 
 type Props = {
@@ -140,12 +139,13 @@ class MapMaker extends MapHubsComponent<Props, State> {
 
   onCancel = () => {
     const {t, onClose} = this
-    ConfirmationActions.showConfirmation({
+    confirm({
       title: t('Confirm Cancel'),
-      postitiveButtonText: t('Cancel Map'),
-      negativeButtonText: t('Return to Editing Map'),
-      message: t('Your map has not been saved, please confirm that you want to cancel your map.'),
-      onPositiveResponse () {
+      content: t('Your map has not been saved, please confirm that you want to cancel your map.'),
+      okText: t('Cancel Map'),
+      okType: 'danger',
+      cancelText: t('Return to Editing Map'),
+      onOk () {
         onClose()
       }
     })

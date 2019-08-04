@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
-import { message, notification } from 'antd'
+import { message, notification, Modal } from 'antd'
 import EditList from '../components/EditList'
 import Header from '../components/header'
 import MultiTextArea from '../components/forms/MultiTextArea'
@@ -11,7 +11,6 @@ import Toggle from '../components/forms/toggle'
 import AddItem from '../components/AddItem'
 import GroupStore from '../stores/GroupStore'
 import GroupActions from '../actions/GroupActions'
-import ConfirmationActions from '../actions/ConfirmationActions'
 import ImageCrop from '../components/ImageCrop'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -24,7 +23,7 @@ import MapList from '../components/Lists/MapList'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
-
+const { confirm } = Modal
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/GroupAdmin')
 
 type Props = {
@@ -125,11 +124,13 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   handleMemberDelete = (user: Object) => {
     const {t} = this
     const {_csrf} = this.state
-
-    ConfirmationActions.showConfirmation({
+    confirm({
       title: t('Confirm Removal'),
-      message: t('Please confirm removal of ') + user.label,
-      onPositiveResponse () {
+      content: t('Please confirm removal of ') + user.label,
+      okText: t('Remove'),
+      okType: 'danger',
+      cancelText: t('Cancel'),
+      onOk () {
         GroupActions.removeMember(user.key, _csrf, (err) => {
           if (err) {
             notification.error({
@@ -148,10 +149,13 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   handleGroupDelete = () => {
     const {t} = this
     const _this = this
-    ConfirmationActions.showConfirmation({
+    confirm({
       title: t('Confirm Deletion'),
-      message: t('Please confirm removal of group ') + this.t(this.state.group.name),
-      onPositiveResponse () {
+      content: t('Please confirm removal of group ') + this.t(this.state.group.name),
+      okText: t('Delete'),
+      okType: 'danger',
+      cancelText: t('Cancel'),
+      onOk () {
         GroupActions.deleteGroup(_this.state._csrf, (err) => {
           if (err) {
             notification.error({
@@ -175,10 +179,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     if (user.type === 'Administrator') {
       this.handleRemoveMemberAdmin(user)
     } else {
-      ConfirmationActions.showConfirmation({
+      confirm({
         title: t('Confirm Administrator'),
-        message: t('Please confirm that you want to make this user an Administrator: ') + user.label,
-        onPositiveResponse () {
+        content: t('Please confirm that you want to make this user an Administrator: ') + user.label,
+        okType: 'danger',
+        onOk () {
           GroupActions.setMemberAdmin(user.key, _csrf, (err) => {
             if (err) {
               notification.error({
@@ -198,10 +203,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
   handleRemoveMemberAdmin = (user: Object) => {
     const {t} = this
     const {_csrf} = this.state
-    ConfirmationActions.showConfirmation({
+    confirm({
       title: t('Confirm Remove Administrator'),
-      message: t('Please confirm that you want to remove Administrator permissions for ') + user.label + '.',
-      onPositiveResponse () {
+      content: t('Please confirm that you want to remove Administrator permissions for ') + user.label + '.',
+      okType: 'danger',
+      onOk () {
         GroupActions.removeMemberAdmin(user.key, _csrf, (err) => {
           if (err) {
             notification.error({

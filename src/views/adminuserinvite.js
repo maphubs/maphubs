@@ -4,8 +4,7 @@ import Formsy from 'formsy-react'
 import TextInput from '../components/forms/textInput'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import {message, notification} from 'antd'
-import ConfirmationActions from '../actions/ConfirmationActions'
+import { Modal, Tooltip, message, notification } from 'antd'
 import request from 'superagent'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -13,9 +12,8 @@ import LocaleStore from '../stores/LocaleStore'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import {Tooltip} from 'react-tippy'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-
+const { confirm } = Modal
 const checkClientError = require('../services/client-error-response').checkClientError
 
 type User = {
@@ -86,12 +84,12 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
   onSubmit = (user: User) => {
     const {t} = this
     const _this = this
-    ConfirmationActions.showConfirmation({
+    confirm({
       title: t('Confirm Invite'),
-      postitiveButtonText: t('Send Invite'),
-      negativeButtonText: t('Cancel'),
-      message: t(`Are you sure you want to invite ${user.email}?`),
-      onPositiveResponse () {
+      content: t(`Are you sure you want to invite ${user.email}?`),
+      okText: t('Send Invite'),
+      okType: 'primary',
+      onOk () {
         _this.submitInvite(user)
       }
     })
@@ -164,12 +162,12 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
   handleResendInvite = (user: User) => {
     const {t} = this
     const {resendInvite} = this
-    ConfirmationActions.showConfirmation({
+    confirm({
       title: t('Confirm Resend Email'),
-      postitiveButtonText: t('Send Invite'),
-      negativeButtonText: t('Cancel'),
-      message: t(`Are you sure you want to resend the invite email for ${user.invite_email}?`),
-      onPositiveResponse () {
+      content: t(`Are you sure you want to resend the invite email for ${user.invite_email}?`),
+      okText: t('Send Invite'),
+      okType: 'primary',
+      onOk () {
         resendInvite(user)
       }
     })
@@ -178,12 +176,12 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
   handleDeauthorize = (user: User) => {
     const {t} = this
     const {submitDeauthorize} = this
-    ConfirmationActions.showConfirmation({
+    confirm({
       title: t('Confirm Deauthorize'),
-      postitiveButtonText: t('Deauthorize'),
-      negativeButtonText: t('Cancel'),
-      message: t(`Are you sure you want to deauthorize access for ${user.email}?`),
-      onPositiveResponse () {
+      content: t(`Are you sure you want to deauthorize access for ${user.email}?`),
+      okText: t('Deauthorize'),
+      okType: 'danger',
+      onOk () {
         submitDeauthorize(user)
       }
     })
@@ -294,7 +292,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
                   return (
                     <tr key={member.id}>
                       <td>
-                        <Tooltip title={status} position='bottom' inertia followCursor>
+                        <Tooltip title={status} placement='bottom'>
                           <i className='material-icons' style={{color}} >{icon}</i>
                         </Tooltip>
                       </td>
@@ -304,7 +302,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
                       <td>
                         {(status !== 'Disabled' && status !== 'Admin') &&
                           <React.Fragment>
-                            <Tooltip title={t('Resend Invite')} position='bottom' inertia followCursor>
+                            <Tooltip title={t('Resend Invite')} placement='bottom'>
                               <a onClick={() => {
                                 _this.handleResendInvite(member)
                               }
@@ -312,7 +310,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
                                 <i className='material-icons' style={{cursor: 'pointer'}}>email</i>
                               </a>
                             </Tooltip>
-                            <Tooltip title={t('Copy Invite Link')} position='bottom' inertia followCursor>
+                            <Tooltip title={t('Copy Invite Link')} placement='bottom'>
                               <a onClick={() => {
                                 _this.copyInviteLink(member)
                               }
@@ -320,7 +318,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
                                 <i className='material-icons' style={{cursor: 'pointer'}}>link</i>
                               </a>
                             </Tooltip>
-                            <Tooltip title={t('Remove User')} position='bottom' inertia followCursor>
+                            <Tooltip title={t('Remove User')} placement='bottom'>
                               <a onClick={() => {
                                 _this.handleDeauthorize(member)
                               }}>

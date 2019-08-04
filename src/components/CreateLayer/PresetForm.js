@@ -6,11 +6,12 @@ import MultiTextInput from '../forms/MultiTextInput'
 import Toggle from '../forms/toggle'
 import Select from '../forms/select'
 import Actions from '../../actions/LayerActions'
-import ConfirmationActions from '../../actions/ConfirmationActions'
 import _debounce from 'lodash.debounce'
 import MapHubsComponent from '../MapHubsComponent'
 import Locales from '../../services/locales'
 import _isequal from 'lodash.isequal'
+import { Modal } from 'antd'
+const { confirm } = Modal
 
 type Props = {
   id: number,
@@ -90,12 +91,13 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
   onRemove = () => {
     const {t} = this
     const {id} = this.props
-    ConfirmationActions.showConfirmation({
+    confirm({
       title: t('Confirm Removal'),
-      message: t('Are you sure you want to remove this field?') + ' ' +
+      content: t('Are you sure you want to remove this field?') + ' ' +
         t('Note: this will hide the field, but will not delete the raw data.') + ' ' +
         t('The field will still be included in data exports.'),
-      onPositiveResponse () {
+      okType: 'danger',
+      onOk () {
         Actions.deletePreset(id)
       }
     })

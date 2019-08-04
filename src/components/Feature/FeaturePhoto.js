@@ -2,10 +2,9 @@
 import React from 'react'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 import ImageCrop from '../ImageCrop'
-import {Tooltip} from 'react-tippy'
-import { message, notification } from 'antd'
-import ConfirmationActions from '../../actions/ConfirmationActions'
+import { message, notification, Modal, Tooltip } from 'antd'
 import FeaturePhotoActions from '../../actions/FeaturePhotoActions'
+const { confirm } = Modal
 
 type Props = {
   photo?: Object,
@@ -39,10 +38,12 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
   deletePhoto = () => {
     const {t} = this
     const {_csrf} = this.state
-    ConfirmationActions.showConfirmation({
+    confirm({
       title: t('Confirm Removal'),
-      message: t('Are you sure you want to remove this photo?'),
-      onPositiveResponse () {
+      content: t('Are you sure you want to remove this photo?'),
+      okText: t('Remove'),
+      okType: 'danger',
+      onOk () {
         FeaturePhotoActions.removePhoto(_csrf, (err) => {
           if (err) {
             notification.error({
@@ -79,8 +80,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
             <div style={{height: '30px', position: 'relative'}}>
               <Tooltip
                 title={t('Replace Photo')}
-                position='left'
-                inertia followCursor
+                placement='left'
               >
                 <i
                   className='material-icons grey-text valign'
@@ -96,8 +96,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
               </Tooltip>
               <Tooltip
                 title={t('Download Photo')}
-                position='left'
-                inertia followCursor
+                placement='left'
               >
                 <a href={photoUrl} download>
                   <i
@@ -114,8 +113,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
               </Tooltip>
               <Tooltip
                 title={t('Remove Photo')}
-                position='left'
-                inertia followCursor
+                placement='left'
               >
                 <i
                   className='material-icons grey-text valign'

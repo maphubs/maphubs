@@ -4,7 +4,6 @@ import { notification } from 'antd'
 import UserMenu from './Header/UserMenu'
 import MapHubsComponent from './MapHubsComponent'
 import UserStore from '../stores/UserStore'
-import Confirmation from '../components/confirmation'
 // var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('header');
 import LocaleChooser from './LocaleChooser'
 import _isequal from 'lodash.isequal'
@@ -239,7 +238,6 @@ export default class Header extends MapHubsComponent<Props, State> {
             </ul>
           </div>
         </nav>
-        <Confirmation />
       </header>
     )
   }

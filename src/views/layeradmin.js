@@ -1,12 +1,11 @@
 // @flow
 import React from 'react'
 import Header from '../components/header'
-import { message, notification } from 'antd'
+import { message, notification, Modal } from 'antd'
 import LayerSettings from '../components/CreateLayer/LayerSettings'
 import LayerAdminSettings from '../components/CreateLayer/LayerAdminSettings'
 import PresetEditor from '../components/CreateLayer/PresetEditor'
 import LayerStyle from '../components/CreateLayer/LayerStyle'
-import ConfirmationActions from '../actions/ConfirmationActions'
 import request from 'superagent'
 import _uniq from 'lodash.uniq'
 import _mapvalues from 'lodash.mapvalues'
@@ -29,7 +28,7 @@ import type {UserStoreState} from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
-
+const { confirm } = Modal
 const checkClientError = require('../services/client-error-response').checkClientError
 
 type Props = {
@@ -151,12 +150,14 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
   deleteLayer = () => {
     const {t} = this
     const _this = this
-    ConfirmationActions.showConfirmation({
+    confirm({
       title: t('Confirm Delete'),
-      message: t('Please confirm removal of') + ' ' +
+      content: t('Please confirm removal of') + ' ' +
       t(this.props.layer.name) + '. ' +
       t('All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, and stories.'),
-      onPositiveResponse () {
+      okText: t('Delete'),
+      okType: 'danger',
+      onOk () {
         const closeMessage = message.loading(t('Deleting'), 0)
         LayerActions.deleteLayer(_this.state._csrf, (err) => {
           closeMessage()

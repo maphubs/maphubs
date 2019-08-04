@@ -12,14 +12,14 @@ import AddPhotoPointStore from '../stores/AddPhotoPointStore'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import Actions from '../actions/AddPhotoPointActions'
-import ConfirmationActions from '../actions/ConfirmationActions'
 import GetNameField from '../components/Map/Styles/get-name-field'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {AddPhotoPointStoreState} from '../stores/AddPhotoPointStore'
-import { message, notification } from 'antd'
+import { Modal, message, notification } from 'antd'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+const { confirm } = Modal
 
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('addphotopoint')
 
@@ -116,15 +116,16 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
           duration: 0
         })
       } else {
-        ConfirmationActions.showConfirmation({
+        confirm({
           title: t('Photo Saved'),
-          message: t('Do you want to add another photo?'),
-          postitiveButtonText: t('Yes'),
-          negativeButtonText: t('No'),
-          onPositiveResponse () {
+          content: t('Do you want to add another photo?'),
+          okText: t('Yes'),
+          okType: 'primary',
+          cancelText: t('No'),
+          onOk () {
             location.reload()
           },
-          onNegativeResponse () {
+          onCancel () {
             let featureName = 'unknown'
             const geoJSON: any = _this.state.geoJSON
             const layerId: string = (_this.state.layer && _this.state.layer.layer_id) ? _this.state.layer.layer_id.toString() : '0'
