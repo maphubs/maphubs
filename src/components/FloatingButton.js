@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import {Tooltip} from 'react-tippy'
+import {Tooltip} from 'antd'
 
 type Props = {
   tooltip?: string,
@@ -19,9 +19,9 @@ export default function FloatingButton ({ onClick, icon = 'info', href, tooltip,
   const hrefProp = href || '#'
   return (
     <Tooltip
-      disabled={!tooltip}
+      visible={tooltip}
       title={tooltip}
-      position={tooltipPosition} inertia followCursor>
+      placement={tooltipPosition}>
       <a className={`btn-floating ${large ? 'btn-large' : ''} ${color}`}
         onClick={clickHandler} href={hrefProp}
       >

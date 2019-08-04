@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import {Tooltip} from 'react-tippy'
+import {Tooltip} from 'antd'
 import slugify from 'slugify'
 import type {Layer} from '../../types/layer'
 
@@ -64,7 +64,7 @@ export default function LayerInfoExternalLink ({layer, t}: Props) {
         <a href={externalUrl} target='_blank' rel='noopener noreferrer'>{externalUrl}</a>
         <Tooltip
           title={t('Copy to Clipboard')}
-          position='left' inertia followCursor>
+          placement='left'>
           <i className='material-icons omh-accent-text'
             style={{cursor: 'pointer'}}
             onClick={() => { copyToClipboard(externalUrl) }}>launch</i>

@@ -3,7 +3,7 @@ import React from 'react'
 import InteractiveMap from '../components/Map/InteractiveMap'
 import Header from '../components/header'
 import _find from 'lodash.find'
-import { Row, Col, notification, message, Tabs } from 'antd'
+import { Row, Col, notification, message, Tabs, Tooltip } from 'antd'
 import Comments from '../components/Comments'
 import TerraformerGL from '../services/terraformerGL'
 import GroupTag from '../components/Groups/GroupTag'
@@ -23,7 +23,6 @@ import turf_length from '@turf/length'
 import numeral from 'numeral'
 import slugify from 'slugify'
 import UserStore from '../stores/UserStore'
-import {Tooltip} from 'react-tippy'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import LayerExport from '../components/LayerInfo/LayerExport'
 import Stats from '../components/LayerInfo/Stats'
@@ -276,7 +275,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
               <li>
                 <Tooltip
                   title={t('Edit Map Data')}
-                  position='left' inertia followCursor>
+                  placement='left'>
                   <a onClick={openEditor} className='btn-floating blue darken-1'>
                     <i className='material-icons'>mode_edit</i>
                   </a>
@@ -287,7 +286,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
               <li>
                 <Tooltip
                   title={t('Add a Photo')}
-                  position='left' inertia followCursor>
+                  placement='left'>
                   <a href={`/layer/adddata/${layer.layer_id}`} className='btn-floating blue darken-1'>
                     <i className='material-icons'>photo</i>
                   </a>
@@ -297,7 +296,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
             <li>
               <Tooltip
                 title={t('Manage Layer')}
-                position='left' inertia followCursor>
+                placement='left'>
                 <a className='btn-floating yellow' href={`/layer/admin/${layer.layer_id}/${slugify(t(layer.name))}`}>
                   <i className='material-icons'>settings</i>
                 </a>
@@ -311,7 +310,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
         <div ref={(el) => { this.menuButton = el }} className='fixed-action-btn action-button-bottom-right hide-on-med-and-up'>
           <Tooltip
             title={t('View Map')}
-            position='left' inertia>
+            placement='left'>
             <a className='btn-floating btn-large red'
               href={`/layer/map/${layer.layer_id}/${slugify(t(layer.name))}`}>
               <i className='material-icons'>map</i>
@@ -370,7 +369,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                   <div style={{position: 'absolute', top: '15px', right: '10px'}}>
                     <Tooltip
                       title={t('Private')}
-                      position='left' inertia followCursor>
+                      placement='left'>
                       <i className='material-icons grey-text text-darken-3'>lock</i>
                     </Tooltip>
                   </div>

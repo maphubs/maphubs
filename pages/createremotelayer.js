@@ -1,7 +1,6 @@
 import View from '../src/views/createremotelayer'
 
 import 'jquery'
-import 'react-tippy/dist/tippy.css'
 
 if (typeof window !== 'undefined') {
   require('materialize-css')

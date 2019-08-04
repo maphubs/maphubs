@@ -1,7 +1,6 @@
 // @flow
 import React from 'react'
-import {Modal, Switch, Row, message, Alert} from 'antd'
-import {Tooltip} from 'react-tippy'
+import {Modal, Switch, Row, message, Alert, Tooltip} from 'antd'
 import {htmlEncode} from 'js-htmlencode'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import getConfig from 'next/config'
@@ -94,13 +93,13 @@ export default class EmbedCodeModal extends React.Component<Props, State> {
         <Row>
           <Tooltip
             title={t('Map image with play button (best performance)')}
-            position='left' inertia followCursor>
+            placement='left'>
             <span style={{marginRight: '10px'}}>{t('Normal')}</span>
           </Tooltip>
           <Switch checked={interactive} onChange={(checked) => { this.setState({interactive: checked}) }} />
           <Tooltip
             title={t('Interactive map (no play button)')}
-            position='right' inertia followCursor>
+            placement='right'>
             <span style={{marginLeft: '10px'}}>{t('Interactive')}</span>
           </Tooltip>
         </Row>

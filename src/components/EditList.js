@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import MapHubsComponent from './MapHubsComponent'
-import {Tooltip} from 'react-tippy'
+import {Tooltip} from 'antd'
 
 type Props = {
   title: string,
@@ -52,7 +52,7 @@ export default class EditList extends MapHubsComponent<Props, void> {
           let action = ''
           if (item.actionIcon && item.actionLabel) {
             action = (
-              <Tooltip title={item.actionLabel} position='bottom' inertia followCursor>
+              <Tooltip title={item.actionLabel} placement='bottom'>
                 <a>
                   <i className='material-icons' onClick={() => {
                     _this.onAction(item)
@@ -78,7 +78,7 @@ export default class EditList extends MapHubsComponent<Props, void> {
               {type}
               <div className='secondary-content'>
                 {action}
-                <Tooltip title={t('Remove')} position='bottom' inertia followCursor>
+                <Tooltip title={t('Remove')} placement='bottom'>
                   <a>
                     <i className='material-icons' onClick={() => {
                       _this.onDelete(item)

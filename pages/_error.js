@@ -3,7 +3,6 @@ import React from 'react'
 import Error from 'next/error'
 
 import 'jquery'
-import 'react-tippy/dist/tippy.css'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 

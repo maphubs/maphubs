@@ -181,7 +181,6 @@
     "react-notification": "^6.8.0",
     "react-scroll-to-component": "^1.0.2",
     "react-share": "^3.0.0",
-    "react-tippy": "^1.2.2",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.5",
     "reflux": "^6.4.1",

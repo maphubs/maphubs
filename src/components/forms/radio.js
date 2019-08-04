@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import {withFormsy} from 'formsy-react'
-import {Tooltip} from 'react-tippy'
+import {Tooltip} from 'antd'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 
 type Props = {
@@ -46,10 +46,9 @@ class Radio extends MapHubsPureComponent<Props, void> {
 
     return (
       <Tooltip
-        disabled={!dataTooltip}
+        visible={dataTooltip}
         title={dataTooltip}
-        position={dataPosition}
-        inertia followCursor
+        placement={dataPosition}
       >
         <div className={className}>
 

@@ -3,7 +3,7 @@ import React from 'react'
 import {withFormsy} from 'formsy-react'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
-import {Tooltip} from 'react-tippy'
+import {Tooltip} from 'antd'
 import classNames from 'classnames'
 
 type Props = {|
@@ -166,11 +166,9 @@ class TextInput extends MapHubsComponent<Props, State> {
 
     return (
       <Tooltip
-        disabled={!this.props.dataTooltip}
+        visible={this.props.dataTooltip}
         title={this.props.dataTooltip}
-        position={this.props.dataPosition}
-        inertia
-        followCursor
+        placement={this.props.dataPosition}
       >
         <div ref='inputWrapper' className={className} style={this.props.style}>
           {icon}

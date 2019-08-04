@@ -2,7 +2,7 @@
 import React from 'react'
 import {withFormsy} from 'formsy-react'
 import MapHubsComponent from '../MapHubsComponent'
-import {Tooltip} from 'react-tippy'
+import {Tooltip} from 'antd'
 import classNames from 'classnames'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('Toggle')
@@ -82,11 +82,9 @@ class Toggle extends MapHubsComponent<Props, void> {
 
     return (
       <Tooltip
-        disabled={!this.props.dataTooltip}
+        visible={this.props.dataTooltip}
         title={this.props.dataTooltip}
-        position={this.props.dataPosition}
-        inertia
-        followCursor
+        placement={this.props.dataPosition}
       >
         <div
           ref='toggle'

@@ -1,12 +1,11 @@
 // @flow
 import React from 'react'
 import {withFormsy} from 'formsy-react'
-import { Select, Row } from 'antd'
+import { Select, Row, Tooltip } from 'antd'
 import find from 'lodash.find'
 import result from 'lodash.result'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
-import {Tooltip} from 'react-tippy'
 
 const { Option } = Select
 
@@ -116,11 +115,9 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
     return (
       <div className={className}>
         <Tooltip
-          disabled={!dataTooltip}
+          visible={dataTooltip}
           title={dataTooltip}
-          position={dataPosition}
-          inertia
-          followCursor
+          placement={dataPosition}
         >
           <div ref='selectwrapper' className='input-field no-margin' id={id} >
             {icon &&
