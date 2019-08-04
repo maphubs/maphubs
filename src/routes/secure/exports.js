@@ -225,7 +225,7 @@ module.exports = function (app: any) {
       } else {
         res.writeHead(200, {
           'Content-Type': 'application/gpx+xml',
-          'ETag': hash
+          ETag: hash
         })
         return ogr2ogr(geoJSON)
           .format('GPX')
@@ -250,7 +250,7 @@ module.exports = function (app: any) {
       } else {
         res.writeHead(200, {
           'Content-Type': 'application/zip',
-          'ETag': hash
+          ETag: hash
         })
 
         return ogr2ogr(geoJSON)

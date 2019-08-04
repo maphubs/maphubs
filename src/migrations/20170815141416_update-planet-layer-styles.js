@@ -11,12 +11,12 @@ var multiRasterStyleWithOpacity = function (layer_id, layers, opacity) {
     var id = `omh-raster-${i}-${layer_id}`
     style.layers.push(
       {
-        'id': id,
-        'type': 'raster',
-        'source': id,
-        'minzoom': 0,
-        'maxzoom': 18,
-        'paint': {
+        id: id,
+        type: 'raster',
+        source: id,
+        minzoom: 0,
+        maxzoom: 18,
+        paint: {
           'raster-opacity': opacity
         }
       }
@@ -24,7 +24,7 @@ var multiRasterStyleWithOpacity = function (layer_id, layers, opacity) {
     style.sources[id] = {
       type: 'raster',
       tiles: raster.tiles,
-      'tileSize': 256
+      tileSize: 256
 
     }
   })
@@ -38,7 +38,7 @@ exports.up = function (knex, Promise) {
       var updateCommands = []
       if (layers) {
         layers.forEach(layer => {
-          let style = multiRasterStyleWithOpacity(layer.layer_id, layer.external_layer_config.layers, 100)
+          const style = multiRasterStyleWithOpacity(layer.layer_id, layer.external_layer_config.layers, 100)
           updateCommands.push(knex('omh.layers').update({style}).where({layer_id: layer.layer_id}))
         })
       }

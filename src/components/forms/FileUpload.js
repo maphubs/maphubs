@@ -105,7 +105,7 @@ export default class FileUpload extends MapHubsComponent<Props, State> {
 
       let message = (<span>{progressPct}</span>)
       if (hasError) {
-        message = (<span style={{'color': '#a94442'}}>{t('Failed to upload ...')}</span>)
+        message = (<span style={{color: '#a94442'}}>{t('Failed to upload ...')}</span>)
       }
       if (progress === 100) {
         message = (<span>{t('Done')}</span>)
@@ -122,7 +122,7 @@ export default class FileUpload extends MapHubsComponent<Props, State> {
             </button>
           </div>
 
-          <div style={{'clear': 'left', textAlign: 'center'}}>
+          <div style={{clear: 'left', textAlign: 'center'}}>
             {message}
           </div>
         </div>

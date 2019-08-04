@@ -15,7 +15,7 @@ module.exports = function (app: any) {
   app.post('/api/story/save', csrfProtection, isAuthenticated, async (req, res) => {
     const data = req.body
     if (data && data.owned_by_group_id && data.title && data.body) {
-      let story_id = data.story_id
+      const story_id = data.story_id
       try {
         let firstEdit
         let allowedToModifyGroup

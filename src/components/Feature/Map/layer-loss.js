@@ -25,16 +25,16 @@ function getLossLayer (active: boolean): Layer {
       },
       layers: [
         {
-          'id': 'fr-tree-cover-loss',
-          'type': 'raster',
-          'source': 'fr-tree-cover-loss',
-          'minzoom': 0,
-          'maxzoom': 18,
-          'paint': {
+          id: 'fr-tree-cover-loss',
+          type: 'raster',
+          source: 'fr-tree-cover-loss',
+          minzoom: 0,
+          maxzoom: 18,
+          paint: {
             'raster-opacity': 1
           },
-          'layout': {
-            'visibility': active ? 'visible' : 'none'
+          layout: {
+            visibility: active ? 'visible' : 'none'
           }
         }
       ],

@@ -103,7 +103,6 @@ export default class Stories extends MapHubsComponent<Props, State> {
               icon='add'
               tooltip={t('Create New Story')} tooltipPosition='top' />
           </div>
-          
         </main>
         <Footer {...this.props.footerConfig} />
       </ErrorBoundary>

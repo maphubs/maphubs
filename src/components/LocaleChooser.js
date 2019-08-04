@@ -10,7 +10,7 @@ const debug = debugFactory('MapHubsComponent')
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
-let supportedLangs = localeUtil.getSupported()
+const supportedLangs = localeUtil.getSupported()
 let languagesFromConfig
 const langs = []
 if (MAPHUBS_CONFIG.LANGUAGES) {

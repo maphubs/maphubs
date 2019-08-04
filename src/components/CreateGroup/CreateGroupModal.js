@@ -29,6 +29,7 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
     super(props)
     this.stores.push(GroupStore)
   }
+
   componentWillMount () {
     super.componentWillMount()
     const _this = this
@@ -41,19 +42,23 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
       return this.groupIdAvailable
     })
   }
+
   showModal = () => {
     this.setState({visible: true})
   }
+
   enableButton = () => {
     this.setState({
       canSubmit: true
     })
   }
+
   disableButton = () => {
     this.setState({
       canSubmit: false
     })
   }
+
   checkGroupIdAvailable = (id: string) => {
     const {t} = this
     let result = false
@@ -84,9 +89,11 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
     }
     return result
   }
+
   onFormChange = (formModel: Object) => {
     this.setState({formModel})
   }
+
   saveGroup = () => {
     const {t} = this
     const _this = this
@@ -114,9 +121,11 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
       }
     })
   }
+
   handleCancel = () => {
     this.setState({visible: false})
   }
+
   render () {
     const { saveGroup, handleCancel } = this
     const { t } = this.props

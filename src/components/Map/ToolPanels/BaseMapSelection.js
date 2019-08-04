@@ -27,7 +27,7 @@ export default class BaseMapSelection extends React.Component<Props, void> {
           return (
             <div style={{width: '100%', height: 'calc(100% - 50px)', overflow: 'auto', backgroundColor: 'white', textAlign: 'left', padding: '10px'}}>
               {baseMapOptions.map((baseMapOption: BaseMapOption) => {
-                let selected = (BaseMap.state.baseMap === baseMapOption.value)
+                const selected = (BaseMap.state.baseMap === baseMapOption.value)
                 return (
                   <div
                     style={{

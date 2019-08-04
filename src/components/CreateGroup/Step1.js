@@ -96,6 +96,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
       canSubmit: true
     })
   }
+
   disableButton = () => {
     this.setState({
       canSubmit: false

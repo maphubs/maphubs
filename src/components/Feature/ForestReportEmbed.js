@@ -39,7 +39,7 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
 
     const {onModuleToggle} = this.props
 
-    let marks = {
+    const marks = {
       1: '1km',
       5: '5km',
       10: '10km',

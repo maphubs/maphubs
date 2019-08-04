@@ -114,7 +114,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
   }
 
   resetStyleGL () {
-    let style = this.state.style ? JSON.parse(JSON.stringify(this.state.style)) : {'sources': {}}
+    let style = this.state.style ? JSON.parse(JSON.stringify(this.state.style)) : {sources: {}}
     const layer_id = this.state.layer_id ? this.state.layer_id : -1
     const isExternal = this.state.is_external
     const shortid = this.state.shortid

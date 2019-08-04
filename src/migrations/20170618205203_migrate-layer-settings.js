@@ -1,7 +1,7 @@
 
 exports.up = function (knex, Promise) {
   return knex('omh.layers').select('layer_id', 'style', 'settings').then((layers) => {
-    let commands = []
+    const commands = []
     layers.forEach((layer) => {
       if (layer.style && layer.settings) {
         if (!layer.style.metadata) {

@@ -3,9 +3,9 @@ var updateStyle = function (style, layer_id, shortid) {
   if (!style || !style.layers) return style
   style.layers.map(layer => {
     if (layer.metadata && layer.metadata['maphubs:markers'] && layer.metadata['maphubs:layer_id']) {
-      let data_layer_id = layer.metadata['maphubs:layer_id']
+      const data_layer_id = layer.metadata['maphubs:layer_id']
       if (layer_id === data_layer_id) {
-        let markerSettings = layer.metadata['maphubs:markers']
+        const markerSettings = layer.metadata['maphubs:markers']
         markerSettings.dataUrl = `{MAPHUBS_DOMAIN}/api/lyr/${shortid}/export/json/${data_layer_id}.json`
         markerSettings.geobufUrl = `{MAPHUBS_DOMAIN}/api/lyr/${shortid}/export/geobuf/${data_layer_id}.pbf`
         layer.metadata['maphubs:markers'] = markerSettings
@@ -42,7 +42,7 @@ exports.up = function (knex, Promise) {
     .whereNot({is_external: true, remote: true})
     .then(layers => {
       return Promise.map(layers, layer => {
-        let updatedStyle = updateStyle(layer.style, layer.layer_id, layer.shortid)
+        const updatedStyle = updateStyle(layer.style, layer.layer_id, layer.shortid)
         return knex('omh.layers').update({style: updatedStyle}).where({layer_id: layer.layer_id})
       }).then(() => {
         return knex.raw(`select omh.map_layers.map_id, omh.map_layers.layer_id, 
@@ -52,10 +52,10 @@ exports.up = function (knex, Promise) {
         left join omh.layers on omh.map_layers.layer_id = omh.layers.layer_id
         order by position`)
           .then((result) => {
-            let updatedMapStyles = {}
+            const updatedMapStyles = {}
             return Promise.mapSeries(result.rows, mapLayer => {
               console.log(`updating map layer, map:${mapLayer.map_id} layer: ${mapLayer.layer_id}`)
-              let mapLayerStyle = updateStyle(mapLayer.map_layer_style, mapLayer.layer_id, mapLayer.shortid)
+              const mapLayerStyle = updateStyle(mapLayer.map_layer_style, mapLayer.layer_id, mapLayer.shortid)
               if (!updatedMapStyles[mapLayer.map_id]) {
                 updatedMapStyles[mapLayer.map_id] = []
               }
@@ -69,7 +69,7 @@ exports.up = function (knex, Promise) {
             }).then((updatedMapStyles) => {
               return Promise.mapSeries(Object.keys(updatedMapStyles), map_id => {
                 console.log(`updating map: ${map_id}`)
-                let updatedMapStyle = buildMapStyle(updatedMapStyles[map_id])
+                const updatedMapStyle = buildMapStyle(updatedMapStyles[map_id])
                 return knex('omh.maps').update({style: updatedMapStyle}).where({map_id})
               })
             })

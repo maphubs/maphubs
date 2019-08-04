@@ -41,7 +41,7 @@ exports.up = function (knex, Promise) {
     .select('layer_id', 'shortid', 'style')
     .then(layers => {
       return Promise.map(layers, layer => {
-        let updatedStyle = updateStyle(layer.style, layer.layer_id, layer.shortid)
+        const updatedStyle = updateStyle(layer.style, layer.layer_id, layer.shortid)
         return knex('omh.layers').update({style: updatedStyle}).where({layer_id: layer.layer_id})
       }).then(() => {
         return knex.raw(`select omh.map_layers.map_id, omh.map_layers.layer_id, 
@@ -51,10 +51,10 @@ exports.up = function (knex, Promise) {
         left join omh.layers on omh.map_layers.layer_id = omh.layers.layer_id
         order by position`)
           .then((result) => {
-            let updatedMapStyles = {}
+            const updatedMapStyles = {}
             return Promise.mapSeries(result.rows, mapLayer => {
               console.log(`updating map layer, map:${mapLayer.map_id} layer: ${mapLayer.layer_id}`)
-              let mapLayerStyle = updateStyle(mapLayer.map_layer_style, mapLayer.layer_id, mapLayer.shortid)
+              const mapLayerStyle = updateStyle(mapLayer.map_layer_style, mapLayer.layer_id, mapLayer.shortid)
               if (!updatedMapStyles[mapLayer.map_id]) {
                 updatedMapStyles[mapLayer.map_id] = []
               }
@@ -68,7 +68,7 @@ exports.up = function (knex, Promise) {
             }).then(updatedMapStyles => {
               return Promise.mapSeries(Object.keys(updatedMapStyles), map_id => {
                 console.log(`updating map: ${map_id}`)
-                let updatedMapStyle = buildMapStyle(updatedMapStyles[map_id])
+                const updatedMapStyle = buildMapStyle(updatedMapStyles[map_id])
                 return knex('omh.maps').update({style: updatedMapStyle}).where({map_id})
               })
             })

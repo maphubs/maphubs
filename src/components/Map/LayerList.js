@@ -52,7 +52,7 @@ export default class LayerList extends React.Component<Props, State> {
     }
   }
 
-  moveLayer = (dragIndex, hoverIndex) => {
+  moveLayer = (dragIndex: any, hoverIndex: any) => {
     const layers = this.state.layers
     const dragLayer = layers[dragIndex]
 
@@ -70,7 +70,7 @@ export default class LayerList extends React.Component<Props, State> {
     const _this = this
     const {layers} = this.state
     const {toggleVisibility, showVisibility, showRemove, showDesign, showEdit, removeFromMap, showLayerDesigner, editLayer, t} = this.props
-    let empty = !layers || layers.length === 0
+    const empty = !layers || layers.length === 0
     return (
       <div style={{height: '100%', padding: 0, margin: 0, border: '1px solid #eeeeee'}}>
         <style jsx global>{`

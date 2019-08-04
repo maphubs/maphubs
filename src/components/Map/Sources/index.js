@@ -45,12 +45,12 @@ export default {
       return response(this['generic'])
     }
   },
-  'arcgisraster': AGSRaster,
+  arcgisraster: AGSRaster,
   'ags-mapserver-query': AGSMapServerQuery,
   'ags-featureserver-query': AGSFeatureServerQuery,
   'mapbox-style': MapboxSource,
   'maphubs-vector': MapHubsSource,
-  'earthengine': EarthEngineSource,
-  'raster': RasterSource,
-  'generic': GenericSource
+  earthengine: EarthEngineSource,
+  raster: RasterSource,
+  generic: GenericSource
 }

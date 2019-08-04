@@ -125,7 +125,7 @@ export default class MapMakerStore extends Reflux.Store {
   }
 
   removeFromMap (layer: Layer) {
-    const layers = _reject(this.state.mapLayers, {'layer_id': layer.layer_id})
+    const layers = _reject(this.state.mapLayers, {layer_id: layer.layer_id})
     this.updateMap(layers)
   }
 

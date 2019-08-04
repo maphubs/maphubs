@@ -6,54 +6,54 @@ function getLayerFRActive (layer: Object, geojson: Object): Layer {
   const defaultColor = 'yellow'
   const layers = [
     {
-      'id': `omh-data-point-feature-geojson`,
-      'type': 'circle',
-      'metadata': {
+      id: `omh-data-point-feature-geojson`,
+      type: 'circle',
+      metadata: {
         'maphubs:interactive': true,
         'maphubs:showBehindBaseMapLabels': false
       },
-      'source': 'omh-feature-geojson',
-      'filter': ['in', '$type', 'Point'],
-      'paint': {
+      source: 'omh-feature-geojson',
+      filter: ['in', '$type', 'Point'],
+      paint: {
         'circle-color': defaultColor,
         'circle-opacity': 1
       }
     }, {
-      'id': `omh-data-line-feature-geojson`,
-      'type': 'line',
-      'metadata': {
+      id: `omh-data-line-feature-geojson`,
+      type: 'line',
+      metadata: {
         'maphubs:interactive': true,
         'maphubs:showBehindBaseMapLabels': false
       },
-      'source': 'omh-feature-geojson',
-      'filter': ['in', '$type', 'LineString'],
-      'paint': {
+      source: 'omh-feature-geojson',
+      filter: ['in', '$type', 'LineString'],
+      paint: {
         'line-color': defaultColor,
         'line-opacity': 0.5,
         'line-width': 2
       }
     },
     {
-      'id': `omh-data-polygon-feature-geojson`,
-      'type': 'fill',
-      'metadata': {
+      id: `omh-data-polygon-feature-geojson`,
+      type: 'fill',
+      metadata: {
         'maphubs:interactive': false,
         'maphubs:showBehindBaseMapLabels': false
       },
-      'source': 'omh-feature-geojson',
-      'filter': ['in', '$type', 'Polygon'],
-      'paint': {
+      source: 'omh-feature-geojson',
+      filter: ['in', '$type', 'Polygon'],
+      paint: {
         'fill-color': 'white',
         'fill-opacity': 0
       }
     }, {
-      'id': `omh-data-outline-polygon-feature-geojson`,
-      'type': 'line',
-      'metadata': {
+      id: `omh-data-outline-polygon-feature-geojson`,
+      type: 'line',
+      metadata: {
       },
-      'source': 'omh-feature-geojson',
-      'filter': ['in', '$type', 'Polygon'],
-      'paint': {
+      source: 'omh-feature-geojson',
+      filter: ['in', '$type', 'Polygon'],
+      paint: {
         'line-color': defaultColor,
         'line-opacity': 0.8,
         'line-width': 3
@@ -90,54 +90,54 @@ function getLayer (layer: Object, geojson: Object): Layer {
   const defaultColorTransparent = 'rgba(255,0,0,0.3)'
   const layers = [
     {
-      'id': `omh-data-point-feature-geojson`,
-      'type': 'circle',
-      'metadata': {
+      id: `omh-data-point-feature-geojson`,
+      type: 'circle',
+      metadata: {
         'maphubs:interactive': true,
         'maphubs:showBehindBaseMapLabels': false
       },
-      'source': 'omh-feature-geojson',
-      'filter': ['in', '$type', 'Point'],
-      'paint': {
+      source: 'omh-feature-geojson',
+      filter: ['in', '$type', 'Point'],
+      paint: {
         'circle-color': defaultColor,
         'circle-opacity': 1
       }
     }, {
-      'id': `omh-data-line-feature-geojson`,
-      'type': 'line',
-      'metadata': {
+      id: `omh-data-line-feature-geojson`,
+      type: 'line',
+      metadata: {
         'maphubs:interactive': true,
         'maphubs:showBehindBaseMapLabels': false
       },
-      'source': 'omh-feature-geojson',
-      'filter': ['in', '$type', 'LineString'],
-      'paint': {
+      source: 'omh-feature-geojson',
+      filter: ['in', '$type', 'LineString'],
+      paint: {
         'line-color': defaultColor,
         'line-opacity': 0.5,
         'line-width': 2
       }
     },
     {
-      'id': `omh-data-polygon-feature-geojson`,
-      'type': 'fill',
-      'metadata': {
+      id: `omh-data-polygon-feature-geojson`,
+      type: 'fill',
+      metadata: {
         'maphubs:interactive': false,
         'maphubs:showBehindBaseMapLabels': false
       },
-      'source': 'omh-feature-geojson',
-      'filter': ['in', '$type', 'Polygon'],
-      'paint': {
+      source: 'omh-feature-geojson',
+      filter: ['in', '$type', 'Polygon'],
+      paint: {
         'fill-color': defaultColor,
         'fill-opacity': 0.3
       }
     }, {
-      'id': `omh-data-outline-polygon-feature-geojson`,
-      'type': 'line',
-      'metadata': {
+      id: `omh-data-outline-polygon-feature-geojson`,
+      type: 'line',
+      metadata: {
       },
-      'source': 'omh-feature-geojson',
-      'filter': ['in', '$type', 'Polygon'],
-      'paint': {
+      source: 'omh-feature-geojson',
+      filter: ['in', '$type', 'Polygon'],
+      paint: {
         'line-color': defaultColor,
         'line-opacity': 0.8,
         'line-width': 3

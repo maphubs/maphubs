@@ -25,7 +25,7 @@ module.exports = function (app: any) {
     const legend = layer.legend_html ? layer.legend_html : name
 
     if (layer.is_external && layer.external_layer_config.type === 'raster') {
-      let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ]
+      let bounds = [-180, -85.05112877980659, 180, 85.0511287798066]
       if (layer.external_layer_config.bounds) {
         bounds = layer.external_layer_config.bounds
       } else if (layer.extent_bbox) {
@@ -60,7 +60,7 @@ module.exports = function (app: any) {
       }
       return res.status(200).send(tileJSON)
     } else if (layer.is_external && layer.external_layer_config.type === 'vector') {
-      let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ]
+      let bounds = [-180, -85.05112877980659, 180, 85.0511287798066]
       if (layer.extent_bbox) bounds = layer.extent_bbox
       const minzoom = layer.external_layer_config.minzoom ? parseInt(layer.external_layer_config.minzoom) : 0
       const maxzoom = layer.external_layer_config.maxzoom ? parseInt(layer.external_layer_config.maxzoom) : 19
@@ -91,7 +91,7 @@ module.exports = function (app: any) {
       }
       return res.status(200).send(tileJSON)
     } else if (!layer.is_external) {
-      let bounds = [ -180, -85.05112877980659, 180, 85.0511287798066 ]
+      let bounds = [-180, -85.05112877980659, 180, 85.0511287798066]
       if (layer.extent_bbox) bounds = layer.extent_bbox
       const minzoom = 0
       const maxzoom = 19

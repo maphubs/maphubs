@@ -79,7 +79,6 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
     }
     const baseUrl = urlUtil.getBaseUrl()
 
-    const groupLogoUrl = `/img/resize/72?url=/group/${story.owned_by_group_id}/thumbnail`
     let authorText = ''
     if (story.author) {
       authorText = t(story.author) + ' - '

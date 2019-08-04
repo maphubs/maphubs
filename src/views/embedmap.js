@@ -128,34 +128,34 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
 
   getStyleLayer = (props: Props) => {
     return {
-      'id': 'omh-data-point-geojson-overlay',
-      'type': 'circle',
-      'metadata': {
+      id: 'omh-data-point-geojson-overlay',
+      type: 'circle',
+      metadata: {
         'maphubs:layer_id': 0,
         'maphubs:interactive': false,
         'maphubs:showBehindBaseMapLabels': false,
         'maphubs:markers': {
-          'shape': 'MAP_PIN',
-          'size': '32',
-          'width': 32,
-          'height': 32,
-          'shapeFill': props.markerColor,
-          'shapeFillOpacity': 0.75,
-          'shapeStroke': '#FFFFFF',
-          'shapeStrokeWidth': 2,
-          'inverted': false,
-          'enabled': true,
-          'dataUrl': props.geoJSONUrl,
-          'interactive': true
+          shape: 'MAP_PIN',
+          size: '32',
+          width: 32,
+          height: 32,
+          shapeFill: props.markerColor,
+          shapeFillOpacity: 0.75,
+          shapeStroke: '#FFFFFF',
+          shapeStrokeWidth: 2,
+          inverted: false,
+          enabled: true,
+          dataUrl: props.geoJSONUrl,
+          interactive: true
         }
       },
-      'source': 'geojson-overlay',
-      'filter': [
+      source: 'geojson-overlay',
+      filter: [
         'in',
         '$type',
         'Point'
       ],
-      'paint': {
+      paint: {
         'circle-color': props.markerColor
       }
     }

@@ -48,10 +48,15 @@ type State = {
 
 class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
   Selectors: null
+
   ReactDataGrid: any
+
   Toolbar: any
+
   DropDownEditor: any
+
   CheckboxEditor: any
+
   DropDownFormatter: any
 
   static defaultProps = {

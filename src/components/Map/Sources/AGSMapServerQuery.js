@@ -12,7 +12,7 @@ const AGSMapServerQuery = {
           if (geoJSON.bbox && geoJSON.bbox.length > 0 && mapComponent.state.allowLayersToMoveMap) {
             mapComponent.zoomToData(geoJSON)
           }
-          return mapComponent.addSource(key, {'type': 'geojson', data: geoJSON})
+          return mapComponent.addSource(key, {type: 'geojson', data: geoJSON})
         }, (error) => {
           debug.log('(' + mapComponent.state.id + ') ' + error)
         })

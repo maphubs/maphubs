@@ -242,7 +242,7 @@ module.exports = {
       res.writeHead(200, {
         'Content-Type': 'image/png',
         'Content-Length': img.length,
-        'ETag': hash
+        ETag: hash
       })
       res.end(img)
     }

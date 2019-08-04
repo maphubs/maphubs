@@ -30,6 +30,7 @@ export default class UppyFileUpload extends MapHubsComponent<Props, State> {
   static defaultProps = {
     height: 300
   }
+
   componentDidMount () {
     const {maxFileSize, allowedFileTypes, meta, headers, endpoint} = this.props
     this.uppy = Uppy({

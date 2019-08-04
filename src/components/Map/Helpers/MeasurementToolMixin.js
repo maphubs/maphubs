@@ -104,12 +104,12 @@ export default {
     const {t} = this.props
     if (features.length > 0) {
       const lines = {
-        'type': 'FeatureCollection',
-        'features': []
+        type: 'FeatureCollection',
+        features: []
       }
       const polygons = {
-        'type': 'FeatureCollection',
-        'features': []
+        type: 'FeatureCollection',
+        features: []
       }
       features.forEach((feature) => {
         if (feature.geometry.type === 'Polygon') {

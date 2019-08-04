@@ -121,7 +121,7 @@ export default class AddLayerPanel extends React.Component<Props, State> {
       myCards = myLayers.map((layer, i) => cardUtil.getLayerCard(layer, i, [], onAdd))
     }
 
-    let popularCards = popularLayers.map((layer, i) => cardUtil.getLayerCard(layer, i, [], onAdd))
+    const popularCards = popularLayers.map((layer, i) => cardUtil.getLayerCard(layer, i, [], onAdd))
 
     let searchResultDisplay = ''
     let searchCards = []

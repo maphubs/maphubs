@@ -31,6 +31,7 @@ export default class StoryContainer extends Container<StoryContainerState> {
     }
     this.state = Object.assign(defaultState, initialState)
   }
+
   bodyChange = (lang:string, update: string) => {
     this.setState(state => {
       const body = state.body || {}

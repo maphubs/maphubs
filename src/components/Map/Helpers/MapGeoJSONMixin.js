@@ -8,7 +8,7 @@ export default {
     const _this = this
     if (this.map) {
       if (data && data.features && Array.isArray(data.features) && data.features.length > 0) {
-        this.map.addSource('omh-geojson', {'type': 'geojson', data})
+        this.map.addSource('omh-geojson', {type: 'geojson', data})
         const glStyle = MapStyles.style.defaultStyle('geojson', 'geojson', null, null)
         // glStyle.sources["omh-geojson"] = {"type": "geojson", data};
         glStyle.layers.map((layer) => {

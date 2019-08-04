@@ -112,17 +112,17 @@ module.exports = function (app: any) {
             users.forEach(user => {
               userExport.push(
                 {
-                  'username': user.display_name,
-                  'email': user.email,
-                  'email_verified': user.email_valid,
-                  'app_metadata': {
-                    'hosts': [
+                  username: user.display_name,
+                  email: user.email,
+                  email_verified: user.email_valid,
+                  app_metadata: {
+                    hosts: [
                       {
-                        'host': local.host,
-                        'user_id': user.id
+                        host: local.host,
+                        user_id: user.id
                       }
                     ],
-                    'signedUp': true
+                    signedUp: true
                   }
                 }
               )

@@ -53,7 +53,7 @@ const comparisons = [
     name: {
       en: 'Central Parks'
     },
-    ha: 341.10
+    ha: 341.1
   }, {
     name: {
       en: 'Louvre Museums'
@@ -121,7 +121,7 @@ export default class FeatureArea extends MapHubsPureComponent<Props, void> {
     }
     if (featureAreaM2 && featureAreaM2 > 0) {
       featureAreaKM2 = featureAreaM2 * 0.000001
-      featureAreaHA = featureAreaM2 / 10000.00
+      featureAreaHA = featureAreaM2 / 10000
       let value, units
       if (featureAreaKM2 < 1) {
         value = featureAreaM2

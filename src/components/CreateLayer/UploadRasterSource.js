@@ -58,7 +58,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
     const _this = this
     const closeMessage = message.loading(t('Processing'), 0)
     superagent.post(`${MAPHUBS_CONFIG.RASTER_UPLOAD_API}/upload/complete`)
-      .set({'Content-Type': 'application/json', 'Authorization': 'Bearer ' + MAPHUBS_CONFIG.RASTER_UPLOAD_API_KEY})
+      .set({'Content-Type': 'application/json', Authorization: 'Bearer ' + MAPHUBS_CONFIG.RASTER_UPLOAD_API_KEY})
       .accept('json')
       .send({
         uploadUrl: file.uploadURL,

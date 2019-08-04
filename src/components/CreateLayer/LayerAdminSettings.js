@@ -117,7 +117,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
           message: t('Server Error'),
           description: err.message || err.toString() || err,
           duration: 0
-        })        
+        })
       } else {
         _this.setState({pendingChanges: false})
         _this.props.onSubmit()

@@ -31,6 +31,7 @@ export class ModalContent extends Reflux.Component<ModalContentDefaultProps, Mod
   static defaultProps = {
     style: {}
   }
+
   render () {
     const className = classNames('modal-content', this.props.className)
     return (
@@ -53,9 +54,11 @@ type ModalFooterDefaultProps = {
 
 export class ModalFooter extends Reflux.Component<ModalFooterDefaultProps, ModalFooterProps, void> {
   props: ModalFooterProps
+
   static defaultProps = {
     style: {}
   }
+
   render () {
     const className = classNames('modal-footer', this.props.className)
     return (

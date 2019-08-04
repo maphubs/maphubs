@@ -22,7 +22,7 @@ module.exports = function (app: any) {
           res.writeHead(200, {
             'Content-Type': dataType,
             'Content-Length': img.length,
-            'ETag': require('crypto').createHash('md5').update(img).digest('hex')
+            ETag: require('crypto').createHash('md5').update(img).digest('hex')
           })
           return res.end(img)
         } else {

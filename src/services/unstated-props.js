@@ -25,7 +25,7 @@ const subscribe = (WrappedComponent, containers) => {
     }
 
     renderChildren () {
-      let contrs:ConnectConfigObj = {}
+      const contrs:ConnectConfigObj = {}
       const functionArguments = arguments
       _containerNames.forEach((el, i) => { contrs[el] = functionArguments[i] })
       return (<WrappedComponent {...this.props} containers={contrs} />)

@@ -212,13 +212,13 @@ module.exports = {
     if (includePrivate) {
       query.where({
         status: 'published',
-        'owned_by_group_id': group_id
+        owned_by_group_id: group_id
       })
     } else {
       query.where({
-        'private': false,
+        private: false,
         status: 'published',
-        'owned_by_group_id': group_id
+        owned_by_group_id: group_id
       })
     }
 
@@ -353,9 +353,9 @@ module.exports = {
 
     return new Promise((resolve, reject) => {
       dbgeo.parse(data.rows, {
-        'outputFormat': 'geojson',
-        'geometryColumn': 'geom',
-        'geometryType': 'geojson'
+        outputFormat: 'geojson',
+        geometryColumn: 'geom',
+        geometryType: 'geojson'
       }, (error, result) => {
         if (error) {
           log.error(error)

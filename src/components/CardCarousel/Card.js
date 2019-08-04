@@ -7,11 +7,9 @@ import LockOpen from '@material-ui/icons/LockOpenTwoTone'
 import { Card, Tooltip } from 'antd'
 
 export type CardConfig = {|
-  id: string,
   title?: LocalizedString,
   description?: LocalizedString,
   image_url?: string,
-  background_image_url?: string,
   link: string,
   group?: {
     group_id: string,
@@ -139,16 +137,6 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
             </Tooltip>
           </div>
         }
-        {this.props.public &&
-          <div style={{position: 'absolute', top: '5px', right: '5px'}}>
-            <Tooltip
-              title={t('Public Sharing Enabled')}
-              placement='bottom'
-            >
-              <LockOpen style={{color: 'green'}} />
-            </Tooltip>
-          </div>
-        }
         <div className='card-content word-wrap' style={{padding: '5px'}}>
 
           <b>{t(this.props.title)}</b> <br />
@@ -159,6 +147,16 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
             <div className='valign-wrapper' style={{position: 'absolute', bottom: 5, left: 5}}>
               <GroupTag group={group.group_id} />
             </div>
+          }
+          {this.props.public &&
+          <div style={{position: 'absolute', bottom: '2px', right: '30px'}}>
+            <Tooltip
+              title={t('Public Sharing Enabled')}
+              placement='top'
+            >
+              <LockOpen style={{color: 'green'}} />
+            </Tooltip>
+          </div>
           }
           <Tooltip title={toolTipText} placement='top'>
             <i className='material-icons grey-text text-darken-3'

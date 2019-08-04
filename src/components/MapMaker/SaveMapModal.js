@@ -65,15 +65,19 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
       closeSavingMessage()
     })
   }
+
   showModal = () => {
     this.setState({visible: true})
   }
+
   cancel = () => {
     this.setState({visible: false})
   }
+
   titleChange = (title: Object) => {
     this.setState({title})
   }
+
   groupChange = (group: string) => {
     this.setState({group})
   }

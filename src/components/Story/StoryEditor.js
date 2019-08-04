@@ -25,7 +25,6 @@ type Props = {|
   myMaps: Array<Object>,
   popularMaps: Array<Object>,
   groups: Array<Object>,
-  create?: boolean,
   t: Function,
   locale: string,
   containers: any
@@ -50,9 +49,10 @@ class StoryEditor extends React.Component<Props, State> {
 
   componentDidMount () {
     const _this = this
+    const {t} = this.props
     window.addEventListener('beforeunload', (e) => {
       if (_this.props.containers.story.state.modified) {
-        const msg = _this.t('You have not saved the edits for your story, your changes will be lost.')
+        const msg = t('You have not saved the edits for your story, your changes will be lost.')
         e.returnValue = msg
         return msg
       }
@@ -115,19 +115,20 @@ class StoryEditor extends React.Component<Props, State> {
     }
   }
 
-delete = async () => {
-  const { t, containers } = this.props
-  try {
-    await containers.story.delete()
-    message.info(t('Story Deleted'), 1, () => { window.location = '/' })
-  } catch (err) {
-    notification.error({
-      message: t('Error'),
-      description: err.message || err.toString() || err,
-      duration: 0
-    })
+  delete = async () => {
+    const { t, containers } = this.props
+    try {
+      await containers.story.delete()
+      message.info(t('Story Deleted'), 1, () => { window.location = '/' })
+    } catch (err) {
+      notification.error({
+        message: t('Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
-}
+
   onAddImage = async (info: Object) => {
     const {containers} = this.props
     await containers.story.addImage(info)
@@ -288,5 +289,5 @@ delete = async () => {
 }
 
 export default subscribe(StoryEditor, {
-  'story': StoryContainer
+  story: StoryContainer
 })

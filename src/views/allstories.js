@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import {Row, Col} from 'antd'
+import { Row } from 'antd'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import UserStore from '../stores/UserStore'

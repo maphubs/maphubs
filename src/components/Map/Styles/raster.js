@@ -15,16 +15,16 @@ export default {
       sources: {},
       layers: [
         {
-          'id': 'omh-raster-' + shortid,
-          'type': 'raster',
-          'metadata': {
+          id: 'omh-raster-' + shortid,
+          type: 'raster',
+          metadata: {
             'maphubs:layer_id': layer_id,
             'maphubs:globalid': shortid
           },
-          'source': 'omh-' + shortid,
-          'minzoom': 0,
-          'maxzoom': 18,
-          'paint': {
+          source: 'omh-' + shortid,
+          minzoom: 0,
+          maxzoom: 18,
+          paint: {
             'raster-opacity': opacity
           }
         }
@@ -34,7 +34,7 @@ export default {
     style.sources['omh-' + shortid] = {
       type,
       url: sourceUrl,
-      'tileSize': 256
+      tileSize: 256
     }
 
     return style
@@ -46,23 +46,23 @@ export default {
       sources: {},
       layers: [
         {
-          'id': 'omh-raster-' + shortid,
-          'type': 'raster',
-          'metadata': {
+          id: 'omh-raster-' + shortid,
+          type: 'raster',
+          metadata: {
             'maphubs:layer_id': layer_id,
             'maphubs:globalid': shortid
           },
-          'source': 'omh-' + shortid,
-          'minzoom': 0,
-          'maxzoom': 18,
-          'paint': {
+          source: 'omh-' + shortid,
+          minzoom: 0,
+          maxzoom: 18,
+          paint: {
             'raster-opacity': opacity
           }
         }
       ]
     }
 
-    let metadata = {}
+    const metadata = {}
 
     Object.keys(elc).forEach(key => {
       metadata[`maphubs:${key}`] = elc[key]
@@ -70,11 +70,11 @@ export default {
 
     style.sources['omh-' + shortid] = {
       type,
-      'minzoom': elc.minzoom || 0,
-      'maxzoom': elc.maxzoom || 22,
+      minzoom: elc.minzoom || 0,
+      maxzoom: elc.maxzoom || 22,
       tiles: elc.tiles,
-      'tileSize': elc.tileSize || 256,
-      'metadata': metadata
+      tileSize: elc.tileSize || 256,
+      metadata: metadata
     }
 
     return style
@@ -92,15 +92,15 @@ export default {
       style.layers.push(
         {
           id,
-          'type': 'raster',
-          'metadata': {
+          type: 'raster',
+          metadata: {
             'maphubs:layer_id': layer_id,
             'maphubs:globalid': shortid
           },
-          'source': id,
-          'minzoom': 0,
-          'maxzoom': 18,
-          'paint': {
+          source: id,
+          minzoom: 0,
+          maxzoom: 18,
+          paint: {
             'raster-opacity': opacity
           }
         }
@@ -108,7 +108,7 @@ export default {
       style.sources[id] = {
         type,
         tiles: raster.tiles,
-        'tileSize': 256
+        tileSize: 256
 
       }
     })

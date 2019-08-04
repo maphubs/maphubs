@@ -33,8 +33,8 @@ exports.up = (knex, Promise) => {
       if (layers && Array.isArray(layers)) {
         var updateCommands = []
         layers.forEach(layer => {
-          let style = layer.style
-          let name = layer.name
+          const style = layer.style
+          const name = layer.name
 
           if (style && style.layers && style.sources.osm) {
             style.layers.forEach(styleLayer => {

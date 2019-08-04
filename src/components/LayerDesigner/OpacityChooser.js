@@ -68,6 +68,7 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
     style = JSON.parse(style)
     this.props.onStyleChange(style)
   }
+
   onLegendChange = (legendCode: string) => {
     this.props.onLegendChange(legendCode)
   }

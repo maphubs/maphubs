@@ -6,7 +6,7 @@ import localeUtil from '../../../locales/util'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
-let supportedLangs = localeUtil.getSupported()
+const supportedLangs = localeUtil.getSupported()
 let languagesFromConfig
 const langs = []
 if (MAPHUBS_CONFIG.LANGUAGES) {
@@ -49,7 +49,7 @@ export default class LocalizedInput extends React.Component<Props, State> {
   }
 
   handleChange = (lang: string, val: string) => {
-    let changedValue = {}
+    const changedValue = {}
     changedValue[lang] = val
 
     this.setState({

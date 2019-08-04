@@ -6,35 +6,35 @@ function getGLADLayer (gladGeoJSON: Object, active: boolean): Layer {
   const gladColor = 'red'
   const layers = [
     {
-      'id': `omh-data-polygon-glad-geojson`,
-      'type': 'fill',
-      'metadata': {
+      id: `omh-data-polygon-glad-geojson`,
+      type: 'fill',
+      metadata: {
         'maphubs:interactive': false,
         'maphubs:showBehindBaseMapLabels': false
       },
-      'source': 'fr-glad-geojson',
-      'filter': ['in', '$type', 'Polygon'],
-      'paint': {
+      source: 'fr-glad-geojson',
+      filter: ['in', '$type', 'Polygon'],
+      paint: {
         'fill-color': gladColor,
         'fill-opacity': 0.2
       },
-      'layout': {
-        'visibility': active ? 'visible' : 'none'
+      layout: {
+        visibility: active ? 'visible' : 'none'
       }
     }, {
-      'id': `fr-data-outline-polygon-glad-geojson`,
-      'type': 'line',
-      'metadata': {
+      id: `fr-data-outline-polygon-glad-geojson`,
+      type: 'line',
+      metadata: {
       },
-      'source': 'fr-glad-geojson',
-      'filter': ['in', '$type', 'Polygon'],
-      'paint': {
+      source: 'fr-glad-geojson',
+      filter: ['in', '$type', 'Polygon'],
+      paint: {
         'line-color': gladColor,
         'line-opacity': 1,
         'line-width': 1
       },
-      'layout': {
-        'visibility': active ? 'visible' : 'none'
+      layout: {
+        visibility: active ? 'visible' : 'none'
       }
     }
   ]

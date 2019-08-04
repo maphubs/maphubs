@@ -26,11 +26,11 @@ exports.up = function (knex, Promise) {
   left join omh.layers on omh.map_layers.layer_id = omh.layers.layer_id
   order by position`)
     .then((result) => {
-      let updatedMapStyles = {}
-      let updateCommands = []
+      const updatedMapStyles = {}
+      const updateCommands = []
       result.rows.forEach((mapLayer) => {
-        let mapLayerStyle = mapLayer.map_layer_style
-        let origLayerStyle = mapLayer.orig_layer_style
+        const mapLayerStyle = mapLayer.map_layer_style
+        const origLayerStyle = mapLayer.orig_layer_style
         if (origLayerStyle) {
         // update root metadata
           if (origLayerStyle.metadata) {
@@ -60,7 +60,7 @@ exports.up = function (knex, Promise) {
 
       // loop through map_ids, build updated styles, and update
       Object.keys(updatedMapStyles).forEach((map_id) => {
-        let updatedMapStyle = rebuildMapStyle(updatedMapStyles[map_id])
+        const updatedMapStyle = rebuildMapStyle(updatedMapStyles[map_id])
         updateCommands.push(
           knex('omh.maps').update({style: updatedMapStyle}).where({map_id: map_id})
         )

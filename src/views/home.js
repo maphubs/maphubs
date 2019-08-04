@@ -173,6 +173,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     }
     return homepageMap
   }
+
   /* eslint-disable react/display-name */
   renderXComponent = (config: Object, key: string) => {
     if (this.state.loaded) {

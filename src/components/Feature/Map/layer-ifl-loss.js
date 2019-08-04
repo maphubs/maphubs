@@ -7,73 +7,73 @@ function getIFLLossLayer (loss0013: Object, loss1316: Object, active: boolean): 
   const loss1316Color = 'rgba(223,82,134,0.93)'
   const layers = [
     {
-      'id': 'fr-data-polygon-iflloss0013-geojson',
-      'type': 'fill',
-      'metadata': {
+      id: 'fr-data-polygon-iflloss0013-geojson',
+      type: 'fill',
+      metadata: {
         'maphubs:interactive': true,
         'maphubs:showBehindBaseMapLabels': false,
         'maphubs:outline-only': true
       },
-      'source': 'fr-iflloss0013-geojson',
-      'paint': {
+      source: 'fr-iflloss0013-geojson',
+      paint: {
         'fill-color': `${loss0013Color}`,
         'fill-opacity': 0
       },
-      'layout': {
-        'visibility': active ? 'visible' : 'none'
+      layout: {
+        visibility: active ? 'visible' : 'none'
       }
     },
     {
-      'id': 'fr-data-outline-polygon-iflloss0013-geojson',
-      'type': 'line',
-      'source': 'fr-iflloss0013-geojson',
-      'filter': [
+      id: 'fr-data-outline-polygon-iflloss0013-geojson',
+      type: 'line',
+      source: 'fr-iflloss0013-geojson',
+      filter: [
         'in',
         '$type',
         'Polygon'
       ],
-      'paint': {
+      paint: {
         'line-color': `${loss0013Color}`,
         'line-opacity': 0.8,
         'line-width': 3
       },
-      'layout': {
-        'visibility': active ? 'visible' : 'none'
+      layout: {
+        visibility: active ? 'visible' : 'none'
       }
     },
     {
-      'id': 'fr-data-polygon-iflloss1316-geojson',
-      'type': 'fill',
-      'metadata': {
+      id: 'fr-data-polygon-iflloss1316-geojson',
+      type: 'fill',
+      metadata: {
         'maphubs:interactive': true,
         'maphubs:showBehindBaseMapLabels': false,
         'maphubs:outline-only': true
       },
-      'source': 'fr-iflloss1316-geojson',
-      'paint': {
+      source: 'fr-iflloss1316-geojson',
+      paint: {
         'fill-color': `${loss1316Color}`,
         'fill-opacity': 0
       },
-      'layout': {
-        'visibility': active ? 'visible' : 'none'
+      layout: {
+        visibility: active ? 'visible' : 'none'
       }
     },
     {
-      'id': 'fr-data-outline-polygon-iflloss1316-geojson',
-      'type': 'line',
-      'source': 'fr-iflloss1316-geojson',
-      'filter': [
+      id: 'fr-data-outline-polygon-iflloss1316-geojson',
+      type: 'line',
+      source: 'fr-iflloss1316-geojson',
+      filter: [
         'in',
         '$type',
         'Polygon'
       ],
-      'paint': {
+      paint: {
         'line-color': `${loss1316Color}`,
         'line-opacity': 0.8,
         'line-width': 3
       },
-      'layout': {
-        'visibility': active ? 'visible' : 'none'
+      layout: {
+        visibility: active ? 'visible' : 'none'
       }
     }
   ]

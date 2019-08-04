@@ -9,7 +9,7 @@ import localeUtil from '../../locales/util'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
-let supportedLangs = localeUtil.getSupported()
+const supportedLangs = localeUtil.getSupported()
 let languagesFromConfig
 const langs = []
 if (MAPHUBS_CONFIG.LANGUAGES) {

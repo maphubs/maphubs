@@ -80,7 +80,7 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
   }
 
   setNote = (val) => {
-    const note = result(find(this.props.options, {'value': val}), 'note')
+    const note = result(find(this.props.options, {value: val}), 'note')
     if (note) {
       this.setState({note})
     }

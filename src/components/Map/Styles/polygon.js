@@ -8,74 +8,74 @@ export default {
     interactive: boolean, showBehindBaseMapLabels: boolean) {
     const layers = [
       {
-        'id': `omh-data-polygon-${layer_id}-${shortid}`,
-        'type': 'fill',
-        'metadata': {
+        id: `omh-data-polygon-${layer_id}-${shortid}`,
+        type: 'fill',
+        metadata: {
           'maphubs:layer_id': layer_id,
           'maphubs:globalid': shortid,
           'maphubs:interactive': interactive,
           'maphubs:showBehindBaseMapLabels': showBehindBaseMapLabels
         },
-        'source': 'omh-' + shortid,
+        source: 'omh-' + shortid,
         'source-layer': '',
-        'filter': ['in', '$type', 'Polygon'],
-        'paint': {
+        filter: ['in', '$type', 'Polygon'],
+        paint: {
           'fill-color': color,
           'fill-outline-color': color,
           'fill-opacity': 0.5
         }
       }, {
-        'id': `omh-data-doublestroke-polygon--${layer_id}-${shortid}`,
-        'type': 'line',
-        'metadata': {
+        id: `omh-data-doublestroke-polygon--${layer_id}-${shortid}`,
+        type: 'line',
+        metadata: {
           'maphubs:layer_id': layer_id,
           'maphubs:globalid': shortid
         },
-        'source': 'omh-' + shortid,
+        source: 'omh-' + shortid,
         'source-layer': '',
-        'filter': ['in', '$type', 'Polygon'],
-        'paint': {
+        filter: ['in', '$type', 'Polygon'],
+        paint: {
           'line-color': color,
           'line-opacity': 0.3,
           'line-width': {
-            'base': 0.5,
-            'stops': [
-              [5, 1.0],
-              [6, 2.0],
-              [7, 3.0],
-              [8, 4.0],
-              [9, 5.0],
-              [10, 6.0]
+            base: 0.5,
+            stops: [
+              [5, 1],
+              [6, 2],
+              [7, 3],
+              [8, 4],
+              [9, 5],
+              [10, 6]
             ]
           },
           'line-offset': {
-            'base': 0.5,
-            'stops': [
+            base: 0.5,
+            stops: [
               [5, 0.5],
-              [6, 1.0],
+              [6, 1],
               [7, 1.5],
-              [8, 2.0],
+              [8, 2],
               [9, 2.5],
-              [10, 3.0]
+              [10, 3]
             ]
           }
         }
       }, {
-        'id': `omh-data-outline-polygon-${layer_id}-${shortid}`,
-        'type': 'line',
-        'metadata': {
+        id: `omh-data-outline-polygon-${layer_id}-${shortid}`,
+        type: 'line',
+        metadata: {
           'maphubs:layer_id': layer_id,
           'maphubs:globalid': shortid
         },
-        'source': 'omh-' + shortid,
+        source: 'omh-' + shortid,
         'source-layer': '',
-        'filter': ['in', '$type', 'Polygon'],
-        'paint': {
+        filter: ['in', '$type', 'Polygon'],
+        paint: {
           'line-color': '#222222',
           'line-opacity': 0.8,
           'line-width': {
-            'base': 0.5,
-            'stops': [
+            base: 0.5,
+            stops: [
               [3, 0.1],
               [4, 0.2],
               [5, 0.3],
@@ -89,16 +89,16 @@ export default {
         }
       },
       {
-        'id': `omh-hover-polygon-${layer_id}-${shortid}`,
-        'type': 'fill',
-        'metadata': {
+        id: `omh-hover-polygon-${layer_id}-${shortid}`,
+        type: 'fill',
+        metadata: {
           'maphubs:layer_id': layer_id,
           'maphubs:globalid': shortid
         },
-        'source': 'omh-' + shortid,
+        source: 'omh-' + shortid,
         'source-layer': '',
-        'filter': ['==', 'mhid', ''],
-        'paint': {
+        filter: ['==', 'mhid', ''],
+        paint: {
           'fill-color': hoverColor,
           'fill-outline-color': hoverOutlineColor,
           'fill-opacity': 0.7
@@ -121,8 +121,8 @@ export default {
     let outlineColor
     let legendColor
     let outlineWidth = {
-      'base': 0.5,
-      'stops': [
+      base: 0.5,
+      stops: [
         [3, 0.1],
         [4, 0.2],
         [5, 0.3],

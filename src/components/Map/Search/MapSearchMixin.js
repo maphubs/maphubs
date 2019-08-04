@@ -245,45 +245,45 @@ export default {
     const mhidFilter = ['in', 'mhid'].concat(mhids)
     return [
       {
-        'id': `omh-search-result-point-${sourceID}`,
-        'type': 'circle',
-        'source': sourceID,
+        id: `omh-search-result-point-${sourceID}`,
+        type: 'circle',
+        source: sourceID,
         'source-layer': source.type === 'geojson' ? '' : 'data',
-        'filter': [ 'all',
+        filter: ['all',
           ['in', '$type', 'Point'],
           mhidFilter
         ],
-        'paint': {
+        paint: {
           'circle-radius': 15,
           'circle-color': searchLayerColor,
           'circle-opacity': 0.5
         }
       },
       {
-        'id': `omh-search-result-line-${sourceID}`,
-        'type': 'line',
-        'source': sourceID,
+        id: `omh-search-result-line-${sourceID}`,
+        type: 'line',
+        source: sourceID,
         'source-layer': source.type === 'geojson' ? '' : 'data',
-        'filter': [ 'all',
+        filter: ['all',
           ['in', '$type', 'LineString'],
           mhidFilter
         ],
-        'paint': {
+        paint: {
           'line-color': searchLayerColor,
           'line-opacity': 0.3,
           'line-width': 1
         }
       },
       {
-        'id': `omh-search-result-polygon-${sourceID}`,
-        'type': 'fill',
-        'source': sourceID,
+        id: `omh-search-result-polygon-${sourceID}`,
+        type: 'fill',
+        source: sourceID,
         'source-layer': source.type === 'geojson' ? '' : 'data',
-        'filter': [ 'all',
+        filter: ['all',
           ['in', '$type', 'Polygon'],
           mhidFilter
         ],
-        'paint': {
+        paint: {
           'fill-color': searchLayerColor,
           'fill-outline-color': 'black',
           'fill-opacity': 0.7

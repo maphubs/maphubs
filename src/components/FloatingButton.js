@@ -16,7 +16,7 @@ export default function FloatingButton ({ onClick, icon = 'info', href, tooltip,
   const clickHandler = () => {
     if (onClick) onClick()
   }
-  let hrefProp = href || '#'
+  const hrefProp = href || '#'
   return (
     <Tooltip
       disabled={!tooltip}

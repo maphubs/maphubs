@@ -22,6 +22,7 @@ export default class CopyMapModal extends React.Component<Props, State> {
       visible: false
     }
   }
+
   show = () => {
     this.setState({visible: true})
   }

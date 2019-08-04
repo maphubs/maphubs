@@ -127,7 +127,7 @@ module.exports = function (app: any) {
         } else {
           res.writeHead(200, {
             'Content-Type': 'application/json',
-            'ETag': hash
+            ETag: hash
           })
           res.end(resultStr)
         }
@@ -162,7 +162,7 @@ module.exports = function (app: any) {
           } else {
             res.writeHead(200, {
               'Content-Type': 'application/gpx+xml',
-              'ETag': hash
+              ETag: hash
             })
 
             let gpx = `

@@ -15,6 +15,7 @@ type Props = {
 
 export default class NoteCKEditor extends React.Component<Props, void> {
   editorInstance: any
+
   domContainer: any
 
   constructor (props: Props) {

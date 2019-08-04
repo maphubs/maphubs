@@ -49,7 +49,9 @@ type State = {|
 
 class InsetMap extends React.Component<Props, State> {
   insetMap: Object
+
   insetMapActive: boolean
+
   insetMapComponent: any
 
   static defaultProps = {
@@ -132,17 +134,17 @@ class InsetMap extends React.Component<Props, State> {
       if (!insetGeoJSONData) {
         // create layers
         const geoJSON = _this.getGeoJSONFromBounds(bounds)
-        geoJSON.features[0].properties = {'v': 1}
+        geoJSON.features[0].properties = {v: 1}
         const geoJSONCentroid = _centroid(geoJSON)
-        geoJSONCentroid.properties = {'v': 1}
+        geoJSONCentroid.properties = {v: 1}
 
-        insetMap.addSource('inset-bounds', {'type': 'geojson', data: geoJSON})
-        insetMap.addSource('inset-centroid', {'type': 'geojson', data: geoJSONCentroid})
+        insetMap.addSource('inset-bounds', {type: 'geojson', data: geoJSON})
+        insetMap.addSource('inset-centroid', {type: 'geojson', data: geoJSONCentroid})
         insetMap.addLayer({
-          'id': 'bounds',
-          'type': 'line',
-          'source': 'inset-bounds',
-          'paint': {
+          id: 'bounds',
+          type: 'line',
+          source: 'inset-bounds',
+          paint: {
             'line-color': 'rgb(244, 118, 144)',
             'line-opacity': 0.75,
             'line-width': 5
@@ -150,10 +152,10 @@ class InsetMap extends React.Component<Props, State> {
         })
 
         insetMap.addLayer({
-          'id': 'center',
-          'type': 'circle',
-          'source': 'inset-centroid',
-          'paint': {
+          id: 'center',
+          type: 'circle',
+          source: 'inset-centroid',
+          paint: {
             'circle-color': 'rgb(244, 118, 144)',
             'circle-opacity': 0.75
           }
@@ -221,7 +223,7 @@ class InsetMap extends React.Component<Props, State> {
           geometry: {
             type: 'Polygon',
             coordinates: [
-              [ v1, v2, v3, v4, v5 ]
+              [v1, v2, v3, v4, v5]
             ]
           }
         }]
@@ -245,10 +247,10 @@ class InsetMap extends React.Component<Props, State> {
        if (insetGeoJSONData || insetGeoJSONCentroidData) {
          try {
            const geoJSONBounds = this.getGeoJSONFromBounds(bounds)
-           geoJSONBounds.features[0].properties = {'v': 1}
+           geoJSONBounds.features[0].properties = {v: 1}
            insetGeoJSONData.setData(geoJSONBounds)
            const geoJSONCentroid = _centroid(geoJSONBounds)
-           geoJSONCentroid.properties = {'v': 1}
+           geoJSONCentroid.properties = {v: 1}
            insetGeoJSONCentroidData.setData(geoJSONCentroid)
            this.setState({insetGeoJSONData, insetGeoJSONCentroidData})
 
@@ -286,10 +288,10 @@ class InsetMap extends React.Component<Props, State> {
       if (insetGeoJSONData || insetGeoJSONCentroidData) {
         try {
           const geoJSONBounds = this.getGeoJSONFromBounds(bounds)
-          geoJSONBounds.features[0].properties = {'v': 1}
+          geoJSONBounds.features[0].properties = {v: 1}
           insetGeoJSONData.setData(geoJSONBounds)
           const geoJSONCentroid = _centroid(geoJSONBounds)
-          geoJSONCentroid.properties = {'v': 1}
+          geoJSONCentroid.properties = {v: 1}
           insetGeoJSONCentroidData.setData(geoJSONCentroid)
           this.setState({insetGeoJSONData, insetGeoJSONCentroidData})
 

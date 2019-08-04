@@ -90,8 +90,8 @@ module.exports = function (app: any) {
       mailchimp.post({
         path: '/lists/' + local.MAILCHIMP_LIST_ID + '/members',
         body: {
-          'email_address': data.email,
-          'status': 'subscribed'
+          email_address: data.email,
+          status: 'subscribed'
         }
       }, (err) => {
         if (err) {

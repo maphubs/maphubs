@@ -20,6 +20,7 @@ type State = UserStoreState
 
 export default class UserMenu extends MapHubsComponent<Props, State> {
   props: Props
+
   userButton: any
 
   static defaultProps: Props = {
@@ -92,7 +93,7 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
     if (user) {
       const {admin, picture, email} = user
 
-      let userIcon = picture ? <UserIcon {...user} /> : <Gravatar email={email} />
+      const userIcon = picture ? <UserIcon {...user} /> : <Gravatar email={email} />
 
       const displayName = (this.state.user && this.state.user.display_name) ? this.state.user.display_name : ''
       if (sidenav) {

@@ -34,8 +34,8 @@ exports.up = function (knex, Promise) {
         'OpenStreetMap',
         'http://www.openstreetmap.org/',
         'Global',
-    	TRUE
-    	);
+      TRUE
+      );
     `).then(() => {
     return knex.raw(`
         INSERT INTO omh.group_memberships (group_id, user_id, role)

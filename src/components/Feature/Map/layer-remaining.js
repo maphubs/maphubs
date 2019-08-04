@@ -26,16 +26,16 @@ function getRemainingLayer (active: boolean, remainingThreshold?: number): Layer
       },
       layers: [
         {
-          'id': 'fr-tree-cover-density',
-          'type': 'raster',
-          'source': 'fr-tree-cover-density',
-          'minzoom': 0,
-          'maxzoom': 18,
-          'paint': {
+          id: 'fr-tree-cover-density',
+          type: 'raster',
+          source: 'fr-tree-cover-density',
+          minzoom: 0,
+          maxzoom: 18,
+          paint: {
             'raster-opacity': 1
           },
-          'layout': {
-            'visibility': active ? 'visible' : 'none'
+          layout: {
+            visibility: active ? 'visible' : 'none'
           }
         }
       ],

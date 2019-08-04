@@ -29,10 +29,12 @@ export default class AddMapDrawer extends React.Component<Props, State> {
     myMaps: [],
     popularMaps: []
   }
+
   state = {
     searchActive: false,
     searchResults: []
   }
+
   handleSearch = (input: string) => {
     const { t } = this.props
     const _this = this
@@ -62,9 +64,11 @@ export default class AddMapDrawer extends React.Component<Props, State> {
         )
       })
   }
+
   resetSearch = () => {
     this.setState({searchActive: false, searchResults: []})
   }
+
   render () {
     const { resetSearch, handleSearch } = this
     const { visible, onClose, onAdd, myMaps, popularMaps, t } = this.props

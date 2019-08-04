@@ -84,9 +84,9 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
         is_external: true,
         external_layer_type: 'mapbox-map',
         external_layer_config: {
-          'url': 'mapbox://' + mapboxMapID,
-          'type': 'raster',
-          'tileSize': 256
+          url: 'mapbox://' + mapboxMapID,
+          type: 'raster',
+          tileSize: 256
         }
       }
     }

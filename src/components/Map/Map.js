@@ -126,12 +126,19 @@ class Map extends React.Component<Props, State> {
   }
 
   map: Object
+
   overlayMapStyle: Object
+
   mapboxPopup: any
+
   glStyle: Object
+
   lunr: any
+
   idx: any
+
   searchSourceIds: any
+
   languageControl: any
 
   constructor (props: Props) {
@@ -275,7 +282,7 @@ class Map extends React.Component<Props, State> {
           if (map.authUrlStartsWith && url.startsWith(map.authUrlStartsWith)) {
             return {
               url: url,
-              headers: { 'Authorization': 'Basic ' + map.authToken },
+              headers: { Authorization: 'Basic ' + map.authToken },
               credentials: 'include'
             }
           }
@@ -886,6 +893,7 @@ class Map extends React.Component<Props, State> {
   measureFeatureClick = () => {
     return MeasurementToolMixin.measureFeatureClick.bind(this)()
   }
+
   // MapSearchMixin
   onSearch = (queryText: string) => {
     return MapSearchMixin.onSearch.bind(this)(queryText)

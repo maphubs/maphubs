@@ -47,21 +47,21 @@ export default {
         sourceLayer = 'data-centroids'
       }
       style.layers.push({
-        'id': `omh-label-${layer_id}-${shortid}`,
-        'type': 'symbol',
-        'source': 'omh-' + shortid,
+        id: `omh-label-${layer_id}-${shortid}`,
+        type: 'symbol',
+        source: 'omh-' + shortid,
         'source-layer': sourceLayer,
         filter,
-        'layout': {
+        layout: {
           'text-font': [
             'Roboto Bold'
           ],
-          'visibility': 'visible',
+          visibility: 'visible',
           'symbol-placement': placement,
           'text-field': '{' + field + '}',
           'text-size': {
-            'base': 14,
-            'stops': [
+            base: 14,
+            stops: [
               [
                 13,
                 14
@@ -73,7 +73,7 @@ export default {
             ]
           }
         },
-        'paint': {
+        paint: {
           'text-color': '#000',
           'text-halo-color': '#FFF',
           'text-halo-width': 2,

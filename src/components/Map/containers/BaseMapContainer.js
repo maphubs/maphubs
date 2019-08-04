@@ -19,8 +19,8 @@ export type BaseMapOption = {
   attribution: string,
   updateWithMapPosition: boolean,
   style: Object,
-  loadFromFile: string
-
+  loadFromFile: string,
+  icon?: string
 }
 
 export type BaseMapState = {
@@ -37,12 +37,13 @@ export type BaseMapState = {
 export default class BaseMapContainer extends Container<BaseMapState> {
   constructor (initialState?: Object) {
     super()
-    let state = {
+    const state = {
       baseMap: 'default',
       attribution: '© Mapbox © OpenStreetMap',
       bingImagerySet: null,
       updateWithMapPosition: false,
-      baseMapOptions: defaultBaseMapOptions
+      baseMapOptions: defaultBaseMapOptions,
+      mapboxAccessToken: ''
     }
     if (initialState) {
       Object.assign(state, initialState)
@@ -56,22 +57,21 @@ export default class BaseMapContainer extends Container<BaseMapState> {
 
   debouncedUpdateMapPosition = _debounce((position, bbox) => {
     const _this = this
-
-    if (_this.position) {
+    if (this.position) {
       const from = {
-        'type': 'Feature',
-        'properties': {},
-        'geometry': {
-          'type': 'Point',
-          'coordinates': [_this.position.lng, _this.position.lat]
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates: [_this.position.lng, _this.position.lat]
         }
       }
       const to = {
-        'type': 'Feature',
-        'properties': {},
-        'geometry': {
-          'type': 'Point',
-          'coordinates': [position.lng, position.lat]
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Point',
+          coordinates: [position.lng, position.lat]
         }
       }
       let distance = 0

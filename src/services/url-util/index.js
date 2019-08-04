@@ -4,10 +4,8 @@ const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 module.exports = {
   getBaseUrl (): string {
-    let host, port
-
-    host = MAPHUBS_CONFIG.host
-    port = MAPHUBS_CONFIG.port
+    const host = MAPHUBS_CONFIG.host
+    const port = MAPHUBS_CONFIG.port
 
     let proto = 'http://'
     if (MAPHUBS_CONFIG.https) proto = 'https://'

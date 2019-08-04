@@ -20,7 +20,7 @@ module.exports = {
       } else {
         res.writeHead(200, {
           'Content-Type': 'application/octet-stream',
-          'ETag': hash
+          ETag: hash
         })
 
         const data = geobuf.encode(geoJSON, new Pbf())
@@ -60,7 +60,7 @@ module.exports = {
       } else {
         res.writeHead(200, {
           'Content-Type': 'application/octet-stream',
-          'ETag': hash
+          ETag: hash
         })
 
         const data = geobuf.encode(geoJSON, new Pbf())

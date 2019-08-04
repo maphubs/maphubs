@@ -27,11 +27,11 @@ exports.up = function (knex, Promise) {
         .where({map_id: map.map_id})
         .then(mapLayers => {
           console.log(`found ${mapLayers.length} layers`)
-          let styles = []
+          const styles = []
           mapLayers.forEach(mapLayer => {
             styles.push(mapLayer.style)
           })
-          let mapStyle = buildMapStyle(styles)
+          const mapStyle = buildMapStyle(styles)
           return knex('omh.maps').update({style: mapStyle}).where({map_id: map.map_id})
         })
     })

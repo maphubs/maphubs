@@ -48,24 +48,24 @@ export default {
         const url = '{MAPHUBS_DOMAIN}/api/lyr/' + shortid + '/tile.json'
 
         styles.sources['omh-' + shortid] = {
-          'type': 'vector',
+          type: 'vector',
           url
         }
       } else if (source.type === 'ags-mapserver-query' ||
       source.type === 'ags-featureserver-query') {
         styles.sources['omh-' + shortid] = {
-          'type': source.type,
+          type: source.type,
           url: source.url
         }
       } else if (source.type === 'ags-mapserver-tiles') {
         styles.sources['omh-' + shortid] = {
-          'type': 'arcgisraster',
+          type: 'arcgisraster',
           url: source.url + '?f=json'
         }
       } else if (source.type === 'geojson') {
         styles.sources['omh-' + shortid] = {
-          'type': 'geojson',
-          'data': source.data
+          type: 'geojson',
+          data: source.data
         }
         styles.layers.map(layer => {
           delete layer['source-layer']

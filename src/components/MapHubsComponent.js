@@ -5,6 +5,7 @@ import LocaleStore from '../stores/LocaleStore'
 
 export default class MapHubsComponent<P, S> extends Reflux.Component<P, S> {
   props: P
+
   state: S
 
   constructor (props: P) {

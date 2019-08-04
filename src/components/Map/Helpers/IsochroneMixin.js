@@ -25,7 +25,7 @@ export default {
           id: `${sourceId}-line-60`,
           type: 'line',
           source: sourceId,
-          'filter': ['==', 'value', 3600],
+          filter: ['==', 'value', 3600],
           paint: {
             'line-color': 'red',
             'line-opacity': 0.8,
@@ -36,7 +36,7 @@ export default {
           id: `${sourceId}-line-30`,
           type: 'line',
           source: sourceId,
-          'filter': ['==', 'value', 1800],
+          filter: ['==', 'value', 1800],
           paint: {
             'line-color': 'yellow',
             'line-opacity': 0.8,
@@ -47,7 +47,7 @@ export default {
           id: `${sourceId}-line-15`,
           type: 'line',
           source: sourceId,
-          'filter': ['==', 'value', 900],
+          filter: ['==', 'value', 900],
           paint: {
             'line-color': 'green',
             'line-opacity': 0.8,

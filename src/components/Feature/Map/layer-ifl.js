@@ -6,35 +6,35 @@ function getIFLLayer (geoJSON: Object, active: boolean): Layer {
   const iflColor = 'rgba(104,159,56,0.65)'
   const layers = [
     {
-      'id': `omh-data-polygon-ifl2016-geojson`,
-      'type': 'fill',
-      'metadata': {
+      id: `omh-data-polygon-ifl2016-geojson`,
+      type: 'fill',
+      metadata: {
         'maphubs:interactive': false,
         'maphubs:showBehindBaseMapLabels': false
       },
-      'source': 'fr-ifl2016-geojson',
-      'filter': ['in', '$type', 'Polygon'],
-      'paint': {
+      source: 'fr-ifl2016-geojson',
+      filter: ['in', '$type', 'Polygon'],
+      paint: {
         'fill-color': iflColor,
         'fill-opacity': 1
       },
-      'layout': {
-        'visibility': active ? 'visible' : 'none'
+      layout: {
+        visibility: active ? 'visible' : 'none'
       }
     }, {
-      'id': `fr-data-outline-polygon-ifl2016-geojson`,
-      'type': 'line',
-      'metadata': {
+      id: `fr-data-outline-polygon-ifl2016-geojson`,
+      type: 'line',
+      metadata: {
       },
-      'source': 'fr-ifl2016-geojson',
-      'filter': ['in', '$type', 'Polygon'],
-      'paint': {
+      source: 'fr-ifl2016-geojson',
+      filter: ['in', '$type', 'Polygon'],
+      paint: {
         'line-color': iflColor,
         'line-opacity': 1,
         'line-width': 1
       },
-      'layout': {
-        'visibility': active ? 'visible' : 'none'
+      layout: {
+        visibility: active ? 'visible' : 'none'
       }
     }
   ]

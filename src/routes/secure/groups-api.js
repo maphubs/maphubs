@@ -216,7 +216,7 @@ module.exports = function (app: any) {
               })
               return res.status(200).send({success: true})
             } else {
-              return res.status(200).send({success: false, 'error': req.__('User is already a member of this group.')})
+              return res.status(200).send({success: false, error: req.__('User is already a member of this group.')})
             }
           } else {
             return res.status(401).send()

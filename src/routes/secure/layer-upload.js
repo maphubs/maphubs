@@ -25,7 +25,7 @@ const metadataStringToObject = (stringValue) => {
 
   const metadata = {}
   keyValuePairList.forEach((keyValuePair) => {
-    let [key, base64Value] = keyValuePair.split(' ')
+    const [key, base64Value] = keyValuePair.split(' ')
     metadata[key] = Buffer.from(base64Value, 'base64').toString('ascii')
   })
 

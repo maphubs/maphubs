@@ -9,7 +9,7 @@ import localeUtil from '../../locales/util'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
-let supportedLangs = localeUtil.getSupported()
+const supportedLangs = localeUtil.getSupported()
 let languagesFromConfig
 const langs = []
 if (MAPHUBS_CONFIG.LANGUAGES) {
@@ -35,6 +35,7 @@ type Props = {
 
 export default class StoryCKEditor extends React.Component<Props, void> {
   editorInstance: any
+
   domContainer: any
 
   constructor (props: Props) {

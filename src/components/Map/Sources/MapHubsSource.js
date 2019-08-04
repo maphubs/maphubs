@@ -98,9 +98,9 @@ const MapHubsSource = {
     if (customImages) {
       await Promise.map(customImages, async customImage => {
         return new Promise((resolve, reject) => {
-          let width = customImage.width || 16
-          let height = customImage.height || 16
-          let img = new Image(width, height)
+          const width = customImage.width || 16
+          const height = customImage.height || 16
+          const img = new Image(width, height)
 
           let src = customImage.url
           if (customImage.svg) {
@@ -131,8 +131,8 @@ const MapHubsSource = {
       layer.metadata['maphubs:markers'] &&
       layer.metadata['maphubs:markers'].enabled) {
       const markerConfig = JSON.parse(JSON.stringify(layer.metadata['maphubs:markers']))
-      let width = markerConfig.width || 16
-      let height = markerConfig.height || 16
+      const width = markerConfig.width || 16
+      const height = markerConfig.height || 16
 
       let imageName = markerConfig.imageName
 
@@ -175,7 +175,7 @@ const MapHubsSource = {
         const svgString = renderToStaticMarkup(<Marker {...markerConfig} />)
         const src = `data:image/svg+xml;base64,${btoa(svgString)}`
 
-        let img = new Image(width * 2, height * 2)
+        const img = new Image(width * 2, height * 2)
         // eslint-disable-next-line unicorn/prefer-add-event-listener
         img.onerror = (err) => {
           console.log(err)

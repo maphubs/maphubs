@@ -27,7 +27,7 @@ type State = {
 export default class FRContainer extends Container<State> {
   constructor (initialState?: Object) {
     super()
-    let state = {
+    const state = {
       featureLayer: {},
       buffer: 25
     }
@@ -44,7 +44,7 @@ export default class FRContainer extends Container<State> {
     let bufferFeature
     if (geoJSON) {
       const feature = geoJSON.features[0]
-      let geom = feature.geometry
+      const geom = feature.geometry
       if (geom.type === 'Point' || geom.type === 'LineString' || geom.type === 'MultiLineString') {
         isBuffered = true
         bufferFeature = turfBuffer(geom, buffer, {steps: 128})
