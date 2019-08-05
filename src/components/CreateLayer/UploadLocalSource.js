@@ -195,7 +195,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
       })
       multipleShapefilesDisplay = (
         <RadioModal ref='chooseshape' title={t('Multiple Shapefiles Found - Please Select One')}
-          options={options} onSubmit={this.finishUpload} />
+          options={options} onSubmit={this.finishUpload} t={t} />
       )
     }
 

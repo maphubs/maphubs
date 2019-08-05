@@ -194,7 +194,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
       })
       multipleShapefiles = (
         <RadioModal ref='chooseshape' title={t('Multiple Shapefiles Found - Please Select One')}
-          options={options} onSubmit={this.finishUpload} />
+          options={options} onSubmit={this.finishUpload} t={t} />
       )
     }
 

@@ -316,6 +316,8 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
                 feature={this.state.selectedFeature}
                 presets={presets}
                 onSave={this.onSaveEdits}
+                _csrf={this.state._csrf}
+                t={t}
                 layer_id={layer_id} />
             }
           </Toolbar>

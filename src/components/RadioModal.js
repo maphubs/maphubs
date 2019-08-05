@@ -2,14 +2,14 @@
 import React from 'react'
 import Formsy from 'formsy-react'
 import Radio from './forms/radio'
-
-import {Modal, ModalContent, ModalFooter} from './Modal/Modal'
+import { Modal, Button } from 'antd'
 
 type Props = {
   onCancel: Function,
   onSubmit: Function,
   options: Array<Object>,
-  title: string
+  title: string,
+  t: Function
 }
 
 type State = {
@@ -69,22 +69,27 @@ export default class RadioModal extends React.Component<Props, State> {
   }
 
   render () {
+    const { t } = this.props
     return (
-      <Modal id='radio-modal' show={this.state.show} fixedFooter dismissible={false}>
-        <ModalContent>
-          <h5>{this.props.title}</h5>
-          <Formsy onValid={this.enableButton} onInvalid={this.disableButton}>
-            <Radio name='type' label='' options={this.props.options} onChange={this.optionChange}
-            />
-          </Formsy>
-        </ModalContent>
-        <ModalFooter>
-          <div className='right'>
-            <button className='waves-effect waves-light btn' style={{float: 'none', marginRight: '15px'}} onClick={this.onCancel}>Cancel</button>
-            <button className='waves-effect waves-light btn' style={{float: 'none'}} disabled={!this.state.canSubmit} onClick={this.onSubmit}>Submit</button>
-          </div>
-
-        </ModalFooter>
+      <Modal
+        title={this.props.title}
+        visible={this.state.show}
+        onOk={this.onSubmit}
+        centered
+        footer={[
+          <Button key='back' onClick={this.onCancel}>
+            {t('Cancel')}
+          </Button>,
+          <Button key='submit' type='primary' disabled={!this.state.canSubmit} onClick={this.onSubmit}>
+            {t('Submit')}
+          </Button>
+        ]}
+        onCancel={this.onCancel}
+      >
+        <Formsy onValid={this.enableButton} onInvalid={this.disableButton}>
+          <Radio name='type' label='' options={this.props.options} onChange={this.optionChange}
+          />
+        </Formsy>
       </Modal>
     )
   }
