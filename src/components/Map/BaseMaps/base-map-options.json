@@ -5,7 +5,7 @@
       "en": "Default (Light)",
       "fr": ""
     },
-    "icon": "/static/basemap/light.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/light.png",
     "attribution": "&copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
     "mapboxUrl": "mapbox://styles/mapbox/light-v9?optimize=true"
@@ -16,7 +16,7 @@
       "en": "Dark",
       "fr": "Dark"
     },
-    "icon": "/static/basemap/dark.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/dark.png",
     "attribution": "&copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
     "mapboxUrl": "mapbox://styles/mapbox/dark-v9?optimize=true"
@@ -27,7 +27,7 @@
       "en": "Streets",
       "fr": "Rues"
     },
-    "icon": "/static/basemap/streets.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/streets.png",
     "attribution": "&copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
     "mapboxUrl": "mapbox://styles/mapbox/streets-v11?optimize=true"
@@ -38,7 +38,7 @@
       "en": "Satellite",
       "fr": "Satellite"
     },
-    "icon": "/static/basemap/satellite.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/satellite.png",
     "attribution": "&copy; Mapbox",
     "updateWithMapPosition": false,
     "mapboxUrl": "mapbox://styles/mapbox/satellite-v9"
@@ -49,7 +49,7 @@
       "en": "Satellite w/Streets",
       "fr": "Satellite w/Streets"
     },
-    "icon": "/static/basemap/satellitewstreets.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/satellitewstreets.png",
     "attribution": "&copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
     "mapboxUrl": "mapbox://styles/mapbox/satellite-streets-v9"
@@ -62,7 +62,7 @@
       "en": "Outdoors / Topo",
       "fr": "Outdoors / Topo"
     },
-    "icon": "/static/basemap/outdoors.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/outdoors.png",
     "attribution": "&copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
     "mapboxUrl": "mapbox://styles/mapbox/outdoors-v10"
@@ -73,7 +73,7 @@
       "en": "Bing Satellite",
       "fr": "Bing Satellite"
     },
-    "icon": "/static/basemap/bing.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/bing.png",
     "attribution": "© Bing Maps",
     "updateWithMapPosition": true,
     "style": {
@@ -105,7 +105,7 @@
       "en": "Moonlight",
       "fr": "Moonlight"
     },
-    "icon": "/static/basemap/moonlight.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/moonlight.png",
     "attribution": "Moonlight by Rasagy Sharma &copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
     "mapboxUrl": "mapbox://styles/maphubs/cjxtegwf405hy1cpb6hh1fbuo"
@@ -116,7 +116,7 @@
       "en": "North Star",
       "fr": "North Star"
     },
-    "icon": "/static/basemap/northstar.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/northstar.png",
     "attribution": "North Star by Nat Slaughter &copy; Mapbox &copy; OpenStreetMap",
     "updateWithMapPosition": false,
     "mapboxUrl": "mapbox://styles/maphubs/cjxteofio89o11cmpmgrnwyzc"
@@ -127,7 +127,7 @@
       "en": "Black & White",
       "fr": "Black & White"
     },
-    "icon": "/static/basemap/stamentoner.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/stamentoner.png",
     "attribution": "Stamen Design (CC BY 3.0) Data by OpenStreetMap (ODbL)",
     "updateWithMapPosition": false,
     "style":{
@@ -159,7 +159,7 @@
       "en": "Terrain",
       "fr": "Terrain"
     },
-    "icon": "/static/basemap/stamenterrain.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/stamenterrain.png",
     "attribution": "Stamen Design (CC BY 3.0) Data by OpenStreetMap (ODbL)",
     "updateWithMapPosition": false,
     "style": {
@@ -191,7 +191,7 @@
       "en": "Watercolor",
       "fr": "Watercolor"
     },
-    "icon": "/static/basemap/stamenwatercolor.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/stamenwatercolor.png",
     "attribution": "Stamen Design (CC BY 3.0) Data by OpenStreetMap (CC BY SA)",
     "updateWithMapPosition": false,
     "style": {
@@ -223,7 +223,7 @@
       "en": "OpenStreetMap",
       "fr": "OpenStreetMap"
     },
-    "icon": "/static/basemap/osm.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/osm.png",
     "attribution": "&copy; OpenStreetMap contributors",
     "updateWithMapPosition": false,
     "style": {
@@ -256,7 +256,7 @@
       "en": "OSM Humanitarian",
       "fr": "OSM Humanitarian"
     },
-    "icon": "/static/basemap/osmhot.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/osmhot.png",
     "attribution": "&copy; OpenStreetMap contributors",
     "updateWithMapPosition": false,
     "style": {
@@ -288,7 +288,7 @@
       "en": "Wikimedia Maps",
       "fr": "Wikimedia Maps"
     },
-    "icon": "/static/basemap/osmwiki.png",
+    "icon": "https://hpvhe47439ygwrt.belugacdn.link/maphubs/static/basemap/osmwiki.png",
     "attribution": "&copy; Wikimedia Maps &copy; OpenStreetMap contributors",
     "updateWithMapPosition": false,
     "style": {
