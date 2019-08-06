@@ -93,7 +93,7 @@ export default class StoryCKEditor extends React.Component<Props, void> {
               animated={false}
             >
               {langs.map(locale => {
-                const data = initialData[locale.value] || ''
+                const data = initialData ? initialData[locale.value] : ''
                 return (
                   <TabPane
                     tab={<Tooltip title={locale.name}><span>{locale.label}</span></Tooltip>}

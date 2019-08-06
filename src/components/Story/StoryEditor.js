@@ -247,7 +247,7 @@ class StoryEditor extends React.Component<Props, State> {
               <Tags initialTags={story.state.tags} onChange={story.tagsChange} />
             </Row>
           </ErrorBoundary>
-          <Row type='flex' justify='left'>
+          <Row type='flex' justify='start'>
             <Col span={12}>
               <Button
                 type='primary'

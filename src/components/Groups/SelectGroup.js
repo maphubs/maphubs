@@ -101,11 +101,11 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
               dataPosition='right' dataTooltip={t('Owned by Group')}
               required
             />
-            <Row style={{padding: '10px', marginTop: '10px'}}>
-              <Col span={18}>
+            <Row style={{padding: '5px', marginTop: '10px'}}>
+              <Col span={16}>
                 <p style={{fontSize: '12px'}}>{t('Since you are in multiple groups, please select the group that should own this item.')}</p>
               </Col>
-              <Col span={6} style={{padding: '10px'}}>
+              <Col span={8} style={{padding: '5px'}}>
                 <CreateGroupModal t={t} onCreate={(createdGroup) => {
                   this.setState({createdGroup, group_id: createdGroup.group_id})
                   this.onGroupChange(createdGroup.group_id)
