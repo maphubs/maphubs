@@ -206,7 +206,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
             z-index: 9999 !important;
           }
         `}</style>
-        <Row>
+        <Row style={{marginBottom: '10px'}}>
           <div style={{margin: 'auto auto', maxWidth: '750px'}}>
             <UppyFileUpload
               endpoint='/api/layer/upload'
@@ -217,7 +217,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
             />
           </div>
         </Row>
-        <Row>
+        <Row style={{marginBottom: '10px'}}>
           {map}
         </Row>
         {multipleShapefilesDisplay}

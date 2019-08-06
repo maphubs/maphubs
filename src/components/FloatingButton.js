@@ -19,7 +19,6 @@ export default function FloatingButton ({ onClick, icon = 'info', href, tooltip,
   const hrefProp = href || '#'
   return (
     <Tooltip
-      visible={tooltip}
       title={tooltip}
       placement={tooltipPosition}>
       <a className={`btn-floating ${large ? 'btn-large' : ''} ${color}`}

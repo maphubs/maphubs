@@ -64,6 +64,7 @@ export default class Tags extends React.Component<Props, State> {
     return (
       <div>
         {tags.map((tag, index) => {
+          if (!tag) return ''
           const isLongTag = tag.length > 20
           const tagElem = (
             <Tag key={tag} color={MAPHUBS_CONFIG.primaryColor} closable onClose={() => this.handleClose(tag)}>
