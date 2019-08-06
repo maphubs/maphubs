@@ -1,5 +1,5 @@
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return knex('omh.layers').select('layer_id', 'style', 'presets').then((layers) => {
     const commands = []
     layers.forEach((layer) => {

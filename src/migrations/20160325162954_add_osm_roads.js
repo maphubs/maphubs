@@ -27,7 +27,7 @@ var buildLayerFromStyle = function (style, legend, knex) {
   }
 }
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   var commands = []
   // Add Road Layers
   Object.keys(roadDefinitions).forEach((key) => {

@@ -1,5 +1,5 @@
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return knex('omh.layers')
     .select('layer_id', 'name', 'style')
     .where({owned_by_group_id: 'OpenStreetMap'})

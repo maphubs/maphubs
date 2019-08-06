@@ -1,5 +1,5 @@
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return Promise.all([
     knex.raw(`ALTER TABLE omh.layers ADD COLUMN remote boolean NOT NULL DEFAULT false;`),
     knex.raw(`ALTER TABLE omh.layers ADD COLUMN remote_host text;`),
@@ -7,7 +7,7 @@ exports.up = function (knex, Promise) {
   ])
 }
 
-exports.down = function (knex, Promise) {
+exports.down = function (knex) {
   return Promise.all([
     knex.raw(`ALTER TABLE omh.layers DROP COLUMN remote boolean;`),
     knex.raw(`ALTER TABLE omh.layers DROP COLUMN remote_host;`),

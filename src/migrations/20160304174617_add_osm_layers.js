@@ -27,7 +27,7 @@ var buildLayerFromStyle = function (style, legend, knex) {
   }
 }
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return knex.raw(`
     INSERT INTO omh.groups (group_id, name, description, location, published)
     VALUES ('OpenStreetMap',

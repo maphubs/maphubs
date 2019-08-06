@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return knex('omh.layers').select('layer_id', 'data_type', 'status').where({status: 'published', is_external: false, remote: false})
     .then((results) => {
       var updates = []

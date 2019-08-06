@@ -1,5 +1,5 @@
 
-exports.up = async (knex, Promise) => {
+exports.up = async (knex) => {
   await knex.raw(`ALTER TABLE omh.stories ADD COLUMN owned_by_group_id text;`)
   await knex.raw(`ALTER TABLE omh.stories ADD COLUMN updated_by bigint;`)
   await knex.raw(`UPDATE omh.stories SET updated_by = user_id;`)
@@ -57,6 +57,6 @@ exports.up = async (knex, Promise) => {
   }))
 }
 
-exports.down = async (knex, Promise) => {
+exports.down = async (knex) => {
   return null
 }

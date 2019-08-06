@@ -16,7 +16,7 @@ var updateStyle = function (style) {
   return style
 }
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return Promise.all([
     knex('omh.layers').select('layer_id', 'style'),
     knex('omh.maps').select('map_id', 'style'),

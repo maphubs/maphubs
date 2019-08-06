@@ -1,5 +1,5 @@
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return Promise.all([
     knex.raw(`ALTER TABLE omh.hubs ADD COLUMN owned_by_group_id text;`),
     knex.raw(`

@@ -19,7 +19,7 @@ var updatePlanetConfig = function (elc) {
   return elc
 }
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return knex('omh.layers').select('layer_id', 'external_layer_config', 'style')
     .where({external_layer_type: 'Planet Labs'})
     .then((layers) => {

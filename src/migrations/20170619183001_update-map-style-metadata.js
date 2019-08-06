@@ -18,7 +18,7 @@ var rebuildMapStyle = function (layerStyles) {
   return mapStyle
 }
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return knex.raw(`select omh.map_layers.map_id, omh.map_layers.layer_id, 
   omh.map_layers.style as map_layer_style,
   omh.layers.style as orig_layer_style

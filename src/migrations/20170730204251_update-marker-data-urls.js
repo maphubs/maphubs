@@ -36,15 +36,15 @@ var buildMapStyle = function (styles) {
   return mapStyle
 }
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return knex('omh.layers')
     .select('layer_id', 'shortid', 'style')
     .whereNot({is_external: true, remote: true})
     .then(layers => {
-      return Promise.map(layers, layer => {
+      return Promise.all(layers.map(layer => {
         const updatedStyle = updateStyle(layer.style, layer.layer_id, layer.shortid)
         return knex('omh.layers').update({style: updatedStyle}).where({layer_id: layer.layer_id})
-      }).then(() => {
+      })).then(() => {
         return knex.raw(`select omh.map_layers.map_id, omh.map_layers.layer_id, 
         omh.map_layers.style as map_layer_style,
         omh.layers.shortid
@@ -53,7 +53,7 @@ exports.up = function (knex, Promise) {
         order by position`)
           .then((result) => {
             const updatedMapStyles = {}
-            return Promise.mapSeries(result.rows, mapLayer => {
+            return Promise.all(result.rows.map(mapLayer => {
               console.log(`updating map layer, map:${mapLayer.map_id} layer: ${mapLayer.layer_id}`)
               const mapLayerStyle = updateStyle(mapLayer.map_layer_style, mapLayer.layer_id, mapLayer.shortid)
               if (!updatedMapStyles[mapLayer.map_id]) {
@@ -66,12 +66,12 @@ exports.up = function (knex, Promise) {
                 .then(() => {
                   return updatedMapStyles
                 })
-            }).then((updatedMapStyles) => {
-              return Promise.mapSeries(Object.keys(updatedMapStyles), map_id => {
+            })).then((updatedMapStyles) => {
+              return Promise.all(Object.keys(updatedMapStyles).map(map_id => {
                 console.log(`updating map: ${map_id}`)
                 const updatedMapStyle = buildMapStyle(updatedMapStyles[map_id])
                 return knex('omh.maps').update({style: updatedMapStyle}).where({map_id})
-              })
+              }))
             })
           })
       })

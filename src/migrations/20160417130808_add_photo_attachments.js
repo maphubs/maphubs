@@ -1,5 +1,5 @@
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return Promise.all([
     knex.raw(`
       CREATE TABLE omh.photo_attachments (
@@ -26,7 +26,7 @@ exports.up = function (knex, Promise) {
   ])
 }
 
-exports.down = function (knex, Promise) {
+exports.down = function (knex) {
   Promise.all([
     knex.raw(`DROP TABLE omh.feature_photo_attachments`),
     knex.raw(`DROP TABLE omh.photo_attachments`)

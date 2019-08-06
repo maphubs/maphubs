@@ -18,9 +18,9 @@ var buildMapStyle = function (styles) {
   })
   return mapStyle
 }
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return knex('omh.maps').select('map_id').then(maps => {
-    return Promise.mapSeries(maps, map => {
+    return Promise.all(maps.map(map => {
       console.log(`updating map: ${map.map_id}`)
       return knex('omh.map_layers')
         .select('layer_id', 'style')
@@ -34,7 +34,7 @@ exports.up = function (knex, Promise) {
           const mapStyle = buildMapStyle(styles)
           return knex('omh.maps').update({style: mapStyle}).where({map_id: map.map_id})
         })
-    })
+    }))
   })
 }
 

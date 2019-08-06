@@ -31,7 +31,7 @@ var multiRasterStyleWithOpacity = function (layer_id, layers, opacity) {
   return style
 }
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return knex('omh.layers').select('layer_id', 'external_layer_config', 'style')
     .whereIn('external_layer_type', ['Planet', 'Planet Labs'])
     .then((layers) => {

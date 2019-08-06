@@ -37,7 +37,7 @@ var updateStyle = function (style, maphubsLayer) {
   return style
 }
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return Promise.all([
     knex('omh.layers').select('layer_id', 'style', 'data_type')
   ])

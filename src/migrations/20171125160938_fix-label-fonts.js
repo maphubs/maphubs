@@ -13,10 +13,10 @@ var fixStyleLayer = function (layer) {
   }
 }
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return knex('omh.maps').select('map_id', 'style')
     .then(maps => {
-      return Promise.mapSeries(maps, map => {
+      return Promise.all(maps.map(map => {
       // console.log(`checking map: ${map.map_id}`);
         if (map.style && map.style.layers) {
           var updated
@@ -32,12 +32,12 @@ exports.up = function (knex, Promise) {
             return knex('omh.maps').update({style: map.style}).where({map_id: map.map_id})
           }
         }
-      })
+      }))
     })
     .then(() => {
       return knex('omh.layers').select('layer_id', 'style')
         .then(layers => {
-          return Promise.mapSeries(layers, layer => {
+          return Promise.all(layers.map(layer => {
             // console.log(`checking layer: ${layer.layer_id}`);
             if (layer.style && layer.style.layers) {
               var updated
@@ -53,13 +53,13 @@ exports.up = function (knex, Promise) {
                 return knex('omh.layers').update({style: layer.style}).where({layer_id: layer.layer_id})
               }
             }
-          })
+          }))
         })
     })
     .then(() => {
       return knex('omh.map_layers').select('layer_id', 'map_id', 'style')
         .then(mapLayers => {
-          return Promise.mapSeries(mapLayers, mapLayer => {
+          return Promise.all(mapLayers.map(mapLayer => {
             // console.log(`checking layer: ${layer.layer_id}`);
             if (mapLayer.style && mapLayer.style.layers) {
               var updated
@@ -79,11 +79,11 @@ exports.up = function (knex, Promise) {
                   })
               }
             }
-          })
+          }))
         })
     })
 }
 
-exports.down = function (knex, Promise) {
+exports.down = function (knex) {
   return Promise.resolve()
 }

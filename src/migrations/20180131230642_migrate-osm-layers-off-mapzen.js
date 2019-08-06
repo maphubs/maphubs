@@ -25,7 +25,7 @@ var roadsUpdate = (style, styleLayer, classes) => {
   return styleLayer
 }
 
-exports.up = (knex, Promise) => {
+exports.up = (knex) => {
   return knex('omh.layers')
     .select('layer_id', 'name', 'style')
     .where({owned_by_group_id: 'OpenStreetMap'})

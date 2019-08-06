@@ -1,5 +1,5 @@
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return knex.select().from('omh.hubs')
     .then((hubs) => {
       var commands = []

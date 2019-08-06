@@ -1,4 +1,4 @@
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return Promise.all([
     knex.raw(`UPDATE omh.layers SET settings='{}' where settings IS NULL`)
   ])

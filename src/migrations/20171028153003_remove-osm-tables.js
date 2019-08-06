@@ -1,5 +1,5 @@
 
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return Promise.all([
     knex.raw(`drop table if exists current_relations cascade;`),
     knex.raw(`drop table if exists current_ways cascade;`),

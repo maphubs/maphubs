@@ -1,5 +1,5 @@
 var layerViews = require('../services/layer-views')
-exports.up = function (knex, Promise) {
+exports.up = function (knex) {
   return Promise.all([
     knex.raw(`
 CREATE OR REPLACE FUNCTION isnumeric(text) RETURNS BOOLEAN AS $$
