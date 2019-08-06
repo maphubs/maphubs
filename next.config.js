@@ -36,11 +36,13 @@ const themeVariables = lessToJS(
 )
 
 // fix: prevents error when .less files are required by node
+/*
 if (typeof require !== 'undefined') {
   require.extensions['.less'] = file => {}
 }
+*/
 
-module.exports = withLess(withCSS(withTM({
+module.exports = withCSS(withLess(withTM({
   publicRuntimeConfig: {
     host: config.host,
     port: config.port,
@@ -91,7 +93,7 @@ module.exports = withLess(withCSS(withTM({
   },
   assetPrefix,
   poweredByHeader: false,
-  webpack (config, { dev }) {
+  webpack (config, { dev, isServer }) {
     if (dev) {
       /// config.devtool = 'cheap-eval-source-map'
       config.devtool = 'cheap-eval-source-map'
@@ -107,12 +109,33 @@ module.exports = withLess(withCSS(withTM({
       }
     }
 
+    if (isServer) {
+      const antStyles = /antd\/.*?\/style.*?/
+      const origExternals = [...config.externals]
+      config.externals = [
+        (context, request, callback) => {
+          if (request.match(antStyles)) return callback()
+          if (typeof origExternals[0] === 'function') {
+            origExternals[0](context, request, callback)
+          } else {
+            callback()
+          }
+        },
+        ...(typeof origExternals[0] === 'function' ? [] : origExternals)
+      ]
+
+      config.module.rules.unshift({
+        test: antStyles,
+        use: 'null-loader'
+      })
+    }
+
     if (!config.node) config.node = {}
     config.node.fs = 'empty'
 
     config.module.rules.push({
       test: /ckeditor5-[^/]+\/theme\/icons\/[^/]+\.svg$/,
-      use: [ 'raw-loader' ]
+      use: ['raw-loader']
     })
 
     config.module.rules.push({
