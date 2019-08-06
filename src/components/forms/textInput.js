@@ -166,7 +166,6 @@ class TextInput extends MapHubsComponent<Props, State> {
 
     return (
       <Tooltip
-        visible={this.props.dataTooltip}
         title={this.props.dataTooltip}
         placement={this.props.dataPosition}
       >

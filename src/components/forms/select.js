@@ -115,7 +115,6 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
     return (
       <div className={className}>
         <Tooltip
-          visible={dataTooltip}
           title={dataTooltip}
           placement={dataPosition}
         >

@@ -82,7 +82,6 @@ class Toggle extends MapHubsComponent<Props, void> {
 
     return (
       <Tooltip
-        visible={this.props.dataTooltip}
         title={this.props.dataTooltip}
         placement={this.props.dataPosition}
       >

@@ -46,7 +46,6 @@ class Radio extends MapHubsPureComponent<Props, void> {
 
     return (
       <Tooltip
-        visible={dataTooltip}
         title={dataTooltip}
         placement={dataPosition}
       >
