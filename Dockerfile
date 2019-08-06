@@ -24,7 +24,7 @@ COPY --from=dependencies /app /app
 COPY ./src /app/src
 COPY ./pages /app/pages
 COPY ./.next /app/.next
-COPY .babelrc next.config.js server.js server.es6.js docker-entrypoint.sh version.json /app/
+COPY .babelrc next.config.js server.js server.es6.js docker-entrypoint.sh version.json theme.less /app/
 
 RUN chmod +x /app/docker-entrypoint.sh && \
     mkdir -p css && mkdir -p /app/temp/uploads
