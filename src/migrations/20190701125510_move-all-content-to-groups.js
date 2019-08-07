@@ -17,11 +17,12 @@ exports.up = async (knex) => {
   return Promise.all(users.map(async (user) => {
     // check if user has stories or maps
     const userStories = await knex('omh.user_stories').where({user_id: user.id})
-    const userMaps = await knex('omh.maps').whereNotNull('owned_by_user_id')
+    const userMaps = await knex('omh.maps').where({owned_by_user_id: user.id})
     if ((userStories && userStories.length > 0) || (userMaps && userMaps.length > 0)) {
       // check if the user name is available as a group
       let targetGroup = user.display_name
-      const existingGroup = await knex('omh.groups').select().where({group_id: targetGroup})
+      const existingGroup = await knex('omh.groups').select()
+        .whereRaw('lower(group_id) = ?', targetGroup.toLowerCase())
       if (existingGroup && existingGroup.length > 0) {
         targetGroup = `${targetGroup}2`
       }
