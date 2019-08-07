@@ -10,14 +10,19 @@ module.exports = async function (app: any) {
 
   if (pageConfigs.config && Array.isArray(pageConfigs.config) && pageConfigs.config.length > 0) {
     log.info('loading CMS pages')
-    pageConfigs.config.forEach((page) => {
+    return Promise.all(pageConfigs.config.map(async (page) => {
       log.info(`creating: ${page.path}`)
       app.get(page.path, csrfProtection, async (req, res, next) => {
+        let pageConfig = page
+        if (page.config) {
+          const result = await Page.getPageConfigs([page.config])
+          pageConfig = result[page.config]
+        }
         try {
-          await renderCMSPage(app, page, req, res)
+          await renderCMSPage(app, pageConfig, req, res)
         } catch (err) { nextError(next)(err) }
       })
-    })
+    }))
   } else {
     log.info('No CMS pages found')
   }

@@ -2,9 +2,11 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification } from 'antd'
+import { Row, Col, List, Button, Empty, message, notification } from 'antd'
 import CodeEditor from '../components/LayerDesigner/CodeEditor'
+import LocalizedCodeEditor from '../components/forms/LocalizedCodeEditor'
 import request from 'superagent'
+import shortid from 'shortid'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
@@ -25,7 +27,8 @@ type Props = {
 }
 
 type State = {
-  pageConfig?: Object
+  pageConfig?: Object,
+  editingComponent?: Object
 } & LocaleStoreState
 
 export default class PageEdit extends MapHubsComponent<Props, State> {
@@ -47,8 +50,13 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
+    const pageConfig = props.pageConfig || {}
+    if (!pageConfig.components) pageConfig.components = []
+    pageConfig.components.map(c => {
+      if (!c.id) c.id = shortid()
+    })
     this.state = {
-      pageConfig: props.pageConfig
+      pageConfig
     }
   }
 
@@ -83,16 +91,87 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
       })
   }
 
+  updateComponent (component) {
+    const { pageConfig } = this.state
+    pageConfig.components = pageConfig.components.map(c => {
+      if (c.id === component.id) {
+        return component
+      } else {
+        return c
+      }
+    })
+    this.setState({pageConfig, editingComponent: null})
+  }
+
   render () {
     const {t} = this
+    const { pageConfig, editingComponent } = this.state
+    const components = pageConfig.components
     return (
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
-        <main className='container' style={{height: 'calc(100% - 100px)'}}>
-          <CodeEditor ref='pageEditor' id='layer-style-editor' mode='json'
-            code={JSON.stringify(this.state.pageConfig, undefined, 2)}
-            title={t('Editing Page Config: ') + this.props.page_id}
-            onSave={this.savePageConfig} modal={false} />
+        <main style={{height: 'calc(100% - 100px)', padding: '20px'}}>
+          <Row style={{height: '100%'}}>
+            <Col span={12} style={{height: '100%', padding: '20px'}}>
+              <Row style={{height: '50%', overflow: 'auto'}}>
+                <List
+                  header={<b>Components</b>}
+                  bordered
+                  dataSource={components}
+                  renderItem={(item) => (
+                    <List.Item>
+                      <Row style={{width: '100%'}}>
+                        <Col span={8}>ID: {item.id}</Col>
+                        <Col span={8}>Type: {item.type}</Col>
+                        <Col span={8}>
+                          <Button type='primary' size='small' onClick={() => {
+                            this.setState({editingComponent: item})
+                          }}>Edit</Button>
+                        </Col>
+                      </Row>
+                    </List.Item>
+                  )}
+                />
+              </Row>
+              <Row style={{height: '50%'}}>
+                <CodeEditor ref='pageEditor' id='layer-style-editor' mode='json'
+                  code={JSON.stringify(this.state.pageConfig, undefined, 2)}
+                  title={t('Editing Page Config: ') + this.props.page_id}
+                  onSave={this.savePageConfig} modal={false} />
+              </Row>
+            </Col>
+            <Col span={12} style={{height: '100%', padding: '20px'}}>
+              <ErrorBoundary>
+                <Row style={{height: '100%'}}>
+                  {(editingComponent && editingComponent.type === 'html') &&
+                    <LocalizedCodeEditor
+                      id='component-html-editor'
+                      mode='html'
+                      localizedCode={editingComponent.html}
+                      title={`Editing ${editingComponent.id}`}
+                      onSave={(html) => {
+                        editingComponent.html = html
+                        this.updateComponent(editingComponent)
+                      }} />
+                  }
+                  {(editingComponent && editingComponent.type !== 'html') &&
+                    <CodeEditor
+                      visible
+                      id='component-config-editor'
+                      mode='json'
+                      code={JSON.stringify(editingComponent, undefined, 2)}
+                      title={`Editing ${editingComponent.id}`}
+                      onSave={(json) => {
+                        this.updateComponent(editingComponent)
+                      }} modal={false} />
+                  }
+                  {!editingComponent &&
+                    <Empty />
+                  }
+                </Row>
+              </ErrorBoundary>
+            </Col>
+          </Row>
         </main>
         <Footer {...this.props.footerConfig} />
       </ErrorBoundary>

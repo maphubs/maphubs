@@ -23,7 +23,7 @@ module.exports = function (app: any, config: Object, req: any, res: any) {
         if (component.datasets) {
           component.datasets.forEach((dataset) => {
             const {type, max} = dataset
-            const number = max || 5
+            const number = max || 6
             if (type === 'trending' || type === 'popular') {
               dataRequests.push(Story.getPopularStories(number))
               dataRequestNames.push('popularStories')
@@ -45,7 +45,7 @@ module.exports = function (app: any, config: Object, req: any, res: any) {
         if (component.datasets && Array.isArray(component.datasets) && component.datasets.length > 0) {
           component.datasets.forEach((dataset) => {
             const {type, filter, max} = dataset
-            const number = max || 5
+            const number = max || 6
             if (type === 'layer') {
               if (filter === 'featured') {
                 dataRequests.push(Layer.getFeaturedLayers(number))

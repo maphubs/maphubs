@@ -13,7 +13,8 @@ type Props = {|
   code: string,
   mode: string,
   theme: string,
-  modal: boolean
+  modal: boolean,
+  visible: boolean
 |}
 
 type State = {
@@ -29,7 +30,8 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
     id: 'code-editor',
     mode: 'json',
     theme: 'monokai',
-    modal: true
+    modal: true,
+    visible: false
   }
 
   editor: any
@@ -39,7 +41,7 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
     this.state = {
       code: props.code,
       canSave: true,
-      show: false
+      show: props.visible
     }
   }
 

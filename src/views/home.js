@@ -444,7 +444,12 @@ export default class HomePro extends MapHubsComponent<Props, State> {
 
   render () {
     const _this = this
-
+    const { pageConfig } = this.props
+    if (!pageConfig || !pageConfig.components) {
+      return (
+        <p>Invalid page config: {JSON.stringify(pageConfig)}</p>
+      )
+    }
     return (
       <ErrorBoundary>
         <Provider inject={[this.BaseMapState]}>

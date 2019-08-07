@@ -9,7 +9,7 @@ const isAuthenticated = require('../../services/auth-check')
 const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app) {
-  app.get('/page/edit/:id', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
+  app.get('/admin/page/edit/:id', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
     try {
       const user_id = req.session.user.maphubsUser.id
       const page_id = req.params.id.toLowerCase()
@@ -19,7 +19,44 @@ module.exports = function (app) {
         const pageConfig = pageConfigs[page_id]
         return app.next.render(req, res, '/pageedit', await pageOptions(req, {
           title: req.__('Edit Page') + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {page_id, pageConfig}
+          props: {page_id, pageConfig},
+          hideFeedback: true
+        }))
+      } else {
+        return res.redirect('/unauthorized')
+      }
+    } catch (err) { nextError(next)(err) }
+  })
+
+  app.get('/admin/config', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
+    try {
+      const user_id = req.session.user.maphubsUser.id
+
+      if (await Admin.checkAdmin(user_id)) {
+        const pageConfigs = await Page.getPageConfigs(['config'])
+        const pageConfig = pageConfigs['config']
+        return app.next.render(req, res, '/configedit', await pageOptions(req, {
+          title: req.__('Edit Config') + ' - ' + MAPHUBS_CONFIG.productName,
+          props: {page_id: 'config', pageConfig},
+          hideFeedback: true
+        }))
+      } else {
+        return res.redirect('/unauthorized')
+      }
+    } catch (err) { nextError(next)(err) }
+  })
+
+  app.get('/admin/map', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
+    try {
+      const user_id = req.session.user.maphubsUser.id
+
+      if (await Admin.checkAdmin(user_id)) {
+        const pageConfigs = await Page.getPageConfigs(['map'])
+        const pageConfig = pageConfigs['map']
+        return app.next.render(req, res, '/configedit', await pageOptions(req, {
+          title: req.__('Edit Map Config') + ' - ' + MAPHUBS_CONFIG.productName,
+          props: {page_id: 'map', pageConfig},
+          hideFeedback: true
         }))
       } else {
         return res.redirect('/unauthorized')
@@ -33,7 +70,7 @@ module.exports = function (app) {
       if (data && data.page_id && data.pageConfig) {
         if (await Admin.checkAdmin(req.user_id)) {
           const result = await Page.savePageConfig(data.page_id, data.pageConfig)
-          if (result && result === 1) {
+          if (result) {
             return res.send({
               success: true
             })

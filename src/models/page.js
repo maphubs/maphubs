@@ -1,5 +1,6 @@
 // @flow
 const knex = require('../connection')
+const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 
 module.exports = {
 
@@ -24,6 +25,13 @@ module.exports = {
   },
 
   async savePageConfig (page_id: string, config: string) {
-    return knex('omh.page').where({page_id}).update({config})
+    const existingResults = await knex('omh.page').where({page_id}).select('page_id')
+    if (existingResults && existingResults.length === 1) {
+      log.info(`updating page config for ${page_id}`)
+      return knex('omh.page').where({page_id}).update({config})
+    } else {
+      log.info(`creating new page config for ${page_id}`)
+      return knex('omh.page').insert({page_id, config})
+    }
   }
 }
