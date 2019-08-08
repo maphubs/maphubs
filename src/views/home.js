@@ -2,6 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
+import { Row } from 'antd'
 import CardCarousel from '../components/CardCarousel/CardCarousel'
 import StorySummary from '../components/Story/StorySummary'
 import Carousel from 'nuka-carousel'
@@ -150,9 +151,10 @@ export default class HomePro extends MapHubsComponent<Props, State> {
 
   renderHomePageMap = (config: Object, key: string) => {
     let homepageMap = ''
+    const style = config.style || {}
     if (this.props.map) {
       homepageMap = (
-        <div key={key} className='row'>
+        <Row key={key} style={style}>
           <InteractiveMap height='calc(100vh - 150px)'
             {...this.props.map}
             mapConfig={this.props.mapConfig}
@@ -168,7 +170,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
             t={this.t}
           />
           <div className='divider' />
-        </div>
+        </Row>
       )
     }
     return homepageMap
@@ -182,8 +184,10 @@ export default class HomePro extends MapHubsComponent<Props, State> {
         height = config.height
       }
       const dimensions = {width: '100%', height}
+      let style = config.style || {}
+      style = Object.assign(style, dimensions)
       return (
-        <div key={key} className='row no-margin' style={dimensions}>
+        <Row key={key} style={style}>
           <XComponentReact
             tag={config.tag}
             url={config.url}
@@ -193,7 +197,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
             dimensions={dimensions}
             onComplete={() => { window.location = config.onCompleteUrl || '/' }}
           />
-        </div>
+        </Row>
       )
     } else {
       return ''
@@ -201,8 +205,9 @@ export default class HomePro extends MapHubsComponent<Props, State> {
   }
 
   renderSlides = (config: Object, key: string) => {
+    const style = config.style || {}
     const slides = (
-      <div key={key} className='row' style={{marginTop: 0, marginBottom: 0, height: '70vh', maxHeight: '600px'}}>
+      <Row key={key} style={{marginTop: 0, marginBottom: 0, height: '70vh', maxHeight: '600px', ...style}}>
         <Carousel autoplay slidesToShow={1} autoplayInterval={5000} wrapAround
           renderCenterLeftControls={({ previousSlide, currentSlide, wrapAround }) => (
             <SliderDecorators.LeftArrow previousSlide={previousSlide} currentSlide={currentSlide} wrapAround={wrapAround} />
@@ -234,48 +239,51 @@ export default class HomePro extends MapHubsComponent<Props, State> {
             )
           })}
         </Carousel>
-
-      </div>
+      </Row>
     )
     return slides
   }
 
   renderMailingList = (config: Object, key: string) => {
-    const bgColor = config.bgColor ? config.bgColor : 'inherit'
+    const bgColor = config.bgColor || 'inherit'
+    const style = config.style || {}
     const mailingList = (
-      <div key={key} className='row no-margin' style={{backgroundColor: bgColor}}>
+      <Row key={key} style={{backgroundColor: bgColor, ...style}}>
         <MailingList text={config.text} />
-      </div>
+      </Row>
     )
     return mailingList
   }
 
   renderLinks = (config: Object, key: string) => {
     const bgColor = config.bgColor ? config.bgColor : 'inherit'
+    const style = config.style || {}
     const links = (
-      <div key={key} className='row' style={{backgroundColor: bgColor}}>
+      <Row key={key} style={{backgroundColor: bgColor, ...style}}>
         <PublicOnboardingLinks t={this.t} {...config} />
-      </div>
+      </Row>
     )
     return links
   }
 
   renderOnboardingLinks = (config: Object, key: string) => {
     const bgColor = config.bgColor ? config.bgColor : 'inherit'
+    const style = config.style || {}
     const links = (
-      <div key={key} className='row' style={{backgroundColor: bgColor}}>
+      <Row key={key} style={{backgroundColor: bgColor, ...style}}>
         <OnboardingLinks t={this.t} />
-      </div>
+      </Row>
     )
     return links
   }
 
   renderProLinks = (config: Object, key: string) => {
     const bgColor = config.bgColor ? config.bgColor : 'inherit'
+    const style = config.style || {}
     const links = (
-      <div key={key} className='row' style={{backgroundColor: bgColor}}>
+      <Row key={key} style={{backgroundColor: bgColor, ...style}}>
         <MapHubsProLinks t={this.t} />
-      </div>
+      </Row>
     )
     return links
   }
@@ -324,6 +332,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     }
 
     const bgColor = config.bgColor ? config.bgColor : 'inherit'
+    const style = config.style || {}
 
     let trendingIcon = ''
     if (config.trendingIcon) {
@@ -336,21 +345,19 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     const title = config.title ? t(config.title) : t('Trending')
 
     const carousel = (
-      <div key={key} className='row' style={{marginBottom: '50px', backgroundColor: bgColor}}>
-        <div className='row no-margin' style={{height: '50px'}}>
+      <Row key={key} style={{marginBottom: '50px', backgroundColor: bgColor, ...style}}>
+        <Row style={{height: '50px'}}>
           <div>
             <h5 className='no-margin center-align' style={{lineHeight: '50px'}}>
               {title}
               {trendingIcon}
             </h5>
           </div>
-        </div>
-        <div className='row'>
-          <div className='col s12'>
-            <CardCarousel cards={collectionCards} infinite={false} t={this.t} />
-          </div>
-        </div>
-      </div>
+        </Row>
+        <Row>
+          <CardCarousel cards={collectionCards} infinite={false} t={this.t} />
+        </Row>
+      </Row>
     )
     return carousel
   }
@@ -374,9 +381,10 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     } else {
       title = t('Stories')
     }
+    const style = config.style || {}
     if (stories.length > 0) {
       return (
-        <div key={key}>
+        <Row key={key} style={style}>
           <div className='divider' />
           <div className='row'>
             <h5 className='no-margin center-align' style={{lineHeight: '50px', color: '#212121'}}>
@@ -392,43 +400,46 @@ export default class HomePro extends MapHubsComponent<Props, State> {
               )
             })}
           </div>
-        </div>
+        </Row>
       )
     }
   }
 
   renderText = (config: Object, key: string) => {
+    const style = config.style || {}
     let text = config.text[this.state.locale]
     if (!text) text = config.text.en
     const textPanel = (
-      <div key={key} className='row'>
+      <Row key={key} style={style}>
         <div className='flow-text center align-center'>
           {text}
         </div>
-      </div>
+      </Row>
     )
 
     return textPanel
   }
 
   renderHtml = (config: Object, key: string) => {
+    const style = config.style || {}
     let html = config.html[this.state.locale]
     if (!html) html = config.html.en
     const textPanel = (
-      <div key={key} className='row' style={{height: config.height || '100px'}}>
+      <Row key={key} style={{height: config.height || '100px', ...style}}>
         <div dangerouslySetInnerHTML={{__html: html}} />
-      </div>
+      </Row>
     )
 
     return textPanel
   }
 
   renderButton = (config: Object, key: string) => {
+    const style = config.style || {}
     let label = config.label[this.state.locale]
     if (!label) label = config.label.en
     const button = (
-      <div key={key} className='row valign-wrapper'
-        style={{padding: '25px'}}>
+      <Row key={key} className='valign-wrapper'
+        style={{padding: '25px', ...style}}>
         <a
           className='waves-effect waves-light btn valign'
           style={{margin: 'auto'}}
@@ -436,7 +447,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
         >
           {label}
         </a>
-      </div>
+      </Row>
     )
 
     return button
