@@ -53,7 +53,7 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
         </a>
         <div className='story-content'>
           <p className='fade'>
-            {story.firstline}
+            {t(story.summary)}
           </p>
         </div>
         <a href={linkUrl} style={{fontSize: '12px', color: 'rgba(0, 0, 0, 0.45)'}}>

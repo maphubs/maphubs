@@ -50,6 +50,7 @@ module.exports = function (app: any) {
     try {
       const user_id = req.session.user.maphubsUser.id
       const story_id = parseInt(req.params.story_id || '', 10)
+      const locale = req.session.locale || 'en'
       const story = await Story.getStoryById(story_id)
       let firstEdit
       console.log(story)
@@ -59,7 +60,7 @@ module.exports = function (app: any) {
       }
       if (firstEdit || await Story.allowedToModify(story_id, user_id)) {
         return app.next.render(req, res, '/editstory', await pageOptions(req, {
-          title: 'Editing: ' + story.title,
+          title: 'Editing: ' + story.title[locale],
           props: {
             story,
             myMaps: await Map.getUserMaps(user_id),
@@ -110,8 +111,8 @@ module.exports = function (app: any) {
             imageUrl = urlUtil.getBaseUrl() + story.firstimage
           }
           let description = story.title[locale]
-          if (story.firstline) {
-            description = story.firstline
+          if (story.summary) {
+            description = story.summary[locale]
           }
           if (!story.published) {
             // guest users never see draft stories
@@ -140,8 +141,8 @@ module.exports = function (app: any) {
                 imageUrl = story.firstimage
               }
               let description = story.title[locale]
-              if (story.firstline) {
-                description = story.firstline
+              if (story.summary) {
+                description = story.summary[locale]
               }
 
               if (!story.published && !canEdit) {

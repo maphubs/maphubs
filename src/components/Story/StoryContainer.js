@@ -6,6 +6,7 @@ export type Story ={
   title?: Object,
   author?: Object,
   body?: Object,
+  summary?: Object,
   story_id?: number,
   published?: boolean,
   published_at?: string,
@@ -40,7 +41,7 @@ export default class StoryContainer extends Container<StoryContainerState> {
     })
   }
 
-  titleChange = (title: string) => {
+  titleChange = (title: Object) => {
     this.setState({title, modified: true})
   }
 
@@ -52,8 +53,12 @@ export default class StoryContainer extends Container<StoryContainerState> {
     this.setState({published, modified: true})
   }
 
-  authorChange = (author: string) => {
+  authorChange = (author: Object) => {
     this.setState({author, modified: true})
+  }
+
+  summaryChange = (summary: Object) => {
+    this.setState({summary, modified: true})
   }
 
   groupChange = (owned_by_group_id: string) => {
@@ -68,8 +73,8 @@ export default class StoryContainer extends Container<StoryContainerState> {
     this.setState({modified})
   }
 
-  save = async (firstline: string, firstimage: any) => {
-    const { story_id, owned_by_group_id, body, title, author, published, published_at, tags, _csrf } = this.state
+  save = async (firstimage: any) => {
+    const { story_id, owned_by_group_id, body, title, author, summary, published, published_at, tags, _csrf } = this.state
 
     return request.post('/api/story/save')
       .type('json').accept('json')
@@ -79,10 +84,10 @@ export default class StoryContainer extends Container<StoryContainerState> {
         body,
         title,
         author,
+        summary,
         published,
         published_at,
         tags,
-        firstline,
         firstimage,
         _csrf
       })

@@ -20,11 +20,13 @@ if (MAPHUBS_CONFIG.LANGUAGES) {
 }
 
 const TabPane = Tabs.TabPane
+const { TextArea } = Input
 
 type Props = {
   value?: Object,
   onChange?: Function,
-  placeholder?: string
+  placeholder?: string,
+  type: string
 }
 
 type State = {
@@ -32,6 +34,10 @@ type State = {
 }
 
 export default class LocalizedInput extends React.Component<Props, State> {
+  static defaultProps = {
+    type: 'input'
+  }
+
   constructor (props: Props) {
     super(props)
     const value = props.value || {}
@@ -64,7 +70,7 @@ export default class LocalizedInput extends React.Component<Props, State> {
 
   render () {
     const {value} = this.state
-    const {placeholder} = this.props
+    const {placeholder, type} = this.props
     const {handleChange} = this
     return (
       <div>
@@ -84,15 +90,28 @@ export default class LocalizedInput extends React.Component<Props, State> {
                   tab={<Tooltip title={locale.name}><span>{locale.label}</span></Tooltip>}
                   key={locale.value}
                 >
-                  <Input type='text' value={value[locale.value]}
-                    placeholder={placeholder}
-                    onChange={
-                      (e) => {
-                        const val = e.target.value
-                        handleChange(locale.value, val)
+                  {type === 'input' &&
+                    <Input type='text' value={value[locale.value]}
+                      placeholder={placeholder}
+                      onChange={
+                        (e) => {
+                          const val = e.target.value
+                          handleChange(locale.value, val)
+                        }
                       }
-                    }
-                  />
+                    />
+                  }
+                  {type === 'area' &&
+                    <TextArea rows={4} type='text' value={value[locale.value]}
+                      placeholder={placeholder}
+                      onChange={
+                        (e) => {
+                          const val = e.target.value
+                          handleChange(locale.value, val)
+                        }
+                      }
+                    />
+                  }
                 </TabPane>
               )
             })

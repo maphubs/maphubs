@@ -59,21 +59,21 @@ class StoryEditor extends React.Component<Props, State> {
     })
   }
 
-  getFirstLine = () => {
-    const firstLine = $('.storybody').find('p')
-      .filter(function () {
-        return ($.trim($(this).text()).length)
-      }).first().text()
-    return firstLine
-  }
-
   getFirstImage = () => {
     // attempt to find the first map or image
     let firstImg = null
-    const firstEmbed = $('.storybody').find('img, .embed-map-container').first()
-    if (firstEmbed.is('.embed-map-container')) {
-      const mapid = firstEmbed.attr('id').split('-')[1]
-      firstImg = `${urlUtil.getBaseUrl()}/api/screenshot/map/${mapid}.png`
+    const firstEmbed = $('.ck-content').find('.maphubs-img-embed, .ck-media__wrapper').first()
+    if (firstEmbed.is('.ck-media__wrapper')) {
+      console.log(firstEmbed)
+      const oembedURL = firstEmbed.attr('data-oembed-url')
+      const parts = oembedURL.split('/')
+      if (parts && parts.length >= 6 &&
+        parts[3] === 'map' &&
+        parts[4] === 'view') {
+        const mapid = parts[5]
+        firstImg = `${urlUtil.getBaseUrl()}/api/screenshot/map/${mapid}.png`
+      }
+      console.log(parts)
     } else {
       firstImg = firstEmbed.attr('src')
     }
@@ -100,13 +100,12 @@ class StoryEditor extends React.Component<Props, State> {
       return
     }
 
-    const firstline = this.getFirstLine()
     const firstimage = this.getFirstImage()
 
     const closeSavingMessage = message.loading(t('Saving'), 0)
 
     try {
-      await story.save(firstline, firstimage)
+      await story.save(firstimage)
       closeSavingMessage()
       message.info(t('Story Saved'))
       story.setModified(false)
@@ -176,7 +175,7 @@ class StoryEditor extends React.Component<Props, State> {
     const { t, containers, myMaps, popularMaps, locale } = this.props
     const { showAddMap, showImageCrop, imageData } = this.state
     const { story } = containers
-    const { story_id, title, author, body, published, published_at, owned_by_group_id, modified, canChangeGroup } = story.state
+    const { story_id, title, author, body, summary, published, published_at, owned_by_group_id, modified, canChangeGroup } = story.state
 
     return (
       <Row style={{height: '100%'}}>
@@ -228,12 +227,13 @@ class StoryEditor extends React.Component<Props, State> {
           <ErrorBoundary>
             <Row style={{marginBottom: '10px'}}>
               <Row style={{marginBottom: '10px'}}>
-                <p><b>Title</b></p>
                 <LocalizedInput value={title} placeholder={'Title'} onChange={story.titleChange} />
               </Row>
               <Row>
-                <p><b>Author</b></p>
                 <LocalizedInput value={author} placeholder={'Author'} onChange={story.authorChange} />
+              </Row>
+              <Row>
+                <LocalizedInput type='area' value={summary} placeholder={'Summary'} onChange={story.summaryChange} />
               </Row>
             </Row>
           </ErrorBoundary>

@@ -11,7 +11,7 @@ module.exports = {
     return db.select(
       'omh.stories.story_id', 'omh.stories.title',
       'omh.stories.body', 'omh.stories.language',
-      'omh.stories.firstline', 'omh.stories.firstimage',
+      'omh.stories.summary', 'omh.stories.firstimage',
       'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
       knex.raw(`timezone('UTC', omh.stories.updated_at) as updated_at`),
       'omh.stories.published_at',
@@ -69,33 +69,6 @@ module.exports = {
       .where(knex.raw('lower(title)'), 'like', '%' + input + '%')
   },
 
-  getUserStories (user_id: number, includeDrafts: boolean = false) {
-    debug.log('get stories for user: ' + user_id)
-    const query = knex.select(
-      'omh.stories.story_id', 'omh.stories.title',
-      'omh.stories.firstline', 'omh.stories.firstimage', 'omh.stories.language',
-      'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
-      knex.raw(`timezone('UTC', omh.stories.updated_at) as updated_at`),
-      knex.raw('md5(lower(trim(public.users.email))) as emailhash'),
-      'omh.user_stories.user_id', 'public.users.display_name'
-    )
-      .from('omh.stories')
-      .leftJoin('omh.user_stories', 'omh.stories.story_id', 'omh.user_stories.story_id')
-      .leftJoin('public.users', 'omh.user_stories.user_id', 'public.users.id')
-    if (!includeDrafts) {
-      query.where({
-        'omh.user_stories.user_id': user_id,
-        'omh.stories.published': true
-      })
-    } else {
-      query.where({
-        'public.users.id': user_id
-      })
-    }
-    query.orderBy('updated_at', 'desc')
-    return query
-  },
-
   async getStoryById (story_id: number) {
     debug.log('get story: ' + story_id)
     const query = this.getStoriesBaseQuery()
@@ -116,7 +89,7 @@ module.exports = {
       title: Object,
       body: Object,
       author: Object,
-      firstline: string,
+      summary: Object,
       firstimage: any,
       published: boolean,
       published_at: string,
@@ -134,7 +107,7 @@ module.exports = {
           title: data.title,
           body: data.body,
           author: data.author,
-          firstline: data.firstline,
+          summary: data.summary,
           firstimage: data.firstimage,
           published: data.published,
           published_at: data.published_at,
