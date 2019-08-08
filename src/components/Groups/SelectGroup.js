@@ -10,7 +10,6 @@ import type {Group} from '../../stores/GroupStore'
 
 type Props = {
     groups: Array<Group>,
-    type: string,
     group_id?: string,
     canChangeGroup: boolean,
     private: boolean,
@@ -74,7 +73,7 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const {t} = this
+    const { t } = this
     const { groups, canChangeGroup } = this.props
     const { group_id, createdGroup } = this.state
     let startEmpty = true
@@ -97,7 +96,7 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
           <Row>
             <Select name='group' id='group-select' label={t('Group')} startEmpty={startEmpty}
               value={this.state.group_id} onChange={this.onGroupChange}
-              emptyText={t('Choose a Group')} options={groupOptions} className='col s12'
+              emptyText={t('Choose a Group')} options={groupOptions}
               dataPosition='right' dataTooltip={t('Owned by Group')}
               required
             />

@@ -83,15 +83,20 @@ class StoryEditor extends React.Component<Props, State> {
   save = async () => {
     const { t, containers } = this.props
     const { story } = containers
-    const { title, author } = story.state
+    const { title, author, body } = story.state
 
     if (!title) {
-      message.warning(t('Please Add a Title'), 5)
+      message.warning(t('Please add a title'), 5)
       return
     }
 
     if (!author) {
-      message.warning(t('Please Add an Author'), 5)
+      message.warning(t('Please add an author'), 5)
+      return
+    }
+
+    if (!body) {
+      message.warning(t('Please add the story body'), 5)
       return
     }
 

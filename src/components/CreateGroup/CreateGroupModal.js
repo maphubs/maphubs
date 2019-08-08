@@ -134,7 +134,7 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
       <>
         {!visible &&
           <Button size='small' onClick={this.showModal}><Icon type='plus' />{t('New Group')}</Button>
-        }`
+        }
         <Modal
           title={t('Create Group')}
           visible={visible}
