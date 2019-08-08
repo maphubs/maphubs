@@ -65,7 +65,8 @@ module.exports = function (app: any) {
             myMaps: await Map.getUserMaps(user_id),
             popularMaps: await Map.getPopularMaps(),
             groups: await Group.getAllGroups()
-          }
+          },
+          hideFeedback: true
         }))
       } else {
         return res.redirect('/unauthorized')

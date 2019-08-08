@@ -131,6 +131,9 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
                 bordered
                 dataSource={this.props.members}
                 renderItem={user => {
+                  if (user.display_name === 'maphubs') {
+                    return <span> </span>
+                  }
                   return (
                     <List.Item>
                       {user.image &&

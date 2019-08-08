@@ -14,6 +14,9 @@ export default class AddDropdown extends React.PureComponent<Props, void> {
     const menu = (
       <Menu>
         <Menu.Item>
+          <a href='/map/new' className='nav-hover-menu-item'>{t('New Map')}</a>
+        </Menu.Item>
+        <Menu.Item>
           <a href='/createlayer' className='nav-hover-menu-item'>{t('New Layer')}</a>
         </Menu.Item>
         <Menu.Item>
