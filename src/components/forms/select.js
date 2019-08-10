@@ -5,7 +5,6 @@ import { Select, Row, Tooltip } from 'antd'
 import find from 'lodash.find'
 import result from 'lodash.result'
 import MapHubsComponent from '../MapHubsComponent'
-import _isequal from 'lodash.isequal'
 
 const { Option } = Select
 
@@ -28,7 +27,8 @@ type Props = {|
   setValue: Function,
   getValue: Function,
   isRequired: Function,
-  getErrorMessage: Function
+  getErrorMessage: Function,
+  showSearch: boolean
 |}
 
 type State = {
@@ -44,7 +44,8 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
     name: 'select-box',
     id: 'select-box',
     options: [],
-    dataDelay: 100
+    dataDelay: 100,
+    showSearch: true
   }
 
   constructor (props: Props) {
@@ -95,7 +96,7 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const { id, name, options, icon, label, className, dataTooltip, dataPosition, getErrorMessage, successText, emptyText } = this.props
+    const { id, name, options, icon, label, className, dataTooltip, dataPosition, getErrorMessage, successText, emptyText, showSearch } = this.props
     const { note } = this.state
     const value = this.props.getValue()
 
@@ -118,11 +119,19 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
             }
             <Row>
               <Select
+                showSearch={showSearch}
                 defaultValue={value}
                 onChange={this.handleSelectChange}
                 allowClear
                 placeholder={emptyText}
                 style={{ width: '100%' }}
+                filterOption={(input, option) => {
+                  // eslint-disable-next-line unicorn/prefer-includes
+                  return option.props.children
+                    .toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0
+                }
+                }
               >
                 {options.map((option) =>
                   <Option key={option.value} value={option.value}>{option.label}</Option>

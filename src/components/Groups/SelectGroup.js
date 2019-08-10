@@ -97,7 +97,6 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
             <Select name='group' id='group-select' label={t('Group')} startEmpty={startEmpty}
               value={this.state.group_id} onChange={this.onGroupChange}
               emptyText={t('Choose a Group')} options={groupOptions}
-              dataPosition='right' dataTooltip={t('Owned by Group')}
               required
             />
             <Row style={{padding: '5px', marginTop: '10px'}}>
