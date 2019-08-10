@@ -147,6 +147,14 @@ export default class Story extends MapHubsComponent<Props, void> {
                 border:1px solid #d9d9d9;
                 padding-left:5px;
               }
+            
+              .image {
+                text-align: center;
+              }
+
+              .image-style-side {
+                float: right;
+              }
               
             `}</style>
           </main>

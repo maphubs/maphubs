@@ -62,9 +62,9 @@ class StoryEditor extends React.Component<Props, State> {
   getFirstImage = () => {
     // attempt to find the first map or image
     let firstImg = null
-    const firstEmbed = $('.ck-content').find('.maphubs-img-embed, .ck-media__wrapper').first()
+    const firstEmbed = $('.ck-content').find('img, .ck-media__wrapper').first()
     if (firstEmbed.is('.ck-media__wrapper')) {
-      console.log(firstEmbed)
+      // console.log(firstEmbed)
       const oembedURL = firstEmbed.attr('data-oembed-url')
       const parts = oembedURL.split('/')
       if (parts && parts.length >= 6 &&
@@ -73,7 +73,7 @@ class StoryEditor extends React.Component<Props, State> {
         const mapid = parts[5]
         firstImg = `${urlUtil.getBaseUrl()}/api/screenshot/map/${mapid}.png`
       }
-      console.log(parts)
+      // console.log(parts)
     } else {
       firstImg = firstEmbed.attr('src')
     }
@@ -160,8 +160,8 @@ class StoryEditor extends React.Component<Props, State> {
 
   onCrop = (dataURL: string, info: Object) => {
     message.info(this.props.t('Saving Image Crop'))
-    console.log(dataURL)
-    console.log(info)
+    // console.log(dataURL)
+    // console.log(info)
     this.setState({showImageCrop: false, imageData: null})
     this.state.imageCropCallback(dataURL)
   }
@@ -185,6 +185,9 @@ class StoryEditor extends React.Component<Props, State> {
               initialData={body}
               onChange={story.bodyChange}
               cropImage={onSelectImage}
+              onUploadImage={() => {
+                message.info(t('Image Saved'))
+              }}
               getMap={(cb) => {
                 message.info(t('Selecting a Map'))
                 this.setState({showAddMap: true, getMapCallback: cb})

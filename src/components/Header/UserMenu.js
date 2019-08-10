@@ -102,7 +102,6 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
             <ul id={this.props.id} style={{top: '100px'}}>
               <li className='divider' />
               <li className='nav-link-wrapper'><a href={`/user/${displayName}/maps`}>{t('My Maps')}</a></li>
-              <li className='nav-link-wrapper'><a href={`/user/${displayName}/stories`}>{t('My Stories')}</a></li>
               <li className='nav-link-wrapper'><a href={`/user/${displayName}/groups`}>{t('My Groups')}</a></li>
               <li className='nav-link-wrapper'><a href='/user/profile'>{t('Settings')}</a></li>
               {admin &&
@@ -122,8 +121,6 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
             </div>
             <ul id={this.props.id} className='dropdown-content' style={{top: '100px'}}>
               <li className='usermenu-wrapper'><a href={`/user/${displayName}/maps`}>{t('My Maps')}</a></li>
-              <li className='divider' />
-              <li className='usermenu-wrapper'><a href={`/user/${displayName}/stories`}>{t('My Stories')}</a></li>
               <li className='divider' />
               <li className='usermenu-wrapper'><a href={`/user/${displayName}/groups`}>{t('My Groups')}</a></li>
               <li className='divider' />

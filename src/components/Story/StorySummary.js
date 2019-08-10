@@ -28,7 +28,9 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
       if (imageUrl.startsWith(baseUrl)) {
         imageUrl = imageUrl.replace(baseUrl, '')
       }
-      imageUrl = '/img/resize/1200?url=' + imageUrl
+      if (!imageUrl.startsWith('https')) {
+        imageUrl = '/img/resize/1200?url=' + imageUrl
+      }
     }
 
     let title = t(story.title)

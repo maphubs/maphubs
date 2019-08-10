@@ -30,7 +30,8 @@ type Props = {
   getMap?: Function,
   cropImage?: Function,
   onImageUpload?: Function,
-  language?: string
+  language?: string,
+  story_id: number
 }
 
 export default class StoryCKEditor extends React.Component<Props, void> {
@@ -59,17 +60,18 @@ export default class StoryCKEditor extends React.Component<Props, void> {
   }
 
   render () {
-    const { initialData, language, getMap, cropImage, onImageUpload } = this.props
+    const { initialData, language, getMap, cropImage, onImageUpload, story_id } = this.props
+    const host = MAPHUBS_CONFIG.host ? MAPHUBS_CONFIG.host.replace('.', '') : 'unknownhost'
     const editorConfiguration = {
       language,
       maphubsMap: {
         getMap
       },
       maphubsUpload: {
-        assetUploadAPI: 'assets.maphubs.com', // maphubs asset upload service
-        assetUploadAPIKey: 'abc123', //
-        subfolder: 'example', // can be used to group content by host and or type
-        subfolderID: '', // an id for example a story id that can be used to bulk delete content later
+        assetUploadAPI: `${MAPHUBS_CONFIG.ASSET_UPLOAD_API}/image/upload`, // maphubs asset upload service
+        assetUploadAPIKey: MAPHUBS_CONFIG.ASSET_UPLOAD_API_KEY, //
+        subfolder: `${host}-stories`, // can be used to group content by host and or type
+        subfolderID: story_id, // an id for example a story id that can be used to bulk delete content later
         onUpload: onImageUpload,
         cropImage
       },

@@ -75,7 +75,7 @@ module.exports = function (app: any) {
           group,
           maps: await Map.getGroupMaps(group_id, canEdit),
           layers: await Layer.getGroupLayers(group_id, canEdit),
-          stories: await Story.getGroupStories(group_id),
+          stories: await Story.getGroupStories(group_id, canEdit),
           members: await Group.getGroupMembers(group_id),
           canEdit
         },

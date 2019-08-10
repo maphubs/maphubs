@@ -469,6 +469,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
         <Modal
           title={t('Select Image')}
           visible={this.state.visible}
+          destroyOnClose
           onOk={this.onSave}
           centered
           bodyStyle={{height: 'calc(100% - 110px)'}}

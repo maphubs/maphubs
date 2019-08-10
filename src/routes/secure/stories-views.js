@@ -59,8 +59,9 @@ module.exports = function (app: any) {
         log.info(`first edit for story: ${story_id}`)
       }
       if (firstEdit || await Story.allowedToModify(story_id, user_id)) {
+        const title = story.title ? story.title[locale] : 'New Story'
         return app.next.render(req, res, '/editstory', await pageOptions(req, {
-          title: 'Editing: ' + story.title[locale],
+          title: 'Editing: ' + title,
           props: {
             story,
             myMaps: await Map.getUserMaps(user_id),

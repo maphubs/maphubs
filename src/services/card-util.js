@@ -91,7 +91,9 @@ export default {
       if (image_url.startsWith(baseUrl)) {
         image_url = image_url.replace(baseUrl, '')
       }
-      image_url = '/img/resize/400?url=' + image_url
+      if (!image_url.startsWith('https')) {
+        image_url = '/img/resize/400?url=' + image_url
+      }
     }
 
     return {
@@ -104,6 +106,7 @@ export default {
         group_id: story.owned_by_group_id,
         name: story.groupname
       },
+      draft: !story.published,
       data: story
     }
   }

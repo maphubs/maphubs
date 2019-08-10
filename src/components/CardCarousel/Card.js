@@ -19,6 +19,7 @@ export type CardConfig = {|
   type: string,
   private?: boolean,
   public?: boolean,
+  draft?: boolean,
   onClick?: Function
 |}
 
@@ -157,6 +158,16 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
               <LockOpen style={{color: 'green'}} />
             </Tooltip>
           </div>
+          }
+          {this.props.draft &&
+          <>
+            <div style={{position: 'absolute', top: '5px', right: '75px'}}>
+              <span style={{color: 'red', fontWeight: 600}} >{t('DRAFT')}</span>
+            </div>
+            <div style={{position: 'absolute', bottom: '5px', right: '75px'}}>
+              <span style={{color: 'red', fontWeight: 600}} >{t('DRAFT')}</span>
+            </div>
+          </>
           }
           <Tooltip title={toolTipText} placement='top'>
             <i className='material-icons grey-text text-darken-3'
