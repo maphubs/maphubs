@@ -327,7 +327,7 @@ class InsetMap extends React.Component<Props, State> {
               display: 'none'
             }}>
             <MapToolButton onClick={this.toggleCollapsed}
-              color='#212121'
+              color='#323333'
               top='auto' right='auto' bottom='5px' left='5px'
               icon='near_me' />
           </div>

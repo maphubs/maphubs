@@ -226,7 +226,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
     const {position, width} = this.state
     let border = 'none'
     if (this.props.border) {
-      border = '1px solid #212121'
+      border = '1px solid #323333'
     }
 
     let bounds

@@ -26,7 +26,7 @@ type Props = {|
 export default class MapToolButton extends React.PureComponent<Props, void> {
   static defaultProps = {
     top: '10px',
-    color: '#212121',
+    color: '#323333',
     right: '10px',
     bottom: 'auto',
     left: 'auto',

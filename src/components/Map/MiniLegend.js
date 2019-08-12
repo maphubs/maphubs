@@ -190,12 +190,12 @@ export default class MiniLegend extends React.Component<Props, State> {
 
           .omh-legend h3 {
               font-size: 10px;
-              color: #212121;
+              color: #323333;
               margin: 0px;
           }
 
           .base-map-legend * {
-              color: #212121 !important;
+              color: #323333 !important;
           }
 
           .omh-legend .block {

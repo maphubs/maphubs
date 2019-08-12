@@ -2,11 +2,9 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { Row } from 'antd'
+import { Row, Carousel } from 'antd'
 import CardCarousel from '../components/CardCarousel/CardCarousel'
 import StorySummary from '../components/Story/StorySummary'
-import Carousel from 'nuka-carousel'
-import SliderDecorators from '../components/Home/SliderDecorators'
 import PublicOnboardingLinks from '../components/Home/PublicOnboardingLinks'
 import OnboardingLinks from '../components/Home/OnboardingLinks'
 import MapHubsProLinks from '../components/Home/MapHubsProLinks'
@@ -207,38 +205,88 @@ export default class HomePro extends MapHubsComponent<Props, State> {
   renderSlides = (config: Object, key: string) => {
     const style = config.style || {}
     const slides = (
-      <Row key={key} style={{marginTop: 0, marginBottom: 0, height: '70vh', maxHeight: '600px', ...style}}>
-        <Carousel autoplay slidesToShow={1} autoplayInterval={5000} wrapAround
-          renderCenterLeftControls={({ previousSlide, currentSlide, wrapAround }) => (
-            <SliderDecorators.LeftArrow previousSlide={previousSlide} currentSlide={currentSlide} wrapAround={wrapAround} />
-          )}
-          renderCenterRightControls={({ nextSlide, currentSlide, wrapAround }) => (
-            <SliderDecorators.RightArrow nextSlide={nextSlide} currentSlide={currentSlide} wrapAround={wrapAround} />
-          )}
-          renderBottomCenterControls={({ currentSlide }) => (<div />)}
-          renderBottomRightControls={({ currentSlide, slidesToScroll, slideCount, goToSlide }) => (
-            <SliderDecorators.Dots currentSlide={currentSlide} slidesToScroll={slidesToScroll} slideCount={slideCount} goToSlide={goToSlide} />
-          )}
-        >
-          {config.slides.map((slide, i) => {
-            return (
-              <div key={i} className='homepage-slide responsive-img valign-wrapper'
-                style={{
-                  height: '100%',
-                  backgroundSize: 'cover',
-                  backgroundImage: 'url(' + slide.img + ')'
-                }}>
-                <div className='slide-text'>
-                  <h2 className='no-margin'>{this.t(slide.title)}</h2>
-                  <h3 className='no-margin'>{this.t(slide.text)}</h3>
+      <Row key={key} style={{...style}}>
+        {typeof window !== 'undefined' &&
+          <Carousel autoplay>
+            {config.slides.map((slide, i) => {
+              return (
+                <div key={i}>
+                  <div key={i} className='valign-wrapper'
+                    style={{
+                      height: '500px',
+                      backgroundSize: 'cover',
+                      backgroundImage: 'url(' + slide.img + ')'
+                    }}>
+                    <div className='slide-text'>
+                      <h2 className='no-margin'>{this.t(slide.title)}</h2>
+                      <h3 className='no-margin'>{this.t(slide.text)}</h3>
+                    </div>
+                    <div className='slide-button'>
+                      <a className='btn waves-effect z-depth-3' href={slide.link}>{this.t(slide.buttonText)}</a>
+                    </div>
+                  </div>
                 </div>
-                <div className='slide-button center'>
-                  <a className='btn waves-effect z-depth-3' style={{borderRadius: '25px'}} href={slide.link}>{this.t(slide.buttonText)}</a>
-                </div>
-              </div>
-            )
-          })}
-        </Carousel>
+              )
+            })}
+          </Carousel>
+        }
+        <style jsx global>{`
+          .ant-carousel .slick-slide {
+            text-align: center;
+            height: 500px;
+            width: 100vw;
+            line-height: 160px;
+            overflow: hidden;
+          }
+          .slide-text {
+            display: block;
+            margin-left: 5%;
+            max-width: 80%;
+            padding: 0;
+            bottom: auto;
+            width: auto;
+            background: none;
+          }
+
+          .slide-text h2 {
+            background: rgba(0,0,0,0.55);
+              font-size: 61px;
+              padding: 10px 5px 5px;
+              color: rgba(255,255,255,0.85);
+              border: none;
+              font-weight: 400;
+              text-transform: uppercase;
+          }
+
+          .slide-text h3 {
+            display: inline-block;
+            float: left;
+            clear: both;
+            background: rgba(0,0,0,0.55);
+            font-size: 31px;
+            padding: 5px;
+            overflow: hidden;
+            color: rgba(255,255,255,0.85);
+            border: none;
+            text-transform: uppercase;
+            font-weight: 300;
+          }
+
+          .slide-button {
+            position: absolute;
+            margin-left: calc(50vw - 66px);
+            bottom: -5px;
+          }
+          @media only screen and (max-width : 480px) {
+            .slide-text h2 {
+              font-size: 40px;
+            }
+
+            .slide-text h3 {
+              font-size: 20px;
+            }
+          }
+        `}</style>
       </Row>
     )
     return slides
@@ -387,7 +435,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
         <Row key={key} style={style}>
           <div className='divider' />
           <div className='row'>
-            <h5 className='no-margin center-align' style={{lineHeight: '50px', color: '#212121'}}>
+            <h5 className='no-margin center-align' style={{lineHeight: '50px', color: '#323333'}}>
               {title}
             </h5>
             {stories.map(story => {
@@ -439,7 +487,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     if (!label) label = config.label.en
     const button = (
       <Row key={key} className='valign-wrapper'
-        style={{padding: '25px', ...style}}>
+        style={{padding: '25px', textAlign: 'center', ...style}}>
         <a
           className='waves-effect waves-light btn valign'
           style={{margin: 'auto'}}
@@ -469,7 +517,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
             <main style={{margin: 0, height: 'calc(100% - 50px)'}}>
 
               {this.props.pageConfig.components.map((component, i) => {
-                const key = `homepro-component-${i}`
+                const key = `homepro-component-${component.id || i}`
                 if (!component.disabled) {
                   if (component.type === 'map') {
                     return _this.renderHomePageMap(component, key)

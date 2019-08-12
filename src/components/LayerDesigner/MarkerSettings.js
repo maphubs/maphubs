@@ -30,12 +30,12 @@ export default class MarkerSettings extends React.Component<Props, State> {
       height: 32,
       shapeFill: 'red',
       shapeFillOpacity: 1,
-      shapeStroke: '#212121',
+      shapeStroke: '#323333',
       shapeStrokeWidth: 1,
       icon: 'none',
       iconFill: 'white',
       iconFillOpacity: 1,
-      iconStroke: '#212121',
+      iconStroke: '#323333',
       iconStrokeWidth: 0,
       inverted: false
     }
@@ -93,7 +93,7 @@ export default class MarkerSettings extends React.Component<Props, State> {
     } else {
       options.shapeFill = this.props.color
       options.iconFill = 'white'
-      options.shapeStroke = '#212121'
+      options.shapeStroke = '#323333'
       options.shapeFillOpacity = 1
       options.shapeStrokeWidth = 1
     }

@@ -55,20 +55,18 @@ export default class LocaleChooser extends MapHubsComponent<Props, State> {
         {langs.map(l => {
           return (
             <Menu.Item key={`locale-${l.value}`}>
-              <a href='#!' id={l.value} onClick={this.onChange} className='nav-hover-menu-item'>{`${l.name} (${l.label})`}</a>
+              <a href='#!' id={l.value} onClick={this.onChange}>{`${l.name} (${l.label})`}</a>
             </Menu.Item>
           )
         })}
       </Menu>
     )
     return (
-      <li className='nav-link-wrapper' style={{height: '50px', overflow: 'hidden'}}>
-        <Dropdown overlay={menu} trigger={['click']}>
-          <a className='nav-link-item' href='#'>
-            {label} <Icon type='down' />
-          </a>
-        </Dropdown>
-      </li>
+      <Dropdown overlay={menu} trigger={['click']}>
+        <a className='nav-link-item' href='#'>
+          {label} <Icon type='down' />
+        </a>
+      </Dropdown>
     )
   }
 }

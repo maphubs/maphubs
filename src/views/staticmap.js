@@ -269,7 +269,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
                 <span style={{marginRight: '10px'}}>{t('Inset')}</span>
                 <Switch defaultChecked={userShowInset} onChange={setShowInset} size='small' />
               </Col>
-              <a onClick={hideSettings} style={{color: '#212121', textDecoration: 'underline', position: 'absolute', right: '10px'}}>{t('hide')}</a>
+              <a onClick={hideSettings} style={{color: '#323333', textDecoration: 'underline', position: 'absolute', right: '10px'}}>{t('hide')}</a>
             </Row>
           }
           <Row>

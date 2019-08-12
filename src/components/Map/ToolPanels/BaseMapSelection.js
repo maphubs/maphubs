@@ -31,7 +31,7 @@ export default class BaseMapSelection extends React.Component<Props, void> {
                 return (
                   <div
                     style={{
-                      border: selected ? '1px solid #212121' : '1px solid #d9d9d9',
+                      border: selected ? '1px solid #323333' : '1px solid #d9d9d9',
                       backgroundColor: selected ? '#fff' : '#eee',
                       marginBottom: '5px',
                       padding: '5px',

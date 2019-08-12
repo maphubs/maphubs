@@ -2,7 +2,7 @@
 import React from 'react'
 import MapHubsComponent from '../MapHubsComponent'
 import UserStore from '../../stores/UserStore'
-// import UserActions from '../actions/UserActions'
+import { Menu, Dropdown, Divider, Button } from 'antd'
 import Gravatar from '../user/Gravatar'
 import UserIcon from '../user/UserIcon'
 import _isequal from 'lodash.isequal'
@@ -94,68 +94,97 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
       const {admin, picture, email} = user
 
       const userIcon = picture ? <UserIcon {...user} /> : <Gravatar email={email} />
-
       const displayName = (this.state.user && this.state.user.display_name) ? this.state.user.display_name : ''
-      if (sidenav) {
+
+      const menu = (
+        <Menu>
+          <Menu.Item>
+            <a href={`/user/${displayName}/maps`}>{t('My Maps')}</a>
+          </Menu.Item>
+          <Menu.Item>
+            <a href={`/user/${displayName}/groups`}>{t('My Groups')}</a>
+          </Menu.Item>
+          <Menu.Item>
+            <a href='/user/profile'>{t('Settings')}</a>
+          </Menu.Item>
+          {admin &&
+            <>
+              <Divider style={{margin: '10px 0px'}} />
+              <Menu.Item>
+                <a href='/admin/manage'>{t('Manage Users')}</a>
+              </Menu.Item>
+            </>
+          }
+          <Divider style={{margin: '10px 0px'}} />
+          <Menu.Item>
+            <a href={'/logout'}>{t('Logout')}</a>
+          </Menu.Item>
+        </Menu>
+      )
+
+      userMenu = (
+        <div style={{backgroundColor: 'inherit'}}>
+          <Dropdown overlay={menu} trigger={['click']}>
+            <div ref={(el) => { this.userButton = el }} className='chip user-dropdown-button omh-btn dropdown-trigger' style={{marginRight: '5px', marginLeft: '5px', marginTop: '9px', backgroundColor: '#FFF'}} data-target={this.props.id}>
+              {userIcon}
+              {displayName}
+              <i className='material-icons right' style={{marginLeft: 0, color: '#323333', height: '30px', lineHeight: '30px', width: '15px'}}>arrow_drop_down</i>
+            </div>
+          </Dropdown>
+        </div>
+      )
+    } else {
+      if (!MAPHUBS_CONFIG.mapHubsPro) {
         userMenu = (
-          <div>
-            <ul id={this.props.id} style={{top: '100px'}}>
-              <li className='divider' />
-              <li className='nav-link-wrapper'><a href={`/user/${displayName}/maps`}>{t('My Maps')}</a></li>
-              <li className='nav-link-wrapper'><a href={`/user/${displayName}/groups`}>{t('My Groups')}</a></li>
-              <li className='nav-link-wrapper'><a href='/user/profile'>{t('Settings')}</a></li>
-              {admin &&
-                <li className='nav-link-wrapper'><a href='/admin/manage'>{t('Manage Users')}</a></li>
-              }
-              <li className='nav-link-wrapper'><a href={'/logout'}>{t('Logout')}</a></li>
-            </ul>
+          <div className='login-with-signup'>
+            <a className='login-with-signup-link' style={{float: !this.props.sidenav ? 'left' : 'inherit'}} href='#' onClick={this.loginClick}>{t('Login')}</a>
+            <Button type='primary' style={{marginLeft: '5px', marginRight: '5px', color: '#FFF'}} href='/signup'>{t('Sign Up')}</Button>
           </div>
         )
       } else {
         userMenu = (
-          <li className='nav-link-wrapper' style={{backgroundColor: 'inherit'}}>
-            <div ref={(el) => { this.userButton = el }} className='chip user-dropdown-button omh-btn dropdown-trigger' style={{marginRight: '5px', marginLeft: '5px', marginTop: '9px', backgroundColor: '#FFF'}} data-target={this.props.id}>
-              {userIcon}
-              {displayName}
-              <i className='material-icons right' style={{marginLeft: 0, color: '#212121', height: '30px', lineHeight: '30px', width: '15px'}}>arrow_drop_down</i>
-            </div>
-            <ul id={this.props.id} className='dropdown-content' style={{top: '100px'}}>
-              <li className='usermenu-wrapper'><a href={`/user/${displayName}/maps`}>{t('My Maps')}</a></li>
-              <li className='divider' />
-              <li className='usermenu-wrapper'><a href={`/user/${displayName}/groups`}>{t('My Groups')}</a></li>
-              <li className='divider' />
-              <li className='usermenu-wrapper'><a href='/user/profile'>{t('Settings')}</a></li>
-              {admin &&
-                <li className='usermenu-wrapper'><a href='/admin/manage'>{t('Manage Users')}</a></li>
-              }
-              <li className='divider' />
-              <li className='usermenu-wrapper'><a href={'/logout'}>{t('Logout')}</a></li>
-            </ul>
-
-          </li>
-        )
-      }
-    } else {
-      let style = {}
-      if (!this.props.sidenav) {
-        style = {marginLeft: '1px', marginRight: '5px'}
-      }
-      if (!MAPHUBS_CONFIG.mapHubsPro) {
-        userMenu = (
-          <li className='nav-link-wrapper login-with-signup'>
-            <a className='nav-link-item login-with-signup-link' style={{float: !this.props.sidenav ? 'left' : 'inherit'}} href='#' onClick={this.loginClick}>{t('Login')}</a>
-            <a className='btn' style={style} href='/signup'>{t('Sign Up')}</a>
-          </li>
-        )
-      } else {
-        userMenu = (
-          <li className='nav-link-wrapper'>
-            <a className='nav-link-item' style={{float: !this.props.sidenav ? 'left' : 'inherit'}} href='#' onClick={this.loginClick}>{t('Login')}</a>
-          </li>
+          <a style={{float: !this.props.sidenav ? 'left' : 'inherit'}} href='#' onClick={this.loginClick}>{t('Login')}</a>
         )
       }
     }
 
-    return userMenu
+    return (
+      <>
+        <style jsx global>{`
+        .usermenu-wrapper:hover {
+          color: $navbar-hover-font-color !important;
+          background-color: $primary-color !important;
+
+          -o-transition:.5s;
+          -ms-transition:.5s;
+          -moz-transition:.5s;
+          -webkit-transition:.5s;
+          transition:.5s;
+        }
+
+        .usermenu-wrapper a {
+          color: #323333;
+        }
+
+        .usermenu-wrapper:hover a {
+          color: $navbar-hover-font-color !important;
+          background-color: transparent !important;
+        }
+
+        .login-with-signup:hover {
+          background-color: transparent !important;
+        }
+
+        .login-with-signup-link {
+          cursor: pointer;
+        }
+
+        .login-with-signup-link:hover {
+          color: $header-font-color !important;
+        }
+      `}</style>
+        {userMenu}
+      </>
+    )
   }
 }

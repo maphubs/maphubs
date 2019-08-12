@@ -1,23 +1,19 @@
 // @flow
 import React from 'react'
-import { notification } from 'antd'
-import UserMenu from './Header/UserMenu'
+import { Layout, Menu, Drawer } from 'antd'
 import MapHubsComponent from './MapHubsComponent'
-import UserStore from '../stores/UserStore'
-// var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('header');
-import LocaleChooser from './LocaleChooser'
-import _isequal from 'lodash.isequal'
-import type {LocaleStoreState} from '../stores/LocaleStore'
-import HelpButton from './Header/HelpButton'
-import SearchButton from './Header/SearchButton'
 import ExploreDropdown from './Header/ExploreDropdown'
 import AddDropdown from './Header/AddDropdown'
+import HelpButton from './Header/HelpButton'
+import SearchButton from './Header/SearchButton'
+import LocaleChooser from './LocaleChooser'
+import UserMenu from './Header/UserMenu'
+import type {LocaleStoreState} from '../stores/LocaleStore'
+import MenuIcon from '@material-ui/icons/Menu'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
-if (process.env.NODE_ENV !== 'production') {
-  // require('unstated-debug')
-}
+const { Header } = Layout
 
 type Link = {
   href: string,
@@ -35,14 +31,18 @@ type Props = {
   showExplore: boolean,
   showOSM: boolean,
   showAdd: boolean,
-  customLinks: Array<Link>
+  customLinks: Array<Link>,
+  theme?: {
+    backgroundColor?: string,
+    fontColor?: string
+  }
 }
 
-type State = LocaleStoreState;
+type State = {
+  visible: boolean
+} & LocaleStoreState
 
-export default class Header extends MapHubsComponent<Props, State> {
-  sidenav: any
-
+export default class MapHubsHeader extends MapHubsComponent<Props, State> {
   static defaultProps = {
     logoLinkUrl: '/',
     showSearch: true,
@@ -54,191 +54,155 @@ export default class Header extends MapHubsComponent<Props, State> {
     customLinks: []
   }
 
-  constructor (props: Props) {
-    super(props)
-    this.stores.push(UserStore)
+  showDrawer = () => {
+    this.setState({
+      visible: true
+    })
   }
 
-  componentDidMount () {
+  onClose = () => {
+    this.setState({
+      visible: false
+    })
+  }
+
+  renderMenu = (className: string, mode: string) => {
     const {t} = this
-    M.Sidenav.init(this.sidenav, {})
+    const {customHelpLink, showHelp, activePage, customLinks, showMakeAMap, showSearch, customSearchLink, showExplore, showAdd} = this.props
 
-    if (this.detectIE()) {
-      notification.error({
-        message: t('Unsupported Browser'),
-        description: t('Unable to support Internet Explorer. Please use Firefox or Chrome.'),
-        duration: 0
-      })
-    }
-  }
-
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
-    // only update if something changes
-    if (!_isequal(this.props, nextProps)) {
-      return true
-    }
-    if (this.state.locale !== nextState.locale) {
-      return true
-    }
-    return false
-  }
-
-  /**
-   * detect IE
-   * returns version of IE or false, if browser is not Internet Explorer
-   */
-  detectIE = () => {
-    if (window === undefined) { return false }
-
-    // only show the use this warning once per day
-    if (this.getCookie('iecheck')) {
-      return false
-    } else {
-      this.setCookie('iecheck', true, 1)
-    }
-
-    const ua = window.navigator.userAgent
-
-    // Test values; Uncomment to check result …
-
-    // IE 10
-    // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
-
-    // IE 11
-    // ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
-
-    // IE 12 / Spartan
-    // ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
-
-    // Edge (IE 12+)
-    // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
-
-    const msie = ua.indexOf('MSIE ')
-    if (msie > 0) {
-      // IE 10 or older => return version number
-      return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10)
-    }
-
-    const trident = ua.indexOf('Trident/')
-    if (trident > 0) {
-      // IE 11 => return version number
-      const rv = ua.indexOf('rv:')
-      return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10)
-    }
-
-    /*
-    var edge = ua.indexOf('Edge/');
-    if (edge > 0) {
-      // Edge (IE 12+) => return version number
-      return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
-    }
-  */
-    // other browser
-    return false
-  }
-
-  setCookie = (cname: string, cvalue: any, exdays: number) => {
-    const d = new Date()
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
-    const expires = 'expires=' + d.toUTCString()
-    document.cookie = cname + '=' + cvalue + '; ' + expires
-  }
-
-  getCookie = (cname: string) => {
-    const name = cname + '='
-    const ca = document.cookie.split(';')
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i]
-      while (c.charAt(0) === ' ') c = c.substring(1)
-      if (c.indexOf(name) === 0) return c.substring(name.length, c.length)
-    }
-    return ''
+    return (
+      <Menu
+        mode={mode}
+        className={`${className} nav-menu`}
+        defaultSelectedKeys={[activePage]}
+        style={{
+          height: '50px',
+          lineHeight: '50px',
+          textAlign: mode === 'vertical' ? 'left' : 'right'
+        }}
+      >
+        {showMakeAMap &&
+          <Menu.Item key='makeamap' style={{
+            height: '50px'
+          }}>
+            <a href='/map/new'>{t('Make a Map')}</a>
+          </Menu.Item>
+        }
+        {showExplore &&
+          <Menu.Item key='explore' style={{height: '50px'}}>
+            <ExploreDropdown t={t} />
+          </Menu.Item>
+        }
+        {
+          customLinks.map((link, i) => {
+            return (
+              <Menu.Item key={`nav-custom-link-${i}`} style={{padding: 0, height: '50px'}}>
+                <a href={link.href}>{this.t(link.label)}</a>
+              </Menu.Item>
+            )
+          })
+        }
+        <Menu.Item key='locale' style={{padding: '0 20px', height: '50px'}}>
+          <LocaleChooser />
+        </Menu.Item>
+        {showAdd &&
+          <Menu.Item key='add' style={{padding: mode === 'vertical' ? '0 20px' : '0 5px', height: '50px'}}>
+            <AddDropdown t={t} sidenav={mode === 'vertical'} />
+          </Menu.Item>
+        }
+        {showSearch &&
+          <Menu.Item key='search' style={{padding: mode === 'vertical' ? '0 20px' : '0 5px', height: '50px'}}>
+            {mode === 'vertical' &&
+              <a href={customSearchLink || '/search'}>{t('Search')}</a>
+            }
+            {mode !== 'vertical' &&
+              <SearchButton t={t} searchLink={customSearchLink || '/search'} />
+            }
+          </Menu.Item>
+        }
+        {showHelp &&
+          <Menu.Item key='help' style={{padding: mode === 'vertical' ? '0 20px' : '0 5px', height: '50px'}}>
+            {mode === 'vertical' &&
+              <a href={customHelpLink || 'https://help.maphubs.com'}>{t('Help/Support')}</a>
+            }
+            {mode !== 'vertical' &&
+              <HelpButton t={t} helpLink={customHelpLink || 'https://help.maphubs.com'} />
+            }
+          </Menu.Item>
+        }
+        <Menu.Item key='user'>
+          <UserMenu id='user-menu-header' sidenav={mode === 'vertical'} />
+        </Menu.Item>
+      </Menu>
+    )
   }
 
   render () {
     const {t} = this
-    const defaultLinkClasses = 'nav-link-item'
-    const activeLinkClasses = 'nav-link-item active'
+    const { logoLinkUrl, theme } = this.props
+    const {backgroundColor, fontColor} = theme || {}
 
-    const {customHelpLink, showHelp, activePage, logoLinkUrl, customLinks, showMakeAMap, showSearch, customSearchLink, showExplore, showAdd} = this.props
-
-    let mapClasses = defaultLinkClasses
-    if (activePage && activePage === 'map') {
-      mapClasses = activeLinkClasses
-    }
-
+    const NavMenu = this.renderMenu('desktop-menu', 'horizontal', backgroundColor, fontColor)
+    const MobileMenu = this.renderMenu('mobile-menu', 'vertical', backgroundColor, fontColor)
     return (
-      <header>
+      <Header
+        style={{
+          padding: 0,
+          height: '50px'
+        }}>
+        <div className='logo' style={{float: 'left'}}>
+          <a className='valign-wrapper' href={logoLinkUrl}>
+            <img className='valign' width={MAPHUBS_CONFIG.logoWidth} height={MAPHUBS_CONFIG.logoHeight} style={{margin: '5px'}} src={MAPHUBS_CONFIG.logo} alt={MAPHUBS_CONFIG.productName + ' ' + t('Logo')} />
+            <small id='beta-text' style={{position: 'absolute', top: '12px', left: MAPHUBS_CONFIG.logoWidth + 5 + 'px', fontSize: '12px'}}>{MAPHUBS_CONFIG.betaText}</small>
+          </a>
+        </div>
+        <style jsx global>{`
+          .ant-menu-horizontal > .ant-menu-item {
+            vertical-align: top;
+          }
 
-        <nav style={{boxShadow: '0 0 1px rgba(0,0,0,0.7)'}}>
-          <div className='nav-wrapper z-depth-0'>
-            <a className='brand-logo valign-wrapper' href={logoLinkUrl}>
-              <img className='valign' width={MAPHUBS_CONFIG.logoWidth} height={MAPHUBS_CONFIG.logoHeight} style={{margin: '5px'}} src={MAPHUBS_CONFIG.logo} alt={MAPHUBS_CONFIG.productName + ' ' + t('Logo')} />
-              <small id='beta-text' style={{position: 'absolute', top: '12px', left: MAPHUBS_CONFIG.logoWidth + 5 + 'px', fontSize: '12px'}}>{MAPHUBS_CONFIG.betaText}</small>
-            </a>
+          .ant-menu-horizontal > .ant-menu-item:hover {
+            border-bottom: none;
+          }
 
-            <a className='button-collapse omh-accent-text sidenav-trigger' data-target='side-nav-menu' href='#'><i className='material-icons'>menu</i></a>
-            <ul className='right hide-on-med-and-down'>
-              {showMakeAMap &&
-                <li className='nav-link-wrapper'>
-                  <a className={mapClasses} href='/map/new'>{t('Make a Map')}</a>
-                </li>
-              }
-              {showExplore &&
-                <ExploreDropdown t={t} />
-              }
-              {
-                this.props.customLinks.map((link, i) => {
-                  return (
-                    <li key={`nav-custom-link-${i}`} className='nav-link-wrapper'>
-                      <a className={mapClasses} href={link.href}>{this.t(link.label)}</a>
-                    </li>
-                  )
-                })
-              }
-              <LocaleChooser />
-              {showAdd &&
-                <AddDropdown t={t} />
-              }
-              {showSearch &&
-                <SearchButton t={t} searchLink={customSearchLink || '/search'} />
-              }
-              {showHelp &&
-                <HelpButton t={t} helpLink={customHelpLink || 'https://help.maphubs.com'} />
-              }
-              <UserMenu id='user-menu-header' />
-            </ul>
-            <ul ref={(el) => { this.sidenav = el }} className='sidenav' id='side-nav-menu'>
-              {showExplore &&
-                <ExploreDropdown sidenav id='explore-sidnav' t={t} />
-              }
-              {showMakeAMap &&
-                <li className='nav-link-wrapper'>
-                  <a className={mapClasses} href='/map/new'>{t('Make a Map')}</a>
-                </li>
-              }
-              {
-                customLinks.map((link, i) => (
-                  <li key={`nav-custom-link-${i}`} className='nav-link-wrapper'>
-                    <a className={mapClasses} href={link.href}>{this.t(link.label)}</a>
-                  </li>
-                ))
-              }
-              {showSearch &&
-                <li className='nav-link-wrapper'>
-                  <a className={mapClasses} href={customSearchLink || '/search'}>{t('Search')}</a>
-                </li>
-              }
-              {showHelp &&
-                <li className='nav-link-wrapper'>
-                  <a className={mapClasses} href={customHelpLink || 'https://help.maphubs.com'}>{t('Help/Support')}</a>
-                </li>
-              }
-              <UserMenu id='user-menu-sidenav' sidenav />
-            </ul>
+          .ant-menu-horizontal > .ant-menu-item-selected {
+            border-bottom: none;
+          }
+
+          .hamburger-menu{
+            display: none !important;
+            font-size: 32px;
+            color: ${fontColor || 'inherit'};
+            position: absolute;
+            top: 10px;
+            right: 10px;
+          }
+
+
+          @media(max-width: 767px){
+            .hamburger-menu{
+              display: inline-block !important;
+            }
+            .desktop-menu{
+              display: none;
+            }
+          }
+          
+        `}</style>
+        {NavMenu}
+        <MenuIcon className='hamburger-menu' type='primary' onClick={this.showDrawer} />
+        <Drawer
+          bodyStyle={{padding: 0, height: '100%'}}
+          placement='right'
+          closable={false}
+          onClose={this.onClose}
+          visible={this.state.visible}
+        >
+          <div className='nav-menu' style={{height: '100%'}}>
+            {MobileMenu}
           </div>
-        </nav>
-      </header>
+        </Drawer>
+      </Header>
     )
   }
 }

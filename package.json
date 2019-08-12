@@ -151,7 +151,6 @@
     "next": "^9.0.3",
     "next-transpile-modules": "^2.3.1",
     "node-sass": "^4.12.0",
-    "nuka-carousel": "^4.5.8",
     "null-loader": "^3.0.0",
     "numeral": "^2.0.6",
     "ogr2ogr": "^1.2.1",

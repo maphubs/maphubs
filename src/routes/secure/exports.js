@@ -120,7 +120,7 @@ module.exports = function (app: any) {
           geoJSON.features.map((feature) => {
             if (feature.properties) {
               if (layer.data_type === 'polygon') {
-                feature.properties['stroke'] = '#212121'
+                feature.properties['stroke'] = '#323333'
                 feature.properties['stroke-width'] = 2
                 feature.properties['fill'] = '#FF0000'
                 feature.properties['fill-opacity'] = 0.5
@@ -177,7 +177,7 @@ module.exports = function (app: any) {
             geoJSON.features.map((feature) => {
               if (feature.properties) {
                 if (layer.data_type === 'polygon') {
-                  feature.properties['stroke'] = '#212121'
+                  feature.properties['stroke'] = '#323333'
                   feature.properties['stroke-width'] = 2
                   feature.properties['fill'] = '#FF0000'
                   feature.properties['fill-opacity'] = 0.5

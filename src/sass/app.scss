@@ -45,12 +45,25 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   line-height: 50px;
 }
 
-.nav-dropdown-link-wrapper ul {
-  background-color: $nav-background-color;
+.nav-menu, .ant-layout-header {
+  background: $nav-background-color !important;
+  color: $navbar-font-color !important;
 }
 
-.nav-dropdown-link-wrapper i {
-  color: $navbar-font-color;
+.ant-menu-item  {
+  background: $nav-background-color !important;
+}
+
+.ant-menu-item a {
+  color: $navbar-font-color !important;
+}
+
+.ant-menu-item:hover {
+  color: $navbar-hover-font-color !important;
+}
+
+.hamburger-menu {
+  color: $navbar-font-color !important;
 }
 
 .collapsible-body {
@@ -58,7 +71,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 .home-section {
-  color: #212121;
+  color: #323333;
 }
 
 .home-section:hover {
@@ -68,34 +81,6 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   -moz-transition:.5s;
   -webkit-transition:.5s;
   transition:.5s;
-}
-
-.nav-hover-menu-item {
-  color: $navbar-font-color !important;
-  background-color: $nav-background-color !important;
-}
-
-.nav-hover-menu-item:hover {
-  color: $nav-background-color !important;
-  background-color: $navbar-font-color !important;
-}
-
-.nav-link-wrapper a.active {
-  color:$primary-color;
-}
-
-.nav-dropdown-link-wrapper {
-  color:$primary-color !important;
-  background-color: transparent !important;
-}
-
-.nav-dropdown-button i {
-  color:$navbar-font-color !important;
-}
-
-.nav-dropdown-button:hover {
-  color:$navbar-hover-font-color !important;
-  background-color: $primary-color !important;
 }
 
 .category-dropdown-button {
@@ -345,32 +330,6 @@ textarea.materialize-textarea+label:after {
   right: 11px;
   }
 
-}
-
-@media only screen and (max-width : 600px) {
-
-  .hub-banner {
-    height: 350px;
-  }
-  .hub-banner-subpage {
-    height: 350px;
-  }
- }
-
-@media only screen and (max-width : 480px) {
-  .slide-text h2 {
-    font-size: 40px;
-  }
-
-  .slide-text h3 {
-    font-size: 20px;
-  }
-
-  .slide-button {
-    bottom: 23px;
-    left: 5%;
-    width: auto;
-  }
 }
 
 .custom-scroll-bar::-webkit-scrollbar-track

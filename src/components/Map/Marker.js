@@ -32,7 +32,7 @@ export default class Marker extends React.PureComponent<Props> {
     icon: 'none',
     iconFill: 'white',
     iconFillOpacity: 1,
-    iconStroke: '#212121',
+    iconStroke: '#323333',
     iconStrokeWidth: 0
   }
 

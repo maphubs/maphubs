@@ -157,7 +157,7 @@ export default class SearchBar extends React.Component {
       <div className='white no-margin'
         style={{
           borderRadius: '25px',
-          border: '1px solid #212121',
+          border: '1px solid #323333',
           boxSizing: 'content-box',
           height: '2.2pc',
           lineHeight: '2.2pc'
@@ -173,7 +173,7 @@ export default class SearchBar extends React.Component {
               style={{
                 margin: 0,
                 border: 'none',
-                color: '#212121',
+                color: '#323333',
                 height: '2.2pc',
                 lineHeight: '2.2pc',
                 fontSize: '1rem',

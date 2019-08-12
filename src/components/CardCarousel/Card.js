@@ -134,7 +134,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
         {this.props.private &&
           <div style={{position: 'absolute', top: '5px', right: '5px'}}>
             <Tooltip title={t('Private')} placement='bottom'>
-              <Lock style={{color: '#212121'}} />
+              <Lock style={{color: '#323333'}} />
             </Tooltip>
           </div>
         }

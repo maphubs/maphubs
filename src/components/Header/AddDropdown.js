@@ -4,12 +4,13 @@ import { Menu, Dropdown } from 'antd'
 import AddCircle from '@material-ui/icons/AddCircle'
 
 type Props = {
-  t: Function
+  t: Function,
+  sidenav?: boolean
 }
 
 export default class AddDropdown extends React.PureComponent<Props, void> {
   render () {
-    const {t} = this.props
+    const {t, sidenav} = this.props
 
     const menu = (
       <Menu>
@@ -34,9 +35,12 @@ export default class AddDropdown extends React.PureComponent<Props, void> {
       </Menu>
     )
     return (
-      <li className='nav-link-wrapper' style={{height: '50px', overflow: 'hidden', width: '30px'}} >
-        <Dropdown overlay={menu} trigger={['click']}>
-          <a className='nav-link-item' style={{padding: '0px', marginTop: '6px', textAlign: 'center'}} href='#'>
+      <Dropdown overlay={menu} trigger={['click']}>
+        <a style={{paddingTop: '6px', height: '50px', textAlign: sidenav ? 'left' : 'center'}} href='#'>
+          {sidenav &&
+            <a href='#!'>{t('Add')}</a>
+          }
+          {!sidenav &&
             <AddCircle style={{
               fill: 'currentColor',
               width: '1em',
@@ -45,9 +49,9 @@ export default class AddDropdown extends React.PureComponent<Props, void> {
               fontSize: '24px'
             }}
             />
-          </a>
-        </Dropdown>
-      </li>
+          }
+        </a>
+      </Dropdown>
     )
   }
 }

@@ -9,22 +9,20 @@ type Props = {
 }
 
 export default ({t, searchLink}: Props) => (
-  <li className='nav-link-wrapper' style={{height: '50px', overflow: 'hidden', width: '30px'}}>
-    <Tooltip
-      title={t('Search')}
-      placement='bottom'
-    >
-      <a className='nav-link-item' style={{padding: 0, marginTop: '6px', textAlign: 'center'}} href={searchLink}>
-        <Search
-          style={{
-            fill: 'currentColor',
-            width: '1em',
-            height: '1em',
-            display: 'inline-block',
-            fontSize: '24px'
-          }}
-        />
-      </a>
-    </Tooltip>
-  </li>
+  <Tooltip
+    title={t('Search')}
+    placement='bottom'
+  >
+    <a style={{paddingTop: '6px', height: '50px', textAlign: 'center'}} href={searchLink}>
+      <Search
+        style={{
+          fill: 'currentColor',
+          width: '1em',
+          height: '1em',
+          display: 'inline-block',
+          fontSize: '24px'
+        }}
+      />
+    </a>
+  </Tooltip>
 )
