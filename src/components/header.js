@@ -96,7 +96,7 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
         {
           customLinks.map((link, i) => {
             return (
-              <Menu.Item key={`nav-custom-link-${i}`} style={{padding: 0, height: '50px'}}>
+              <Menu.Item key={`nav-custom-link-${i}`} style={{height: '50px'}}>
                 <a href={link.href}>{this.t(link.label)}</a>
               </Menu.Item>
             )
@@ -171,7 +171,7 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
 
           .hamburger-menu{
             display: none !important;
-            font-size: 32px;
+            font-size: 32px !important;
             color: ${fontColor || 'inherit'};
             position: absolute;
             top: 10px;

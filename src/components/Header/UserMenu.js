@@ -138,7 +138,9 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
         userMenu = (
           <div className='login-with-signup'>
             <a className='login-with-signup-link' style={{float: !this.props.sidenav ? 'left' : 'inherit'}} href='#' onClick={this.loginClick}>{t('Login')}</a>
-            <Button type='primary' style={{marginLeft: '5px', marginRight: '5px', color: '#FFF'}} href='/signup'>{t('Sign Up')}</Button>
+            <Button type='primary' style={{marginLeft: '5px', marginRight: '5px', color: '#FFF'}} href='/signup'>
+              <span style={{color: '#FFF'}}>{t('Sign Up')}</span>
+            </Button>
           </div>
         )
       } else {
