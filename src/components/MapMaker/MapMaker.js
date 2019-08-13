@@ -378,11 +378,15 @@ class MapMaker extends MapHubsComponent<Props, State> {
               bodyStyle={{ height: 'calc(100vh - 55px)', padding: '0px' }}
               onClose={this.closeLayerDesigner}
               visible
+              mask={false}
             >
               <MapLayerDesigner ref='LayerDesigner'
                 layer={layerDesignerLayer}
                 onStyleChange={this.onLayerStyleChange}
                 onClose={this.closeLayerDesigner} />
+              <Row style={{textAlign: 'center', marginTop: '20px'}}>
+                <Button type='primary' onClick={this.closeLayerDesigner}>{t('Close')}</Button>
+              </Row>
             </Drawer>
           }
           <style jsx global>{`
