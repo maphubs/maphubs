@@ -15,7 +15,7 @@ export default class EditBaseMapBox extends React.PureComponent<Props, void> {
     const lon = hashParts[1]
     const lat = hashParts[2]
     let osmEditLink = 'https://www.openstreetmap.org/edit#map=' + zoom + '/' + lon + '/' + lat
-    let loggingRoadsEditLink = 'http://id.loggingroads.org/#map=' + zoom + '/' + lat + '/' + lon
+    let loggingRoadsEditLink = 'https://edit.osm.earth/#map=' + zoom + '/' + lon + '/' + lat
     if (this.props.gpxLink) {
       osmEditLink += '&gpx=' + this.props.gpxLink
       loggingRoadsEditLink += '&gpx=' + this.props.gpxLink
@@ -46,7 +46,7 @@ export default class EditBaseMapBox extends React.PureComponent<Props, void> {
             <Button type='primary' onClick={this.openOSM}>{t('OpenStreetMap')}</Button>
           </List.Item>
           <List.Item>
-            <Button type='primary' onClick={this.openLoggingRoads}>{t('LoggingRoads')}</Button>
+            <Button type='primary' onClick={this.openLoggingRoads}>{t('OSM Earth')}</Button>
           </List.Item>
         </List>
       </div>
