@@ -89,6 +89,21 @@ export default class StoryCKEditor extends React.Component<Props, void> {
                 height: ${height - 40}px;
                 overflow-y: scroll;
               }
+              .ck-content p {
+                font-size: 20px;
+              }
+              .ck-content ul {
+                list-style: initial;
+                font-size: 20px;
+                 padding-left: 40px;
+              }
+              .ck-content ul li {
+                list-style-type: inherit;
+              }
+              .ck-content a {
+                color: ${MAPHUBS_CONFIG.primaryColor};
+                text-decoration: underline;
+              }
             `}</style>
             <Tabs size='small'
               tabBarStyle={{marginBottom: 0}}

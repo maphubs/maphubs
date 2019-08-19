@@ -133,7 +133,22 @@ export default class Story extends MapHubsComponent<Props, void> {
                 font-family: 'Roboto', sans-serif !important;
                 color: #323333;
               }
-              
+
+              .story-content p {
+                font-size: 20px;
+              }
+              .story-content ul {
+                list-style: initial;
+                font-size: 20px;
+                padding-left: 40px;
+              }
+              .story-content ul li {
+                list-style-type: inherit;
+              }
+              .story-content a {
+                color: ${MAPHUBS_CONFIG.primaryColor};
+                text-decoration: underline;
+              }
               .story-content table {
                 width: 80%;
                 margin: auto auto;
@@ -147,9 +162,22 @@ export default class Story extends MapHubsComponent<Props, void> {
                 border:1px solid #d9d9d9;
                 padding-left:5px;
               }
+
+              .story-content blockquote {
+                overflow: hidden;
+                padding-right: 1.5em;
+                padding-left: 1.5em;
+                margin-left: 0;
+                font-style: italic;
+                border-left: 5px solid #ccc;
+              }
             
               .image {
                 text-align: center;
+              }
+
+              .image img {
+                max-width: 100%;
               }
 
               .image-style-side {

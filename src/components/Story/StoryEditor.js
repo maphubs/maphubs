@@ -210,7 +210,7 @@ class StoryEditor extends React.Component<Props, State> {
             </Row>
             <Row style={{marginBottom: '10px'}}>
               <p><b>Published Date</b></p>
-              <DatePicker onChange={story.publishDateChange} defaultValue={published_at && moment(published_at)} format={'YYYY-MM-DD'} />
+              <DatePicker onChange={story.publishDateChange} defaultValue={(published_at && moment(published_at)) || moment()} format={'YYYY-MM-DD'} />
               <style jsx global>{`
                 .ant-calendar-input {
                   background-color: #fff !important;

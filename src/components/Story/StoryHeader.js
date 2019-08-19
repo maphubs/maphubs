@@ -43,16 +43,17 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
     const { story, short } = this.props
     const { locale, groupLogoFailed } = this.state
     const guessedTz = moment.tz.guess()
-    const updatedTime = moment.tz(story.updated_at, guessedTz).format()
+    const date = story.published_at || story.updated_at
+    const publishedTime = moment.tz(date, guessedTz).format()
 
     let time = ''
     if (short) {
-      const daysOld = moment().diff(moment(story.updated_at), 'days')
+      const daysOld = moment().diff(moment(date), 'days')
       if (daysOld < 7) {
         time = (
           <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}>
             <IntlProvider locale={locale}>
-              <FormattedRelative value={updatedTime} />
+              <FormattedRelative value={publishedTime} />
             </IntlProvider>
           </p>
         )
@@ -60,7 +61,7 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
         time = (
           <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}>
             <IntlProvider locale={locale}>
-              <FormattedDate value={updatedTime} month='short' day='numeric' />
+              <FormattedDate value={publishedTime} month='short' day='numeric' />
             </IntlProvider>&nbsp;
           </p>
         )
@@ -69,10 +70,10 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
       time = (
         <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}>
           <IntlProvider locale={locale}>
-            <FormattedDate value={updatedTime} month='short' day='numeric' />
+            <FormattedDate value={publishedTime} month='short' day='numeric' />
           </IntlProvider>&nbsp;
           (<IntlProvider locale={locale}>
-            <FormattedRelative value={updatedTime} />
+            <FormattedRelative value={publishedTime} />
           </IntlProvider>)
         </p>
       )

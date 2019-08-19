@@ -35,10 +35,6 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
     this.stores.push(UserStore)
   }
 
-  componentDidMount () {
-    this.initDropdown()
-  }
-
   shouldComponentUpdate (nextProps: Props, nextState: State) {
     // only update if something changes
 
@@ -49,30 +45,6 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
       return true
     }
     return false
-  }
-
-  componentDidUpdate (prevProps: Props, prevState: State) {
-    if (this.state.user && !prevState.user) {
-      this.initDropdown()
-    }
-  }
-
-  initDropdown = () => {
-    if (!this.props.sidenav && this.state.user && this.userButton) {
-      try {
-        M.Dropdown.init(this.userButton, {
-          inDuration: 300,
-          outDuration: 225,
-          constrainWidth: false, // Does not change width of dropdown to that of the activator
-          hover: false, // Activate on hover
-          gutter: 0, // Spacing from edge
-          coverTrigger: false, // Displays dropdown below the button
-          alignment: 'right' // Displays dropdown with edge aligned to the left of button
-        })
-      } catch (err) {
-        console.error(err)
-      }
-    }
   }
 
   loginClick = () => {

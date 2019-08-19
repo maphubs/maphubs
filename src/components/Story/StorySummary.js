@@ -44,7 +44,7 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
       <div>
         <StoryHeader story={story} baseUrl={this.props.baseUrl} />
         {story.firstimage &&
-          <div>
+          <div style={{marginBottom: '10px'}}>
             <a href={linkUrl}>
               <div style={{height: '160px', width: '100%', backgroundImage: 'url(' + imageUrl + ')', backgroundSize: 'cover', backgroundPosition: 'center'}} />
             </a>
