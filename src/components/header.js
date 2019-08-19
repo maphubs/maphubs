@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { Layout, Menu, Drawer } from 'antd'
+import { Layout, Menu, Drawer, Icon } from 'antd'
 import MapHubsComponent from './MapHubsComponent'
 import ExploreDropdown from './Header/ExploreDropdown'
 import AddDropdown from './Header/AddDropdown'
@@ -9,7 +9,6 @@ import SearchButton from './Header/SearchButton'
 import LocaleChooser from './LocaleChooser'
 import UserMenu from './Header/UserMenu'
 import type {LocaleStoreState} from '../stores/LocaleStore'
-import MenuIcon from '@material-ui/icons/Menu'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -130,7 +129,7 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
             }
           </Menu.Item>
         }
-        <Menu.Item key='user'>
+        <Menu.Item key='user' style={{height: '50px'}}>
           <UserMenu id='user-menu-header' sidenav={mode === 'vertical'} />
         </Menu.Item>
       </Menu>
@@ -169,19 +168,9 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
             border-bottom: none;
           }
 
-          .hamburger-menu{
-            display: none !important;
-            font-size: 32px !important;
-            color: ${fontColor || 'inherit'};
-            position: absolute;
-            top: 10px;
-            right: 10px;
-          }
-
-
-          @media(max-width: 767px){
+          @media(max-width: 1000px){
             .hamburger-menu{
-              display: inline-block !important;
+              display: block !important;
             }
             .desktop-menu{
               display: none;
@@ -190,7 +179,17 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
           
         `}</style>
         {NavMenu}
-        <MenuIcon className='hamburger-menu' type='primary' onClick={this.showDrawer} />
+
+        <Icon type='menu' className='hamburger-menu'
+          style={{
+            fontSize: '24px',
+            color: fontColor || 'inherit',
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            display: 'none'
+          }}
+          onClick={this.showDrawer} />
         <Drawer
           bodyStyle={{padding: 0, height: '100%'}}
           placement='right'

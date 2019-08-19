@@ -123,7 +123,7 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
       )
 
       userMenu = (
-        <div style={{backgroundColor: 'inherit'}}>
+        <div style={{backgroundColor: 'inherit', height: '50px'}}>
           <Dropdown overlay={menu} trigger={['click']}>
             <div ref={(el) => { this.userButton = el }} className='chip user-dropdown-button omh-btn dropdown-trigger' style={{marginRight: '5px', marginLeft: '5px', marginTop: '9px', backgroundColor: '#FFF'}} data-target={this.props.id}>
               {userIcon}
