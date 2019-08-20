@@ -77,7 +77,8 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
         style={{
           height: '50px',
           lineHeight: '50px',
-          textAlign: mode === 'vertical' ? 'left' : 'right'
+          textAlign: mode === 'vertical' ? 'left' : 'right',
+          borderBottom: 'none'
         }}
       >
         {showMakeAMap &&
@@ -129,8 +130,8 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
             }
           </Menu.Item>
         }
-        <Menu.Item key='user' style={{height: '50px'}}>
-          <UserMenu id='user-menu-header' sidenav={mode === 'vertical'} />
+        <Menu.Item key='user' style={{height: '50px', overflow: 'hidden'}}>
+          <UserMenu sidenav={mode === 'vertical'} />
         </Menu.Item>
       </Menu>
     )
