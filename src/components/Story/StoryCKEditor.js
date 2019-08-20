@@ -95,10 +95,13 @@ export default class StoryCKEditor extends React.Component<Props, void> {
               .ck-content ul {
                 list-style: initial;
                 font-size: 20px;
-                 padding-left: 40px;
+                padding-left: 40px;
               }
               .ck-content ul li {
                 list-style-type: inherit;
+              }
+              .ck-content ol {
+                font-size: 20px;
               }
               .ck-content a {
                 color: ${MAPHUBS_CONFIG.primaryColor};

@@ -145,6 +145,9 @@ export default class Story extends MapHubsComponent<Props, void> {
               .story-content ul li {
                 list-style-type: inherit;
               }
+              .story-content ol {
+                font-size: 20px;
+              }
               .story-content a {
                 color: ${MAPHUBS_CONFIG.primaryColor};
                 text-decoration: underline;
