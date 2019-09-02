@@ -140,7 +140,7 @@
     "lodash.uniq": "4.5.0",
     "lunr": "^2.3.5",
     "mailchimp-api-v3": "^1.13.0",
-    "mapbox-gl": "^1.2.0",
+    "mapbox-gl": "^1.3.0",
     "mapbox-gl-arcgis-tiled-map-service": "^0.4.0",
     "mapbox-gl-dual-scale-control": "0.1.2",
     "materialize-css": "1.0.0",
