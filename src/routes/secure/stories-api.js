@@ -17,7 +17,6 @@ module.exports = function (app: any) {
     if (data && data.owned_by_group_id && data.title && data.body) {
       const story_id = data.story_id
       try {
-        let firstEdit
         let allowedToModify
         const story = await Story.getStoryById(story_id)
         if (story) {
@@ -30,22 +29,15 @@ module.exports = function (app: any) {
             delete data.owned_by_group_id
             allowedToModify = Story.allowedToModify(story_id, req.user_id)
           } else {
-            // user the provided group
+            // use the provided group
             allowedToModify = await Group.allowedToModify(data.owned_by_group_id, req.user_id)
           }
         } else {
           return res.status(404).send({error: 'not found'})
         }
-        if (!story.owned_by_group_id && story.updated_by === req.user_id) {
-          firstEdit = true
-          log.info(`first save for story: ${story_id}`)
-          allowedToModifyGroup = await Group.allowedToModify(data.owned_by_group_id, req.user_id)
-          if (!allowedToModifyGroup) {
-            log.info(`not allowed to modify group: ${data.owned_by_group_id}`)
-          }
-        }
-        if ((firstEdit && allowedToModifyGroup) || await Story.allowedToModify(story_id, req.user_id)) {
+        if (allowedToModify) {
           data.updated_by = req.user_id
+          log.info(`updating story ${story_id}`)
           const result = await Story.updateStory(story_id, data)
           if (result && result === 1) {
             return res.send({
