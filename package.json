@@ -204,7 +204,8 @@
     "webpack": "^4.35.3",
     "webpack-filter-warnings-plugin": "^1.2.1",
     "wgs84-util": "3.0.0",
-    "xcomponent": "6.0.62"
+    "xcomponent": "6.0.62",
+    "snyk": "^1.224.0"
   },
   "optionalDependencies": {
     "fsevents": "^1.2.4",
@@ -228,7 +229,6 @@
     "flow-bin": "^0.106.3",
     "geojson-flow": "^1.0.1",
     "semver": "^6.3.0",
-    "snyk": "^1.224.0",
     "unstated-debug": "^0.3.2",
     "webpack-bundle-analyzer": "^3.4.1"
   },
