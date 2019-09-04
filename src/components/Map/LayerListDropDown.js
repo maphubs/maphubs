@@ -21,6 +21,7 @@ export default class LayerListDropDown extends React.PureComponent<Props, void> 
             <LayerListStatic layers={layers} toggleVisibility={toggleVisibility} t={t} />
           }
           trigger={['click']}
+          getPopupContainer={trigger => trigger.parentNode}
         >
           <span className='ant-dropdown-link' style={{cursor: 'pointer', height: '35px', lineHeight: '35px'}}>
             {t(name)} <Icon type='down' />
