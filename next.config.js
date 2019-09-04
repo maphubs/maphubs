@@ -6,6 +6,7 @@ const lessToJS = require('less-vars-to-js')
 const config = require('./src/local')
 const fs = require('fs')
 const {styles} = require('@ckeditor/ckeditor5-dev-utils')
+const FilterWarningsPlugin = require('webpack-filter-warnings-plugin')
 
 // fix: prevents error when .less files are required by node
 if (typeof require !== 'undefined') {
@@ -96,6 +97,11 @@ module.exports = withCSS(withLess(withTM({
   assetPrefix,
   poweredByHeader: false,
   webpack (config, { dev, isServer }) {
+    config.plugins.push(
+      new FilterWarningsPlugin({
+        exclude: /mini-css-extract-plugin[^]*Conflicting order between:/
+      })
+    )
     if (dev) {
       /// config.devtool = 'cheap-eval-source-map'
       config.devtool = 'cheap-eval-source-map'

@@ -202,6 +202,7 @@
     "urlencode": "^1.1.0",
     "uuid": "^3.3.3",
     "webpack": "^4.35.3",
+    "webpack-filter-warnings-plugin": "^1.2.1",
     "wgs84-util": "3.0.0",
     "xcomponent": "6.0.62"
   },
