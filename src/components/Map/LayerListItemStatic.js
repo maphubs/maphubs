@@ -27,10 +27,10 @@ export default class LayerListItemStatic extends React.Component<Props, void> {
         }}
       >
         <Row>
-          <b className='title grey-text text-darken-4 truncate' style={{fontSize: '12px'}}>{t(name)}</b>
+          <b className='truncate' style={{fontSize: '12px'}}>{t(name)}</b>
         </Row>
         <Row>
-          <p className='truncate no-margin no-padding grey-text text-darken-1' style={{fontSize: '8px', lineHeight: '10px'}}>{t(source)}</p>
+          <p className='truncate no-margin no-padding' style={{fontSize: '8px', lineHeight: '10px'}}>{t(source)}</p>
         </Row>
         <Row type='flex' justify='end'>
           <Col span={4}>

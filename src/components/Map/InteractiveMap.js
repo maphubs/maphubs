@@ -6,7 +6,6 @@ import Map from './index'
 import LayerList from './LayerList'
 import MiniLegend from './MiniLegend'
 import IsochroneLegendHelper from './IsochroneLegendHelper'
-import MapLayerMenu from './MapLayerMenu'
 import {Drawer, Row} from 'antd'
 import _debounce from 'lodash.debounce'
 import _isEqual from 'lodash.isequal'
@@ -294,14 +293,6 @@ export default class InteractiveMap extends React.Component<Props, State> {
             color={primaryColor}
             icon='info'
           />}
-
-        {this.props.categories &&
-          <MapLayerMenu
-            categories={this.props.categories}
-            toggleVisibility={this.toggleVisibility}
-            layers={this.state.layers} t={t}
-          />}
-
         <Map
           id={'map-' + this.props.map_id}
           fitBounds={bounds} fitBoundsOptions={this.props.fitBoundsOptions}
@@ -328,6 +319,8 @@ export default class InteractiveMap extends React.Component<Props, State> {
           mapboxAccessToken={this.props.mapboxAccessToken}
           DGWMSConnectID={this.props.DGWMSConnectID}
           earthEngineClientID={this.props.earthEngineClientID}
+          categories={this.props.categories}
+          mapLayers={this.state.layers}
         >
           {legend}
           <div ref={(el) => { this.mobileMapLegend = el }} />

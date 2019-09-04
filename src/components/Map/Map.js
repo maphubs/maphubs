@@ -23,6 +23,7 @@ import MapSearchMixin from './Search/MapSearchMixin'
 import Promise from 'bluebird'
 import turfCentroid from '@turf/centroid'
 import PlayArrow from '@material-ui/icons/PlayArrow'
+import MapLayerMenu from './MapLayerMenu'
 import type {GLStyle, GLSource, GLLayer} from '../../types/mapbox-gl-style'
 import type {GeoJSONObject} from 'geojson-flow'
 import type {Layer} from '../../types/layer'
@@ -85,7 +86,9 @@ type Props = {|
     logoSmallHeight?: number,
     mapboxAccessToken: string,
     DGWMSConnectID?: string,
-    earthEngineClientID?: string
+    earthEngineClientID?: string,
+    categories?: Array<Object>,
+    mapLayers?: Array<Object>
   |}
 
   type State = {
@@ -189,7 +192,7 @@ class Map extends React.Component<Props, State> {
     // switch to interactive
     if (this.state.interactive && !prevState.interactive) {
       this.map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), this.props.navPosition)
-      this.map.addControl(new mapboxgl.FullscreenControl(), this.props.navPosition)
+      this.map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector(`#${this.state.id}-fullscreen-wrapper`)}), this.props.navPosition)
       if (this.map.dragPan) this.map.dragPan.enable()
       if (this.map.scrollZoom) this.map.scrollZoom.enable()
       if (this.map.doubleClickZoom) this.map.doubleClickZoom.enable()
@@ -355,7 +358,7 @@ class Map extends React.Component<Props, State> {
 
       if (interactive) {
         map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), _this.props.navPosition)
-        map.addControl(new mapboxgl.FullscreenControl())
+        map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector(`#${this.state.id}-fullscreen-wrapper`)}))
       }
 
       if (attributionControl) {
@@ -599,7 +602,7 @@ class Map extends React.Component<Props, State> {
     }
 
     return (
-      <div className={this.props.className} style={this.props.style}>
+      <div id={`${this.state.id}-fullscreen-wrapper`} className={this.props.className} style={this.props.style}>
         <style jsx global>{`
 
           .mapboxgl-canvas{
@@ -725,6 +728,12 @@ class Map extends React.Component<Props, State> {
 
         `}
         </style>
+        {this.props.categories &&
+          <MapLayerMenu
+            categories={this.props.categories}
+            toggleVisibility={this.toggleVisibility}
+            layers={this.props.mapLayers} t={t}
+          />}
         <div id={this.state.id} className={className} style={{width: '100%', height: '100%'}}>
           {insetMap &&
             <InsetMap id={this.state.id} bottom={showLogo ? '30px' : '25px'} mapboxAccessToken={this.props.mapboxAccessToken} {...this.props.insetConfig} />}

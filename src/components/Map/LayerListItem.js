@@ -89,7 +89,7 @@ class LayerListItem extends React.Component<Props, void> {
       >
         <Row>
           <b
-            className='title grey-text text-darken-4 truncate'
+            className='truncate'
             style={{fontSize: '12px'}}
           >
             {t(layer.name)}
@@ -97,7 +97,7 @@ class LayerListItem extends React.Component<Props, void> {
         </Row>
         <Row>
           <p
-            className='truncate no-margin grey-text text-darken-1'
+            className='truncate no-margin'
             style={{fontSize: '8px', lineHeight: '10px', padding: '0px 0px 2px 0px'}}
           >
             {t(layer.source)}
