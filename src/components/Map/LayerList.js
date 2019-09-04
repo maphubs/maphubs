@@ -72,7 +72,7 @@ export default class LayerList extends React.Component<Props, State> {
     const {toggleVisibility, showVisibility, showRemove, showDesign, showEdit, removeFromMap, showLayerDesigner, editLayer, t} = this.props
     const empty = !layers || layers.length === 0
     return (
-      <div style={{height: '100%', padding: 0, margin: 0, border: '1px solid #eeeeee'}}>
+      <div style={{height: '100%', padding: 0, margin: 0, border: '1px solid #eeeeee', overflowY: 'auto'}}>
         <style jsx global>{`
           .ant-list-item-content {
             width: 100%;
