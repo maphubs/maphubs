@@ -66,11 +66,6 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     settings: {}
   }
 
-  state = {
-    width: 1024,
-    height: 600
-  }
-
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
@@ -87,7 +82,9 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
       userShowInset: props.insetMap,
       userShowLegend: props.showLegend,
       userShowScale: props.showScale,
-      showSettings: props.showToolbar
+      showSettings: !!props.showToolbar,
+      width: 1024,
+      height: 600
     }
   }
 

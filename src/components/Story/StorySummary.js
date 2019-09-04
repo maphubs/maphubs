@@ -50,7 +50,7 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
             </a>
           </div>}
         <a href={linkUrl}>
-          <h5 className='grey-text text-darken-4 story-title'>{title}</h5>
+          <h5 className='story-title'>{title}</h5>
         </a>
         <div className='story-content'>
           <p className='fade'>

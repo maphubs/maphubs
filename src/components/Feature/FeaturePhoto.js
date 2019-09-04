@@ -83,7 +83,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                 placement='left'
               >
                 <i
-                  className='material-icons grey-text valign'
+                  className='material-icons valign'
                   onClick={this.showImageCrop}
                   style={{
                     fontSize: '24px',
@@ -102,7 +102,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
               >
                 <a href={photoUrl} download>
                   <i
-                    className='material-icons grey-text valign'
+                    className='material-icons valign'
                     style={{
                       fontSize: '24px',
                       position: 'absolute',
@@ -120,7 +120,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                 placement='left'
               >
                 <i
-                  className='material-icons grey-text valign'
+                  className='material-icons valign'
                   onClick={this.deletePhoto}
                   style={{
                     fontSize: '24px',
@@ -148,7 +148,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                 inertia followCursor
               >
                 <i
-                  className='material-icons grey-text valign'
+                  className='material-icons valign'
                   onClick={this.showImageCrop}
                   style={{
                     fontSize: '24px',

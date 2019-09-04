@@ -169,7 +169,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
             </>}
           <Tooltip title={toolTipText} placement='top'>
             <i
-              className='material-icons grey-text text-darken-3'
+              className='material-icons'
               style={{position: 'absolute', bottom: '6px', right: '6px'}}
             >
               {iconName}

@@ -47,7 +47,7 @@ export default class LegendItem extends React.Component<Props, void> {
     let legendItem = (
       <div style={style}>
         <span className='no-margin no-padding valign' dangerouslySetInnerHTML={{__html: html}} />
-        <span className='grey-text right right-align truncate no-padding' style={{margin: 0, fontSize: '6px', lineHeight: '6px', position: 'absolute', bottom: 0, right: 0}}>{source}</span>
+        <span className='right right-align truncate no-padding' style={{margin: 0, fontSize: '6px', lineHeight: '6px', position: 'absolute', bottom: 0, right: 0}}>{source}</span>
       </div>
     )
     const mapStyle = layer.style
@@ -65,7 +65,7 @@ export default class LegendItem extends React.Component<Props, void> {
                   <Marker {...markerConfig} />
                 </div>
                 <h3 className='valign' style={{paddingLeft: '5px', paddingTop: '0px', paddingBottom: '5px'}}>{name}</h3>
-                <span className='grey-text left left-align truncate no-padding' style={{margin: 0, fontSize: '6px', lineHeight: '6px', position: 'absolute', bottom: 0, right: 0}}>{source}</span>
+                <span className='left left-align truncate no-padding' style={{margin: 0, fontSize: '6px', lineHeight: '6px', position: 'absolute', bottom: 0, right: 0}}>{source}</span>
               </div>
 
             )

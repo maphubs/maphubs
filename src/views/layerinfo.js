@@ -341,7 +341,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
           </IntlProvider>&nbsp;
           (<IntlProvider locale={this.state.locale}>
             <FormattedRelative value={updatedTimeStr} />
-          </IntlProvider>)&nbsp;
+           </IntlProvider>)&nbsp;
           {t('by') + ' ' + this.props.updatedByUser.display_name}
         </p>
       )
@@ -375,7 +375,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                       title={t('Private')}
                       placement='left'
                     >
-                      <i className='material-icons grey-text text-darken-3'>lock</i>
+                      <i className='material-icons'>lock</i>
                     </Tooltip>
                   </div>}
 
