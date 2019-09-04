@@ -154,7 +154,8 @@ export default class SearchBar extends React.Component {
 
   render () {
     return (
-      <div className='white no-margin'
+      <div
+        className='white no-margin'
         style={{
           borderRadius: '25px',
           border: '1px solid #323333',
@@ -167,7 +168,8 @@ export default class SearchBar extends React.Component {
         <form style={{boxSizing: 'content-box'}}>
 
           <div className='input-field no-margin' style={{position: 'relative'}}>
-            <input id={this.props.id}
+            <input
+              id={this.props.id}
               className='truncate'
               type='search'
               style={{
@@ -190,9 +192,11 @@ export default class SearchBar extends React.Component {
               onClick={this.handleClick}
               data-beloworigin='true'
               data-activates={this.refs.suggestions}
-              required />
+              required
+            />
 
-            <label htmlFor={this.props.id}
+            <label
+              htmlFor={this.props.id}
               style={{
                 height: 'inherit',
                 lineHeight: 'inherit',
@@ -201,7 +205,9 @@ export default class SearchBar extends React.Component {
                 left: '0px',
                 marginLeft: '5px',
                 marginRight: '5px',
-                transform: 'inherit'}}>
+                transform: 'inherit'
+              }}
+            >
               <i className='material-icons' style={{height: 'inherit', lineHeight: 'inherit'}}>search</i>
             </label>
             <i className='material-icons' style={{height: 'inherit', lineHeight: 'inherit'}} onClick={this.reset}>close</i>
@@ -210,11 +216,12 @@ export default class SearchBar extends React.Component {
 
         <div className='row no-margin'>
           {!!this.state.suggestions.length &&
-          <Suggestions
-            ref={(el) => { this.suggestions = el }}
-            suggestions={this.state.suggestions}
-            highlightedItem={this.state.highlightedItem}
-            onSelection={this.fillInSuggestion} />}
+            <Suggestions
+              ref={(el) => { this.suggestions = el }}
+              suggestions={this.state.suggestions}
+              highlightedItem={this.state.highlightedItem}
+              onSelection={this.fillInSuggestion}
+            />}
         </div>
       </div>
     )

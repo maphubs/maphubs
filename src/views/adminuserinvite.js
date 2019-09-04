@@ -237,11 +237,13 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
             <div className='col s12 m8 l8 valign' style={{margin: 'auto'}}>
               <Formsy onValidSubmit={this.onSubmit} onValid={this.enableButton} onInvalid={this.disableButton}>
                 <div className='row' style={{margin: '25px'}}>
-                  <TextInput name='email' label={t('Email to Invite')} icon='email' className='col s12'
+                  <TextInput
+                    name='email' label={t('Email to Invite')} icon='email' className='col s12'
                     validations={{isEmail: true}} validationErrors={{
                       isEmail: t('Not a valid email address.')
                     }} length={50}
-                    required />
+                    required
+                  />
 
                 </div>
                 <div className='row'>
@@ -293,7 +295,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
                     <tr key={member.id}>
                       <td>
                         <Tooltip title={status} placement='bottom'>
-                          <i className='material-icons' style={{color}} >{icon}</i>
+                          <i className='material-icons' style={{color}}>{icon}</i>
                         </Tooltip>
                       </td>
                       <td>{member.display_name}</td>
@@ -301,34 +303,37 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
                       <td>{member.key}</td>
                       <td>
                         {(status !== 'Disabled' && status !== 'Admin') &&
-                          <React.Fragment>
+                          <>
                             <Tooltip title={t('Resend Invite')} placement='bottom'>
                               <a onClick={() => {
                                 _this.handleResendInvite(member)
-                              }
-                              }>
+                              }}
+                              >
                                 <i className='material-icons' style={{cursor: 'pointer'}}>email</i>
                               </a>
                             </Tooltip>
                             <Tooltip title={t('Copy Invite Link')} placement='bottom'>
                               <a onClick={() => {
                                 _this.copyInviteLink(member)
-                              }
-                              }>
+                              }}
+                              >
                                 <i className='material-icons' style={{cursor: 'pointer'}}>link</i>
                               </a>
                             </Tooltip>
                             <Tooltip title={t('Remove User')} placement='bottom'>
                               <a onClick={() => {
                                 _this.handleDeauthorize(member)
-                              }}>
-                                <i className='material-icons' style={{
-                                  cursor: 'pointer'
-                                }}>delete</i>
+                              }}
+                              >
+                                <i
+                                  className='material-icons' style={{
+                                    cursor: 'pointer'
+                                  }}
+                                >delete
+                                </i>
                               </a>
                             </Tooltip>
-                          </React.Fragment>
-                        }
+                          </>}
                       </td>
                     </tr>
                   )

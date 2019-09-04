@@ -168,7 +168,8 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
       map = (
         <div ref='mapSection'>
           <p>{t('Please review the data on the map to confirm the upload was successful.')}</p>
-          <Map style={{width: '100%', height: '400px'}}
+          <Map
+            style={{width: '100%', height: '400px'}}
             id='upload-preview-map' t={this.t}
             showFeatureInfoEditButtons={false}
             mapConfig={this.props.mapConfig}
@@ -193,8 +194,10 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
         options.push({value: shpFile, label: shpFile})
       })
       multipleShapefiles = (
-        <RadioModal ref='chooseshape' title={t('Multiple Shapefiles Found - Please Select One')}
-          options={options} onSubmit={this.finishUpload} t={t} />
+        <RadioModal
+          ref='chooseshape' title={t('Multiple Shapefiles Found - Please Select One')}
+          options={options} onSubmit={this.finishUpload} t={t}
+        />
       )
     }
 

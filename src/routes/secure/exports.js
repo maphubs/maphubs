@@ -26,7 +26,7 @@ module.exports = function (app: any) {
       const layer = await Layer.getLayerByID(layer_id)
       if (layer) {
         const table = `layers.data_${layer.layer_id}`
-        const featureSVGs = await knex.raw(`select ST_AsSVG(ST_Transform(wkb_geometry, 900913)) as svg from :table:;`, {table})
+        const featureSVGs = await knex.raw('select ST_AsSVG(ST_Transform(wkb_geometry, 900913)) as svg from :table:;', {table})
         let bounds = await knex.raw(`select ST_XMin(bbox)::float as xmin, 
             ST_YMin(bbox)::float as ymin, 
             ST_XMax(bbox)::float as xmax, ST_YMax(bbox)::float as ymax 
@@ -120,12 +120,12 @@ module.exports = function (app: any) {
           geoJSON.features.map((feature) => {
             if (feature.properties) {
               if (layer.data_type === 'polygon') {
-                feature.properties['stroke'] = '#323333'
+                feature.properties.stroke = '#323333'
                 feature.properties['stroke-width'] = 2
-                feature.properties['fill'] = '#FF0000'
+                feature.properties.fill = '#FF0000'
                 feature.properties['fill-opacity'] = 0.5
               } else if (layer.data_type === 'line') {
-                feature.properties['stroke'] = '#FF0000'
+                feature.properties.stroke = '#FF0000'
                 feature.properties['stroke-width'] = 2
               } else if (layer.data_type === 'point') {
                 feature.properties['marker-color'] = '#FF0000'
@@ -177,12 +177,12 @@ module.exports = function (app: any) {
             geoJSON.features.map((feature) => {
               if (feature.properties) {
                 if (layer.data_type === 'polygon') {
-                  feature.properties['stroke'] = '#323333'
+                  feature.properties.stroke = '#323333'
                   feature.properties['stroke-width'] = 2
-                  feature.properties['fill'] = '#FF0000'
+                  feature.properties.fill = '#FF0000'
                   feature.properties['fill-opacity'] = 0.5
                 } else if (layer.data_type === 'line') {
-                  feature.properties['stroke'] = '#FF0000'
+                  feature.properties.stroke = '#FF0000'
                   feature.properties['stroke-width'] = 2
                 } else if (layer.data_type === 'point') {
                   feature.properties['marker-color'] = '#FF0000'

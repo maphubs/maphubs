@@ -174,7 +174,8 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
                 href='/map/new'
                 tooltip={t('Create New Map')}
                 tooltipPosition='top'
-                icon='add' />
+                icon='add'
+              />
             </div>
           </div>
         </main>

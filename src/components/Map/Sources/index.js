@@ -34,7 +34,7 @@ export default {
     } else if (
       source.type === 'arcgisraster'
     ) {
-      return response(this['arcgisraster'], true)
+      return response(this.arcgisraster, true)
     } else if (
       this[source.type] &&
       this[source.type].addLayer
@@ -42,7 +42,7 @@ export default {
       // use custom driver for this source type
       return response(this[source.type])
     } else {
-      return response(this['generic'])
+      return response(this.generic)
     }
   },
   arcgisraster: AGSRaster,

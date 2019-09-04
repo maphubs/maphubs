@@ -31,8 +31,7 @@ export default class StoryList extends MapHubsComponent<Props, void> {
         {showTitle &&
           <li className='collection-header'>
             <h4>{t('Stories')}</h4>
-          </li>
-        }
+          </li>}
         {this.props.stories.map((story, i) => {
           let title = t(story.title)
           title = title

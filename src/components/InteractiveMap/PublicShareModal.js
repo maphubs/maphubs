@@ -125,10 +125,12 @@ export default class PublicShareModal extends React.Component<Props, State> {
           <Button key='back' onClick={this.close}>
             {t('Close')}
           </Button>,
-          <Button key='submit' type='primary' disabled={!share_id} onClick={() => {
-            this.writeToClipboard()
-            this.close()
-          }}>
+          <Button
+            key='submit' type='primary' disabled={!share_id} onClick={() => {
+              this.writeToClipboard()
+              this.close()
+            }}
+          >
             {t('Copy Link')}
           </Button>
         ]}
@@ -140,11 +142,9 @@ export default class PublicShareModal extends React.Component<Props, State> {
             </Col>
             <Col span={20}>
               {share_id &&
-              <p style={{fontSize: '16px'}}><b>{t('Sharing')}</b>&nbsp;-&nbsp;<span>{t('Anyone can use this link to view the map.')}</span></p>
-              }
+                <p style={{fontSize: '16px'}}><b>{t('Sharing')}</b>&nbsp;-&nbsp;<span>{t('Anyone can use this link to view the map.')}</span></p>}
               {!share_id &&
-                <p style={{fontSize: '16px'}}><b>{t('Protected')}</b>&nbsp;-&nbsp;<span>{t('Only authorized users can see this map.')}</span></p>
-              }
+                <p style={{fontSize: '16px'}}><b>{t('Protected')}</b>&nbsp;-&nbsp;<span>{t('Only authorized users can see this map.')}</span></p>}
             </Col>
           </Row>
           <Row>
@@ -156,11 +156,9 @@ export default class PublicShareModal extends React.Component<Props, State> {
                   <i className='material-icons omh-accent-text' style={{cursor: 'pointer'}} onClick={this.writeToClipboard}>launch</i>
                 </p>
                 <p className='no-margin'>{t('Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.')}</p>
-              </div>
-            }
+              </div>}
             {!share_id &&
-              <p>{t('Create a public link to this map and associated map layers that can be viewed by anyone with the link without needing a MapHubs account or permissions on this site.')}</p>
-            }
+              <p>{t('Create a public link to this map and associated map layers that can be viewed by anyone with the link without needing a MapHubs account or permissions on this site.')}</p>}
           </Row>
         </Row>
       </Modal>

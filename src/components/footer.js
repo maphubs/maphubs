@@ -99,8 +99,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
                 <a className='page-footer no-padding' href={link.href} target={link.target}>{t(link.name)}</a>
               </li>
             )
-          })
-          }
+          })}
         </ul>
       )
     }
@@ -116,7 +115,7 @@ export default class Footer extends MapHubsComponent<Props, void> {
               <ul style={{marginTop: '0px'}}>
                 {customLeftColumnItems.map((item, i) => {
                   return (
-                    <li key={`custom-footer-item-${i}`} >
+                    <li key={`custom-footer-item-${i}`}>
                       <div dangerouslySetInnerHTML={{__html: item}} />
                     </li>
                   )

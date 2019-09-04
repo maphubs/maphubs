@@ -119,22 +119,24 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
            <Formsy ref='form' onChange={this.onFormChange}>
              <div className='row' style={{marginTop: '10px', marginBottom: '0px', padding: '0 .75rem'}}>
                <b>{t('Enable Labels')}</b>
-               <Toggle name='enabled' labelOff={t('Off')} labelOn={t('On')} className='col s12'
+               <Toggle
+                 name='enabled' labelOff={t('Off')} labelOn={t('On')} className='col s12'
                  checked={this.state.enabled}
                  dataPosition='right' dataTooltip={t('Enable Labels for this Layer')}
                />
              </div>
              <div className='row no-margin'>
-               <Select name='field' id='label-field-select' label={t('Label Field')} options={fieldOptions}
+               <Select
+                 name='field' id='label-field-select' label={t('Label Field')} options={fieldOptions}
                  className='col s12 label-field no-margin'
                  value={this.state.field} startEmpty={!this.state.field}
                  dataPosition='right' dataTooltip={t('Data field to use in map labels.')}
-                 required />
+                 required
+               />
              </div>
            </Formsy>
            {(enabled && !field) &&
-             <p style={{color: 'red'}}>{t('Please Select a Label Field')}</p>
-           }
+             <p style={{color: 'red'}}>{t('Please Select a Label Field')}</p>}
          </div>
        </div>
      )

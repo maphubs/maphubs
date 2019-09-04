@@ -47,18 +47,18 @@ export default class GroupTag extends MapHubsComponent<Props, State> {
     }
     return (
       <div>
-        <Tooltip title={group} placement='top' >
+        <Tooltip title={group} placement='top'>
           <a target='_blank' className='no-padding' rel='noopener noreferrer' href={`${baseUrl}/group/${group}`} style={{height: 'initial'}}>
             {!failed &&
-              <Avatar alt={group} size={24} src={`/img/resize/40?url=/group/${group}/thumbnail`} onError={() => {
-                this.setState({failed: true})
-              }} />
-            }
+              <Avatar
+                alt={group} size={24} src={`/img/resize/40?url=/group/${group}/thumbnail`} onError={() => {
+                  this.setState({failed: true})
+                }}
+              />}
             {failed &&
               <Avatar size={24} style={{ color: '#FFF' }}>
                 {group.charAt(0).toUpperCase()}
-              </Avatar>
-            }
+              </Avatar>}
           </a>
         </Tooltip>
       </div>

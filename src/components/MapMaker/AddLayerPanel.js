@@ -132,11 +132,9 @@ export default class AddLayerPanel extends React.Component<Props, State> {
           <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('Search Results')}</h5>
           <Divider />
           {searchCards.length > 0 &&
-            <CardCarousel cards={searchCards} showAddButton t={t} />
-          }
+            <CardCarousel cards={searchCards} showAddButton t={t} />}
           {searchCards.length === 0 &&
-            <p><b>{t('No Results Found')}</b></p>
-          }
+            <p><b>{t('No Results Found')}</b></p>}
         </Row>
       )
     }
@@ -163,7 +161,8 @@ export default class AddLayerPanel extends React.Component<Props, State> {
               .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
                 color: #FFF;
               }
-            `}</style>
+            `}
+            </style>
           </Col>
         </Row>
         <Row style={{height: 'calc(100% - 100px)', overflowY: 'auto', padding: '10px'}}>
@@ -173,8 +172,7 @@ export default class AddLayerPanel extends React.Component<Props, State> {
               <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('My Layers')}</h5>
               <Divider />
               <CardCarousel cards={myCards} showAddButton t={t} />
-            </Row>
-          }
+            </Row>}
           <Row>
             <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('Popular Layers')}</h5>
             <Divider />

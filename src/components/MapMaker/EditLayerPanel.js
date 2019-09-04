@@ -56,13 +56,15 @@ export default class EditLayerPanel extends React.Component<Props, void> {
             const presets = MapStyles.settings.getSourceSetting(editingLayer.style, firstSource, 'presets')
 
             featureAttributes = (
-              <DataCollectionForm presets={presets}
+              <DataCollectionForm
+                presets={presets}
                 values={selectedEditFeature.geojson.properties}
                 onChange={(data) => {
                   this.onChange(data, DataEditor)
                 }}
                 style={{padding: '10px', height: '100%', overflow: 'auto'}}
-                showSubmit={false} />
+                showSubmit={false}
+              />
             )
           }
           return (

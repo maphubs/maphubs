@@ -57,8 +57,7 @@ export default class Stories extends MapHubsComponent<Props, State> {
             {(hasRecent || hasPopular) &&
               <Row style={{textAlign: 'right'}}>
                 <Button type='link' href='/stories/all'>{t('View All Stories')}</Button>
-              </Row>
-            }
+              </Row>}
             {hasRecent &&
               <Col sm={24} med={12} style={{margin: '20px'}}>
                 <Row style={{textAlign: 'center'}}>
@@ -73,8 +72,7 @@ export default class Stories extends MapHubsComponent<Props, State> {
                     </div>
                   )
                 })}
-              </Col>
-            }
+              </Col>}
             {hasPopular &&
               <Col sm={24} med={12} style={{margin: '20px'}}>
                 <Row style={{textAlign: 'center'}}>
@@ -89,19 +87,18 @@ export default class Stories extends MapHubsComponent<Props, State> {
                     </div>
                   )
                 })}
-              </Col>
-            }
+              </Col>}
             {(!hasRecent && !hasPopular) &&
               <div className='col s12' style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
                 <b>{t('No Stories Found')}</b>
-              </div>
-            }
+              </div>}
           </Row>
           <div className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton
               href='/createstory'
               icon='add'
-              tooltip={t('Create New Story')} tooltipPosition='top' />
+              tooltip={t('Create New Story')} tooltipPosition='top'
+            />
           </div>
         </main>
         <Footer {...this.props.footerConfig} />

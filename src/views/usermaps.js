@@ -58,7 +58,8 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
           <div className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton
               href='/map/new' icon='add'
-              tooltip={t('Create New Map')} tooltipPosition='top' />
+              tooltip={t('Create New Map')} tooltipPosition='top'
+            />
           </div>
         </div>
       )

@@ -82,17 +82,17 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
         }}
       >
         {showMakeAMap &&
-          <Menu.Item key='makeamap' style={{
-            height: '50px'
-          }}>
+          <Menu.Item
+            key='makeamap' style={{
+              height: '50px'
+            }}
+          >
             <a href='/map/new'>{t('Make a Map')}</a>
-          </Menu.Item>
-        }
+          </Menu.Item>}
         {showExplore &&
           <Menu.Item key='explore' style={{height: '50px'}}>
             <ExploreDropdown t={t} />
-          </Menu.Item>
-        }
+          </Menu.Item>}
         {
           customLinks.map((link, i) => {
             return (
@@ -108,28 +108,21 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
         {showAdd &&
           <Menu.Item key='add' style={{padding: mode === 'vertical' ? '0 20px' : '0 5px', height: '50px'}}>
             <AddDropdown t={t} sidenav={mode === 'vertical'} />
-          </Menu.Item>
-        }
+          </Menu.Item>}
         {showSearch &&
           <Menu.Item key='search' style={{padding: mode === 'vertical' ? '0 20px' : '0 5px', height: '50px'}}>
             {mode === 'vertical' &&
-              <a href={customSearchLink || '/search'}>{t('Search')}</a>
-            }
+              <a href={customSearchLink || '/search'}>{t('Search')}</a>}
             {mode !== 'vertical' &&
-              <SearchButton t={t} searchLink={customSearchLink || '/search'} />
-            }
-          </Menu.Item>
-        }
+              <SearchButton t={t} searchLink={customSearchLink || '/search'} />}
+          </Menu.Item>}
         {showHelp &&
           <Menu.Item key='help' style={{padding: mode === 'vertical' ? '0 20px' : '0 5px', height: '50px'}}>
             {mode === 'vertical' &&
-              <a href={customHelpLink || 'https://help.maphubs.com'}>{t('Help/Support')}</a>
-            }
+              <a href={customHelpLink || 'https://help.maphubs.com'}>{t('Help/Support')}</a>}
             {mode !== 'vertical' &&
-              <HelpButton t={t} helpLink={customHelpLink || 'https://help.maphubs.com'} />
-            }
-          </Menu.Item>
-        }
+              <HelpButton t={t} helpLink={customHelpLink || 'https://help.maphubs.com'} />}
+          </Menu.Item>}
         <Menu.Item key='user' style={{height: '50px', overflow: 'hidden'}}>
           <UserMenu sidenav={mode === 'vertical'} />
         </Menu.Item>
@@ -149,7 +142,8 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
         style={{
           padding: 0,
           height: '50px'
-        }}>
+        }}
+      >
         <div className='logo' style={{float: 'left'}}>
           <a className='valign-wrapper' href={logoLinkUrl}>
             <img className='valign' width={MAPHUBS_CONFIG.logoWidth} height={MAPHUBS_CONFIG.logoHeight} style={{margin: '5px'}} src={MAPHUBS_CONFIG.logo} alt={MAPHUBS_CONFIG.productName + ' ' + t('Logo')} />
@@ -178,10 +172,12 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
             }
           }
           
-        `}</style>
+        `}
+        </style>
         {NavMenu}
 
-        <Icon type='menu' className='hamburger-menu'
+        <Icon
+          type='menu' className='hamburger-menu'
           style={{
             fontSize: '24px',
             color: fontColor || 'inherit',
@@ -190,7 +186,8 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
             right: '10px',
             display: 'none'
           }}
-          onClick={this.showDrawer} />
+          onClick={this.showDrawer}
+        />
         <Drawer
           bodyStyle={{padding: 0, height: '100%'}}
           placement='right'

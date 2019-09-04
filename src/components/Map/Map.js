@@ -306,7 +306,7 @@ class Map extends React.Component<Props, State> {
         debugLog('MAP LOADED')
         // add selector for screenshot tool
         setTimeout(() => {
-          $('body').append(`<div id="map-load-complete" style="display: none;"></div>`)
+          $('body').append('<div id="map-load-complete" style="display: none;"></div>')
         }, 5000)
       })
 
@@ -326,7 +326,7 @@ class Map extends React.Component<Props, State> {
           if (MapState.state.insetMap) {
             MapState.state.insetMap.sync(map)
           } else {
-            debugLog(`insetMap not found`)
+            debugLog('insetMap not found')
           }
         }
 
@@ -346,7 +346,7 @@ class Map extends React.Component<Props, State> {
           MapState.initInset(map, baseMap)
         }
       } else {
-        debugLog(`failed to init inset`)
+        debugLog('failed to init inset')
       }
 
       map.on('mousemove', _this.mousemoveHandler)
@@ -723,12 +723,13 @@ class Map extends React.Component<Props, State> {
             right: 0;
           }
 
-        `}</style>
+        `}
+        </style>
         <div id={this.state.id} className={className} style={{width: '100%', height: '100%'}}>
           {insetMap &&
-            <InsetMap id={this.state.id} bottom={showLogo ? '30px' : '25px'} mapboxAccessToken={this.props.mapboxAccessToken} {...this.props.insetConfig} />
-          }
-          <MapToolPanel show={this.state.interactive && this.state.mapLoaded}
+            <InsetMap id={this.state.id} bottom={showLogo ? '30px' : '25px'} mapboxAccessToken={this.props.mapboxAccessToken} {...this.props.insetConfig} />}
+          <MapToolPanel
+            show={this.state.interactive && this.state.mapLoaded}
             height={this.props.height}
             gpxLink={this.props.gpxLink}
             toggleMeasurementTools={this.toggleMeasurementTools}
@@ -754,25 +755,26 @@ class Map extends React.Component<Props, State> {
                 borderRadius: '4px',
                 zIndex: '100',
                 lineHeight: '30px'
-              }}>
+              }}
+              >
                 <span>{this.state.measurementMessage}</span>
               </div>
-              <MapToolButton top='260px' right='10px' icon='close' show color='#000'
-                onClick={this.stopMeasurementTool} tooltipText={t('Exit Measurement')} />
-            </div>
-          }
+              <MapToolButton
+                top='260px' right='10px' icon='close' show color='#000'
+                onClick={this.stopMeasurementTool} tooltipText={t('Exit Measurement')}
+              />
+            </div>}
           {(!this.state.interactive && this.props.showPlayButton) &&
-            <a onClick={this.startInteractive} className='btn-floating waves-effect waves-light'
-              style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)', zIndex: '999'}}>
+            <a
+              onClick={this.startInteractive} className='btn-floating waves-effect waves-light'
+              style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)', zIndex: '999'}}
+            >
               <PlayArrow />
-            </a>
-          }
+            </a>}
           {this.state.mapLoaded &&
-            this.props.children
-          }
+            this.props.children}
           {(this.state.mapLoaded && this.props.showLogo) &&
-            <img style={{position: 'absolute', left: '5px', bottom: '2px', zIndex: '1'}} width={logoSmallWidth} height={logoSmallHeight} src={logoSmall} alt='Logo' />
-          }
+            <img style={{position: 'absolute', left: '5px', bottom: '2px', zIndex: '1'}} width={logoSmallWidth} height={logoSmallHeight} src={logoSmall} alt='Logo' />}
           <MapSearchPanel
             show={this.state.interactive && this.state.mapLoaded}
             height={this.props.height}

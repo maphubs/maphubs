@@ -98,10 +98,12 @@ export default class Marker extends React.PureComponent<Props> {
     }
 
     return (
-      <React.Fragment>
-        <svg xmlns='http://www.w3.org/2000/svg' version='1.1'
+      <>
+        <svg
+          xmlns='http://www.w3.org/2000/svg' version='1.1'
           width={this.props.width} height={this.props.height} x='0px' y='0px'
-          viewBox={viewBox} preserveAspectRatio='xMidYMid meet'>
+          viewBox={viewBox} preserveAspectRatio='xMidYMid meet'
+        >
           <g stroke={this.props.shapeStroke} fill={this.props.shapeFill} strokeWidth={this.props.shapeStrokeWidth} fillOpacity={this.props.shapeFillOpacity}>
             {markerBackground}
           </g>
@@ -116,10 +118,9 @@ export default class Marker extends React.PureComponent<Props> {
             >
               <IconComponent />
               <use x={x} y={y} width={iconWidth} height={iconHeight} href={`#${icon}`} />
-            </g>
-          }
+            </g>}
         </svg>
-      </React.Fragment>
+      </>
     )
   }
 }

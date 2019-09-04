@@ -7,7 +7,7 @@ export default {
 
   rasterLegend () {
     // var name = this.htmlEncode(layer.name);
-    const html = `<div class="omh-legend">\n<h3>{NAME}</h3>\n</div>`
+    const html = '<div class="omh-legend">\n<h3>{NAME}</h3>\n</div>'
     return html
   },
 

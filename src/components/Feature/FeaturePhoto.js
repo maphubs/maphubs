@@ -90,7 +90,9 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                     position: 'absolute',
                     top: '5px',
                     cursor: 'pointer',
-                    right: '30px'}}>
+                    right: '30px'
+                  }}
+                >
                   add_a_photo
                 </i>
               </Tooltip>
@@ -106,7 +108,9 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                       position: 'absolute',
                       top: '5px',
                       cursor: 'pointer',
-                      right: '56px'}}>
+                      right: '56px'
+                    }}
+                  >
                     get_app
                   </i>
                 </a>
@@ -123,12 +127,13 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                     position: 'absolute',
                     top: '5px',
                     cursor: 'pointer',
-                    right: '5px'}}>
+                    right: '5px'
+                  }}
+                >
                   delete
                 </i>
               </Tooltip>
-            </div>
-          }
+            </div>}
           {imageCrop}
         </div>
       )
@@ -150,7 +155,9 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                     position: 'absolute',
                     top: '5px',
                     cursor: 'pointer',
-                    right: '5px'}}>
+                    right: '5px'
+                  }}
+                >
                   add_a_photo
                 </i>
               </Tooltip>

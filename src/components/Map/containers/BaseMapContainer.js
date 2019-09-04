@@ -78,7 +78,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
       try {
         distance = _distance(from, to, {units: 'kilometers'})
       } catch (err) {
-        debug.error(`error calculating map move distance`)
+        debug.error('error calculating map move distance')
       }
 
       // debug.log('map moved: ' + distance + 'km')
@@ -93,7 +93,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
     const lat = position.lat
     const lng = position.lng
     const zoom = Math.round(position.zoom)
-    const url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${this.state.bingImagerySet}/${lat},${lng}?zl=${zoom}&include=ImageryProviders&key=${bingKey}`
+    const url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${this.state.bingImagerySet}/${lat},${lng}?zl=${zoom}&include=ImageryProviders&key=${this.state.bingKey}`
     let attributionString = '© Bing Maps'
     request.get(url)
       .end((err, res) => {
@@ -186,7 +186,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
           })
           const style = config.style
           if (!style.glyphs) {
-            style.glyphs = `mapbox://fonts/mapbox/{fontstack}/{range}.pbf`
+            style.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
           }
           if (!style.sprite) {
             style.sprite = ''
@@ -199,7 +199,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
         const style = config.style
         if (typeof style !== 'string') {
           if (!style.glyphs) {
-            style.glyphs = `mapbox://fonts/mapbox/{fontstack}/{range}.pbf`
+            style.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
           }
           if (!style.sprite) {
             style.sprite = ''
@@ -214,7 +214,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
             } else {
               const style = res.body
               if (!style.glyphs) {
-                style.glyphs = `mapbox://fonts/mapbox/{fontstack}/{range}.pbf`
+                style.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
               }
               if (!style.sprite) {
                 style.sprite = ''

@@ -15,7 +15,7 @@ export default class XComponentReact extends React.Component<any, void> {
     // eslint-disable-next-line global-require (needed for SSR)
     const xcomponent = require('xcomponent')
     const xEmbedComponent = xcomponent.create(this.props)
-    xEmbedComponent.log(`instantiate_react_component`)
+    xEmbedComponent.log('instantiate_react_component')
 
     const parent = xEmbedComponent.init(Object.assign({}, this.props), null, this.xcontainer)
     this.setState({parent})

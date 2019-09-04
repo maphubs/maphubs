@@ -273,7 +273,7 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
 
   onRowsDeselected = (rows: Array<Object>) => {
     const rowIndexes = rows.map(r => r.rowIdx)
-    this.setState({selectedIndexes: this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1)})
+    this.setState({selectedIndexes: this.state.selectedIndexes.filter(i => !rowIndexes.includes(i))})
   }
 
   getSelectedFeature () {
@@ -314,77 +314,78 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
     window.location = url
   }
 
-   handleGridRowsUpdated = (result: Object) => {
-     const fromRow: number = result.fromRow
-     const toRow: number = result.toRow
-     const updated: Object = result.updated
-     const rows = this.getRows().slice()
-     const [DataEditorState] = this.props.containers
+  handleGridRowsUpdated = (result: Object) => {
+    const fromRow: number = result.fromRow
+    const toRow: number = result.toRow
+    const updated: Object = result.updated
+    const rows = this.getRows().slice()
+    const [DataEditorState] = this.props.containers
 
-     for (let i = fromRow; i <= toRow; i++) {
-       const rowToUpdate = this.rowGetter(i)
-       const mhid = rowToUpdate[this.state.rowKey]
-       DataEditorState.selectFeature(mhid, (featureData) => {
-         // update data
-         const data = featureData.properties
-         _assignIn(data, updated)
-         DataEditorState.updateSelectedFeatureTags(data)
-       })
-       const updatedRow = update(rowToUpdate, {$merge: updated})
-       rows[i] = updatedRow
-     }
+    for (let i = fromRow; i <= toRow; i++) {
+      const rowToUpdate = this.rowGetter(i)
+      const mhid = rowToUpdate[this.state.rowKey]
+      DataEditorState.selectFeature(mhid, (featureData) => {
+        // update data
+        const data = featureData.properties
+        _assignIn(data, updated)
+        DataEditorState.updateSelectedFeatureTags(data)
+      })
+      const updatedRow = update(rowToUpdate, {$merge: updated})
+      rows[i] = updatedRow
+    }
 
-     this.setState({rows})
-   }
+    this.setState({rows})
+  }
 
-   render () {
-     const {t} = this
-     const { height } = this.props
-     const _this = this
+  render () {
+    const {t} = this
+    const { height } = this.props
+    const _this = this
 
-     if (this.state.rows.length > 0 && typeof window !== 'undefined') {
-       const ReactDataGrid = this.ReactDataGrid
-       const Toolbar = this.Toolbar
-       return (
-         <ReactDataGrid
-           ref='grid'
-           columns={this.state.columns}
-           rowKey={this.state.rowKey}
-           rowGetter={this.rowGetter}
-           rowsCount={this.getSize()}
-           minHeight={height - 49}
-           onGridSort={this.handleGridSort}
-           onRowSelect={this.onRowSelect}
-           enableCellSelect
-           onGridRowsUpdated={this.handleGridRowsUpdated}
-           rowSelection={{
-             showCheckbox: true,
-             enableShiftSelect: false,
-             onRowsSelected: this.onRowsSelected,
-             onRowsDeselected: this.onRowsDeselected,
-             selectBy: {
-               indexes: this.state.selectedIndexes
-             }
-           }}
-           toolbar={<Toolbar
-             enableFilter
-             filterRowsButtonText={t('Filter Data')}
-           >
-             <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={_this.onViewSelectedFeature}>
-               {t('View Selected')}
-             </button>
-           </Toolbar>
-           }
-           onAddFilter={this.handleFilterChange}
-           onClearFilters={this.onClearFilters}
-         />
-       )
-     } else {
-       return (
-         <div><h5>{t(this.props.dataLoadingMsg)}</h5></div>
-       )
-     }
-   }
+    if (this.state.rows.length > 0 && typeof window !== 'undefined') {
+      const ReactDataGrid = this.ReactDataGrid
+      const Toolbar = this.Toolbar
+      return (
+        <ReactDataGrid
+          ref='grid'
+          columns={this.state.columns}
+          rowKey={this.state.rowKey}
+          rowGetter={this.rowGetter}
+          rowsCount={this.getSize()}
+          minHeight={height - 49}
+          onGridSort={this.handleGridSort}
+          onRowSelect={this.onRowSelect}
+          enableCellSelect
+          onGridRowsUpdated={this.handleGridRowsUpdated}
+          rowSelection={{
+            showCheckbox: true,
+            enableShiftSelect: false,
+            onRowsSelected: this.onRowsSelected,
+            onRowsDeselected: this.onRowsDeselected,
+            selectBy: {
+              indexes: this.state.selectedIndexes
+            }
+          }}
+          toolbar={
+            <Toolbar
+              enableFilter
+              filterRowsButtonText={t('Filter Data')}
+            >
+              <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={_this.onViewSelectedFeature}>
+                {t('View Selected')}
+              </button>
+            </Toolbar>
+          }
+          onAddFilter={this.handleFilterChange}
+          onClearFilters={this.onClearFilters}
+        />
+      )
+    } else {
+      return (
+        <div><h5>{t(this.props.dataLoadingMsg)}</h5></div>
+      )
+    }
+  }
 }
 
 export default connect([DataEditorContainer, MapContainer])(LayerDataEditorGrid)

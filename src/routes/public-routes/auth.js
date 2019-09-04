@@ -7,7 +7,7 @@ const pageOptions = require('../../services/page-options-helper')
 
 module.exports = function (app: any) {
   function checkReturnTo (req, res, next) {
-    const returnTo = req.query['returnTo']
+    const returnTo = req.query.returnTo
     if (returnTo) {
       // Maybe unnecessary, but just to be sure.
       req.session = req.session || {}

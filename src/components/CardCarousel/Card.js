@@ -71,8 +71,10 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
     let addButton = ''
     if (showAddButton) {
       addButton = (
-        <a className='btn-floating halfway-fab waves-effect waves-light red'
-          style={{top: '10px', right: '10px'}}>
+        <a
+          className='btn-floating halfway-fab waves-effect waves-light red'
+          style={{top: '10px', right: '10px'}}
+        >
           <i className='material-icons'>add</i>
         </a>
       )
@@ -87,7 +89,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
       )
     } else if (type === 'story' && image_url) {
       image = (
-        <div style={{height: '150px', width: '200px', backgroundImage: 'url(' + image_url + ')', backgroundSize: 'cover', backgroundPosition: 'center'}} >
+        <div style={{height: '150px', width: '200px', backgroundImage: 'url(' + image_url + ')', backgroundSize: 'cover', backgroundPosition: 'center'}}>
           {addButton}
         </div>
 
@@ -136,8 +138,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
             <Tooltip title={t('Private')} placement='bottom'>
               <Lock style={{color: '#323333'}} />
             </Tooltip>
-          </div>
-        }
+          </div>}
         <div className='card-content word-wrap' style={{padding: '5px'}}>
 
           <b>{t(this.props.title)}</b> <br />
@@ -147,30 +148,28 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
           {group &&
             <div className='valign-wrapper' style={{position: 'absolute', bottom: 5, left: 5}}>
               <GroupTag group={group.group_id} />
-            </div>
-          }
+            </div>}
           {this.props.public &&
-          <div style={{position: 'absolute', bottom: '2px', right: '30px'}}>
-            <Tooltip
-              title={t('Public Sharing Enabled')}
-              placement='top'
-            >
-              <LockOpen style={{color: 'green'}} />
-            </Tooltip>
-          </div>
-          }
+            <div style={{position: 'absolute', bottom: '2px', right: '30px'}}>
+              <Tooltip
+                title={t('Public Sharing Enabled')}
+                placement='top'
+              >
+                <LockOpen style={{color: 'green'}} />
+              </Tooltip>
+            </div>}
           {this.props.draft &&
-          <>
-            <div style={{position: 'absolute', top: '5px', right: '75px'}}>
-              <span style={{color: 'red', fontWeight: 600}} >{t('DRAFT')}</span>
-            </div>
-            <div style={{position: 'absolute', bottom: '5px', right: '75px'}}>
-              <span style={{color: 'red', fontWeight: 600}} >{t('DRAFT')}</span>
-            </div>
-          </>
-          }
+            <>
+              <div style={{position: 'absolute', top: '5px', right: '75px'}}>
+                <span style={{color: 'red', fontWeight: 600}}>{t('DRAFT')}</span>
+              </div>
+              <div style={{position: 'absolute', bottom: '5px', right: '75px'}}>
+                <span style={{color: 'red', fontWeight: 600}}>{t('DRAFT')}</span>
+              </div>
+            </>}
           <Tooltip title={toolTipText} placement='top'>
-            <i className='material-icons grey-text text-darken-3'
+            <i
+              className='material-icons grey-text text-darken-3'
               style={{position: 'absolute', bottom: '6px', right: '6px'}}
             >
               {iconName}

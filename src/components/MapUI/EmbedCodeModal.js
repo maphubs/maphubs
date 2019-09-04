@@ -88,18 +88,19 @@ export default class EmbedCodeModal extends React.Component<Props, State> {
         {(!share_id && MAPHUBS_CONFIG.requireLogin) &&
           <Row style={{marginBottom: '20px'}}>
             <Alert message={t('Login required to view this embed, enable sharing for public embeds.')} type='warning' />
-          </Row>
-        }
+          </Row>}
         <Row>
           <Tooltip
             title={t('Map image with play button (best performance)')}
-            placement='left'>
+            placement='left'
+          >
             <span style={{marginRight: '10px'}}>{t('Normal')}</span>
           </Tooltip>
           <Switch checked={interactive} onChange={(checked) => { this.setState({interactive: checked}) }} />
           <Tooltip
             title={t('Interactive map (no play button)')}
-            placement='right'>
+            placement='right'
+          >
             <span style={{marginLeft: '10px'}}>{t('Interactive')}</span>
           </Tooltip>
         </Row>

@@ -60,8 +60,8 @@ module.exports = {
       'omh.layers.status', 'omh.layers.published', 'omh.layers.source', 'omh.layers.license', 'omh.layers.presets',
       'omh.layers.is_external', 'omh.layers.external_layer_type', 'omh.layers.external_layer_config', 'omh.layers.disable_export', 'omh.layers.is_empty',
       'omh.layers.owned_by_group_id',
-      knex.raw(`timezone('UTC', omh.layers.last_updated) as last_updated`),
-      knex.raw(`timezone('UTC', omh.layers.creation_time) as creation_time`),
+      knex.raw('timezone(\'UTC\', omh.layers.last_updated) as last_updated'),
+      knex.raw('timezone(\'UTC\', omh.layers.creation_time) as creation_time'),
       'omh.layers.views',
       'omh.layers.style as default_style', 'omh.layers.labels as default_labels', 'omh.layers.settings as default_settings',
       'omh.layers.legend_html as default_legend_html', 'omh.layers.extent_bbox', 'omh.layers.preview_position',
@@ -114,7 +114,7 @@ module.exports = {
       'omh.maps.updated_at',
       'omh.maps.share_id',
       'omh.maps.owned_by_group_id',
-      knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`),
+      knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'),
       'omh.maps.views',
       'omh.groups.name as groupname'
     )
@@ -129,7 +129,7 @@ module.exports = {
     const query = this.getMapsBaseQuery(trx)
     return query
       .where('omh.maps.private', false)
-      .whereRaw(`omh.maps.title -> 'en' <> '""'`)
+      .whereRaw('omh.maps.title -> \'en\' <> \'""\'')
   },
 
   /**
@@ -177,7 +177,7 @@ module.exports = {
       'omh.maps.updated_at',
       'omh.maps.share_id',
       'omh.maps.owned_by_group_id',
-      knex.raw(`timezone('UTC', omh.maps.updated_at) as updated_at`),
+      knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'),
       'omh.maps.views',
       'omh.groups.name as groupname'
     )
@@ -332,7 +332,8 @@ module.exports = {
   async updateMap (map_id: number, layers: Array<Object>, style: Object, basemap: string, position: any, title: string, settings: Object, user_id: number) {
     return knex.transaction(async (trx) => {
       await trx('omh.maps')
-        .update({position,
+        .update({
+          position,
           style,
           basemap,
           title,

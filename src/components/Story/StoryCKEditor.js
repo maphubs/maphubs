@@ -107,8 +107,10 @@ export default class StoryCKEditor extends React.Component<Props, void> {
                 color: ${MAPHUBS_CONFIG.primaryColor};
                 text-decoration: underline;
               }
-            `}</style>
-            <Tabs size='small'
+            `}
+            </style>
+            <Tabs
+              size='small'
               tabBarStyle={{marginBottom: 0}}
               animated={false}
             >
@@ -142,8 +144,7 @@ export default class StoryCKEditor extends React.Component<Props, void> {
                     </div>
                   </TabPane>
                 )
-              })
-              }
+              })}
             </Tabs>
           </div>
         )}

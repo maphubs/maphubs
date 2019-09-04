@@ -174,7 +174,8 @@ export default class Layers extends MapHubsComponent<Props, State> {
               href='/createlayer'
               tooltip={t('Create New Layer')}
               tooltipPosition='top'
-              icon='add' />
+              icon='add'
+            />
           </div>
         </main>
         <Footer {...this.props.footerConfig} />

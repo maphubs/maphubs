@@ -151,7 +151,8 @@ export default class Maps extends MapHubsComponent<Props, State> {
               <FloatingButton
                 href='/map/new'
                 tooltip={t('Create New Map')} tooltipPosition='top'
-                icon='add' />
+                icon='add'
+              />
             </div>
           </div>
           <div className='row center-align'>

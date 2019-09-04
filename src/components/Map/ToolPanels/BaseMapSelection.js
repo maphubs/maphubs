@@ -30,6 +30,7 @@ export default class BaseMapSelection extends React.Component<Props, void> {
                 const selected = (BaseMap.state.baseMap === baseMapOption.value)
                 return (
                   <div
+                    key={baseMapOption.value}
                     style={{
                       border: selected ? '1px solid #323333' : '1px solid #d9d9d9',
                       backgroundColor: selected ? '#fff' : '#eee',
@@ -42,18 +43,17 @@ export default class BaseMapSelection extends React.Component<Props, void> {
                     <Row>
                       <Col span={6}>
                         {baseMapOption.icon &&
-                          <Avatar shape='square' size={64} src={baseMapOption.icon} />
-                        }
+                          <Avatar shape='square' size={64} src={baseMapOption.icon} />}
                         {!baseMapOption.icon &&
-                          <Avatar shape='square' size={64} icon='global' />
-                        }
+                          <Avatar shape='square' size={64} icon='global' />}
                       </Col>
                       <Col span={18} style={{paddingLeft: '5px'}}>
                         <p style={{marginBottom: '0.5em'}}><b>{t(baseMapOption.label)}</b></p>
                         <p style={{fontSize: '12px'}}>
                           <span
                             className='no-margin no-padding'
-                            dangerouslySetInnerHTML={{__html: baseMapOption.attribution}} />
+                            dangerouslySetInnerHTML={{__html: baseMapOption.attribution}}
+                          />
                         </p>
                       </Col>
                     </Row>

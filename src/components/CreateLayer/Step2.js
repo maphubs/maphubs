@@ -114,7 +114,8 @@ export default class Step2 extends MapHubsComponent<Props, State> {
     return (
       <div className='row'>
         <p>{t('Provide Information About the Data Layer')}</p>
-        <LayerSettings groups={this.props.groups}
+        <LayerSettings
+          groups={this.props.groups}
           submitText={t('Save and Continue')} onSubmit={this.onSubmit}
           warnIfUnsaved={false}
         />

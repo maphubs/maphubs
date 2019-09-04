@@ -33,14 +33,14 @@ module.exports = {
         'is_external', 'external_layer_type', 'external_layer_config', 'disable_export',
         'owned_by_group_id', db.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
         'style', 'legend_html', 'labels', 'settings', 'extent_bbox', 'preview_position')
-        .table('omh.layers').where({private: false, status: 'published'}).orderBy(db.raw(`name -> 'en'`))
+        .table('omh.layers').where({private: false, status: 'published'}).orderBy(db.raw('name -> \'en\''))
     } else {
       return db.select('layer_id', 'shortid', 'name', 'description', 'data_type',
         'remote', 'remote_host', 'remote_layer_id',
         'status', 'source', 'license', 'presets',
         'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'owned_by_group_id',
         db.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
-        .table('omh.layers').where({private: false, status: 'published'}).orderBy(db.raw(`name -> 'en'`))
+        .table('omh.layers').where({private: false, status: 'published'}).orderBy(db.raw('name -> \'en\''))
     }
   },
 
@@ -89,7 +89,7 @@ module.exports = {
       'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
       .table('omh.layers')
       .where({private: false, status: 'published', featured: true})
-      .orderBy(knex.raw(`name -> 'en'`))
+      .orderBy(knex.raw('name -> \'en\''))
       .limit(number)
   },
 
@@ -145,7 +145,7 @@ module.exports = {
       || ' ' || COALESCE((source -> 'it')::text, '')) @@ plainto_tsquery(:input)
       )
       `, {input}))
-      .orderByRaw(`name -> 'en'`)
+      .orderByRaw('name -> \'en\'')
 
     return query
   },
@@ -181,7 +181,7 @@ module.exports = {
       || ' ' || COALESCE((source -> 'it')::text, '')) @@ plainto_tsquery(:input)
       )
       `, {input}))
-      .orderByRaw(`name -> 'en'`)
+      .orderByRaw('name -> \'en\'')
 
     return query
   },
@@ -206,7 +206,7 @@ module.exports = {
         'status', 'private', 'source', 'license', 'presets',
         'allow_public_submit',
         'is_external', 'external_layer_type', 'external_layer_config', 'owned_by_group_id', knex.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
-        .table('omh.layers').orderBy(knex.raw(`name -> 'en'`))
+        .table('omh.layers').orderBy(knex.raw('name -> \'en\''))
     }
 
     if (includePrivate) {

@@ -159,14 +159,11 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
                 </Steps>
               </Row>
               {step === 1 &&
-                <Step1 onSubmit={this.nextStep} mapConfig={mapConfig} />
-              }
+                <Step1 onSubmit={this.nextStep} mapConfig={mapConfig} />}
               {step === 2 &&
-                <Step2 groups={groups} showPrev onPrev={this.prevStep} onSubmit={this.nextStep} />
-              }
+                <Step2 groups={groups} showPrev onPrev={this.prevStep} onSubmit={this.nextStep} />}
               {step === 3 &&
-                <Step3 onPrev={this.prevStep} onSubmit={this.submit} mapConfig={mapConfig} />
-              }
+                <Step3 onPrev={this.prevStep} onSubmit={this.submit} mapConfig={mapConfig} />}
             </div>
           </main>
         </Provider>

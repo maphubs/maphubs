@@ -24,7 +24,8 @@ export default class LayerListItemStatic extends React.Component<Props, void> {
           padding: '5px 5px',
           position: 'relative',
           backgroundColor: active ? 'white' : '#eeeeee'
-        }}>
+        }}
+      >
         <Row>
           <b className='title grey-text text-darken-4 truncate' style={{fontSize: '12px'}}>{t(name)}</b>
         </Row>
@@ -35,7 +36,8 @@ export default class LayerListItemStatic extends React.Component<Props, void> {
           <Col span={4}>
             <Tooltip
               title={t('Layer Info')}
-              placement='right' >
+              placement='right'
+            >
               <a href={'/lyr/' + layer_id} target='_blank' rel='noopener noreferrer'>
                 <Info style={{fontSize: '20px'}} />
               </a>
@@ -44,9 +46,12 @@ export default class LayerListItemStatic extends React.Component<Props, void> {
           <Col span={4}>
             <Tooltip
               title={t('Show/Hide Layer')}
-              placement='right' >
-              <Switch size='small' style={{marginBottom: '5px'}} checked={active}
-                onChange={() => { toggleVisibility(layer_id) }} />
+              placement='right'
+            >
+              <Switch
+                size='small' style={{marginBottom: '5px'}} checked={active}
+                onChange={() => { toggleVisibility(layer_id) }}
+              />
             </Tooltip>
           </Col>
         </Row>

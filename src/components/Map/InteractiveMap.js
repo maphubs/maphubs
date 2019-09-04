@@ -242,9 +242,9 @@ export default class InteractiveMap extends React.Component<Props, State> {
       }
     }
 
-    let children = this.props.children || ''
+    const children = this.props.children || ''
 
-    let title = this.props.showTitle ? this.props.title : undefined
+    const title = this.props.showTitle ? this.props.title : undefined
 
     let height = '100%'
     let topOffset = 0
@@ -293,16 +293,17 @@ export default class InteractiveMap extends React.Component<Props, State> {
             left='10px'
             color={primaryColor}
             icon='info'
-          />
-        }
+          />}
 
         {this.props.categories &&
-          <MapLayerMenu categories={this.props.categories}
+          <MapLayerMenu
+            categories={this.props.categories}
             toggleVisibility={this.toggleVisibility}
-            layers={this.state.layers} t={t} />
-        }
+            layers={this.state.layers} t={t}
+          />}
 
-        <Map id={'map-' + this.props.map_id}
+        <Map
+          id={'map-' + this.props.map_id}
           fitBounds={bounds} fitBoundsOptions={this.props.fitBoundsOptions}
           height={this.props.height}
           interactive={this.props.interactive}
@@ -349,8 +350,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
                 hideInactive={this.props.hideInactive}
                 showLayersButton={false}
                 layers={this.state.layers}
-              />
-            }
+              />}
           </Drawer>
           <div ref={(el) => { this.mapLayersList = el }} />
           <Drawer
@@ -363,7 +363,8 @@ export default class InteractiveMap extends React.Component<Props, State> {
             width='240px'
           >
             <Row style={{height: '100%'}}>
-              <LayerList layers={this.state.layers}
+              <LayerList
+                layers={this.state.layers}
                 showDesign={false} showRemove={false} showVisibility
                 toggleVisibility={this.toggleVisibility}
                 updateLayers={this.updateLayers}
@@ -373,9 +374,10 @@ export default class InteractiveMap extends React.Component<Props, State> {
           </Drawer>
           {children}
           {showShareButtons &&
-            <ShareButtons title={this.props.title} iconSize={24} t={t}
-              style={{position: 'absolute', bottom: '5px', right: '180px', zIndex: '1'}} />
-          }
+            <ShareButtons
+              title={this.props.title} iconSize={24} t={t}
+              style={{position: 'absolute', bottom: '5px', right: '180px', zIndex: '1'}}
+            />}
         </Map>
       </div>
     )

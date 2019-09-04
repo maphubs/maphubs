@@ -34,7 +34,8 @@ export default class DraggableIndicator extends React.PureComponent<Props> {
     for (let i = 0; i < _this.props.numX; i++) {
       for (let j = 0; j < _this.props.numY; j++) {
         rows.push(
-          <rect key={i + '-' + j} x={(_this.props.initialX + i * _this.props.offset)}
+          <rect
+            key={i + '-' + j} x={(_this.props.initialX + i * _this.props.offset)}
             y={(_this.props.initialY + j * _this.props.offset)} fill='#ccc'
             width={_this.props.dotWidth} height={_this.props.dotWidth}
           />
@@ -43,8 +44,10 @@ export default class DraggableIndicator extends React.PureComponent<Props> {
     }
 
     return (
-      <svg viewBox={'0 0 ' + this.props.width + ' ' + this.props.height}
-        style={{width: '100%', height: '100%'}}>
+      <svg
+        viewBox={'0 0 ' + this.props.width + ' ' + this.props.height}
+        style={{width: '100%', height: '100%'}}
+      >
         {rows}
       </svg>
     )

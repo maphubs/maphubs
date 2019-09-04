@@ -38,8 +38,7 @@ export default class AddDropdown extends React.PureComponent<Props, void> {
       <Dropdown overlay={menu} trigger={['click']}>
         <a style={{paddingTop: '6px', height: '50px', textAlign: sidenav ? 'left' : 'center'}} href='#'>
           {sidenav &&
-            <a href='#!'>{t('Add')}</a>
-          }
+            <a href='#!'>{t('Add')}</a>}
           {!sidenav &&
             <AddCircle style={{
               fill: 'currentColor',
@@ -48,8 +47,7 @@ export default class AddDropdown extends React.PureComponent<Props, void> {
               display: 'inline-block',
               fontSize: '24px'
             }}
-            />
-          }
+            />}
         </a>
       </Dropdown>
     )

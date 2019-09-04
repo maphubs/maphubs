@@ -142,25 +142,30 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
                   isHttps: t('SSL required for external links, URLs must start with https://')
                 }} length={500}
                 dataPosition='top' dataTooltip={t('Only layers paramater is required, others will be ignored unless pasted in Other Parameters below. Example:') + 'https://geodata.state.nj.us/imagerywms/Natural2015?layers=Natural2015'}
-                required />
+                required
+              />
             </div>
             <div className='row'>
-              <TextInput name='other' label={t('Other Parameters (Optional)')} icon='info' className='col s12'
+              <TextInput
+                name='other' label={t('Other Parameters (Optional)')} icon='info' className='col s12'
                 dataPosition='top' dataTooltip={t('Additional needed URL parmeters, for example: apikey=1234&query=value>0')}
               />
             </div>
             <div className='row'>
-              <TextInput name='minzoom' label={t('MinZoom (Optional)')} icon='info' className='col s12'
+              <TextInput
+                name='minzoom' label={t('MinZoom (Optional)')} icon='info' className='col s12'
                 dataPosition='top' dataTooltip={t('Lowest tile zoom level available in data')}
               />
             </div>
             <div className='row'>
-              <TextInput name='maxzoom' label={t('MaxZoom (Optional)')} icon='info' className='col s12'
+              <TextInput
+                name='maxzoom' label={t('MaxZoom (Optional)')} icon='info' className='col s12'
                 dataPosition='top' dataTooltip={t('Highest tile zoom level available in data')}
               />
             </div>
             <div className='row'>
-              <TextInput name='bounds' label={t('Bounds (Optional)')} icon='info' className='col s12'
+              <TextInput
+                name='bounds' label={t('Bounds (Optional)')} icon='info' className='col s12'
                 dataPosition='top' dataTooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
               />
             </div>

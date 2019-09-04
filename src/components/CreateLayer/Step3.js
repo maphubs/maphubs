@@ -30,9 +30,11 @@ export default class Step3 extends MapHubsComponent<Props, State> {
   render () {
     return (
       <div className='row'>
-        <LayerStyle waitForTileInit
+        <LayerStyle
+          waitForTileInit
           mapConfig={this.props.mapConfig}
-          onSubmit={this.onSubmit} />
+          onSubmit={this.onSubmit}
+        />
       </div>
     )
   }

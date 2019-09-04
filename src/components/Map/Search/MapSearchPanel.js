@@ -112,7 +112,7 @@ export default class MapSearchPanel extends React.Component<Props, State> {
       })
       .catch(err => {
         debug.log(err)
-        notification['error']({
+        notification.error({
           message: 'Error',
           description: err.toString(),
           duration: 0
@@ -176,15 +176,16 @@ export default class MapSearchPanel extends React.Component<Props, State> {
                     renderItem={item => {
                       return (
                         <List.Item>
-                          <a key={item.id} href='#!'
-                            onClick={() => { _this.onClickResult(item) }}>
+                          <a
+                            key={item.id} href='#!'
+                            onClick={() => { _this.onClickResult(item) }}
+                          >
                             {item.name}
                           </a>
                         </List.Item>
                       )
                     }}
-                  />
-                }
+                  />}
               </TabPane>
               <TabPane tab={t('Location')} key='location'>
                 {(locationSearchResults && locationSearchResults.length > 0) &&
@@ -195,15 +196,16 @@ export default class MapSearchPanel extends React.Component<Props, State> {
                     renderItem={item => {
                       return (
                         <List.Item>
-                          <a key={item.key} href='#!' className='collection-item'
-                            onClick={() => { _this.onClickResult(item.feature) }}>
+                          <a
+                            key={item.key} href='#!' className='collection-item'
+                            onClick={() => { _this.onClickResult(item.feature) }}
+                          >
                             {item.value}
                           </a>
                         </List.Item>
                       )
                     }}
-                  />
-                }
+                  />}
               </TabPane>
             </Tabs>
           </Row>

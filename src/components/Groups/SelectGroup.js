@@ -94,7 +94,8 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
       <>
         {(canChangeGroup && !createdGroup) &&
           <Row>
-            <Select name='group' id='group-select' label={t('Group')} startEmpty={startEmpty}
+            <Select
+              name='group' id='group-select' label={t('Group')} startEmpty={startEmpty}
               value={this.state.group_id} onChange={this.onGroupChange}
               emptyText={t('Choose a Group')} options={groupOptions}
               required
@@ -104,21 +105,19 @@ export default class SelectGroup extends MapHubsComponent<Props, State> {
                 <p style={{fontSize: '12px'}}>{t('Since you are in multiple groups, please select the group that should own this item.')}</p>
               </Col>
               <Col span={8} style={{padding: '5px'}}>
-                <CreateGroupModal t={t} onCreate={(createdGroup) => {
-                  this.setState({createdGroup, group_id: createdGroup.group_id})
-                  this.onGroupChange(createdGroup.group_id)
-                }}
+                <CreateGroupModal
+                  t={t} onCreate={(createdGroup) => {
+                    this.setState({createdGroup, group_id: createdGroup.group_id})
+                    this.onGroupChange(createdGroup.group_id)
+                  }}
                 />
               </Col>
             </Row>
-          </Row>
-        }
+          </Row>}
         {(canChangeGroup && createdGroup) &&
-          <p><b>{t('Created Group:')} </b>{t(createdGroup.name)}</p>
-        }
+          <p><b>{t('Created Group:')} </b>{t(createdGroup.name)}</p>}
         {(!canChangeGroup && selectedGroup) &&
-          <p><b>{t('Group:')} </b>{t(selectedGroup.name)}</p>
-        }
+          <p><b>{t('Group:')} </b>{t(selectedGroup.name)}</p>}
       </>
     )
   }

@@ -85,11 +85,9 @@ export default class UserGroups extends MapHubsComponent<Props, void> {
         <Header {...this.props.headerConfig} />
         <main style={{marginLeft: '10px', marginRight: '10px'}}>
           {canEdit &&
-            <h4>{t('My Groups')}</h4>
-          }
+            <h4>{t('My Groups')}</h4>}
           {!canEdit &&
-            <h4>{t('Groups for user: ') + user.display_name}</h4>
-          }
+            <h4>{t('Groups for user: ') + user.display_name}</h4>}
           {groups}
           {canEdit &&
             <div>
@@ -97,10 +95,10 @@ export default class UserGroups extends MapHubsComponent<Props, void> {
                 <FloatingButton
                   href='/creategroup'
                   tooltip={t('Create New Group')} tooltipPosition='top'
-                  icon='add' />
+                  icon='add'
+                />
               </div>
-            </div>
-          }
+            </div>}
         </main>
         <Footer {...this.props.footerConfig} />
       </ErrorBoundary>

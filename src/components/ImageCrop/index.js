@@ -280,7 +280,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
           // read the file
           const img = new Image()
 
-          img.onload = () => {
+          img.addEventListener('load', () => {
             // get the original size
             const width = img.width
             const height = img.height
@@ -342,9 +342,9 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
               _this.setState({src: data, exif: exifdata, file, img, ext, loading: false})
               $(tempCanvas).remove()
             })
-          }
+          })
 
-          img.onerror = () => {
+          img.addEventListener('error', () => {
             const message = t('Bad Image:') + ' ' + file.name
             debug.log(message)
             notification.error({
@@ -352,7 +352,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
               description: err.message || err.toString() || err,
               duration: 0
             })
-          }
+          })
 
           img.src = window.URL.createObjectURL(file)
         }).catch((err) => {
@@ -465,7 +465,8 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
           .ant-modal-content {
             height: 100%;
           }
-        `}</style>
+        `}
+        </style>
         <Modal
           title={t('Select Image')}
           visible={this.state.visible}
@@ -496,8 +497,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
                   <input className='file-path validate' type='text' value={this.state.selectedFile} />
                 </div>
               </div>
-            </Row>
-          }
+            </Row>}
           {src &&
             <ImageCropToolbar
               lockAspect={lockAspect}
@@ -509,8 +509,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
               aspectSquare={this.aspectSquare}
               resetCropPosition={this.resetCropPosition}
               t={t}
-            />
-          }
+            />}
           <Row style={{height: 'calc(100% - 50px)'}}>
             {src &&
               <Cropper
@@ -522,13 +521,12 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
                 minContainerHeight='200'
                 src={src}
                 ref='cropper'
-                crop={_crop} />
-            }
+                crop={_crop}
+              />}
             {!src &&
               <div className='valign-wrapper' style={{height: '75%'}}>
                 <h5 className='center-align valign' style={{margin: 'auto'}}>{t('Choose an image file')}</h5>
-              </div>
-            }
+              </div>}
           </Row>
         </Modal>
       </div>

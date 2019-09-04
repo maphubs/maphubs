@@ -200,8 +200,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                                 <p style={{fontSize: '16px'}}><b>{t('Layer:')} </b><a href={layerUrl}>{this.t(layer.name)}</a></p>
                                 <FeatureLocation geojson={geojsonFeature} t={t} locale={this.state.locale} />
                                 {isPolygon &&
-                                  <FeatureArea geojson={geojsonFeature} t={t} />
-                                }
+                                  <FeatureArea geojson={geojsonFeature} t={t} />}
                               </div>
                             </Col>
                             <Col sm={24} md={12} style={{height: '100%', border: '1px solid #ddd'}}>
@@ -216,17 +215,14 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                             {frActive &&
                               <ForestReportEmbed
                                 onModuleToggle={this.map.frToggle}
-                              />
-                            }
-                          </TabPane>
-                        }
+                              />}
+                          </TabPane>}
                         {MAPHUBS_CONFIG.enableComments &&
                           <TabPane tab={t('Discussion')} key='discussion'>
                             <ErrorBoundary>
                               <Comments />
                             </ErrorBoundary>
-                          </TabPane>
-                        }
+                          </TabPane>}
                         <TabPane tab={t('Notes')} key='notes' style={{position: 'relative', height: '100%'}}>
                           <FeatureNotes notes={notes} canEdit={canEdit} layer_id={layer.layer_id} mhid={geoJSONProps.mhid} t={t} _csrf={this.props._csrf} />
                         </TabPane>
@@ -237,8 +233,10 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                     </Row>
                   </Col>
                   <Col span={12} style={{height: '100%'}}>
-                    <FeatureMap ref={(el) => { this.map = el }}
-                      geojson={feature} gpxLink={gpxLink} />
+                    <FeatureMap
+                      ref={(el) => { this.map = el }}
+                      geojson={feature} gpxLink={gpxLink}
+                    />
                   </Col>
                 </Row>
                 {canEdit &&
@@ -251,12 +249,11 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                         <li>
                           <FloatingButton
                             onClick={() => { openEditor(MapState.state.map) }} icon='mode_edit'
-                            tooltip={t('Edit Map Data')} tooltipPosition='left' />
-                        </li>
-                      }
+                            tooltip={t('Edit Map Data')} tooltipPosition='left'
+                          />
+                        </li>}
                     </ul>
-                  </div>
-                }
+                  </div>}
               </main>
             )}
           </Subscribe>

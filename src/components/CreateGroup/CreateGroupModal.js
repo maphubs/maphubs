@@ -133,8 +133,7 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
     return (
       <>
         {!visible &&
-          <Button size='small' onClick={this.showModal}><Icon type='plus' />{t('New Group')}</Button>
-        }
+          <Button size='small' onClick={this.showModal}><Icon type='plus' />{t('New Group')}</Button>}
         <Modal
           title={t('Create Group')}
           visible={visible}
@@ -153,7 +152,8 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
           <Row>
             <Formsy onChange={this.onFormChange} onValid={this.enableButton} onInvalid={this.disableButton}>
               <Row style={{marginBottom: '20px'}}>
-                <TextInput name='group_id' label={t('Group ID')} icon='group_work' className='col s6'
+                <TextInput
+                  name='group_id' label={t('Group ID')} icon='group_work' className='col s6'
                   validations={{matchRegexp: /^[a-zA-Z0-9-]*$/, maxLength: 25, isAvailable: true}} validationErrors={{
                     maxLength: t('ID must be 25 characters or less.'),
                     matchRegexp: t('Can only contain letters, numbers, or dashes.'),
@@ -161,10 +161,12 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
                   }} length={25}
                   successText='ID is Available'
                   dataPosition='right' dataTooltip={t("Identifier for the Group. This will be used in links and URLs for your group's content.")}
-                  required />
+                  required
+                />
               </Row>
               <Row style={{marginBottom: '20px'}}>
-                <MultiTextInput name='name' id='name'
+                <MultiTextInput
+                  name='name' id='name'
                   label={{
                     en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
                   }}
@@ -172,10 +174,12 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
                     maxLength: t('Name must be 100 characters or less.')
                   }} length={100}
                   dataPosition='top' dataTooltip={t('Short Descriptive Name for the Group')}
-                  required />
+                  required
+                />
               </Row>
               <Row style={{marginBottom: '20px'}}>
-                <MultiTextArea name='description'
+                <MultiTextArea
+                  name='description'
                   label={{
                     en: 'Description',
                     fr: 'Description',
@@ -186,7 +190,8 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
                     maxLength: t('Description must be 500 characters or less.')
                   }} length={500}
                   dataPosition='top' dataTooltip={t('Brief Description of the Group')}
-                  required />
+                  required
+                />
               </Row>
             </Formsy>
           </Row>

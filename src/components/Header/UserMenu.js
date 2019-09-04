@@ -59,7 +59,6 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
     }
 
     const {user} = this.state
-    const {sidenav} = this.props
 
     let userMenu
     if (user) {
@@ -85,11 +84,10 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
               <Menu.Item>
                 <a href='/admin/manage'>{t('Manage Users')}</a>
               </Menu.Item>
-            </>
-          }
+            </>}
           <Divider style={{margin: '10px 0px'}} />
           <Menu.Item>
-            <a href={'/logout'}>{t('Logout')}</a>
+            <a href='/logout'>{t('Logout')}</a>
           </Menu.Item>
         </Menu>
       )

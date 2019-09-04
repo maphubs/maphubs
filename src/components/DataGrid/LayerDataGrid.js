@@ -213,7 +213,7 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
 
   onRowsDeselected = (rows: Array<Object>) => {
     const rowIndexes = rows.map(r => r.rowIdx)
-    this.setState({selectedIndexes: this.state.selectedIndexes.filter(i => rowIndexes.indexOf(i) === -1)})
+    this.setState({selectedIndexes: this.state.selectedIndexes.filter(i => !rowIndexes.includes(i))})
   }
 
   onEditSelectedFeature = () => {
@@ -305,8 +305,7 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
             {canEdit &&
               <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={this.onEditSelectedFeature}>
                 {t('Edit Selected')}
-              </button>
-            }
+              </button>}
             <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={_this.onViewSelectedFeature}>
               {t('View Selected')}
             </button>
@@ -318,10 +317,9 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
                 onSave={this.onSaveEdits}
                 _csrf={this.state._csrf}
                 t={t}
-                layer_id={layer_id} />
-            }
-          </Toolbar>
-          }
+                layer_id={layer_id}
+              />}
+          </Toolbar>}
           onAddFilter={this.handleFilterChange}
           onClearFilters={this.onClearFilters}
         />

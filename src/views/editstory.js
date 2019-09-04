@@ -60,7 +60,7 @@ export default class EditStory extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header {...headerConfig} />
         <main style={{height: 'calc(100% - 50px)'}}>
-          <Provider inject={[this.StoryContainer]} >
+          <Provider inject={[this.StoryContainer]}>
             <StoryEditor
               myMaps={myMaps}
               popularMaps={popularMaps}

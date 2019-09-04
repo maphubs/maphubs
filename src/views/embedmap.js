@@ -210,9 +210,12 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
           <img src={imgSrc} style={{width: '100%', height: '100%', objectFit: 'contain'}} alt={MAPHUBS_CONFIG.productName + ' Map'} />
           <Tooltip
             title={t('Start Interactive Map')}
-            placement='right'>
-            <a onClick={this.startInteractive} className='embed-map-btn btn-floating waves-effect waves-light'
-              style={{position: 'absolute', left: 'calc(50% - 30px)', bottom: 'calc(50% - 30px)', backgroundColor: 'rgba(25,25,25,0.35)', height: '60px', width: '60px', zIndex: '999'}}>
+            placement='right'
+          >
+            <a
+              onClick={this.startInteractive} className='embed-map-btn btn-floating waves-effect waves-light'
+              style={{position: 'absolute', left: 'calc(50% - 30px)', bottom: 'calc(50% - 30px)', backgroundColor: 'rgba(25,25,25,0.35)', height: '60px', width: '60px', zIndex: '999'}}
+            >
               <i style={{lineHeight: '60px', fontSize: '30px'}} className='material-icons'>play_arrow</i>
             </a>
           </Tooltip>
@@ -238,7 +241,8 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
       insetConfig.collapsible = false
 
       map = (
-        <InteractiveMap height='100vh'
+        <InteractiveMap
+          height='100vh'
           interactive={this.state.interactive}
           fitBounds={bounds}
           fitBoundsOptions={{animate: false, padding: 0, maxZoom: 20}}

@@ -133,10 +133,12 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
     if (is_external && external_layer_config) {
       elcEditor = (
         <div className='row' style={{height: '300px'}}>
-          <CodeEditor ref='pageEditor' id='layer-elc-editor' mode='json'
+          <CodeEditor
+            ref='pageEditor' id='layer-elc-editor' mode='json'
             code={JSON.stringify(external_layer_config, undefined, 2)}
             title={t('External Layer Config')}
-            onSave={this.saveExternalLayerConfig} modal={false} />
+            onSave={this.saveExternalLayerConfig} modal={false}
+          />
         </div>
       )
     }
@@ -169,7 +171,8 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
                   groups={this.props.groups}
                   type='layer'
                   group_id={owned_by_group_id}
-                  canChangeGroup editing={false} />
+                  canChangeGroup editing={false}
+                />
               </Row>
             </Col>
           </Row>

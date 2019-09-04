@@ -157,8 +157,10 @@ class TextInput extends MapHubsComponent<Props, State> {
     let charCount = ''
     if (this.props.showCharCount) {
       charCount = (
-        <span className='character-counter'
-          style={{float: 'right', fontSize: '12px', height: '1px', color: countColor}}>
+        <span
+          className='character-counter'
+          style={{float: 'right', fontSize: '12px', height: '1px', color: countColor}}
+        >
           {this.state.charCount} / {this.props.length}
         </span>
       )
@@ -171,10 +173,12 @@ class TextInput extends MapHubsComponent<Props, State> {
       >
         <div ref='inputWrapper' className={className} style={this.props.style}>
           {icon}
-          <input ref='input' id={id} type={this.props.type} className={inputClassName} placeholder={this.props.placeholder} value={value}
+          <input
+            ref='input' id={id} type={this.props.type} className={inputClassName} placeholder={this.props.placeholder} value={value}
             disabled={this.props.disabled}
             onClick={this.props.onClick}
-            onChange={this.changeValue} />
+            onChange={this.changeValue}
+          />
           <label htmlFor={id} className={labelClassName} data-error={errorMessage} data-success={this.props.successText}>{this.props.label}</label>
           {charCount}
         </div>

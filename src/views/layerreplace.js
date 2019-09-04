@@ -101,12 +101,11 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
               <div className='row center-align'>
                 <h5>{t('Replace data in layer:') + ' ' + t(layer.name)}</h5>
                 <p>{t('First you must download the backup file. This file can be used to restore the previous data if needed.')}</p>
-                <a className='btn' href={maphubsFileURL} target='_blank' onClick={this.onDownload}>{t('Download Backup File')}</a>
+                <a className='btn' href={maphubsFileURL} target='_blank' rel='noopener noreferrer' onClick={this.onDownload}>{t('Download Backup File')}</a>
               </div>
               <div className='row'>
                 {downloaded &&
-                  <UploadLayerReplacement showPrev={false} onSubmit={this.onDataSubmit} mapConfig={this.props.mapConfig} />
-                }
+                  <UploadLayerReplacement showPrev={false} onSubmit={this.onDataSubmit} mapConfig={this.props.mapConfig} />}
               </div>
             </div>
           </main>

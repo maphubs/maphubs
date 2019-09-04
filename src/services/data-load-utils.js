@@ -224,14 +224,15 @@ module.exports = {
 
       if (update) {
         debug.log('Update temp geojson')
-        await db('omh.temp_data').update({
-          unique_props: JSON.stringify(uniqueProps)})
+        await db('omh.temp_data').update({unique_props: JSON.stringify(uniqueProps)})
           .where({layer_id})
       } else { // delete and replace
         await db('omh.temp_data').where({layer_id}).del()
-        await db('omh.temp_data').insert({layer_id,
+        await db('omh.temp_data').insert({
+          layer_id,
           uploadtmppath,
-          unique_props: JSON.stringify(uniqueProps)})
+          unique_props: JSON.stringify(uniqueProps)
+        })
       }
 
       debug.log('db updates complete')

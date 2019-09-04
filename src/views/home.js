@@ -153,7 +153,8 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     if (this.props.map) {
       homepageMap = (
         <Row key={key} style={style}>
-          <InteractiveMap height='calc(100vh - 150px)'
+          <InteractiveMap
+            height='calc(100vh - 150px)'
             {...this.props.map}
             mapConfig={this.props.mapConfig}
             layers={this.props.layers} showTitle={false}
@@ -211,12 +212,14 @@ export default class HomePro extends MapHubsComponent<Props, State> {
             {config.slides.map((slide, i) => {
               return (
                 <div key={i}>
-                  <div key={i} className='valign-wrapper'
+                  <div
+                    key={i} className='valign-wrapper'
                     style={{
                       height: '500px',
                       backgroundSize: 'cover',
                       backgroundImage: 'url(' + slide.img + ')'
-                    }}>
+                    }}
+                  >
                     <div className='slide-text'>
                       <h2 className='no-margin'>{this.t(slide.title)}</h2>
                       <h3 className='no-margin'>{this.t(slide.text)}</h3>
@@ -228,8 +231,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
                 </div>
               )
             })}
-          </Carousel>
-        }
+          </Carousel>}
         <style jsx global>{`
           .ant-carousel .slick-slide {
             text-align: center;
@@ -286,7 +288,8 @@ export default class HomePro extends MapHubsComponent<Props, State> {
               font-size: 20px;
             }
           }
-        `}</style>
+        `}
+        </style>
       </Row>
     )
     return slides
@@ -486,8 +489,10 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     let label = config.label[this.state.locale]
     if (!label) label = config.label.en
     const button = (
-      <Row key={key} className='valign-wrapper'
-        style={{padding: '25px', textAlign: 'center', ...style}}>
+      <Row
+        key={key} className='valign-wrapper'
+        style={{padding: '25px', textAlign: 'center', ...style}}
+      >
         <a
           className='waves-effect waves-light btn valign'
           style={{margin: 'auto'}}
@@ -547,11 +552,9 @@ export default class HomePro extends MapHubsComponent<Props, State> {
                     return ''
                   }
                 }
-              })
-              }
+              })}
               {!this.props.pageConfig.disableFooter &&
-              <Footer {...this.props.footerConfig} />
-              }
+                <Footer {...this.props.footerConfig} />}
 
             </main>
           </div>

@@ -229,17 +229,23 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
               <div className='row center-align'>
                 <h5>{t('Unable to modify remote layers.')}</h5>
                 <div className='center-align center'>
-                  <button className='btn' style={{marginTop: '20px'}}
-                    onClick={this.refreshRemoteLayer}>{t('Refresh Remote Layer')}</button>
+                  <button
+                    className='btn' style={{marginTop: '20px'}}
+                    onClick={this.refreshRemoteLayer}
+                  >{t('Refresh Remote Layer')}
+                  </button>
                 </div>
                 <p>{t('You can remove this layer using the button in the bottom right.')}</p>
               </div>
-              <div ref={(el) => { this.menuButton = el }}
-                className='fixed-action-btn action-button-bottom-right'>
+              <div
+                ref={(el) => { this.menuButton = el }}
+                className='fixed-action-btn action-button-bottom-right'
+              >
                 <FloatingButton
                   onClick={this.deleteLayer}
                   tooltip={t('Delete Layer')}
-                  color='red' icon='delete' />
+                  color='red' icon='delete'
+                />
               </div>
             </div>
           </main>
@@ -266,55 +272,50 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                         <a onClick={() => { _this.selectTab('style') }} href='#style'>{t('Style/Display')}</a>
                       </li>
                       {this.state.user && this.state.user.admin &&
-                      <li className='tab'>
-                        <a onClick={() => { _this.selectTab('admin') }} href='#admin'>{t('Admin Only')}</a>
-                      </li>
-                      }
+                        <li className='tab'>
+                          <a onClick={() => { _this.selectTab('admin') }} href='#admin'>{t('Admin Only')}</a>
+                        </li>}
                     </ul>
                   </div>
                   <div id='info' className='col s12' style={{borderTop: '1px solid #ddd'}}>
                     {this.state.tab === 'settings' &&
-                    <LayerSettings
-                      groups={this.props.groups}
-                      showGroup={false}
-                      warnIfUnsaved
-                      onSubmit={this.onSave}
-                      submitText={t('Save')}
-                    />
-                    }
+                      <LayerSettings
+                        groups={this.props.groups}
+                        showGroup={false}
+                        warnIfUnsaved
+                        onSubmit={this.onSave}
+                        submitText={t('Save')}
+                      />}
                   </div>
                   <div id='fields' className='col s12' style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
                     {this.state.tab === 'fields' &&
-                    <div className='container' >
-                      <h5>{t('Data Fields')}</h5>
-                      <div className='right'>
-                        <button onClick={this.savePresets} className='waves-effect waves-light btn' disabled={!this.state.canSavePresets}>{t('Save')}</button>
-                      </div>
-                      <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid} />
-                      <div className='right'>
-                        <button onClick={this.savePresets} className='waves-effect waves-light btn' disabled={!this.state.canSavePresets}>{t('Save')}</button>
-                      </div>
-                    </div>
-                    }
+                      <div className='container'>
+                        <h5>{t('Data Fields')}</h5>
+                        <div className='right'>
+                          <button onClick={this.savePresets} className='waves-effect waves-light btn' disabled={!this.state.canSavePresets}>{t('Save')}</button>
+                        </div>
+                        <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid} />
+                        <div className='right'>
+                          <button onClick={this.savePresets} className='waves-effect waves-light btn' disabled={!this.state.canSavePresets}>{t('Save')}</button>
+                        </div>
+                      </div>}
                   </div>
                   <div id='style' className='col s12' style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
                     {this.state.tab === 'style' &&
-                    <LayerStyle
-                      showPrev={false}
-                      onSubmit={this.onSave}
-                      mapConfig={this.props.mapConfig}
-                    />
-                    }
+                      <LayerStyle
+                        showPrev={false}
+                        onSubmit={this.onSave}
+                        mapConfig={this.props.mapConfig}
+                      />}
                   </div>
                   <div id='admin' className='col s12' style={{display: tabContentDisplay, borderTop: '1px solid #ddd'}}>
                     {this.state.tab === 'admin' &&
-                    <LayerAdminSettings
-                      groups={this.props.groups}
-                      warnIfUnsaved
-                      onSubmit={this.onSave}
-                      submitText={t('Save')}
-                    />
-                    }
+                      <LayerAdminSettings
+                        groups={this.props.groups}
+                        warnIfUnsaved
+                        onSubmit={this.onSave}
+                        submitText={t('Save')}
+                      />}
                   </div>
                 </div>
               </div>
@@ -327,13 +328,15 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                     <FloatingButton
                       href={`/layer/replace/${layerId}/${layerName}`}
                       tooltip={t('Replace Layer Data')}
-                      color='blue' icon='file_upload' large={false} />
+                      color='blue' icon='file_upload' large={false}
+                    />
                   </li>
                   <li>
                     <FloatingButton
                       onClick={this.deleteLayer}
                       tooltip={t('Delete Layer')}
-                      color='red' icon='delete' large={false} />
+                      color='red' icon='delete' large={false}
+                    />
                   </li>
                 </ul>
               </div>

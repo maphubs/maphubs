@@ -6,7 +6,7 @@ function getGLADLayer (gladGeoJSON: Object, active: boolean): Layer {
   const gladColor = 'red'
   const layers = [
     {
-      id: `omh-data-polygon-glad-geojson`,
+      id: 'omh-data-polygon-glad-geojson',
       type: 'fill',
       metadata: {
         'maphubs:interactive': false,
@@ -22,7 +22,7 @@ function getGLADLayer (gladGeoJSON: Object, active: boolean): Layer {
         visibility: active ? 'visible' : 'none'
       }
     }, {
-      id: `fr-data-outline-polygon-glad-geojson`,
+      id: 'fr-data-outline-polygon-glad-geojson',
       type: 'line',
       metadata: {
       },

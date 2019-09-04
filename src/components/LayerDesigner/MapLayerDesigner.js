@@ -120,10 +120,12 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
           elc.type === 'ags-mapserver-tiles')) {
         designer = (
           <div style={{padding: '5px'}}>
-            <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
+            <OpacityChooser
+              value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
               style={style} onStyleChange={this.setStyle} onColorChange={this.onColorChange}
               layer={this.props.layer}
-              legendCode={legendCode} onLegendChange={this.setLegend} showAdvanced />
+              legendCode={legendCode} onLegendChange={this.setLegend} showAdvanced
+            />
           </div>
         )
       } else if (this.props.layer.is_external && elc &&
@@ -135,12 +137,14 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
         )
       } else {
         designer = (
-          <LayerDesigner onColorChange={this.onColorChange}
+          <LayerDesigner
+            onColorChange={this.onColorChange}
             style={style} onStyleChange={this.setStyle}
             labels={this.props.layer.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setMarkers}
             layer={this.props.layer}
             showAdvanced={this.props.showAdvanced}
-            legend={legendCode} onLegendChange={this.setLegend} />
+            legend={legendCode} onLegendChange={this.setLegend}
+          />
         )
       }
     }

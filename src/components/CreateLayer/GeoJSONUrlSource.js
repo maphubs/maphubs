@@ -112,15 +112,19 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
                   isHttps: t('SSL required for external links, URLs must start with https://')
                 }} length={500}
                 dataPosition='top' dataTooltip={t('Vector Tile URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.pbf'}
-                required />
+                required
+              />
             </Row>
             <Row>
-              <TextInput name='id' label={t('ID Property (Optional)')} icon='info' className='col s12'
+              <TextInput
+                name='id' label={t('ID Property (Optional)')} icon='info' className='col s12'
                 dataPosition='top' dataTooltip={t('Some features require idenify a unique identifier that can be used to select features')}
-                required />
+                required
+              />
             </Row>
             <Row>
-              <Radio name='data_type' label=''
+              <Radio
+                name='data_type' label=''
                 defaultValue='point'
                 options={dataTypeOptions}
                 className='col s10'

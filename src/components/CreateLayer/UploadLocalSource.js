@@ -167,7 +167,8 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
       map = (
         <div ref='mapSection'>
           <p>{t('Please review the data on the map to confirm the upload was successful.')}</p>
-          <Map style={{width: '100%', height: '400px'}}
+          <Map
+            style={{width: '100%', height: '400px'}}
             id='upload-preview-map'
             showFeatureInfoEditButtons={false}
             mapConfig={mapConfig}
@@ -194,8 +195,10 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
         options.push({value: shpFile, label: shpFile})
       })
       multipleShapefilesDisplay = (
-        <RadioModal ref='chooseshape' title={t('Multiple Shapefiles Found - Please Select One')}
-          options={options} onSubmit={this.finishUpload} t={t} />
+        <RadioModal
+          ref='chooseshape' title={t('Multiple Shapefiles Found - Please Select One')}
+          options={options} onSubmit={this.finishUpload} t={t}
+        />
       )
     }
 
@@ -205,7 +208,8 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
           #upload-process-progess {
             z-index: 9999 !important;
           }
-        `}</style>
+        `}
+        </style>
         <Row style={{marginBottom: '10px'}}>
           <div style={{margin: 'auto auto', maxWidth: '750px'}}>
             <UppyFileUpload

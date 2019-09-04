@@ -34,7 +34,7 @@ module.exports = function (app) {
 
       if (await Admin.checkAdmin(user_id)) {
         const pageConfigs = await Page.getPageConfigs(['config'])
-        const pageConfig = pageConfigs['config']
+        const pageConfig = pageConfigs.config
         return app.next.render(req, res, '/configedit', await pageOptions(req, {
           title: req.__('Edit Config') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {page_id: 'config', pageConfig},
@@ -52,7 +52,7 @@ module.exports = function (app) {
 
       if (await Admin.checkAdmin(user_id)) {
         const pageConfigs = await Page.getPageConfigs(['map'])
-        const pageConfig = pageConfigs['map']
+        const pageConfig = pageConfigs.map
         return app.next.render(req, res, '/configedit', await pageOptions(req, {
           title: req.__('Edit Map Config') + ' - ' + MAPHUBS_CONFIG.productName,
           props: {page_id: 'map', pageConfig},

@@ -60,7 +60,7 @@ export default class FeatureLocation extends React.PureComponent<Props, void> {
         <div className='row no-margin'>
           <span>
             <b>{t('Plus Code:')}</b>&nbsp;
-            {plusCode} (<a href='https://plus.codes/' target='_blank'>{t('More Info')}</a>)
+            {plusCode} (<a href='https://plus.codes/' target='_blank' rel='noopener noreferrer'>{t('More Info')}</a>)
           </span>
         </div>
         <div className='row no-margin'>

@@ -94,8 +94,7 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
     return (
       <>
         {!visible &&
-          <Button type='primary' onClick={this.showModal}>{t('Save Map')}</Button>
-        }
+          <Button type='primary' onClick={this.showModal}>{t('Save Map')}</Button>}
         <Modal
           title={t('Save Map')}
           visible={visible}
@@ -118,13 +117,13 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
               </Row>
               <Row>
                 <Formsy>
-                  <SelectGroup groups={groups} group_id={owned_by_group_id} type='map' canChangeGroup={!editing} editing={editing}
+                  <SelectGroup
+                    groups={groups} group_id={owned_by_group_id} type='map' canChangeGroup={!editing} editing={editing}
                     onGroupChange={this.groupChange}
                   />
                 </Formsy>
               </Row>
-            </>
-          }
+            </>}
           {!user &&
             <>
               <Row style={{textAlign: 'center'}}>
@@ -136,8 +135,7 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
               <Row style={{textAlign: 'center'}}>
                 <a className='btn' onClick={this.recheckLogin}>{t('Retry')}</a>
               </Row>
-            </>
-          }
+            </>}
         </Modal>
       </>
     )

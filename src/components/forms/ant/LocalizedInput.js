@@ -83,7 +83,7 @@ export default class LocalizedInput extends React.Component<Props, State> {
         `}
         </style>
         <div className='localized-input'>
-          <Tabs animated={false} size='small' tabBarStyle={{margin: 0}} >
+          <Tabs animated={false} size='small' tabBarStyle={{margin: 0}}>
             {langs.map(locale => {
               return (
                 <TabPane
@@ -91,31 +91,26 @@ export default class LocalizedInput extends React.Component<Props, State> {
                   key={locale.value}
                 >
                   {type === 'input' &&
-                    <Input type='text' value={value[locale.value]}
+                    <Input
+                      type='text' value={value[locale.value]}
                       placeholder={placeholder}
-                      onChange={
-                        (e) => {
-                          const val = e.target.value
-                          handleChange(locale.value, val)
-                        }
-                      }
-                    />
-                  }
+                      onChange={(e) => {
+                        const val = e.target.value
+                        handleChange(locale.value, val)
+                      }}
+                    />}
                   {type === 'area' &&
-                    <TextArea rows={4} type='text' value={value[locale.value]}
+                    <TextArea
+                      rows={4} type='text' value={value[locale.value]}
                       placeholder={placeholder}
-                      onChange={
-                        (e) => {
-                          const val = e.target.value
-                          handleChange(locale.value, val)
-                        }
-                      }
-                    />
-                  }
+                      onChange={(e) => {
+                        const val = e.target.value
+                        handleChange(locale.value, val)
+                      }}
+                    />}
                 </TabPane>
               )
-            })
-            }
+            })}
           </Tabs>
         </div>
       </div>

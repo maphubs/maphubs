@@ -72,7 +72,8 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
           <IntlProvider locale={locale}>
             <FormattedDate value={publishedTime} month='short' day='numeric' />
           </IntlProvider>&nbsp;
-          (<IntlProvider locale={locale}>
+          (
+          <IntlProvider locale={locale}>
             <FormattedRelative value={publishedTime} />
           </IntlProvider>)
         </p>
@@ -91,28 +92,34 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
       <div>
         <div style={{height: '40px', marginBottom: '10px'}}>
           <div className='valign-wrapper' style={{width: '36px', float: 'left'}}>
-            <a className='valign' style={{marginTop: '4px'}}
-              href={groupUrl}>
+            <a
+              className='valign' style={{marginTop: '4px'}}
+              href={groupUrl}
+            >
               {!groupLogoFailed &&
-              <Avatar alt={story.owned_by_group_id} size={36} src={`/img/resize/64?url=/group/${story.owned_by_group_id}/thumbnail`} onError={() => {
-                console.error('Group Logo Failed')
-                this.setState({groupLogoFailed: true})
-              }} />
-              }
+                <Avatar
+                  alt={story.owned_by_group_id} size={36} src={`/img/resize/64?url=/group/${story.owned_by_group_id}/thumbnail`} onError={() => {
+                    console.error('Group Logo Failed')
+                    this.setState({groupLogoFailed: true})
+                  }}
+                />}
               {groupLogoFailed &&
                 <Avatar size={36} style={{ color: '#FFF' }}>
                   {story.owned_by_group_id.charAt(0).toUpperCase()}
-                </Avatar>
-              }
+                </Avatar>}
             </a>
           </div>
           <div style={{marginLeft: '46px'}}>
             <p
               style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}
-              className='truncate'>{authorText}
-              <a className='valign' style={{marginTop: 0, marginBottom: 0, marginLeft: '5px', fontSize: '14px', lineHeight: '1.4rem'}}
-                href={groupUrl}>
-                {story.groupname ? t(story.groupname) : story.owned_by_group_id}</a>
+              className='truncate'
+            >{authorText}
+              <a
+                className='valign' style={{marginTop: 0, marginBottom: 0, marginLeft: '5px', fontSize: '14px', lineHeight: '1.4rem'}}
+                href={groupUrl}
+              >
+                {story.groupname ? t(story.groupname) : story.owned_by_group_id}
+              </a>
             </p>
             {time}
           </div>

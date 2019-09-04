@@ -20,8 +20,10 @@ export default function FloatingButton ({ onClick, icon = 'info', href, tooltip,
   return (
     <Tooltip
       title={tooltip}
-      placement={tooltipPosition}>
-      <a className={`btn-floating ${large ? 'btn-large' : ''} ${color}`}
+      placement={tooltipPosition}
+    >
+      <a
+        className={`btn-floating ${large ? 'btn-large' : ''} ${color}`}
         onClick={clickHandler} href={hrefProp}
       >
         <i className='large material-icons'>{icon}</i>

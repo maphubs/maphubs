@@ -80,7 +80,8 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
       }
     }, _this.state._csrf, (err) => {
       if (err) {
-        notification.error({message: t('Server Error'),
+        notification.error({
+          message: t('Server Error'),
           description: err.message || err.toString() || err,
           duration: 0
         })
@@ -106,9 +107,10 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
       <Row>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div>
-            <p>DigitalGlobe <a href='https://discover.digitalglobe.com/' target='_blank'>https://discover.digitalglobe.com/</a></p>
+            <p>DigitalGlobe <a href='https://discover.digitalglobe.com/' target='_blank' rel='noopener noreferrer'>https://discover.digitalglobe.com/</a></p>
             <Row>
-              <TextInput name='featureid' label={t('DG Image ID')} icon='info' className='col s12'
+              <TextInput
+                name='featureid' label={t('DG Image ID')} icon='info' className='col s12'
                 dataPosition='top' dataTooltip={t('DigitalGlobe Image ID / Legacy ID')}
                 required
               />

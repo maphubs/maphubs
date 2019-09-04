@@ -54,8 +54,7 @@ export default class MiniLegend extends React.Component<Props, State> {
   }
 
   render () {
-    const _this = this
-    const {t, title, showLayersButton} = this.props
+    const {t, title, layers, showLayersButton, hideInactive} = this.props
     const {collapsed} = this.state
 
     let layersButton = ''
@@ -117,14 +116,17 @@ export default class MiniLegend extends React.Component<Props, State> {
       titleDisplay = (
         <Row style={{height: '32px', width: '100%'}}>
           <Col span={20} className='valign-wrapper' style={{height: '32px'}}>
-            <h6 className='black-text valign word-wrap' style={{
-              padding: '0.2rem',
-              marginLeft: '2px',
-              marginTop: '0px',
-              marginBottom: '2px',
-              fontWeight: '500',
-              fontSize: titleFontSize
-            }}>{titleText}</h6>
+            <h6
+              className='black-text valign word-wrap' style={{
+                padding: '0.2rem',
+                marginLeft: '2px',
+                marginTop: '0px',
+                marginBottom: '2px',
+                fontWeight: '500',
+                fontSize: titleFontSize
+              }}
+            >{titleText}
+            </h6>
           </Col>
           <Col span={4} className='no-padding valign'>
             {layersButton}
@@ -134,13 +136,12 @@ export default class MiniLegend extends React.Component<Props, State> {
               height: '32px',
               zIndex: '100',
               lineHeight: '32px'
-            }}>
+            }}
+            >
               {collapsed &&
-                <KeyboardArrowDown style={iconStyle} />
-              }
+                <KeyboardArrowDown style={iconStyle} />}
               {!collapsed &&
-                <KeyboardArrowUp style={iconStyle} />
-              }
+                <KeyboardArrowUp style={iconStyle} />}
             </span>
           </Col>
         </Row>
@@ -148,13 +149,16 @@ export default class MiniLegend extends React.Component<Props, State> {
     } else {
       titleDisplay = (
         <Row className='valign-wrapper' style={{height: '32px', width: '100%'}}>
-          <h6 className='black-text valign' style={{
-            padding: '0.2rem',
-            marginLeft: '2px',
-            marginBottom: '2px',
-            fontWeight: '500',
-            fontSize: titleFontSize
-          }}>{titleText}</h6>
+          <h6
+            className='black-text valign' style={{
+              padding: '0.2rem',
+              marginLeft: '2px',
+              marginBottom: '2px',
+              fontWeight: '500',
+              fontSize: titleFontSize
+            }}
+          >{titleText}
+          </h6>
           <Col span={4} className='valign'>
             {layersButton}
           </Col>
@@ -227,8 +231,10 @@ export default class MiniLegend extends React.Component<Props, State> {
             -webkit-hyphens: auto;
             hyphens: auto;
           }
-        `}</style>
-        <ul ref='legend' className='collapsible'
+        `}
+        </style>
+        <ul
+          ref='legend' className='collapsible'
           style={{
             zIndex: 1,
             textAlign: 'left',
@@ -241,15 +247,19 @@ export default class MiniLegend extends React.Component<Props, State> {
             border: 'none',
             paddingLeft: '0px',
             listStyleType: 'none'
-          }}>
-          <li className='z-depth-1 active'
+          }}
+        >
+          <li
+            className='z-depth-1 active'
             style={{
               backgroundColor: '#FFF',
               height: 'auto',
               pointerEvents: 'auto',
               borderTop: '1px solid #ddd',
               borderRight: '1px solid #ddd',
-              borderLeft: '1px solid #ddd'}}>
+              borderLeft: '1px solid #ddd'
+            }}
+          >
             <div className='collapsible-header no-padding' style={{height: '32px', minHeight: '32px'}} onClick={this.toggleCollapsed}>
               {titleDisplay}
             </div>
@@ -258,21 +268,26 @@ export default class MiniLegend extends React.Component<Props, State> {
                 display: collapsed ? 'none' : 'flex',
                 maxHeight: contentHeight,
                 flexDirection: 'column',
-                borderBottom: 'none'}}>
-              <div className='no-margin'
+                borderBottom: 'none'
+              }}
+            >
+              <div
+                className='no-margin'
                 style={{
                   overflowX: 'hidden',
                   overflowY: allowScroll ? 'auto' : 'hidden',
                   maxHeight: contentHeight,
-                  padding: '5px'}}>
+                  padding: '5px'
+                }}
+              >
                 {
-                  this.props.layers.map((layer) => {
+                  layers.map((layer) => {
                     let active = MapStyles.settings.get(layer.style, 'active')
                     if (typeof active === 'undefined') {
                       layer.style = MapStyles.settings.set(layer.style, 'active', true)
                       active = true
                     }
-                    if (_this.props.hideInactive && !active) {
+                    if (hideInactive && !active) {
                       return null
                     }
                     return (<LegendItem key={layer.layer_id} layer={layer} t={t} />)
@@ -281,8 +296,11 @@ export default class MiniLegend extends React.Component<Props, State> {
                 <Subscribe to={[BaseMapContainer]}>
                   {BaseMap => (
                     <div className='base-map-legend' style={{lineHeight: '0.75em', padding: '2px'}}>
-                      <span style={{fontSize: '6px', float: 'left', backgroundColor: '#FFF'}}
-                        className='grey-text align-left'>{t('Base Map')} - <span className='no-margin no-padding' dangerouslySetInnerHTML={{__html: BaseMap.state.attribution}} /></span>
+                      <span
+                        style={{fontSize: '6px', float: 'left', backgroundColor: '#FFF'}}
+                        className='grey-text align-left'
+                      >{t('Base Map')} - <span className='no-margin no-padding' dangerouslySetInnerHTML={{__html: BaseMap.state.attribution}} />
+                      </span>
                     </div>
                   )}
                 </Subscribe>

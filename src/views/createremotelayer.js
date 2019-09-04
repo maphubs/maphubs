@@ -198,7 +198,8 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
         <div className='row'>
           <div className='col s12'>
             <div>
-              <Map style={{width: '100%', height: '400px'}}
+              <Map
+                style={{width: '100%', height: '400px'}}
                 id='remote-layer-preview-map'
                 showFeatureInfoEditButtons={false}
                 mapConfig={this.props.mapConfig}
@@ -229,13 +230,17 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                   }}
                   collapsible hideInactive={false} showLayersButton={false}
                   title={this.state.layer.name}
-                  layers={[this.state.layer]} />
+                  layers={[this.state.layer]}
+                />
               </Map>
             </div>
           </div>
           <div>
-            <button className='btn right' style={{marginTop: '20px'}}
-              onClick={this.saveLayer}>{t('Save Layer')}</button>
+            <button
+              className='btn right' style={{marginTop: '20px'}}
+              onClick={this.saveLayer}
+            >{t('Save Layer')}
+            </button>
           </div>
         </div>
       )
@@ -257,7 +262,8 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                       validMapHubsLayerPath: t('Not a valid MapHubs Layer URL')
                     }} length={250}
                     dataPosition='top' dataTooltip={t('MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer')}
-                    required />
+                    required
+                  />
                   <SelectGroup groups={this.props.groups} type='layer' />
                   <div className='right'>
                     <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Load Remote Layer')}</button>

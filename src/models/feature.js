@@ -52,7 +52,7 @@ module.exports = {
     const db = trx || knex
 
     const layerTable = 'layers.data_' + layerId
-    const data = await db.select(db.raw(`ST_AsGeoJSON(ST_Force2D(wkb_geometry)) as geom`), 'tags')
+    const data = await db.select(db.raw('ST_AsGeoJSON(ST_Force2D(wkb_geometry)) as geom'), 'tags')
       .from(layerTable).where({mhid})
 
     if (!data || data.length === 0) {

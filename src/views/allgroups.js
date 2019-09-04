@@ -175,7 +175,8 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
             <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
               <FloatingButton
                 href='/creategroup' icon='add'
-                tooltip={t('Create New Group')} tooltipPosition='top' />
+                tooltip={t('Create New Group')} tooltipPosition='top'
+              />
             </div>
           </div>
         </main>

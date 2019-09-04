@@ -64,8 +64,7 @@ export default class UserStories extends MapHubsComponent<Props, void> {
                     <h5>{t('Click the button below to create your first story')}</h5>
                   </div>
                 </div>
-              </div>
-            }
+              </div>}
             {stories.map((story) => {
               return (
                 <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
@@ -81,10 +80,10 @@ export default class UserStories extends MapHubsComponent<Props, void> {
               <div className='fixed-action-btn action-button-bottom-right'>
                 <FloatingButton
                   href='/createstory' icon='add'
-                  tooltip={t('Create New Story')} tooltipPosition='top' />
+                  tooltip={t('Create New Story')} tooltipPosition='top'
+                />
               </div>
-            </div>
-          }
+            </div>}
         </main>
         <Footer {...this.props.footerConfig} />
       </ErrorBoundary>

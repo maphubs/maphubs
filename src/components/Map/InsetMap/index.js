@@ -317,25 +317,32 @@ class InsetMap extends React.Component<Props, State> {
     const {collapsible, id} = this.props
     if (collapsed) {
       return (
-        <div className='maphubs-inset' style={{
-          position: 'absolute', bottom: this.props.bottom, left: '5px'
-        }}>
+        <div
+          className='maphubs-inset' style={{
+            position: 'absolute', bottom: this.props.bottom, left: '5px'
+          }}
+        >
 
-          <div id={id + '_inset'}
+          <div
+            id={id + '_inset'}
             ref={(c) => { this.insetMapComponent = c }}
             style={{
               display: 'none'
-            }}>
-            <MapToolButton onClick={this.toggleCollapsed}
+            }}
+          >
+            <MapToolButton
+              onClick={this.toggleCollapsed}
               color='#323333'
               top='auto' right='auto' bottom='5px' left='5px'
-              icon='near_me' />
+              icon='near_me'
+            />
           </div>
         </div>
       )
     } else {
       return (
-        <div className='maphubs-inset'
+        <div
+          className='maphubs-inset'
           style={{
             position: 'absolute',
             bottom: this.props.bottom,
@@ -346,8 +353,10 @@ class InsetMap extends React.Component<Props, State> {
             maxWidth: this.props.maxWidth,
             height: this.props.height,
             width: this.props.width
-          }}>
-          <div id={this.props.id + '_inset'}
+          }}
+        >
+          <div
+            id={this.props.id + '_inset'}
             ref={(c) => { this.insetMapComponent = c }}
             className='map'
             style={{
@@ -358,7 +367,8 @@ class InsetMap extends React.Component<Props, State> {
               right: 0,
               display: 'none',
               zIndex: 1
-            }} />
+            }}
+          />
           {(collapsible && this.insetMap) &&
             <ArrowDownward
               onClick={this.toggleCollapsed}
@@ -371,9 +381,9 @@ class InsetMap extends React.Component<Props, State> {
                 textAlign: 'center',
                 zIndex: 1,
                 transform: 'rotate(45deg)',
-                fontSize: '20px'}}
-            />
-          }
+                fontSize: '20px'
+              }}
+            />}
         </div>
       )
     }

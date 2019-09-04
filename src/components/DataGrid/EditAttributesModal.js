@@ -107,7 +107,8 @@ export default class EditAttributesModal extends React.Component<Props, State> {
           .ant-modal-content {
             height: 100%;
           }
-          `}</style>
+          `}
+        </style>
         <Modal
           title={t('Edit Attributes')}
           visible={show}
@@ -127,10 +128,12 @@ export default class EditAttributesModal extends React.Component<Props, State> {
           onCancel={this.hide}
         >
           <Row style={{height: 'calc(100% - 35px)', overflow: 'auto'}}>
-            <DataCollectionForm presets={presets}
+            <DataCollectionForm
+              presets={presets}
               values={values}
               onChange={this.onChange}
-              showSubmit={false} />
+              showSubmit={false}
+            />
           </Row>
         </Modal>
       </>

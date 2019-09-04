@@ -57,12 +57,14 @@ class Radio extends MapHubsPureComponent<Props, void> {
             if (option.value === value) {
               checked = true
             }
-            return (<p key={option.value}>
-              <label>
-                <input name={name} type='radio' id={option.value} onChange={_this.changeValue} checked={checked} />
-                <span>{option.label}</span>
-              </label>
-            </p>)
+            return (
+              <p key={option.value}>
+                <label>
+                  <input name={name} type='radio' id={option.value} onChange={_this.changeValue} checked={checked} />
+                  <span>{option.label}</span>
+                </label>
+              </p>
+            )
           })}
         </div>
       </Tooltip>

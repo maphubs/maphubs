@@ -107,14 +107,14 @@ export default class LocalizedCodeEditor extends MapHubsComponent<Props, State> 
         </Row>
         <Row style={{marginBottom: '10px'}}>
           <Select defaultValue='en' style={{ width: 120 }} onChange={this.onLocaleChange}>
-            {langs.map(locale => <Option value={locale.value}>{locale.label}</Option>)}
+            {langs.map(locale => <Option key={locale.value} value={locale.value}>{locale.label}</Option>)}
           </Select>
         </Row>
         <Row style={{height: 'calc(100% - 100px)'}}>
           <SimpleCodeEditor
             mode={mode}
             theme={this.props.theme}
-            name={'component-html-editor'}
+            name='component-html-editor'
             value={localizedCode[locale]}
             onChange={(val) => {
               localizedCode[locale] = val

@@ -9,9 +9,7 @@ type Props = {
   label: string,
   suggestionUrl: ?string,
   onSearch: Function,
-  onError: Function,
   onReset: Function,
-  style: Object,
   id: string
 }
 
@@ -61,7 +59,8 @@ export default class SearchBox extends React.Component<Props, void> {
        placeholder={this.props.label}
        onChange={this.onChange}
        onSubmit={this.onSubmit}
-       onReset={this.props.onReset} />
+       onReset={this.props.onReset}
+     />
    )
  }
 }

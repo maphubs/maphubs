@@ -163,8 +163,7 @@ export default class Search extends MapHubsComponent<Props, State> {
           </Row>
           <Row style={{height: 'calc(100% - 50px)', minHeight: '200px'}}>
             {(this.state.searchCards && this.state.searchCards.length > 0) &&
-              <CardCollection cards={this.state.searchCards} />
-            }
+              <CardCollection cards={this.state.searchCards} />}
           </Row>
         </main>
         <Footer {...this.props.footerConfig} />

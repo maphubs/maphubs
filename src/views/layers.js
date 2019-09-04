@@ -151,7 +151,8 @@ export default class Layers extends MapHubsComponent<Props, State> {
               href='/createlayer'
               tooltip={t('Create New Layer')}
               tooltipPosition='top'
-              icon='add' />
+              icon='add'
+            />
           </div>
           <div className='row center-align'>
             <a className='btn' href='/layers/all'>{t('View All Layers')}</a>

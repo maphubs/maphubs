@@ -91,7 +91,8 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
                   maxLength: t('Must be 200 characters or less.')
                 }} length={200}
                 dataPosition='top' dataTooltip={t('EarthEngine Image ID or Asset ID')}
-                required />
+                required
+              />
             </Row>
             <Row>
               <TextInput name='min' label={t('Min (Optional)')} icon='info' className='col s12' />

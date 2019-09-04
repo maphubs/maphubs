@@ -73,7 +73,8 @@ export default class NoteCKEditor extends React.Component<Props, void> {
                 height: ${height - 40}px;
                 overflow-y: scroll;
               }
-            `}</style>
+            `}
+            </style>
             <CKEditor
               editor={MapHubsEditor}
               config={editorConfiguration}

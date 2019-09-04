@@ -86,15 +86,15 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
             <Col span={8} style={{padding: '5px'}}>
               <Row style={{marginBottom: '20px'}}>
                 {!imageFailed &&
-                  <Avatar alt={t(group.name)} shape='square' size={256} src={'/img/resize/600?url=/group/' + groupId + '/image'} onError={() => {
-                    this.setState({imageFailed: true})
-                  }} />
-                }
+                  <Avatar
+                    alt={t(group.name)} shape='square' size={256} src={'/img/resize/600?url=/group/' + groupId + '/image'} onError={() => {
+                      this.setState({imageFailed: true})
+                    }}
+                  />}
                 {imageFailed &&
                   <Avatar size={256} shape='square' style={{ color: '#FFF' }}>
                     {groupId.charAt(0).toUpperCase()}
-                  </Avatar>
-                }
+                  </Avatar>}
               </Row>
               {canEdit &&
                 <Row>
@@ -110,8 +110,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
                   <Col span={6}>
                     <Button style={{margin: 'auto'}} href={`/group/${groupId}/admin`}><Icon type='setting' />{t('Manage')}</Button>
                   </Col>
-                </Row>
-              }
+                </Row>}
             </Col>
             <Col span={8}>
               <h4>{t(group.name)}</h4>
@@ -121,8 +120,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
               {this.props.group.unofficial &&
                 <Row>
                   <p><b>{t('Unofficial Group')}</b> - {t('This group is maintained by Maphubs using public data and is not intended to represent the listed organization. If you represent this group and would like to take ownership please contact us.')}</p>
-                </Row>
-              }
+                </Row>}
             </Col>
             <Col span={8}>
               <List
@@ -137,20 +135,18 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
                   return (
                     <List.Item>
                       {user.image &&
-                        <Avatar alt={t('Profile Photo')} size={24} src={user.image} />
-                      }
+                        <Avatar alt={t('Profile Photo')} size={24} src={user.image} />}
                       {!user.image &&
-                        <Person />
-                      }
+                        <Person />}
                       <span className='title'>{user.display_name}</span>
                       <span style={{position: 'absolute', right: '5px'}}>
                         {(user.role === 'Administrator') &&
                           <Tooltip
                             title={t('Group Administrator')}
-                            placement='top'>
+                            placement='top'
+                          >
                             <SupervisorAccount />
-                          </Tooltip>
-                        }
+                          </Tooltip>}
                       </span>
                     </List.Item>
                   )

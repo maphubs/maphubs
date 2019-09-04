@@ -36,10 +36,12 @@ export default class MapSettingsPanel extends MapHubsComponent<Props, MapMakerSt
           <Icon type='setting' style={{fontSize: '24px', marginTop: '4px'}} onClick={this.showSettingsEditor} />
         </Tooltip>
 
-        <CodeEditor ref='settingsEditor' id='map-settings-editor' mode='json'
+        <CodeEditor
+          ref='settingsEditor' id='map-settings-editor' mode='json'
           code={JSON.stringify(this.state.settings, undefined, 2)}
           title={t('Advanced Map Settings')}
-          onSave={this.onSave} modal />
+          onSave={this.onSave} modal
+        />
       </div>
     )
   }

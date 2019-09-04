@@ -183,8 +183,11 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
             </div>
           </div>
           <div className='row no-margin'>
-            <button className='btn' style={{marginLeft: '10px'}}
-              onClick={this.resetPhoto}>{t('Replace Photo')}</button>
+            <button
+              className='btn' style={{marginLeft: '10px'}}
+              onClick={this.resetPhoto}
+            >{t('Replace Photo')}
+            </button>
           </div>
         </div>
       )
@@ -196,8 +199,11 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
       addPhotoButton = (
         <div className='row no-margin'>
           <p>{t('Upload a Photo with Location Information')}</p>
-          <button className='btn' style={{marginLeft: '10px'}}
-            onClick={this.showImageCrop}>{t('Add Photo')}</button>
+          <button
+            className='btn' style={{marginLeft: '10px'}}
+            onClick={this.showImageCrop}
+          >{t('Add Photo')}
+          </button>
         </div>
       )
     }

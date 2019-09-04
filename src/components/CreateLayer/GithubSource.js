@@ -70,7 +70,8 @@ export default class GithubSource extends MapHubsComponent<Props, State> {
                   maxLength: 'Must be 100 characters or less.'
                 }} length={100}
                 dataPosition='top' dataTooltip='Github GeoJSON URL'
-                required />
+                required
+              />
             </Row>
           </div>
           <div className='right'>

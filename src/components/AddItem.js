@@ -195,7 +195,8 @@ export default class AddItem extends React.Component<Props, State> {
    }
    return (
      <div>
-       <div className='white no-margin'
+       <div
+         className='white no-margin'
          style={{
            borderRadius: '25px',
            border: '1px solid #323333',
@@ -206,7 +207,8 @@ export default class AddItem extends React.Component<Props, State> {
        >
          <form>
            <div className='input-field no-margin' style={{position: 'relative'}}>
-             <input id={this.props.id}
+             <input
+               id={this.props.id}
                type='search'
                style={{
                  margin: 0,
@@ -228,9 +230,11 @@ export default class AddItem extends React.Component<Props, State> {
                onClick={this.handleClick}
                data-beloworigin='true'
                data-activates={this.suggestions}
-               required />
+               required
+             />
 
-             <label htmlFor={this.props.id}
+             <label
+               htmlFor={this.props.id}
                style={{
                  height: 'inherit',
                  lineHeight: 'inherit',
@@ -239,13 +243,16 @@ export default class AddItem extends React.Component<Props, State> {
                  left: '0px',
                  marginLeft: '5px',
                  marginRight: '5px',
-                 transform: 'inherit'}}
+                 transform: 'inherit'
+               }}
              >
-               <i className='material-icons' style={{height: 'inherit', lineHeight: 'inherit'}}>search</i></label>
+               <i className='material-icons' style={{height: 'inherit', lineHeight: 'inherit'}}>search</i>
+             </label>
            </div>
          </form>
-         <Formsy >
-           <Toggle name='admin' onChange={this.handleAddWithOptionChecked} labelOff={t('Member')} labelOn={t('Administrator')} checked={this.state.option}
+         <Formsy>
+           <Toggle
+             name='admin' onChange={this.handleAddWithOptionChecked} labelOff={t('Member')} labelOn={t('Administrator')} checked={this.state.option}
              dataPosition='top' dataTooltip={this.props.optionLabel}
            />
          </Formsy>
@@ -255,11 +262,12 @@ export default class AddItem extends React.Component<Props, State> {
        </div>
        <div className='row no-margin'>
          {!!this.state.suggestions.length &&
-         <Suggestions
-           ref={(el) => { this.suggestions = el }}
-           suggestions={this.state.suggestions}
-           highlightedItem={this.state.highlightedItem}
-           onSelection={this.fillInSuggestion} />}
+           <Suggestions
+             ref={(el) => { this.suggestions = el }}
+             suggestions={this.state.suggestions}
+             highlightedItem={this.state.highlightedItem}
+             onSelection={this.fillInSuggestion}
+           />}
        </div>
      </div>
    )

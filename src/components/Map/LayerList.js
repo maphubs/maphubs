@@ -86,7 +86,8 @@ export default class LayerList extends React.Component<Props, State> {
               dataSource={layers}
               renderItem={(item, i) => (
                 <List.Item key={item.layer_id} style={{padding: 0}}>
-                  <LayerListItem id={item.layer_id} item={item} index={i}
+                  <LayerListItem
+                    id={item.layer_id} item={item} index={i}
                     toggleVisibility={toggleVisibility}
                     showVisibility={showVisibility}
                     showRemove={showRemove}
@@ -101,17 +102,17 @@ export default class LayerList extends React.Component<Props, State> {
                 </List.Item>
               )}
             />
-          </DndProvider>
-        }
+          </DndProvider>}
         {empty &&
           <div style={{height: '100%', paddingTop: '50%', margin: 0}}>
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={
-              <span>
-                <a onClick={this.props.openAddLayer}>{t('Add a Layer')}</a>
-              </span>
-            } />
-          </div>
-        }
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE} description={
+                <span>
+                  <a onClick={this.props.openAddLayer}>{t('Add a Layer')}</a>
+                </span>
+              }
+            />
+          </div>}
       </div>
     )
   }

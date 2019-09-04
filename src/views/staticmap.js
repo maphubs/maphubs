@@ -111,7 +111,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     })
 
     window.addEventListener('keydown', (e) => {
-      if (e.keyCode === 83) {
+      if (e.key === 'S') {
         this.showSettings()
       }
     })
@@ -159,7 +159,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    let map, legend, bottomLegend
+    let legend, bottomLegend
     const {t, setShowLegend, setShowScale, setShowInset, hideSettings} = this
     const {name, layers, position, settings} = this.props
     const {userShowInset, userShowLegend, userShowScale, showSettings} = this.state
@@ -174,7 +174,8 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
             collapsible={false}
             title={name}
             hideInactive={false} showLayersButton={false}
-            layers={layers} />
+            layers={layers}
+          />
         )
       } else {
         legend = (
@@ -190,7 +191,8 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
             collapsible={false}
             title={name}
             hideInactive showLayersButton={false}
-            layers={layers} />
+            layers={layers}
+          />
         )
       }
     }
@@ -209,35 +211,6 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     }
     insetConfig.collapsible = false
 
-    map = (
-      <Map
-        id='static-map'
-        interactive={false}
-        showPlayButton={false}
-        fitBounds={bounds}
-        insetMap={this.props.insetMap}
-        insetConfig={insetConfig}
-        showLogo={this.props.showLogo}
-        showScale={this.props.showScale}
-        style={{width: '100vw', height: showSettings ? 'calc(100vh - 25px)' : '100vh'}}
-        glStyle={this.props.style}
-        mapConfig={this.props.mapConfig}
-        preserveDrawingBuffer
-        baseMap={this.props.basemap}
-        navPosition='top-right'
-        primaryColor={MAPHUBS_CONFIG.primaryColor}
-        logoSmall={MAPHUBS_CONFIG.logoSmall}
-        logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-        logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-        mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-        DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-        earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
-        t={this.t}
-      >
-        {legend}
-      </Map>
-    )
-
     return (
       <ErrorBoundary>
         <Provider inject={[this.BaseMapState]}>
@@ -254,7 +227,8 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
             .mapboxgl-ctrl-logo {
               display: ${!this.props.showLogo ? 'none !important' : 'block'};
             }
-          `}</style>
+          `}
+          </style>
           {showSettings &&
             <Row style={{height: '25px', paddingLeft: '20px', paddingRight: '20px'}}>
               <Col span={4}>
@@ -270,11 +244,35 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
                 <Switch defaultChecked={userShowInset} onChange={setShowInset} size='small' />
               </Col>
               <a onClick={hideSettings} style={{color: '#323333', textDecoration: 'underline', position: 'absolute', right: '10px'}}>{t('hide')}</a>
-            </Row>
-          }
+            </Row>}
           <Row>
             <div className='embed-map'>
-              {map}
+              <Map
+                id='static-map'
+                interactive={false}
+                showPlayButton={false}
+                fitBounds={bounds}
+                insetMap={this.props.insetMap}
+                insetConfig={insetConfig}
+                showLogo={this.props.showLogo}
+                showScale={this.props.showScale}
+                style={{width: '100vw', height: showSettings ? 'calc(100vh - 25px)' : '100vh'}}
+                glStyle={this.props.style}
+                mapConfig={this.props.mapConfig}
+                preserveDrawingBuffer
+                baseMap={this.props.basemap}
+                navPosition='top-right'
+                primaryColor={MAPHUBS_CONFIG.primaryColor}
+                logoSmall={MAPHUBS_CONFIG.logoSmall}
+                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+                mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+                DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+                earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+                t={this.t}
+              >
+                {legend}
+              </Map>
               {bottomLegend}
             </div>
           </Row>

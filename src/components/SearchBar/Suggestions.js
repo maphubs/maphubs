@@ -51,7 +51,8 @@ export default class Suggestions extends React.Component<Props, State> {
           highlighted: this.props.highlightedItem === index
         })}
         key={match.key}
-        onClick={this.props.onSelection.bind(null, match)}>
+        onClick={this.props.onSelection.bind(null, match)}
+      >
         <a href='#!'>{match.value}</a>
       </li>
     )
@@ -61,7 +62,8 @@ export default class Suggestions extends React.Component<Props, State> {
         opacity: 1,
         display: show ? 'inherit' : 'none',
         position: 'relative',
-        maxHeight: 'calc(100vh - 200px)'}}
+        maxHeight: 'calc(100vh - 200px)'
+      }}
     >
       {suggestions}
     </ul>

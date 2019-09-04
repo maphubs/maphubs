@@ -69,7 +69,8 @@ export default class Step1 extends MapHubsComponent<Props, State> {
      const {t} = this
      return (
        <div className='row'>
-         <CreateLayer onSubmit={this.onSubmit}
+         <CreateLayer
+           onSubmit={this.onSubmit}
            mapConfig={this.props.mapConfig}
            showCancel cancelText={t('Cancel')} onCancel={this.onCancel}
          />

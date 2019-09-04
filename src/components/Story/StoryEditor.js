@@ -184,7 +184,8 @@ class StoryEditor extends React.Component<Props, State> {
               getMap={(cb) => {
                 message.info(t('Selecting a Map'))
                 this.setState({showAddMap: true, getMapCallback: cb})
-              }} />
+              }}
+            />
           </ErrorBoundary>
         </Col>
         <Col span={6} style={{padding: '10px'}}>
@@ -196,14 +197,17 @@ class StoryEditor extends React.Component<Props, State> {
                 <span style={{marginLeft: '5px', fontWeight: 'bold', fontSize: '12px'}}>Published</span>
               </Col>
               <Col span={12} style={{textAlign: 'right'}}>
-                <Button type='primary' ghost disabled={modified} onClick={() => {
-                  window.location = `/story/${slugify(title[locale])}/${story_id}`
-                }}>{t('View Story')}<Icon type='right' /></Button>
+                <Button
+                  type='primary' ghost disabled={modified} onClick={() => {
+                    window.location = `/story/${slugify(title[locale])}/${story_id}`
+                  }}
+                >{t('View Story')}<Icon type='right' />
+                </Button>
               </Col>
             </Row>
             <Row style={{marginBottom: '10px'}}>
               <p><b>Published Date</b></p>
-              <DatePicker onChange={story.publishDateChange} defaultValue={(published_at && moment(published_at)) || moment()} format={'YYYY-MM-DD'} />
+              <DatePicker onChange={story.publishDateChange} defaultValue={(published_at && moment(published_at)) || moment()} format='YYYY-MM-DD' />
               <style jsx global>{`
                 .ant-calendar-input {
                   background-color: #fff !important;
@@ -217,19 +221,20 @@ class StoryEditor extends React.Component<Props, State> {
                   height: 32px  !important;
                   font-size: 14px !important;
                 }
-              `}</style>
+              `}
+              </style>
             </Row>
           </ErrorBoundary>
           <ErrorBoundary>
             <Row style={{marginBottom: '10px'}}>
               <Row style={{marginBottom: '10px'}}>
-                <LocalizedInput value={title} placeholder={'Title'} onChange={story.titleChange} />
+                <LocalizedInput value={title} placeholder='Title' onChange={story.titleChange} />
               </Row>
               <Row>
-                <LocalizedInput value={author} placeholder={'Author'} onChange={story.authorChange} />
+                <LocalizedInput value={author} placeholder='Author' onChange={story.authorChange} />
               </Row>
               <Row>
-                <LocalizedInput type='area' value={summary} placeholder={'Summary'} onChange={story.summaryChange} />
+                <LocalizedInput type='area' value={summary} placeholder='Summary' onChange={story.summaryChange} />
               </Row>
             </Row>
           </ErrorBoundary>
@@ -241,7 +246,8 @@ class StoryEditor extends React.Component<Props, State> {
                   type='layer'
                   group_id={owned_by_group_id}
                   onGroupChange={story.groupChange}
-                  canChangeGroup={canChangeGroup} />
+                  canChangeGroup={canChangeGroup}
+                />
               </Formsy>
             </Row>
             <Row style={{marginBottom: '20px'}}>
@@ -254,7 +260,8 @@ class StoryEditor extends React.Component<Props, State> {
                 type='primary'
                 disabled={!modified}
                 onClick={save}
-              >{t('Save')}</Button>
+              >{t('Save')}
+              </Button>
             </Col>
             {story_id &&
               <Col span={12}>
@@ -266,18 +273,18 @@ class StoryEditor extends React.Component<Props, State> {
                 >
                   <Button type='danger' icon='delete'>{t('Delete')}</Button>
                 </Popconfirm>
-              </Col>
-            }
+              </Col>}
           </Row>
           <Row>
             {modified &&
-              <span style={{marginRight: '10px'}}>Not Saved</span>
-            }
+              <span style={{marginRight: '10px'}}>Not Saved</span>}
           </Row>
         </Col>
-        <AddMapDrawer visible={showAddMap}
+        <AddMapDrawer
+          visible={showAddMap}
           onAdd={onAddMap} onClose={onMapCancel}
-          myMaps={myMaps} popularMaps={popularMaps} t={t} />
+          myMaps={myMaps} popularMaps={popularMaps} t={t}
+        />
         <ImageCrop
           visible={showImageCrop}
           imageData={imageData}

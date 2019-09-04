@@ -51,12 +51,10 @@ export default class IsochronePanel extends React.Component<Props, State> {
     return (
       <div style={{width: '100%', textAlign: 'center'}}>
         {!isochroneResult &&
-          <Button type='primary' onClick={this.selectLocation}>{t('Select Location')}</Button>
-        }
+          <Button type='primary' onClick={this.selectLocation}>{t('Select Location')}</Button>}
         {message}
         {(isochroneResult || selectingLocation) &&
-          <Button type='primary' onClick={this.clear}>{t('Reset')}</Button>
-        }
+          <Button type='primary' onClick={this.clear}>{t('Reset')}</Button>}
       </div>
     )
   }

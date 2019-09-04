@@ -78,11 +78,12 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
               <div style={{width: '100%', height: '100%'}}>
                 {isBuffered &&
                   <div style={{height: '75px', padding: '25px'}}>
-                    <Slider min={1} max={50} marks={marks} step={null}
+                    <Slider
+                      min={1} max={50} marks={marks} step={null}
                       onChange={FRState.changeBuffer}
-                      defaultValue={25} />
-                  </div>
-                }
+                      defaultValue={25}
+                    />
+                  </div>}
                 <div style={dimensions}>
                   <XComponentReact
                     tag='forest-report-feature-profile'

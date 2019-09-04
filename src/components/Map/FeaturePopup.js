@@ -111,7 +111,8 @@ export default class FeaturePopup extends React.Component<Props, State> {
             position: 'absolute',
             left: '5px',
             bottom: '5px'
-          }}>
+          }}
+        >
           {name}
         </span>
       )
@@ -214,12 +215,14 @@ export default class FeaturePopup extends React.Component<Props, State> {
       <Card
         key='feature'
         bodyStyle={{height: '100%', padding: '0'}}
-        style={{width: '150px', height: '200px', margin: 0, boxShadow: 'none'}}>
+        style={{width: '150px', height: '200px', margin: 0, boxShadow: 'none'}}
+      >
         <div style={{height: 'calc(100% - 35px)'}}>
           {content}
         </div>
         <div style={{padding: '5px 5px'}}>
-          <ActionPanel layer={layer} t={t}
+          <ActionPanel
+            layer={layer} t={t}
             selectedFeature={feature} featureName={featureName}
             toggled={showAttributes}
             enableToggle={photoUrl} toggleData={this.toggleAttributes}
@@ -237,7 +240,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
     const {features} = this.props
 
     return (
-      <div >
+      <div>
         {
           features.map((feature, i) => this.renderFeature(feature, i))
         }

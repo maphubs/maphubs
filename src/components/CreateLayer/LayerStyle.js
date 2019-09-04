@@ -162,7 +162,8 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
               {(layer_id !== undefined && layer_id !== -1 && showMap) &&
                 <div>
                   <div className='row no-margin'>
-                    <Map id='layer-style-map' className='z-depth-2' insetMap={false} style={{height: '300px', width: '400px', margin: 'auto'}}
+                    <Map
+                      id='layer-style-map' className='z-depth-2' insetMap={false} style={{height: '300px', width: '400px', margin: 'auto'}}
                       glStyle={style}
                       showLogo
                       mapConfig={this.props.mapConfig}
@@ -179,12 +180,13 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
                     />
                   </div>
                   <div className='row' style={{width: '400px', position: 'relative', margin: 'auto'}}>
-                    <MiniLegend t={t} style={{position: 'absolute', height: 'auto', width: '400px', margin: 'auto'}}
+                    <MiniLegend
+                      t={t} style={{position: 'absolute', height: 'auto', width: '400px', margin: 'auto'}}
                       collapsible={false} hideInactive={false} showLayersButton={false}
-                      layers={[this.state]} />
+                      layers={[this.state]}
+                    />
                   </div>
-                </div>
-              }
+                </div>}
             </div>
             <Subscribe to={[MapContainer]}>
               {MapState => (
@@ -192,22 +194,24 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
                   {colorChooserMode === 'default' &&
                     <div>
                       <h5>{t('Choose Style')}</h5>
-                      <LayerDesigner onColorChange={this.onColorChange}
+                      <LayerDesigner
+                        onColorChange={this.onColorChange}
                         style={cssStyle} onStyleChange={this.setStyle}
                         labels={this.state.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setStyle}
                         layer={this.state}
-                        legend={legendCode} onLegendChange={this.setLegend} />
-                    </div>
-                  }
+                        legend={legendCode} onLegendChange={this.setLegend}
+                      />
+                    </div>}
                   {colorChooserMode === 'external' &&
                     <div>
                       <h5>{t('Choose Style')}</h5>
-                      <OpacityChooser value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
+                      <OpacityChooser
+                        value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
                         style={cssStyle} onStyleChange={this.setStyle} onColorChange={this.onColorChange}
                         layer={this.state}
-                        legendCode={legendCode} onLegendChange={this.setLegend} showAdvanced />
-                    </div>
-                  }
+                        legendCode={legendCode} onLegendChange={this.setLegend} showAdvanced
+                      />
+                    </div>}
                   {colorChooserMode === 'mapbox' &&
                     <div style={{marginTop: '20px', marginBottom: '20px', padding: '20px', border: '1px solid #b1b1b1'}}>
                       <b>{t('Mapbox Studio Style Layer')}</b>
@@ -217,8 +221,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
                         <b>{t('It may take a few minutes for the changes to appear, your layer will update automatically.')}</b>
                       </p>
                       <button onClick={() => { reloadMap(MapState) }} className='waves-effect waves-light btn'>{t('Reload')}</button>
-                    </div>
-                  }
+                    </div>}
                   <div className='right'>
                     <button onClick={this.resetStyle} style={{marginRight: '10px'}} className='waves-effect waves-light btn'>{t('Reset')}</button>
                     <button onClick={() => { this.onSubmit(MapState) }} className='waves-effect waves-light btn'>{t('Save')}</button>
@@ -230,8 +233,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
           {showPrev &&
             <div className='left'>
               <a className='waves-effect waves-light btn' onClick={this.onPrev}><i className='material-icons left'>arrow_back</i>{this.props.prevText}</a>
-            </div>
-          }
+            </div>}
         </div>
       </div>
     )

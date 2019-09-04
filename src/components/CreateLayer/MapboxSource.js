@@ -144,7 +144,8 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
                 isValidMapboxStyleURL: t('Invalid Mapbox Style URL, must be in the format mapbox://styles/...')
               }} length={100}
               dataPosition='top' dataTooltip={t('Mapbox Style URL in the format mapbox://styles/...')}
-              required />
+              required
+            />
           </div>
         </div>
       )
@@ -155,12 +156,14 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
         <div>
           <p>{t('Mapbox Tileset/Raster Source')}</p>
           <div className='row'>
-            <TextInput name='mapboxMapID' label={t('Mapbox Tileset Map ID')} icon='info' className='col s12'
+            <TextInput
+              name='mapboxMapID' label={t('Mapbox Tileset Map ID')} icon='info' className='col s12'
               validations={{isValidMapboxMapID: true}} validationErrors={{
                 isValidMapboxMapID: t('Invalid Mapbox Map ID, should be in the format accountname.mapid')
               }} length={100}
               dataPosition='top' dataTooltip={t('Mapbox Map ID')}
-              required />
+              required
+            />
           </div>
         </div>
 
@@ -172,7 +175,8 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
         <Formsy>
           <b>{t('Choose an Option')}</b>
           <div className='row'>
-            <Radio name='type' label=''
+            <Radio
+              name='type' label=''
               defaultValue={this.state.selectedOption}
               options={mapboxOptions} onChange={this.optionChange}
               className='col s10'

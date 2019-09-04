@@ -1,5 +1,4 @@
 // @flow
-import React from 'react'
 import Boat from './boat'
 import Campfire from './campfire'
 import CargoShip from './cargo-ship'

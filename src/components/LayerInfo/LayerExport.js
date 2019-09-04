@@ -29,18 +29,16 @@ export default class LayerExport extends MapHubsPureComponent<Props, void> {
             <li className='collection-header'><h5>{t('Export Layer')}</h5></li>
             <li className='collection-item'>{t('MapHubs Format:')} <a href={maphubsFileURL}>{maphubsFileURL}</a></li>
             {!layer.is_external &&
-            <React.Fragment>
-              <li className='collection-item'>{t('Shapefile:')} <a href={shpURL}>{shpURL}</a></li>
-              <li className='collection-item'>{t('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
-              <li className='collection-item'>{t('KML:')} <a href={kmlURL}>{kmlURL}</a></li>
-              <li className='collection-item'>{t('CSV:')} <a href={csvURL}>{csvURL}</a></li>
-              <li className='collection-item'>{t('SVG:')} <a href={svgURL}>{svgURL}</a></li>
-              <li className='collection-item'>{t('Geobuf:')} <a href={geobufURL}>{geobufURL}</a> (<a href='https://github.com/mapbox/geobuf'>{t('Learn More')}</a>)</li>
-            </React.Fragment>
-            }
+              <>
+                <li className='collection-item'>{t('Shapefile:')} <a href={shpURL}>{shpURL}</a></li>
+                <li className='collection-item'>{t('GeoJSON:')} <a href={geoJSONURL}>{geoJSONURL}</a></li>
+                <li className='collection-item'>{t('KML:')} <a href={kmlURL}>{kmlURL}</a></li>
+                <li className='collection-item'>{t('CSV:')} <a href={csvURL}>{csvURL}</a></li>
+                <li className='collection-item'>{t('SVG:')} <a href={svgURL}>{svgURL}</a></li>
+                <li className='collection-item'>{t('Geobuf:')} <a href={geobufURL}>{geobufURL}</a> (<a href='https://github.com/mapbox/geobuf'>{t('Learn More')}</a>)</li>
+              </>}
             {(!layer.is_external && layer.data_type !== 'polygon') &&
-              <li className='collection-item'>{t('GPX:')} <a href={gpxURL}>{gpxURL}</a></li>
-            }
+              <li className='collection-item'>{t('GPX:')} <a href={gpxURL}>{gpxURL}</a></li>}
           </ul>
         </div>
       )

@@ -124,9 +124,12 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
                         <Col span={8}>ID: {item.id}</Col>
                         <Col span={8}>Type: {item.type}</Col>
                         <Col span={8}>
-                          <Button type='primary' size='small' onClick={() => {
-                            this.setState({editingComponent: item})
-                          }}>Edit</Button>
+                          <Button
+                            type='primary' size='small' onClick={() => {
+                              this.setState({editingComponent: item})
+                            }}
+                          >Edit
+                          </Button>
                         </Col>
                       </Row>
                     </List.Item>
@@ -134,10 +137,12 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
                 />
               </Row>
               <Row style={{height: '50%'}}>
-                <CodeEditor ref='pageEditor' id='layer-style-editor' mode='json'
+                <CodeEditor
+                  ref='pageEditor' id='layer-style-editor' mode='json'
                   code={JSON.stringify(this.state.pageConfig, undefined, 2)}
                   title={t('Editing Page Config: ') + this.props.page_id}
-                  onSave={this.savePageConfig} modal={false} />
+                  onSave={this.savePageConfig} modal={false}
+                />
               </Row>
             </Col>
             <Col span={12} style={{height: '100%', padding: '20px'}}>
@@ -152,8 +157,8 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
                       onSave={(html) => {
                         editingComponent.html = html
                         this.updateComponent(editingComponent)
-                      }} />
-                  }
+                      }}
+                    />}
                   {(editingComponent && editingComponent.type !== 'html') &&
                     <CodeEditor
                       visible
@@ -163,11 +168,10 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
                       title={`Editing ${editingComponent.id}`}
                       onSave={(json) => {
                         this.updateComponent(editingComponent)
-                      }} modal={false} />
-                  }
+                      }} modal={false}
+                    />}
                   {!editingComponent &&
-                    <Empty />
-                  }
+                    <Empty />}
                 </Row>
               </ErrorBoundary>
             </Col>

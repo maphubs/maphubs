@@ -70,7 +70,8 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
         <Provider inject={[this.BaseMapState, this.MapState]}>
           <Header {...this.props.headerConfig} />
           <main style={{height: 'calc(100% - 52px)', width: '100%', overflow: 'hidden'}}>
-            <MapMaker onCreate={this.mapCreated}
+            <MapMaker
+              onCreate={this.mapCreated}
               mapConfig={this.props.mapConfig}
               mapLayers={this.props.layers}
               basemap={this.props.map.basemap}
@@ -81,7 +82,8 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
               popularLayers={this.props.popularLayers}
               myLayers={this.props.myLayers}
               groups={this.props.groups}
-              edit />
+              edit
+            />
           </main>
         </Provider>
       </ErrorBoundary>

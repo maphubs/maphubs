@@ -21,7 +21,7 @@ module.exports = {
     const result = await trx(`layers.data_${layer_id}`)
       .insert({
         mhid: trx.raw(`${layer_id} || ':' || nextval('layers.mhid_seq_${layer_id}')`),
-        wkb_geometry: trx.raw(`ST_SetSRID(ST_GeomFromGeoJSON( :geom ),4326)::geometry(Geometry,4326)`, {geom: JSON.stringify(feature.geometry)}),
+        wkb_geometry: trx.raw('ST_SetSRID(ST_GeomFromGeoJSON( :geom ),4326)::geometry(Geometry,4326)', {geom: JSON.stringify(feature.geometry)}),
         tags: JSON.stringify(feature.properties)
       }).returning('mhid')
 
@@ -80,7 +80,7 @@ module.exports = {
     const tagStr = `{${tag}}`
     return trx(`layers.data_${layer_id}`)
       .update({
-        tags: trx.raw(`jsonb_set(tags, :tag , :val ::jsonb)`, {tag: tagStr, val: valStr})
+        tags: trx.raw('jsonb_set(tags, :tag , :val ::jsonb)', {tag: tagStr, val: valStr})
       })
       .where({mhid})
   },
@@ -106,7 +106,7 @@ module.exports = {
     const tagStr = `{${tag}}`
     return trx(`layers.data_${layer_id}`)
       .update({
-        tags: trx.raw(`jsonb_set(tags, :tag , :val ::jsonb)`, {tag: tagStr, val: valStr})
+        tags: trx.raw('jsonb_set(tags, :tag , :val ::jsonb)', {tag: tagStr, val: valStr})
       })
       .where({mhid})
   },

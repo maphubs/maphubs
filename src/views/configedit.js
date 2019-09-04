@@ -89,10 +89,12 @@ export default class ConfigEdit extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main className='container' style={{height: 'calc(100% - 100px)'}}>
-          <CodeEditor ref='pageEditor' id='layer-style-editor' mode='json'
+          <CodeEditor
+            ref='pageEditor' id='layer-style-editor' mode='json'
             code={JSON.stringify(this.state.pageConfig, undefined, 2)}
             title={t('Editing Page Config: ') + this.props.page_id}
-            onSave={this.savePageConfig} modal={false} />
+            onSave={this.savePageConfig} modal={false}
+          />
         </main>
         <Footer {...this.props.footerConfig} />
       </ErrorBoundary>

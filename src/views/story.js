@@ -59,7 +59,7 @@ export default class Story extends MapHubsComponent<Props, void> {
       anchor.setAttribute('href', element.getAttribute('url'))
       anchor.className = 'embedly-card'
 
-      element.appendChild(anchor)
+      element.append(anchor)
     })
   }
 
@@ -75,7 +75,8 @@ export default class Story extends MapHubsComponent<Props, void> {
             href={`/editstory/${this.props.story.story_id}/${slugify(t(this.props.story.title))}`}
             tooltip={t('Edit')}
             tooltipPosition='left'
-            icon='mode_edit' />
+            icon='mode_edit'
+          />
         </div>
       )
     }
@@ -187,7 +188,8 @@ export default class Story extends MapHubsComponent<Props, void> {
                 float: right;
               }
               
-            `}</style>
+            `}
+            </style>
           </main>
         </ErrorBoundary>
       </>

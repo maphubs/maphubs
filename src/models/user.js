@@ -35,7 +35,7 @@ module.exports = {
     display_name = display_name.toLowerCase()
 
     const result = await knex('users')
-      .where(knex.raw(`lower(display_name)`), '=', display_name)
+      .where(knex.raw('lower(display_name)'), '=', display_name)
 
     if (result && result.length === 1) {
       const user = result[0]
@@ -60,7 +60,7 @@ module.exports = {
     email = email.toLowerCase()
 
     const result = await knex('users')
-      .where(knex.raw(`lower(email)`), '=', email)
+      .where(knex.raw('lower(email)'), '=', email)
 
     if (result && result.length === 1) {
       const user = result[0]
@@ -104,7 +104,7 @@ module.exports = {
   getSearchSuggestions (input: string) {
     input = input.toLowerCase()
     return knex.select('display_name', 'id').table('users')
-      .where(knex.raw(`lower(display_name)`), 'like', '%' + input + '%')
+      .where(knex.raw('lower(display_name)'), 'like', '%' + input + '%')
   }
 
 }

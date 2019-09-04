@@ -45,7 +45,8 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     if (this.state.edits.length > 0) {
       debug.log('stopping with unsaved edits, edits have been deleted')
     }
-    this.setState({editing: false,
+    this.setState({
+      editing: false,
       originals: [],
       edits: [],
       redo: [],
@@ -243,7 +244,8 @@ export default class DataEditorContainer extends Container<DataEditorState> {
       this.setState({
         edits,
         redo: [],
-        selectedEditFeature})
+        selectedEditFeature
+      })
     } else {
       debug.log('feature not selected')
     }

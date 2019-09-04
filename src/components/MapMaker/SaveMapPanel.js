@@ -87,7 +87,8 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
       return (
         <Formsy onValidSubmit={this.onSave} onValid={this.enableSaveButton} onInvalid={this.disableSaveButton}>
           <Row style={{width: '100%'}}>
-            <MultiTextInput name='title' id='title'
+            <MultiTextInput
+              name='title' id='title'
               value={title}
               label={{
                 en: 'Map Title', fr: 'Titre de la carte', es: 'Título del mapa', it: 'Titolo della mappa'
@@ -96,15 +97,19 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
               validations='maxLength:100' validationErrors={{
                 maxLength: t('Name must be 100 characters or less.')
               }} length={100}
-              required />
+              required
+            />
           </Row>
           <Row style={{width: '100%'}}>
             <SelectGroup groups={groups} group_id={owned_by_group_id} type='map' canChangeGroup={!editing} editing={editing} />
           </Row>
           <Row style={{width: '100%'}}>
             <div className='col s12 valign-wrapper'>
-              <button type='submit' className='valign waves-effect waves-light btn' style={{margin: 'auto'}}
-                disabled={(!canSave || saving)}>{t('Save Map')}</button>
+              <button
+                type='submit' className='valign waves-effect waves-light btn' style={{margin: 'auto'}}
+                disabled={(!canSave || saving)}
+              >{t('Save Map')}
+              </button>
             </div>
           </Row>
 

@@ -275,28 +275,29 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
               <li>
                 <Tooltip
                   title={t('Edit Map Data')}
-                  placement='left'>
+                  placement='left'
+                >
                   <a onClick={openEditor} className='btn-floating blue darken-1'>
                     <i className='material-icons'>mode_edit</i>
                   </a>
                 </Tooltip>
-              </li>
-            }
+              </li>}
             {showAddPhotoPointButton &&
               <li>
                 <Tooltip
                   title={t('Add a Photo')}
-                  placement='left'>
+                  placement='left'
+                >
                   <a href={`/layer/adddata/${layer.layer_id}`} className='btn-floating blue darken-1'>
                     <i className='material-icons'>photo</i>
                   </a>
                 </Tooltip>
-              </li>
-            }
+              </li>}
             <li>
               <Tooltip
                 title={t('Manage Layer')}
-                placement='left'>
+                placement='left'
+              >
                 <a className='btn-floating yellow' href={`/layer/admin/${layer.layer_id}/${slugify(t(layer.name))}`}>
                   <i className='material-icons'>settings</i>
                 </a>
@@ -310,9 +311,12 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
         <div ref={(el) => { this.menuButton = el }} className='fixed-action-btn action-button-bottom-right hide-on-med-and-up'>
           <Tooltip
             title={t('View Map')}
-            placement='left'>
-            <a className='btn-floating btn-large red'
-              href={`/layer/map/${layer.layer_id}/${slugify(t(layer.name))}`}>
+            placement='left'
+          >
+            <a
+              className='btn-floating btn-large red'
+              href={`/layer/map/${layer.layer_id}/${slugify(t(layer.name))}`}
+            >
               <i className='material-icons'>map</i>
             </a>
           </Tooltip>
@@ -369,11 +373,11 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                   <div style={{position: 'absolute', top: '15px', right: '10px'}}>
                     <Tooltip
                       title={t('Private')}
-                      placement='left'>
+                      placement='left'
+                    >
                       <i className='material-icons grey-text text-darken-3'>lock</i>
                     </Tooltip>
-                  </div>
-                }
+                  </div>}
 
                 <style jsx global>{`
                   .ant-tabs-content {
@@ -396,7 +400,8 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                 >
                   <TabPane tab={t('Info')} key='info' style={{position: 'relative'}}>
                     <Row style={{height: '50%', overflowY: 'auto', overflowX: 'hidden'}}>
-                      <Col sm={24} md={12}
+                      <Col
+                        sm={24} md={12}
                         style={{height: '100%', padding: '5px', border: '1px solid #ddd', minHeight: '200px', overflowY: 'auto'}}
                       >
                         <div style={{width: '100%'}}>
@@ -432,26 +437,23 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                       <Col sm={24} md={12} style={{height: '100%', padding: '5px', border: '1px solid #ddd'}}>
                         <p style={{fontSize: '16px'}}><b>{t('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
                         {this.state.area &&
-                          <p style={{fontSize: '16px'}}><b>{t('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>
-                        }
+                          <p style={{fontSize: '16px'}}><b>{t('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>}
                         {this.state.length > 0 &&
-                          <p style={{fontSize: '16px'}}><b>{t('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>
-                        }
+                          <p style={{fontSize: '16px'}}><b>{t('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>}
                       </Col>
                     </Row>
                     <Stats views={layer.views} stats={this.props.stats} t={t} />
                   </TabPane>
-                  <TabPane tab={t('Notes')} key='notes' >
+                  <TabPane tab={t('Notes')} key='notes'>
                     <LayerNotes canEdit={canEdit} notes={this.props.notes} layer_id={layer.layer_id} t={t} _csrf={this.state._csrf} />
                   </TabPane>
                   {MAPHUBS_CONFIG.enableComments &&
-                    <TabPane tab={t('Discuss')} key='discuss' >
+                    <TabPane tab={t('Discuss')} key='discuss'>
                       <ErrorBoundary>
                         <Comments />
                       </ErrorBoundary>
-                    </TabPane>
-                  }
-                  <TabPane tab={t('Data')} key='data' >
+                    </TabPane>}
+                  <TabPane tab={t('Data')} key='data'>
                     <Subscribe to={[DataEditorContainer]}>
                       {DataEditor => {
                         return (
@@ -466,36 +468,37 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                                       geoJSON={this.state.geoJSON}
                                       presets={presets}
                                       canEdit
-                                    />
-                                  }
+                                    />}
                                   {!editingData &&
                                     <LayerDataGrid
                                       layer_id={layer.layer_id}
                                       height={height}
                                       geoJSON={this.state.geoJSON}
                                       presets={presets}
-                                      canEdit={canEdit} />
-                                  }
+                                      canEdit={canEdit}
+                                    />}
                                 </>
                               )}
                             </AutoSizer>
                             {canEdit &&
-                              <EditButton editing={editingData}
+                              <EditButton
+                                editing={editingData}
                                 style={{position: 'absolute', bottom: '10px'}}
-                                startEditing={startEditingData} stopEditing={() => { stopEditingData(DataEditor) }} />
-                            }
+                                startEditing={startEditingData} stopEditing={() => { stopEditingData(DataEditor) }}
+                              />}
                           </Row>
                         )
                       }}
                     </Subscribe>
                   </TabPane>
-                  <TabPane tab={t('Export')} key='export' >
+                  <TabPane tab={t('Export')} key='export'>
                     <LayerExport layer={layer} />
                   </TabPane>
                 </Tabs>
               </Col>
               <Col sm={24} md={12} className='hide-on-small-only' style={{height: '100%'}}>
-                <InteractiveMap ref='interactiveMap' height='100vh - 50px'
+                <InteractiveMap
+                  ref='interactiveMap' height='100vh - 50px'
                   fitBounds={layer.preview_position.bbox}
                   style={glStyle}
                   layers={[layer]}

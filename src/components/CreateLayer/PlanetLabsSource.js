@@ -118,9 +118,11 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
           <div>
             <p>{t('Paste the selected IDs from the Planet Explorer API box')}</p>
             <div className='row'>
-              <TextArea name='selectedIDs' label={t('Planet Explorer Selected IDs')}
+              <TextArea
+                name='selectedIDs' label={t('Planet Explorer Selected IDs')}
                 length={2000}
-                icon='info' className='col s12'required />
+                icon='info' className='col s12' required
+              />
             </div>
           </div>
           <div className='right'>

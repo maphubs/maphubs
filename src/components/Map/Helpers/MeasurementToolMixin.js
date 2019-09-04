@@ -87,7 +87,8 @@ export default {
       this.setState({measurementMessage: t('Use the drawing tools below')})
     })
 
-    this.setState({enableMeasurementTools: true,
+    this.setState({
+      enableMeasurementTools: true,
       measurementMessage: t('Use the drawing tools below')
     })
   },

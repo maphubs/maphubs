@@ -109,8 +109,10 @@ class TextArea extends MapHubsComponent<Props, State> {
           {icon}
           <textarea ref='textarea' id={this.props.name} className={textAreaClassName} value={this.state.value} onChange={this.changeValue} />
           <label htmlFor={this.props.name} className={labelClassName} data-error={this.props.getErrorMessage()} data-success=''>{this.props.label}</label>
-          <span className='character-counter'
-            style={{float: 'right', fontSize: '12px', height: '1px', color: countColor}}>
+          <span
+            className='character-counter'
+            style={{float: 'right', fontSize: '12px', height: '1px', color: countColor}}
+          >
             {this.state.charCount} / {this.props.length}
           </span>
         </div>

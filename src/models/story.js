@@ -13,12 +13,12 @@ module.exports = {
       'omh.stories.body', 'omh.stories.language',
       'omh.stories.summary', 'omh.stories.firstimage',
       'omh.stories.published', 'omh.stories.author', 'omh.stories.created_at',
-      knex.raw(`timezone('UTC', omh.stories.updated_at) as updated_at`),
+      knex.raw('timezone(\'UTC\', omh.stories.updated_at) as updated_at'),
       'omh.stories.published_at',
       'omh.stories.updated_by',
       'omh.stories.owned_by_group_id',
       'omh.groups.name as groupname',
-      knex.raw(`to_jsonb(array_remove(array_agg(omh.story_tags.tag), NULL)) as tags`)
+      knex.raw('to_jsonb(array_remove(array_agg(omh.story_tags.tag), NULL)) as tags')
     )
       .from('omh.stories')
       .leftJoin('omh.groups', 'omh.stories.owned_by_group_id', 'omh.groups.group_id')

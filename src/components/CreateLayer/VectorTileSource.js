@@ -119,19 +119,25 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
               />
             </div>
             <div className='row'>
-              <TextInput name='minzoom' label={t('MinZoom')} icon='info' className='col s12'
+              <TextInput
+                name='minzoom' label={t('MinZoom')} icon='info' className='col s12'
                 dataPosition='top' dataTooltip={t('Lowest tile zoom level available in data')}
-                required />
+                required
+              />
             </div>
             <div className='row'>
-              <TextInput name='maxzoom' label={t('MaxZoom')} icon='info' className='col s12'
+              <TextInput
+                name='maxzoom' label={t('MaxZoom')} icon='info' className='col s12'
                 dataPosition='top' dataTooltip={t('Highest tile zoom level available in data')}
-                required />
+                required
+              />
             </div>
             <div className='row'>
-              <TextInput name='bounds' label={t('Bounds')} icon='info' className='col s12'
+              <TextInput
+                name='bounds' label={t('Bounds')} icon='info' className='col s12'
                 dataPosition='top' dataTooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
-                required />
+                required
+              />
             </div>
           </div>
           <div className='right'>

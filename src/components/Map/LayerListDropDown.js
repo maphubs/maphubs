@@ -15,7 +15,8 @@ export default class LayerListDropDown extends React.PureComponent<Props, void> 
     const {name, layers, toggleVisibility, t} = this.props
     return (
       <div style={{height: '35px'}}>
-        <Dropdown style={{padding: 0}}
+        <Dropdown
+          style={{padding: 0}}
           overlay={
             <LayerListStatic layers={layers} toggleVisibility={toggleVisibility} t={t} />
           }

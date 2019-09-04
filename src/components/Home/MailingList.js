@@ -88,7 +88,8 @@ export default class MailingList extends MapHubsComponent<Props, State> {
         <div className='col s6 valign'>
           <Formsy onSubmit={this.onSubmit} onValid={this.onValid} onInvalid={this.onInvalid}>
             <div>
-              <TextInput name='email' label={null} placeholder={placeholder}
+              <TextInput
+                name='email' label={null} placeholder={placeholder}
                 className='left no-margin no-padding mailing-list-text-input'
                 validations={{isEmail: true}} validationErrors={{
                   isEmail: t('Not a valid email address.')
@@ -99,8 +100,10 @@ export default class MailingList extends MapHubsComponent<Props, State> {
                 onClick={() => {
                   _this.setState({placeholder: t('Enter your email address')})
                 }}
-                required />
-              <button type='submit' className='left waves-effect waves-light btn'
+                required
+              />
+              <button
+                type='submit' className='left waves-effect waves-light btn'
                 style={{
                   borderTopLeftRadius: '0px',
                   borderTopRightRadius: '25px',
@@ -112,7 +115,9 @@ export default class MailingList extends MapHubsComponent<Props, State> {
                   paddingLeft: 0,
                   paddingRight: 0,
                   textTransform: 'none'
-                }}>{t('Sign up')}</button>
+                }}
+              >{t('Sign up')}
+              </button>
             </div>
           </Formsy>
         </div>
@@ -138,7 +143,8 @@ export default class MailingList extends MapHubsComponent<Props, State> {
             border: 1px solid #aaa !important;
             box-shadow: none !important;
           }
-        `}</style>
+        `}
+        </style>
       </div>
     )
   }

@@ -6,7 +6,7 @@ function getLayerFRActive (layer: Object, geojson: Object): Layer {
   const defaultColor = 'yellow'
   const layers = [
     {
-      id: `omh-data-point-feature-geojson`,
+      id: 'omh-data-point-feature-geojson',
       type: 'circle',
       metadata: {
         'maphubs:interactive': true,
@@ -19,7 +19,7 @@ function getLayerFRActive (layer: Object, geojson: Object): Layer {
         'circle-opacity': 1
       }
     }, {
-      id: `omh-data-line-feature-geojson`,
+      id: 'omh-data-line-feature-geojson',
       type: 'line',
       metadata: {
         'maphubs:interactive': true,
@@ -34,7 +34,7 @@ function getLayerFRActive (layer: Object, geojson: Object): Layer {
       }
     },
     {
-      id: `omh-data-polygon-feature-geojson`,
+      id: 'omh-data-polygon-feature-geojson',
       type: 'fill',
       metadata: {
         'maphubs:interactive': false,
@@ -47,7 +47,7 @@ function getLayerFRActive (layer: Object, geojson: Object): Layer {
         'fill-opacity': 0
       }
     }, {
-      id: `omh-data-outline-polygon-feature-geojson`,
+      id: 'omh-data-outline-polygon-feature-geojson',
       type: 'line',
       metadata: {
       },
@@ -90,7 +90,7 @@ function getLayer (layer: Object, geojson: Object): Layer {
   const defaultColorTransparent = 'rgba(255,0,0,0.3)'
   const layers = [
     {
-      id: `omh-data-point-feature-geojson`,
+      id: 'omh-data-point-feature-geojson',
       type: 'circle',
       metadata: {
         'maphubs:interactive': true,
@@ -103,7 +103,7 @@ function getLayer (layer: Object, geojson: Object): Layer {
         'circle-opacity': 1
       }
     }, {
-      id: `omh-data-line-feature-geojson`,
+      id: 'omh-data-line-feature-geojson',
       type: 'line',
       metadata: {
         'maphubs:interactive': true,
@@ -118,7 +118,7 @@ function getLayer (layer: Object, geojson: Object): Layer {
       }
     },
     {
-      id: `omh-data-polygon-feature-geojson`,
+      id: 'omh-data-polygon-feature-geojson',
       type: 'fill',
       metadata: {
         'maphubs:interactive': false,
@@ -131,7 +131,7 @@ function getLayer (layer: Object, geojson: Object): Layer {
         'fill-opacity': 0.3
       }
     }, {
-      id: `omh-data-outline-polygon-feature-geojson`,
+      id: 'omh-data-outline-polygon-feature-geojson',
       type: 'line',
       metadata: {
       },

@@ -26,9 +26,9 @@ export default class Attributes extends React.Component<Props, void> {
 
     if (attributes && Object.keys(attributes).length > 0) {
       let presets
-      if (attributes['maphubs_metadata'] &&
-          attributes['maphubs_metadata'].presets) {
-        presets = attributes['maphubs_metadata'].presets
+      if (attributes.maphubs_metadata &&
+          attributes.maphubs_metadata.presets) {
+        presets = attributes.maphubs_metadata.presets
       }
       if (presets && Array.isArray(presets) && presets.length > 0) {
         // only display presets
@@ -110,7 +110,8 @@ export default class Attributes extends React.Component<Props, void> {
             -webkit-hyphens: auto;
             hyphens: auto;
           }
-        `}</style>
+        `}
+        </style>
         {display}
         {spacer}
       </div>

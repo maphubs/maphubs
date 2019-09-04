@@ -135,14 +135,16 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
           {toggleFill}
           <div className='row'>
             <b>{t('Interactive')}</b>
-            <Toggle name='interactive' labelOff={t('Off')} labelOn={t('On')}
+            <Toggle
+              name='interactive' labelOff={t('Off')} labelOn={t('On')}
               checked={this.state.interactive}
               dataPosition='right' dataTooltip={t('Allow users to interact with this layer by clicking the map')}
             />
           </div>
           <div className='row'>
             <b>{t('Show Below Base Map Labels')}</b>
-            <Toggle name='showBehindBaseMapLabels' labelOff={t('Off')} labelOn={t('On')}
+            <Toggle
+              name='showBehindBaseMapLabels' labelOff={t('Off')} labelOn={t('On')}
               checked={this.state.showBehindBaseMapLabels}
               dataPosition='right' dataTooltip={t('Allow base map labels to display on top of this layer')}
             />

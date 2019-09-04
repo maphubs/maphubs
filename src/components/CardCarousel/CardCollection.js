@@ -24,16 +24,14 @@ export default class CardCollection extends MapHubsComponent<Props, void> {
       <div className='row'>
         <div className='col s12' style={{position: 'relative'}}>
           {title &&
-            <h5>{title}</h5>
-          }
+            <h5>{title}</h5>}
           {viewAllLink &&
             <a
               style={{position: 'absolute', right: '5px', top: '14px'}}
               href={viewAllLink}
             >
               {t('View All')}
-            </a>
-          }
+            </a>}
           <div className='divider' />
           <CardCarousel cards={this.props.cards} infinite={false} t={t} />
         </div>

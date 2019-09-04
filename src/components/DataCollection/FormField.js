@@ -65,7 +65,8 @@ export default class FormField extends React.Component<Props, void> {
       )
     } else if (preset.type === 'check') {
       field = (
-        <Toggle name={preset.tag}
+        <Toggle
+          name={preset.tag}
           labelOff='' labelOn={t(preset.label)}
           className='col s12'
           checked={value}

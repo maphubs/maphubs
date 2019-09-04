@@ -6,7 +6,7 @@ function getIFLLayer (geoJSON: Object, active: boolean): Layer {
   const iflColor = 'rgba(104,159,56,0.65)'
   const layers = [
     {
-      id: `omh-data-polygon-ifl2016-geojson`,
+      id: 'omh-data-polygon-ifl2016-geojson',
       type: 'fill',
       metadata: {
         'maphubs:interactive': false,
@@ -22,7 +22,7 @@ function getIFLLayer (geoJSON: Object, active: boolean): Layer {
         visibility: active ? 'visible' : 'none'
       }
     }, {
-      id: `fr-data-outline-polygon-ifl2016-geojson`,
+      id: 'fr-data-outline-polygon-ifl2016-geojson',
       type: 'line',
       metadata: {
       },

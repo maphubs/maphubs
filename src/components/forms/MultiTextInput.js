@@ -70,7 +70,7 @@ export default class MultiTextInput extends MapHubsComponent<Props, State> {
     super(props)
     let value: LocalizedString = localeUtil.getEmptyLocalizedString()
     if (typeof props.value === 'string') {
-      value['en'] = props.value
+      value.en = props.value
     } else if (props.value) {
       value = props.value
     }
@@ -123,7 +123,8 @@ export default class MultiTextInput extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <Tabs type='card'
+      <Tabs
+        type='card'
         tabBarStyle={{marginBottom: 0}}
         animated={false}
       >
@@ -144,8 +145,7 @@ export default class MultiTextInput extends MapHubsComponent<Props, State> {
               </div>
             </TabPane>
           )
-        })
-        }
+        })}
       </Tabs>
     )
   }

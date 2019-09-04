@@ -126,7 +126,8 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
 
     if (this.props.type === 'combo' || this.props.type === 'radio') {
       typeOptions = (
-        <TextArea name='options' label={t('Options(seperate with commas)')} icon='list'
+        <TextArea
+          name='options' label={t('Options(seperate with commas)')} icon='list'
           className='row no-margin' validations='maxLength:500' validationErrors={{
             maxLength: t('Description must be 500 characters or less.')
           }} length={500}
@@ -142,8 +143,10 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
     return (
       <div>
         <div className='row'>
-          <Formsy ref='form' onChange={this.onFormChange}
-            onValid={this.onValid} onInvalid={this.onInvalid}>
+          <Formsy
+            ref='form' onChange={this.onFormChange}
+            onValid={this.onValid} onInvalid={this.onInvalid}
+          >
             <div className='row'>
               <div className='col s12 m6'>
                 <Select

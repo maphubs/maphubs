@@ -312,7 +312,8 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
             <div className='row'>
               <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
                 <div className='row'>
-                  <MultiTextInput name='name' id='name'
+                  <MultiTextInput
+                    name='name' id='name'
                     label={{
                       en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
                     }}
@@ -322,10 +323,12 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     }} length={100}
                     dataPosition='top' dataTooltip={t('Short Descriptive Name for the Group')}
                     value={this.state.group.name}
-                    required />
+                    required
+                  />
                 </div>
                 <div className='row'>
-                  <MultiTextArea name='description'
+                  <MultiTextArea
+                    name='description'
                     label={{
                       en: 'Description',
                       fr: 'Description',
@@ -337,7 +340,8 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     }} length={500}
                     dataPosition='top' dataTooltip={t('Brief Description of the Group')}
                     value={this.state.group.description}
-                    required />
+                    required
+                  />
                 </div>
                 <div className='row'>
                   <TextInput
@@ -346,10 +350,12 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     }} length={100}
                     dataPosition='top' dataTooltip={t('Country or City Where the Group is Located')}
                     value={this.state.group.location}
-                    required />
+                    required
+                  />
                 </div>
                 <div className='row'>
-                  <Toggle name='published' labelOff={t('Draft')} labelOn={t('Published')} className='col s12'
+                  <Toggle
+                    name='published' labelOff={t('Draft')} labelOn={t('Published')} className='col s12'
                     dataPosition='top' dataTooltip={t('Include in Public Group Listings')}
                     checked={isPublished}
                   />
@@ -365,9 +371,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
             </div>
             <div className='row'>
               <h5>{t('Add Group Member')}</h5>
-              <AddItem t={t} placeholder={t('Search for User Name')} suggestionUrl='/api/user/search/suggestions'
+              <AddItem
+                t={t} placeholder={t('Search for User Name')} suggestionUrl='/api/user/search/suggestions'
                 optionLabel={t('Add as Administrator')} addButtonLabel={t('Add and Send Invite')}
-                onAdd={this.handleAddMember} onError={this.onError} />
+                onAdd={this.handleAddMember} onError={this.onError}
+              />
             </div>
             <div className='row'>
               <LayerList layers={this.props.layers} />
@@ -379,7 +387,8 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
               <FloatingButton
                 onClick={this.handleGroupDelete}
                 tooltip={t('Delete Group')}
-                color='red' icon='delete' />
+                color='red' icon='delete'
+              />
             </div>
 
           </div>

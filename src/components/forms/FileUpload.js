@@ -58,7 +58,7 @@ export default class FileUpload extends MapHubsComponent<Props, State> {
   }
 
   formGetter = () => {
-    const element: any = document.getElementById('customForm')
+    const element: any = document.querySelector('#customForm')
     if (element) {
       const formElement: HTMLFormElement = ((element: any): HTMLFormElement)
 
@@ -135,7 +135,8 @@ export default class FileUpload extends MapHubsComponent<Props, State> {
 
   render () {
     return (
-      <FileUploadProgress key='omh' url={this.props.action}
+      <FileUploadProgress
+        key='omh' url={this.props.action}
         onProgress={this.onProgress}
         onLoad={this.onLoad}
         onError={this.onError}

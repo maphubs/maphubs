@@ -62,8 +62,10 @@ class LayerListItem extends React.Component<Props, void> {
   }
 
   render () {
-    const {t, isDragging, connectDragSource, connectDropTarget,
-      showVisibility, showRemove, showDesign} = this.props
+    const {
+      t, isDragging, connectDragSource, connectDropTarget,
+      showVisibility, showRemove, showDesign
+    } = this.props
     const layer: Layer = this.props.item
     const layer_id = layer.layer_id ? layer.layer_id : 0
     const canEdit = (this.props.showEdit &&
@@ -83,16 +85,21 @@ class LayerListItem extends React.Component<Props, void> {
           padding: '5px 10px 5px 5px',
           position: 'relative',
           backgroundColor: active ? 'white' : '#eeeeee'
-        }}>
+        }}
+      >
         <Row>
-          <b className='title grey-text text-darken-4 truncate'
-            style={{fontSize: '12px'}}>
+          <b
+            className='title grey-text text-darken-4 truncate'
+            style={{fontSize: '12px'}}
+          >
             {t(layer.name)}
           </b>
         </Row>
         <Row>
-          <p className='truncate no-margin grey-text text-darken-1'
-            style={{fontSize: '8px', lineHeight: '10px', padding: '0px 0px 2px 0px'}}>
+          <p
+            className='truncate no-margin grey-text text-darken-1'
+            style={{fontSize: '8px', lineHeight: '10px', padding: '0px 0px 2px 0px'}}
+          >
             {t(layer.source)}
           </p>
         </Row>
@@ -100,7 +107,8 @@ class LayerListItem extends React.Component<Props, void> {
           <Col span={4}>
             <Tooltip
               title={t('Layer Info')}
-              placement='right' >
+              placement='right'
+            >
               <a href={'/lyr/' + layer_id} target='_blank' rel='noopener noreferrer'>
                 <Info style={{fontSize: '20px'}} />
               </a>
@@ -110,7 +118,8 @@ class LayerListItem extends React.Component<Props, void> {
             <Col span={4}>
               <Tooltip
                 title={t('Remove from Map')}
-                placement='top' >
+                placement='top'
+              >
                 <Popconfirm
                   title={t('Remove Layer') + ' ' + t(layer.name)}
                   onConfirm={this.removeFromMap} onCancel={() => {}}
@@ -121,41 +130,41 @@ class LayerListItem extends React.Component<Props, void> {
                   </a>
                 </Popconfirm>
               </Tooltip>
-            </Col>
-          }
+            </Col>}
           {showDesign &&
             <Col span={4}>
               <Tooltip
                 title={t('Edit Layer Style')}
-                placement='top'>
+                placement='top'
+              >
                 <a onClick={this.showLayerDesigner}>
                   <Palette style={{fontSize: '20px'}} />
                 </a>
               </Tooltip>
-            </Col>
-          }
+            </Col>}
           {canEdit &&
             <Col span={4}>
               <Tooltip
                 title={t('Edit Layer Data')}
-                placement='top' >
+                placement='top'
+              >
                 <a onClick={this.editLayer}>
                   <Edit style={{fontSize: '20px'}} />
                 </a>
               </Tooltip>
-            </Col>
-          }
+            </Col>}
           {showVisibility &&
             <Col span={4}>
               <Tooltip
                 title={t('Show/Hide Layer')}
-                placement='right' >
+                placement='right'
+              >
                 <Switch size='small' style={{marginBottom: '5px'}} checked={active} onChange={this.toggleVisibility} />
               </Tooltip>
-            </Col>
-          }
+            </Col>}
         </Row>
-        <div className='draggable-indicator'
+        <div
+          className='draggable-indicator'
           style={{
             width: '8px',
             height: '50px',

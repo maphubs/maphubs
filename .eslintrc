@@ -42,7 +42,8 @@
     "object-curly-spacing": "off",
     "standard/object-curly-even-spacing": [2, "either"],
     "unicorn/catch-error-name": ["error", {"name": "err"}],
-    "unicorn/prevent-abbreviations": "off"
+    "unicorn/prevent-abbreviations": "off",
+    "react/jsx-handler-names": "off"
   },
 
   "env": {
@@ -67,7 +68,7 @@
   "settings": {
     "react": {
       "pragma": "React",
-      "version": "15.0"
+      "version": "16.8"
     }
   }
 }

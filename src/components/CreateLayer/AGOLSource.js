@@ -146,7 +146,8 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
                 isHttps: t('SSL required for external links, URLs must start with https://')
               }} length={250}
               dataPosition='top' dataTooltip={t('Map Service URL: ex: http://myserver/arcgis/rest/services/MyMap/MapServer/0')}
-              required />
+              required
+            />
           </Row>
         </div>
       )
@@ -164,7 +165,8 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
                 isHttps: t('SSL required for external links, URLs must start with https://')
               }} length={250}
               dataPosition='top' dataTooltip={t('Feature Service URL ex: http://myserver/arcgis/rest/services/MyMap/FeatureServer/0')}
-              required />
+              required
+            />
           </Row>
         </div>
       )
@@ -182,7 +184,8 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
                 isHttps: t('SSL required for external links, URLs must start with https://')
               }} length={250}
               dataPosition='top' dataTooltip={t('MapServer URL ex: http://myserver/arcgis/rest/services/MyMap/MapServer')}
-              required />
+              required
+            />
           </Row>
         </div>
       )
@@ -193,7 +196,8 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
         <Formsy>
           <b>{t('Choose an Option')}</b>
           <Row>
-            <Radio name='type' label=''
+            <Radio
+              name='type' label=''
               defaultValue={this.state.selectedOption}
               options={agolOptions} onChange={this.optionChange}
               className='col s10'

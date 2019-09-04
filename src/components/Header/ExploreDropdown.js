@@ -33,7 +33,7 @@ export default class ExploreDropdown extends React.PureComponent<Props, void> {
         </Menu.Item>
       </Menu>
     )
-    return (   
+    return (
       <Dropdown overlay={menu} trigger={['click']}>
         <a href='#'>
           {t('Explore')} <Icon type='down' />

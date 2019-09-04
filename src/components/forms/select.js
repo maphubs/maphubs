@@ -108,15 +108,13 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
           title={dataTooltip}
           placement={dataPosition}
         >
-          <div ref='selectwrapper' className='input-field no-margin' id={id} >
+          <div ref='selectwrapper' className='input-field no-margin' id={id}>
             {icon &&
-              <i className='material-icons prefix'>{icon}</i>
-            }
+              <i className='material-icons prefix'>{icon}</i>}
             {label &&
               <div className='row' style={{height: '10px'}}>
                 <label htmlFor={name} data-error={getErrorMessage()} data-success={successText}>{label}</label>
-              </div>
-            }
+              </div>}
             <Row>
               <Select
                 showSearch={showSearch}
@@ -130,8 +128,7 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
                   return option.props.children
                     .toLowerCase()
                     .indexOf(input.toLowerCase()) >= 0
-                }
-                }
+                }}
               >
                 {options.map((option) =>
                   <Option key={option.value} value={option.value}>{option.label}</Option>
@@ -141,12 +138,12 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
                 .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
                   color: #FFF;
                 }
-              `}</style>
+              `}
+              </style>
             </Row>
           </div>
           {note &&
-            <div dangerouslySetInnerHTML={{__html: note}} />
-          }
+            <div dangerouslySetInnerHTML={{__html: note}} />}
         </Tooltip>
       </div>
     )

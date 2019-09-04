@@ -15,13 +15,15 @@ export default class UserIcon extends React.PureComponent<Props, void> {
 
   render () {
     return (
-      <img className='circle'
+      <img
+        className='circle'
         height={this.props.size} width={this.props.size}
         style={{
           height: this.props.size.toString() + 'px',
           width: this.props.size.toString() + 'px',
           border: '1px solid #bbbbbb'
         }}
-        src={this.props.picture} alt='User Profile Photo' />)
+        src={this.props.picture} alt='User Profile Photo'
+      />)
   }
 }

@@ -64,10 +64,14 @@ export default function LayerInfoExternalLink ({layer, t}: Props) {
         <a href={externalUrl} target='_blank' rel='noopener noreferrer'>{externalUrl}</a>
         <Tooltip
           title={t('Copy to Clipboard')}
-          placement='left'>
-          <i className='material-icons omh-accent-text'
+          placement='left'
+        >
+          <i
+            className='material-icons omh-accent-text'
             style={{cursor: 'pointer'}}
-            onClick={() => { copyToClipboard(externalUrl) }}>launch</i>
+            onClick={() => { copyToClipboard(externalUrl) }}
+          >launch
+          </i>
         </Tooltip>
       </p>
     </div>

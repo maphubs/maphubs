@@ -372,7 +372,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
             <Drawer
               title={t(layerDesignerLayer.name)}
               placement='left'
-              width={`300px`}
+              width='300px'
               closable
               destroyOnClose
               bodyStyle={{ height: 'calc(100vh - 55px)', padding: '0px' }}
@@ -380,15 +380,16 @@ class MapMaker extends MapHubsComponent<Props, State> {
               visible
               mask={false}
             >
-              <MapLayerDesigner ref='LayerDesigner'
+              <MapLayerDesigner
+                ref='LayerDesigner'
                 layer={layerDesignerLayer}
                 onStyleChange={this.onLayerStyleChange}
-                onClose={this.closeLayerDesigner} />
+                onClose={this.closeLayerDesigner}
+              />
               <Row style={{textAlign: 'center', marginTop: '20px'}}>
                 <Button type='primary' onClick={this.closeLayerDesigner}>{t('Close')}</Button>
               </Row>
-            </Drawer>
-          }
+            </Drawer>}
           <style jsx global>{`
             .ant-tabs-content {
               height: 100%;
@@ -403,7 +404,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
           `}
           </style>
           <Tabs
-            defaultActiveKey={'overlays'}
+            defaultActiveKey='overlays'
             style={{height: 'calc(100% - 50px)'}}
             tabBarStyle={{marginBottom: 0}}
             animated={false}
@@ -439,8 +440,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
             {editingLayer &&
               <TabPane tab={t('Editing')} key='editing' style={{height: '100%'}}>
                 <EditLayerPanel t={t} />
-              </TabPane>
-            }
+              </TabPane>}
           </Tabs>
           <hr style={{margin: 0}} />
           <Row style={{padding: '10px'}}>
@@ -454,7 +454,8 @@ class MapMaker extends MapHubsComponent<Props, State> {
         </div>
         <div className='col s6 m8 l9 no-padding' style={{height: '100%'}}>
           <div className='row' style={{height: '100%', width: '100%', margin: 0, position: 'relative'}}>
-            <Map id='create-map-map' style={{height: '100%', width: '100%', margin: 'auto'}}
+            <Map
+              id='create-map-map' style={{height: '100%', width: '100%', margin: 'auto'}}
               glStyle={this.state.mapStyle}
               baseMap={this.state.basemap}
               insetMap
@@ -476,8 +477,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
               earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
             >
               {editingLayer &&
-                <EditorToolButtons stopEditingLayer={this.stopEditingLayer} onFeatureUpdate={MapState.state.map.onFeatureUpdate} />
-              }
+                <EditorToolButtons stopEditingLayer={this.stopEditingLayer} onFeatureUpdate={MapState.state.map.onFeatureUpdate} />}
             </Map>
 
             <MiniLegend
@@ -491,23 +491,26 @@ class MapMaker extends MapHubsComponent<Props, State> {
               }}
               layers={mapLayers}
               maxHeight='calc(100vh - 300px)'
-              hideInactive showLayersButton={false} />
+              hideInactive showLayersButton={false}
+            />
           </div>
         </div>
         <Drawer
           title={t('Add Layer')}
           placement='bottom'
-          height={`100vh`}
+          height='100vh'
           closable
           destroyOnClose
           bodyStyle={{ height: 'calc(100vh - 55px)', padding: '0px' }}
           onClose={() => { this.setState({showAddLayer: false}) }}
           visible={showAddLayer}
         >
-          <AddLayerPanel myLayers={this.props.myLayers}
+          <AddLayerPanel
+            myLayers={this.props.myLayers}
             popularLayers={this.props.popularLayers}
             groups={this.props.groups}
-            onAdd={this.addLayer} t={t} />
+            onAdd={this.addLayer} t={t}
+          />
         </Drawer>
       </div>
     )

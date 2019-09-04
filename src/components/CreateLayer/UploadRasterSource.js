@@ -121,7 +121,8 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
           #upload-process-progess {
             z-index: 9999 !important;
           }
-        `}</style>
+        `}
+        </style>
         <div>
           <Row>
             <div style={{margin: 'auto auto', maxWidth: '750px'}}>
@@ -141,7 +142,8 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
             {(canSubmit && style) &&
               <div ref='mapSection'>
                 <p>{t('Please review the data on the map to confirm the upload was successful.')}</p>
-                <Map style={{width: '100%', height: '400px'}}
+                <Map
+                  style={{width: '100%', height: '400px'}}
                   id='upload-preview-map'
                   showFeatureInfoEditButtons={false}
                   mapConfig={mapConfig}
@@ -157,8 +159,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
                   DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
                   earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
                 />
-              </div>
-            }
+              </div>}
           </Row>
         </div>
         <div className='right'>

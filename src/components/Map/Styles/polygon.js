@@ -136,8 +136,8 @@ export default {
     style.layers.forEach((layer) => {
       const {id, type, metadata, paint} = layer
       // clear old outline-only settings
-      if (metadata && typeof metadata['fill'] !== 'undefined') {
-        delete metadata['fill']
+      if (metadata && typeof metadata.fill !== 'undefined') {
+        delete metadata.fill
       }
       if (type === 'fill' && id.startsWith('omh-data-polygon')) {
         legendColor = paint['fill-color']

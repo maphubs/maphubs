@@ -132,7 +132,8 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
               <i className='material-icons'>color_lens</i>{t('Colors')}
             </div>
             <div className='collapsible-body'>
-              <SwatchesPicker width='100%' onChange={this.onColorPickerChange}
+              <SwatchesPicker
+                width='100%' onChange={this.onColorPickerChange}
                 colors={[
                   ['rgba(183,28,28,0.65)', 'rgba(211,47,47,0.65)', 'rgba(244,67,54,0.65)', 'rgba(229,115,115,0.65)', 'rgba(255,205,210,0.65)'],
                   ['rgba(136,14,79,0.65)', 'rgba(194,24,91,0.65)', 'rgba(233,30,99,0.65)', 'rgba(240,98,146,0.65)', 'rgba(248,187,208,0.65)'],
@@ -184,8 +185,7 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
               <div className='collapsible-body'>
                 <MarkerSettings onChange={this.onMarkersChange} style={style} color={color} layer={layer} t={t} />
               </div>
-            </li>
-          }
+            </li>}
           {showAdvanced &&
             <li>
               <div className='collapsible-header'>
@@ -202,13 +202,16 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
                   </div>
                 </div>
               </div>
-            </li>
-          }
+            </li>}
         </ul>
-        <CodeEditor ref='styleEditor' id='layer-style-editor' mode='json'
-          code={JSON.stringify(this.props.style, undefined, 2)} title={t('Editing Layer Style')} onSave={this.onCodeStyleChange} />
-        <CodeEditor ref='legendEditor' id='layer-legend-editor' mode='html'
-          code={legend} title={t('Edit Layer Legend')} onSave={this.onLegendChange} />
+        <CodeEditor
+          ref='styleEditor' id='layer-style-editor' mode='json'
+          code={JSON.stringify(this.props.style, undefined, 2)} title={t('Editing Layer Style')} onSave={this.onCodeStyleChange}
+        />
+        <CodeEditor
+          ref='legendEditor' id='layer-legend-editor' mode='html'
+          code={legend} title={t('Edit Layer Legend')} onSave={this.onLegendChange}
+        />
       </div>
     )
   }

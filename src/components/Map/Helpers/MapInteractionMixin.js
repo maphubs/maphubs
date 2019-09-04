@@ -116,10 +116,10 @@ export default {
                 debug.log(`data not found in source ${feature.layer.source}`)
               }
             }
-            if (!feature.properties['maphubs_metadata']) {
-              feature.properties['maphubs_metadata'] = {}
+            if (!feature.properties.maphubs_metadata) {
+              feature.properties.maphubs_metadata = {}
             }
-            feature.properties['maphubs_metadata'].presets = presets
+            feature.properties.maphubs_metadata.presets = presets
           }
 
           if (DataEditor.state.editing) {

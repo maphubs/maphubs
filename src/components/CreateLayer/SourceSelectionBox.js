@@ -28,10 +28,12 @@ export default class SourceSelectionBox extends MapHubsPureComponent<Props, void
     }
     const border = `3px solid ${MAPHUBS_CONFIG.primaryColor}`
     return (
-      <div className='card-panel center' style={{width: '110px', height: '110px', padding: '5px', marginLeft: 'auto', marginRight: 'auto', border}}
-        onClick={this.onSelect}>
+      <div
+        className='card-panel center' style={{width: '110px', height: '110px', padding: '5px', marginLeft: 'auto', marginRight: 'auto', border}}
+        onClick={this.onSelect}
+      >
 
-        <form action='#' style={{height: '100%', position: 'relative'}} >
+        <form action='#' style={{height: '100%', position: 'relative'}}>
           {icon}
           <p className='no-margin' style={{position: 'absolute', bottom: '0'}}>
             <label>

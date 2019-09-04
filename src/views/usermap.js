@@ -167,14 +167,16 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     if (this.props.canEdit && !publicShare) {
       deleteButton = (
         <li>
-          <FloatingButton color='red' icon='delete' large={false}
+          <FloatingButton
+            color='red' icon='delete' large={false}
             onClick={this.onDelete} tooltip={t('Delete Map')}
           />
         </li>
       )
       editButton = (
         <li>
-          <FloatingButton color='blue' icon='mode_edit' large={false}
+          <FloatingButton
+            color='blue' icon='mode_edit' large={false}
             onClick={this.onEdit} tooltip={t('Edit Map')}
           />
         </li>
@@ -183,7 +185,8 @@ export default class UserMap extends MapHubsComponent<Props, State> {
       if (MAPHUBS_CONFIG.mapHubsPro && !publicShare) {
         shareButton = (
           <li>
-            <FloatingButton color='green' icon='share' large={false}
+            <FloatingButton
+              color='green' icon='share' large={false}
               onClick={this.showSharePublic} tooltip={t('Share')}
             />
           </li>
@@ -199,7 +202,8 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     if (user && !publicShare) {
       copyButton = (
         <li>
-          <FloatingButton color='purple' icon='queue' large={false}
+          <FloatingButton
+            color='purple' icon='queue' large={false}
             onClick={this.showCopyMap} tooltip={t('Copy Map')}
           />
         </li>
@@ -222,7 +226,8 @@ export default class UserMap extends MapHubsComponent<Props, State> {
         <Provider inject={[this.BaseMapState]}>
           <Header {...this.props.headerConfig} />
           <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
-            <InteractiveMap height='calc(100vh - 50px)'
+            <InteractiveMap
+              height='calc(100vh - 50px)'
               {...map}
               layers={this.props.layers}
               mapConfig={this.props.mapConfig}
@@ -238,47 +243,50 @@ export default class UserMap extends MapHubsComponent<Props, State> {
               t={this.t}
             />
             {!publicShare &&
-            <div ref={(ref) => { this.menuButton = ref }} id='user-map-button' className='fixed-action-btn' style={{bottom: '40px'}}
-              onMouseEnter={this.onMouseEnterMenu}
-            >
-              <a className='btn-floating btn-large'>
-                <i className='large material-icons'>more_vert</i>
-              </a>
-              <ul>
-                {shareButton}
-                {deleteButton}
-                {editButton}
-                {copyButton}
-                <li>
-                  <Tooltip
-                    title={t('Get Map as a PNG Image')}
-                    placement='left'
-                  >
-                    <a onClick={this.download}
-                      download={download} href={downloadHREF}
-                      className='btn-floating green'>
-                      <i className='material-icons'>insert_photo</i>
-                    </a>
-                  </Tooltip>
-                </li>
-                <li>
-                  <FloatingButton color='orange' icon='code' large={false}
-                    onClick={this.showEmbedCode} tooltip={t('Embed')}
-                  />
-                </li>
-                <li>
-                  <FloatingButton color='yellow' icon='print' large={false}
-                    onClick={this.onFullScreen} tooltip={t('Print/Screenshot')}
-                  />
-                </li>
-              </ul>
-            </div>
-            }
+              <div
+                ref={(ref) => { this.menuButton = ref }} id='user-map-button' className='fixed-action-btn' style={{bottom: '40px'}}
+                onMouseEnter={this.onMouseEnterMenu}
+              >
+                <a className='btn-floating btn-large'>
+                  <i className='large material-icons'>more_vert</i>
+                </a>
+                <ul>
+                  {shareButton}
+                  {deleteButton}
+                  {editButton}
+                  {copyButton}
+                  <li>
+                    <Tooltip
+                      title={t('Get Map as a PNG Image')}
+                      placement='left'
+                    >
+                      <a
+                        onClick={this.download}
+                        download={download} href={downloadHREF}
+                        className='btn-floating green'
+                      >
+                        <i className='material-icons'>insert_photo</i>
+                      </a>
+                    </Tooltip>
+                  </li>
+                  <li>
+                    <FloatingButton
+                      color='orange' icon='code' large={false}
+                      onClick={this.showEmbedCode} tooltip={t('Embed')}
+                    />
+                  </li>
+                  <li>
+                    <FloatingButton
+                      color='yellow' icon='print' large={false}
+                      onClick={this.onFullScreen} tooltip={t('Print/Screenshot')}
+                    />
+                  </li>
+                </ul>
+              </div>}
             {shareModal}
             {copyModal}
             {showEmbedCode &&
-              <EmbedCodeModal show={showEmbedCode} map_id={map.map_id} share_id={share_id} onClose={() => { this.setState({showEmbedCode: false}) }} t={t} />
-            }
+              <EmbedCodeModal show={showEmbedCode} map_id={map.map_id} share_id={share_id} onClose={() => { this.setState({showEmbedCode: false}) }} t={t} />}
           </main>
         </Provider>
       </ErrorBoundary>

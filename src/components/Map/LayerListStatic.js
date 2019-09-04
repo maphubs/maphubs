@@ -43,8 +43,9 @@ export default class LayerListStatic extends React.Component<Props, State> {
           layers.map((layer) => {
             if (layer && layer.layer_id && layer.layer_id > 0) {
               return (
-                <li key={layer.layer_id} >
-                  <LayerListItemStatic item={layer}
+                <li key={layer.layer_id}>
+                  <LayerListItemStatic
+                    item={layer}
                     toggleVisibility={toggleVisibility}
                     t={t}
                   />
@@ -52,7 +53,8 @@ export default class LayerListStatic extends React.Component<Props, State> {
               )
             }
           })
-        }</ul>
+        }
+        </ul>
       </div>
     )
   }

@@ -29,8 +29,7 @@ export default class GroupList extends React.Component<Props, void> {
         {showTitle &&
           <li className='collection-header'>
             <h4>{t('Groups')}</h4>
-          </li>
-        }
+          </li>}
         {groups.map((group, i) => {
           const groupName = t(group.name)
           return (

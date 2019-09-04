@@ -1,7 +1,7 @@
 import locales from '../locales'
 import localeUtil from '../locales/util'
 
-let i18n = null
+const i18n = null
 /*
 if (process.env.APP_ENV !== 'browser') {
   i18n = require('../i18n')
@@ -60,18 +60,18 @@ export default {
         // found the requested locale
         return localizedString[locale]
       } else {
-        if (localizedString['en']) {
+        if (localizedString.en) {
           // default to English if avaliable
-          return localizedString['en']
+          return localizedString.en
         } else {
           // didn't find requested locale or english, so trying to return something
           return this.getFirstNonEmptyString(localizedString)
         }
       }
     } else {
-      if (localizedString['en']) {
+      if (localizedString.en) {
         // default to English if avaliable
-        return localizedString['en']
+        return localizedString.en
       } else {
         // didn't find requested locale or english, so trying to return something
         return this.getFirstNonEmptyString(localizedString)

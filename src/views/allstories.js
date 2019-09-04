@@ -85,18 +85,14 @@ export default class AllStories extends MapHubsComponent<Props, State> {
                   {showList &&
                     <div className='container'>
                       <StoryList showTitle={false} stories={stories} />
-                    </div>
-                  }
+                    </div>}
                   {!showList &&
-                    <CardGrid cards={stories.map(s => cardUtil.getStoryCard(s, t))} t={t} />
-                  }
-                </Row>
-              }
+                    <CardGrid cards={stories.map(s => cardUtil.getStoryCard(s, t))} t={t} />}
+                </Row>}
               {!hasStories &&
                 <div className='col s12' style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
                   <b>{t('No Stories Found')}</b>
-                </div>
-              }
+                </div>}
             </Row>
           </div>
           <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
@@ -104,7 +100,8 @@ export default class AllStories extends MapHubsComponent<Props, State> {
               href='/createstory'
               tooltip={t('Create New Story')}
               tooltipPosition='top'
-              icon='add' />
+              icon='add'
+            />
           </div>
         </main>
         <Footer {...this.props.footerConfig} />

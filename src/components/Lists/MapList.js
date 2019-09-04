@@ -31,8 +31,7 @@ export default class MapList extends React.Component<Props, void> {
         {showTitle &&
           <li className='collection-header'>
             <h4>{t('Maps')}</h4>
-          </li>
-        }
+          </li>}
         {maps.map((map, i) => {
           const mapTitle = t(map.title)
           const slugTitle = slugify(mapTitle)

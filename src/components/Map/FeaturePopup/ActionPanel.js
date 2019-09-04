@@ -82,7 +82,8 @@ export default function ActionPanel ({ layer, selectedFeature, featureName, enab
       dataToggle = (
         <Tooltip
           title={t('View Details')}
-          placement='bottom'>
+          placement='bottom'
+        >
           <a href='#' onClick={toggleData} style={{margin: 0}}>
             <Info />
           </a>
@@ -97,14 +98,17 @@ export default function ActionPanel ({ layer, selectedFeature, featureName, enab
         <div style={{textAlign: 'left'}}>
           <Tooltip
             title={t('Open Layer')}
-            placement='bottom'>
+            placement='bottom'
+          >
             <b>
-              <a className='truncate omh-accent-text' target='_blank' rel='noopener noreferrer'
+              <a
+                className='truncate omh-accent-text' target='_blank' rel='noopener noreferrer'
                 style={{
                   margin: 0,
                   fontSize: '8px'
                 }}
-                href={layerLink}>
+                href={layerLink}
+              >
                 {t(layerName)}
               </a>
             </b>
@@ -113,15 +117,18 @@ export default function ActionPanel ({ layer, selectedFeature, featureName, enab
       </Col>
       <Col span={8}>
         <Row>
-          <Col span={12} >
+          <Col span={12}>
             {dataToggle}
           </Col>
           <Col span={12} style={{textAlign: 'right'}}>
             <Tooltip
               title={t('Open Feature Page')}
-              placement='bottom'>
-              <a href={featureLink} target='_blank' rel='noopener noreferrer'
-                style={{margin: 0}}>
+              placement='bottom'
+            >
+              <a
+                href={featureLink} target='_blank' rel='noopener noreferrer'
+                style={{margin: 0}}
+              >
                 <Launch />
               </a>
             </Tooltip>

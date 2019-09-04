@@ -70,9 +70,11 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
     if (MAPHUBS_CONFIG.PLANET_LABS_API_KEY) {
       planetSource = (
         <div className='col s6'>
-          <SourceSelectionBox name={t('Planet API')} value={'planet'}
+          <SourceSelectionBox
+            name={t('Planet API')} value='planet'
             selected={source === 'planet'} icon='satellite'
-            onSelect={this.selectSource} />
+            onSelect={this.selectSource}
+          />
         </div>
       )
     }
@@ -94,33 +96,43 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
               <div className='row no-margin'>
                 <p style={{margin: '5px'}}>{t('Upload Data or Import MapHubs Data')}</p>
                 <div className='col s6'>
-                  <SourceSelectionBox name={t('Upload File')} value={'local'}
+                  <SourceSelectionBox
+                    name={t('Upload File')} value='local'
                     selected={source === 'local'} icon='file_upload'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
                 <div className='col s6'>
-                  <SourceSelectionBox name={t('MapHubs Layer')} value={'remote'}
+                  <SourceSelectionBox
+                    name={t('MapHubs Layer')} value='remote'
                     selected={source === 'maphubs'} icon='cloud_download'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
               </div>
               <div className='row no-margin'>
                 <p style={{margin: '5px'}}>{t('Satellite Data')}</p>
                 <div className='col s6'>
-                  <SourceSelectionBox name={t('Upload Raster')} value={'raster-upload'}
+                  <SourceSelectionBox
+                    name={t('Upload Raster')} value='raster-upload'
                     selected={source === 'raster-upload'} icon='file_upload'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
                 {planetSource}
                 <div className='col s6'>
-                  <SourceSelectionBox name={t('Digital Globe')} value={'dgwms'}
+                  <SourceSelectionBox
+                    name={t('Digital Globe')} value='dgwms'
                     selected={source === 'dgwms'} icon='satellite'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
                 <div className='col s6'>
-                  <SourceSelectionBox name={t('Earth Engine')} value={'earthengine'}
+                  <SourceSelectionBox
+                    name={t('Earth Engine')} value='earthengine'
                     selected={source === 'earthengine'} icon='satellite'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
               </div>
             </div>
@@ -128,52 +140,70 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
               <div className='row no-margin'>
                 <p style={{margin: '5px'}}>{t('Create New Data')}</p>
                 <div className='col s6 m4 l4'>
-                  <SourceSelectionBox name={t('New Point(s)')} value={'point'}
+                  <SourceSelectionBox
+                    name={t('New Point(s)')} value='point'
                     selected={source === 'point'} icon='place'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
                 <div className='col s6 m4 l4'>
-                  <SourceSelectionBox name={t('New Line(s)')} value={'line'}
+                  <SourceSelectionBox
+                    name={t('New Line(s)')} value='line'
                     selected={source === 'line'} icon='timeline'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
                 <div className='col s6 m4 l4'>
-                  <SourceSelectionBox name={t('New Polygon(s)')} value={'polygon'}
+                  <SourceSelectionBox
+                    name={t('New Polygon(s)')} value='polygon'
                     selected={source === 'polygon'} icon='crop_din'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
               </div>
               <div className='row no-margin'>
                 <p style={{margin: '5px'}}>{t('Remote Data Sources')}</p>
                 <div className='col s6 m4 l4'>
-                  <SourceSelectionBox name={t('GeoJSON URL')} value={'geojson'}
+                  <SourceSelectionBox
+                    name={t('GeoJSON URL')} value='geojson'
                     selected={source === 'geojson'} icon='cloud_download'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
                 <div className='col s6 m4 l4'>
-                  <SourceSelectionBox name={t('Mapbox Styles')} value={'mapbox'}
+                  <SourceSelectionBox
+                    name={t('Mapbox Styles')} value='mapbox'
                     selected={source === 'mapbox'} icon='cloud_download'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
                 <div className='col s6 m4 l4'>
-                  <SourceSelectionBox name={t('Raster Tiles')} value={'raster'}
+                  <SourceSelectionBox
+                    name={t('Raster Tiles')} value='raster'
                     selected={source === 'raster'} icon='cloud_download'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
                 <div className='col s6 m4 l4'>
-                  <SourceSelectionBox name={t('Vector Tiles')} value={'vector'}
+                  <SourceSelectionBox
+                    name={t('Vector Tiles')} value='vector'
                     selected={source === 'vector'} icon='cloud_download'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
                 <div className='col s6 m4 l4'>
-                  <SourceSelectionBox name={t('ArcGIS Services')} value={'ags'}
+                  <SourceSelectionBox
+                    name={t('ArcGIS Services')} value='ags'
                     selected={source === 'ags'} icon='cloud_download'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
                 <div className='col s6 m4 l4'>
-                  <SourceSelectionBox name={t('WMS')} value={'wms'}
+                  <SourceSelectionBox
+                    name={t('WMS')} value='wms'
                     selected={source === 'wms'} icon='cloud_download'
-                    onSelect={this.selectSource} />
+                    onSelect={this.selectSource}
+                  />
                 </div>
               </div>
             </div>

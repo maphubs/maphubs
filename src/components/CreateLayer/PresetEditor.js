@@ -78,7 +78,8 @@ export default class PresetEditor extends MapHubsComponent<Props, State> {
             presets.map((preset: MapHubsField) => {
               return (
                 <li key={preset.id} className='collection-item attribute-collection-item'>
-                  <PresetForm ref={preset.tag} {...preset}
+                  <PresetForm
+                    ref={preset.tag} {...preset}
                     onValid={_this.onValid}
                     onInvalid={_this.onInvalid}
                   />

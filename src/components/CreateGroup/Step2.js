@@ -102,8 +102,7 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
             {showPrev &&
               <div className='left'>
                 <Button type='primary' onClick={this.props.onPrev}>{t('Previous Step')}</Button>
-              </div>
-            }
+              </div>}
             <div className='right'>
               <Button type='primary' onClick={this.submit}>{t('Save')}</Button>
             </div>

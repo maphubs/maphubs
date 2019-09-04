@@ -48,8 +48,7 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
             <a href={linkUrl}>
               <div style={{height: '160px', width: '100%', backgroundImage: 'url(' + imageUrl + ')', backgroundSize: 'cover', backgroundPosition: 'center'}} />
             </a>
-          </div>
-        }
+          </div>}
         <a href={linkUrl}>
           <h5 className='grey-text text-darken-4 story-title'>{title}</h5>
         </a>
@@ -64,8 +63,7 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
         {!story.published &&
           <p style={{position: 'absolute', top: '15px', left: '50%', right: '50%'}}>
             <b style={{color: 'red', textTransform: 'uppercase'}}>{t('Draft')}</b>
-          </p>
-        }
+          </p>}
         <ShareButtons
           title={story.title} t={t}
           style={{width: '70px', position: 'absolute', right: '10px', bottom: '10px'}}

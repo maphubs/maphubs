@@ -187,7 +187,8 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
           <div className='row'>
             <div className='col s12 m6'>
               <div className='row'>
-                <MultiTextInput name='name' id='layer-name'
+                <MultiTextInput
+                  name='name' id='layer-name'
                   label={{
                     en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
                   }}
@@ -197,10 +198,12 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                     maxLength: t('Name must be 100 characters or less.')
                   }} length={100}
                   dataPosition='top' dataTooltip={t('Short Descriptive Name for the Layer')}
-                  required />
+                  required
+                />
               </div>
               <div className='row'>
-                <MultiTextArea name='description'
+                <MultiTextArea
+                  name='description'
                   label={{
                     en: 'Description',
                     fr: 'Description',
@@ -213,7 +216,8 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                     maxLength: t('Description must be 1000 characters or less.')
                   }} length={1000}
                   dataPosition='top' dataTooltip={t('Brief Description of the Layer')}
-                  required />
+                  required
+                />
               </div>
               {selectGroup}
             </div>
@@ -228,10 +232,12 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                     maxLength: t('Name must be 300 characters or less.')
                   }} length={300}
                   dataPosition='top' dataTooltip={t('Short Description of the Layer Source')}
-                  required />
+                  required
+                />
               </div>
               <div className='row'>
-                <Select name='license' id='layer-source-select' label={t('License')} startEmpty={false}
+                <Select
+                  name='license' id='layer-source-select' label={t('License')} startEmpty={false}
                   value={license} options={licenseOptions}
                   note={t('Select a license for more information')}
                   className='col s12'

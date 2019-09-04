@@ -56,11 +56,14 @@ export default class MapToolButton extends React.PureComponent<Props, void> {
         <Tooltip
           disabled={!tooltipText}
           title={tooltipText}
-          placement='bottom'>
-          <a ref='mapToolButton'
+          placement='bottom'
+        >
+          <a
+            ref='mapToolButton'
             onClick={this.onClick}
             onMouseDown={this.onMouseDown}
-            style={{position: 'absolute',
+            style={{
+              position: 'absolute',
               top: this.props.top,
               right: this.props.right,
               bottom: this.props.bottom,
@@ -74,32 +77,25 @@ export default class MapToolButton extends React.PureComponent<Props, void> {
               color: disabled ? '#9F9F9F' : color,
               backgroundColor: disabled ? '#DFDFDF' : 'white',
               boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
-              width: '30px'}}
+              width: '30px'
+            }}
           >
             {icon === 'near_me' &&
-              <NearMe style={iconStyle} />
-            }
+              <NearMe style={iconStyle} />}
             {icon === 'close' &&
-              <Close style={iconStyle} />
-            }
+              <Close style={iconStyle} />}
             {icon === 'undo' &&
-              <Undo style={iconStyle} />
-            }
+              <Undo style={iconStyle} />}
             {icon === 'redo' &&
-              <Redo style={iconStyle} />
-            }
+              <Redo style={iconStyle} />}
             {icon === 'save' &&
-              <Save style={iconStyle} />
-            }
+              <Save style={iconStyle} />}
             {icon === 'search' &&
-              <Search style={iconStyle} />
-            }
+              <Search style={iconStyle} />}
             {icon === 'info' &&
-              <Info style={iconStyle} />
-            }
+              <Info style={iconStyle} />}
             {icon === 'build' &&
-              <Build style={iconStyle} />
-            }
+              <Build style={iconStyle} />}
           </a>
         </Tooltip>
       )
