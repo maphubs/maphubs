@@ -91,44 +91,4 @@ module.exports = function (app: any) {
       }
     } catch (err) { apiError(res, 500)(err) }
   })
-
-  app.post('/api/story/addimage', csrfProtection, isAuthenticated, (req, res) => {
-    const data = req.body
-    if (data && data.story_id && data.image) {
-      Story.allowedToModify(data.story_id, req.user_id)
-        .then((allowed) => {
-          if (allowed) {
-            return Image.addStoryImage(data.story_id, data.image, data.info)
-              .then((image_id) => {
-                return res.send({
-                  success: true, image_id
-                })
-              }).catch(apiError(res, 500))
-          } else {
-            return notAllowedError(res, 'story')
-          }
-        }).catch(apiError(res, 500))
-    } else {
-      apiDataError(res)
-    }
-  })
-
-  app.post('/api/story/removeimage', csrfProtection, isAuthenticated, (req, res) => {
-    const data = req.body
-    if (data && data.story_id && data.image_id) {
-      Story.allowedToModify(data.story_id, req.user_id)
-        .then(async (allowed) => {
-          if (allowed) {
-            await Image.removeStoryImage(data.story_id, data.image_id)
-            return res.send({
-              success: true
-            })
-          } else {
-            return notAllowedError(res, 'story')
-          }
-        }).catch(apiError(res, 500))
-    } else {
-      apiDataError(res)
-    }
-  })
 }

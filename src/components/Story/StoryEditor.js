@@ -133,13 +133,7 @@ class StoryEditor extends React.Component<Props, State> {
     }
   }
 
-  onAddImage = async (info: Object) => {
-    const {containers} = this.props
-    await containers.story.addImage(info)
-  }
-
   showAddMap = () => {
-    // this.refs.addmap.show()
     this.setState({showAddMap: true})
   }
 
@@ -151,7 +145,6 @@ class StoryEditor extends React.Component<Props, State> {
   }
 
   onSelectImage = (data: any) => {
-    // this.refs.imagecrop.show()
     return new Promise((resolve, reject) => {
       message.info(this.props.t('Cropping Image'))
       this.setState({showImageCrop: true, imageCropCallback: resolve, imageData: data})

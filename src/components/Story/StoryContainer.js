@@ -93,18 +93,6 @@ export default class StoryContainer extends Container<StoryContainerState> {
       })
   }
 
-  addImage = async (data: string, info: Object) => {
-    const { story_id, _csrf } = this.state
-    return request.post('/api/story/addimage')
-      .type('json').accept('json')
-      .send({
-        story_id,
-        image: data,
-        info,
-        _csrf
-      })
-  }
-
   delete = async () => {
     return request.post('/api/story/delete')
       .type('json').accept('json')
