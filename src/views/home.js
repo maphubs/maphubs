@@ -110,18 +110,18 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
 
     this.state = {
-      featuredLayersCards: _shuffle(props.featuredLayers.map(cardUtil.getLayerCard)),
-      featuredGroupsCards: _shuffle(props.featuredGroups.map(cardUtil.getGroupCard)),
-      featuredMapsCards: _shuffle(props.featuredMaps.map(cardUtil.getMapCard)),
-      featuredStoriesCards: _shuffle(props.featuredStories.map(s => cardUtil.getStoryCard(s, this.t))),
-      popularLayersCards: _shuffle(props.popularLayers.map(cardUtil.getLayerCard)),
-      popularGroupsCards: _shuffle(props.popularGroups.map(cardUtil.getGroupCard)),
-      popularMapsCards: _shuffle(props.popularMaps.map(cardUtil.getMapCard)),
-      popularStoriesCards: _shuffle(props.popularStories.map(s => cardUtil.getStoryCard(s, this.t))),
-      recentLayersCards: _shuffle(props.recentLayers.map(cardUtil.getLayerCard)),
-      recentGroupsCards: _shuffle(props.recentGroups.map(cardUtil.getGroupCard)),
-      recentMapsCards: _shuffle(props.recentMaps.map(cardUtil.getMapCard)),
-      recentStoriesCards: _shuffle(props.recentStories.map(s => cardUtil.getStoryCard(s, this.t))),
+      featuredLayersCards: props.featuredLayers ? _shuffle(props.featuredLayers.map(cardUtil.getLayerCard)) : [],
+      featuredGroupsCards: props.featuredGroups ? _shuffle(props.featuredGroups.map(cardUtil.getGroupCard)) : [],
+      featuredMapsCards: props.featuredMaps ? _shuffle(props.featuredMaps.map(cardUtil.getMapCard)) : [],
+      featuredStoriesCards: props.featuredStories ? _shuffle(props.featuredStories.map(s => cardUtil.getStoryCard(s, this.t))) : [],
+      popularLayersCards: props.popularLayers ? _shuffle(props.popularLayers.map(cardUtil.getLayerCard)) : [],
+      popularGroupsCards: props.popularGroups ? _shuffle(props.popularGroups.map(cardUtil.getGroupCard)) : [],
+      popularMapsCards: props.popularMaps ? _shuffle(props.popularMaps.map(cardUtil.getMapCard)) : [],
+      popularStoriesCards: props.popularStories ? _shuffle(props.popularStories.map(s => cardUtil.getStoryCard(s, this.t))) : [],
+      recentLayersCards: props.recentLayers ? _shuffle(props.recentLayers.map(cardUtil.getLayerCard)) : [],
+      recentGroupsCards: props.recentGroups ? _shuffle(props.recentGroups.map(cardUtil.getGroupCard)) : [],
+      recentMapsCards: props.recentMaps ? _shuffle(props.recentMaps.map(cardUtil.getMapCard)) : [],
+      recentStoriesCards: props.recentStories ? _shuffle(props.recentStories.map(s => cardUtil.getStoryCard(s, this.t))) : [],
       loaded: false
     }
   }
@@ -364,7 +364,9 @@ export default class HomePro extends MapHubsComponent<Props, State> {
           if (filter === 'recent') return state.recentStoriesCards
         }
       })
-      collectionCards = cardUtil.combineCards(cards)
+      if (cards && cards.length > 0) {
+        collectionCards = cardUtil.combineCards(cards)
+      }
     } else { // combine all the results
       collectionCards = cardUtil.combineCards([
         state.featuredLayersCards,
@@ -405,9 +407,11 @@ export default class HomePro extends MapHubsComponent<Props, State> {
             </h5>
           </div>
         </Row>
-        <Row>
-          <CardCarousel cards={collectionCards} infinite={false} t={this.t} />
-        </Row>
+        <ErrorBoundary>
+          <Row>
+            <CardCarousel cards={collectionCards} infinite={false} t={this.t} emptyMessage={config.emptyMessage} />
+          </Row>
+        </ErrorBoundary>
       </Row>
     )
     return carousel

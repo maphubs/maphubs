@@ -11,7 +11,9 @@ export default {
   combineCards (cardDataArray: Array<CardConfigArray>): Array<CardConfig> {
     let output = []
     cardDataArray.forEach((cardArr: Array<CardConfig>) => {
-      output = output.concat(cardArr)
+      if (cardArr) {
+        output = output.concat(cardArr)
+      }
     })
     return output
   },
