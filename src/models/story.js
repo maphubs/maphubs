@@ -41,12 +41,19 @@ module.exports = {
     return query
   },
 
-  getRecentStories (number: number = 10) {
-    const query = this.getStoriesBaseQuery()
+  getRecentStories (options: {number: number, tags: Array}) {
+    const { number, tags } = options
+    let query = this.getStoriesBaseQuery()
+    if (tags) {
+      query = query
+        .whereIn('omh.story_tags.tag', tags)
+        .andWhere('omh.stories.published', true)
+    } else {
+      query = query.where('omh.stories.published', true)
+    }
     return query
-      .where('omh.stories.published', true)
-      .orderBy('omh.stories.updated_at', 'desc')
-      .limit(number)
+      .orderBy('omh.stories.published_at', 'desc')
+      .limit(number || 10)
   },
 
   getPopularStories (number: number = 10) {
@@ -62,7 +69,7 @@ module.exports = {
     return query
       .where('omh.stories.published', true)
       .andWhere('omh.stories.featured', true)
-      .orderBy('omh.stories.updated_at', 'desc')
+      .orderBy('omh.stories.published_at', 'desc')
       .limit(number)
   },
 

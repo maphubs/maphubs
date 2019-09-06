@@ -3,128 +3,102 @@ const Layer = require('../models/layer')
 const Group = require('../models/group')
 const Map = require('../models/map')
 const Story = require('../models/story')
-const Promise = require('bluebird')
 const pageOptions = require('./page-options-helper')
 const local = require('../local')
 
-module.exports = function (app: any, config: Object, req: any, res: any) {
-  const dataRequests = []
-  const dataRequestNames: Array<string> = []
+module.exports = async function (app: any, config: Object, req: any, res: any) {
+  const results = {}
   let useMailChimp
   // use page config to determine data requests
   if (config.components && Array.isArray(config.components) && config.components.length > 0) {
-    config.components.forEach((component: Object) => {
+    await Promise.all(config.components.map(async (component: Object) => {
       if (component.type === 'map') {
-        dataRequests.push(Map.getMap(component.map_id))
-        dataRequestNames.push('map')
-        dataRequests.push(Map.getMapLayers(component.map_id, false))
-        dataRequestNames.push('layers')
+        results.map = await Map.getMap(component.map_id)
+        results.layers = await Map.getMapLayers(component.map_id, false)
       } else if (component.type === 'storyfeed') {
         if (component.datasets) {
-          component.datasets.forEach((dataset) => {
-            const {type, max} = dataset
+          await Promise.all(component.datasets.map(async (dataset) => {
+            const {type, max, tags} = dataset
             const number = max || 6
             if (type === 'trending' || type === 'popular') {
-              dataRequests.push(Story.getPopularStories(number))
-              dataRequestNames.push('popularStories')
+              results.popularStories = await Story.getPopularStories(number)
             } else if (type === 'featured') {
-              dataRequests.push(Story.getFeaturedStories(number))
-              dataRequestNames.push('featuredStories')
+              results.featuredStories = await Story.getFeaturedStories(number)
             } else if (type === 'recent') {
-              dataRequests.push(Story.getRecentStories(number))
-              dataRequestNames.push('recentStories')
+              results.recentStories = await Story.getRecentStories({number, tags})
             }
-          })
+          }))
         } else {
-          dataRequests.push(Story.getPopularStories(5))
-          dataRequestNames.push('popularStories')
-          dataRequests.push(Story.getFeaturedStories(5))
-          dataRequestNames.push('featuredStories')
+          results.popularStories = await Story.getPopularStories(5)
+          results.featuredStories = await Story.getFeaturedStories(5)
         }
       } else if (component.type === 'carousel') {
         if (component.datasets && Array.isArray(component.datasets) && component.datasets.length > 0) {
-          component.datasets.forEach((dataset) => {
-            const {type, filter, max} = dataset
+          await Promise.all(component.datasets.map(async (dataset) => {
+            const {type, filter, max, tags} = dataset
             const number = max || 6
             if (type === 'layer') {
               if (filter === 'featured') {
-                dataRequests.push(Layer.getFeaturedLayers(number))
-                dataRequestNames.push('popularLayers')
+                results.featuredLayers = await Layer.getFeaturedLayers(number)
               } else if (filter === 'popular') {
-                dataRequests.push(Layer.getPopularLayers(number))
-                dataRequestNames.push('popularLayers')
+                results.popularLayers = await Layer.getPopularLayers(number)
               } else if (filter === 'recent') {
-                dataRequests.push(Layer.getRecentLayers(number))
-                dataRequestNames.push('recentLayers')
+                results.recentLayers = await Layer.getRecentLayers(number)
               }
             } else if (type === 'group') {
               if (filter === 'featured') {
-                dataRequests.push(Group.getFeaturedGroups(number))
-                dataRequestNames.push('featuredGroups')
+                results.featuredGroups = await Group.getFeaturedGroups(number)
               } else if (filter === 'popular') {
-                dataRequests.push(Group.getPopularGroups(number))
-                dataRequestNames.push('popularGroups')
+                results.popularGroups = await Group.getPopularGroups(number)
               } else if (filter === 'recent') {
-                dataRequests.push(Group.getRecentGroups(number))
-                dataRequestNames.push('recentGroups')
+                results.recentGroups = await Group.getRecentGroups(number)
               }
             } else if (type === 'map') {
               if (filter === 'featured') {
-                dataRequests.push(Map.getFeaturedMaps(number))
-                dataRequestNames.push('featuredMaps')
+                results.featuredMaps = await Map.getFeaturedMaps(number)
               } else if (filter === 'popular') {
-                dataRequests.push(Map.getPopularMaps(number))
-                dataRequestNames.push('popularMaps')
+                results.popularMaps = await Map.getPopularMaps(number)
               } else if (filter === 'recent') {
-                dataRequests.push(Map.getRecentMaps(number))
-                dataRequestNames.push('recentMaps')
+                results.popularMaps = await Map.getRecentMaps(number)
               }
             } else if (type === 'story') {
               if (filter === 'featured') {
-                dataRequests.push(Story.getFeaturedStories(number))
-                dataRequestNames.push('featuredStories')
+                results.featuredStories = await Story.getFeaturedStories(number)
               } else if (filter === 'popular') {
-                dataRequests.push(Story.getPopularStories(number))
-                dataRequestNames.push('popularStories')
+                results.popularStories = await Story.getPopularStories(number)
               } else if (filter === 'recent') {
-                dataRequests.push(Story.getRecentStories(number))
-                dataRequestNames.push('recentStories')
+                results.recentStories = await Story.getRecentStories({number, tags})
               }
             }
-          })
+          }))
         }
       } else if (component.type === 'mailinglist') {
         useMailChimp = true
       }
-    })
+    }))
   }
 
-  return Promise.all(dataRequests)
-    .then(async (results) => {
-      const props = {pageConfig: config, _csrf: req.csrfToken()}
-      results.forEach((result, i) => {
-        props[dataRequestNames[i]] = result
-      })
-      let title = local.productName
-      let description = local.productName
-      if (config.title && config.title[req.locale]) {
-        title = config.title[req.locale]
-      } else if (config.title && config.title.en) {
-        title = config.title.en
-      }
+  const props = {...results, pageConfig: config, _csrf: req.csrfToken()}
 
-      if (config.description && config.description[req.locale]) {
-        description = config.description[req.locale]
-      } else if (config.description && config.description.en) {
-        description = config.description.en
-      }
+  let title = local.productName
+  let description = local.productName
+  if (config.title && config.title[req.locale]) {
+    title = config.title[req.locale]
+  } else if (config.title && config.title.en) {
+    title = config.title.en
+  }
 
-      return app.next.render(req, res, '/home', await pageOptions(req, {
-        title,
-        description,
-        mailchimp: useMailChimp,
-        props,
-        hideFeedback: config.hideFeedback
-      }))
-    })
+  if (config.description && config.description[req.locale]) {
+    description = config.description[req.locale]
+  } else if (config.description && config.description.en) {
+    description = config.description.en
+  }
+
+  return app.next.render(req, res, '/home', await pageOptions(req, {
+    title,
+    description,
+    mailchimp: useMailChimp,
+    props,
+    hideFeedback: config.hideFeedback
+  }))
 }
