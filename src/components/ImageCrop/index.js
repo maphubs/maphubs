@@ -443,14 +443,18 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
     if (this.refs.cropper && this.refs.cropper.reset) this.refs.cropper.reset()
     if (this.refs.cropper && this.refs.cropper.clear) this.refs.cropper.clear()
     this.setState({
-      img: null,
       src: null,
-      selectedFile: null,
-      file: null,
       visible: false,
-      preview: null,
       autoCropArea: this.props.autoCropArea,
-      aspectRatio: this.props.aspectRatio
+      aspectRatio: this.props.aspectRatio,
+      img: null,
+      file: {size: 0, type: ''},
+      preview: null,
+      loading: false,
+      cropWidth: 0,
+      cropHeight: 0,
+      selectedFile: '',
+      exif: {}
     })
   }
 
