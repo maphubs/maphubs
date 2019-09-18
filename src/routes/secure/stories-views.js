@@ -66,7 +66,7 @@ module.exports = function (app: any) {
             story,
             myMaps: await Map.getUserMaps(user_id),
             popularMaps: await Map.getPopularMaps(),
-            groups: await Group.getAllGroups()
+            groups: await Group.getGroupsForUser(user_id)
           },
           hideFeedback: true
         }))
