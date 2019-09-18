@@ -59,7 +59,7 @@ module.exports = async function (app: any, config: Object, req: any, res: any) {
               } else if (filter === 'popular') {
                 results.popularMaps = await Map.getPopularMaps(number)
               } else if (filter === 'recent') {
-                results.popularMaps = await Map.getRecentMaps(number)
+                results.recentMaps = await Map.getRecentMaps(number)
               }
             } else if (type === 'story') {
               if (filter === 'featured') {
