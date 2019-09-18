@@ -147,11 +147,18 @@ export default class AddLayerPanel extends React.Component<Props, State> {
           </Col>
           <Col span={12} style={{padding: '22px'}}>
             <Select
+              showSearch
               defaultValue={selectedGroupId}
               onChange={this.handleGroupSearch}
               allowClear
               placeholder={t('or Select a Group')}
               style={{ width: '100%' }}
+              filterOption={(input, option) => {
+                // eslint-disable-next-line unicorn/prefer-includes
+                return option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }}
             >
               {groups.map((group) =>
                 <Option key={group.group_id} value={group.group_id}>{t(group.name)}</Option>
