@@ -129,6 +129,7 @@ module.exports = {
   },
 
   async delete (story_id: number, trx: any) {
+    await trx('omh.story_tags').where({story_id}).del()
     await trx('omh.story_views').where({story_id}).del()
     await trx('omh.story_maps').where({story_id}).del()
     await trx('omh.user_stories').where({story_id}).del() // leave until we delete the user_stories table
