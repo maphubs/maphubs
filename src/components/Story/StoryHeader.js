@@ -43,7 +43,7 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
     const { story, short } = this.props
     const { locale, groupLogoFailed } = this.state
     const guessedTz = moment.tz.guess()
-    const date = story.published_at || story.updated_at
+    const date = story.published_at
     const publishedTime = moment.tz(date, guessedTz).format()
 
     let time = ''

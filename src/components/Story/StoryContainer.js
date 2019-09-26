@@ -1,6 +1,7 @@
 // @flow
 import { Container } from 'unstated'
 import request from 'superagent'
+import moment from 'moment'
 
 export type Story ={
   title?: Object,
@@ -31,6 +32,11 @@ export default class StoryContainer extends Container<StoryContainerState> {
       canChangeGroup: !initialState.owned_by_group_id
     }
     this.state = Object.assign(defaultState, initialState)
+
+    // must be done after the .assign since published_at=null is sent from the server
+    if (!this.state.published_at) {
+      this.state.published_at = moment().startOf('day').format()
+    }
   }
 
   bodyChange = (lang:string, update: string) => {
@@ -46,7 +52,7 @@ export default class StoryContainer extends Container<StoryContainerState> {
   }
 
   publishDateChange = (date: Object) => {
-    this.setState({published_at: date.format('YYYY-MM-DD'), modified: true})
+    this.setState({published_at: date.format(), modified: true})
   }
 
   togglePublished = (published: boolean) => {

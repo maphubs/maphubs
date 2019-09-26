@@ -9,6 +9,7 @@ import { Card, Tooltip } from 'antd'
 export type CardConfig = {|
   title?: LocalizedString,
   description?: LocalizedString,
+  showDescription?: boolean,
   image_url?: string,
   link: string,
   group?: {
@@ -40,7 +41,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
   }
 
   render () {
-    const {group, showAddButton, type, t, image_url} = this.props
+    const {group, showAddButton, type, t, image_url, showDescription} = this.props
 
     let iconName = ''
     let toolTipText = ''
@@ -139,11 +140,13 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
               <Lock style={{color: '#323333'}} />
             </Tooltip>
           </div>}
-        <div className='card-content word-wrap' style={{padding: '5px'}}>
+        <div className='card-content word-wrap' style={{height: '150x', padding: '5px'}}>
 
           <b>{t(this.props.title)}</b> <br />
-
-          <p className='fade' style={{fontSize: '12px'}}> {t(this.props.description)}</p>
+          {
+            showDescription &&
+              <p className='fade' style={{fontSize: '12px'}}> {t(this.props.description)}</p>
+          }
           {mapCardGroupTag}
           {group &&
             <div className='valign-wrapper' style={{position: 'absolute', bottom: 5, left: 5}}>

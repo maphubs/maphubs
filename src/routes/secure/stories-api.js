@@ -14,7 +14,7 @@ const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 module.exports = function (app: any) {
   app.post('/api/story/save', csrfProtection, isAuthenticated, async (req, res) => {
     const data = req.body
-    if (data && data.owned_by_group_id && data.title && data.body) {
+    if (data && data.owned_by_group_id && data.title && data.body && data.published_at) {
       const story_id = data.story_id
       try {
         let allowedToModify

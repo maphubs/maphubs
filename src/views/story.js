@@ -3,6 +3,7 @@ import React from 'react'
 import { Row, Col } from 'antd'
 import Head from 'next/head'
 import Header from '../components/header'
+import Footer from '../components/footer'
 import Comments from '../components/Comments'
 import slugify from 'slugify'
 import StoryHeader from '../components/Story/StoryHeader'
@@ -23,6 +24,7 @@ type Props = {
   locale: string,
   _csrf: string,
   headerConfig: Object,
+  footerConfig: Object,
   user: Object
 }
 
@@ -191,6 +193,7 @@ export default class Story extends MapHubsComponent<Props, void> {
             `}
             </style>
           </main>
+          <Footer {...this.props.footerConfig} />
         </ErrorBoundary>
       </>
     )
