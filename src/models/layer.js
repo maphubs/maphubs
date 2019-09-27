@@ -371,6 +371,36 @@ module.exports = {
     })
   },
 
+  async getGeoJSONAgg (layer_id: number, aggFields: Array<string>) {
+    const layerTable = `layers.data_full_${layer_id}`
+
+    const layer = await this.getLayerByID(layer_id)
+
+    const properties = aggFields.map(field => knex.raw(`'${field}', "${field}"`))
+    const groupBys = aggFields.map(field => knex.raw(`"${field}"`))
+
+    layer.presets.forEach(preset => {
+      if (!aggFields.includes(preset.tag)) {
+        properties.push(knex.raw(`'${preset.tag}', string_agg(distinct "${preset.tag}", ',')`))
+      }
+    })
+
+    properties.push(knex.raw('\'mhid\', string_agg(distinct mhid, \',\')'))
+    const selects = [
+      knex.raw('\'Feature\' as type'),
+      knex.raw(`json_build_object(${properties.toString()}) as properties`),
+      knex.raw('ST_AsGeoJSON(ST_Multi(ST_Union(ST_Transform(geom, 4326)))):: json as geometry')
+    ]
+
+    const features = await knex(layerTable).select(selects).groupBy(groupBys)
+    // console.log(data)
+
+    return {
+      type: 'FeatureCollection',
+      features
+    }
+  },
+
   // Layer Security
 
   async isPrivate (layer_id: number) {

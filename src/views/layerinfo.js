@@ -341,7 +341,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
           </IntlProvider>&nbsp;
           (<IntlProvider locale={this.state.locale}>
             <FormattedRelative value={updatedTimeStr} />
-           </IntlProvider>)&nbsp;
+          </IntlProvider>)&nbsp;
           {t('by') + ' ' + this.props.updatedByUser.display_name}
         </p>
       )
@@ -492,7 +492,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                     </Subscribe>
                   </TabPane>
                   <TabPane tab={t('Export')} key='export'>
-                    <LayerExport layer={layer} />
+                    <LayerExport layer={layer} t={t} />
                   </TabPane>
                 </Tabs>
               </Col>

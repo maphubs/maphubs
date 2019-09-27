@@ -13,11 +13,23 @@ const geojson2dsv = require('geojson2dsv')
 const exportUtils = require('../../services/export-utils')
 
 module.exports = function (app: any) {
-  app.get('/api/layer/:layer_id/export/json/*', privateLayerCheck, (req, res) => {
+  app.get('/api/layer/:layer_id/export/json/*', privateLayerCheck, async (req, res) => {
     const layer_id = parseInt(req.params.layer_id || '', 10)
-    Layer.getGeoJSON(layer_id).then((geoJSON) => {
+    let aggFields
+    if (req.query.agg) {
+      aggFields = req.query.agg.split(',')
+    }
+    try {
+      let geoJSON
+      if (aggFields) {
+        geoJSON = await Layer.getGeoJSONAgg(layer_id, aggFields)
+      } else {
+        geoJSON = await Layer.getGeoJSON(layer_id)
+      }
       return res.status(200).send(geoJSON)
-    }).catch(apiError(res, 200))
+    } catch (err) {
+      apiError(res, 200)(err)
+    }
   })
 
   app.get('/api/layer/:layer_id/export/svg/*', privateLayerCheck, async (req, res) => {
@@ -70,26 +82,39 @@ module.exports = function (app: any) {
     } catch (err) { apiError(res, 200)(err) }
   })
 
-  app.get('/api/layer/:layer_id/export/csv/*', privateLayerCheck, (req, res) => {
+  app.get('/api/layer/:layer_id/export/csv/*', privateLayerCheck, async (req, res) => {
     const layer_id = parseInt(req.params.layer_id || '', 10)
 
-    Layer.getGeoJSON(layer_id).then((geoJSON) => {
-      const resultStr = JSON.stringify(geoJSON)
-      const hash = require('crypto').createHash('md5').update(resultStr).digest('hex')
-      const match = req.get('If-None-Match')
+    let aggFields
+    if (req.query.agg) {
+      aggFields = req.query.agg.split(',')
+    }
+    try {
+      let geoJSON
+      if (aggFields) {
+        geoJSON = await Layer.getGeoJSONAgg(layer_id, aggFields)
+      } else {
+        geoJSON = await Layer.getGeoJSON(layer_id)
+      }
+
+      // const resultStr = JSON.stringify(geoJSON)
+      // const hash = require('crypto').createHash('md5').update(resultStr).digest('hex')
+      // const match = req.get('If-None-Match')
       /* eslint-disable security/detect-possible-timing-attacks */
       // We freely give out the Etag hash, don't need to protect against someone brute forcing it
-      if (hash === match) {
-        return res.status(304).send()
-      } else {
-        res.header('Content-Type', 'text/csv')
-        res.header('ETag', hash)
+      // if (hash === match) {
+      // return res.status(304).send()
+      // } else {
+      res.header('Content-Type', 'text/csv')
+      // res.header('ETag', hash)
 
-        const csvString = geojson2dsv(geoJSON, ',', true)
+      const csvString = geojson2dsv(geoJSON, ',', true)
 
-        return res.status(200).send(csvString)
-      }
-    }).catch(apiError(res, 200))
+      return res.status(200).send(csvString)
+      // }
+    } catch (err) {
+      apiError(res, 200)(err)
+    }
   })
 
   app.get('/api/layer/:layer_id/export/geobuf/*', privateLayerCheck, (req, res) => {
@@ -105,7 +130,18 @@ module.exports = function (app: any) {
   app.get('/api/layer/:layer_id/export/kml/*', privateLayerCheck, async (req, res) => {
     try {
       const layer_id = parseInt(req.params.layer_id || '', 10)
-      const geoJSON = await Layer.getGeoJSON(layer_id)
+      let aggFields
+      if (req.query.agg) {
+        aggFields = req.query.agg.split(',')
+      }
+
+      let geoJSON
+      if (aggFields) {
+        geoJSON = await Layer.getGeoJSONAgg(layer_id, aggFields)
+      } else {
+        geoJSON = await Layer.getGeoJSON(layer_id)
+      }
+
       const layer = await Layer.getLayerByID(layer_id)
       if (layer) {
         const geoJSONStr = JSON.stringify(geoJSON)
@@ -238,29 +274,33 @@ module.exports = function (app: any) {
     }).catch(apiError(res, 200))
   })
 
-  app.get('/api/layer/:layer_id/export/shp/*', privateLayerCheck, (req, res) => {
+  app.get('/api/layer/:layer_id/export/shp/*', privateLayerCheck, async (req, res) => {
     const layer_id = parseInt(req.params.layer_id || '', 10)
-
-    Layer.getGeoJSON(layer_id).then((geoJSON) => {
-      const resultStr = JSON.stringify(geoJSON)
-      const hash = require('crypto').createHash('md5').update(resultStr).digest('hex')
-      const match = req.get('If-None-Match')
-      if (hash === match) {
-        return res.status(304).send()
+    let aggFields
+    if (req.query.agg) {
+      aggFields = req.query.agg.split(',')
+    }
+    try {
+      let geoJSON
+      if (aggFields) {
+        geoJSON = await Layer.getGeoJSONAgg(layer_id, aggFields)
       } else {
-        res.writeHead(200, {
-          'Content-Type': 'application/zip',
-          ETag: hash
-        })
-
-        return ogr2ogr(geoJSON)
-          .format('ESRI Shapefile')
-          .skipfailures()
-          .options(['-t_srs', 'EPSG:4326'])
-          .timeout(60000)
-          .stream()
-          .pipe(res)
+        geoJSON = await Layer.getGeoJSON(layer_id)
       }
-    }).catch(apiError(res, 200))
+
+      res.writeHead(200, {
+        'Content-Type': 'application/zip'
+      })
+
+      return ogr2ogr(geoJSON)
+        .format('ESRI Shapefile')
+        .skipfailures()
+        .options(['-t_srs', 'EPSG:4326'])
+        .timeout(60000)
+        .stream()
+        .pipe(res)
+    } catch (err) {
+      apiError(res, 200)(err)
+    }
   })
 }
