@@ -5,13 +5,13 @@ import MapHubsComponent from '../MapHubsComponent'
 import CheckboxFormatter from './CheckboxFormatter'
 import update from 'immutability-helper'
 import type {MapHubsField} from '../../types/maphubs-field'
-import connect from 'unstated-connect'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapContainer from '../Map/containers/MapContainer'
 import _assignIn from 'lodash.assignin'
 import type {Layer} from '../../types/layer'
 import GetNameField from '../Map/Styles/get-name-field'
 import turf_bbox from '@turf/bbox'
+import { subscribe } from '../Map/containers/unstated-props'
 
 type Props = {
   geoJSON: Object,
@@ -22,7 +22,7 @@ type Props = {
   dataLoadingMsg: string,
   onSave?: Function,
   presets: Array<MapHubsField>,
-  containers: Array<Object>
+  containers: Object
 }
 
 type Column = {
@@ -82,9 +82,9 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
 
   componentDidMount () {
     if (this.props.geoJSON) {
-      const [DataEditorState] = this.props.containers
+      const {dataEditorState} = this.props.containers
       this.processGeoJSON(this.props.geoJSON, this.props.presets)
-      DataEditorState.startEditing(this.props.layer)
+      dataEditorState.startEditing(this.props.layer)
     }
   }
 
@@ -260,11 +260,11 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
     const idVal = row.row[idField]
 
     if (this.state.geoJSON) {
-      const [, MapState] = this.props.containers
+      const {mapState} = this.props.containers
       this.state.geoJSON.features.forEach((feature) => {
         if (idVal === feature.properties[idField]) {
           const bbox = turf_bbox(feature)
-          MapState.state.map.fitBounds(bbox, 16, 25)
+          mapState.state.map.fitBounds(bbox, 16, 25)
         }
       })
     }
@@ -319,16 +319,16 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
     const toRow: number = result.toRow
     const updated: Object = result.updated
     const rows = this.getRows().slice()
-    const [DataEditorState] = this.props.containers
+    const {dataEditorState} = this.props.containers
 
     for (let i = fromRow; i <= toRow; i++) {
       const rowToUpdate = this.rowGetter(i)
       const mhid = rowToUpdate[this.state.rowKey]
-      DataEditorState.selectFeature(mhid, (featureData) => {
+      dataEditorState.selectFeature(mhid, (featureData) => {
         // update data
         const data = featureData.properties
         _assignIn(data, updated)
-        DataEditorState.updateSelectedFeatureTags(data)
+        dataEditorState.updateSelectedFeatureTags(data)
       })
       const updatedRow = update(rowToUpdate, {$merge: updated})
       rows[i] = updatedRow
@@ -388,4 +388,7 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
   }
 }
 
-export default connect([DataEditorContainer, MapContainer])(LayerDataEditorGrid)
+export default subscribe(LayerDataEditorGrid, {
+  dataEditorState: DataEditorContainer,
+  mapState: MapContainer
+})

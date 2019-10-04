@@ -25,6 +25,7 @@ export type BaseMapOption = {
 
 export type BaseMapState = {
   baseMap: string,
+  baseMapStyle?: Object,
   attribution: string,
   bingImagerySet: ?string,
   updateWithMapPosition: boolean,
@@ -51,8 +52,19 @@ export default class BaseMapContainer extends Container<BaseMapState> {
     this.state = state
   }
 
-  setBaseMap = (baseMap: string) => {
-    this.setState({baseMap})
+  position: any
+
+  initBaseMap = async () => {
+    if (!this.state.baseMapStyle) {
+      const baseMapStyle = await this.getBaseMapStyle(this.state.baseMap)
+      return this.setState({baseMapStyle})
+    }
+  }
+
+  setBaseMap = async (baseMap: string) => {
+    const baseMapStyle = await this.getBaseMapStyle(baseMap)
+    await this.setState({baseMap, baseMapStyle})
+    return baseMapStyle
   }
 
   debouncedUpdateMapPosition = _debounce((position, bbox) => {
@@ -63,7 +75,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
         properties: {},
         geometry: {
           type: 'Point',
-          coordinates: [_this.position.lng, _this.position.lat]
+          coordinates: [this.position.lng, this.position.lat]
         }
       }
       const to = {
@@ -83,8 +95,8 @@ export default class BaseMapContainer extends Container<BaseMapState> {
 
       // debug.log('map moved: ' + distance + 'km')
 
-      if (distance < 50 && Math.abs(_this.position.zoom - position.zoom) < 1) {
-        _this.position = position
+      if (distance < 50 && Math.abs(this.position.zoom - position.zoom) < 1) {
+        this.position = position
         return
       }
     }
@@ -140,19 +152,18 @@ export default class BaseMapContainer extends Container<BaseMapState> {
     }
   }
 
-  getBingSource = (type: string, cb: Function) => {
+  /*
+  getBingSource = async (type: string) => {
     const url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${type}?key=${this.state.bingKey}&include=ImageryProviders`
-    request.get(url)
-      .end((err, res) => {
-        if (err) {
-          debug.error(err)
-        } else {
-          const metadata = res.body
-          // don't actually need anything from bing
-          cb(metadata)
-        }
-      })
+    try {
+      const res = await request.get(url)
+      const metadata = res.body
+      return metadata
+    } catch (err) {
+      debug.error(err)
+    }
   }
+  */
 
   /*
   loadFromFile (name, cb) {
@@ -171,28 +182,27 @@ export default class BaseMapContainer extends Container<BaseMapState> {
   }
   */
 
-  getBaseMapFromName = (mapName: string, cb: Function) => {
-    const config = _find(this.state.baseMapOptions, {value: mapName})
-    const { mapboxAccessToken, tileHostingKey } = this.state
+  getBaseMapStyle = async (baseMap: string) => {
+    const { mapboxAccessToken, tileHostingKey, baseMapOptions } = this.state
+    const config = _find(baseMapOptions, {value: baseMap})
     if (config) {
       this.setState({
         attribution: config.attribution,
         updateWithMapPosition: config.updateWithMapPosition
       })
-      if (mapName === 'bing-satellite') {
-        this.getBingSource('Aerial', () => {
-          this.setState({
-            bingImagerySet: 'Aerial'
-          })
-          const style = config.style
-          if (!style.glyphs) {
-            style.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
-          }
-          if (!style.sprite) {
-            style.sprite = ''
-          }
-          cb(style)
+      if (baseMap === 'bing-satellite') {
+        // const bingMetadata = await this.getBingSource('Aerial')
+        this.setState({
+          bingImagerySet: 'Aerial'
         })
+        const style = config.style
+        if (!style.glyphs) {
+          style.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
+        }
+        if (!style.sprite) {
+          style.sprite = ''
+        }
+        return style
       } else if (config.loadFromFile) {
         // this.loadFromFile(config.loadFromFile, cb)
       } else if (config.style) {
@@ -205,40 +215,36 @@ export default class BaseMapContainer extends Container<BaseMapState> {
             style.sprite = ''
           }
         }
-        cb(style)
+        return style
       } else if (config.url) {
-        request.get(config.url)
-          .end((err, res) => {
-            if (err) {
-              debug.error(err)
-            } else {
-              const style = res.body
-              if (!style.glyphs) {
-                style.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
-              }
-              if (!style.sprite) {
-                style.sprite = ''
-              }
-              cb(style)
-            }
-          })
+        try {
+          const res = await request.get(config.url)
+          const style = res.body
+          if (!style.glyphs) {
+            style.glyphs = 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf'
+          }
+          if (!style.sprite) {
+            style.sprite = ''
+          }
+          return style
+        } catch (err) {
+          debug.error(err)
+        }
       } else if (config.tilehostingUrl) {
         const url = config.tilehostingUrl + tileHostingKey
-        request.get(url)
-          .end((err, res) => {
-            if (err) {
-              debug.error(err)
-            } else {
-              const style = res.body
-              if (!style.glyphs) {
-                style.glyphs = `https://maps.tilehosting.com/fonts/{fontstack}/{range}.pbf.pict?key=${tileHostingKey}`
-              }
-              if (!style.sprite) {
-                style.sprite = ''
-              }
-              cb(style)
-            }
-          })
+        try {
+          const res = await request.get(url)
+          const style = res.body
+          if (!style.glyphs) {
+            style.glyphs = `https://maps.tilehosting.com/fonts/{fontstack}/{range}.pbf.pict?key=${tileHostingKey}`
+          }
+          if (!style.sprite) {
+            style.sprite = ''
+          }
+          return style
+        } catch (err) {
+          debug.error(err)
+        }
       } else if (config.mapboxUrl) {
         // example: mapbox://styles/mapbox/streets-v8?optimize=true
         // converted to: //https://api.mapbox.com/styles/v1/mapbox/streets-v9?access_token=
@@ -248,20 +254,17 @@ export default class BaseMapContainer extends Container<BaseMapState> {
         } else {
           url = url + '?access_token=' + mapboxAccessToken
         }
-
-        request.get(url)
-          .end((err, res) => {
-            if (err) {
-              debug.error(err)
-            } else {
-              cb(res.body)
-            }
-          })
+        try {
+          const res = await request.get(url)
+          return res.body
+        } catch (err) {
+          debug.error(err)
+        }
       } else {
-        debug.log(`map style not found for base map: ${mapName}`)
+        debug.log(`map style not found for base map: ${baseMap}`)
       }
     } else {
-      console.error(`unknown base map: ${mapName} using default instead`)
+      console.error(`unknown base map: ${baseMap} using default instead`)
       // load the  default basemap
       const defaultConfig = _find(defaultBaseMapOptions, {value: 'default'})
       let url = defaultConfig.mapboxUrl.replace('mapbox://styles/', 'https://api.mapbox.com/styles/v1/')
@@ -271,14 +274,12 @@ export default class BaseMapContainer extends Container<BaseMapState> {
         url = url + '?access_token=' + mapboxAccessToken
       }
 
-      request.get(url)
-        .end((err, res) => {
-          if (err) {
-            debug.error(err)
-          } else {
-            cb(res.body)
-          }
-        })
+      try {
+        const res = await request.get(url)
+        return res.body
+      } catch (err) {
+        debug.error(err)
+      }
     }
   }
 }

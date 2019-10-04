@@ -52,9 +52,9 @@ export default {
     const {t} = this.props
 
     const containers: Array<Object> = this.props.containers
-    const [, DataEditor] = containers
+    const {dataEditorState} = containers
 
-    if (DataEditor && DataEditor.state && DataEditor.state.editing) {
+    if (dataEditorState && dataEditorState.state && dataEditorState.state.editing) {
       message.warning(t('Please stop editing before enabling the measurement tool'), 3)
       return
     }

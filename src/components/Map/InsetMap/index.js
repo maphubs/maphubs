@@ -1,14 +1,14 @@
 // @flow
 import React from 'react'
 import _centroid from '@turf/centroid'
-import connect from 'unstated-connect'
 import MapToolButton from '../MapToolButton'
-import BaseMapContainer from '../containers/BaseMapContainer'
 import MapContainer from '../containers/MapContainer'
+import { subscribe } from '../containers/unstated-props'
 import ArrowDownward from '@material-ui/icons/ArrowDownward'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import $ from 'jquery'
+
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('map')
 
@@ -35,8 +35,7 @@ type Props = {
     center: Array<number>,
     zoom: number
   },
-  baseMap?: string,
-  containers: Array<Object>,
+  containers: {mapState: Object},
   mapboxAccessToken: string
 }
 
@@ -76,8 +75,8 @@ class InsetMap extends React.Component<Props, State> {
       insetGeoJSONData: {},
       insetGeoJSONCentroidData: {}
     }
-    const [, MapState] = props.containers
-    MapState.setInsetMap(this)
+    const {mapState} = props.containers
+    mapState.setInsetMap(this)
   }
 
   componentDidMount () {
@@ -100,26 +99,18 @@ class InsetMap extends React.Component<Props, State> {
     }
   }
 
-  createInsetMap = (center: any, bounds: Object, baseMapStyle: string) => {
+  createInsetMap = (center: any, bounds: Object, baseMapStyle: Object) => {
     const _this = this
-    const [BaseMapState] = this.props.containers
-    const {fixedPosition, baseMap} = this.props
-    let currentBaseMapStyle = baseMapStyle
+    const {fixedPosition} = this.props
     if (fixedPosition && fixedPosition.center) {
       // ignore position info and use fixed
       center = fixedPosition.center
     }
 
-    // TODO: base map from Props overrides the style provided?
-    if (baseMap) {
-      BaseMapState.getBaseMapFromName(baseMap, (baseMapStyleResult) => {
-        currentBaseMapStyle = baseMapStyleResult
-      })
-    }
     mapboxgl.accessToken = this.props.mapboxAccessToken
     const insetMap = new mapboxgl.Map({
       container: this.props.id + '_inset',
-      style: currentBaseMapStyle,
+      style: baseMapStyle,
       zoom: 0,
       maxZoom: this.props.maxZoom,
       interactive: false,
@@ -175,13 +166,7 @@ class InsetMap extends React.Component<Props, State> {
   }
 
   reloadInset = (baseMapStyle: string) => {
-    const [BaseMapState] = this.props.containers
     if (this.insetMap) {
-      if (this.props.baseMap) {
-        BaseMapState.getBaseMapFromName(this.props.baseMap, (baseMap) => {
-          baseMapStyle = baseMap
-        })
-      }
       this.insetMap.setStyle(baseMapStyle)
     }
   }
@@ -389,5 +374,6 @@ class InsetMap extends React.Component<Props, State> {
     }
   }
 }
-
-export default connect([BaseMapContainer, MapContainer])(InsetMap)
+export default subscribe(InsetMap, {
+  mapState: MapContainer
+})

@@ -8,8 +8,8 @@ import _assignIn from 'lodash.assignin'
 import type {MapHubsField} from '../../types/maphubs-field'
 import GetNameField from '../Map/Styles/get-name-field'
 import turf_bbox from '@turf/bbox'
-import connect from 'unstated-connect'
 import MapContainer from '../Map/containers/MapContainer'
+import { subscribe } from '../Map/containers/unstated-props'
 
 type Props = {
   geoJSON: Object,
@@ -200,11 +200,11 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
     const idVal = row.row[idField]
 
     if (this.state.geoJSON) {
-      const [MapState] = this.props.containers
+      const {mapState} = this.props.containers
       this.state.geoJSON.features.forEach((feature) => {
         if (idVal === feature.properties[idField]) {
           const bbox = turf_bbox(feature)
-          MapState.state.map.fitBounds(bbox, 16, 25)
+          mapState.state.map.fitBounds(bbox, 16, 25)
         }
       })
     }
@@ -301,7 +301,7 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
           toolbar={<Toolbar
             enableFilter
             filterRowsButtonText={t('Filter Data')}
-          >
+                   >
             {canEdit &&
               <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={this.onEditSelectedFeature}>
                 {t('Edit Selected')}
@@ -319,7 +319,7 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
                 t={t}
                 layer_id={layer_id}
               />}
-          </Toolbar>}
+                   </Toolbar>}
           onAddFilter={this.handleFilterChange}
           onClearFilters={this.onClearFilters}
         />
@@ -332,4 +332,6 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
   }
 }
 
-export default connect([MapContainer])(LayerDataGrid)
+export default subscribe(LayerDataGrid, {
+  mapState: MapContainer
+})

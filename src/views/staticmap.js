@@ -72,10 +72,22 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-    let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+
+    const baseMapContainerInit: {
+      baseMap: string,
+      bingKey: string,
+      tileHostingKey: string,
+      mapboxAccessToken: string,
+      baseMapOptions?: Object
+    } = {
+      baseMap: props.basemap,
+      bingKey: MAPHUBS_CONFIG.BING_KEY,
+      tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY,
+      mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
+    }
 
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+      baseMapContainerInit.baseMapOptions = props.mapConfig.baseMapOptions
     }
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
     this.state = {
@@ -257,7 +269,6 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
                 glStyle={this.props.style}
                 mapConfig={this.props.mapConfig}
                 preserveDrawingBuffer
-                baseMap={this.props.basemap}
                 navPosition='top-right'
                 primaryColor={MAPHUBS_CONFIG.primaryColor}
                 logoSmall={MAPHUBS_CONFIG.logoSmall}

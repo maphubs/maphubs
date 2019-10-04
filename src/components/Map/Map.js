@@ -2,11 +2,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classNames from 'classnames'
-import connect from 'unstated-connect'
 import FeaturePopup from './FeaturePopup'
 import BaseMapContainer from './containers/BaseMapContainer'
 import DataEditorContainer from './containers/DataEditorContainer'
 import MapContainer from './containers/MapContainer'
+import { subscribe } from './containers/unstated-props'
 import _isequal from 'lodash.isequal'
 import MapToolButton from './MapToolButton'
 import MapSearchPanel from './Search/MapSearchPanel'
@@ -62,7 +62,6 @@ type Props = {|
     disableScrollZoom?: boolean,
     enableRotation?: boolean,
     navPosition: string,
-    baseMap: string,
     onChangeBaseMap?: Function,
     insetMap: boolean,
     hoverInteraction: boolean,
@@ -111,7 +110,6 @@ class Map extends React.Component<Props, State> {
     showFeatureInfoEditButtons: true,
     showPlayButton: true,
     navPosition: 'top-right',
-    baseMap: 'default',
     showLogo: true,
     insetMap: true,
     showScale: true,
@@ -157,11 +155,10 @@ class Map extends React.Component<Props, State> {
     }
   }
 
-  componentWillMount () {
-    // TODO: this is a hack, need to move state helper functions the containers instead of attached to the instance
-    const [BaseMapState, , MapState] = this.props.containers
-    MapState.setMap(this)
-    BaseMapState.setBaseMap(this.props.baseMap)
+  async componentWillMount () {
+    const {mapState} = this.props.containers
+    mapState.setMap(this)
+
     if (this.props.glStyle) {
       const interactiveLayers = this.getInteractiveLayers(this.props.glStyle)
       this.setState({interactiveLayers})
@@ -201,9 +198,9 @@ class Map extends React.Component<Props, State> {
     // change locale
     if (this.props.locale && (this.props.locale !== prevProps.locale)) {
       this.changeLocale(this.props.locale, this.map)
-      const [, , MapState] = this.props.containers
-      if (MapState.state.insetMap) {
-        this.changeLocale(this.props.locale, MapState.state.insetMap.getInsetMap())
+      const {mapState} = this.props.containers
+      if (mapState.state.insetMap) {
+        this.changeLocale(this.props.locale, mapState.state.insetMap.getInsetMap())
       }
     }
   }
@@ -238,7 +235,7 @@ class Map extends React.Component<Props, State> {
     }
   }
 
-  createMap = () => {
+  createMap = async () => {
     const _this = this
     this.debugLog('Creating MapboxGL Map')
     mapboxgl.accessToken = this.props.mapboxAccessToken
@@ -259,139 +256,138 @@ class Map extends React.Component<Props, State> {
       locale
     } = this.props
     const {interactive, mapLoaded} = this.state
-    const [BaseMapState, , MapState] = this.props.containers
-    BaseMapState.getBaseMapFromName(this.props.baseMap, (baseMap) => {
-      _this.setBaseMapStyle(baseMap, false)
+    const {baseMapState, mapState} = this.props.containers
+    await baseMapState.initBaseMap()
+    const baseMapStyle = baseMapState.state.baseMapStyle
+    this.setBaseMapStyle(baseMapStyle, false)
 
-      if (!mapboxgl || !mapboxgl.supported || !mapboxgl.supported()) {
-        alert(t('Your browser does not support Mapbox GL please see: https://help.maphubs.com/getting-started/troubleshooting-common-issues'))
-        return
-      }
+    if (!mapboxgl || !mapboxgl.supported || !mapboxgl.supported()) {
+      alert(t('Your browser does not support Mapbox GL please see: https://help.maphubs.com/getting-started/troubleshooting-common-issues'))
+      return
+    }
 
-      const map = new mapboxgl.Map({
-        container: _this.state.id,
-        style: _this.glStyle,
-        zoom: zoom || 0,
-        minZoom: minZoom || 0,
-        maxZoom: maxZoom || 22,
-        interactive,
-        dragRotate: !!enableRotation,
-        touchZoomRotate: !!enableRotation,
-        preserveDrawingBuffer,
-        center: [0, 0],
-        hash,
-        attributionControl: false,
-        transformRequest: (url, resourceType) => {
-          if (map.authUrlStartsWith && url.startsWith(map.authUrlStartsWith)) {
-            return {
-              url: url,
-              headers: { Authorization: 'Basic ' + map.authToken },
-              credentials: 'include'
-            }
+    const map = new mapboxgl.Map({
+      container: _this.state.id,
+      style: _this.glStyle,
+      zoom: zoom || 0,
+      minZoom: minZoom || 0,
+      maxZoom: maxZoom || 22,
+      interactive,
+      dragRotate: !!enableRotation,
+      touchZoomRotate: !!enableRotation,
+      preserveDrawingBuffer,
+      center: [0, 0],
+      hash,
+      attributionControl: false,
+      transformRequest: (url, resourceType) => {
+        if (map.authUrlStartsWith && url.startsWith(map.authUrlStartsWith)) {
+          return {
+            url: url,
+            headers: { Authorization: 'Basic ' + map.authToken },
+            credentials: 'include'
           }
         }
-      })
-
-      map.addSourceType('arcgisraster', ArcGISTiledMapServiceSource, (err) => {
-        if (err) {
-          debug.error(err)
-        } else {
-          debugLog('Added custom source: arcgisraster')
-        }
-      })
-
-      // catch generic errors so 404 tile errors etc don't cause unexpected issues
-      map.on('error', (err) => {
-        debug.error(err.error)
-      })
-
-      map.on('load', () => {
-        debugLog('MAP LOADED')
-        // add selector for screenshot tool
-        setTimeout(() => {
-          $('body').append('<div id="map-load-complete" style="display: none;"></div>')
-        }, 5000)
-      })
-
-      map.on('style.load', () => {
-        debugLog('style.load')
-        // restore map bounds (except for geoJSON maps)
-        if (!data && // use bbox for GeoJSON data
-          !mapLoaded && // only set map position on first style load (not after changing base map etc)
-          fitBounds // bounds are provided in Props
-        ) {
-          let bounds = fitBounds
-          if (bounds && bounds.length > 2) {
-            bounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]]
-          }
-          debugLog(`fitting map to bounds: ${bounds.toString()}`)
-          map.fitBounds(fitBounds, fitBoundsOptions)
-          if (MapState.state.insetMap) {
-            MapState.state.insetMap.sync(map)
-          } else {
-            debugLog('insetMap not found')
-          }
-        }
-
-        // add the omh data
-        _this.addMapData(map, glStyle, data, () => {
-          // do stuff that needs to happen after data loads
-          debugLog('finished adding map data')
-
-          _this.setState({mapLoaded: true})
-          if (_this.props.onLoad) _this.props.onLoad()
-        })
-      })// end style.load
-
-      // Setup inset map
-      if (MapState.state.insetMap) {
-        if (!MapState.state.insetMap.getInsetMap()) {
-          MapState.initInset(map, baseMap)
-        }
-      } else {
-        debugLog('failed to init inset')
       }
-
-      map.on('mousemove', _this.mousemoveHandler)
-      map.on('moveend', _this.moveendHandler)
-      map.on('click', _this.clickHandler)
-
-      if (interactive) {
-        map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), _this.props.navPosition)
-        map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector(`#${this.state.id}-fullscreen-wrapper`)}))
-      }
-
-      if (attributionControl) {
-        map.addControl(new mapboxgl.AttributionControl(), 'bottom-left')
-      }
-
-      if (_this.props.showScale) {
-        map.addControl(new ScalePositionControl({
-          maxWidth: 175
-        }), 'bottom-right')
-      }
-
-      try {
-        var languageControl = new MapboxLanguage()
-        map.addControl(locale)
-      } catch (err) {
-        console.error('failed to add langauge control')
-        console.error(err)
-      }
-
-      if (_this.props.disableScrollZoom) {
-        map.scrollZoom.disable()
-      }
-
-      _this.map = map
-      _this.languageControl = languageControl
     })
+
+    map.addSourceType('arcgisraster', ArcGISTiledMapServiceSource, (err) => {
+      if (err) {
+        debug.error(err)
+      } else {
+        debugLog('Added custom source: arcgisraster')
+      }
+    })
+
+    // catch generic errors so 404 tile errors etc don't cause unexpected issues
+    map.on('error', (err) => {
+      debug.error(err.error)
+    })
+
+    map.on('load', () => {
+      debugLog('MAP LOADED')
+      // add selector for screenshot tool
+      setTimeout(() => {
+        $('body').append('<div id="map-load-complete" style="display: none;"></div>')
+      }, 5000)
+    })
+
+    map.on('style.load', () => {
+      debugLog('style.load')
+      // restore map bounds (except for geoJSON maps)
+      if (!data && // use bbox for GeoJSON data
+        !mapLoaded && // only set map position on first style load (not after changing base map etc)
+        fitBounds // bounds are provided in Props
+      ) {
+        let bounds = fitBounds
+        if (bounds && bounds.length > 2) {
+          bounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]]
+        }
+        debugLog(`fitting map to bounds: ${bounds.toString()}`)
+        map.fitBounds(fitBounds, fitBoundsOptions)
+        if (mapState.state.insetMap) {
+          mapState.state.insetMap.sync(map)
+        } else {
+          debugLog('insetMap not found')
+        }
+      }
+
+      // add the omh data
+      _this.addMapData(map, glStyle, data, () => {
+        // do stuff that needs to happen after data loads
+        debugLog('finished adding map data')
+
+        _this.setState({mapLoaded: true})
+        if (_this.props.onLoad) _this.props.onLoad()
+      })
+    })// end style.load
+
+    // Setup inset map
+    if (mapState.state.insetMap) {
+      if (!mapState.state.insetMap.getInsetMap()) {
+        mapState.initInset(map, baseMapStyle)
+      }
+    } else {
+      debugLog('failed to init inset')
+    }
+
+    map.on('mousemove', _this.mousemoveHandler)
+    map.on('moveend', _this.moveendHandler)
+    map.on('click', _this.clickHandler)
+
+    if (interactive) {
+      map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), _this.props.navPosition)
+      map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector(`#${this.state.id}-fullscreen-wrapper`)}))
+    }
+
+    if (attributionControl) {
+      map.addControl(new mapboxgl.AttributionControl(), 'bottom-left')
+    }
+
+    if (this.props.showScale) {
+      map.addControl(new ScalePositionControl({
+        maxWidth: 175
+      }), 'bottom-right')
+    }
+
+    try {
+      var languageControl = new MapboxLanguage()
+      map.addControl(locale)
+    } catch (err) {
+      console.error('failed to add langauge control')
+      console.error(err)
+    }
+
+    if (this.props.disableScrollZoom) {
+      map.scrollZoom.disable()
+    }
+
+    this.map = map
+    this.languageControl = languageControl
   }
 
   async componentWillReceiveProps (nextProps: Props) {
     // debug.log('(' + this.state.id + ') ' +'componentWillReceiveProps');
     const _this = this
-    const [BaseMapState] = this.props.containers
     if (nextProps.data && this.map) {
       const geoJSONData = this.map.getSource('omh-geojson')
       if (geoJSONData) {
@@ -411,85 +407,11 @@ class Map extends React.Component<Props, State> {
       }
     }
 
-    let fitBoundsChanging = false
-    let bounds: any
-    let allowLayersToMoveMap = this.state.allowLayersToMoveMap
-
-    if (nextProps.fitBounds && !_isequal(this.props.fitBounds, nextProps.fitBounds) && this.map) {
-      _this.debugLog('FIT BOUNDS CHANGING')
-      fitBoundsChanging = true
-      allowLayersToMoveMap = false
-      if (nextProps.fitBounds && nextProps.fitBounds.length > 2) {
-        bounds = [[nextProps.fitBounds[0], nextProps.fitBounds[1]], [nextProps.fitBounds[2], nextProps.fitBounds[3]]]
-      } else {
-        bounds = nextProps.fitBounds
-      }
-      if (bounds) {
-        debug.log('(' + this.state.id + ') ' + 'bounds: ' + bounds.toString())
-      }
-    }
-
-    if (nextProps.glStyle && nextProps.baseMap) {
-      const nextGLStyle = nextProps.glStyle
-      if (!_isequal(this.props.glStyle, nextGLStyle)) {
-        _this.debugLog('glstyle changing from props')
-        //* * Style Changing (also reloads basemap if needed) **/
-        if (this.state.mapLoaded && !fitBoundsChanging) {
-          // if fitBounds isn't changing, restore the current map position
-          if (this.glStyle !== null) {
-            this.debugLog('restoring current map position')
-            allowLayersToMoveMap = false
-          }
-        }
-        this.setState({allowLayersToMoveMap})
-
-        if (!_isequal(BaseMapState.state.baseMap, nextProps.baseMap)) {
-          await BaseMapState.setBaseMap(nextProps.baseMap)
-          await BaseMapState.getBaseMapFromName(nextProps.baseMap, (baseMapStyle) => {
-            _this.setBaseMapStyle(baseMapStyle, false)
-          })
-        }
-
-        return Promise.resolve(_this.setOverlayStyle(nextGLStyle, _this.props.allowLayerOrderOptimization))
-          .catch((err) => {
-            _this.debugLog(err)
-          })
-          .asCallback((err) => {
-            if (err) {
-              _this.debugLog(err)
-            }
-            const interactiveLayers = _this.getInteractiveLayers(nextGLStyle)
-            _this.setState({interactiveLayers})
-          })
-      } else if (this.props.baseMap !== nextProps.baseMap) {
-        //* * Style Not Changing, but Base Map is Changing **/
-        /*
-        _this.debugLog(`basemap changing from props (${this.state.baseMap} -> ${nextProps.baseMap})`)
-        allowLayersToMoveMap = false
-        this.setState({allowLayersToMoveMap})
-
-        this.changeBaseMap(nextProps.baseMap)
-        */
-      } else if (fitBoundsChanging) {
-        //* * just changing the fit bounds
-        // in this case we can fitBounds directly since we are not waiting for the map to reload styles first
-        if (bounds) {
-          _this.debugLog('only bounds changing, bounds: ' + bounds)
-          if (Array.isArray(bounds) && bounds.length > 2) {
-            bounds = [[bounds[0], bounds[1]], [bounds[2], bounds[3]]]
-          }
-          debug.log('(' + this.state.id + ') ' + 'calling map fitBounds')
-          this.map.fitBounds(bounds, this.props.fitBoundsOptions)
-
-          this.setState({allowLayersToMoveMap})
-        }
-      }
-    } else if (nextProps.glStyle &&
+    if (nextProps.glStyle &&
       !_isequal(this.props.glStyle, nextProps.glStyle)) {
       const nextGLStyle = nextProps.glStyle
-      //* * Style Changing (no basemap provided) **/
-      _this.debugLog('glstyle changing from props (default basemap)')
-      return Promise.resolve(this.setOverlayStyle(nextGLStyle, _this.props.allowLayerOrderOptimization))
+      _this.debugLog('glstyle changing from props')
+      await Promise.resolve(this.setOverlayStyle(nextGLStyle, _this.props.allowLayerOrderOptimization))
         .catch((err) => {
           _this.debugLog(err)
         })
@@ -498,33 +420,27 @@ class Map extends React.Component<Props, State> {
             _this.debugLog(err)
           }
           const interactiveLayers = this.getInteractiveLayers(nextGLStyle)
-          this.setState({allowLayersToMoveMap, interactiveLayers}) // wait to change state style until after reloaded
+          this.setState({interactiveLayers}) // wait to change state style until after reloaded
         })
-    } else if (nextProps.baseMap &&
-      !_isequal(BaseMapState.state.baseMap, nextProps.baseMap)) {
-      //* * Style Not Found, but Base Map is Changing **/
-      _this.debugLog('basemap changing from props (no glstyle)')
+    }
 
-      this.setState({allowLayersToMoveMap})
-      await BaseMapState.setBaseMap(nextProps.baseMap)
-      await BaseMapState.getBaseMapFromName(nextProps.baseMap, (baseMapStyle) => {
-        _this.setBaseMapStyle(baseMapStyle, true)
-      })
-    } else if (fitBoundsChanging) {
-      //* * just changing the fit bounds on a map that does not have styles or basemap settings **/
-      // in this case we can fitBounds directly since we are not waiting for the map to reload styles first
-      if (bounds) {
-        _this.debugLog('only bounds changing')
-        if (bounds._ne && bounds._sw) {
-          this.map.fitBounds(bounds, this.props.fitBoundsOptions)
-        } else if (Array.isArray(bounds) && bounds.length > 2) {
-          this.map.fitBounds([[bounds[0], bounds[1]],
-            [bounds[2], bounds[3]]], this.props.fitBoundsOptions)
-        } else {
-          this.map.fitBounds(bounds, this.props.fitBoundsOptions)
-        }
-        this.setState({allowLayersToMoveMap})
+    if (nextProps.fitBounds && !_isequal(this.props.fitBounds, nextProps.fitBounds) && this.map) {
+      _this.debugLog('FIT BOUNDS CHANGING')
+      let bounds = nextProps.fitBounds
+      if (nextProps.fitBounds && nextProps.fitBounds.length > 2) {
+        bounds = [[nextProps.fitBounds[0], nextProps.fitBounds[1]], [nextProps.fitBounds[2], nextProps.fitBounds[3]]]
       }
+
+      debug.log('(' + this.state.id + ') ' + 'bounds: ' + bounds.toString())
+      if (bounds._ne && bounds._sw) {
+        this.map.fitBounds(bounds, this.props.fitBoundsOptions)
+      } else if (Array.isArray(bounds) && bounds.length > 2) {
+        this.map.fitBounds([[bounds[0], bounds[1]],
+          [bounds[2], bounds[3]]], this.props.fitBoundsOptions)
+      } else {
+        this.map.fitBounds(bounds, this.props.fitBoundsOptions)
+      }
+      this.setState({allowLayersToMoveMap: false})
     }
   }
 
@@ -544,24 +460,21 @@ class Map extends React.Component<Props, State> {
 
   changeBaseMap = async (mapName: string) => {
     this.debugLog('changing basemap to: ' + mapName)
-    const _this = this
     const {setBaseMapStyle, map} = this
     const {onChangeBaseMap} = this.props
-    const [BaseMapState, , MapState] = this.props.containers
-    await BaseMapState.getBaseMapFromName(mapName, (baseMapStyle) => {
-      BaseMapState.setBaseMap(mapName)
-      _this.setState({allowLayersToMoveMap: false})
-      setBaseMapStyle(baseMapStyle, true)
+    const {baseMapState, mapState} = this.props.containers
+    const baseMapStyle = await baseMapState.setBaseMap(mapName)
+    setBaseMapStyle(baseMapStyle, true)
+    this.setState({allowLayersToMoveMap: false})
 
-      if (MapState.state.insetMap) {
-        MapState.state.insetMap.reloadInset(baseMapStyle)
-        MapState.state.insetMap.sync(map)
-      }
+    if (mapState.state.insetMap) {
+      mapState.state.insetMap.reloadInset(baseMapStyle)
+      mapState.state.insetMap.sync(map)
+    }
 
-      if (onChangeBaseMap) {
-        onChangeBaseMap(mapName)
-      }
-    })
+    if (onChangeBaseMap) {
+      onChangeBaseMap(mapName)
+    }
   }
 
   render () {
@@ -739,7 +652,6 @@ class Map extends React.Component<Props, State> {
             <InsetMap id={this.state.id} bottom={showLogo ? '30px' : '25px'} mapboxAccessToken={this.props.mapboxAccessToken} {...this.props.insetConfig} />}
           <MapToolPanel
             show={this.state.interactive && this.state.mapLoaded}
-            height={this.props.height}
             gpxLink={this.props.gpxLink}
             toggleMeasurementTools={this.toggleMeasurementTools}
             enableMeasurementTools={this.state.enableMeasurementTools}
@@ -834,8 +746,8 @@ class Map extends React.Component<Props, State> {
 
   moveendHandler = () => {
     debug.log('mouse up fired')
-    const [BaseMapState] = this.props.containers
-    BaseMapState.updateMapPosition(this.getPosition(), this.getBounds())
+    const {baseMapState} = this.props.containers
+    baseMapState.updateMapPosition(this.getPosition(), this.getBounds())
   }
 
   mousemoveHandler = (e: any) => {
@@ -1038,4 +950,8 @@ class Map extends React.Component<Props, State> {
   }
 }
 
-export default connect([BaseMapContainer, DataEditorContainer, MapContainer])(Map)
+export default subscribe(Map, {
+  baseMapState: BaseMapContainer,
+  dataEditorState: DataEditorContainer,
+  mapState: MapContainer
+})

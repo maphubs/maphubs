@@ -51,10 +51,22 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-    let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+
+    const baseMapContainerInit: {
+      baseMap: string,
+      bingKey: string,
+      tileHostingKey: string,
+      mapboxAccessToken: string,
+      baseMapOptions?: Object
+    } = {
+      baseMap: props.map.basemap,
+      bingKey: MAPHUBS_CONFIG.BING_KEY,
+      tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY,
+      mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
+    }
 
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+      baseMapContainerInit.baseMapOptions = props.mapConfig.baseMapOptions
     }
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
     this.MapState = new MapContainer()
@@ -74,7 +86,6 @@ export default class MapEdit extends MapHubsComponent<Props, void> {
               onCreate={this.mapCreated}
               mapConfig={this.props.mapConfig}
               mapLayers={this.props.layers}
-              basemap={this.props.map.basemap}
               map_id={this.props.map.map_id} title={this.props.map.title}
               owned_by_group_id={this.props.map.owned_by_group_id}
               position={this.props.map.position}

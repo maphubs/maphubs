@@ -22,10 +22,10 @@ import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {UserStoreState} from '../../stores/UserStore'
 import type {MapMakerStoreState} from '../../stores/MapMakerStore'
 import type {Layer} from '../../types/layer'
-import connect from 'unstated-connect'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapContainer from '../Map/containers/MapContainer'
 import BaseMapContainer from '../Map/containers/BaseMapContainer'
+import { subscribe } from '../Map/containers/unstated-props'
 import BaseMapSelection from '../Map/ToolPanels/BaseMapSelection'
 import ErrorBoundary from '../ErrorBoundary'
 import getConfig from 'next/config'
@@ -197,9 +197,9 @@ class MapMaker extends MapHubsComponent<Props, State> {
   onSave = (model: Object, cb: Function) => {
     const {t} = this
     const _this = this
-    const [, MapState, BaseMapState] = this.props.containers
-    const position = MapState.state.map.getPosition()
-    position.bbox = MapState.state.map.getBounds()
+    const {mapState, baseMapState} = this.props.containers
+    const position = mapState.state.map.getPosition()
+    position.bbox = mapState.state.map.getBounds()
 
     if (model.private === undefined) model.private = false
 
@@ -211,7 +211,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
         duration: 0
       })
     } else {
-      const basemap = BaseMapState.state.baseMap
+      const basemap = baseMapState.state.baseMap
       if (!this.state.map_id || this.state.map_id === -1) {
         Actions.createMap(model.title, position, basemap, model.group, model.private, _this.state._csrf, err => {
           cb()
@@ -272,56 +272,52 @@ class MapMaker extends MapHubsComponent<Props, State> {
 
   addLayer = (layer: Layer) => {
     const {t} = this
-    const [, MapState] = this.props.containers
+    const {mapState} = this.props.containers
     // clone the layer object so we don't mutate the data in the search results
     layer = JSON.parse(JSON.stringify(layer))
-    if (MapState.state.map) {
+    if (mapState.state.map) {
       if (this.state.mapLayers && this.state.mapLayers.length === 0 && layer.extent_bbox) {
-        MapState.state.map.fitBounds(layer.extent_bbox, 16, 25, false)
+        mapState.state.map.fitBounds(layer.extent_bbox, 16, 25, false)
       }
-      const position = MapState.state.map.getPosition()
-      position.bounds = MapState.state.map.getBounds()
+      const position = mapState.state.map.getPosition()
+      position.bounds = mapState.state.map.getBounds()
       Actions.setMapPosition(position)
     }
-
-    Actions.addToMap(layer, (err) => {
-      if (err) {
-        message.warning(t('Map already contains this layer'), 3)
-      }
-
+    if (_find(this.state.mapLayers, {layer_id: layer.layer_id})) {
+      message.warning(t('Map already contains this layer'), 3)
+    } else {
+      Actions.addToMap(layer)
       // close add layer drawer
       this.setState({showAddLayer: false})
-    })
+    }
   }
 
   editLayer = (layer: Layer) => {
-    const [DataEditor, MapState] = this.props.containers
+    const {dataEditor, mapState} = this.props.containers
     Actions.startEditing()
-    DataEditor.startEditing(layer)
-    MapState.state.map.startEditingTool(layer)
+    dataEditor.startEditing(layer)
+    mapState.state.map.startEditingTool(layer)
     this.setState({activeTab: 'editing'})
   }
 
   stopEditingLayer = () => {
-    const [, MapState] = this.props.containers
+    const {mapState} = this.props.containers
     Actions.stopEditing()
-    MapState.state.map.stopEditingTool()
+    mapState.state.map.stopEditingTool()
     this.setState({activeTab: 'overlays'})
   }
 
   changeBaseMap = async (mapName: string) => {
-    const _this = this
-    const [, MapState, BaseMapState] = this.props.containers
-    await BaseMapState.getBaseMapFromName(mapName, (baseMapStyle) => {
-      BaseMapState.setBaseMap(mapName)
-      _this.setState({allowLayersToMoveMap: false})
-      MapState.state.map.setBaseMapStyle(baseMapStyle, true)
+    const {mapState, baseMapState} = this.props.containers
+    const baseMapStyle = await baseMapState.setBaseMap(mapName)
+    this.setState({allowLayersToMoveMap: false})
+    baseMapState.state.map.setBaseMapStyle(baseMapStyle, true)
 
-      if (MapState.state.insetMap) {
-        MapState.state.insetMap.reloadInset(baseMapStyle)
-        MapState.state.insetMap.sync(MapState.state.map)
-      }
-    })
+    if (mapState.state.insetMap) {
+      mapState.state.insetMap.reloadInset(baseMapStyle)
+      mapState.state.insetMap.sync(mapState.state.map)
+    }
+
     Actions.setMapBasemap(mapName)
   }
 
@@ -355,7 +351,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
     const {editLayer, toggleVisibility, removeFromMap, showLayerDesigner, t} = this
     const {showVisibility} = this.props
     const {showMapLayerDesigner, layerDesignerLayer, position, mapLayers, editingLayer, showAddLayer, activeTab} = this.state
-    const [, MapState] = this.props.containers
+    const {mapState} = this.props.containers
 
     if (!Array.isArray(mapLayers)) return 'bad maplayers array'
 
@@ -457,7 +453,6 @@ class MapMaker extends MapHubsComponent<Props, State> {
             <Map
               id='create-map-map' style={{height: '100%', width: '100%', margin: 'auto'}}
               glStyle={this.state.mapStyle}
-              baseMap={this.state.basemap}
               insetMap
               insetConfig={this.state.settings ? this.state.settings.insetConfig : undefined}
               onChangeBaseMap={Actions.setMapBasemap}
@@ -477,7 +472,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
               earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
             >
               {editingLayer &&
-                <EditorToolButtons stopEditingLayer={this.stopEditingLayer} onFeatureUpdate={MapState.state.map.onFeatureUpdate} />}
+                <EditorToolButtons stopEditingLayer={this.stopEditingLayer} onFeatureUpdate={mapState.state.map.onFeatureUpdate} />}
             </Map>
 
             <MiniLegend
@@ -517,4 +512,8 @@ class MapMaker extends MapHubsComponent<Props, State> {
   }
 }
 
-export default connect([DataEditorContainer, MapContainer, BaseMapContainer])(MapMaker)
+export default subscribe(MapMaker, {
+  dataEditorState: DataEditorContainer,
+  mapState: MapContainer,
+  baseMapState: BaseMapContainer
+})

@@ -49,16 +49,16 @@ export default {
       debug.log('missing required args')
     }
 
-    const [BaseMapState] = this.props.containers
+    const {baseMapState} = this.props.containers
 
     debug.log(`(${this.state.id}) changing map language to: ${language}`)
     try {
       if (
-        BaseMapState.state.baseMap === 'default' ||
-        BaseMapState.state.baseMap === 'dark' ||
-        BaseMapState.state.baseMap === 'streets' ||
-        BaseMapState.state.baseMap === 'satellite-streets' ||
-        BaseMapState.state.baseMap === 'topo'
+        baseMapState.state.baseMap === 'default' ||
+        baseMapState.state.baseMap === 'dark' ||
+        baseMapState.state.baseMap === 'streets' ||
+        baseMapState.state.baseMap === 'satellite-streets' ||
+        baseMapState.state.baseMap === 'topo'
       ) {
         if (this.languageControl) {
           this.glStyle = this.languageControl.setLanguage(this.glStyle, language)

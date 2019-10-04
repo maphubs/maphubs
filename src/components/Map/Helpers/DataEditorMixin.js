@@ -22,9 +22,9 @@ export default {
 
   editFeature (feature: Object) {
     const containers: Array<Object> = this.props.containers
-    const [, DataEditor] = containers
+    const {dataEditorState} = containers
     // get the feature from the database, since features from vector tiles can be incomplete or simplified
-    DataEditor.selectFeature(feature.properties.mhid, feature => {
+    dataEditorState.selectFeature(feature.properties.mhid, feature => {
       if (this.draw) {
         if (!this.draw.get(feature.id)) {
         // if not already editing this feature
@@ -37,7 +37,7 @@ export default {
 
   startEditingTool (layer: Layer) {
     const containers: Array<Object> = this.props.containers
-    const [, DataEditor] = containers
+    const {dataEditorState} = containers
 
     if (this.state.enableMeasurementTools) {
       this.stopMeasurementTool() // close measurement tool if open
@@ -62,7 +62,7 @@ export default {
       const features = e.features
       if (features && features.length > 0) {
         features.forEach(feature => {
-          DataEditor.createFeature(feature)
+          dataEditorState.createFeature(feature)
         })
       }
     })
@@ -106,9 +106,9 @@ export default {
 
   updateEdits (e: any) {
     const containers: Array<Object> = this.props.containers
-    const [, DataEditor] = containers
+    const {dataEditorState} = containers
     if (e.features.length > 0) {
-      DataEditor.updateFeatures(e.features)
+      dataEditorState.updateFeatures(e.features)
     }
   },
 
@@ -136,9 +136,9 @@ export default {
    */
   updateMapLayerFilters () {
     const containers: Array<Object> = this.props.containers
-    const [, DataEditor] = containers
-    const layerId = DataEditor.state.editingLayer.layer_id
-    const shortid = DataEditor.state.editingLayer.shortid
+    const {dataEditorState} = containers
+    const layerId = dataEditorState.state.editingLayer.layer_id
+    const shortid = dataEditorState.state.editingLayer.shortid
 
     // build a new filter
     const uniqueIds = []
@@ -226,8 +226,8 @@ export default {
 
   reloadEditingSourceCache () {
     const containers: Array<Object> = this.props.containers
-    const [, DataEditor] = containers
-    const sourceID = Object.keys(DataEditor.state.editingLayer.style.sources)[0]
+    const {dataEditorState} = containers
+    const sourceID = Object.keys(dataEditorState.state.editingLayer.style.sources)[0]
     const sourceCache = this.map.style.sourceCaches[sourceID]
     if (sourceCache) {
       sourceCache.reload()

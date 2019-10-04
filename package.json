@@ -198,7 +198,6 @@
     "terraformer-arcgis-parser": "^1.1.0",
     "tus-node-server": "0.3.2",
     "unstated": "^2.1.1",
-    "unstated-connect": "0.0.3",
     "urlencode": "^1.1.0",
     "uuid": "^3.3.3",
     "webpack": "^4.35.3",

@@ -29,11 +29,6 @@ type Props = {
   user: Object
 }
 
-type DefaultProps = {
-  popularLayers: Array<Object>,
-  myLayers: Array<Object>
-}
-
 export default class Map extends MapHubsComponent<Props, void> {
   static async getInitialProps ({ req, query }: {req: any, query: Object}) {
     const isServer = !!req
@@ -45,7 +40,7 @@ export default class Map extends MapHubsComponent<Props, void> {
     }
   }
 
-  static defaultProps: DefaultProps = {
+  static defaultProps = {
     popularLayers: [],
     myLayers: []
   }
@@ -56,10 +51,20 @@ export default class Map extends MapHubsComponent<Props, void> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-    let baseMapContainerInit = {bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+    const baseMapContainerInit: {
+      baseMap?: string,
+      bingKey: string,
+      tileHostingKey: string,
+      mapboxAccessToken: string,
+      baseMapOptions?: Object
+    } = {
+      bingKey: MAPHUBS_CONFIG.BING_KEY,
+      tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY,
+      mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
+    }
 
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      baseMapContainerInit = {baseMapOptions: props.mapConfig.baseMapOptions, bingKey: MAPHUBS_CONFIG.BING_KEY, tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY, mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+      baseMapContainerInit.baseMapOptions = props.mapConfig.baseMapOptions
     }
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
     this.MapState = new MapContainer()

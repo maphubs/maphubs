@@ -67,8 +67,8 @@ export default {
   clickHandler (e: any) {
     const map = this.map
 
-    const containers: Array<Object> = this.props.containers
-    const [, DataEditor] = containers
+    const containers: Object = this.props.containers
+    const {dataEditorState} = containers
 
     if (this.state.enableMeasurementTools) {
 
@@ -122,9 +122,9 @@ export default {
             feature.properties.maphubs_metadata.presets = presets
           }
 
-          if (DataEditor.state.editing) {
+          if (dataEditorState.state.editing) {
             if (feature.properties.layer_id &&
-              DataEditor.state.editingLayer.layer_id === feature.properties.layer_id) {
+              dataEditorState.state.editingLayer.layer_id === feature.properties.layer_id) {
               this.editFeature(feature)
             }
             return // return here to disable interactation with other layers when editing

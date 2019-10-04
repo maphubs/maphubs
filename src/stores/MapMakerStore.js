@@ -107,10 +107,10 @@ export default class MapMakerStore extends Reflux.Store {
     this.setState({settings})
   }
 
-  addToMap (layer: Layer, cb: Function) {
+  addToMap (layer: Layer) {
     // check if the map already has this layer
     if (_find(this.state.mapLayers, {layer_id: layer.layer_id})) {
-      cb(true)
+      return false
     } else {
       // tell the map to make this layer visible
       layer.style = MapStyles.settings.set(layer.style, 'active', true)
@@ -120,7 +120,7 @@ export default class MapMakerStore extends Reflux.Store {
         layers.unshift(layer)
         this.updateMap(layers)
       }
-      cb()
+      return true
     }
   }
 
@@ -235,25 +235,6 @@ export default class MapMakerStore extends Reflux.Store {
         })
       })
   }
-  // not used?
-  /*
-  savePrivate(isPrivate: boolean, _csrf: string, cb: Function){
-    var _this = this;
-    request.post('/api/map/privacy')
-    .type('json').accept('json')
-    .send({
-        map_id: this.state.map_id,
-        private: isPrivate,
-        _csrf
-    })
-    .end((err, res) => {
-      checkClientError(res, err, cb, (cb) => {
-        _this.setState({isPrivate});
-        cb();
-      });
-    });
-  }
-  */
 
   // helpers
   updateMap (mapLayers: Array<Layer>, rebuild: boolean = true) {

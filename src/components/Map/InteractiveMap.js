@@ -300,7 +300,6 @@ export default class InteractiveMap extends React.Component<Props, State> {
           interactive={this.props.interactive}
           style={{width: '100%', height}}
           glStyle={this.state.style}
-          baseMap={this.props.basemap}
           onToggleIsochroneLayer={this.onToggleIsochroneLayer}
           showLogo={this.props.showLogo}
           mapConfig={this.props.mapConfig}
