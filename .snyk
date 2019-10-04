@@ -1,4 +1,24 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.12.0
+version: v1.13.5
 ignore: {}
-patch: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-HTTPSPROXYAGENT-469131:
+    - '@google/earthengine > googleapis > google-auth-library > gaxios > https-proxy-agent':
+        patched: '2019-10-04T02:22:02.878Z'
+    - '@google/earthengine > googleapis > googleapis-common > gaxios > https-proxy-agent':
+        patched: '2019-10-04T02:22:02.878Z'
+    - '@google/earthengine > googleapis > google-auth-library > gcp-metadata > gaxios > https-proxy-agent':
+        patched: '2019-10-04T02:22:02.878Z'
+    - '@google/earthengine > googleapis > google-auth-library > gtoken > gaxios > https-proxy-agent':
+        patched: '2019-10-04T02:22:02.878Z'
+    - '@google/earthengine > googleapis > googleapis-common > google-auth-library > gaxios > https-proxy-agent':
+        patched: '2019-10-04T02:22:02.878Z'
+    - '@google/earthengine > googleapis > googleapis-common > google-auth-library > gcp-metadata > gaxios > https-proxy-agent':
+        patched: '2019-10-04T02:22:02.878Z'
+    - '@google/earthengine > googleapis > googleapis-common > google-auth-library > gtoken > gaxios > https-proxy-agent':
+        patched: '2019-10-04T02:22:02.878Z'
+    - tus-node-server > @google-cloud/storage > @google-cloud/common > google-auto-auth > google-auth-library > gtoken > gaxios > https-proxy-agent:
+        patched: '2019-10-04T02:22:02.878Z'
+    - tus-node-server > @google-cloud/storage > gcs-resumable-upload > google-auto-auth > google-auth-library > gtoken > gaxios > https-proxy-agent:
+        patched: '2019-10-04T02:22:02.878Z'
