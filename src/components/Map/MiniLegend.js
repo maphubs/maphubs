@@ -297,7 +297,7 @@ export default class MiniLegend extends React.Component<Props, State> {
                   {BaseMap => (
                     <div className='base-map-legend' style={{lineHeight: '0.75em', padding: '2px'}}>
                       <span
-                        style={{fontSize: '6px', float: 'left', backgroundColor: '#FFF'}}
+                        style={{fontSize: '8px', float: 'left', backgroundColor: '#FFF'}}
                         className='align-left'
                       >{t('Base Map')} - <span className='no-margin no-padding' dangerouslySetInnerHTML={{__html: BaseMap.state.attribution}} />
                       </span>
