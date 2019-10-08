@@ -2,6 +2,8 @@
 
 MapHubs is a collaborative platform for sharing and organzing mapping data, and telling stories with maps.
 
+MapHubs is a modern open-source web mapping stack, built with Mapbox GL graphics-based map rendering using vector tiles (https://www.mapbox.com/maps/), PostGIS (https://postgis.net/) and GDAL (https://gdal.org/) for data storage/processing, and Next.js (https://nextjs.org/) and React (https://reactjs.org/) for the web application, along with many other smaller open-source libraries including CKEditor (https://ckeditor.com/ckeditor-5/) for the story editor
+
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmaphubs%2Fmaphubs.svg?type=shield)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fmaphubs%2Fmaphubs?ref=badge_shield)
 
 ## Status
