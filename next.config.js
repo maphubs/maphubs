@@ -83,7 +83,8 @@ module.exports = withCSS(withLess(withTM({
     RASTER_UPLOAD_API_KEY: config.RASTER_UPLOAD_API_KEY,
     ASSET_UPLOAD_API: config.ASSET_UPLOAD_API,
     ASSET_UPLOAD_API_KEY: config.ASSET_UPLOAD_API_KEY,
-    LANGUAGES: config.LANGUAGES
+    LANGUAGES: config.LANGUAGES,
+    RASTER_UPLOAD_FILE_SIZE_LIMIT: config.RASTER_UPLOAD_FILE_SIZE_LIMIT
   },
   transpileModules: ['react-dnd', 'react-dnd-html5-backend'],
   lessLoaderOptions: {

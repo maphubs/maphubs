@@ -84,7 +84,8 @@ var local = {
   RASTER_UPLOAD_API_KEY: getenv('RASTER_UPLOAD_API_KEY'),
   ASSET_UPLOAD_API: getenv('ASSET_UPLOAD_API'),
   ASSET_UPLOAD_API_KEY: getenv('ASSET_UPLOAD_API_KEY'),
-  LANGUAGES: getenv('LANGUAGES', 'en,fr,es,pt,id,it,de')
+  LANGUAGES: getenv('LANGUAGES', 'en,fr,es,pt,id,it,de'),
+  RASTER_UPLOAD_FILE_SIZE_LIMIT: getenv.int('RASTER_UPLOAD_FILE_SIZE_LIMIT', 157286400)
 }
 
 module.exports = local
