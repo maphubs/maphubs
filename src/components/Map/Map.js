@@ -87,7 +87,8 @@ type Props = {|
     DGWMSConnectID?: string,
     earthEngineClientID?: string,
     categories?: Array<Object>,
-    mapLayers?: Array<Object>
+    mapLayers?: Array<Object>,
+    toggleVisibility?: Function
   |}
 
   type State = {
@@ -479,7 +480,7 @@ class Map extends React.Component<Props, State> {
 
   render () {
     const className = classNames('mode', 'map', 'active')
-    const {t, insetMap, showLogo, logoSmall, logoSmallHeight, logoSmallWidth} = this.props
+    const {t, insetMap, showLogo, logoSmall, logoSmallHeight, logoSmallWidth, mapLayers, toggleVisibility} = this.props
     if (this.state.selectedFeature) {
       // close any existing popups
       if (this.mapboxPopup && this.mapboxPopup.isOpen()) {
@@ -644,8 +645,8 @@ class Map extends React.Component<Props, State> {
         {this.props.categories &&
           <MapLayerMenu
             categories={this.props.categories}
-            toggleVisibility={this.toggleVisibility}
-            layers={this.props.mapLayers} t={t}
+            toggleVisibility={toggleVisibility}
+            layers={mapLayers} t={t}
           />}
         <div id={this.state.id} className={className} style={{width: '100%', height: '100%'}}>
           {insetMap &&

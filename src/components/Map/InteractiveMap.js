@@ -320,6 +320,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
           earthEngineClientID={this.props.earthEngineClientID}
           categories={this.props.categories}
           mapLayers={this.state.layers}
+          toggleVisibility={this.toggleVisibility}
         >
           {legend}
           <div ref={(el) => { this.mobileMapLegend = el }} />
