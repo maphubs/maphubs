@@ -49,7 +49,11 @@ type Props = {
     mapConfig: Object,
     settings: Object,
     groups: Array<Object>,
-    containers: Array<Object>
+    containers: {
+      dataEditorState: Object,
+      mapState: Object,
+      baseMapState: Object
+    }
   }
 
   type State = {
@@ -293,9 +297,9 @@ class MapMaker extends MapHubsComponent<Props, State> {
   }
 
   editLayer = (layer: Layer) => {
-    const {dataEditor, mapState} = this.props.containers
+    const {dataEditorState, mapState} = this.props.containers
     Actions.startEditing()
-    dataEditor.startEditing(layer)
+    dataEditorState.startEditing(layer)
     mapState.state.map.startEditingTool(layer)
     this.setState({activeTab: 'editing'})
   }

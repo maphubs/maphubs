@@ -5,7 +5,7 @@ import 'jquery'
 
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('Map/DataEditorMixin')
 
-let MapboxDraw = {}
+let MapboxDraw
 if (typeof window !== 'undefined') {
   MapboxDraw = require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js')
 }
@@ -21,8 +21,7 @@ export default {
   },
 
   editFeature (feature: Object) {
-    const containers: Array<Object> = this.props.containers
-    const {dataEditorState} = containers
+    const {dataEditorState} = this.props.containers
     // get the feature from the database, since features from vector tiles can be incomplete or simplified
     dataEditorState.selectFeature(feature.properties.mhid, feature => {
       if (this.draw) {
@@ -36,8 +35,7 @@ export default {
   },
 
   startEditingTool (layer: Layer) {
-    const containers: Array<Object> = this.props.containers
-    const {dataEditorState} = containers
+    const {dataEditorState} = this.props.containers
 
     if (this.state.enableMeasurementTools) {
       this.stopMeasurementTool() // close measurement tool if open
@@ -77,7 +75,7 @@ export default {
       const features = e.features
       if (features && features.length > 0) {
         features.forEach(feature => {
-          DataEditor.deleteFeature(feature)
+          dataEditorState.deleteFeature(feature)
         })
       }
     })
@@ -90,7 +88,7 @@ export default {
         const features = e.features
         if (features && features.length > 0) {
           features.forEach(feature => {
-            DataEditor.selectFeature(feature.id, () => {})
+            dataEditorState.selectFeature(feature.id, () => {})
           })
         }
       }
@@ -105,8 +103,7 @@ export default {
   },
 
   updateEdits (e: any) {
-    const containers: Array<Object> = this.props.containers
-    const {dataEditorState} = containers
+    const {dataEditorState} = this.props.containers
     if (e.features.length > 0) {
       dataEditorState.updateFeatures(e.features)
     }
@@ -135,27 +132,29 @@ export default {
    *
    */
   updateMapLayerFilters () {
-    const containers: Array<Object> = this.props.containers
-    const {dataEditorState} = containers
+    const {dataEditorState} = this.props.containers
     const layerId = dataEditorState.state.editingLayer.layer_id
     const shortid = dataEditorState.state.editingLayer.shortid
 
     // build a new filter
     const uniqueIds = []
+    if (this.state.edits) {
+      this.state.edits.forEach(edit => {
+        const mhid = edit.geojson.id
+        if (mhid && !uniqueIds.includes(mhid)) {
+          uniqueIds.push(mhid)
+        }
+      })
+    }
 
-    this.state.edits.forEach(edit => {
-      const mhid = edit.geojson.id
-      if (mhid && !uniqueIds.includes(mhid)) {
-        uniqueIds.push(mhid)
-      }
-    })
-
-    this.state.originals.forEach(orig => {
-      const mhid = orig.geojson.id
-      if (mhid && !uniqueIds.includes(mhid)) {
-        uniqueIds.push(mhid)
-      }
-    })
+    if (this.state.originals) {
+      this.state.originals.forEach(orig => {
+        const mhid = orig.geojson.id
+        if (mhid && !uniqueIds.includes(mhid)) {
+          uniqueIds.push(mhid)
+        }
+      })
+    }
 
     const hideEditingFilter = ['!in', 'mhid'].concat(uniqueIds)
 
@@ -225,12 +224,20 @@ export default {
   },
 
   reloadEditingSourceCache () {
-    const containers: Array<Object> = this.props.containers
-    const {dataEditorState} = containers
+    const {dataEditorState} = this.props.containers
     const sourceID = Object.keys(dataEditorState.state.editingLayer.style.sources)[0]
     const sourceCache = this.map.style.sourceCaches[sourceID]
+
     if (sourceCache) {
-      sourceCache.reload()
+      // From: https://github.com/mapbox/mapbox-gl-js/issues/2941#issuecomment-518631078
+      // Remove the tiles for a particular source
+      sourceCache.clearTiles()
+
+      // Load the new tiles for the current viewport (map.transform -> viewport)
+      sourceCache.update(this.map.transform)
+
+      // Force a repaint, so that the map will be repainted without you having to touch the map
+      this.map.triggerRepaint()
       this.reloadStyle()
     }
   }
