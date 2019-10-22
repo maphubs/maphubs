@@ -119,7 +119,12 @@ export default {
             if (!feature.properties.maphubs_metadata) {
               feature.properties.maphubs_metadata = {}
             }
-            feature.properties.maphubs_metadata.presets = presets
+            if (typeof feature.properties.maphubs_metadata === 'string') {
+              feature.properties.maphubs_metadata = JSON.parse(feature.properties.maphubs_metadata)
+            }
+            if (!feature.properties.maphubs_metadata.presets) {
+              feature.properties.maphubs_metadata.presets = presets
+            }
           }
 
           if (dataEditorState.state.editing) {

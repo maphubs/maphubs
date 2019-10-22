@@ -8,11 +8,13 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
+import MapContainer from '../components/Map/containers/MapContainer'
 import type {Layer} from '../types/layer'
 import type {GLStyle} from '../types/mapbox-gl-style'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import {Tooltip} from 'antd'
+import StyleHelper from '../components/Map/Styles/style'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -88,6 +90,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
       baseMapContainerInit.baseMapOptions = props.mapConfig.baseMapOptions
     }
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
+    this.MapState = new MapContainer()
 
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
@@ -95,26 +98,19 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
 
     const glStyle = props.map.style
     const layers = props.layers
-    if (props.geoJSONUrl) {
-      glStyle.sources['geojson-overlay'] = {
-        type: 'geojson',
-        data: props.geoJSONUrl
-      }
-
-      glStyle.layers.push(this.getStyleLayer(props))
-      layers.push(this.getLayerConfig(props))
-    }
 
     this.state = {
       interactive: props.interactive,
       bounds: null,
       layers,
-      glStyle
+      glStyle: !props.geoJSONUrl ? glStyle : undefined
     }
   }
 
+  geoJSONLoaded: boolean
+
   componentDidMount () {
-    if (this.props.geoJSONUrl) {
+    if (this.props.geoJSONUrl && !this.geoJSONLoaded) {
       this.loadGeoJSON(this.props.geoJSONUrl)
     }
   }
@@ -125,6 +121,8 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
 
   loadGeoJSON = (url: string) => {
     const _this = this
+    const {layers} = this.state
+
     request.get(url)
       .type('json').accept('json')
       .end((err, res) => {
@@ -132,49 +130,83 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
           const geoJSON = res.body
           const bounds = _bbox(geoJSON)
           // _this.refs.map.fitBounds(bounds, 12, 10, true);
-          _this.setState({bounds})
+          const layer = this.getLayerConfig(this.props, geoJSON)
+          const newLayers = [layer].concat(layers)
+          const glStyle = StyleHelper.buildMapStyle(layers)
+          this.geoJSONLoaded = true
+          _this.setState({bounds, glStyle, layers: newLayers})
+          this.MapState.state.map.fitBounds(bounds, 12, 400, false)
         })
       })
   }
 
-  getStyleLayer = (props: Props) => {
-    return {
-      id: 'omh-data-point-geojson-overlay',
-      type: 'circle',
-      metadata: {
-        'maphubs:layer_id': 0,
-        'maphubs:interactive': false,
-        'maphubs:showBehindBaseMapLabels': false,
-        'maphubs:markers': {
-          shape: 'MAP_PIN',
-          size: '32',
-          width: 32,
-          height: 32,
-          shapeFill: props.markerColor,
-          shapeFillOpacity: 0.75,
-          shapeStroke: '#FFFFFF',
-          shapeStrokeWidth: 2,
-          inverted: false,
-          enabled: true,
-          dataUrl: props.geoJSONUrl,
-          interactive: true
+  getStyleLayers = (props: Props) => {
+    return [
+      {
+        id: 'omh-data-point-geojson-overlay-markers',
+        type: 'symbol',
+        metadata: {
+          'maphubs:interactive': true
+        },
+        source: 'geojson-overlay',
+        layout: {
+          'icon-image': 'marker-icon-geojson-overlay',
+          'icon-size': 0.5,
+          'icon-allow-overlap': true,
+          'icon-offset': [
+            0,
+            -16
+          ],
+          visibility: 'visible'
         }
       },
-      source: 'geojson-overlay',
-      filter: [
-        'in',
-        '$type',
-        'Point'
-      ],
-      paint: {
-        'circle-color': props.markerColor
+      {
+        id: 'omh-data-point-geojson-overlay',
+        type: 'circle',
+        metadata: {
+          'maphubs:layer_id': 0,
+          'maphubs:interactive': true,
+          'maphubs:showBehindBaseMapLabels': false,
+          'maphubs:markers': {
+            shape: 'MAP_PIN',
+            size: '32',
+            width: 32,
+            height: 32,
+            shapeFill: props.markerColor,
+            shapeFillOpacity: 0.75,
+            shapeStroke: '#FFFFFF',
+            shapeStrokeWidth: 2,
+            inverted: false,
+            enabled: true,
+            interactive: true,
+            version: 2,
+            imageName: 'marker-icon-geojson-overlay'
+          }
+        },
+        source: 'geojson-overlay',
+        filter: [
+          'in',
+          '$type',
+          'Point'
+        ],
+        paint: {
+          'circle-color': props.markerColor,
+          'circle-radius': 20
+        },
+        layout: {
+          visibility: 'none'
+        }
       }
-    }
+    ]
   }
 
-  getLayerConfig = (props: Props): Layer => {
+  getLayerConfig = (props: Props, geoJSON: Object): Layer => {
     const emptyLocalizedString: LocalizedString = {en: '', fr: '', es: '', it: ''}
-
+    /*
+    geoJSON.metadata = {
+      'maphubs:presets': []
+    }
+    */
     const style: GLStyle = {
       version: 8,
       sources: {
@@ -183,7 +215,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
           data: props.geoJSONUrl
         }
       },
-      layers: [this.getStyleLayer(props)]
+      layers: this.getStyleLayers(props)
     }
 
     return {
@@ -276,13 +308,18 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
           mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
           DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
           earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+          onLoad={() => {
+            if (this.props.geoJSONUrl && !this.geoJSONLoaded) {
+              this.loadGeoJSON(this.props.geoJSONUrl)
+            }
+          }}
           {...this.props.map.settings}
         />
       )
     }
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState]}>
+        <Provider inject={[this.BaseMapState, this.MapState]}>
           <div className='embed-map' style={{height: '100%', width: '100%', display: 'flex', overflow: 'hidden'}}>
             {map}
           </div>

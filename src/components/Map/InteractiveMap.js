@@ -52,7 +52,8 @@ type Props = {
   locale: string,
   mapboxAccessToken: string,
   DGWMSConnectID?: string,
-  earthEngineClientID?: string
+  earthEngineClientID?: string,
+  onLoad?: Function
 }
 
 type State = {
@@ -321,6 +322,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
           categories={this.props.categories}
           mapLayers={this.state.layers}
           toggleVisibility={this.toggleVisibility}
+          onLoad={this.props.onLoad}
         >
           {legend}
           <div ref={(el) => { this.mobileMapLegend = el }} />
