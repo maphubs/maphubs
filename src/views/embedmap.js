@@ -135,7 +135,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
           const glStyle = StyleHelper.buildMapStyle(layers)
           this.geoJSONLoaded = true
           _this.setState({bounds, glStyle, layers: newLayers})
-          this.MapState.state.map.fitBounds(bounds, 12, 400, false)
+          this.MapState.state.map.fitBounds(bounds, 12, 50, false)
         })
       })
   }
@@ -190,8 +190,8 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
           'Point'
         ],
         paint: {
-          'circle-color': props.markerColor,
-          'circle-radius': 20
+          'circle-color': 'rgba(255,255,255,0)',
+          'circle-radius': 0
         },
         layout: {
           visibility: 'none'
