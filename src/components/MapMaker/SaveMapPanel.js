@@ -91,7 +91,12 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
               name='title' id='title'
               value={title}
               label={{
-                en: 'Map Title', fr: 'Titre de la carte', es: 'Título del mapa', it: 'Titolo della mappa'
+                en: 'Map Title',
+                fr: 'Titre de la carte',
+                es: 'Título del mapa',
+                it: 'Titolo della mappa',
+                id: 'Judul Peta',
+                pt: 'Título do mapa'
               }}
               className='col s12'
               validations='maxLength:100' validationErrors={{

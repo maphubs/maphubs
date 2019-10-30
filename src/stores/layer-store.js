@@ -26,11 +26,11 @@ export type LayerStoreState = {
 
 const defaultState: LayerStoreState = {
   layer_id: -1,
-  name: {en: '', fr: '', es: '', it: ''},
-  description: {en: '', fr: '', es: '', it: ''},
+  name: {en: '', fr: '', es: '', it: '', id: '', pt: ''},
+  description: {en: '', fr: '', es: '', it: '', id: '', pt: ''},
   published: true,
   data_type: '',
-  source: {en: '', fr: '', es: '', it: ''},
+  source: {en: '', fr: '', es: '', it: '', id: '', pt: ''},
   license: 'none',
   preview_position: {
     zoom: 1,
@@ -582,7 +582,8 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
           isRequired: false,
           showOnMap: true,
           mapTo: tag,
-          id: idSeq++}
+          id: idSeq++
+}
       })
 
       const newPresets = _differenceBy(importedPresets, presets, 'tag')

@@ -110,7 +110,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     const {t} = this
     const _this = this
     confirm({
-      title: t('Confirm Delete'),
+      title: t('Confirm Deletion'),
       content: t('Please confirm deletion of ') + t(this.props.map.title),
       okText: t('Delete'),
       okType: 'danger',

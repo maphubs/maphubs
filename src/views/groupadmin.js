@@ -126,7 +126,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     const {_csrf} = this.state
     confirm({
       title: t('Confirm Removal'),
-      content: t('Please confirm removal of ') + user.label,
+      content: `${t('Please confirm removal of')} ${user.label}`,
       okText: t('Remove'),
       okType: 'danger',
       cancelText: t('Cancel'),
@@ -151,7 +151,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     const _this = this
     confirm({
       title: t('Confirm Deletion'),
-      content: t('Please confirm removal of group ') + this.t(this.state.group.name),
+      content: `${t('Please confirm removal of')} ${this.t(this.state.group.name)}`,
       okText: t('Delete'),
       okType: 'danger',
       cancelText: t('Cancel'),
@@ -315,7 +315,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                   <MultiTextInput
                     name='name' id='name'
                     label={{
-                      en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
+                      en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome', id: 'Nama', pt: 'Nome'
                     }}
                     icon='info'
                     className='col s12' validations='maxLength:100' validationErrors={{
@@ -333,7 +333,9 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                       en: 'Description',
                       fr: 'Description',
                       es: 'Descripción',
-                      it: 'Descrizione'
+                      it: 'Descrizione',
+                      id: 'Deskripsi',
+                      pt: 'Descrição'
                     }}
                     icon='description' className='col s12' validations='maxLength:500' validationErrors={{
                       maxLength: t('Description must be 500 characters or less.')

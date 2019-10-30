@@ -352,7 +352,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
           </IntlProvider>&nbsp;
           (<IntlProvider locale={this.state.locale}>
             <FormattedRelative value={updatedTimeStr} />
-           </IntlProvider>)&nbsp;
+          </IntlProvider>)&nbsp;
           {t('by') + ' ' + this.props.updatedByUser.display_name}
         </p>
       )
@@ -424,7 +424,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                         </div>
                       </Col>
                       <Col sm={24} md={12} style={{height: '100%', padding: '5px', minHeight: '200px', overflow: 'auto', border: '1px solid #ddd'}}>
-                        <p className='word-wrap' style={{fontSize: '16px'}}><b>{t('Description:')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
+                        <p className='word-wrap' style={{fontSize: '16px'}}><b>{`${t('Description')}:`}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
                       </Col>
                     </Row>
                     <Row style={{height: 'calc(50% - 58px)'}}>

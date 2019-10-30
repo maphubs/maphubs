@@ -190,7 +190,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                 <MultiTextInput
                   name='name' id='layer-name'
                   label={{
-                    en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
+                    en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome', id: 'Nama', pt: 'Nome'
                   }}
                   className='col s12'
                   value={this.state.name}
@@ -208,7 +208,9 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                     en: 'Description',
                     fr: 'Description',
                     es: 'Descripción',
-                    it: 'Descrizione'
+                    it: 'Descrizione',
+                    id: 'Deskripsi',
+                    pt: 'Descrição'
                   }}
                   className='col s12'
                   value={this.state.description}

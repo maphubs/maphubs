@@ -161,7 +161,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
     const {t} = this
     const _this = this
     confirm({
-      title: t('Confirm Delete'),
+      title: t('Confirm Deletion'),
       content: t('Please confirm removal of') + ' ' +
       t(this.props.layer.name) + '. ' +
       t('All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, and stories.'),

@@ -27,7 +27,7 @@ export default class MailingList extends MapHubsComponent<Props, State> {
   }
 
   static defaultProps = {
-    text: {en: '', fr: '', es: '', it: ''}
+    text: {en: '', fr: '', es: '', it: '', id: '', pt: ''}
   }
 
   shouldComponentUpdate (nextProps: Props, nextState: State) {
@@ -116,7 +116,7 @@ export default class MailingList extends MapHubsComponent<Props, State> {
                   paddingRight: 0,
                   textTransform: 'none'
                 }}
-              >{t('Sign up')}
+              >{t('Sign Up')}
               </button>
             </div>
           </Formsy>

@@ -94,7 +94,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
           <div className='row' style={{margin: 'auto', textAlign: 'center'}}>
             <div className='col s5'>
               <div className='row no-margin'>
-                <p style={{margin: '5px'}}>{t('Upload Data or Import MapHubs Data')}</p>
+                <p style={{margin: '5px'}}>{t('Upload Data')}</p>
                 <div className='col s6'>
                   <SourceSelectionBox
                     name={t('Upload File')} value='local'

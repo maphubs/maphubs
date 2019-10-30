@@ -116,7 +116,7 @@ module.exports = function (app: any) {
           title: req.__('Not Found'),
           props: {
             title: req.__('Not Found'),
-            error: req.__('The page you request was not found'),
+            error: req.__('The page you requested was not found'),
             url: req.url
           }
         }))
@@ -178,7 +178,7 @@ module.exports = function (app: any) {
           title: req.__('Not Found'),
           props: {
             title: req.__('Not Found'),
-            error: req.__('The page you request was not found'),
+            error: req.__('The page you requested was not found'),
             url: req.url
           }
         }))

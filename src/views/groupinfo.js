@@ -115,7 +115,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
             <Col span={8}>
               <h4>{t(group.name)}</h4>
               <Row>
-                <p><b>{t('Description: ')}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
+                <p><b>{`${t('Description')}: `}}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
               </Row>
               {this.props.group.unofficial &&
                 <Row>

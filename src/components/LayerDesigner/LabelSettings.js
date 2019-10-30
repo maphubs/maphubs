@@ -122,7 +122,6 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
                <Toggle
                  name='enabled' labelOff={t('Off')} labelOn={t('On')} className='col s12'
                  checked={this.state.enabled}
-                 dataPosition='right' dataTooltip={t('Enable Labels for this Layer')}
                />
              </div>
              <div className='row no-margin'>

@@ -201,7 +201,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
   }
 
   getLayerConfig = (props: Props, geoJSON: Object): Layer => {
-    const emptyLocalizedString: LocalizedString = {en: '', fr: '', es: '', it: ''}
+    const emptyLocalizedString: LocalizedString = {en: '', fr: '', es: '', it: '', id: '', pt: ''}
     /*
     geoJSON.metadata = {
       'maphubs:presets': []

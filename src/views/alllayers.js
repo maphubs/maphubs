@@ -149,7 +149,6 @@ export default class Layers extends MapHubsComponent<Props, State> {
             <div className='row' style={{marginBottom: '0px'}}>
               <div className='col l8 m7 s12'>
                 <h4 className='no-margin'>{t('Layers')}</h4>
-                <p style={{fontSize: '16px', margin: 0}}>{t('Browse layers or create a new layer.')}</p>
               </div>
               <div className='col l3 m4 s12 right' style={{paddingRight: '15px'}}>
                 <SearchBox label={t('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />

@@ -179,7 +179,6 @@ export default class MarkerSettings extends React.Component<Props, State> {
               <Toggle
                 name='enabled' labelOff={t('Off')} labelOn={t('On')}
                 checked={this.state.options.enabled}
-                dataPosition='right' dataTooltip={t('Enable markers for this Layer')}
               />
             </div>
             <div className='row no-margin'>
@@ -212,7 +211,6 @@ export default class MarkerSettings extends React.Component<Props, State> {
               <Toggle
                 name='inverted' labelOff={t('Off')} labelOn={t('On')}
                 checked={this.state.options.inverted}
-                dataPosition='right' dataTooltip={t('Invert colors')}
               />
             </div>
           </Formsy>

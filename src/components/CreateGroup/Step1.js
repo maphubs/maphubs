@@ -195,7 +195,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                 <MultiTextInput
                   name='name' id='name'
                   label={{
-                    en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome'
+                    en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome', id: 'Nama', pt: 'Nome'
                   }}
                   icon='info' className='col s12' validations='maxLength:100' validationErrors={{
                     maxLength: t('Name must be 100 characters or less.')
@@ -211,7 +211,9 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                     en: 'Description',
                     fr: 'Description',
                     es: 'Descripción',
-                    it: 'Descrizione'
+                    it: 'Descrizione',
+                    id: 'Deskripsi',
+                    pt: 'Descrição'
                   }}
                   icon='description' className='col s12' validations='maxLength:500' validationErrors={{
                     maxLength: t('Description must be 500 characters or less.')
