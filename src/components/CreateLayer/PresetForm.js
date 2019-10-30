@@ -165,7 +165,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                     en: 'Label', fr: 'Étiquette', es: 'Etiqueta', it: 'Etichetta'
                   }}
                   validations='maxLength:50' validationErrors={{
-                    maxLength: t('Name must be 50 characters or less.')
+                    maxLength: t('Must be 50 characters or less.')
                   }} length={50}
                   value={this.props.label}
                   required

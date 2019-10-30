@@ -319,7 +319,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     }}
                     icon='info'
                     className='col s12' validations='maxLength:100' validationErrors={{
-                      maxLength: t('Name must be 100 characters or less.')
+                      maxLength: t('Must be 100 characters or less.')
                     }} length={100}
                     dataPosition='top' dataTooltip={t('Short Descriptive Name for the Group')}
                     value={this.state.group.name}

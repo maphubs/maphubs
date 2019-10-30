@@ -198,7 +198,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                     en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome', id: 'Nama', pt: 'Nome'
                   }}
                   icon='info' className='col s12' validations='maxLength:100' validationErrors={{
-                    maxLength: t('Name must be 100 characters or less.')
+                    maxLength: t('Must be 100 characters or less.')
                   }} length={100}
                   dataPosition='top' dataTooltip={t('Short Descriptive Name for the Group')}
                   required

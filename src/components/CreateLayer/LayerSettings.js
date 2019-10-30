@@ -195,7 +195,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   className='col s12'
                   value={this.state.name}
                   validations='maxLength:100' validationErrors={{
-                    maxLength: t('Name must be 100 characters or less.')
+                    maxLength: t('Must be 100 characters or less.')
                   }} length={100}
                   dataPosition='top' dataTooltip={t('Short Descriptive Name for the Layer')}
                   required
@@ -231,7 +231,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   }} className='col s12'
                   value={this.state.source}
                   validations='maxLength:300' validationErrors={{
-                    maxLength: t('Name must be 300 characters or less.')
+                    maxLength: t('Must be 300 characters or less.')
                   }} length={300}
                   dataPosition='top' dataTooltip={t('Short Description of the Layer Source')}
                   required

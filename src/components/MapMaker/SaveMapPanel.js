@@ -100,7 +100,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
               }}
               className='col s12'
               validations='maxLength:100' validationErrors={{
-                maxLength: t('Name must be 100 characters or less.')
+                maxLength: t('Must be 100 characters or less.')
               }} length={100}
               required
             />
