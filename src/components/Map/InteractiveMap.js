@@ -85,8 +85,8 @@ export default class InteractiveMap extends React.Component<Props, State> {
     showLegendLayersButton: true,
     preserveDrawingBuffer: false,
     primaryColor: 'black',
-    showLayerVisibility: true,
-    showLayerInfo: true
+    showLayerVisibility: true, // show toggles in layer menu
+    showLayerInfo: true // show info links in layer menu
   }
 
   mobileMapLegend: any
