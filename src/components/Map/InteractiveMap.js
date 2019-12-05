@@ -53,6 +53,8 @@ type Props = {
   mapboxAccessToken: string,
   DGWMSConnectID?: string,
   earthEngineClientID?: string,
+  showLayerVisibility: boolean,
+  showLayerInfo: boolean,
   onLoad?: Function
 }
 
@@ -82,7 +84,9 @@ export default class InteractiveMap extends React.Component<Props, State> {
     insetMap: true,
     showLegendLayersButton: true,
     preserveDrawingBuffer: false,
-    primaryColor: 'black'
+    primaryColor: 'black',
+    showLayerVisibility: true,
+    showLayerInfo: true
   }
 
   mobileMapLegend: any
@@ -222,7 +226,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
   }
 
   render () {
-    const {fitBounds, showShareButtons, t, primaryColor, logoSmall, logoSmallHeight, logoSmallWidth, hash} = this.props
+    const {fitBounds, showShareButtons, t, primaryColor, logoSmall, logoSmallHeight, logoSmallWidth, hash, showLayerVisibility, showLayerInfo} = this.props
     const {position, width} = this.state
     let border = 'none'
     if (this.props.border) {
@@ -360,7 +364,9 @@ export default class InteractiveMap extends React.Component<Props, State> {
             <Row style={{height: '100%'}}>
               <LayerList
                 layers={this.state.layers}
-                showDesign={false} showRemove={false} showVisibility
+                showDesign={false} showRemove={false}
+                showVisibility={showLayerVisibility}
+                showInfo={showLayerInfo}
                 toggleVisibility={this.toggleVisibility}
                 updateLayers={this.updateLayers}
                 t={t}

@@ -422,7 +422,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
                   <LayerList
                     layers={mapLayers}
                     showVisibility={showVisibility}
-                    showRemove showDesign showEdit={!editingLayer}
+                    showRemove showDesign showInfo showEdit={!editingLayer}
                     toggleVisibility={toggleVisibility}
                     removeFromMap={removeFromMap}
                     showLayerDesigner={showLayerDesigner}

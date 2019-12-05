@@ -10,6 +10,7 @@ import update from 'react-addons-update'
 type Props = {
   layers: Array<Object>,
   showVisibility: boolean,
+  showInfo: boolean,
   showDesign: boolean,
   showRemove: boolean,
   showEdit: boolean,
@@ -31,7 +32,8 @@ export default class LayerList extends React.Component<Props, State> {
     showVisibility: false,
     showDesign: false,
     showRemove: false,
-    showEdit: false
+    showEdit: false,
+    showInfo: false
   }
 
   constructor (props: Props) {
@@ -69,7 +71,7 @@ export default class LayerList extends React.Component<Props, State> {
   render () {
     const _this = this
     const {layers} = this.state
-    const {toggleVisibility, showVisibility, showRemove, showDesign, showEdit, removeFromMap, showLayerDesigner, editLayer, t} = this.props
+    const {toggleVisibility, showVisibility, showRemove, showDesign, showEdit, showInfo, removeFromMap, showLayerDesigner, editLayer, t} = this.props
     const empty = !layers || layers.length === 0
     return (
       <div style={{height: '100%', padding: 0, margin: 0, border: '1px solid #eeeeee', overflowY: 'auto'}}>
@@ -93,6 +95,7 @@ export default class LayerList extends React.Component<Props, State> {
                     showRemove={showRemove}
                     showDesign={showDesign}
                     showEdit={showEdit}
+                    showInfo={showInfo}
                     moveItem={_this.moveLayer}
                     removeFromMap={removeFromMap}
                     showLayerDesigner={showLayerDesigner}

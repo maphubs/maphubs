@@ -22,6 +22,7 @@ type Props = {
   showRemove: boolean,
   showDesign: boolean,
   showEdit: boolean,
+  showInfo: boolean,
   toggleVisibility: Function,
   removeFromMap: Function,
   showLayerDesigner: Function,
@@ -64,7 +65,7 @@ class LayerListItem extends React.Component<Props, void> {
   render () {
     const {
       t, isDragging, connectDragSource, connectDropTarget,
-      showVisibility, showRemove, showDesign
+      showVisibility, showRemove, showDesign, showInfo
     } = this.props
     const layer: Layer = this.props.item
     const layer_id = layer.layer_id ? layer.layer_id : 0
@@ -104,16 +105,19 @@ class LayerListItem extends React.Component<Props, void> {
           </p>
         </Row>
         <Row style={{textAlign: 'center'}} type='flex' justify='end'>
-          <Col span={4}>
-            <Tooltip
-              title={t('Layer Info')}
-              placement='right'
-            >
-              <a href={'/lyr/' + layer_id} target='_blank' rel='noopener noreferrer'>
-                <Info style={{fontSize: '20px'}} />
-              </a>
-            </Tooltip>
-          </Col>
+          {
+            showInfo &&
+              <Col span={4}>
+                <Tooltip
+                  title={t('Layer Info')}
+                  placement='right'
+                >
+                  <a href={'/lyr/' + layer_id} target='_blank' rel='noopener noreferrer'>
+                    <Info style={{fontSize: '20px'}} />
+                  </a>
+                </Tooltip>
+              </Col>
+          }
           {showRemove &&
             <Col span={4}>
               <Tooltip
