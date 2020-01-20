@@ -150,7 +150,7 @@
     "multer": "^1.3.0",
     "next": "^9.0.5",
     "next-transpile-modules": "^2.3.1",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
     "null-loader": "^3.0.0",
     "numeral": "^2.0.6",
     "ogr2ogr": "^1.2.1",
