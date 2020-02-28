@@ -168,7 +168,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     let isPolygon
     if (geojsonFeature && geojsonFeature.geometry &&
       (geojsonFeature.geometry.type === 'Polygon' ||
-        geojsonFeature.geometry.type === 'Polygon')) {
+        geojsonFeature.geometry.type === 'MultiPolygon')) {
       isPolygon = true
     }
 

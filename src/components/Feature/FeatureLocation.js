@@ -1,5 +1,7 @@
 //  @flow
 import React from 'react'
+import { Row, Col } from 'antd'
+import { QRCode } from 'react-qr-svg'
 import {addLocaleData, IntlProvider, FormattedNumber} from 'react-intl'
 import turf_centroid from '@turf/centroid'
 import {OpenLocationCode} from 'open-location-code'
@@ -42,28 +44,37 @@ export default class FeatureLocation extends React.PureComponent<Props, void> {
     const lat = centroid.geometry.coordinates[1]
     const plusCode = openLocationCode.encode(lat, lon, 11)
     return (
-      <div className='row'>
-        <div className='row no-margin'>
-          <span>
-            <b>{t('Latitude:')}</b>&nbsp;
-            <IntlProvider locale={locale}>
-              <FormattedNumber value={lat} />
-            </IntlProvider>&nbsp;
-          </span>
-          <span>
-            <b>{t('Longitude:')}</b>&nbsp;
-            <IntlProvider locale={locale}>
-              <FormattedNumber value={lon} />
-            </IntlProvider>&nbsp;
-          </span>
-        </div>
-        <div className='row no-margin'>
-          <span>
-            <b>{t('Plus Code:')}</b>&nbsp;
-            {plusCode} (<a href='https://plus.codes/' target='_blank' rel='noopener noreferrer'>{t('More Info')}</a>)
-          </span>
-        </div>
-        <div className='row no-margin'>
+      <Row style={{marginBottom: '20px'}}>
+
+        <Row style={{padding: '5px'}}>
+          <QRCode
+            bgColor='#FFFFFF'
+            fgColor='#000000'
+            level='L'
+            style={{ width: 64 }}
+            value={`geo:${lat},${lon}`}
+          />
+        </Row>
+        <Row>
+          <Row>
+            <span>
+              <b>{t('Latitude:')}</b>&nbsp;
+              <IntlProvider locale={locale}>
+                <FormattedNumber value={lat} minimumFractionDigits={6} />
+              </IntlProvider>&nbsp;
+            </span>
+          </Row>
+          <Row>
+            <span>
+              <b>{t('Longitude:')}</b>&nbsp;
+              <IntlProvider locale={locale}>
+                <FormattedNumber value={lon} minimumFractionDigits={6} />
+              </IntlProvider>&nbsp;
+            </span>
+          </Row>
+        </Row>
+
+        <Row>
           <span>
             <b>{t('UTM:')}</b>&nbsp;
             {utm.properties.zoneNumber}{utm.properties.zoneLetter}&nbsp;
@@ -74,8 +85,15 @@ export default class FeatureLocation extends React.PureComponent<Props, void> {
               <FormattedNumber value={utm.geometry.coordinates[1]} />
             </IntlProvider>m N
           </span>
-        </div>
-      </div>
+        </Row>
+        <Row>
+          <span>
+            <b>{t('Plus Code:')}</b>&nbsp;
+            {plusCode} (<a href='https://plus.codes/' target='_blank' rel='noopener noreferrer'>{t('More Info')}</a>)
+          </span>
+        </Row>
+
+      </Row>
     )
   }
 }

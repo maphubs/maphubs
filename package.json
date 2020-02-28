@@ -180,6 +180,7 @@
     "react-image-lightbox": "^5.0.0",
     "react-intl": "^2.9.0",
     "react-notification": "^6.8.0",
+    "react-qr-svg": "^2.2.1",
     "react-scroll-to-component": "^1.0.2",
     "react-share": "^3.0.1",
     "react-virtualized-auto-sizer": "^1.0.2",
