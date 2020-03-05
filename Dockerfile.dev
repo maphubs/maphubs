@@ -11,7 +11,7 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-COPY package.json package-lock.json .snyk /app/
+COPY package.json package-lock.json /app/
 RUN npm install
 
 COPY docker-entrypoint-dev.sh /app/docker-entrypoint.sh

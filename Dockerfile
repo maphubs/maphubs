@@ -12,12 +12,10 @@ RUN apt-get update && \
 WORKDIR /app
 
 FROM base AS dependencies
-COPY package.json package-lock.json .snyk /app/
+COPY package.json package-lock.json /app/
 
 RUN npm config set '@bit:registry' https://node.bitsrc.io && \
-    npm install --production && \
-    npm install -g snyk && \
-    npm run snyk-protect
+    npm install --production
 
 FROM base AS release 
 COPY --from=dependencies /app /app  

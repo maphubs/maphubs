@@ -17,9 +17,7 @@
     "deploy-minor": "node minor && npm run deploy",
     "deploy-patch": "node patch && npm run deploy",
     "deploy": "/bin/sh deploy.sh",
-    "upgrade-rancher": "cd ../maphubs-rancher-catalog && /bin/sh new_version.sh",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "upgrade-rancher": "cd ../maphubs-rancher-catalog && /bin/sh new_version.sh"
   },
   "repository": {
     "type": "git",
@@ -227,9 +225,7 @@
     "flow-bin": "^0.106.3",
     "geojson-flow": "^1.0.1",
     "semver": "^6.3.0",
-    "snyk": "^1.224.0",
     "unstated-debug": "^0.3.2",
     "webpack-bundle-analyzer": "^3.4.1"
-  },
-  "snyk": true
+  }
 }
