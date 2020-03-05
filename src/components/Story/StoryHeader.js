@@ -31,8 +31,7 @@ if (!Intl.RelativeTimeFormat) {
 
 type Props = {
   story: Object,
-  baseUrl: string,
-  short: boolean
+  baseUrl: string
 }
 
 type State = {
@@ -43,51 +42,17 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
   props: Props
 
   static defaultProps = {
-    baseUrl: '',
-    short: false
+    baseUrl: ''
   }
 
   render () {
     const { t } = this
-    const { story, short } = this.props
+    const { story } = this.props
     const { locale, groupLogoFailed } = this.state
     const guessedTz = moment.tz.guess()
     const date = story.published_at
-    const publishedTime = moment.tz(date, guessedTz).format()
-
-    let time = ''
-    if (short) {
-      const daysOld = moment().diff(moment(date), 'days')
-      if (daysOld < 7) {
-        time = (
-          <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}>
-            <IntlProvider locale={locale}>
-              <FormattedRelativeTime value={publishedTime} />
-            </IntlProvider>
-          </p>
-        )
-      } else {
-        time = (
-          <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}>
-            <IntlProvider locale={locale}>
-              <FormattedDate value={publishedTime} month='short' day='numeric' />
-            </IntlProvider>&nbsp;
-          </p>
-        )
-      }
-    } else {
-      time = (
-        <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}>
-          <IntlProvider locale={locale}>
-            <FormattedDate value={publishedTime} month='short' day='numeric' />
-          </IntlProvider>&nbsp;
-          (
-          <IntlProvider locale={locale}>
-            <FormattedRelativeTime value={publishedTime} />
-          </IntlProvider>)
-        </p>
-      )
-    }
+    const publishedTime = moment.tz(date, guessedTz)
+    const daysSincePublished = publishedTime.diff(moment(), 'days')
     const baseUrl = urlUtil.getBaseUrl()
 
     let authorText = ''
@@ -130,7 +95,17 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
                 {story.groupname ? t(story.groupname) : story.owned_by_group_id}
               </a>
             </p>
-            {time}
+            <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}>
+              <IntlProvider locale={locale}>
+                <FormattedDate value={publishedTime} month='long' day='numeric' year={(daysSincePublished < -365) ? 'numeric' : undefined} />
+              </IntlProvider>&nbsp;
+              {(daysSincePublished > -365) &&
+                <span>(
+                  <IntlProvider locale={locale}>
+                    <FormattedRelativeTime value={daysSincePublished} numeric='auto' unit='day' />
+                  </IntlProvider>)
+                </span>}
+            </p>
           </div>
         </div>
       </div>

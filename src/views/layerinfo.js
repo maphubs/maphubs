@@ -345,27 +345,10 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     }
 
     const guessedTz = moment.tz.guess()
-    const creationTimeObj = moment.tz(layer.creation_time, guessedTz)
-    const creationTime = creationTimeObj.format()
-    const updatedTimeObj = moment.tz(layer.last_updated, guessedTz)
-    const updatedTimeStr = updatedTimeObj.format()
-    let updatedTime = ''
-    if (updatedTimeObj > creationTimeObj) {
-      updatedTime = (
-        <p style={{fontSize: '16px'}}><b>{t('Last Update:')} </b>
-          <IntlProvider locale={this.state.locale}>
-            <FormattedDate value={updatedTimeStr} />
-          </IntlProvider>&nbsp;
-          <IntlProvider locale={this.state.locale}>
-            <FormattedTime value={updatedTimeStr} />
-          </IntlProvider>&nbsp;
-          <IntlProvider locale={this.state.locale}>
-            <FormattedRelativeTime value={updatedTimeStr} />
-          </IntlProvider>&nbsp;
-          {t('by') + ' ' + this.props.updatedByUser.display_name}
-        </p>
-      )
-    }
+    const creationTime = moment.tz(layer.creation_time, guessedTz)
+    const daysSinceCreated = creationTime.diff(moment(), 'days')
+    const updatedTime = moment.tz(layer.last_updated, guessedTz)
+    const daysSinceUpdated = updatedTime.diff(moment(), 'days')
 
     const licenseOptions = Licenses.getLicenses(t)
     const license = _find(licenseOptions, {value: layer.license})
@@ -375,7 +358,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     if (layer.description) {
       // regex for detecting links
       const localizedDescription = this.t(layer.description)
-      const regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig
+      const regex = /(https?:\/\/([\w.-]+)+(:\d+)?(\/([\w./]*(\?\S+)?)?)?)/gi
       descriptionWithLinks = localizedDescription.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>")
     }
 
@@ -445,14 +428,28 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                           <IntlProvider locale={this.state.locale}>
                             <FormattedTime value={creationTime} />
                           </IntlProvider>&nbsp;
-                      (
+                          (
                           <IntlProvider locale={this.state.locale}>
-                            <FormattedRelativeTime value={creationTime} />
+                            <FormattedRelativeTime value={daysSinceCreated} numeric='auto' unit='day' />
                           </IntlProvider>
-                      )&nbsp;
+                          )&nbsp;
                           {t('by') + ' ' + this.props.updatedByUser.display_name}
                         </p>
-                        {updatedTime}
+                        {(updatedTime > creationTime) &&
+                          <p style={{fontSize: '16px'}}><b>{t('Last Update:')} </b>
+                            <IntlProvider locale={this.state.locale}>
+                              <FormattedDate value={updatedTime} />
+                            </IntlProvider>&nbsp;
+                            <IntlProvider locale={this.state.locale}>
+                              <FormattedTime value={updatedTime} />
+                            </IntlProvider>&nbsp;
+                            (
+                            <IntlProvider locale={this.state.locale}>
+                              <FormattedRelativeTime value={daysSinceUpdated} numeric='auto' unit='day' />
+                            </IntlProvider>
+                            )&nbsp;
+                            {t('by') + ' ' + this.props.updatedByUser.display_name}
+                          </p>}
                       </Col>
                       <Col sm={24} md={12} style={{height: '100%', padding: '5px', border: '1px solid #ddd'}}>
                         <p style={{fontSize: '16px'}}><b>{t('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
