@@ -59,7 +59,7 @@ export default class CardGrid extends React.Component<Props, State> {
         <Row type='flex' justify='center' style={{padding: '15px'}}>
           {cards.map((card) => {
             return (
-              <Col key={card.id} sm={24} md={6} lg={4}>
+              <Col key={card.id} xs={24} sm={12} md={7} lg={5} xl={4} style={{marginBottom: '10px'}}>
                 <Card showAddButton={showAddButton} {...card} t={t} />
               </Col>
             )
