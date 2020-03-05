@@ -8,7 +8,6 @@ const tus = require('tus-node-server')
 const EVENTS = require('tus-node-server').EVENTS
 const express = require('express')
 const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-const shapefileFairy = Promise.promisify(require('@mapbox/shapefile-fairy'))
 const DataLoadUtils = require('../../services/data-load-utils')
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/layers-upload')
 const local = require('../../local')
@@ -161,20 +160,14 @@ module.exports = function (app: any) {
           // get file path
           const path = await DataLoadUtils.getTempShapeUpload(req.body.layer_id)
           debug.log('finishing upload with file: ' + path)
-          const shapefileFairyResult = await shapefileFairy(path, {shapefileName: req.body.requestedShapefile})
-          if (shapefileFairyResult) {
-            const shpFilePath = path + '_zip' + '/' + req.body.requestedShapefile
 
-            const ogr = ogr2ogr(shpFilePath).format('GeoJSON').skipfailures().options(['-t_srs', 'EPSG:4326']).timeout(60000)
-            const geoJSON = await Promise.promisify(ogr.exec, {context: ogr})()
+          const shpFilePath = path + '_zip' + '/' + req.body.requestedShapefile
 
-            const result = await DataLoadUtils.storeTempGeoJSON(geoJSON, path, req.body.layer_id, shortid, true, true)
-            return res.status(200).send(result)
-          } else {
-            return res.status(200).send({
-              success: false,
-              error: 'failed to extract shapefile'})
-          }
+          const ogr = ogr2ogr(shpFilePath).format('GeoJSON').skipfailures().options(['-t_srs', 'EPSG:4326']).timeout(60000)
+          const geoJSON = await Promise.promisify(ogr.exec, {context: ogr})()
+
+          const result = await DataLoadUtils.storeTempGeoJSON(geoJSON, path, req.body.layer_id, shortid, true, true)
+          return res.status(200).send(result)
         } else {
           return notAllowedError(res, 'layer')
         }
