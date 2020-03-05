@@ -145,9 +145,9 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
     return (
       <div style={{marginRight: '2%', marginLeft: '2%', marginTop: '10px'}}>
         <Formsy onValidSubmit={this.onSubmit} onChange={this.onFormChange} onValid={this.onValid} onInvalid={this.onInValid}>
-          <Row>
+          <Row style={{marginBottom: '20px'}}>
             <Col span={12}>
-              <Row>
+              <Row style={{marginBottom: '20px'}}>
                 <Toggle
                   name='disableExport'
                   labelOff={t('Allow Export')}
@@ -155,7 +155,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
                   checked={disable_export}
                 />
               </Row>
-              <Row>
+              <Row style={{marginBottom: '20px'}}>
                 <Toggle
                   name='allowPublicSubmit'
                   labelOff={t('Disabled')}
@@ -166,7 +166,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
               {elcEditor}
             </Col>
             <Col span={12}>
-              <Row>
+              <Row style={{marginBottom: '20px'}}>
                 <SelectGroup
                   groups={this.props.groups}
                   type='layer'

@@ -59,12 +59,12 @@ export default class GithubSource extends MapHubsComponent<Props, State> {
 
   render () {
     return (
-      <Row>
+      <Row style={{marginBottom: '20px'}}>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
 
           <div>
             <p>Github GeoJSON Source</p>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='githuburl' label='Github GeoJSON URL' icon='info' validations='maxLength:100' validationErrors={{
                   maxLength: 'Must be 100 characters or less.'

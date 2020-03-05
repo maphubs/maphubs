@@ -97,11 +97,11 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     return (
-      <Row>
+      <Row style={{marginBottom: '20px'}}>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div>
-            <p>Raster Tile Source</p>
-            <Row>
+            <p>{t('Raster Tile Source')}</p>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='rasterTileUrl' label={t('Raster Tile URL')} icon='info' validations='maxLength:500,isHttps' validationErrors={{
                   maxLength: t('Must be 500 characters or less.'),
@@ -111,19 +111,19 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
                 required
               />
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='minzoom' label={t('MinZoom (Optional)')} icon='info'
                 dataPosition='top' dataTooltip={t('Lowest tile zoom level available in data')}
               />
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='maxzoom' label={t('MaxZoom (Optional)')} icon='info'
                 dataPosition='top' dataTooltip={t('Highest tile zoom level available in data')}
               />
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='bounds' label={t('Bounds (Optional)')} icon='info'
                 dataPosition='top' dataTooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}

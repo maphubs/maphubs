@@ -11,7 +11,7 @@ const debug = DebugService('MapInteractionMixin')
  */
 export default {
   setSelectionFilter (features: Array<Object>) {
-    if (this.glStyle) {
+    if (this?.glStyle?.layers) {
       this.glStyle.layers.forEach((layer) => {
         const filter = ['in', 'mhid']
         features.forEach((feature) => {
@@ -51,7 +51,7 @@ export default {
 
   getInteractiveLayers (glStyle: GLStyle) {
     const interactiveLayers = []
-    if (glStyle) {
+    if (glStyle?.layers) {
       glStyle.layers.forEach((layer) => {
         if (layer.metadata && layer.metadata['maphubs:interactive'] &&
           (layer.id.startsWith('omh') ||

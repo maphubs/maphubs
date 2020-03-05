@@ -1,8 +1,8 @@
-let babelConfig = {
+const babelConfig = {
   babelrc: false,
   presets: [
     ['@babel/env', {
-      'targets': {
+      targets: {
         node: true
       }
     }],
@@ -10,9 +10,11 @@ let babelConfig = {
   ],
   plugins: [
     '@babel/plugin-proposal-export-default-from',
+    '@babel/plugin-proposal-optional-chaining',
+    '@babel/plugin-proposal-nullish-coalescing-operator',
     '@babel/plugin-transform-runtime'
   ],
-  ignore: [/assets.*|node_modules\/(?!(mapbox-gl|@bit\/kriscarle.maphubs-utils.maphubs-utils.importers)).*/]
+  ignore: [/as{2}ets.*|node_modules\/(?!(mapbox-gl|@bit\/kriscarle(?:.maphubs-utils){2}.importers)).*/]
 }
 
 require('@babel/register')(babelConfig)

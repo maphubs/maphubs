@@ -171,13 +171,13 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
     return (
       <div className={className}>
         <div className='container'>
-          <Row>
+          <Row style={{marginBottom: '20px'}}>
             <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
               <Row style={{marginBottom: '20px'}}>
                 <TextInput
                   name='group_id' label={t('Group ID')} icon='group_work' className='col s6'
                   disabled={this.state.group.created}
-                  validations={{matchRegexp: /^[a-zA-Z0-9-]*$/, maxLength: 25, isAvailable: true}} validationErrors={{
+                  validations={{matchRegexp: /^[\dA-Za-z-]*$/, maxLength: 25, isAvailable: true}} validationErrors={{
                     maxLength: t('ID must be 25 characters or less.'),
                     matchRegexp: t('Can only contain letters, numbers, or dashes.'),
                     isAvailable: t('ID already taken, please try another.')

@@ -124,7 +124,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
         `}
         </style>
         <div>
-          <Row>
+          <Row style={{marginBottom: '20px'}}>
             <div style={{margin: 'auto auto', maxWidth: '750px'}}>
               <UppyFileUpload
                 endpoint={`${MAPHUBS_CONFIG.RASTER_UPLOAD_API}/upload/save`}
@@ -138,7 +138,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
               />
             </div>
           </Row>
-          <Row>
+          <Row style={{marginBottom: '20px'}}>
             {(canSubmit && style) &&
               <div ref='mapSection'>
                 <p>{t('Please review the data on the map to confirm the upload was successful.')}</p>

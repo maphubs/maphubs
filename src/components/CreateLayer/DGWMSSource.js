@@ -100,11 +100,11 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     return (
-      <Row>
+      <Row style={{marginBottom: '20px'}}>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div>
             <p>DigitalGlobe <a href='https://discover.digitalglobe.com/' target='_blank' rel='noopener noreferrer'>https://discover.digitalglobe.com/</a></p>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='featureid' label={t('DG Image ID')} icon='info' className='col s12'
                 dataPosition='top' dataTooltip={t('DigitalGlobe Image ID / Legacy ID')}

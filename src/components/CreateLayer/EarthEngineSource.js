@@ -81,11 +81,11 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     return (
-      <Row>
+      <Row style={{marginBottom: '20px'}}>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div>
-            <p>Raster Tile Source</p>
-            <Row>
+            <p>{t('Earth Engine Source')}</p>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='image_id' label={t('Image ID/Asset ID')} icon='info' className='col s12' validations='maxLength:200' validationErrors={{
                   maxLength: t('Must be 200 characters or less.')
@@ -94,10 +94,10 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
                 required
               />
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput name='min' label={t('Min (Optional)')} icon='info' />
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput name='max' label={t('Max (Optional)')} icon='info' />
             </Row>
           </div>

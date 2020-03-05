@@ -142,7 +142,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
     if (this.props.showGroup && (!this.props.groups || this.props.groups.length === 0)) {
       return (
         <div className='container'>
-          <Row>
+          <<Row style={{marginBottom: '20px'}}>
             <h5>{t('Please Join a Group')}</h5>
             <p>{t('Please create or join a group before creating a layer.')}</p>
           </Row>
@@ -184,7 +184,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
     return (
       <div style={{marginRight: '2%', marginLeft: '2%', marginTop: '10px'}}>
         <Formsy onValidSubmit={this.onSubmit} onChange={this.onFormChange} onValid={this.onValid} onInvalid={this.onInValid}>
-          <Row>
+          <Row style={{marginBottom: '20px'}}>
             <Col sm={24} md={12} style={{padding: '0px 20px'}}>
               <Row style={{marginBottom: '20px'}}>
                 <MultiTextInput

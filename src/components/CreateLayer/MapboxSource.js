@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { message, notification } from 'antd'
+import { message, notification, Row, Col } from 'antd'
 import TextInput from '../forms/textInput'
 import Radio from '../forms/radio'
 import LayerActions from '../../actions/LayerActions'
@@ -134,7 +134,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
       styleForm = (
         <div>
           <p>{t('Mapbox Style Source')}</p>
-          <div className='row'>
+          <Row style={{marginBottom: '20px'}}>
             <TextInput
               name='mapboxStyleID' label={t('Mapbox Style URL')} icon='info' validations={{isValidMapboxStyleURL: true}} validationErrors={{
                 isValidMapboxStyleURL: t('Invalid Mapbox Style URL, must be in the format mapbox://styles/...')
@@ -142,7 +142,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
               dataPosition='top' dataTooltip={t('Mapbox Style URL in the format mapbox://styles/...')}
               required
             />
-          </div>
+          </Row>
         </div>
       )
     }
@@ -151,7 +151,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
       tilesForm = (
         <div>
           <p>{t('Mapbox Tileset/Raster Source')}</p>
-          <div className='row'>
+          <Row style={{marginBottom: '20px'}}>
             <TextInput
               name='mapboxMapID' label={t('Mapbox Tileset Map ID')} icon='info'
               validations={{isValidMapboxMapID: true}} validationErrors={{
@@ -160,24 +160,25 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
               dataPosition='top' dataTooltip={t('Mapbox Map ID')}
               required
             />
-          </div>
+          </Row>
         </div>
 
       )
     }
 
     return (
-      <div className='row'>
+      <Row style={{marginBottom: '20px'}}>
         <Formsy>
           <b>{t('Choose an Option')}</b>
-          <div className='row'>
-            <Radio
-              name='type' label=''
-              defaultValue={this.state.selectedOption}
-              options={mapboxOptions} onChange={this.optionChange}
-              className='col s10'
-            />
-          </div>
+          <Row style={{marginBottom: '20px'}}>
+            <Col span={20}>
+              <Radio
+                name='type' label=''
+                defaultValue={this.state.selectedOption}
+                options={mapboxOptions} onChange={this.optionChange}
+              />
+            </Col>
+          </Row>
           <hr />
         </Formsy>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
@@ -187,7 +188,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
             <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
           </div>
         </Formsy>
-      </div>
+      </Row>
     )
   }
 }

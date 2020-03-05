@@ -96,12 +96,12 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
     ]
 
     return (
-      <Row>
+      <Row style={{marginBottom: '20px'}}>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
 
           <div>
             <p>{t('GeoJSON URL')}</p>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='geojsonUrl' label={t('GeoJSON URL')}
                 icon='info' validations='maxLength:500,isHttps'
@@ -113,14 +113,14 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
                 required
               />
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='id' label={t('ID Property (Optional)')} icon='info'
                 dataPosition='top' dataTooltip={t('Some features require idenify a unique identifier that can be used to select features')}
                 required
               />
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <Radio
                 name='data_type' label=''
                 defaultValue='point'

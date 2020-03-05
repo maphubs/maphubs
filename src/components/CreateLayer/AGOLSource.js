@@ -135,7 +135,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
       msqForm = (
         <div>
           <p>{t('ArcGIS MapServer Query Source')}</p>
-          <Row>
+          <Row style={{marginBottom: '20px'}}>
             <TextInput
               name='mapServiceUrl' label={t('Map Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
                 maxLength: t('Must be 250 characters or less.'),
@@ -154,7 +154,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
       fsqForm = (
         <div>
           <p>{t('ArcGIS FeatureService Query Source')}</p>
-          <Row>
+          <Row style={{marginBottom: '20px'}}>
             <TextInput
               name='featureServiceUrl' label={t('Feature Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
                 maxLength: t('Must be 250 characters or less.'),
@@ -173,7 +173,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
       tilesForm = (
         <div>
           <p>{t('ArcGIS MapServer Tiles')}</p>
-          <Row>
+          <Row style={{marginBottom: '20px'}}>
             <TextInput
               name='tileServiceUrl' label={t('MapServer Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
                 maxLength: t('Must be 250 characters or less.'),
@@ -188,10 +188,10 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <Row>
+      <Row style={{marginBottom: '20px'}}>
         <Formsy>
           <b>{t('Choose an Option')}</b>
-          <Row>
+          <Row style={{marginBottom: '20px'}}>
             <Radio
               name='type' label=''
               defaultValue={this.state.selectedOption}

@@ -98,7 +98,7 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div>
             <p>{t('Vector Tile Source')}</p>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='vectorTileUrl'
                 label={t('Vector Tile URL')}
@@ -113,21 +113,21 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
                 required
               />
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='minzoom' label={t('MinZoom')} icon='info'
                 dataPosition='top' dataTooltip={t('Lowest tile zoom level available in data')}
                 required
               />
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='maxzoom' label={t('MaxZoom')} icon='info'
                 dataPosition='top' dataTooltip={t('Highest tile zoom level available in data')}
                 required
               />
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='bounds' label={t('Bounds')} icon='info'
                 dataPosition='top' dataTooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}

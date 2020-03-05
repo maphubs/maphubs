@@ -47,7 +47,7 @@ export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStor
   render () {
     const {t} = this
     return (
-      <Row>
+      <Row style={{marginBottom: '20px'}}>
         <p>{t('Creating a new layer of type:') + ' ' + this.props.type}</p>
         <div className='right'>
           <button className='waves-effect waves-light btn' onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>

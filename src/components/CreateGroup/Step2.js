@@ -98,7 +98,7 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
               <p>{t('Upload an Image or Logo for Your Group (Optional)')}</p>
             </Col>
           </Row>
-          <Row>
+          <Row style={{marginBottom: '20px'}}>
             {showPrev &&
               <div className='left'>
                 <Button type='primary' onClick={this.props.onPrev}>{t('Previous Step')}</Button>
