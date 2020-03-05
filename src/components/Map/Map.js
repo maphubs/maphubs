@@ -594,7 +594,7 @@ class Map extends React.Component<Props, State> {
 
           .map-position {
             height: 12px;
-            width: 75px;
+            width: 125px;
             position: absolute;
             top: 0;
             right: 0;
