@@ -2,7 +2,7 @@
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import TextInput from '../forms/textInput'
-import { message, notification } from 'antd'
+import { message, notification, Row } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
@@ -131,50 +131,50 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     return (
-      <div className='row'>
+      <Row>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div>
-            <p>Raster Tile Source</p>
-            <div className='row'>
+            <p>{t('Raster Tile Source')}</p>
+            <Row>
               <TextInput
-                name='rasterTileUrl' label={t('WMS URL')} icon='info' className='col s12' validations='maxLength:500,isHttps' validationErrors={{
+                name='rasterTileUrl' label={t('WMS URL')} icon='info' validations='maxLength:500,isHttps' validationErrors={{
                   maxLength: t('Must be 500 characters or less.'),
                   isHttps: t('SSL required for external links, URLs must start with https://')
                 }} length={500}
                 dataPosition='top' dataTooltip={t('Only layers paramater is required, others will be ignored unless pasted in Other Parameters below. Example:') + 'https://geodata.state.nj.us/imagerywms/Natural2015?layers=Natural2015'}
                 required
               />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <TextInput
-                name='other' label={t('Other Parameters (Optional)')} icon='info' className='col s12'
+                name='other' label={t('Other Parameters (Optional)')} icon='info'
                 dataPosition='top' dataTooltip={t('Additional needed URL parmeters, for example: apikey=1234&query=value>0')}
               />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <TextInput
-                name='minzoom' label={t('MinZoom (Optional)')} icon='info' className='col s12'
+                name='minzoom' label={t('MinZoom (Optional)')} icon='info'
                 dataPosition='top' dataTooltip={t('Lowest tile zoom level available in data')}
               />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <TextInput
-                name='maxzoom' label={t('MaxZoom (Optional)')} icon='info' className='col s12'
+                name='maxzoom' label={t('MaxZoom (Optional)')} icon='info'
                 dataPosition='top' dataTooltip={t('Highest tile zoom level available in data')}
               />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <TextInput
-                name='bounds' label={t('Bounds (Optional)')} icon='info' className='col s12'
+                name='bounds' label={t('Bounds (Optional)')} icon='info'
                 dataPosition='top' dataTooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
               />
-            </div>
+            </Row>
           </div>
           <div className='right'>
             <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
           </div>
         </Formsy>
-      </div>
+      </Row>
     )
   }
 }

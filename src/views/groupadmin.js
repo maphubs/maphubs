@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
-import { message, notification, Modal } from 'antd'
+import { message, notification, Modal, Row } from 'antd'
 import EditList from '../components/EditList'
 import Header from '../components/header'
 import MultiTextArea from '../components/forms/MultiTextArea'
@@ -296,22 +296,21 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                 <p>&larr; <a href={groupUrl}>{t('Back to Group')}</a></p>
               </div>
             </div>
-            <div className='row' style={{marginTop: '20px'}}>
+            <Row style={{marginTop: '20px'}}>
               <div className='col s12 m6 l6'>
                 <img alt={t('Group Photo')} width='300' className='' src={'/group/' + groupId + '/image?' + new Date().getTime()} />
               </div>
               <div className='col s12 m6 l6'>
                 <button className='waves-effect waves-light btn' onClick={this.showImageCrop}>{t('Change Image')}</button>
               </div>
-
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <h4>{this.t(this.props.group.name)}</h4>
-            </div>
+            </Row>
             <div className='divider' />
-            <div className='row'>
+            <Row>
               <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
-                <div className='row'>
+                <Row>
                   <MultiTextInput
                     name='name' id='name'
                     label={{
@@ -325,8 +324,8 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     value={this.state.group.name}
                     required
                   />
-                </div>
-                <div className='row'>
+                </Row>
+                <Row>
                   <MultiTextArea
                     name='description'
                     label={{
@@ -344,8 +343,8 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     value={this.state.group.description}
                     required
                   />
-                </div>
-                <div className='row'>
+                </Row>
+                <Row>
                   <TextInput
                     name='location' label={t('Location')} icon='navigation' className='col s12' validations='maxLength:100' validationErrors={{
                       maxLength: t('Location must be 100 characters or less.')
@@ -354,37 +353,36 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     value={this.state.group.location}
                     required
                   />
-                </div>
-                <div className='row'>
+                </Row>
+                <Row>
                   <Toggle
                     name='published' labelOff={t('Draft')} labelOn={t('Published')} className='col s12'
                     dataPosition='top' dataTooltip={t('Include in Public Group Listings')}
                     checked={isPublished}
                   />
-                </div>
+                </Row>
                 <div className='right'>
                   <button className='btn waves-effect waves-light' type='submit' name='action'>{t('Update')}</button>
                 </div>
-
               </Formsy>
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <EditList title='Members' items={membersList} onDelete={this.handleMemberDelete} onAction={this.handleMemberMakeAdmin} onError={this.onError} />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <h5>{t('Add Group Member')}</h5>
               <AddItem
                 t={t} placeholder={t('Search for User Name')} suggestionUrl='/api/user/search/suggestions'
                 optionLabel={t('Add as Administrator')} addButtonLabel={t('Add and Send Invite')}
                 onAdd={this.handleAddMember} onError={this.onError}
               />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <LayerList layers={this.props.layers} />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <MapList maps={this.props.maps} t={t} />
-            </div>
+            </Row>
             <div className='fixed-action-btn action-button-bottom-right'>
               <FloatingButton
                 onClick={this.handleGroupDelete}
@@ -392,7 +390,6 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                 color='red' icon='delete'
               />
             </div>
-
           </div>
           <ImageCrop ref='imagecrop' aspectRatio={1} lockAspect resize_width={600} resize_height={600} onCrop={this.onCrop} />
         </main>

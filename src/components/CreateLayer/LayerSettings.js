@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
-import { notification } from 'antd'
+import { notification, Row, Col } from 'antd'
 import MultiTextArea from '../forms/MultiTextArea'
 import MultiTextInput from '../forms/MultiTextInput'
 import SelectGroup from '../Groups/SelectGroup'
@@ -142,10 +142,10 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
     if (this.props.showGroup && (!this.props.groups || this.props.groups.length === 0)) {
       return (
         <div className='container'>
-          <div className='row'>
+          <Row>
             <h5>{t('Please Join a Group')}</h5>
             <p>{t('Please create or join a group before creating a layer.')}</p>
-          </div>
+          </Row>
         </div>
       )
     }
@@ -184,9 +184,9 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
     return (
       <div style={{marginRight: '2%', marginLeft: '2%', marginTop: '10px'}}>
         <Formsy onValidSubmit={this.onSubmit} onChange={this.onFormChange} onValid={this.onValid} onInvalid={this.onInValid}>
-          <div className='row'>
-            <div className='col s12 m6'>
-              <div className='row'>
+          <Row>
+            <Col sm={24} md={12}>
+              <Row>
                 <MultiTextInput
                   name='name' id='layer-name'
                   label={{
@@ -200,8 +200,8 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   dataPosition='top' dataTooltip={t('Short Descriptive Name for the Layer')}
                   required
                 />
-              </div>
-              <div className='row'>
+              </Row>
+              <Row>
                 <MultiTextArea
                   name='description'
                   label={{
@@ -220,11 +220,11 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   dataPosition='top' dataTooltip={t('Brief Description of the Layer')}
                   required
                 />
-              </div>
+              </Row>
               {selectGroup}
-            </div>
-            <div className='col s12 m6'>
-              <div className='row'>
+            </Col>
+            <Col sm={24} md={12}>
+              <Row>
                 <MultiTextInput
                   name='source' id='layer-source' label={{
                     en: 'Source', fr: 'Source', es: 'Source', it: 'Source'
@@ -236,8 +236,8 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   dataPosition='top' dataTooltip={t('Short Description of the Layer Source')}
                   required
                 />
-              </div>
-              <div className='row'>
+              </Row>
+              <Row>
                 <Select
                   name='license' id='layer-source-select' label={t('License')} startEmpty={false}
                   value={license} options={licenseOptions}
@@ -246,9 +246,9 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   dataPosition='top' dataTooltip={t('Layer License')}
                   required
                 />
-              </div>
-            </div>
-          </div>
+              </Row>
+            </Col>
+          </Row>
           <div className='container'>
             {prevButton}
             <div className='right'>

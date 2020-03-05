@@ -107,7 +107,9 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
             <p>{t('GeoJSON URL')}</p>
             <Row>
               <TextInput
-                name='geojsonUrl' label={t('GeoJSON URL')} icon='info' className='col s12' validations='maxLength:500,isHttps' validationErrors={{
+                name='geojsonUrl' label={t('GeoJSON URL')}
+                icon='info' validations='maxLength:500,isHttps'
+                validationErrors={{
                   maxLength: t('Must be 500 characters or less.'),
                   isHttps: t('SSL required for external links, URLs must start with https://')
                 }} length={500}
@@ -117,7 +119,7 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
             </Row>
             <Row>
               <TextInput
-                name='id' label={t('ID Property (Optional)')} icon='info' className='col s12'
+                name='id' label={t('ID Property (Optional)')} icon='info'
                 dataPosition='top' dataTooltip={t('Some features require idenify a unique identifier that can be used to select features')}
                 required
               />

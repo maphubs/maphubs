@@ -2,7 +2,7 @@
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import TextInput from '../forms/textInput'
-import { message, notification } from 'antd'
+import { message, notification, Row } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
@@ -98,16 +98,15 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     return (
-      <div className='row'>
+      <Row>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div>
             <p>{t('Vector Tile Source')}</p>
-            <div className='row'>
+            <Row>
               <TextInput
                 name='vectorTileUrl'
                 label={t('Vector Tile URL')}
                 icon='info'
-                className='col s12'
                 validations='maxLength:500,isHttps' validationErrors={{
                   maxLength: t('Must be 500 characters or less.'),
                   isHttps: t('SSL required for external links, URLs must start with https://')
@@ -117,34 +116,34 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
                 dataTooltip={t('Vector Tile URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.pbf'}
                 required
               />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <TextInput
-                name='minzoom' label={t('MinZoom')} icon='info' className='col s12'
+                name='minzoom' label={t('MinZoom')} icon='info'
                 dataPosition='top' dataTooltip={t('Lowest tile zoom level available in data')}
                 required
               />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <TextInput
-                name='maxzoom' label={t('MaxZoom')} icon='info' className='col s12'
+                name='maxzoom' label={t('MaxZoom')} icon='info'
                 dataPosition='top' dataTooltip={t('Highest tile zoom level available in data')}
                 required
               />
-            </div>
-            <div className='row'>
+            </Row>
+            <Row>
               <TextInput
-                name='bounds' label={t('Bounds')} icon='info' className='col s12'
+                name='bounds' label={t('Bounds')} icon='info'
                 dataPosition='top' dataTooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
                 required
               />
-            </div>
+            </Row>
           </div>
           <div className='right'>
             <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
           </div>
         </Formsy>
-      </div>
+      </Row>
     )
   }
 }

@@ -95,10 +95,10 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
               />
             </Row>
             <Row>
-              <TextInput name='min' label={t('Min (Optional)')} icon='info' className='col s12' />
+              <TextInput name='min' label={t('Min (Optional)')} icon='info' />
             </Row>
             <Row>
-              <TextInput name='max' label={t('Max (Optional)')} icon='info' className='col s12' />
+              <TextInput name='max' label={t('Max (Optional)')} icon='info' />
             </Row>
           </div>
           <div className='right'>

@@ -140,7 +140,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
           <p>{t('Mapbox Style Source')}</p>
           <div className='row'>
             <TextInput
-              name='mapboxStyleID' label={t('Mapbox Style URL')} icon='info' className='col s12' validations={{isValidMapboxStyleURL: true}} validationErrors={{
+              name='mapboxStyleID' label={t('Mapbox Style URL')} icon='info' validations={{isValidMapboxStyleURL: true}} validationErrors={{
                 isValidMapboxStyleURL: t('Invalid Mapbox Style URL, must be in the format mapbox://styles/...')
               }} length={100}
               dataPosition='top' dataTooltip={t('Mapbox Style URL in the format mapbox://styles/...')}
@@ -157,7 +157,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
           <p>{t('Mapbox Tileset/Raster Source')}</p>
           <div className='row'>
             <TextInput
-              name='mapboxMapID' label={t('Mapbox Tileset Map ID')} icon='info' className='col s12'
+              name='mapboxMapID' label={t('Mapbox Tileset Map ID')} icon='info'
               validations={{isValidMapboxMapID: true}} validationErrors={{
                 isValidMapboxMapID: t('Invalid Mapbox Map ID, should be in the format accountname.mapid')
               }} length={100}

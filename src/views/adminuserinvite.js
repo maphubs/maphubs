@@ -4,7 +4,7 @@ import Formsy from 'formsy-react'
 import TextInput from '../components/forms/textInput'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { Modal, Tooltip, message, notification } from 'antd'
+import { Modal, Tooltip, message, notification, Row } from 'antd'
 import request from 'superagent'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -236,27 +236,25 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
           <div className='row valign-wrapper'>
             <div className='col s12 m8 l8 valign' style={{margin: 'auto'}}>
               <Formsy onValidSubmit={this.onSubmit} onValid={this.enableButton} onInvalid={this.disableButton}>
-                <div className='row' style={{margin: '25px'}}>
+                <Row style={{margin: '25px'}}>
                   <TextInput
-                    name='email' label={t('Email to Invite')} icon='email' className='col s12'
+                    name='email' label={t('Email to Invite')} icon='email'
                     validations={{isEmail: true}} validationErrors={{
                       isEmail: t('Not a valid email address.')
                     }} length={50}
                     required
                   />
-
-                </div>
-                <div className='row'>
-                  <div className='col s12 valign-wrapper'>
+                </Row>
+                <Row>
+                  <div className='valign-wrapper'>
                     <button type='submit' className='valign waves-effect waves-light btn' style={{margin: 'auto'}} disabled={!this.state.canSubmit}>{t('Send Invite')}</button>
                   </div>
-                </div>
-
+                </Row>
               </Formsy>
             </div>
 
           </div>
-          <div className='row'>
+          <Row>
             <table>
               <thead>
                 <tr>
@@ -340,12 +338,12 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
                 })}
               </tbody>
             </table>
-          </div>
-          <div className='row'>
+          </Row>
+          <Row>
             <p>
               {t('To delete a user please contact support@maphubs.com. Completely deleting a user may require deleting their content or reassigning their content to another user.')}
             </p>
-          </div>
+          </Row>
         </main>
         <Footer {...this.props.footerConfig} />
       </ErrorBoundary>

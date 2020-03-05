@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification } from 'antd'
+import { message, notification, Row } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
@@ -116,13 +116,11 @@ export default class Layers extends MapHubsComponent<Props, State> {
         )
       } else {
         searchResults = (
-          <div className='row'>
-            <div className='col s12'>
-              <h5>{t('Search Results')}</h5>
-              <div className='divider' />
-              <p><b>{t('No Results Found')}</b></p>
-            </div>
-          </div>
+          <Row>
+            <h5>{t('Search Results')}</h5>
+            <div className='divider' />
+            <p><b>{t('No Results Found')}</b></p>
+          </Row>
         )
       }
     }
@@ -157,16 +155,16 @@ export default class Layers extends MapHubsComponent<Props, State> {
           </div>
           {searchResults}
 
-          <div className='row'>
+          <Row>
             <div className='left-align' style={{marginLeft: '15px', marginTop: '25px'}}>
               <Formsy>
                 <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={this.state.showList} />
               </Formsy>
             </div>
-            <div className='row'>
+            <Row>
               {layers}
-            </div>
-          </div>
+            </Row>
+          </Row>
 
           <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton

@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row } from 'antd'
 import TextInput from '../forms/textInput'
 import Toggle from '../forms/toggle'
 import Select from '../forms/select'
@@ -20,7 +21,7 @@ export default class FormField extends React.Component<Props, void> {
       <TextInput
         name={preset.tag}
         label={t(preset.label)}
-        className='col s12 no-margin'
+        className='no-margin'
         style={style}
         required={preset.isRequired}
         showCharCount={false}
@@ -35,7 +36,7 @@ export default class FormField extends React.Component<Props, void> {
         <TextInput
           name={preset.tag}
           label={t(preset.label)}
-          className='col s12 no-margin'
+          className='no-margin'
           style={style}
           validations='isNumeric' validationErrors={{
             isNumeric: t('Value must be a number')
@@ -57,7 +58,7 @@ export default class FormField extends React.Component<Props, void> {
           name={preset.tag} id={'select-' + preset.tag}
           label={t(preset.label)}
           options={options}
-          className='col s12 no-margin'
+          className='no-margin'
           startEmpty={!value}
           required={preset.isRequired}
           value={value}
@@ -68,16 +69,15 @@ export default class FormField extends React.Component<Props, void> {
         <Toggle
           name={preset.tag}
           labelOff='' labelOn={t(preset.label)}
-          className='col s12'
           checked={value}
         />
       )
     }
 
     return (
-      <div className='row'>
+      <Row>
         {field}
-      </div>
+      </Row>
     )
   }
 }

@@ -2,7 +2,7 @@
 import React from 'react'
 import LayerSettings from './LayerSettings'
 import LayerActions from '../../actions/LayerActions'
-import { notification, message } from 'antd'
+import { notification, message, Row } from 'antd'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
@@ -112,14 +112,14 @@ export default class Step2 extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     return (
-      <div className='row'>
+      <Row>
         <p>{t('Provide Information About the Data Layer')}</p>
         <LayerSettings
           groups={this.props.groups}
           submitText={t('Save and Continue')} onSubmit={this.onSubmit}
           warnIfUnsaved={false}
         />
-      </div>
+      </Row>
     )
   }
 }

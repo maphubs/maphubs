@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { message, notification } from 'antd'
+import { message, notification, Row } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import CreateLayer from './CreateLayer'
 import MapHubsComponent from '../MapHubsComponent'
@@ -68,13 +68,13 @@ export default class Step1 extends MapHubsComponent<Props, State> {
    render () {
      const {t} = this
      return (
-       <div className='row'>
+       <Row>
          <CreateLayer
            onSubmit={this.onSubmit}
            mapConfig={this.props.mapConfig}
            showCancel cancelText={t('Cancel')} onCancel={this.onCancel}
          />
-       </div>
+       </Row>
      )
    }
 }
