@@ -29,13 +29,7 @@ import Stats from '../components/LayerInfo/Stats'
 import ExternalLink from '../components/LayerInfo/ExternalLink'
 import DataEditorContainer from '../components/Map/containers/DataEditorContainer'
 
-import {addLocaleData, IntlProvider, FormattedRelative, FormattedDate, FormattedTime} from 'react-intl'
-import en from 'react-intl/locale-data/en'
-import es from 'react-intl/locale-data/es'
-import fr from 'react-intl/locale-data/fr'
-import it from 'react-intl/locale-data/it'
-import id from 'react-intl/locale-data/id'
-import pt from 'react-intl/locale-data/pt'
+import {IntlProvider, FormattedRelativeTime, FormattedDate, FormattedTime} from 'react-intl'
 import request from 'superagent'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -52,12 +46,27 @@ const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('layer
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const moment = require('moment-timezone')
 
-addLocaleData(en)
-addLocaleData(es)
-addLocaleData(fr)
-addLocaleData(it)
-addLocaleData(id)
-addLocaleData(pt)
+if (!Intl.PluralRules) {
+  require('@formatjs/intl-pluralrules/polyfill')
+  require('@formatjs/intl-pluralrules/dist/locale-data/en')
+  require('@formatjs/intl-pluralrules/dist/locale-data/es')
+  require('@formatjs/intl-pluralrules/dist/locale-data/fr')
+  require('@formatjs/intl-pluralrules/dist/locale-data/pt')
+  require('@formatjs/intl-pluralrules/dist/locale-data/id')
+  require('@formatjs/intl-pluralrules/dist/locale-data/it')
+  require('@formatjs/intl-pluralrules/dist/locale-data/de')
+}
+
+if (!Intl.RelativeTimeFormat) {
+  require('@formatjs/intl-relativetimeformat/polyfill')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/en')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/es')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/pt')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/fr')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/id')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/it')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/de')
+}
 
 type Props = {
   layer: Object,
@@ -350,9 +359,9 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
           <IntlProvider locale={this.state.locale}>
             <FormattedTime value={updatedTimeStr} />
           </IntlProvider>&nbsp;
-          (<IntlProvider locale={this.state.locale}>
-            <FormattedRelative value={updatedTimeStr} />
-          </IntlProvider>)&nbsp;
+          <IntlProvider locale={this.state.locale}>
+            <FormattedRelativeTime value={updatedTimeStr} />
+          </IntlProvider>&nbsp;
           {t('by') + ' ' + this.props.updatedByUser.display_name}
         </p>
       )
@@ -438,7 +447,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                           </IntlProvider>&nbsp;
                       (
                           <IntlProvider locale={this.state.locale}>
-                            <FormattedRelative value={creationTime} />
+                            <FormattedRelativeTime value={creationTime} />
                           </IntlProvider>
                       )&nbsp;
                           {t('by') + ' ' + this.props.updatedByUser.display_name}

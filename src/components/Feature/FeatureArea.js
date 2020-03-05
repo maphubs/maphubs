@@ -2,20 +2,19 @@
 import React from 'react'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 import turf_area from '@turf/area'
-import {addLocaleData, IntlProvider, FormattedNumber} from 'react-intl'
+import {IntlProvider, FormattedNumber} from 'react-intl'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import en from 'react-intl/locale-data/en'
-import es from 'react-intl/locale-data/es'
-import fr from 'react-intl/locale-data/fr'
-import it from 'react-intl/locale-data/it'
-import id from 'react-intl/locale-data/id'
-import pt from 'react-intl/locale-data/pt'
-addLocaleData(en)
-addLocaleData(es)
-addLocaleData(fr)
-addLocaleData(it)
-addLocaleData(id)
-addLocaleData(pt)
+
+if (!Intl.PluralRules) {
+  require('@formatjs/intl-pluralrules/polyfill')
+  require('@formatjs/intl-pluralrules/dist/locale-data/en')
+  require('@formatjs/intl-pluralrules/dist/locale-data/es')
+  require('@formatjs/intl-pluralrules/dist/locale-data/fr')
+  require('@formatjs/intl-pluralrules/dist/locale-data/pt')
+  require('@formatjs/intl-pluralrules/dist/locale-data/id')
+  require('@formatjs/intl-pluralrules/dist/locale-data/it')
+  require('@formatjs/intl-pluralrules/dist/locale-data/de')
+}
 
 const debug = DebugService('feature-area')
 

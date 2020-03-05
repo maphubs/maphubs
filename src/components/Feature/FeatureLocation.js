@@ -1,22 +1,21 @@
 //  @flow
 import React from 'react'
-import { Row, Col } from 'antd'
+import { Row } from 'antd'
 import { QRCode } from 'react-qr-svg'
-import {addLocaleData, IntlProvider, FormattedNumber} from 'react-intl'
+import {IntlProvider, FormattedNumber} from 'react-intl'
 import turf_centroid from '@turf/centroid'
 import {OpenLocationCode} from 'open-location-code'
-import en from 'react-intl/locale-data/en'
-import es from 'react-intl/locale-data/es'
-import fr from 'react-intl/locale-data/fr'
-import it from 'react-intl/locale-data/it'
-import id from 'react-intl/locale-data/id'
-import pt from 'react-intl/locale-data/pt'
-addLocaleData(en)
-addLocaleData(es)
-addLocaleData(fr)
-addLocaleData(it)
-addLocaleData(id)
-addLocaleData(pt)
+
+if (!Intl.PluralRules) {
+  require('@formatjs/intl-pluralrules/polyfill')
+  require('@formatjs/intl-pluralrules/dist/locale-data/en')
+  require('@formatjs/intl-pluralrules/dist/locale-data/es')
+  require('@formatjs/intl-pluralrules/dist/locale-data/fr')
+  require('@formatjs/intl-pluralrules/dist/locale-data/pt')
+  require('@formatjs/intl-pluralrules/dist/locale-data/id')
+  require('@formatjs/intl-pluralrules/dist/locale-data/it')
+  require('@formatjs/intl-pluralrules/dist/locale-data/de')
+}
 
 const openLocationCode = new OpenLocationCode()
 

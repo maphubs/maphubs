@@ -1,24 +1,34 @@
 // @flow
 import React from 'react'
-import {addLocaleData, IntlProvider, FormattedRelative} from 'react-intl'
-import en from 'react-intl/locale-data/en'
-import es from 'react-intl/locale-data/es'
-import fr from 'react-intl/locale-data/fr'
-import pt from 'react-intl/locale-data/pt'
-import id from 'react-intl/locale-data/id'
-import it from 'react-intl/locale-data/it'
+import {IntlProvider, FormattedRelativeTime} from 'react-intl'
+
 import MapHubsComponent from '../../components/MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import moment from 'moment-timezone'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import $ from 'jquery'
 
-addLocaleData(en)
-addLocaleData(es)
-addLocaleData(fr)
-addLocaleData(pt)
-addLocaleData(id)
-addLocaleData(it)
+if (!Intl.PluralRules) {
+  require('@formatjs/intl-pluralrules/polyfill')
+  require('@formatjs/intl-pluralrules/dist/locale-data/en')
+  require('@formatjs/intl-pluralrules/dist/locale-data/es')
+  require('@formatjs/intl-pluralrules/dist/locale-data/fr')
+  require('@formatjs/intl-pluralrules/dist/locale-data/pt')
+  require('@formatjs/intl-pluralrules/dist/locale-data/id')
+  require('@formatjs/intl-pluralrules/dist/locale-data/it')
+  require('@formatjs/intl-pluralrules/dist/locale-data/de')
+}
+
+if (!Intl.RelativeTimeFormat) {
+  require('@formatjs/intl-relativetimeformat/polyfill')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/en')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/es')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/pt')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/fr')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/id')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/it')
+  require('@formatjs/intl-relativetimeformat/dist/locale-data/de')
+}
 
 type Props = {
   map: Object,
@@ -80,7 +90,7 @@ export default class MapCardGroupTag extends MapHubsComponent<Props, State> {
             </p>
             <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}>
               <IntlProvider locale={locale}>
-                <FormattedRelative value={updatedTime} />
+                <FormattedRelativeTime value={updatedTime} />
               </IntlProvider>
             </p>
           </div>
