@@ -1,7 +1,7 @@
 const withCSS = require('@zeit/next-css')
 const withLess = require('@zeit/next-less')
 const path = require('path')
-const withTM = require('next-transpile-modules')
+const withTM = require('next-transpile-modules')(['react-dnd', 'react-dnd-html5-backend'])
 const lessToJS = require('less-vars-to-js')
 const config = require('./src/local')
 const fs = require('fs')
@@ -86,7 +86,6 @@ module.exports = withCSS(withLess(withTM({
     LANGUAGES: config.LANGUAGES,
     RASTER_UPLOAD_FILE_SIZE_LIMIT: config.RASTER_UPLOAD_FILE_SIZE_LIMIT
   },
-  transpileModules: ['react-dnd', 'react-dnd-html5-backend'],
   lessLoaderOptions: {
     modifyVars: themeVariables,
     javascriptEnabled: true
@@ -148,7 +147,7 @@ module.exports = withCSS(withLess(withTM({
     })
 
     config.module.rules.push({
-      test: /\.(woff|ttf|eot|gif)([\?]?.*)$/,
+      test: /\.(woff|ttf|eot|gif)(\??.*)$/,
       use: [{
         loader: 'file-loader',
         options: { publicPath: '/_next/static/', outputPath: 'static/' }
@@ -156,7 +155,7 @@ module.exports = withCSS(withLess(withTM({
     })
 
     config.module.rules.push({
-      test: /\.(glsl|vert|frag)([\?]?.*)$/,
+      test: /\.(glsl|vert|frag)(\??.*)$/,
       use: [{ loader: 'raw-loader' }]
     })
 
