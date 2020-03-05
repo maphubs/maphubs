@@ -102,7 +102,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
     }
   }
 
-  componentWillMount () {
+  componentDidMount () {
     const _this = this
     if (typeof window === 'undefined') return // only run this on the client
 

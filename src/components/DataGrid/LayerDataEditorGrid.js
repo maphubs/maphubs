@@ -74,13 +74,10 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
     redo: []
   }
 
-  componentWillMount () {
+  componentDidMount () {
     if (typeof window !== 'undefined') {
       this.initReactDataGrid()
     }
-  }
-
-  componentDidMount () {
     if (this.props.geoJSON) {
       const {dataEditorState} = this.props.containers
       this.processGeoJSON(this.props.geoJSON, this.props.presets)

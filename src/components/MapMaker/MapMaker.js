@@ -99,15 +99,11 @@ class MapMaker extends MapHubsComponent<Props, State> {
     })
   }
 
-  componentWillMount () {
-    super.componentWillMount()
+  componentDidMount () {
     const {mapLayers, basemap, settings} = this.props
     if (mapLayers) { Actions.setMapLayers(mapLayers) }
     if (basemap) { Actions.setMapBasemap(basemap) }
     if (settings) { Actions.setSettings(settings) }
-  }
-
-  componentDidMount () {
     // const _this = this
     // const {t} = this
 

@@ -13,10 +13,6 @@ export default class MapHubsComponent<P, S> extends Reflux.Component<P, S> {
     this.stores = [LocaleStore]
   }
 
-  componentWillMount () {
-    super.componentWillMount()
-  }
-
   t = (val: any) => {
     return this.__(val)
   }

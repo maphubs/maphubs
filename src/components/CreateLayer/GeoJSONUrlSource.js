@@ -30,10 +30,6 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(LayerStore)
-  }
-
-  componentWillMount () {
-    super.componentWillMount()
     addValidationRule('isHttps', (values, value) => {
       if (value) {
         return value.startsWith('https://')

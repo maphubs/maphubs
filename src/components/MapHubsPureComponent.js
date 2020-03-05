@@ -8,10 +8,6 @@ export default class MapHubsComponent<Props, State> extends Reflux.PureComponent
     this.stores = [LocaleStore]
   }
 
-  componentWillMount () {
-    super.componentWillMount()
-  }
-
   t = (val: any) => {
     return this.__(val)
   }

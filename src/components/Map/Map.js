@@ -76,7 +76,11 @@ type Props = {|
     onToggleForestLoss?: Function,
     onToggleIsochroneLayer?: Function,
     children?: any,
-    containers: Array<Object>,
+    containers: {
+      baseMapState: Object,
+      dataEditorState: Object,
+      mapState: Object
+    },
     onLoad: Function,
     t: Function,
     locale: string,
@@ -156,7 +160,7 @@ class Map extends React.Component<Props, State> {
     }
   }
 
-  async componentWillMount () {
+  componentDidMount () {
     const {mapState} = this.props.containers
     mapState.setMap(this)
 
@@ -164,9 +168,6 @@ class Map extends React.Component<Props, State> {
       const interactiveLayers = this.getInteractiveLayers(this.props.glStyle)
       this.setState({interactiveLayers})
     }
-  }
-
-  componentDidMount () {
     mapboxgl = require('mapbox-gl')
     ArcGISTiledMapServiceSource = require('mapbox-gl-arcgis-tiled-map-service')
     ScalePositionControl = require('mapbox-gl-dual-scale-control')

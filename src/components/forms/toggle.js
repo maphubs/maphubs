@@ -34,8 +34,7 @@ class Toggle extends MapHubsComponent<Props, void> {
     disabled: false
   }
 
-  componentWillMount () {
-    super.componentWillMount()
+  componentDidMount () {
     if ('checked' in this.props) {
       this.props.setValue(this.props.checked)
     } else {

@@ -45,10 +45,6 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(GroupStore)
-  }
-
-  componentWillMount () {
-    super.componentWillMount()
     const _this = this
     addValidationRule('isAvailable', function (values, value) {
       if (_this.state.group.created) return true

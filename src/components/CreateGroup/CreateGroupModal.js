@@ -27,12 +27,8 @@ type State = {
 export default class CreateGroupModal extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
-    this.stores.push(GroupStore)
-  }
-
-  componentWillMount () {
-    super.componentWillMount()
     const _this = this
+    this.stores.push(GroupStore)
     addValidationRule('isAvailable', function (values, value) {
       if (_this.state.group.created) return true
       if (!this.groupIdValue || value !== this.groupIdValue) {

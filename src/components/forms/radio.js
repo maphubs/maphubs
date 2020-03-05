@@ -26,8 +26,7 @@ class Radio extends MapHubsPureComponent<Props, void> {
     dataDelay: 100
   }
 
-  componentWillMount () {
-    super.componentWillMount()
+  componentDidMount () {
     this.props.setValue(this.props.defaultValue)
   }
 

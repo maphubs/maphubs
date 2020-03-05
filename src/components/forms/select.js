@@ -55,8 +55,7 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentWillMount () {
-    super.componentWillMount()
+  componentDidMount () {
     this.props.setValue(this.props.value)
     this.setNote(this.props.value)
   }

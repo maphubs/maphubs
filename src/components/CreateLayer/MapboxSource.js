@@ -30,10 +30,6 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
     this.stores.push(LayerStore)
-  }
-
-  componentWillMount () {
-    super.componentWillMount()
     addValidationRule('isValidMapboxStyleURL', (values, value) => {
       if (value) {
         return value.startsWith('mapbox://styles/')
