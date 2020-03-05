@@ -48,11 +48,11 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
     const _this = this
     addValidationRule('isAvailable', function (values, value) {
       if (_this.state.group.created) return true
-      if (!this.groupIdValue || value !== this.groupIdValue) {
-        this.groupIdValue = value
-        this.groupIdAvailable = _this.checkGroupIdAvailable(value)
+      if (!_this.groupIdValue || value !== _this.groupIdValue) {
+        _this.groupIdValue = value
+        _this.groupIdAvailable = _this.checkGroupIdAvailable(value)
       }
-      return this.groupIdAvailable
+      return _this.groupIdAvailable
     })
   }
 
