@@ -8,7 +8,6 @@ const local = require('../local')
 
 module.exports = async function (app: any, config: Object, req: any, res: any) {
   const results = {}
-  let useMailChimp
   // use page config to determine data requests
   if (config.components && Array.isArray(config.components) && config.components.length > 0) {
     await Promise.all(config.components.map(async (component: Object) => {
@@ -72,8 +71,6 @@ module.exports = async function (app: any, config: Object, req: any, res: any) {
             }
           }))
         }
-      } else if (component.type === 'mailinglist') {
-        useMailChimp = true
       }
     }))
   }
@@ -97,7 +94,6 @@ module.exports = async function (app: any, config: Object, req: any, res: any) {
   return app.next.render(req, res, '/home', await pageOptions(req, {
     title,
     description,
-    mailchimp: useMailChimp,
     props,
     hideFeedback: config.hideFeedback
   }))

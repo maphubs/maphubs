@@ -69,15 +69,4 @@ export default class UserStore extends Reflux.Store {
     this.trigger(this.state)
     // Note the server side is handed by redirecting the user to the logout page
   }
-
-  joinMailingList (email: string, _csrf: string, cb: Function) {
-    request.post('/api/user/mailinglistsignup')
-      .type('json').accept('json')
-      .send({email, _csrf})
-      .end((err, res) => {
-        checkClientError(res, err, cb, (cb) => {
-          cb(err)
-        })
-      })
-  }
 }

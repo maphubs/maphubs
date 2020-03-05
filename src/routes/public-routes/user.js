@@ -6,17 +6,10 @@ const Group = require('../../models/group')
 const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 const apiError = require('../../services/error-response').apiError
 const nextError = require('../../services/error-response').nextError
-const apiDataError = require('../../services/error-response').apiDataError
 const Auth0Helper = require('../../services/auth0-helper')
 const local = require('../../local')
 const csrfProtection = require('csurf')({cookie: false})
 const pageOptions = require('../../services/page-options-helper')
-
-let mailchimp
-if (!local.mapHubsPro) {
-  const Mailchimp = require('mailchimp-api-v3')
-  mailchimp = new Mailchimp(local.MAILCHIMP_API_KEY)
-}
 
 module.exports = function (app: any) {
   app.get('/signup/invite/:key', csrfProtection, async (req, res, next) => {
@@ -82,28 +75,6 @@ module.exports = function (app: any) {
       req.setLocale(data.locale)
     }
     res.status(200).send({success: true})
-  })
-
-  app.post('/api/user/mailinglistsignup', csrfProtection, (req, res) => {
-    const data = req.body
-    if (data.email) {
-      mailchimp.post({
-        path: '/lists/' + local.MAILCHIMP_LIST_ID + '/members',
-        body: {
-          email_address: data.email,
-          status: 'subscribed'
-        }
-      }, (err) => {
-        if (err) {
-          log.error(err)
-          res.status(200).send({success: false, error: err})
-        } else {
-          res.status(200).send({success: true})
-        }
-      })
-    } else {
-      apiDataError(res)
-    }
   })
 
   // can be used to dynamically check for login status, so should be public

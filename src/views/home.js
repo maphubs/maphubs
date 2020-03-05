@@ -9,7 +9,6 @@ import PublicOnboardingLinks from '../components/Home/PublicOnboardingLinks'
 import OnboardingLinks from '../components/Home/OnboardingLinks'
 import MapHubsProLinks from '../components/Home/MapHubsProLinks'
 import InteractiveMap from '../components/Map/InteractiveMap'
-import MailingList from '../components/Home/MailingList'
 import _shuffle from 'lodash.shuffle'
 import cardUtil from '../services/card-util'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -280,17 +279,6 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     return slides
   }
 
-  renderMailingList = (config: Object, key: string) => {
-    const bgColor = config.bgColor || 'inherit'
-    const style = config.style || {}
-    const mailingList = (
-      <Row key={key} style={{backgroundColor: bgColor, ...style}}>
-        <MailingList text={config.text} />
-      </Row>
-    )
-    return mailingList
-  }
-
   renderLinks = (config: Object, key: string) => {
     const bgColor = config.bgColor ? config.bgColor : 'inherit'
     const style = config.style || {}
@@ -549,8 +537,6 @@ export default class HomePro extends MapHubsComponent<Props, State> {
                     return _this.renderProLinks(component, key)
                   } else if (component.type === 'slides') {
                     return _this.renderSlides(component, key)
-                  } else if (component.type === 'mailinglist') {
-                    return _this.renderMailingList(component, key)
                   } else if (component.type === 'xcomponent') {
                     return _this.renderXComponent(component, key)
                   } else if (component.type === 'button') {
