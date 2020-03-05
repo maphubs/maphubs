@@ -185,8 +185,8 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
       <div style={{marginRight: '2%', marginLeft: '2%', marginTop: '10px'}}>
         <Formsy onValidSubmit={this.onSubmit} onChange={this.onFormChange} onValid={this.onValid} onInvalid={this.onInValid}>
           <Row>
-            <Col sm={24} md={12}>
-              <Row>
+            <Col sm={24} md={12} style={{padding: '0px 20px'}}>
+              <Row style={{marginBottom: '20px'}}>
                 <MultiTextInput
                   name='name' id='layer-name'
                   label={{
@@ -201,7 +201,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   required
                 />
               </Row>
-              <Row>
+              <Row style={{marginBottom: '20px'}}>
                 <MultiTextArea
                   name='description'
                   label={{
@@ -223,8 +223,8 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
               </Row>
               {selectGroup}
             </Col>
-            <Col sm={24} md={12}>
-              <Row>
+            <Col sm={24} md={12} style={{padding: '0px 20px'}}>
+              <Row style={{marginBottom: '20px'}}>
                 <MultiTextInput
                   name='source' id='layer-source' label={{
                     en: 'Source', fr: 'Source', es: 'Source', it: 'Source'
@@ -237,9 +237,9 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   required
                 />
               </Row>
-              <Row>
+              <Row style={{marginBottom: '20px'}}>
                 <Select
-                  name='license' id='layer-source-select' label={t('License')} startEmpty={false}
+                  name='license' id='layer-license-select' label={t('License')} startEmpty={false}
                   value={license} options={licenseOptions}
                   note={t('Select a license for more information')}
                   className='col s12'

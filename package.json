@@ -102,7 +102,7 @@
     "express-session": "^1.16.2",
     "express-sharp": "^2.1.1",
     "file-loader": "^4.2.0",
-    "formsy-react": "^1.1.5",
+    "formsy-react": "^2.0.2",
     "geobuf": "^3.0.0",
     "geojson-validation": "0.2.1",
     "geojson2dsv": "^0.1.0",

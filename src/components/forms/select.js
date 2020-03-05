@@ -25,9 +25,9 @@ type Props = {|
   icon: string,
   note: string, // optional note that displays below the select, will be updated on selection if option contains a note
   setValue: Function,
-  getValue: Function,
-  isRequired: Function,
-  getErrorMessage: Function,
+  value: string,
+  isRequired: boolean,
+  errorMessage: string,
   showSearch: boolean
 |}
 
@@ -60,21 +60,21 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
     this.setNote(this.props.value)
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps (nextProps: Props) {
     if (!nextProps.startEmpty && this.props.value !== nextProps.value) {
       this.props.setValue(nextProps.value)
       this.setNote(nextProps.value)
     }
   }
 
-  setNote = (val) => {
+  setNote = (val: string) => {
     const note = result(find(this.props.options, {value: val}), 'note')
     if (note) {
       this.setState({note})
     }
   }
 
-  handleSelectChange = (val) => {
+  handleSelectChange = (val: string) => {
     this.props.setValue(val)
     this.setNote(val)
     if (this.props.onChange) {
@@ -83,8 +83,8 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
   }
 
   validate = () => {
-    if (this.props.isRequired()) {
-      if (this.props.getValue() && this.props.getValue() !== '') {
+    if (this.props.isRequired) {
+      if (this.props.value && this.props.value !== '') {
         return true
       } else {
         return false
@@ -95,9 +95,8 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const { id, name, options, icon, label, className, dataTooltip, dataPosition, getErrorMessage, successText, emptyText, showSearch } = this.props
+    const { id, name, options, icon, label, className, dataTooltip, dataPosition, errorMessage, successText, emptyText, showSearch, value } = this.props
     const { note } = this.state
-    const value = this.props.getValue()
 
     /* eslint-disable react/no-danger */
 
@@ -112,7 +111,7 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
               <i className='material-icons prefix'>{icon}</i>}
             {label &&
               <div className='row' style={{height: '10px'}}>
-                <label htmlFor={name} data-error={getErrorMessage()} data-success={successText}>{label}</label>
+                <label htmlFor={name} data-error={errorMessage} data-success={successText}>{label}</label>
               </div>}
             <Row>
               <Select

@@ -17,11 +17,11 @@ type Props = {
   name: string,
   label: string,
   // Added by Formsy
-  showRequired: Function,
-  isValid: Function,
-  showError: Function,
+  showRequired: boolean,
+  isValid: boolean,
+  showError: boolean,
   setValue: Function,
-  getErrorMessage: Function
+  errorMessage: string
 }
 
 type State = {
@@ -78,42 +78,30 @@ class TextArea extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const { icon, name, label, errorMessage, dataTooltip, dataPosition, length } = this.props
+    const { value, charCount } = this.state
     const className = classNames('input-field', this.props.className)
     const textAreaClassName = classNames(
       'materialize-textarea',
       {
-        required: this.props.showRequired(),
-        valid: this.props.isValid(),
-        invalid: this.props.showError()
+        required: this.props.showRequired,
+        valid: this.props.isValid,
+        invalid: this.props.showError
       }
     )
 
-    let icon = ''
-    if (this.props.icon) {
-      icon = (<i className='material-icons prefix'>{this.props.icon}</i>)
-    }
-    let countColor = 'black'
-    if (this.state.charCount > this.props.length) countColor = 'red'
-
-    let labelClassName = ''
-    if (this.state.value && this.state.value !== '') {
-      labelClassName = 'active'
-    }
-
     return (
-      <Tooltip
-        title={this.props.dataTooltip}
-        position={this.props.dataPosition}
-      >
+      <Tooltip title={dataTooltip} position={dataPosition}>
         <div ref='inputWrapper' className={className}>
-          {icon}
-          <textarea ref='textarea' id={this.props.name} className={textAreaClassName} value={this.state.value} onChange={this.changeValue} />
-          <label htmlFor={this.props.name} className={labelClassName} data-error={this.props.getErrorMessage()} data-success=''>{this.props.label}</label>
+          {icon &&
+            <i className='material-icons prefix'>{icon}</i>}
+          <textarea ref='textarea' id={name} className={textAreaClassName} value={value} onChange={this.changeValue} />
+          <label htmlFor={name} className={value ? 'active' : ''} data-error={errorMessage} data-success=''>{label}</label>
           <span
             className='character-counter'
-            style={{float: 'right', fontSize: '12px', height: '1px', color: countColor}}
+            style={{float: 'right', fontSize: '12px', height: '1px', color: charCount > length ? 'red' : 'black'}}
           >
-            {this.state.charCount} / {this.props.length}
+            {charCount} / {length}
           </span>
         </div>
       </Tooltip>

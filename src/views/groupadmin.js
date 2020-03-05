@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
-import { message, notification, Modal, Row } from 'antd'
+import { message, notification, Modal, Row, Col } from 'antd'
 import EditList from '../components/EditList'
 import Header from '../components/header'
 import MultiTextArea from '../components/forms/MultiTextArea'
@@ -296,21 +296,21 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                 <p>&larr; <a href={groupUrl}>{t('Back to Group')}</a></p>
               </div>
             </div>
-            <Row style={{marginTop: '20px'}}>
-              <div className='col s12 m6 l6'>
+            <Row style={{marginTop: '20px', marginBottom: '20px'}}>
+              <Col sm={24} md={12}>
                 <img alt={t('Group Photo')} width='300' className='' src={'/group/' + groupId + '/image?' + new Date().getTime()} />
-              </div>
-              <div className='col s12 m6 l6'>
+              </Col>
+              <Col sm={24} md={12}>
                 <button className='waves-effect waves-light btn' onClick={this.showImageCrop}>{t('Change Image')}</button>
-              </div>
+              </Col>
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <h4>{this.t(this.props.group.name)}</h4>
             </Row>
             <div className='divider' />
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
-                <Row>
+                <Row style={{marginBottom: '20px'}}>
                   <MultiTextInput
                     name='name' id='name'
                     label={{
@@ -325,7 +325,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     required
                   />
                 </Row>
-                <Row>
+                <Row style={{marginBottom: '20px'}}>
                   <MultiTextArea
                     name='description'
                     label={{
@@ -344,7 +344,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     required
                   />
                 </Row>
-                <Row>
+                <Row style={{marginBottom: '20px'}}>
                   <TextInput
                     name='location' label={t('Location')} icon='navigation' className='col s12' validations='maxLength:100' validationErrors={{
                       maxLength: t('Location must be 100 characters or less.')
@@ -354,7 +354,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     required
                   />
                 </Row>
-                <Row>
+                <Row style={{marginBottom: '20px'}}>
                   <Toggle
                     name='published' labelOff={t('Draft')} labelOn={t('Published')} className='col s12'
                     dataPosition='top' dataTooltip={t('Include in Public Group Listings')}
@@ -366,10 +366,10 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                 </div>
               </Formsy>
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <EditList title='Members' items={membersList} onDelete={this.handleMemberDelete} onAction={this.handleMemberMakeAdmin} onError={this.onError} />
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <h5>{t('Add Group Member')}</h5>
               <AddItem
                 t={t} placeholder={t('Search for User Name')} suggestionUrl='/api/user/search/suggestions'
@@ -377,10 +377,10 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                 onAdd={this.handleAddMember} onError={this.onError}
               />
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <LayerList layers={this.props.layers} />
             </Row>
-            <Row>
+            <Row style={{marginBottom: '20px'}}>
               <MapList maps={this.props.maps} t={t} />
             </Row>
             <div className='fixed-action-btn action-button-bottom-right'>

@@ -155,7 +155,7 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
                     matchRegexp: t('Can only contain letters, numbers, or dashes.'),
                     isAvailable: t('ID already taken, please try another.')
                   }} length={25}
-                  successText='ID is Available'
+                  successText={t('ID is Available')}
                   dataPosition='right' dataTooltip={t("Identifier for the Group. This will be used in links and URLs for your group's content.")}
                   required
                 />

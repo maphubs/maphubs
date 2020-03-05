@@ -1,7 +1,6 @@
 // @flow
 import React from 'react'
 import {withFormsy} from 'formsy-react'
-import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
 import {Tooltip} from 'antd'
 import classNames from 'classnames'
@@ -26,23 +25,19 @@ type Props = {|
   useMaterialize: boolean,
   onClick: Function,
   // Added by Formsy
-  showRequired: Function,
-  isValid: Function,
-  showError: Function,
+  showRequired: boolean,
+  isValid: boolean,
+  showError: boolean,
   setValue: Function,
-  getValue: Function,
-  getErrorMessage: Function
+  value: string,
+  errorMessage: string
 |}
 
 type State = {
-  charCount: number,
-  value: string,
-  isValid?: boolean,
-  showError?: boolean,
-  errorMessage?: string
+  charCount: number
 }
 
-class TextInput extends MapHubsComponent<Props, State> {
+class TextInput extends React.Component<Props, State> {
   props: Props
 
   static defaultProps = {
@@ -74,15 +69,8 @@ class TextInput extends MapHubsComponent<Props, State> {
         this.setState({
           charCount
         })
-        this.props.setValue(nextProps.value)
+        // this.props.setValue(nextProps.value)
       }
-
-      this.setState({
-        value: nextProps.getValue(),
-        isValid: nextProps.isValid(),
-        showError: nextProps.showError(),
-        errorMessage: nextProps.getErrorMessage()
-      })
     }
   }
 
@@ -94,18 +82,6 @@ class TextInput extends MapHubsComponent<Props, State> {
     if (!_isequal(this.state, nextState)) {
       return true
     }
-    const value = nextProps.getValue()
-    const isValid = nextProps.isValid()
-    const showError = nextProps.showError()
-    const errorMessage = nextProps.getErrorMessage()
-    if (value !== this.state.value ||
-      isValid !== this.state.isValid ||
-      showError !== this.state.showError ||
-      errorMessage !== this.state.errorMessage
-    ) {
-      return true
-    }
-    return false
   }
 
   changeValue = (event) => {
@@ -118,8 +94,8 @@ class TextInput extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const value = this.props.getValue()
-    const errorMessage = this.props.getErrorMessage()
+    const { id, name, showRequired, isValid, showError, value, icon, showCharCount, errorMessage, length } = this.props
+    const { charCount } = this.state
 
     let className
     let inputClassName = ''
@@ -127,43 +103,13 @@ class TextInput extends MapHubsComponent<Props, State> {
       className = classNames('input-field', this.props.className)
       inputClassName = classNames(
         {
-          required: this.props.showRequired(),
-          valid: this.props.isValid(),
-          invalid: this.props.showError()
+          required: showRequired,
+          valid: isValid,
+          invalid: showError
         }
       )
     } else {
       className = classNames(this.props.className)
-    }
-
-    let icon = ''
-    if (this.props.icon) {
-      icon = (<i className='material-icons prefix'>{this.props.icon}</i>)
-    }
-    let countColor = 'black'
-    if (this.state.charCount > this.props.length) countColor = 'red'
-
-    let labelClassName = ''
-    if (value && value !== '') {
-      labelClassName = 'active'
-    }
-
-    let id = ''
-    if (this.props.id) {
-      id = this.props.id
-    } else {
-      id = this.props.name
-    }
-    let charCount = ''
-    if (this.props.showCharCount) {
-      charCount = (
-        <span
-          className='character-counter'
-          style={{float: 'right', fontSize: '12px', height: '1px', color: countColor}}
-        >
-          {this.state.charCount} / {this.props.length}
-        </span>
-      )
     }
 
     return (
@@ -172,15 +118,22 @@ class TextInput extends MapHubsComponent<Props, State> {
         placement={this.props.dataPosition}
       >
         <div ref='inputWrapper' className={className} style={this.props.style}>
-          {icon}
+          {icon &&
+            <i className='material-icons prefix'>{icon}</i>}
           <input
-            ref='input' id={id} type={this.props.type} className={inputClassName} placeholder={this.props.placeholder} value={value}
+            ref='input' id={id || name} type={this.props.type} className={inputClassName} placeholder={this.props.placeholder} value={value}
             disabled={this.props.disabled}
             onClick={this.props.onClick}
             onChange={this.changeValue}
           />
-          <label htmlFor={id} className={labelClassName} data-error={errorMessage} data-success={this.props.successText}>{this.props.label}</label>
-          {charCount}
+          <label htmlFor={id || name} className={value ? 'active' : ''} data-error={errorMessage} data-success={this.props.successText}>{this.props.label}</label>
+          {showCharCount &&
+            <span
+              className='character-counter'
+              style={{float: 'right', fontSize: '12px', height: '1px', color: charCount > length ? 'red' : 'black'}}
+            >
+              {charCount} / {length}
+            </span>}
         </div>
       </Tooltip>
     )

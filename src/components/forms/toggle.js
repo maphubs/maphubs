@@ -21,7 +21,7 @@ type Props = {|
   defaultChecked: boolean,
   checked: boolean,
   setValue: Function,
-  getValue: Function
+  value: boolean
 |}
 
 class Toggle extends MapHubsComponent<Props, void> {
@@ -55,7 +55,7 @@ class Toggle extends MapHubsComponent<Props, void> {
     event.stopPropagation()
     const checked = event.currentTarget.checked
     debug.log('change value: ' + checked)
-    if (checked !== this.props.getValue()) { this.props.setValue(checked) }
+    if (checked !== this.props.value) { this.props.setValue(checked) }
     if (this.props.onChange) { this.props.onChange(event.currentTarget.checked) }
   }
 
@@ -68,7 +68,7 @@ class Toggle extends MapHubsComponent<Props, void> {
 
     const className = classNames('switch', this.props.className)
 
-    let checked = this.props.getValue()
+    let checked = this.props.value
 
     if (typeof checked === 'boolean') {
       checked = checked ? 1 : 0

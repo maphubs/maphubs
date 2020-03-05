@@ -10,7 +10,7 @@ import _debounce from 'lodash.debounce'
 import MapHubsComponent from '../MapHubsComponent'
 import Locales from '../../services/locales'
 import _isequal from 'lodash.isequal'
-import { Modal } from 'antd'
+import { Modal, Row, Col } from 'antd'
 const { confirm } = Modal
 
 type Props = {
@@ -142,37 +142,40 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
 
     return (
       <div>
-        <div className='row'>
+        <Row style={{marginBottom: '20px'}}>
           <Formsy
             ref='form' onChange={this.onFormChange}
             onValid={this.onValid} onInvalid={this.onInvalid}
           >
-            <div className='row'>
-              <div className='col s12 m6'>
-                <Select
-                  name='type'
-                  id='preset-type-select'
-                  label={t('Field Type')}
-                  options={presetOptions}
-                  value={this.props.type}
-                  startEmpty={typeStartEmpty}
-                  required
-                />
-                <MultiTextInput
-                  name='label'
-                  id={`preset-${this.props.id}-label`}
-                  label={{
-                    en: 'Label', fr: 'Étiquette', es: 'Etiqueta', it: 'Etichetta'
-                  }}
-                  validations='maxLength:50' validationErrors={{
-                    maxLength: t('Must be 50 characters or less.')
-                  }} length={50}
-                  value={this.props.label}
-                  required
-                />
-
-              </div>
-              <div className='col s12 m6' style={{textAlign: 'center'}}>
+            <Row style={{marginBottom: '20px'}}>
+              <Col sm={24} md={12}>
+                <Row style={{marginBottom: '20px'}}>
+                  <Select
+                    name='type'
+                    id='preset-type-select'
+                    label={t('Field Type')}
+                    options={presetOptions}
+                    value={this.props.type}
+                    startEmpty={typeStartEmpty}
+                    required
+                  />
+                </Row>
+                <Row style={{marginBottom: '20px'}}>
+                  <MultiTextInput
+                    name='label'
+                    id={`preset-${this.props.id}-label`}
+                    label={{
+                      en: 'Label', fr: 'Étiquette', es: 'Etiqueta', it: 'Etichetta'
+                    }}
+                    validations='maxLength:50' validationErrors={{
+                      maxLength: t('Must be 50 characters or less.')
+                    }} length={50}
+                    value={this.props.label}
+                    required
+                  />
+                </Row>
+              </Col>
+              <Col sm={24} md={12} style={{textAlign: 'center'}}>
                 <Toggle
                   name='isRequired'
                   labelOff={t('Optional')}
@@ -205,21 +208,21 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                   style={{paddingTop: '25px'}}
                   checked={this.props.isDescription}
                 />
-              </div>
-            </div>
+              </Col>
+            </Row>
             {typeOptions}
 
           </Formsy>
-        </div>
-        <div className='row'>
-          <div className='col s8'>
+        </Row>
+        <Row style={{marginBottom: '20px'}}>
+          <Col span={16}>
             <a className='waves-effect waves-light btn' onClick={this.onMoveUp}><i className='material-icons left'>arrow_upward</i>{t('Move Up')}</a>
             <a className='waves-effect waves-light btn' style={{marginLeft: '5px'}} onClick={this.onMoveDown}><i className='material-icons left'>arrow_downward</i>{t('Move Down')}</a>
-          </div>
-          <div className='col s4'>
+          </Col>
+          <Col span={8}>
             <a className='waves-effect waves-light btn right' onClick={this.onRemove}><i className='material-icons left'>delete</i>{t('Remove')}</a>
-          </div>
-        </div>
+          </Col>
+        </Row>
       </div>
     )
   }

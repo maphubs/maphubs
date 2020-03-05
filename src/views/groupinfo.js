@@ -74,7 +74,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
     if (group.description) {
       const localizedDescription = this.t(group.description)
       // regex for detecting links
-      const regex = /(https?:\/\/([-\w\.]+)+(:\d+)?(\/([\w\/_\.]*(\?\S+)?)?)?)/ig
+      const regex = /(https?:\/\/([\w.-]+)+(:\d+)?(\/([\w./]*(\?\S+)?)?)?)/gi
       descriptionWithLinks = localizedDescription.replace(regex, "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>")
     }
 
@@ -115,7 +115,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
             <Col span={8}>
               <h4>{t(group.name)}</h4>
               <Row>
-                <p><b>{`${t('Description')}: `}}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
+                <p><b>{`${t('Description')}: `}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
               </Row>
               {this.props.group.unofficial &&
                 <Row>
