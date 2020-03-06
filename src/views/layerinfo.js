@@ -409,7 +409,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                       >
                         <div style={{width: '100%'}}>
                           <h5 className='word-wrap' style={{marginTop: 0}}>{t(layer.name)}</h5>
-                          <GroupTag group={layer.owned_by_group_id} size={25} fontSize={12} />
+                          <GroupTag group={layer.owned_by_group_id} size={48} />
                           <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{t('Data Source:')}</b> {t(layer.source)}</p>
                           <p style={{fontSize: '16px'}}><b>{t('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
                           <ExternalLink layer={layer} t={t} />

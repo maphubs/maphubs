@@ -1,62 +1,53 @@
 // @flow
 import React from 'react'
 import { Avatar, Tooltip } from 'antd'
-import MapHubsComponent from '../../components/MapHubsComponent'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import _isequal from 'lodash.isequal'
 
 type Props = {|
   group: string,
-  size: number,
-  chipWidth: number,
-  fontSize: number,
-  showTooltip: boolean,
-  className: string
+  size: number
 |}
 
 type State = {
   failed?: boolean
 }
 
-export default class GroupTag extends MapHubsComponent<Props, State> {
+export default class GroupTag extends React.Component<Props, State> {
   static defaultProps = {
-    size: 20,
-    chipWidth: 100,
-    fontSize: 10,
-    showTooltip: false,
-    className: ''
+    size: 24,
+    showTooltip: false
+  }
+
+  constructor (props: Props) {
+    super(props)
+    this.state = {}
   }
 
   shouldComponentUpdate (nextProps: Props, nextState: State) {
-    // only update if something changes
-    if (!_isequal(this.props, nextProps)) {
-      return true
-    }
-    if (nextState.failed) {
-      return true
-    }
+    if (nextState.failed !== this.state.failed) return true
     return false
   }
 
   render () {
-    const { group } = this.props
+    const { group, size } = this.props
     const { failed } = this.state
     const baseUrl = urlUtil.getBaseUrl()
     if (!group) {
       return ''
     }
+
     return (
       <div>
         <Tooltip title={group} placement='top'>
           <a target='_blank' className='no-padding' rel='noopener noreferrer' href={`${baseUrl}/group/${group}`} style={{height: 'initial'}}>
             {!failed &&
               <Avatar
-                alt={group} size={24} src={`/img/resize/40?url=/group/${group}/thumbnail`} onError={() => {
+                alt={group} size={size} src={`/img/resize/${size * 2}?url=/group/${group}/thumbnail`} onError={() => {
                   this.setState({failed: true})
                 }}
               />}
             {failed &&
-              <Avatar size={24} style={{ color: '#FFF' }}>
+              <Avatar size={size} style={{ color: '#FFF' }}>
                 {group.charAt(0).toUpperCase()}
               </Avatar>}
           </a>
