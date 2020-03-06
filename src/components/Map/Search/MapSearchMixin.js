@@ -4,11 +4,9 @@ import _find from 'lodash.find'
 import _buffer from '@turf/buffer'
 import _bbox from '@turf/bbox'
 import type {GLSource, GLLayer} from '../../../types/mapbox-gl-style'
-
+import { v1 as uuidv1 } from 'uuid'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('MapSearchMixin')
-
-const uuid = require('uuid').v1
 
 export default {
 
@@ -97,7 +95,7 @@ export default {
         presets.forEach(preset => {
           if (preset && preset.label) {
             const label = t(preset.label).toString()
-            if (label.match(/.*[N,n]ame.*/g)) {
+            if (label.match(/.*[,Nn]ame.*/g)) {
               matchNameArr.push(preset.tag)
             }
           }
@@ -113,7 +111,7 @@ export default {
         // use props of first feature
         const propNames = Object.keys(result.properties)
         propNames.forEach(propName => {
-          if (propName.match(/.*[N,n]ame.*/g)) {
+          if (propName.match(/.*[,Nn]ame.*/g)) {
             matchNameArr.push(propName)
           }
         })
@@ -161,7 +159,7 @@ export default {
         }
       } else {
         // otherwise just add everything
-        data.id = uuid()
+        data.id = uuidv1()
         results.list.push(data)
       }
     })

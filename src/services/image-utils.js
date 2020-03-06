@@ -1,7 +1,7 @@
 // @flow
+import { v4 as uuidv4 } from 'uuid'
 const Promise = require('bluebird')
 const fs: typeof fs = Promise.promisifyAll(require('fs'))
-const uuid = require('uuid').v4
 const local = require('../local')
 const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('image-utils')
@@ -39,7 +39,7 @@ module.exports = {
   },
 
   decodeBase64Image (dataString: string) {
-    const matches: any = dataString.match(/^data:([A-Za-z-+/]+);base64,(.+)$/)
+    const matches: any = dataString.match(/^data:([+/A-Za-z-]+);base64,(.+)$/)
     const response = {}
 
     if (matches.length !== 3) {
@@ -54,9 +54,9 @@ module.exports = {
 
   async resizeBase64 (dataString: string, targetWidth: number, targetHeight: number, crop: boolean = false) {
     const _this = this
-    const origFile = uuid() + '.png'
-    const resizedFile = uuid() + '.png'
-    const convertedFile = uuid() + '.jpg'
+    const origFile = uuidv4() + '.png'
+    const resizedFile = uuidv4() + '.png'
+    const convertedFile = uuidv4() + '.jpg'
     const origfilePath = local.tempFilePath + '/' + origFile
     const resizedFilePath = local.tempFilePath + '/' + resizedFile
     const convertedFilePath = local.tempFilePath + '/' + convertedFile

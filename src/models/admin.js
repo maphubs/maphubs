@@ -1,8 +1,8 @@
 // @flow
+import { v4 as uuidv4 } from 'uuid'
 const knex = require('../connection')
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('models/user')
 const Email = require('@bit/kriscarle.maphubs-utils.maphubs-utils.email-util')
-const uuid = require('uuid').v4
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const local = require('../local')
 
@@ -25,7 +25,7 @@ module.exports = {
     if (resendKey) {
       key = resendKey
     } else {
-      key = uuid()
+      key = uuidv4()
       await knex('omh.account_invites').insert({email, key})
     }
 
