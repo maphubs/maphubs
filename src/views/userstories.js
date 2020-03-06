@@ -85,7 +85,7 @@ export default class UserStories extends MapHubsComponent<Props, void> {
               </div>
             </div>}
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

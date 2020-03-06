@@ -163,7 +163,7 @@ export default class Groups extends MapHubsComponent<Props, State> {
             <a className='btn' href='/groups/all'>{t('View All Groups')}</a>
           </div>
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

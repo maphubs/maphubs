@@ -179,7 +179,7 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
             </div>
           </div>
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

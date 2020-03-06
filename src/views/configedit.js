@@ -96,7 +96,7 @@ export default class ConfigEdit extends MapHubsComponent<Props, State> {
             t={t}
           />
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

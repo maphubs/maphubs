@@ -345,7 +345,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
             </p>
           </Row>
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

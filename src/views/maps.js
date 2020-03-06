@@ -159,7 +159,7 @@ export default class Maps extends MapHubsComponent<Props, State> {
             <a className='btn' href='/maps/all'>{t('View All Maps')}</a>
           </div>
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

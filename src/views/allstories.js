@@ -104,7 +104,7 @@ export default class AllStories extends MapHubsComponent<Props, State> {
             />
           </div>
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

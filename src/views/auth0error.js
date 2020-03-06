@@ -64,7 +64,7 @@ export default class Error extends MapHubsComponent<Props, void> {
             {message}
           </div>
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

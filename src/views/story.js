@@ -193,7 +193,7 @@ export default class Story extends MapHubsComponent<Props, void> {
             `}
             </style>
           </main>
-          <Footer {...this.props.footerConfig} />
+          <Footer t={t} {...this.props.footerConfig} />
         </ErrorBoundary>
       </>
     )

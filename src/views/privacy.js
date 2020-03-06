@@ -122,7 +122,7 @@ export default class Privacy extends MapHubsComponent<Props, void> {
           </div>
 
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

@@ -157,7 +157,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
             <a className='btn' href='/layers/all'>{t('View All Layers')}</a>
           </div>
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

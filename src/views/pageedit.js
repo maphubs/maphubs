@@ -90,7 +90,7 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
       })
   }
 
-  updateComponent (component) {
+  updateComponent (component: Object) {
     const { pageConfig } = this.state
     pageConfig.components = pageConfig.components.map(c => {
       if (c.id === component.id) {
@@ -178,7 +178,7 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
             </Col>
           </Row>
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

@@ -94,7 +94,7 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
           {myMaps}
           {createMaps}
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

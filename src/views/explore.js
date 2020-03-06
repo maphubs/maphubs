@@ -188,7 +188,7 @@ export default class Home extends MapHubsComponent<Props, State> {
             </Row>
           </Row>
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

@@ -60,7 +60,7 @@ export default class Search extends MapHubsComponent<Props, State> {
   getParameterByName = (name: string, url: any) => {
     if (!url) url = window.location.href
     url = url.toLowerCase() // This is just to avoid case sensitiveness
-    name = name.replace(/[\[\]]/g, '\\$&').toLowerCase()// This is just to avoid case sensitiveness for query parameter name
+    name = name.replace(/[[\]]/g, '\\$&').toLowerCase()// This is just to avoid case sensitiveness for query parameter name
     const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)')
     const results = regex.exec(url)
     if (!results) return null
@@ -166,7 +166,7 @@ export default class Search extends MapHubsComponent<Props, State> {
               <CardCollection cards={this.state.searchCards} />}
           </Row>
         </main>
-        <Footer {...this.props.footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

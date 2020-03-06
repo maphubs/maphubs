@@ -503,6 +503,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
 
   render () {
     const _this = this
+    const { t } = this
     const { pageConfig } = this.props
     if (!pageConfig || !pageConfig.components) {
       return (
@@ -547,7 +548,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
                 }
               })}
               {!this.props.pageConfig.disableFooter &&
-                <Footer {...this.props.footerConfig} />}
+                <Footer t={t} {...this.props.footerConfig} />}
 
             </main>
           </div>
