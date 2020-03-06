@@ -1,18 +1,11 @@
+// @flow
 const local = require('../../local')
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const siteMapUtil = require('../../services/sitemap-util')
-const Promise = require('bluebird')
-// var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
 const nextError = require('../../services/error-response').nextError
-const knex = require('../../connection')
+const { SitemapStream, buildSitemapIndex } = require('sitemap')
 
-const sitemap = require('sitemap')
-const sm = sitemap.createSitemap({
-  hostname: urlUtil.getBaseUrl(),
-  sitemapName: 'Maphubs'
-})
-
-module.exports = function (app) {
+module.exports = function (app: any) {
   app.get('/robots.txt', (req, res) => {
     res.type('text/plain')
     if (local.requireLogin) {
@@ -34,60 +27,70 @@ Disallow: /xml/map/*
     }
   })
 
-  app.get('/sitemapindex.xml', (req, res, next) => {
-    if (local.requireLogin) {
-      return res.status(404).send()
+  app.get('/sitemapindex.xml', async (req, res, next) => {
+    try {
+      // not support on private sites
+      if (local.requireLogin) return res.status(404).send()
+
+      const baseUrl = urlUtil.getBaseUrl()
+
+      const layerUrls = await siteMapUtil.getSiteMapIndexFeatureURLs()
+      const smi = buildSitemapIndex({
+        urls: [`${baseUrl}/sitemap.xml`].concat(layerUrls)
+      })
+      res.header('Content-Type', 'application/xml')
+      return res.send(smi)
+    } catch (err) {
+      nextError(next)(err)
     }
-    const baseUrl = urlUtil.getBaseUrl()
-    knex.transaction((trx) => {
-      return siteMapUtil.getSiteMapIndexFeatureURLs(trx)
-        .then(layerUrls => {
-          const smi = sitemap.buildSitemapIndex({
-            urls: [baseUrl + '/sitemap.xml'].concat(layerUrls)
-          })
-          res.header('Content-Type', 'application/xml')
-          return res.send(smi)
-        })
-    }).catch(nextError(next))
   })
 
   app.get('/sitemap.:layer_id.xml', async (req, res, next) => {
-    if (local.requireLogin) {
-      return res.status(404).send()
-    }
-    const layer_id = parseInt(req.params.layer_id || '', 10)
-    // clear sitemap
-    sm.urls = []
-    knex.transaction(async (trx) => {
-      await siteMapUtil.addLayerFeaturesToSiteMap(layer_id, sm, trx)
-      const xml = await Promise.promisify(sm.toXML, {context: sm})()
+    try {
+      // not support on private sites
+      if (local.requireLogin) return res.status(404).send()
+
+      const layer_id = parseInt(req.params.layer_id || '', 10)
+
+      const baseUrl = urlUtil.getBaseUrl()
+      const smStream = new SitemapStream({ hostname: baseUrl })
+
+      await siteMapUtil.addLayerFeaturesToSiteMap(layer_id, smStream)
+      // finished adding
+      smStream.end()
+
+      // send the response
       res.header('Content-Type', 'application/xml')
-      return res.send(xml)
-    }).catch(nextError(next))
+      smStream.pipe(res).on('error', (e) => { throw e })
+    } catch (err) {
+      nextError(next)(err)
+    }
   })
 
-  app.get('/sitemap.xml', (req, res, next) => {
-    if (local.requireLogin) {
-      return res.status(404).send()
-    }
-    const baseUrl = urlUtil.getBaseUrl()
-    // clear sitemap
-    sm.urls = [
-      {url: baseUrl + '/layers', changefreq: 'daily'},
-      {url: baseUrl + '/maps', changefreq: 'daily'},
-      {url: baseUrl + '/stories', changefreq: 'daily'},
-      {url: baseUrl + '/groups', changefreq: 'daily'}
-    ]
+  app.get('/sitemap.xml', async (req, res, next) => {
+    try {
+      // not support on private sites
+      if (local.requireLogin) return res.status(404).send()
 
-    knex.transaction(async (trx) => {
-      await siteMapUtil.addStoriesToSiteMap(sm, trx)
-      await siteMapUtil.addMapsToSiteMap(sm, trx)
-      await siteMapUtil.addLayersToSiteMap(sm, trx)
-      await siteMapUtil.addGroupsToSiteMap(sm, trx)
+      const baseUrl = urlUtil.getBaseUrl()
+      const smStream = new SitemapStream({ hostname: baseUrl })
+      smStream.write({ url: `${baseUrl}/layers`, changefreq: 'daily' })
+      smStream.write({ url: `${baseUrl}/maps`, changefreq: 'daily' })
+      smStream.write({ url: `${baseUrl}/stories`, changefreq: 'daily' })
+      smStream.write({ url: `${baseUrl}/groups`, changefreq: 'daily' })
 
-      const xml = await Promise.promisify(sm.toXML, {context: sm})()
+      await siteMapUtil.addStoriesToSiteMap(smStream)
+      await siteMapUtil.addMapsToSiteMap(smStream)
+      await siteMapUtil.addLayersToSiteMap(smStream)
+      await siteMapUtil.addGroupsToSiteMap(smStream)
+      // finished adding
+      smStream.end()
+
+      // send the response
       res.header('Content-Type', 'application/xml')
-      return res.send(xml)
-    }).catch(nextError(next))
+      smStream.pipe(res).on('error', (e) => { throw e })
+    } catch (err) {
+      nextError(next)(err)
+    }
   })
 }
