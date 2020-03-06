@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import MapHubsPureComponent from '../MapHubsPureComponent'
+import { Row } from 'antd'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -12,9 +12,14 @@ type Props = {|
   selected: boolean
 |}
 
-export default class SourceSelectionBox extends MapHubsPureComponent<Props, void> {
+export default class SourceSelectionBox extends React.Component<Props, void> {
   static defaultProps = {
     selected: false
+  }
+
+  shouldComponentUpdate (nextProps: Props) {
+    if (nextProps.selected !== this.props.selected) return true
+    return false
   }
 
   onSelect = () => {
@@ -22,27 +27,36 @@ export default class SourceSelectionBox extends MapHubsPureComponent<Props, void
   }
 
   render () {
-    let icon = ''
-    if (this.props.icon) {
-      icon = (<i className='material-icons omh-accent-text' style={{fontSize: '48px'}}>{this.props.icon}</i>)
-    }
-    const border = `3px solid ${MAPHUBS_CONFIG.primaryColor}`
+    const { selected, icon, name } = this.props
+
+    let border = `2px solid ${MAPHUBS_CONFIG.primaryColor}`
+    if (selected) border = `5px solid ${MAPHUBS_CONFIG.primaryColor}`
     return (
       <div
-        className='card-panel center' style={{width: '110px', height: '110px', padding: '5px', marginLeft: 'auto', marginRight: 'auto', border}}
+        className=''
+        style={{
+          textAlign: 'center',
+          width: '105px',
+          height: '90px',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          marginBottom: '20px',
+          border,
+          boxShadow: '5px 5px 10px -5px rgba(0,0,0,0.75)'
+        }}
         onClick={this.onSelect}
       >
-
-        <form action='#' style={{height: '100%', position: 'relative'}}>
-          {icon}
-          <p className='no-margin' style={{position: 'absolute', bottom: '0'}}>
+        <Row>
+          {icon &&
+            <i className='material-icons omh-accent-text' style={{fontSize: '48px'}}>{icon}</i>}
+        </Row>
+        <Row>
+          <p className='no-margin'>
             <label>
-              <input type='checkbox' className='filled-in' id={this.props.name + '-checkbox'} onChange={this.onSelect} checked={this.props.selected ? 'checked' : null} />
-              <span className='omh-accent-text' style={{fontSize: '13px'}}>{this.props.name}</span>
+              <span className='omh-accent-text' style={{fontSize: '13px'}}>{name}</span>
             </label>
           </p>
-        </form>
-
+        </Row>
       </div>
     )
   }

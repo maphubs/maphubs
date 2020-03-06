@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row, Col, Button } from 'antd'
 import UploadLocalSource from './UploadLocalSource'
 import EmptyLocalSource from './EmptyLocalSource'
 import MapboxSource from './MapboxSource'
@@ -43,14 +44,15 @@ export default {
       return (<EarthEngineSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'remote') {
       return (
-        <div style={{marginTop: '20px'}}>
-          <div className='col s12 m6'>
-            <a className='btn' href='/createremotelayer'>{t('Link a Remote Layer')}</a>
-          </div>
-          <div className='col s12 m6'>
-            <a className='btn' href='/importlayer'>{t('Import MapHubs File')}</a>
-          </div>
-        </div>
+        <Row justify='center' align='middle' style={{marginTop: '20px', textAlign: 'center'}}>
+          <p style={{marginBottom: '20px'}}>{t('Note: This will exit this page and take you to the import tool')}</p>
+          <Col sm={24} md={12}>
+            <Button type='primary' href='/createremotelayer'>{t('Link a Remote Layer')}</Button>
+          </Col>
+          <Col sm={24} md={12}>
+            <Button type='primary' href='/importlayer'>{t('Import MapHubs File')}</Button>
+          </Col>
+        </Row>
       )
     } else if (type === 'point' || type === 'line' || type === 'polygon') {
       return (<EmptyLocalSource type={type} onSubmit={this.onSubmit} t={t} />)

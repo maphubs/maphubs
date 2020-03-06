@@ -14,7 +14,7 @@ type Props = {
   onChange: Function,
   options: Array<{value: string, label: string}>,
   setValue: Function,
-  getValue: Function
+  value: boolean
 }
 
 class Radio extends MapHubsPureComponent<Props, void> {
@@ -39,8 +39,7 @@ class Radio extends MapHubsPureComponent<Props, void> {
   }
 
   render () {
-    const {name, className, dataPosition, dataTooltip, options, label} = this.props
-    const value = this.props.getValue()
+    const {name, className, dataPosition, dataTooltip, options, label, value} = this.props
     const _this = this
 
     return (

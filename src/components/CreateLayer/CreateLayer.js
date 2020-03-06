@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row, Col, Button, Divider } from 'antd'
 import LayerSourceHelper from './LayerSourceHelper'
 import SourceSelectionBox from './SourceSelectionBox'
 import MapHubsComponent from '../MapHubsComponent'
@@ -64,156 +65,157 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     const {source} = this.state
+    const { showCancel, onCancel, cancelText } = this.props
     const sourceDisplay = this.getSource(source, this.props.mapConfig, t)
-
-    let planetSource = ''
-    if (MAPHUBS_CONFIG.PLANET_LABS_API_KEY) {
-      planetSource = (
-        <div className='col s6'>
-          <SourceSelectionBox
-            name={t('Planet API')} value='planet'
-            selected={source === 'planet'} icon='satellite'
-            onSelect={this.selectSource}
-          />
-        </div>
-      )
-    }
-
-    let cancelButton = ''
-    if (this.props.showCancel) {
-      cancelButton = (
-        <div className='left'>
-          <button className='waves-effect waves-light btn' onClick={this.props.onCancel}>{this.props.cancelText}</button>
-        </div>
-      )
-    }
 
     return (
       <div>
+        <style jsx>{`
+          .section-header {
+            margin: 5px;
+            font-weight: 700;
+            text-align: center;
+          }
+        `}
+        </style>
         <div className='container'>
-          <div className='row' style={{margin: 'auto', textAlign: 'center'}}>
-            <div className='col s5'>
-              <div className='row no-margin'>
-                <p style={{margin: '5px'}}>{t('Upload Data')}</p>
-                <div className='col s6'>
+          <Row justify='center' align='top'>
+            <Col span={10}>
+              <Row justify='center' align='top' style={{border: '1px solid #ddd'}}>
+                <p className='section-header'>{t('Upload Data')}</p>
+                <Col span={12}>
                   <SourceSelectionBox
                     name={t('Upload File')} value='local'
                     selected={source === 'local'} icon='file_upload'
                     onSelect={this.selectSource}
                   />
-                </div>
-                <div className='col s6'>
+                </Col>
+                <Col span={12}>
                   <SourceSelectionBox
                     name={t('MapHubs Layer')} value='remote'
-                    selected={source === 'maphubs'} icon='cloud_download'
+                    selected={source === 'remote'} icon='cloud_download'
                     onSelect={this.selectSource}
                   />
-                </div>
-              </div>
-              <div className='row no-margin'>
-                <p style={{margin: '5px'}}>{t('Satellite Data')}</p>
-                <div className='col s6'>
+                </Col>
+              </Row>
+              <Row justify='center' align='top' style={{border: '1px solid #ddd'}}>
+                <p className='section-header'>{t('Satellite Data')}</p>
+                <Col span={12}>
                   <SourceSelectionBox
                     name={t('Upload Raster')} value='raster-upload'
                     selected={source === 'raster-upload'} icon='file_upload'
                     onSelect={this.selectSource}
                   />
-                </div>
-                {planetSource}
-                <div className='col s6'>
+                </Col>
+                {MAPHUBS_CONFIG.PLANET_LABS_API_KEY &&
+                  <Col span={12}>
+                    <SourceSelectionBox
+                      name={t('Planet API')} value='planet'
+                      selected={source === 'planet'} icon='satellite'
+                      onSelect={this.selectSource}
+                    />
+                  </Col>}
+                <Col span={12}>
                   <SourceSelectionBox
                     name={t('Digital Globe')} value='dgwms'
                     selected={source === 'dgwms'} icon='satellite'
                     onSelect={this.selectSource}
                   />
-                </div>
-                <div className='col s6'>
+                </Col>
+                <Col span={12}>
                   <SourceSelectionBox
                     name={t('Earth Engine')} value='earthengine'
                     selected={source === 'earthengine'} icon='satellite'
                     onSelect={this.selectSource}
                   />
-                </div>
-              </div>
-            </div>
-            <div className='col s7'>
-              <div className='row no-margin'>
-                <p style={{margin: '5px'}}>{t('Create New Data')}</p>
-                <div className='col s6 m4 l4'>
+                </Col>
+              </Row>
+            </Col>
+            <Col span={14}>
+              <Row justify='center' align='top' style={{border: '1px solid #ddd'}}>
+                <p className='section-header'>{t('Create New Data')}</p>
+                <Col sm={12} md={8} lg={8}>
                   <SourceSelectionBox
                     name={t('New Point(s)')} value='point'
                     selected={source === 'point'} icon='place'
                     onSelect={this.selectSource}
                   />
-                </div>
-                <div className='col s6 m4 l4'>
+                </Col>
+                <Col sm={12} md={8} lg={8}>
                   <SourceSelectionBox
                     name={t('New Line(s)')} value='line'
                     selected={source === 'line'} icon='timeline'
                     onSelect={this.selectSource}
                   />
-                </div>
-                <div className='col s6 m4 l4'>
+                </Col>
+                <Col sm={12} md={8} lg={8}>
                   <SourceSelectionBox
                     name={t('New Polygon(s)')} value='polygon'
                     selected={source === 'polygon'} icon='crop_din'
                     onSelect={this.selectSource}
                   />
-                </div>
-              </div>
-              <div className='row no-margin'>
-                <p style={{margin: '5px'}}>{t('Remote Data Sources')}</p>
-                <div className='col s6 m4 l4'>
+                </Col>
+              </Row>
+              <Row justify='center' align='top' style={{border: '1px solid #ddd'}}>
+                <p className='section-header'>{t('Remote Data Sources')}</p>
+                <Col sm={12} md={8} lg={8}>
                   <SourceSelectionBox
                     name={t('GeoJSON URL')} value='geojson'
                     selected={source === 'geojson'} icon='cloud_download'
                     onSelect={this.selectSource}
                   />
-                </div>
-                <div className='col s6 m4 l4'>
+                </Col>
+                <Col sm={12} md={8} lg={8}>
                   <SourceSelectionBox
                     name={t('Mapbox Styles')} value='mapbox'
                     selected={source === 'mapbox'} icon='cloud_download'
                     onSelect={this.selectSource}
                   />
-                </div>
-                <div className='col s6 m4 l4'>
+                </Col>
+                <Col sm={12} md={8} lg={8}>
                   <SourceSelectionBox
                     name={t('Raster Tiles')} value='raster'
                     selected={source === 'raster'} icon='cloud_download'
                     onSelect={this.selectSource}
                   />
-                </div>
-                <div className='col s6 m4 l4'>
+                </Col>
+                <Col sm={12} md={8} lg={8}>
                   <SourceSelectionBox
                     name={t('Vector Tiles')} value='vector'
                     selected={source === 'vector'} icon='cloud_download'
                     onSelect={this.selectSource}
                   />
-                </div>
-                <div className='col s6 m4 l4'>
+                </Col>
+                <Col sm={12} md={8} lg={8}>
                   <SourceSelectionBox
                     name={t('ArcGIS Services')} value='ags'
                     selected={source === 'ags'} icon='cloud_download'
                     onSelect={this.selectSource}
                   />
-                </div>
-                <div className='col s6 m4 l4'>
+                </Col>
+                <Col sm={12} md={8} lg={8}>
                   <SourceSelectionBox
                     name={t('WMS')} value='wms'
                     selected={source === 'wms'} icon='cloud_download'
                     onSelect={this.selectSource}
                   />
-                </div>
-              </div>
-            </div>
-          </div>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         </div>
-        <div className='divider' />
-        <div ref={(ref) => { this.sourceDisplay = ref }} className='container'>
+        <Divider />
+        <div
+          ref={(ref) => { this.sourceDisplay = ref }}
+          className='container'
+          style={{marginBottom: '20px'}}
+        >
           {sourceDisplay}
         </div>
-        {cancelButton}
+        {showCancel &&
+          <Row style={{paddingLeft: '20px', marginBottom: '20px'}}>
+            <Button type='danger' onClick={onCancel}>{cancelText}</Button>
+          </Row>}
 
       </div>
     )
