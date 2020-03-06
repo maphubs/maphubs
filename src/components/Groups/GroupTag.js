@@ -14,8 +14,7 @@ type State = {
 
 export default class GroupTag extends React.Component<Props, State> {
   static defaultProps = {
-    size: 24,
-    showTooltip: false
+    size: 24
   }
 
   constructor (props: Props) {
@@ -42,7 +41,7 @@ export default class GroupTag extends React.Component<Props, State> {
           <a target='_blank' className='no-padding' rel='noopener noreferrer' href={`${baseUrl}/group/${group}`} style={{height: 'initial'}}>
             {!failed &&
               <Avatar
-                alt={group} size={size} src={`/img/resize/${size * 2}?url=/group/${group}/thumbnail`} onError={() => {
+                alt={group} size={size} src={`/img/resize/${size * 2}?format=webp&quality=80&progressive=true&url=/group/${group}/image.jpg`} onError={() => {
                   this.setState({failed: true})
                 }}
               />}

@@ -247,7 +247,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
       if (imgSrc.startsWith(baseUrl)) {
         imgSrc = imgSrc.replace(baseUrl, '')
       }
-      imgSrc = '/img/resize/1200?url=' + imgSrc
+      imgSrc = '/img/resize/1200?format=webp&quality=80&progressive=true&url=' + imgSrc
       map = (
         <div style={{position: 'relative'}}>
           <img src={imgSrc} style={{width: '100%', height: '100%', objectFit: 'contain'}} alt={MAPHUBS_CONFIG.productName + ' Map'} />

@@ -24,7 +24,12 @@ module.exports = function (app: any) {
             res.redirect(req.query.url)
           }
         } else {
-          // TODO: check for private
+          // eslint-disable-next-line unicorn/prefer-includes
+          if (req.headers.accept && req.headers.accept.indexOf('image/webp') !== -1) {
+            req.query.format = 'webp'
+          } else {
+            req.query.format = 'png'
+          }
           next()
         }
       }

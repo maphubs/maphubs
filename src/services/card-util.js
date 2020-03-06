@@ -21,7 +21,7 @@ export default {
   getLayerCard (layer: Layer, id: number, arr: Array<Object>, onClick?: Function): CardConfig {
     const layer_id: number = layer.layer_id ? layer.layer_id : -1
 
-    const image_url = `/img/resize/400?url=/api/screenshot/layer/thumbnail/${layer_id}.jpg`
+    const image_url = `/img/resize/400?format=webp&quality=80&progressive=true&url=/api/screenshot/layer/thumbnail/${layer_id}.jpg`
 
     return {
       id: `layer-${layer_id.toString()}`,
@@ -41,7 +41,7 @@ export default {
   },
 
   getMapCard (map: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig {
-    const image_url = `/img/resize/400?url=/api/screenshot/map/thumbnail/${map.map_id}.jpg`
+    const image_url = `/img/resize/400?format=webp&quality=80&progressive=true&url=/api/screenshot/map/thumbnail/${map.map_id}.jpg`
     return {
       id: `map-${map.map_id.toString()}`,
       title: map.title, // LocalizedString
@@ -62,7 +62,7 @@ export default {
   getGroupCard (group: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig {
     let image_url
     if (group.hasimage) {
-      image_url = `/img/resize/400?url=/group/${group.group_id}/image`
+      image_url = `/img/resize/400?format=webp&quality=80&progressive=true&url=/group/${group.group_id}/image.jpg`
     }
     return {
       id: `group-${group.group_id}`,
@@ -94,7 +94,7 @@ export default {
         image_url = image_url.replace(baseUrl, '')
       }
       if (!image_url.startsWith('https')) {
-        image_url = '/img/resize/400?url=' + image_url
+        image_url = '/img/resize/400?format=webp&quality=80&progressive=true&url=' + image_url
       }
     }
 

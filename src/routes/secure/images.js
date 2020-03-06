@@ -31,7 +31,7 @@ module.exports = function (app: any) {
       }).catch(nextError(next))
   })
 
-  app.get('/group/:id/image', (req, res) => {
+  app.get('/group/:id/image.jpg', (req, res) => {
     const group_id = req.params.id
     Image.getGroupImage(group_id)
       .then((result) => {

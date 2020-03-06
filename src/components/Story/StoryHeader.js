@@ -72,7 +72,7 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
             >
               {!groupLogoFailed &&
                 <Avatar
-                  alt={story.owned_by_group_id} size={36} src={`/img/resize/64?url=/group/${story.owned_by_group_id}/thumbnail`} onError={() => {
+                  alt={story.owned_by_group_id} size={36} src={`/img/resize/64?format=webp&quality=80&progressive=true&url=/group/${story.owned_by_group_id}/thumbnail`} onError={() => {
                     console.error('Group Logo Failed')
                     this.setState({groupLogoFailed: true})
                   }}
