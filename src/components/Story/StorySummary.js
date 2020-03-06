@@ -65,8 +65,8 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
             <b style={{color: 'red', textTransform: 'uppercase'}}>{t('Draft')}</b>
           </p>}
         <ShareButtons
-          title={story.title} t={t}
-          style={{width: '70px', position: 'absolute', right: '10px', bottom: '10px'}}
+          title={story.title} t={t} iconSize={24}
+          style={{position: 'absolute', right: '10px', bottom: '10px'}}
         />
       </div>
     )

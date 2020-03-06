@@ -87,10 +87,10 @@ export default class Story extends MapHubsComponent<Props, void> {
     if (MAPHUBS_CONFIG.enableComments) {
       shareAndDiscuss = (
         <div className='story-share-comments'>
-          <Row style={{height: '32px', position: 'relative'}}>
+          <Row style={{height: '32px', position: 'relative', marginBottom: '25px'}}>
             <ShareButtons
               title={t(story.title)} t={t}
-              style={{width: '70px', position: 'absolute', left: '0px'}}
+              style={{position: 'absolute', left: '0px'}}
             />
           </Row>
           <Row>
@@ -106,7 +106,7 @@ export default class Story extends MapHubsComponent<Props, void> {
     return (
       <>
         <Head>
-          <script async charset='utf-8' src='//cdn.embedly.com/widgets/platform.js' />
+          <script async charSet='utf-8' src='//cdn.embedly.com/widgets/platform.js' />
         </Head>
         <ErrorBoundary>
           <Header {...this.props.headerConfig} />
@@ -119,7 +119,7 @@ export default class Story extends MapHubsComponent<Props, void> {
                 <Col md={6} sm={24}>
                   <ShareButtons
                     title={t(story.title)} t={t}
-                    style={{width: '70px', position: 'absolute', right: '10px'}}
+                    style={{position: 'absolute', right: '10px'}}
                   />
                 </Col>
               </Row>

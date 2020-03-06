@@ -2,9 +2,14 @@ import React from 'react'
 import {
   FacebookShareButton,
   TwitterShareButton,
+  LinkedinShareButton,
+  WhatsappShareButton,
   FacebookIcon,
-  TwitterIcon
+  TwitterIcon,
+  LinkedinIcon,
+  WhatsappIcon
 } from 'react-share'
+import { Row, Col } from 'antd'
 
 type Props = {
   style: Object,
@@ -48,23 +53,41 @@ export default class MapHubsShareButtons extends React.Component<Props, State> {
     const localizedTitle = t(title)
     return (
       <div style={style}>
-        <div style={{float: 'left'}}>
-          <FacebookShareButton
-            url={url}
-            quote={localizedTitle}
-            picture={photoUrl}
-          >
-            <FacebookIcon size={iconSize} round />
-          </FacebookShareButton>
-        </div>
-        <div style={{float: 'right', marginLeft: '3px'}}>
-          <TwitterShareButton
-            url={this.state.url}
-            title={localizedTitle}
-          >
-            <TwitterIcon size={iconSize} round />
-          </TwitterShareButton>
-        </div>
+        <Row justify='center' align='middle'>
+          <Col span={6} style={{width: iconSize + 3}}>
+            <FacebookShareButton
+              url={url}
+              quote={localizedTitle}
+              picture={photoUrl}
+            >
+              <FacebookIcon size={iconSize} round />
+            </FacebookShareButton>
+          </Col>
+          <Col span={6} style={{width: iconSize + 3}}>
+            <TwitterShareButton
+              url={this.state.url}
+              title={localizedTitle}
+            >
+              <TwitterIcon size={iconSize} round />
+            </TwitterShareButton>
+          </Col>
+          <Col span={6} style={{width: iconSize + 3}}>
+            <LinkedinShareButton
+              url={this.state.url}
+              title={localizedTitle}
+            >
+              <LinkedinIcon size={iconSize} round />
+            </LinkedinShareButton>
+          </Col>
+          <Col span={6} style={{width: iconSize + 3}}>
+            <WhatsappShareButton
+              url={this.state.url}
+              title={localizedTitle}
+            >
+              <WhatsappIcon size={iconSize} round />
+            </WhatsappShareButton>
+          </Col>
+        </Row>
       </div>
     )
   }

@@ -255,7 +255,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
             />
             {!publicShare &&
               <div
-                ref={(ref) => { this.menuButton = ref }} id='user-map-button' className='fixed-action-btn' style={{bottom: '40px'}}
+                ref={(ref) => { this.menuButton = ref }} id='user-map-button' className='fixed-action-btn' style={{bottom: '75px'}}
                 onMouseEnter={this.onMouseEnterMenu}
               >
                 <a className='btn-floating btn-large'>
