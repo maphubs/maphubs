@@ -2,11 +2,17 @@
 import React from 'react'
 import _isequal from 'lodash.isequal'
 import ErrorBoundary from '../ErrorBoundary'
-import brace from 'brace'
+
 import AceEditor from 'react-ace'
-import 'brace/mode/json'
-import 'brace/mode/html'
-import 'brace/theme/monokai'
+import 'ace-builds/src-noconflict/mode-json'
+import 'ace-builds/src-noconflict/mode-html'
+import 'ace-builds/src-noconflict/theme-monokai'
+import 'ace-builds/src-min-noconflict/ext-language_tools'
+import 'ace-builds/src-min-noconflict/ext-spellcheck'
+import 'ace-builds/src-min-noconflict/ext-searchbox'
+const ace = require('ace-builds/src-noconflict/ace')
+ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.4.3/src-noconflict/')
+ace.config.setModuleUrl('ace/mode/javascript_worker', 'https://cdn.jsdelivr.net/npm/ace-builds@1.4.3/src-noconflict/worker-javascript.js')
 
 type Props = {|
   name: string,
@@ -16,7 +22,11 @@ type Props = {|
   theme: string
 |}
 
-export default class CodeEditor extends React.Component<Props, void> {
+type State = {
+  canSave?: boolean
+}
+
+export default class CodeEditor extends React.Component<Props, State> {
   static defaultProps = {
     name: 'code-editor',
     mode: 'json',
@@ -34,22 +44,7 @@ export default class CodeEditor extends React.Component<Props, void> {
   }
 
   onChange = (value: any) => {
-    const _this = this
-    if (this.refs.ace) {
-      this.editor = this.refs.ace.editor
-      this.editor.getSession().on('changeAnnotation', () => {
-        const annotations = _this.editor.getSession().getAnnotations()
-        let canSave = true
-        if (annotations && annotations.length > 0) {
-          annotations.forEach((anno) => {
-            if (anno.type === 'error') {
-              canSave = false
-            }
-          })
-        }
-        if (canSave) _this.props.onChange(value)
-      })
-    }
+    if (this.state.canSave) this.props.onChange(value)
   }
 
   render () {
@@ -67,10 +62,20 @@ export default class CodeEditor extends React.Component<Props, void> {
           height='100%'
           highlightActiveLine
           value={value}
-          setOptions={{
-            enableBasicAutocompletion: true
-          }}
+          enableBasicAutocompletion
+          enableLiveAutocompletion
           editorProps={{$blockScrolling: true}}
+          onValidate={(annotations) => {
+            let canSave = true
+            if (annotations?.length > 0) {
+              annotations.forEach((anno) => {
+                if (anno.type === 'error') {
+                  canSave = false
+                }
+              })
+            }
+            this.setState({canSave})
+          }}
         />
       </ErrorBoundary>
     )

@@ -3,7 +3,6 @@ import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import { Row, Col, List, Button, Empty, message, notification } from 'antd'
-import CodeEditor from '../components/LayerDesigner/CodeEditor'
 import LocalizedCodeEditor from '../components/forms/LocalizedCodeEditor'
 import request from 'superagent'
 import shortid from 'shortid'
@@ -13,6 +12,10 @@ import LocaleStore from '../stores/LocaleStore'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import dynamic from 'next/dynamic'
+const CodeEditor = dynamic(() => import('../components/LayerDesigner/CodeEditor'), {
+  ssr: false
+})
 
 const checkClientError = require('../services/client-error-response').checkClientError
 
@@ -58,10 +61,6 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
     this.state = {
       pageConfig
     }
-  }
-
-  componentDidMount () {
-    this.refs.pageEditor.show()
   }
 
   savePageConfig = (pageConfig: string) => {
@@ -141,7 +140,8 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
                   ref='pageEditor' id='layer-style-editor' mode='json'
                   code={JSON.stringify(this.state.pageConfig, undefined, 2)}
                   title={t('Editing Page Config: ') + this.props.page_id}
-                  onSave={this.savePageConfig} modal={false}
+                  onSave={this.savePageConfig} modal={false} visible
+                  t={t}
                 />
               </Row>
             </Col>
@@ -169,6 +169,7 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
                       onSave={(json) => {
                         this.updateComponent(editingComponent)
                       }} modal={false}
+                      t={t}
                     />}
                   {!editingComponent &&
                     <Empty />}

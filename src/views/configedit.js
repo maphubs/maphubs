@@ -3,7 +3,6 @@ import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import { message, notification } from 'antd'
-import CodeEditor from '../components/LayerDesigner/CodeEditor'
 import request from 'superagent'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -11,6 +10,10 @@ import LocaleStore from '../stores/LocaleStore'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import dynamic from 'next/dynamic'
+const CodeEditor = dynamic(() => import('../components/LayerDesigner/CodeEditor'), {
+  ssr: false
+})
 
 const checkClientError = require('../services/client-error-response').checkClientError
 
@@ -52,10 +55,6 @@ export default class ConfigEdit extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentDidMount () {
-    this.refs.pageEditor.show()
-  }
-
   savePageConfig = (pageConfig: string) => {
     const {t} = this
     const _this = this
@@ -90,10 +89,11 @@ export default class ConfigEdit extends MapHubsComponent<Props, State> {
         <Header {...this.props.headerConfig} />
         <main className='container' style={{height: 'calc(100% - 100px)'}}>
           <CodeEditor
-            ref='pageEditor' id='layer-style-editor' mode='json'
+            id='layer-style-editor' mode='json'
             code={JSON.stringify(this.state.pageConfig, undefined, 2)}
             title={t('Editing Page Config: ') + this.props.page_id}
-            onSave={this.savePageConfig} modal={false}
+            onSave={this.savePageConfig} modal={false} visible
+            t={t}
           />
         </main>
         <Footer {...this.props.footerConfig} />

@@ -142,7 +142,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
     if (this.props.showGroup && (!this.props.groups || this.props.groups.length === 0)) {
       return (
         <div className='container'>
-          <<Row style={{marginBottom: '20px'}}>
+          <Row style={{marginBottom: '20px'}}>
             <h5>{t('Please Join a Group')}</h5>
             <p>{t('Please create or join a group before creating a layer.')}</p>
           </Row>

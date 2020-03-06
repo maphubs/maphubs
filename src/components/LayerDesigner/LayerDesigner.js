@@ -1,6 +1,5 @@
 // @flow
 import React from 'react'
-import CodeEditor from './CodeEditor'
 import LabelSettings from './LabelSettings'
 import MarkerSettings from './MarkerSettings'
 import AdvancedLayerSettings from './AdvancedLayerSettings'
@@ -8,6 +7,11 @@ import MapHubsComponent from '../MapHubsComponent'
 import MapStyles from '../Map/Styles'
 import {SketchPicker, SwatchesPicker} from 'react-color'
 import type {GLStyle} from '../../types/mapbox-gl-style'
+
+import dynamic from 'next/dynamic'
+const CodeEditor = dynamic(() => import('./CodeEditor'), {
+  ssr: false
+})
 
 type ColorValue = {
   hex: string,
@@ -29,7 +33,9 @@ type Props = {|
 
 type State = {
   color: string,
-  markers?: Object
+  markers?: Object,
+  showStyleEditor?: boolean,
+  showLegendEditor?: boolean
 }
 
 export default class LayerDesigner extends MapHubsComponent<Props, State> {
@@ -108,11 +114,19 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
   }
 
   showStyleEditor = () => {
-    this.refs.styleEditor.show()
+    this.setState({showStyleEditor: true})
   }
 
   showLegendEditor = () => {
-    this.refs.legendEditor.show()
+    this.setState({showLegendEditor: true})
+  }
+
+  hideStyleEditor = () => {
+    this.setState({showStyleEditor: false})
+  }
+
+  hideLegendEditor = () => {
+    this.setState({showLegendEditor: false})
   }
 
   onAdvancedSettingsChange = (style: GLStyle, legend: string) => {
@@ -121,8 +135,8 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
-    const {layer, style, labels, legend, showAdvanced} = this.props
-    const {color} = this.state
+    const { layer, style, labels, legend, showAdvanced } = this.props
+    const { color, showStyleEditor, showLegendEditor } = this.state
 
     return (
       <div>
@@ -205,12 +219,22 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
             </li>}
         </ul>
         <CodeEditor
-          ref='styleEditor' id='layer-style-editor' mode='json'
-          code={JSON.stringify(this.props.style, undefined, 2)} title={t('Editing Layer Style')} onSave={this.onCodeStyleChange}
+          visible={showStyleEditor}
+          id='layer-style-editor' mode='json'
+          code={JSON.stringify(this.props.style, undefined, 2)}
+          title={t('Editing Layer Style')}
+          onSave={this.onCodeStyleChange}
+          onCancel={this.hideStyleEditor}
+          t={t}
         />
         <CodeEditor
-          ref='legendEditor' id='layer-legend-editor' mode='html'
-          code={legend} title={t('Edit Layer Legend')} onSave={this.onLegendChange}
+          visible={showLegendEditor}
+          id='layer-legend-editor' mode='html'
+          code={legend}
+          title={t('Edit Layer Legend')}
+          onSave={this.onLegendChange}
+          onCancel={this.hideLegendEditor}
+          t={t}
         />
       </div>
     )

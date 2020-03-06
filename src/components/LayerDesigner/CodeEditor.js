@@ -2,30 +2,37 @@
 import React from 'react'
 import { Modal, Button } from 'antd'
 import _isequal from 'lodash.isequal'
-import MapHubsComponent from '../MapHubsComponent'
 
-let AceEditor = ''
+import AceEditor from 'react-ace'
+import 'ace-builds/src-noconflict/mode-json'
+import 'ace-builds/src-noconflict/mode-html'
+import 'ace-builds/src-noconflict/theme-monokai'
+import 'ace-builds/src-min-noconflict/ext-language_tools'
+import 'ace-builds/src-min-noconflict/ext-spellcheck'
+import 'ace-builds/src-min-noconflict/ext-searchbox'
+const ace = require('ace-builds/src-noconflict/ace')
+ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.4.3/src-noconflict/')
+ace.config.setModuleUrl('ace/mode/javascript_worker', 'https://cdn.jsdelivr.net/npm/ace-builds@1.4.3/src-noconflict/worker-javascript.js')
 
 type Props = {|
   id: string,
   onSave: Function,
+  onCancel: Function,
   title: string,
   code: string,
   mode: string,
   theme: string,
   modal: boolean,
-  visible: boolean
+  visible: boolean,
+  t: Function
 |}
 
 type State = {
   code: string,
-  canSave: boolean,
-  show: boolean
+  canSave: boolean
 }
 
-export default class CodeEditor extends MapHubsComponent<Props, State> {
-  props: Props
-
+export default class CodeEditor extends React.Component<Props, State> {
   static defaultProps = {
     id: 'code-editor',
     mode: 'json',
@@ -45,14 +52,6 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentDidMount () {
-    require('brace')
-    AceEditor = require('react-ace').default
-    require('brace/mode/json')
-    require('brace/mode/html')
-    require('brace/theme/monokai')
-  }
-
   componentWillReceiveProps (nextProps: Props) {
     this.setState({code: nextProps.code})
   }
@@ -68,73 +67,46 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
     return false
   }
 
-  componentDidUpdate () {
-    const _this = this
-    if (this.refs.ace) {
-      this.editor = this.refs.ace.editor
-      this.editor.getSession().on('changeAnnotation', () => {
-        const annotations = _this.editor.getSession().getAnnotations()
-        let canSave = true
-        if (annotations && annotations.length > 0) {
-          annotations.forEach((anno) => {
-            if (anno.type === 'error') {
-              canSave = false
-            }
-          })
-        }
-        _this.setState({canSave})
-      })
-    }
-  }
-
-  show = () => {
-    this.setState({show: true})
-  }
-
-  hide = () => {
-    this.setState({show: false})
-  }
-
   onChange = (code: any) => {
     this.setState({code})
   }
 
-  onCancel = () => {
-    this.hide()
-  }
-
   onSave = () => {
     if (this.state.canSave) {
-      if (this.props.modal) {
-        this.hide()
-      }
       this.props.onSave(this.state.code)
     }
   }
 
   render () {
-    const {t} = this
-    const { title, modal } = this.props
-    const { show, canSave } = this.state
+    const { title, modal, t, mode, theme, id, onCancel, visible } = this.props
+    const { canSave, code } = this.state
     let editor = ''
-    if (show) {
-      let enableBasicAutocompletion
-      if (this.props.mode !== 'json') {
-        enableBasicAutocompletion = true
-      }
+    if (visible) {
       editor = (
         <AceEditor
           ref='ace'
-          mode={this.props.mode}
-          theme={this.props.theme}
+          mode={mode}
+          theme={theme}
           onChange={this.onChange}
-          name={this.props.id}
+          name={id}
           width='100%'
           height='100%'
           highlightActiveLine
-          enableBasicAutocompletion={enableBasicAutocompletion}
-          value={this.state.code}
+          enableBasicAutocompletion
+          enableLiveAutocompletion
+          value={code}
           editorProps={{$blockScrolling: true}}
+          onValidate={(annotations) => {
+            let canSave = true
+            if (annotations?.length > 0) {
+              annotations.forEach((anno) => {
+                if (anno.type === 'error') {
+                  canSave = false
+                }
+              })
+            }
+            this.setState({canSave})
+          }}
         />
       )
     }
@@ -148,15 +120,14 @@ export default class CodeEditor extends MapHubsComponent<Props, State> {
         `}</style>
           <Modal
             title={title}
-            visible={show}
-            onOk={this.close}
+            visible={visible}
             centered
             height='90vh'
             width='60vw'
             bodyStyle={{height: 'calc(100% - 110px)', padding: '0px'}}
-            onCancel={this.onCancel}
+            onCancel={onCancel}
             footer={[
-              <Button key='back' onClick={this.onCancel}>
+              <Button key='back' onClick={onCancel}>
                 {t('Cancel')}
               </Button>,
               <Button key='submit' type='primary' disabled={!canSave} onClick={this.onSave}>

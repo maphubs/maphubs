@@ -1,11 +1,14 @@
 // @flow
 import React from 'react'
-import CodeEditor from './CodeEditor'
 import AdvancedLayerSettings from './AdvancedLayerSettings'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
 
 import type {GLStyle} from '../../types/mapbox-gl-style'
+import dynamic from 'next/dynamic'
+const CodeEditor = dynamic(() => import('./CodeEditor'), {
+  ssr: false
+})
 
 type Props = {|
   onChange: Function,
@@ -20,7 +23,9 @@ type Props = {|
 |}
 
 type State = {
-  opacity: number
+  opacity: number,
+  showStyleEditor?: boolean,
+  showLegendEditor?: boolean
 }
 
 export default class OpacityChooser extends MapHubsComponent<Props, State> {
@@ -78,15 +83,24 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
   }
 
   showStyleEditor = () => {
-    this.refs.styleEditor.show()
+    this.setState({showStyleEditor: true})
   }
 
   showLegendEditor = () => {
-    this.refs.legendEditor.show()
+    this.setState({showLegendEditor: true})
+  }
+
+  hideStyleEditor = () => {
+    this.setState({showStyleEditor: false})
+  }
+
+  hideLegendEditor = () => {
+    this.setState({showLegendEditor: false})
   }
 
   render () {
-    const {t} = this
+    const { t } = this
+    const { showStyleEditor, showLegendEditor } = this.state
     let advanced = ''
     if (this.props.showAdvanced) {
       advanced = (
@@ -134,12 +148,22 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
 
         </ul>
         <CodeEditor
-          ref='styleEditor' id='raster-style-editor' mode='json'
-          code={JSON.stringify(this.props.style, undefined, 2)} title='Edit Layer Style' onSave={this.onCodeStyleChange}
+          visible={showStyleEditor}
+          id='raster-style-editor' mode='json'
+          code={JSON.stringify(this.props.style, undefined, 2)}
+          title={t('Editing Layer Style')}
+          onSave={this.onCodeStyleChange}
+          onCancel={this.hideStyleEditor}
+          t={t}
         />
         <CodeEditor
-          ref='legendEditor' id='raster-legend-editor' mode='html'
-          code={this.props.legendCode} title='Edit Layer Legend' onSave={this.onLegendChange}
+          visible={showLegendEditor}
+          id='raster-legend-editor' mode='html'
+          code={this.props.legendCode}
+          title={t('Edit Layer Legend')}
+          onSave={this.onLegendChange}
+          onCancel={this.hideLegendEditor}
+          t={t}
         />
       </div>
     )

@@ -11,7 +11,11 @@ import Toggle from '../forms/toggle'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
 import type {Group} from '../../stores/GroupStore'
-import CodeEditor from '../LayerDesigner/CodeEditor'
+
+import dynamic from 'next/dynamic'
+const CodeEditor = dynamic(() => import('../LayerDesigner/CodeEditor'), {
+  ssr: false
+})
 
 type Props = {|
   onSubmit: Function,
@@ -58,9 +62,6 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
         return msg
       }
     })
-    if (this.refs.pageEditor) {
-      this.refs.pageEditor.show()
-    }
   }
 
   onFormChange = () => {
@@ -134,10 +135,10 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
       elcEditor = (
         <div className='row' style={{height: '300px'}}>
           <CodeEditor
-            ref='pageEditor' id='layer-elc-editor' mode='json'
+            id='layer-elc-editor' mode='json'
             code={JSON.stringify(external_layer_config, undefined, 2)}
             title={t('External Layer Config')}
-            onSave={this.saveExternalLayerConfig} modal={false}
+            onSave={this.saveExternalLayerConfig} visible modal={false} t={t}
           />
         </div>
       )
