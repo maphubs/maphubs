@@ -2,6 +2,7 @@
 const knex = require('../../connection')
 const multer = require('multer')
 const ogr2ogr = require('ogr2ogr')
+const fs = require('fs')
 const Layer = require('../../models/layer')
 const Promise = require('bluebird')
 const tus = require('tus-node-server')
@@ -31,12 +32,28 @@ const metadataStringToObject = (stringValue) => {
   return metadata
 }
 
-const UPLOAD_PATH = `/${local.tempFilePath}/uploads`
+const UPLOAD_PATH = `${local.tempFilePath}/uploads`
+
+const getExt = (fileName: string) => {
+  if (fileName.endsWith('.zip')) return 'zip'
+  if (fileName.endsWith('.pbf')) return 'pbf'
+  if (fileName.endsWith('.maphubs')) return 'maphubs'
+  if (fileName.endsWith('.csv')) return 'csv'
+  if (fileName.endsWith('.kml')) return 'kml'
+  if (fileName.endsWith('.kmz')) return 'kmz'
+  if (fileName.endsWith('.gpx')) return 'gpx'
+  if (fileName.endsWith('.geojson') || fileName.endsWith('.json')) return 'geojson'
+  if (fileName.endsWith('.shp')) {
+    throw new Error('Shapefile must uploaded in a Zip file')
+  } else {
+    throw new Error(`Unsupported file type: ${fileName}`)
+  }
+}
 
 module.exports = function (app: any) {
   const server = new tus.Server()
   server.datastore = new tus.FileStore({
-    path: UPLOAD_PATH
+    path: '/' + UPLOAD_PATH
   })
 
   const uploadApp = express()
@@ -60,11 +77,27 @@ module.exports = function (app: any) {
           const shortid = layer.shortid
           if (layer.created_by_user_id === req.user_id) {
             const importer = Importers.getImporterFromFileName(originalName)
-
             const uploadUrlParts = uploadUrl.split('/')
             const fileid = uploadUrlParts[uploadUrlParts.length - 1]
             const path = UPLOAD_PATH + '/' + fileid
-            const importerResult = await importer(path, layer_id)
+            const ext = getExt(originalName)
+            const pathWithExt = `${path}.${ext}`
+            await new Promise((resolve, reject) => {
+              // path set by us with a uuid filename, extension value is not copying directly from user input
+              // eslint-disable-next-line security/detect-non-literal-fs-filename
+              fs.rename(path, pathWithExt, error => {
+                if (error) reject(error)
+                resolve()
+              })
+            })
+            let importerResult
+            try {
+              importerResult = await importer(pathWithExt, layer_id)
+            } catch (err) {
+              log.error(err.message)
+              apiError(res, 200)(err)
+              return
+            }
             if (importerResult.success === false && importerResult.shapefiles) {
               await DataLoadUtils.storeTempShapeUpload(req.file.path, layer_id)
               debug.log('Finished storing temp path')
