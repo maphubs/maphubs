@@ -2,7 +2,11 @@
   "name": "maphubs",
   "version": "1.0.0",
   "description": "MapHubs",
-  "main": "src/app.js",
+  "main": "server.js",
+  "engines": {
+    "node": ">=12.0.0",
+    "npm": ">=6.0.0"
+  },
   "scripts": {
     "dev": "/bin/sh run-dev.sh",
     "eslint": "node_modules/eslint/bin/eslint.js",
@@ -99,7 +103,7 @@
     "express-async-handler": "^1.1.4",
     "express-http-proxy": "^1.6.0",
     "express-session": "^1.17.0",
-    "express-sharp": "^2.1.1",
+    "express-sharp": "kriscarle/express-sharp",
     "file-loader": "^5.1.0",
     "formsy-react": "^2.0.2",
     "geobuf": "^3.0.0",
@@ -203,7 +207,6 @@
   },
   "optionalDependencies": {
     "fsevents": "^1.2.4",
-    "iltorb": "~2.0.0",
     "node-zopfli-es": "~1.0.3"
   },
   "devDependencies": {
