@@ -142,23 +142,6 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   opacity: 0 !important;
 }
 
-
-.auth0-lock-input {
-   margin: 0 !important;
- }
-.auth0-lock-widget {
-  overflow: visible !important;
-  box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.3) !important;
-}
- .auth0-lock-sign-up-terms-agreement > label > input {
-  left: auto !important;
-  opacity: 1 !important;
- }
-
- .userback-button-container .userback-button {
-   right: 30px !important;
- }
-
  .image-remove-button {
    display: none;
  }
@@ -300,11 +283,6 @@ textarea.materialize-textarea+label:after {
   line-height: 50px !important;
 }
 
-.action-button-bottom-right {
-    bottom: 85px;
-    right: 30px;
-}
-
 .react-grid-checkbox:checked+.react-grid-checkbox-label:before {
   background: inherit !important;
   box-shadow: none !important;
@@ -316,20 +294,6 @@ textarea.materialize-textarea+label:after {
 
 .react-grid-checkbox {
   opacity: 1 !important;
-}
-
-
-.notification-bar {
-  z-index: 9999 !important;
-}
-
-@media only screen and (max-width : 768px) {
-
-  .action-button-bottom-right {
-  bottom: 95px;
-  right: 11px;
-  }
-
 }
 
 .custom-scroll-bar::-webkit-scrollbar-track

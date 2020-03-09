@@ -286,7 +286,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     const showAddPhotoPointButton = showMapEditButton && layer.data_type === 'point'
     if (canEdit) {
       editButton = (
-        <div ref={(el) => { this.menuButton = el }} className='fixed-action-btn action-button-bottom-right'>
+        <div ref={(el) => { this.menuButton = el }} style={{bottom: '85px'}} className='fixed-action-btn action-button-bottom-right'>
           <a className='btn-floating btn-large red red-text'>
             <i className='large material-icons'>more_vert</i>
           </a>

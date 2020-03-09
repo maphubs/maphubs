@@ -4,7 +4,7 @@ import { Layout, Menu, Drawer, Icon } from 'antd'
 import MapHubsComponent from './MapHubsComponent'
 import ExploreDropdown from './Header/ExploreDropdown'
 import AddDropdown from './Header/AddDropdown'
-import HelpButton from './Header/HelpButton'
+import HelpDropdown from './Header/HelpDropdown'
 import SearchButton from './Header/SearchButton'
 import LocaleChooser from './LocaleChooser'
 import UserMenu from './Header/UserMenu'
@@ -118,10 +118,7 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
           </Menu.Item>}
         {showHelp &&
           <Menu.Item key='help' style={{padding: mode === 'vertical' ? '0 20px' : '0 5px', height: '50px'}}>
-            {mode === 'vertical' &&
-              <a href={customHelpLink || 'https://help.maphubs.com'}>{t('Help/Support')}</a>}
-            {mode !== 'vertical' &&
-              <HelpButton t={t} helpLink={customHelpLink || 'https://help.maphubs.com'} />}
+            <HelpDropdown t={t} customHelpLink={customHelpLink} />
           </Menu.Item>}
         <Menu.Item key='user' style={{height: '50px', overflow: 'hidden'}}>
           <UserMenu sidenav={mode === 'vertical'} />

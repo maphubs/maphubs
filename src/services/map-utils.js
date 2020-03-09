@@ -119,7 +119,6 @@ module.exports = {
         return app.next.render(req, res, '/usermap', await pageOptions(req, {
           title: `${title} - ${local.productName}`,
           props: {map, layers, canEdit, publicShare: shared},
-          hideFeedback: true,
           oembed: 'map',
           twitterCard: {
             title,

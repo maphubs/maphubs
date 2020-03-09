@@ -127,7 +127,6 @@ module.exports = function (app: any) {
         }
         return app.next.render(req, res, '/staticmap', await pageOptions(req, {
           title: title + ' - ' + local.productName,
-          hideFeedback: true,
           disableGoogleAnalytics: true,
           props: {
             name: title,

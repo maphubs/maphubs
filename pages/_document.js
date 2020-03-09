@@ -193,39 +193,37 @@ export default class MyDocument extends Document {
           {options.talkComments &&
             <script type='text/javascript' src='https://talk.maphubs.com/embed.js' />
           }
-          {!options.hideFeedback &&
-          <script dangerouslySetInnerHTML={{__html: `
-            Userback = window.Userback || {};
-            Userback.access_token = '4787|6504|RgiVFuqtlpoFGgSIaXOnXXCwp21uxY9nDFXK8dnA6eNxb4jfph';
-        
-            Userback.email = '${email}';
-            Userback.custom_data = {
-              account_id: '${user_id}',
-              name: '${display_name}'
-            };
+          {(!options.hideFeedback && !local.HIDE_FEEDBACK) &&
+          <script
+            type='text/javascript' dangerouslySetInnerHTML={{
+              __html: `
+              Userback = window.Userback || {};
+              Userback.access_token = '4787|6504|RgiVFuqtlpoFGgSIaXOnXXCwp21uxY9nDFXK8dnA6eNxb4jfph';
 
-            Userback.widget_settings = {
+              Userback.email = '${email}';
+              Userback.custom_data = {
+                account_id: '${user_id}',
+                name: '${display_name}'
+              };
+              Userback.widget_settings = {
                 language: '${options.locale}',
-                style: 'circle',
-                position: 'se',
+                autohide: true,
                 main_button_background_colour : '${local.primaryColor}', 
                 main_button_text_colour       : '#FFFFFF', 
                 send_button_background_colour : '${local.primaryColor}', 
                 send_button_text_colour       : '#FFFFFF'  
-            };
-            Userback.after_send = function() {
-                // alert('after send');
-            };
-        
-            (function(id) {
-                if (document.getElementById(id)) {return;}
-                var s = document.createElement('script');
-                s.id = id;
-                s.src = 'https://static.userback.io/widget/v1.js';
-                var parent_node = document.head || document.body;
-                parent_node.appendChild(s);
-            })('userback-sdk');
-            `}} />
+              };
+              Userback.after_send = function() {
+                  // alert('after send');
+              };
+              (function(id) {
+                  var s = document.createElement('script');
+                  s.async = 1;s.src = 'https://static.userback.io/widget/v1.js';
+                  var parent_node = document.head || document.body;parent_node.appendChild(s);
+              })('userback-sdk');
+          `
+            }}
+          />
           }
         </Head>
         <body>

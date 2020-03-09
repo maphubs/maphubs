@@ -71,7 +71,6 @@ module.exports = function (app: any) {
               return app.next.render(req, res, '/featureinfo', await pageOptions(req, {
                 title: featureName + ' - ' + local.productName,
                 talkComments: true,
-                hideFeedback: true,
                 props: {feature, notes, photo, layer, canEdit: false},
                 cache: false
               }))
@@ -81,7 +80,6 @@ module.exports = function (app: any) {
                 return app.next.render(req, res, '/featureinfo', await pageOptions(req, {
                   title: featureName + ' - ' + local.productName,
                   talkComments: true,
-                  hideFeedback: true,
                   props: {feature, notes, photo, layer, canEdit: true}
                 }))
               } else {

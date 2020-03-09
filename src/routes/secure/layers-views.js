@@ -101,7 +101,6 @@ module.exports = function (app: any) {
             updatedByUser: await User.getUser(layer.updated_by_user_id)
           },
           talkComments: true,
-          hideFeedback: true,
           twitterCard: {
             title: name,
             description,
@@ -163,7 +162,6 @@ module.exports = function (app: any) {
             layer,
             canEdit: await Layer.allowedToModify(layer_id, user_id)
           },
-          hideFeedback: true,
           twitterCard: {
             title: name,
             description,

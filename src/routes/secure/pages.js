@@ -19,8 +19,7 @@ module.exports = function (app) {
         const pageConfig = pageConfigs[page_id]
         return app.next.render(req, res, '/pageedit', await pageOptions(req, {
           title: req.__('Edit Page') + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {page_id, pageConfig},
-          hideFeedback: true
+          props: {page_id, pageConfig}
         }))
       } else {
         return res.redirect('/unauthorized')
@@ -37,8 +36,7 @@ module.exports = function (app) {
         const pageConfig = pageConfigs.config
         return app.next.render(req, res, '/configedit', await pageOptions(req, {
           title: req.__('Edit Config') + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {page_id: 'config', pageConfig},
-          hideFeedback: true
+          props: {page_id: 'config', pageConfig}
         }))
       } else {
         return res.redirect('/unauthorized')
@@ -55,8 +53,7 @@ module.exports = function (app) {
         const pageConfig = pageConfigs.map
         return app.next.render(req, res, '/configedit', await pageOptions(req, {
           title: req.__('Edit Map Config') + ' - ' + MAPHUBS_CONFIG.productName,
-          props: {page_id: 'map', pageConfig},
-          hideFeedback: true
+          props: {page_id: 'map', pageConfig}
         }))
       } else {
         return res.redirect('/unauthorized')

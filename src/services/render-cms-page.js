@@ -94,7 +94,6 @@ module.exports = async function (app: any, config: Object, req: any, res: any) {
   return app.next.render(req, res, '/home', await pageOptions(req, {
     title,
     description,
-    props,
-    hideFeedback: config.hideFeedback
+    props
   }))
 }

@@ -74,8 +74,7 @@ module.exports = function (app: any) {
             myLayers,
             editLayer,
             groups: await Group.getAllGroups()
-          },
-          hideFeedback: true
+          }
         }))
       }
     } catch (err) {
@@ -211,8 +210,7 @@ module.exports = function (app: any) {
               popularLayers,
               myLayers,
               groups: await Group.getAllGroups()
-            },
-            hideFeedback: true
+            }
           }))
         } else {
           return res.redirect('/unauthorized')
