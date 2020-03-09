@@ -2,7 +2,7 @@
 import React from 'react'
 import Formsy from 'formsy-react'
 import Toggle from './forms/toggle'
-import { notification } from 'antd'
+import { notification, Row, Button } from 'antd'
 import Suggestions from './SearchBar/Suggestions'
 import LocaleStore from '../stores/LocaleStore'
 
@@ -50,6 +50,8 @@ export default class AddItem extends React.Component<Props, State> {
   }
 
   _timerId: any
+  suggestions: any
+  stores: any
 
   constructor (props: Props) {
     super(props)
@@ -257,10 +259,9 @@ export default class AddItem extends React.Component<Props, State> {
            />
          </Formsy>
 
-         <a className='btn waves-effect waves-light right' onClick={this.submit}>{this.props.addButtonLabel}</a>
-
+         <Button type='primary' onClick={this.submit}>{this.props.addButtonLabel}</Button>
        </div>
-       <div className='row no-margin'>
+       <Row>
          {!!this.state.suggestions.length &&
            <Suggestions
              ref={(el) => { this.suggestions = el }}
@@ -268,7 +269,7 @@ export default class AddItem extends React.Component<Props, State> {
              highlightedItem={this.state.highlightedItem}
              onSelection={this.fillInSuggestion}
            />}
-       </div>
+       </Row>
      </div>
    )
  }

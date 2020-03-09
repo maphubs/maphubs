@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification } from 'antd'
+import { message, notification, Row, Col, Divider, Button } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
@@ -108,13 +108,11 @@ export default class Layers extends MapHubsComponent<Props, State> {
         )
       } else {
         searchResults = (
-          <div className='row'>
-            <div className='col s12'>
-              <h5>{t('Search Results')}</h5>
-              <div className='divider' />
-              <p><b>{t('No Results Found')}</b></p>
-            </div>
-          </div>
+          <Row>
+            <h5>{t('Search Results')}</h5>
+            <Divider />
+            <p><b>{t('No Results Found')}</b></p>
+          </Row>
         )
       }
     }
@@ -129,16 +127,16 @@ export default class Layers extends MapHubsComponent<Props, State> {
     return (
       <ErrorBoundary>
         <Header activePage='layers' {...this.props.headerConfig} />
-        <main>
+        <main style={{margin: '10px'}}>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
-            <div className='row' style={{marginBottom: '0px'}}>
-              <div className='col l8 m7 s12'>
+            <Row>
+              <Col sm={24} md={14} lg={16}>
                 <h4 className='no-margin'>{t('Layers')}</h4>
-              </div>
-              <div className='col l3 m4 s12 right' style={{paddingRight: '15px'}}>
+              </Col>
+              <Col sm={24} md={8} lg={6} style={{paddingRight: '15px', textAlign: 'right'}}>
                 <SearchBox label={t('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
-              </div>
-            </div>
+              </Col>
+            </Row>
           </div>
           {searchResults}
           {featured}
@@ -153,9 +151,9 @@ export default class Layers extends MapHubsComponent<Props, State> {
               icon='add'
             />
           </div>
-          <div className='row center-align'>
-            <a className='btn' href='/layers/all'>{t('View All Layers')}</a>
-          </div>
+          <Row style={{paddingBottom: '20px', textAlign: 'center'}}>
+            <Button type='primary' href='/layers/all'>{t('View All Layers')}</Button>
+          </Row>
         </main>
         <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>

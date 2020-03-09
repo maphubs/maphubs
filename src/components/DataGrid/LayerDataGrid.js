@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Button } from 'antd'
 import _map from 'lodash.map'
 import MapHubsComponent from '../MapHubsComponent'
 import EditAttributesModal from './EditAttributesModal'
@@ -301,14 +302,14 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
           toolbar={<Toolbar
             enableFilter
             filterRowsButtonText={t('Filter Data')}
-                   >
+          >
             {canEdit &&
-              <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={this.onEditSelectedFeature}>
+              <Button type='primary' style={{marginLeft: '5px'}} onClick={this.onEditSelectedFeature}>
                 {t('Edit Selected')}
-              </button>}
-            <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={_this.onViewSelectedFeature}>
+              </Button>}
+            <Button type='primary' style={{marginLeft: '5px'}} onClick={_this.onViewSelectedFeature}>
               {t('View Selected')}
-            </button>
+            </Button>
             {(canEdit && presets) &&
               <EditAttributesModal
                 ref='editAttributeModal'
@@ -319,7 +320,7 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
                 t={t}
                 layer_id={layer_id}
               />}
-                   </Toolbar>}
+          </Toolbar>}
           onAddFilter={this.handleFilterChange}
           onClearFilters={this.onClearFilters}
         />

@@ -130,10 +130,10 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
                 <p>{t('You must login or sign up before saving a map.')}</p>
               </Row>
               <Row style={{textAlign: 'center'}}>
-                <a className='btn' href='/login' target='_blank' rel='noopener noreferrer'>{t('Login')}</a>
+                <Button type='primary' href='/login' target='_blank' rel='noopener noreferrer'>{t('Login')}</Button>
               </Row>
               <Row style={{textAlign: 'center'}}>
-                <a className='btn' onClick={this.recheckLogin}>{t('Retry')}</a>
+                <Button type='primary' onClick={this.recheckLogin}>{t('Retry')}</Button>
               </Row>
             </>}
         </Modal>

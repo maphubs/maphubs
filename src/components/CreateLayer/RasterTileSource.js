@@ -2,7 +2,7 @@
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import TextInput from '../forms/textInput'
-import { Row, message, notification } from 'antd'
+import { Row, message, notification, Button } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
@@ -131,7 +131,7 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
             </Row>
           </div>
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
+            <Button type='primary' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
           </div>
         </Formsy>
       </Row>

@@ -65,7 +65,7 @@ module.exports = function (app: any) {
 
       const canEdit = await Group.allowedToModify(group_id, user_id)
 
-      const image = `${urlUtil.getBaseUrl()}/group/${group_id}/image`
+      const image = `${urlUtil.getBaseUrl()}/group/${group_id}/image.png`
       const name = Locales.getLocaleStringObject(req.locale, group.name)
       const description = Locales.getLocaleStringObject(req.locale, group.description)
       return app.next.render(req, res, '/groupinfo', await pageOptions(req, {

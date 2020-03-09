@@ -30,9 +30,9 @@ export default class FeatureLocation extends React.PureComponent<Props, void> {
     const {geojson, t, locale} = this.props
     if (!geojson) {
       return (
-        <div className='row'>
+        <Row style={{marginBottom: '20px'}}>
           <h5>{t('Data Not Available')}</h5>
-        </div>
+        </Row>
       )
     }
     const centroid = turf_centroid(geojson)

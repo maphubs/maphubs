@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row } from 'antd'
 import Formsy from 'formsy-react'
 import Toggle from '../forms/toggle'
 import Select from '../forms/select'
@@ -105,39 +106,34 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
        })
      } else {
        return (
-         <div>
-           <div className='row'>
-             <p>{t('Not available for this layer')}</p>
-           </div>
-         </div>
+         <Row style={{marginBottom: '20px'}}>
+           <p>{t('Not available for this layer')}</p>
+         </Row>
        )
      }
 
      return (
-       <div>
-         <div className='row'>
-           <Formsy ref='form' onChange={this.onFormChange}>
-             <div className='row' style={{marginTop: '10px', marginBottom: '0px', padding: '0 .75rem'}}>
-               <b>{t('Enable Labels')}</b>
-               <Toggle
-                 name='enabled' labelOff={t('Off')} labelOn={t('On')} className='col s12'
-                 checked={this.state.enabled}
-               />
-             </div>
-             <div className='row no-margin'>
-               <Select
-                 name='field' id='label-field-select' label={t('Label Field')} options={fieldOptions}
-                 className='col s12 label-field no-margin'
-                 value={this.state.field} startEmpty={!this.state.field}
-                 dataPosition='right' dataTooltip={t('Data field to use in map labels.')}
-                 required
-               />
-             </div>
-           </Formsy>
-           {(enabled && !field) &&
-             <p style={{color: 'red'}}>{t('Please Select a Label Field')}</p>}
-         </div>
-       </div>
+       <Row style={{marginBottom: '20px'}}>
+         <Formsy ref='form' onChange={this.onFormChange}>
+           <Row style={{marginTop: '10px', marginBottom: '0px', padding: '0 .75rem'}}>
+             <b>{t('Enable Labels')}</b>
+             <Toggle
+               name='enabled' labelOff={t('Off')} labelOn={t('On')}
+               checked={this.state.enabled}
+             />
+           </Row>
+           <Row>
+             <Select
+               name='field' id='label-field-select' label={t('Label Field')} options={fieldOptions}
+               value={this.state.field} startEmpty={!this.state.field}
+               dataPosition='right' dataTooltip={t('Data field to use in map labels.')}
+               required
+             />
+           </Row>
+         </Formsy>
+         {(enabled && !field) &&
+           <p style={{color: 'red'}}>{t('Please Select a Label Field')}</p>}
+       </Row>
      )
    }
 }

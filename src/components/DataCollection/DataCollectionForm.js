@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import {Button} from 'antd'
 import Formsy from 'formsy-react'
 import FormField from './FormField'
 import MapHubsComponent from '../MapHubsComponent'
@@ -68,7 +69,7 @@ export default class DataCollectionForm extends MapHubsComponent<Props, State> {
     if (showSubmit) {
       submit = (
         <div className='right'>
-          <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.state.submitText}</button>
+          <Button type='primary' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.state.submitText}</Button>
         </div>
       )
     }

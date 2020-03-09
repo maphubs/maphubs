@@ -8,7 +8,7 @@ import LocaleStore from '../stores/LocaleStore'
 import FileUpload from '../components/forms/FileUpload'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import { Steps, Row, notification, message } from 'antd'
+import { Steps, Row, notification, message, Button } from 'antd'
 
 const Step = Steps.Step
 
@@ -98,10 +98,10 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
           <Header {...this.props.headerConfig} />
           <main>
             <div className='container'>
-              <div className='row'>
+              <Row style={{marginBottom: '20px'}}>
                 <h5>{t('Please Join a Group')}</h5>
                 <p>{t('Please create or join a group before creating a layer.')}</p>
-              </div>
+              </Row>
             </div>
           </main>
         </ErrorBoundary>
@@ -125,7 +125,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
       importComplete = (
         <Row>
           <p>{t('Import Complete')}</p>
-          <a className='btn' href={`/lyr/${this.state.layer_id}`}>{t('Go to Layer')}</a>
+          <Button type='primary' href={`/lyr/${this.state.layer_id}`}>{t('Go to Layer')}</Button>
         </Row>
       )
     }

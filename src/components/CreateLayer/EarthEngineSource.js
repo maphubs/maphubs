@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
-import { Row, message, notification } from 'antd'
+import { Row, message, notification, Button } from 'antd'
 import TextInput from '../forms/textInput'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
@@ -87,7 +87,7 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
             <p>{t('Earth Engine Source')}</p>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='image_id' label={t('Image ID/Asset ID')} icon='info' className='col s12' validations='maxLength:200' validationErrors={{
+                name='image_id' label={t('Image ID/Asset ID')} icon='info' validations='maxLength:200' validationErrors={{
                   maxLength: t('Must be 200 characters or less.')
                 }} length={200}
                 dataPosition='top' dataTooltip={t('EarthEngine Image ID or Asset ID')}
@@ -102,7 +102,7 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
             </Row>
           </div>
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
+            <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
           </div>
         </Formsy>
       </Row>

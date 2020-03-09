@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row, Divider } from 'antd'
 import CardCarousel from './CardCarousel'
 import MapHubsComponent from '../MapHubsComponent'
 
@@ -21,10 +22,9 @@ export default class CardCollection extends MapHubsComponent<Props, void> {
     const {title, viewAllLink} = this.props
 
     return (
-      <div className='row'>
-        <div className='col s12' style={{position: 'relative'}}>
-          {title &&
-            <h5>{title}</h5>}
+      <Row style={{marginBottom: '20px'}}>
+        <div style={{position: 'relative'}}>
+          {title && <h5>{title}</h5>}
           {viewAllLink &&
             <a
               style={{position: 'absolute', right: '5px', top: '14px'}}
@@ -32,10 +32,10 @@ export default class CardCollection extends MapHubsComponent<Props, void> {
             >
               {t('View All')}
             </a>}
-          <div className='divider' />
+          <Divider />
           <CardCarousel cards={this.props.cards} infinite={false} t={t} />
         </div>
-      </div>
+      </Row>
     )
   }
 }

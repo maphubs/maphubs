@@ -41,7 +41,7 @@ export default class Footer extends React.Component<Props, void> {
     return (
       <footer className='page-footer'>
         <div className='container'>
-          <Row justify='left' align='top' style={{paddingTop: '15px'}}>
+          <Row justify='start' align='top' style={{paddingTop: '15px'}}>
             <Col sm={24} lg={12}>
               {showMapForEnvironmentMoabiLogo &&
                 <ul style={{marginTop: '0px'}}>

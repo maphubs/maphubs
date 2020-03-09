@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { Row, message } from 'antd'
+import { Row, message, Button } from 'antd'
 import UserStore from '../../stores/UserStore'
 import UserActions from '../../actions/UserActions'
 import Formsy from 'formsy-react'
@@ -98,7 +98,6 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
                 id: 'Judul Peta',
                 pt: 'Título do mapa'
               }}
-              className='col s12'
               validations='maxLength:100' validationErrors={{
                 maxLength: t('Must be 100 characters or less.')
               }} length={100}
@@ -109,13 +108,11 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
             <SelectGroup groups={groups} group_id={owned_by_group_id} type='map' canChangeGroup={!editing} editing={editing} />
           </Row>
           <Row style={{width: '100%'}}>
-            <div className='col s12 valign-wrapper'>
-              <button
-                type='submit' className='valign waves-effect waves-light btn' style={{margin: 'auto'}}
-                disabled={(!canSave || saving)}
-              >{t('Save Map')}
-              </button>
-            </div>
+            <Button
+              htmlType='submit' style={{margin: 'auto'}}
+              disabled={(!canSave || saving)}
+            >{t('Save Map')}
+            </Button>
           </Row>
 
         </Formsy>
@@ -127,10 +124,10 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
             <p>{t('You must login or sign up before saving a map.')}</p>
           </Row>
           <Row style={{textAlign: 'center'}}>
-            <a className='btn' href='/login' target='_blank' rel='noopener noreferrer'>{t('Login')}</a>
+            <Button type='primary' href='/login' target='_blank' rel='noopener noreferrer'>{t('Login')}</Button>
           </Row>
           <Row style={{textAlign: 'center'}}>
-            <a className='btn' onClick={this.recheckLogin}>{t('Retry')}</a>
+            <Button type='primary' onClick={this.recheckLogin}>{t('Retry')}</Button>
           </Row>
         </div>
       )

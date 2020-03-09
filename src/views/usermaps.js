@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row } from 'antd'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import CardCarousel from '../components/CardCarousel/CardCarousel'
@@ -68,22 +69,20 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
     let myMaps = ''
     if (!this.props.maps || this.props.maps.length === 0) {
       myMaps = (
-        <div className='row' style={{height: 'calc(100% - 100px)'}}>
+        <Row style={{height: 'calc(100% - 100px)', marginBottom: '20px'}}>
           <div className='valign-wrapper' style={{height: '100%'}}>
             <div className='valign align-center center-align' style={{width: '100%'}}>
               <h5>{t('Click the button below to create your first map')}</h5>
             </div>
           </div>
-        </div>
+        </Row>
       )
     } else {
       myMaps = (
-        <div className='row'>
-          <div className='col s12'>
-            <h4>{t('My Maps')}</h4>
-            <CardCarousel infinite={false} cards={cards} t={this.t} />
-          </div>
-        </div>
+        <Row style={{marginBottom: '20px'}}>
+          <h4>{t('My Maps')}</h4>
+          <CardCarousel infinite={false} cards={cards} t={this.t} />
+        </Row>
       )
     }
 

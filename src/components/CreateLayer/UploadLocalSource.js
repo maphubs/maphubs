@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import UppyFileUpload from '../forms/UppyFileUpload'
-import { Row, notification, message } from 'antd'
+import { Row, notification, message, Button } from 'antd'
 import Map from '../Map'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
@@ -226,7 +226,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
         </Row>
         {multipleShapefilesDisplay}
         <div className='right'>
-          <button className='waves-effect waves-light btn' disabled={!canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
+          <Button type='primary' disabled={!canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
         </div>
       </Row>
     )

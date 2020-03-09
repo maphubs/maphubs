@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { Row } from 'antd'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -48,9 +49,9 @@ export default class Terms extends MapHubsComponent<Props, void> {
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main className='container'>
-          <div className='row'>
+          <Row style={{marginBottom: '20px'}}>
             <h4>{MAPHUBS_CONFIG.productName + ' ' + t('Terms of Service')}</h4>
-          </div>
+          </Row>
 
           <p>
             By using this web site (&quot;Service&quot;), or any services of {MAPHUBS_CONFIG.productName}, you are agreeing to be bound by the following terms and conditions (&quot;Terms of Service&quot;). IF YOU ARE ENTERING INTO THIS AGREEMENT ON BEHALF OF A COMPANY OR OTHER LEGAL ENTITY, YOU REPRESENT THAT YOU HAVE THE AUTHORITY TO BIND SUCH ENTITY, ITS AFFILIATES AND ALL USERS WHO ACCESS OUR SERVICES THROUGH YOUR ACCOUNT TO THESE TERMS AND CONDITIONS, IN WHICH CASE THE TERMS &quot;YOU&quot; OR &quot;YOUR&quot; SHALL REFER TO SUCH ENTITY, ITS AFFILIATES AND USERS ASSOCIATED WITH IT. IF YOU DO NOT HAVE SUCH AUTHORITY, OR IF YOU DO NOT AGREE WITH THESE TERMS AND CONDITIONS, YOU MUST NOT ACCEPT THIS AGREEMENT AND MAY NOT USE THE SERVICES.

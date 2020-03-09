@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { message, notification } from 'antd'
+import { message, notification, Row } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
@@ -106,9 +106,9 @@ export default class SentinelSource extends MapHubsComponent<Props, State> {
 
   render () {
     return (
-      <div className='row'>
+      <Row>
         <p>Coming Soon!</p>
-      </div>
+      </Row>
     )
   }
 }

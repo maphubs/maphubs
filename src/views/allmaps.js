@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification } from 'antd'
+import { message, notification, Row, Divider } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
@@ -116,13 +116,11 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
         )
       } else {
         searchResults = (
-          <div className='row'>
-            <div className='col s12'>
-              <h5>{t('Search Results')}</h5>
-              <div className='divider' />
-              <p><b>{t('No Results Found')}</b></p>
-            </div>
-          </div>
+          <Row style={{marginBottom: '20px'}}>
+            <h5>{t('Search Results')}</h5>
+            <Divider />
+            <p><b>{t('No Results Found')}</b></p>
+          </Row>
         )
       }
     }

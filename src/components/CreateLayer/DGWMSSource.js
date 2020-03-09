@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { Row, message, notification } from 'antd'
+import { Row, message, notification, Button } from 'antd'
 import TextInput from '../forms/textInput'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
@@ -106,14 +106,14 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
             <p>DigitalGlobe <a href='https://discover.digitalglobe.com/' target='_blank' rel='noopener noreferrer'>https://discover.digitalglobe.com/</a></p>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='featureid' label={t('DG Image ID')} icon='info' className='col s12'
+                name='featureid' label={t('DG Image ID')} icon='info'
                 dataPosition='top' dataTooltip={t('DigitalGlobe Image ID / Legacy ID')}
                 required
               />
             </Row>
           </div>
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
+            <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
           </div>
         </Formsy>
       </Row>

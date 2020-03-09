@@ -2,7 +2,7 @@
 import React from 'react'
 import FileUpload from '../forms/FileUpload'
 import Map from '../Map'
-import { message, notification } from 'antd'
+import { message, notification, Row, Button } from 'antd'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
 import RadioModal from '../RadioModal'
@@ -202,22 +202,22 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
     }
 
     return (
-      <div className='row'>
-        <div>
+      <Row>
+        <Row style={{marginBottom: '20px'}}>
           <p>{t('Upload File: Shapefile(Zip), GeoJSON, KML, GPX (tracks or waypoints), or CSV (with Lat/Lon fields)')}</p>
-          <div className='row'>
+          <Row style={{marginBottom: '20px'}}>
             <FileUpload onUpload={this.onUpload} onFinishTx={this.onProcessingStart} onError={this.onUploadError} action={url} />
-          </div>
-          <div className='row'>
+          </Row>
+          <Row style={{marginBottom: '20px'}}>
             {largeDataMessage}
             {map}
-          </div>
+          </Row>
           {multipleShapefiles}
-        </div>
-        <div className='right'>
-          <button className='waves-effect waves-light btn' disabled={!this.state.canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Replace Layer Data')}</button>
-        </div>
-      </div>
+        </Row>
+        <Row style={{marginBottom: '20px'}}>
+          <Button type='primary' disabled={!this.state.canSubmit} onClick={this.onSubmit}>{t('Replace Layer Data')}</Button>
+        </Row>
+      </Row>
     )
   }
 }

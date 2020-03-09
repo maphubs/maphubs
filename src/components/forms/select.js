@@ -4,7 +4,6 @@ import {withFormsy} from 'formsy-react'
 import { Select, Row, Tooltip } from 'antd'
 import find from 'lodash.find'
 import result from 'lodash.result'
-import MapHubsComponent from '../MapHubsComponent'
 
 const { Option } = Select
 
@@ -12,7 +11,6 @@ type Props = {|
   emptyText: string,
   value: string,
   name: string,
-  className: string,
   options: Array<Object>,
   dataTooltip: string,
   dataDelay: number,
@@ -35,9 +33,7 @@ type State = {
   note: string
 }
 
-class SelectFormItem extends MapHubsComponent<Props, State> {
-  props: Props
-
+class SelectFormItem extends React.Component<Props, State> {
   static defaultProps = {
     startEmpty: true,
     emptyText: 'Choose an Option',
@@ -95,55 +91,53 @@ class SelectFormItem extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const { id, name, options, icon, label, className, dataTooltip, dataPosition, errorMessage, successText, emptyText, showSearch, value } = this.props
+    const { id, name, options, icon, label, dataTooltip, dataPosition, errorMessage, successText, emptyText, showSearch, value } = this.props
     const { note } = this.state
 
     /* eslint-disable react/no-danger */
 
     return (
-      <div className={className}>
-        <Tooltip
-          title={dataTooltip}
-          placement={dataPosition}
-        >
-          <div ref='selectwrapper' className='input-field no-margin' id={id}>
-            {icon &&
-              <i className='material-icons prefix'>{icon}</i>}
-            {label &&
-              <div className='row' style={{height: '10px'}}>
-                <label htmlFor={name} data-error={errorMessage} data-success={successText}>{label}</label>
-              </div>}
-            <Row>
-              <Select
-                showSearch={showSearch}
-                defaultValue={value}
-                onChange={this.handleSelectChange}
-                allowClear
-                placeholder={emptyText}
-                style={{ width: '100%' }}
-                filterOption={(input, option) => {
-                  // eslint-disable-next-line unicorn/prefer-includes
-                  return option.props.children
-                    .toLowerCase()
-                    .indexOf(input.toLowerCase()) >= 0
-                }}
-              >
-                {options.map((option) =>
-                  <Option key={option.value} value={option.value}>{option.label}</Option>
-                )}
-              </Select>
-              <style jsx global>{`
-                .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
-                  color: #FFF;
-                }
-              `}
-              </style>
-            </Row>
-          </div>
-          {note &&
-            <div dangerouslySetInnerHTML={{__html: note}} />}
-        </Tooltip>
-      </div>
+      <Tooltip
+        title={dataTooltip}
+        placement={dataPosition}
+      >
+        <div ref='selectwrapper' className='input-field no-margin' id={id}>
+          {icon &&
+            <i className='material-icons prefix'>{icon}</i>}
+          {label &&
+            <div className='row' style={{height: '10px'}}>
+              <label htmlFor={name} data-error={errorMessage} data-success={successText}>{label}</label>
+            </div>}
+          <Row>
+            <Select
+              showSearch={showSearch}
+              defaultValue={value}
+              onChange={this.handleSelectChange}
+              allowClear
+              placeholder={emptyText}
+              style={{ width: '100%' }}
+              filterOption={(input, option) => {
+                // eslint-disable-next-line unicorn/prefer-includes
+                return option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }}
+            >
+              {options.map((option) =>
+                <Option key={option.value} value={option.value}>{option.label}</Option>
+              )}
+            </Select>
+            <style jsx global>{`
+              .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
+                color: #FFF;
+              }
+            `}
+            </style>
+          </Row>
+        </div>
+        {note &&
+          <div dangerouslySetInnerHTML={{__html: note}} />}
+      </Tooltip>
     )
   }
 }

@@ -166,7 +166,7 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
                   label={{
                     en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome', id: 'Nama', pt: 'Nome'
                   }}
-                  icon='info' className='col s12' validations='maxLength:100' validationErrors={{
+                  icon='info' validations='maxLength:100' validationErrors={{
                     maxLength: t('Must be 100 characters or less.')
                   }} length={100}
                   dataPosition='top' dataTooltip={t('Short Descriptive Name for the Group')}
@@ -184,7 +184,7 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
                     id: 'Deskripsi',
                     pt: 'Descrição'
                   }}
-                  icon='description' className='col s12' validations='maxLength:500' validationErrors={{
+                  icon='description' validations='maxLength:500' validationErrors={{
                     maxLength: t('Description must be 500 characters or less.')
                   }} length={500}
                   dataPosition='top' dataTooltip={t('Brief Description of the Group')}

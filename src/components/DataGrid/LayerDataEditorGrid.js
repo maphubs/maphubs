@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Button } from 'antd'
 import _map from 'lodash.map'
 import MapHubsComponent from '../MapHubsComponent'
 import CheckboxFormatter from './CheckboxFormatter'
@@ -368,9 +369,9 @@ class LayerDataEditorGrid extends MapHubsComponent<Props, State> {
               enableFilter
               filterRowsButtonText={t('Filter Data')}
             >
-              <button type='button' style={{marginLeft: '5px'}} className='btn' onClick={_this.onViewSelectedFeature}>
+              <Button type='button' style={{marginLeft: '5px'}} onClick={_this.onViewSelectedFeature}>
                 {t('View Selected')}
-              </button>
+              </Button>
             </Toolbar>
           }
           onAddFilter={this.handleFilterChange}

@@ -8,7 +8,7 @@ import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
 import superagent from 'superagent'
-import { Row, message, notification } from 'antd'
+import { Row, message, notification, Button } from 'antd'
 // import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 // const debug = DebugService('UploadLocalSource')
 import getConfig from 'next/config'
@@ -163,7 +163,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
           </Row>
         </div>
         <div className='right'>
-          <button className='waves-effect waves-light btn' disabled={!canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
+          <Button type='primary' disabled={!canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
         </div>
       </Row>
     )

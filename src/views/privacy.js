@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row } from 'antd'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -43,46 +44,46 @@ export default class Privacy extends MapHubsComponent<Props, void> {
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main className='container' lang='en'>
-          <div className='row'>
+          <Row>
             <h4>{MAPHUBS_CONFIG.productName + ' ' + t('Privacy Policy')}</h4>
             <p>
-  We respect your privacy and will not share your information other than in the circumstances outlined below.
+              We respect your privacy and will not share your information other than in the circumstances outlined below.
             </p>
             <h5>General Information</h5>
             <p>
-  We collect the e-mail addresses of those who communicate with us via e-mail, aggregate information on what pages consumers access or visit, and information volunteered by the consumer (such as survey information and/or site registrations). We may collect and store your Internet Protocol address, and information about your computer/mobile device, such as the model, and web browser version.
+              We collect the e-mail addresses of those who communicate with us via e-mail, aggregate information on what pages consumers access or visit, and information volunteered by the consumer (such as survey information and/or site registrations). We may collect and store your Internet Protocol address, and information about your computer/mobile device, such as the model, and web browser version.
             </p>
             <p>
-  The information we collect is used to improve the content of our Web pages and the quality of our service, and is not shared with or sold to other organizations for commercial purposes, except to provide products or services you&#39;ve requested, when we have your permission, or under the following circumstances:
+              The information we collect is used to improve the content of our Web pages and the quality of our service, and is not shared with or sold to other organizations for commercial purposes, except to provide products or services you&#39;ve requested, when we have your permission, or under the following circumstances:
             </p>
             <ol>
               <li>
-  It is necessary to share information in order to investigate, prevent, or take action regarding illegal activities, suspected fraud, situations involving potential threats to the physical safety of any person, violations of Terms of Service, or as otherwise required by law.
+                It is necessary to share information in order to investigate, prevent, or take action regarding illegal activities, suspected fraud, situations involving potential threats to the physical safety of any person, violations of Terms of Service, or as otherwise required by law.
               </li>
               <li>
-  We transfer information about you if {MAPHUBS_CONFIG.productName} is acquired by or merged with another company. In this event, {MAPHUBS_CONFIG.productName} will notify you before information about you is transferred and becomes subject to a different privacy policy.
+                We transfer information about you if {MAPHUBS_CONFIG.productName} is acquired by or merged with another company. In this event, {MAPHUBS_CONFIG.productName} will notify you before information about you is transferred and becomes subject to a different privacy policy.
               </li>
             </ol>
             <h5>Information Gathering and Usage</h5>
             <p>
-  When you register for {MAPHUBS_CONFIG.productName} we ask for information such as your name, and email address. {MAPHUBS_CONFIG.productName} uses collected information for the following general purposes: products and services provision, identification and authentication, services improvement, contact, and research.
+              When you register for {MAPHUBS_CONFIG.productName} we ask for information such as your name, and email address. {MAPHUBS_CONFIG.productName} uses collected information for the following general purposes: products and services provision, identification and authentication, services improvement, contact, and research.
             </p>
             <p>
-  In order to better understand our users, we have implemented Google Analytics features based on Display Advertising  (Google Analytics Demographics and Interest Reporting). You can opt-out of Google Analytics for Display Advertising and customize Google Display Network ads using the Ads Settings. In addition, you can use the Google Analytics Opt-Out Browser Add-on to disable tracking by Google Analytics.
+              In order to better understand our users, we have implemented Google Analytics features based on Display Advertising  (Google Analytics Demographics and Interest Reporting). You can opt-out of Google Analytics for Display Advertising and customize Google Display Network ads using the Ads Settings. In addition, you can use the Google Analytics Opt-Out Browser Add-on to disable tracking by Google Analytics.
             </p>
             <h5>Cookies</h5>
             <p>
-  Cookies are required to use the {MAPHUBS_CONFIG.productName} service. A cookie is a small amount of data, which often includes an anonymous unique identifier, that is sent to your browser from a web site&#39;s computers and stored on your computer&#39;s hard drive.
+              Cookies are required to use the {MAPHUBS_CONFIG.productName} service. A cookie is a small amount of data, which often includes an anonymous unique identifier, that is sent to your browser from a web site&#39;s computers and stored on your computer&#39;s hard drive.
             </p>
             <p>
-  We use cookies to record current session information, but do not use permanent cookies. You are required to re-login to your {MAPHUBS_CONFIG.productName} account after a certain period of time has elapsed to protect you against others accidentally accessing your account contents.
+              We use cookies to record current session information, but do not use permanent cookies. You are required to re-login to your {MAPHUBS_CONFIG.productName} account after a certain period of time has elapsed to protect you against others accidentally accessing your account contents.
             </p>
             <p>
-  Some third-party services that we use, such as Google Analytics, may place their own cookies in your browser. This Privacy Policy covers use of cookies by {MAPHUBS_CONFIG.productName} only and not the use of cookies by third parties.
+              Some third-party services that we use, such as Google Analytics, may place their own cookies in your browser. This Privacy Policy covers use of cookies by {MAPHUBS_CONFIG.productName} only and not the use of cookies by third parties.
             </p>
             <h5>Third Party Services</h5>
             <p>
-  The user login and authentication system for {MAPHUBS_CONFIG.productName} is provided by Auth0 https://auth0.com/.
+              The user login and authentication system for {MAPHUBS_CONFIG.productName} is provided by Auth0 https://auth0.com/.
             </p>
             <p>
               {MAPHUBS_CONFIG.productName} layers may link to external map services services hosted by other organizations. This Privacy Policy does not cover usage information collected by map services external to {MAPHUBS_CONFIG.productName}.
@@ -93,7 +94,7 @@ export default class Privacy extends MapHubsComponent<Props, void> {
             </p>
             <h5>Data security</h5>
             <p>
-  We offer encryption (HTTPS/TLS) to protect data transmitted to and from our site, and require it for login and passwords. However, no data transmission over the Internet is 100% secure, so we can’t guarantee security. You use {MAPHUBS_CONFIG.productName} at your own risk, and you’re responsible for taking reasonable measures to secure your account (like using a strong password).
+              We offer encryption (HTTPS/TLS) to protect data transmitted to and from our site, and require it for login and passwords. However, no data transmission over the Internet is 100% secure, so we can’t guarantee security. You use {MAPHUBS_CONFIG.productName} at your own risk, and you’re responsible for taking reasonable measures to secure your account (like using a strong password).
             </p>
             <h5>Disclosure</h5>
             <p>
@@ -101,10 +102,10 @@ export default class Privacy extends MapHubsComponent<Props, void> {
             </p>
             <h5>EU and Swiss Residents</h5>
             <p>
-  If you choose to provide {MAPHUBS_CONFIG.productName} with your information, you consent to the transfer and storage of that information on our servers located in the United States and Germany.
+              If you choose to provide {MAPHUBS_CONFIG.productName} with your information, you consent to the transfer and storage of that information on our servers located in the United States and Germany.
             </p>
             <p>
-  For European Union and Swiss residents, any questions or concerns regarding the use or disclosure of your information should be directed to {MAPHUBS_CONFIG.productName} by sending an email to {MAPHUBS_CONFIG.contactEmail}. We will investigate and attempt to resolve complaints and disputes regarding use and disclosure of your information in accordance with this Privacy Policy. For complaints that cannot be resolved, we have committed to cooperate with data protection authorities located within Switzerland or the European Union (or their authorized representatives).
+              For European Union and Swiss residents, any questions or concerns regarding the use or disclosure of your information should be directed to {MAPHUBS_CONFIG.productName} by sending an email to {MAPHUBS_CONFIG.contactEmail}. We will investigate and attempt to resolve complaints and disputes regarding use and disclosure of your information in accordance with this Privacy Policy. For complaints that cannot be resolved, we have committed to cooperate with data protection authorities located within Switzerland or the European Union (or their authorized representatives).
             </p>
             <h5>Emails</h5>
             <p>
@@ -116,10 +117,10 @@ export default class Privacy extends MapHubsComponent<Props, void> {
             </p>
             <h5>Questions</h5>
             <p>
-  Any questions about this Privacy Policy should be addressed to {MAPHUBS_CONFIG.contactEmail}.
+              Any questions about this Privacy Policy should be addressed to {MAPHUBS_CONFIG.contactEmail}.
             </p>
 
-          </div>
+          </Row>
 
         </main>
         <Footer t={t} {...this.props.footerConfig} />

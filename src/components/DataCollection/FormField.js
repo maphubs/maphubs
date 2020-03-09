@@ -58,7 +58,6 @@ export default class FormField extends React.Component<Props, void> {
           name={preset.tag} id={'select-' + preset.tag}
           label={t(preset.label)}
           options={options}
-          className='no-margin'
           startEmpty={!value}
           required={preset.isRequired}
           value={value}

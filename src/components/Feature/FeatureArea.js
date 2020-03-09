@@ -1,5 +1,6 @@
 //  @flow
 import React from 'react'
+import { Row } from 'antd'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 import turf_area from '@turf/area'
 import {IntlProvider, FormattedNumber} from 'react-intl'
@@ -133,7 +134,7 @@ export default class FeatureArea extends MapHubsPureComponent<Props, void> {
 
       return (
         <div>
-          <div className='row no-margin'>
+          <Row>
             <span>
               <IntlProvider locale={this.state.locale}>
                 <FormattedNumber value={value} />
@@ -145,15 +146,15 @@ export default class FeatureArea extends MapHubsPureComponent<Props, void> {
                 <FormattedNumber value={featureAreaHA} />
               </IntlProvider>&nbsp;ha
             </span>
-          </div>
-          <div className='row no-margin'>
+          </Row>
+          <Row>
             <span>
               (or &nbsp;
               <IntlProvider locale={this.state.locale}>
                 <FormattedNumber value={comparison.val} />
               </IntlProvider>&nbsp;{this.t(comparison.name)})
             </span>
-          </div>
+          </Row>
         </div>
       )
     }

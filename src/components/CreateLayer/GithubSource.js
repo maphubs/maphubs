@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { Row } from 'antd'
+import { Row, Button } from 'antd'
 import Formsy from 'formsy-react'
 import TextInput from '../forms/textInput'
 import LayerStore from '../../stores/layer-store'
@@ -75,7 +75,7 @@ export default class GithubSource extends MapHubsComponent<Props, State> {
             </Row>
           </div>
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>Save and Continue</button>
+            <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>Save and Continue</Button>
           </div>
         </Formsy>
       </Row>

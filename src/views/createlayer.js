@@ -144,10 +144,10 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
           <Header {...headerConfig} />
           <main>
             <div className='container'>
-              <div className='row'>
+              <Row style={{marginBottom: '20px'}}>
                 <h5>{t('Please Join a Group')}</h5>
                 <p>{t('Please create or join a group before creating a layer.')}</p>
-              </div>
+              </Row>
             </div>
           </main>
         </div>

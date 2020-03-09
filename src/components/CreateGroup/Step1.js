@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { Row, message, notification } from 'antd'
+import { Row, message, notification, Button } from 'antd'
 import MultiTextArea from '../forms/MultiTextArea'
 import TextInput from '../forms/textInput'
 import MultiTextInput from '../forms/MultiTextInput'
@@ -193,7 +193,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   label={{
                     en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome', id: 'Nama', pt: 'Nome'
                   }}
-                  icon='info' className='col s12' validations='maxLength:100' validationErrors={{
+                  icon='info' validations='maxLength:100' validationErrors={{
                     maxLength: t('Must be 100 characters or less.')
                   }} length={100}
                   dataPosition='top' dataTooltip={t('Short Descriptive Name for the Group')}
@@ -211,7 +211,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                     id: 'Deskripsi',
                     pt: 'Descrição'
                   }}
-                  icon='description' className='col s12' validations='maxLength:500' validationErrors={{
+                  icon='description' validations='maxLength:500' validationErrors={{
                     maxLength: t('Description must be 500 characters or less.')
                   }} length={500}
                   dataPosition='top' dataTooltip={t('Brief Description of the Group')}
@@ -220,7 +220,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
               </Row>
               <Row style={{marginBottom: '20px'}}>
                 <TextInput
-                  name='location' label='Location' icon='navigation' className='col s12' validations='maxLength:100' validationErrors={{
+                  name='location' label='Location' icon='navigation' validations='maxLength:100' validationErrors={{
                     maxLength: t('Location must be 100 characters or less.')
                   }} length={100}
                   dataPosition='top' dataTooltip={t('Country or City Where the Group is Located')}
@@ -229,15 +229,15 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
               </Row>
               <Row style={{marginBottom: '20px'}}>
                 <Toggle
-                  name='published' labelOff={t('Draft')} labelOn={t('Published')} defaultChecked className='col s12'
+                  name='published' labelOff={t('Draft')} labelOn={t('Published')} defaultChecked
                   dataPosition='top' dataTooltip={t('Include in Public Group Listings')}
                 />
               </Row>
               <div className='left'>
-                <a className='waves-effect waves-light redirect btn' onClick={this.handleCancel}><i className='material-icons left'>delete</i>{t('Cancel')}</a>
+                <Button type='danger' onClick={this.handleCancel}><i className='material-icons left'>delete</i>{t('Cancel')}</Button>
               </div>
               <div className='right'>
-                <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
+                <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
               </div>
             </Formsy>
           </Row>

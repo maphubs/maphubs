@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
+import { Row, Col } from 'antd'
 import AdvancedLayerSettings from './AdvancedLayerSettings'
-import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
 
 import type {GLStyle} from '../../types/mapbox-gl-style'
@@ -19,7 +19,8 @@ type Props = {|
   style: Object,
   legendCode: string,
   layer: Object,
-  showAdvanced: boolean
+  showAdvanced: boolean,
+  t: Function
 |}
 
 type State = {
@@ -28,7 +29,7 @@ type State = {
   showLegendEditor?: boolean
 }
 
-export default class OpacityChooser extends MapHubsComponent<Props, State> {
+export default class OpacityChooser extends React.Component<Props, State> {
   static defaultProps = {
     value: 100
   }
@@ -99,29 +100,9 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const { t } = this
-    const { showStyleEditor, showLegendEditor } = this.state
-    let advanced = ''
-    if (this.props.showAdvanced) {
-      advanced = (
-        <li>
-          <div className='collapsible-header'>
-            <i className='material-icons'>code</i>{t('Advanced')}
-          </div>
-          <div className='collapsible-body'>
-            <AdvancedLayerSettings layer={this.props.layer} style={this.props.style} onChange={this.onAdvancedSettingsChange} />
-            <div className='row'>
-              <div className='col s12, m6'>
-                <button onClick={this.showStyleEditor} className='btn'>{t('Style')}</button>
-              </div>
-              <div className='col s12, m6'>
-                <button onClick={this.showLegendEditor} className='btn'>{t('Legend')}</button>
-              </div>
-            </div>
-          </div>
-        </li>
-      )
-    }
+    const { showAdvanced, style, legendCode, t } = this.props
+    const { showStyleEditor, showLegendEditor, opacity } = this.state
+
     return (
       <div>
         <ul ref='collapsible' className='collapsible' data-collapsible='accordion'>
@@ -130,27 +111,45 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
               <i className='material-icons'>opacity</i>{t('Opacity')}
             </div>
             <div className='collapsible-body'>
-              <div className='row'>
+              <Row style={{marginBottom: '20px'}}>
                 <form action='#'>
                   <p className='range-field'>
-                    <input type='range' id='opacity' min='0' max='100' value={this.state.opacity} onChange={this.onChange} />
+                    <input type='range' id='opacity' min='0' max='100' value={opacity} onChange={this.onChange} />
                   </p>
                 </form>
-              </div>
-              <div className='row valign-wrapper'>
-                <h5 className='valign' style={{margin: 'auto'}}>
-                  {this.state.opacity}%
-                </h5>
-              </div>
+              </Row>
+              <Row style={{marginBottom: '20px'}}>
+                <div className='valign-wrapper'>
+                  <h5 className='valign' style={{margin: 'auto'}}>
+                    {opacity}%
+                  </h5>
+                </div>
+              </Row>
             </div>
           </li>
-          {advanced}
+          {showAdvanced &&
+            <li>
+              <div className='collapsible-header'>
+                <i className='material-icons'>code</i>{t('Advanced')}
+              </div>
+              <div className='collapsible-body'>
+                <AdvancedLayerSettings layer={this.props.layer} style={style} onChange={this.onAdvancedSettingsChange} />
+                <Row style={{marginBottom: '20px'}}>
+                  <Col sm={24} md={12}>
+                    <button onClick={this.showStyleEditor} className='btn'>{t('Style')}</button>
+                  </Col>
+                  <Col sm={24} md={12}>
+                    <button onClick={this.showLegendEditor} className='btn'>{t('Legend')}</button>
+                  </Col>
+                </Row>
+              </div>
+            </li>}
 
         </ul>
         <CodeEditor
           visible={showStyleEditor}
           id='raster-style-editor' mode='json'
-          code={JSON.stringify(this.props.style, undefined, 2)}
+          code={JSON.stringify(style, undefined, 2)}
           title={t('Editing Layer Style')}
           onSave={this.onCodeStyleChange}
           onCancel={this.hideStyleEditor}
@@ -159,7 +158,7 @@ export default class OpacityChooser extends MapHubsComponent<Props, State> {
         <CodeEditor
           visible={showLegendEditor}
           id='raster-legend-editor' mode='html'
-          code={this.props.legendCode}
+          code={legendCode}
           title={t('Edit Layer Legend')}
           onSave={this.onLegendChange}
           onCancel={this.hideLegendEditor}

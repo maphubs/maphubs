@@ -16,7 +16,7 @@ import GetNameField from '../components/Map/Styles/get-name-field'
 import ErrorBoundary from '../components/ErrorBoundary'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {AddPhotoPointStoreState} from '../stores/AddPhotoPointStore'
-import { Modal, message, notification } from 'antd'
+import { Modal, message, notification, Row, Col, Button } from 'antd'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { confirm } = Modal
@@ -170,36 +170,38 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
     if (this.state.geoJSON) {
       // if we have a point show the preview map and data fields
       dataReview = (
-
-        <div className='row'>
-          <div className='col m6 s12'>
-            <img style={{width: '100%', height: 'auto'}} src={this.state.image} alt='uploaded photo' />
-          </div>
-          <div className='col m6 s12'>
-            <div style={{width: '400px'}}>
-              <Map
-                id='add-photo-point-map'
-                style={{width: '100%', height: '400px'}}
-                showFeatureInfoEditButtons={false}
-                showLogo
-                mapConfig={this.props.mapConfig}
-                data={this.state.geoJSON}
-                t={this.t}
-                primaryColor={MAPHUBS_CONFIG.primaryColor}
-                logoSmall={MAPHUBS_CONFIG.logoSmall}
-                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-              />
-            </div>
-          </div>
-          <div className='row no-margin'>
-            <button
-              className='btn' style={{marginLeft: '10px'}}
+        <>
+          <Row style={{marginBottom: '20px'}}>
+            <Col sm={24} md={12}>
+              <img style={{width: '100%', height: 'auto'}} src={this.state.image} alt='uploaded photo' />
+            </Col>
+            <Col sm={24} md={12}>
+              <div style={{width: '400px'}}>
+                <Map
+                  id='add-photo-point-map'
+                  style={{width: '100%', height: '400px'}}
+                  showFeatureInfoEditButtons={false}
+                  showLogo
+                  mapConfig={this.props.mapConfig}
+                  data={this.state.geoJSON}
+                  t={this.t}
+                  primaryColor={MAPHUBS_CONFIG.primaryColor}
+                  logoSmall={MAPHUBS_CONFIG.logoSmall}
+                  logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+                  logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+                />
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Button
+              type='primary'
+              style={{marginLeft: '10px'}}
               onClick={this.resetPhoto}
             >{t('Replace Photo')}
-            </button>
-          </div>
-        </div>
+            </Button>
+          </Row>
+        </>
       )
 
       dataForm = (
@@ -207,14 +209,14 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
       )
     } else {
       addPhotoButton = (
-        <div className='row no-margin'>
+        <Row>
           <p>{t('Upload a Photo with Location Information')}</p>
-          <button
-            className='btn' style={{marginLeft: '10px'}}
+          <Button
+            type='primary' style={{marginLeft: '10px'}}
             onClick={this.showImageCrop}
           >{t('Add Photo')}
-          </button>
-        </div>
+          </Button>
+        </Row>
       )
     }
 
@@ -224,14 +226,14 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
           <Header {...this.props.headerConfig} />
           <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
             <div className='container'>
-              <div className='row center-align'>
+              <Row style={{marginBottom: '20px', textAlign: 'center'}}>
                 <h5>{t('Add data to:') + ' ' + this.t(this.props.layer.name)}</h5>
                 {addPhotoButton}
-              </div>
+              </Row>
               {dataReview}
-              <div className='row'>
+              <Row style={{marginBottom: '20px'}}>
                 {dataForm}
-              </div>
+              </Row>
             </div>
             <ImageCrop ref='imagecrop' aspectRatio={1} lockAspect resize_max_width={1000} resize_max_height={1000} onCrop={this.onCrop} />
           </main>

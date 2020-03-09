@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification, Row } from 'antd'
+import { message, notification, Row, Col } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
@@ -144,14 +144,14 @@ export default class Layers extends MapHubsComponent<Props, State> {
         <Header activePage='layers' {...this.props.headerConfig} />
         <main>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
-            <div className='row' style={{marginBottom: '0px'}}>
-              <div className='col l8 m7 s12'>
+            <Row>
+              <Col sm={12} md={14} lg={16}>
                 <h4 className='no-margin'>{t('Layers')}</h4>
-              </div>
-              <div className='col l3 m4 s12 right' style={{paddingRight: '15px'}}>
+              </Col>
+              <Col sm={12} md={8} lg={6} style={{paddingRight: '15px', textAlign: 'right'}}>
                 <SearchBox label={t('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
-              </div>
-            </div>
+              </Col>
+            </Row>
           </div>
           {searchResults}
 

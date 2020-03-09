@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification } from 'antd'
+import { message, notification, Row, Divider, Col } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
@@ -109,13 +109,11 @@ export default class Maps extends MapHubsComponent<Props, State> {
         )
       } else {
         searchResults = (
-          <div className='row'>
-            <div className='col s12'>
-              <h5>{t('Search Results')}</h5>
-              <div className='divider' />
-              <p><b>{t('No Results Found')}</b></p>
-            </div>
-          </div>
+          <Row>
+            <h5>{t('Search Results')}</h5>
+            <Divider />
+            <p><b>{t('No Results Found')}</b></p>
+          </Row>
         )
       }
     }
@@ -130,16 +128,16 @@ export default class Maps extends MapHubsComponent<Props, State> {
     return (
       <ErrorBoundary>
         <Header activePage='maps' {...this.props.headerConfig} />
-        <main>
+        <main style={{margin: '10px'}}>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
-            <div className='row' style={{marginBottom: '0px'}}>
-              <div className='col l8 m7 s12'>
+            <Row>
+              <Col sm={24} md={14} lg={16}>
                 <h4 className='no-margin'>{t('Maps')}</h4>
-              </div>
-              <div className='col l3 m4 s12 right' style={{paddingRight: '15px'}}>
+              </Col>
+              <Col sm={24} md={8} lg={6} style={{paddingRight: '15px'}}>
                 <SearchBox label={t('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
-              </div>
-            </div>
+              </Col>
+            </Row>
           </div>
           {searchResults}
           {featured}
@@ -155,9 +153,9 @@ export default class Maps extends MapHubsComponent<Props, State> {
               />
             </div>
           </div>
-          <div className='row center-align'>
+          <Row style={{textAlign: 'center'}}>
             <a className='btn' href='/maps/all'>{t('View All Maps')}</a>
-          </div>
+          </Row>
         </main>
         <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>

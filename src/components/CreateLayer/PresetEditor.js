@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row, Button } from 'antd'
 import PresetForm from './PresetForm'
 import LayerStore from '../../stores/layer-store'
 import Actions from '../../actions/LayerActions'
@@ -68,11 +69,11 @@ export default class PresetEditor extends MapHubsComponent<Props, State> {
     }
     return (
       <div>
-        <div className='row no-padding'>
+        <Row>
           <div className='left'>
-            <a className='waves-effect waves-light btn' onClick={this.addPreset}><i className='material-icons right'>add</i>{t('Add Field')}</a>
+            <Button type='primary' onClick={this.addPreset}><i className='material-icons right'>add</i>{t('Add Field')}</Button>
           </div>
-        </div>
+        </Row>
         <ul className='collection'>
           {
             presets.map((preset: MapHubsField) => {

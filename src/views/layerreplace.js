@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row, Button } from 'antd'
 import Header from '../components/header'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -108,15 +109,15 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
           <Header {...this.props.headerConfig} />
           <main style={{height: 'calc(100% - 50px)', marginTop: 0}}>
             <div className='container'>
-              <div className='row center-align'>
+              <Row style={{marginBottom: '20px', textAlign: 'center'}}>
                 <h5>{t('Replace data in layer:') + ' ' + t(layer.name)}</h5>
                 <p>{t('First you must download the backup file. This file can be used to restore the previous data if needed.')}</p>
-                <a className='btn' href={maphubsFileURL} target='_blank' rel='noopener noreferrer' onClick={this.onDownload}>{t('Download Backup File')}</a>
-              </div>
-              <div className='row'>
+                <Button type='primary' href={maphubsFileURL} target='_blank' rel='noopener noreferrer' onClick={this.onDownload}>{t('Download Backup File')}</Button>
+              </Row>
+              <Row style={{marginBottom: '20px'}}>
                 {downloaded &&
                   <UploadLayerReplacement showPrev={false} onSubmit={this.onDataSubmit} mapConfig={this.props.mapConfig} />}
-              </div>
+              </Row>
             </div>
           </main>
         </Provider>

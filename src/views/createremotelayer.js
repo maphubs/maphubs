@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { Row } from 'antd'
+import { Row, Button } from 'antd'
 import slugify from 'slugify'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
@@ -187,10 +187,10 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
           <Header {...this.props.headerConfig} />
           <main>
             <div className='container'>
-              <div className='row'>
+              <Row style={{marginBottom: '20px'}}>
                 <h5>{t('Please Join a Group')}</h5>
                 <p>{t('Please create or join a group before creating a layer.')}</p>
-              </div>
+              </Row>
             </div>
           </main>
         </ErrorBoundary>
@@ -201,54 +201,48 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
 
     if (this.state.layer) {
       layerReview = (
-        <div className='row'>
-          <div className='col s12'>
-            <div>
-              <Map
-                style={{width: '100%', height: '400px'}}
-                id='remote-layer-preview-map'
-                showFeatureInfoEditButtons={false}
-                mapConfig={this.props.mapConfig}
-                glStyle={this.state.layer.style}
-                fitBounds={this.state.layer.preview_position.bbox}
-                primaryColor={MAPHUBS_CONFIG.primaryColor}
-                logoSmall={MAPHUBS_CONFIG.logoSmall}
-                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-                t={t}
-                locale={this.state.locale}
-                mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-                DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-                earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
-              >
-                <MiniLegend
-                  t={this.t}
-                  style={{
-                    position: 'absolute',
-                    top: '5px',
-                    left: '5px',
-                    minWidth: '275px',
-                    width: '25%',
-                    maxWidth: '325px',
-                    maxHeight: 'calc(100% - 200px)',
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}
-                  collapsible hideInactive={false} showLayersButton={false}
-                  title={this.state.layer.name}
-                  layers={[this.state.layer]}
-                />
-              </Map>
-            </div>
-          </div>
-          <div>
-            <button
-              className='btn right' style={{marginTop: '20px'}}
-              onClick={this.saveLayer}
-            >{t('Save Layer')}
-            </button>
-          </div>
-        </div>
+        <Row style={{marginBottom: '20px'}}>
+          <Row style={{marginBottom: '20px'}}>
+            <Map
+              style={{width: '100%', height: '400px'}}
+              id='remote-layer-preview-map'
+              showFeatureInfoEditButtons={false}
+              mapConfig={this.props.mapConfig}
+              glStyle={this.state.layer.style}
+              fitBounds={this.state.layer.preview_position.bbox}
+              primaryColor={MAPHUBS_CONFIG.primaryColor}
+              logoSmall={MAPHUBS_CONFIG.logoSmall}
+              logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+              logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+              t={t}
+              locale={this.state.locale}
+              mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+              DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+              earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+            >
+              <MiniLegend
+                t={this.t}
+                style={{
+                  position: 'absolute',
+                  top: '5px',
+                  left: '5px',
+                  minWidth: '275px',
+                  width: '25%',
+                  maxWidth: '325px',
+                  maxHeight: 'calc(100% - 200px)',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}
+                collapsible hideInactive={false} showLayersButton={false}
+                title={this.state.layer.name}
+                layers={[this.state.layer]}
+              />
+            </Map>
+          </Row>
+          <Row style={{marginBottom: '20px', textAlign: 'right'}}>
+            <Button type='primary' onClick={this.saveLayer}>{t('Save Layer')}</Button>
+          </Row>
+        </Row>
       )
     }
     return (
@@ -272,7 +266,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                   />
                   <SelectGroup groups={this.props.groups} type='layer' />
                   <div className='right'>
-                    <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Load Remote Layer')}</button>
+                    <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Load Remote Layer')}</Button>
                   </div>
                 </Formsy>
               </Row>

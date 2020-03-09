@@ -31,16 +31,18 @@ module.exports = function (app: any) {
       }).catch(nextError(next))
   })
 
-  app.get('/group/:id/image.jpg', (req, res) => {
-    const group_id = req.params.id
-    Image.getGroupImage(group_id)
-      .then((result) => {
-        if (result && result.image) {
-          return imageUtils.processImage(result.image, req, res)
-        } else {
-          return res.status(404).send()
-        }
-      }).catch(apiError(res, 404))
+  app.get('/group/:id/image.png', async (req, res) => {
+    try {
+      const group_id = req.params.id
+      const result = await Image.getGroupImage(group_id)
+      if (result?.image) {
+        return imageUtils.processImage(result.image, req, res)
+      } else {
+        return res.status(404).send()
+      }
+    } catch (err) {
+      apiError(res, 404)(err)
+    }
   })
 
   app.get('/group/:id/thumbnail', (req, res) => {

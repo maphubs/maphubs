@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { Row, Carousel } from 'antd'
+import { Row, Carousel, Divider, Button } from 'antd'
 import CardCarousel from '../components/CardCarousel/CardCarousel'
 import StorySummary from '../components/Story/StorySummary'
 import PublicOnboardingLinks from '../components/Home/PublicOnboardingLinks'
@@ -209,7 +209,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
                       <h3 className='no-margin'>{this.t(slide.text)}</h3>
                     </div>
                     <div className='slide-button'>
-                      <a className='btn waves-effect z-depth-3' href={slide.link}>{this.t(slide.buttonText)}</a>
+                      <Button type='primary' size='large' href={slide.link}>{this.t(slide.buttonText)}</Button>
                     </div>
                   </div>
                 </div>
@@ -431,9 +431,9 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     if (stories.length > 0) {
       return (
         <Row key={key} style={style}>
-          <div className='divider' />
-          <div className='row'>
-            <h5 className='no-margin center-align' style={{lineHeight: '50px', color: '#323333'}}>
+          <Divider />
+          <Row style={{marginBottom: '20px'}}>
+            <h5 style={{lineHeight: '50px', color: '#323333', margin: 0, textAlign: 'center'}}>
               {title}
             </h5>
             {stories.map(story => {
@@ -445,7 +445,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
                 </div>
               )
             })}
-          </div>
+          </Row>
         </Row>
       )
     }
@@ -485,16 +485,16 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     if (!label) label = config.label.en
     const button = (
       <Row
-        key={key} className='valign-wrapper'
+        key={key} align='middle' justify='center'
         style={{padding: '25px', textAlign: 'center', ...style}}
       >
-        <a
-          className='waves-effect waves-light btn valign'
+        <Button
+          type='primary'
           style={{margin: 'auto'}}
           href={config.href}
         >
           {label}
-        </a>
+        </Button>
       </Row>
     )
 

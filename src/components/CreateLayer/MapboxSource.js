@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { message, notification, Row, Col } from 'antd'
+import { message, notification, Row, Col, Button } from 'antd'
 import TextInput from '../forms/textInput'
 import Radio from '../forms/radio'
 import LayerActions from '../../actions/LayerActions'
@@ -185,7 +185,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
           {styleForm}
           {tilesForm}
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
+            <Button type='primary' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
           </div>
         </Formsy>
       </Row>

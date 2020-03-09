@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { Row, message, notification } from 'antd'
+import { Row, message, notification, Button } from 'antd'
 import TextInput from '../forms/textInput'
 import Radio from '../forms/radio'
 import LayerActions from '../../actions/LayerActions'
@@ -137,7 +137,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
           <p>{t('ArcGIS MapServer Query Source')}</p>
           <Row style={{marginBottom: '20px'}}>
             <TextInput
-              name='mapServiceUrl' label={t('Map Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
+              name='mapServiceUrl' label={t('Map Service URL')} icon='info' validations='maxLength:250,isHttps' validationErrors={{
                 maxLength: t('Must be 250 characters or less.'),
                 isHttps: t('SSL required for external links, URLs must start with https://')
               }} length={250}
@@ -156,7 +156,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
           <p>{t('ArcGIS FeatureService Query Source')}</p>
           <Row style={{marginBottom: '20px'}}>
             <TextInput
-              name='featureServiceUrl' label={t('Feature Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
+              name='featureServiceUrl' label={t('Feature Service URL')} icon='info' validations='maxLength:250,isHttps' validationErrors={{
                 maxLength: t('Must be 250 characters or less.'),
                 isHttps: t('SSL required for external links, URLs must start with https://')
               }} length={250}
@@ -175,7 +175,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
           <p>{t('ArcGIS MapServer Tiles')}</p>
           <Row style={{marginBottom: '20px'}}>
             <TextInput
-              name='tileServiceUrl' label={t('MapServer Service URL')} icon='info' className='col s12' validations='maxLength:250,isHttps' validationErrors={{
+              name='tileServiceUrl' label={t('MapServer Service URL')} icon='info' validations='maxLength:250,isHttps' validationErrors={{
                 maxLength: t('Must be 250 characters or less.'),
                 isHttps: t('SSL required for external links, URLs must start with https://')
               }} length={250}
@@ -196,7 +196,6 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
               name='type' label=''
               defaultValue={this.state.selectedOption}
               options={agolOptions} onChange={this.optionChange}
-              className='col s10'
             />
           </Row>
           <hr />
@@ -206,7 +205,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
           {fsqForm}
           {tilesForm}
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
+            <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
           </div>
         </Formsy>
       </Row>

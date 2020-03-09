@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { Row, message, notification } from 'antd'
+import { Row, message, notification, Button } from 'antd'
 import TextInput from '../forms/textInput'
 import LayerActions from '../../actions/LayerActions'
 import Radio from '../forms/radio'
@@ -125,12 +125,11 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
                 name='data_type' label=''
                 defaultValue='point'
                 options={dataTypeOptions}
-                className='col s10'
               />
             </Row>
           </div>
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
+            <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
           </div>
         </Formsy>
       </Row>

@@ -125,6 +125,7 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
               style={style} onStyleChange={this.setStyle} onColorChange={this.onColorChange}
               layer={this.props.layer}
               legendCode={legendCode} onLegendChange={this.setLegend} showAdvanced
+              t={t}
             />
           </div>
         )

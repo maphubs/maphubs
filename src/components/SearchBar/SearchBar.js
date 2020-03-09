@@ -7,6 +7,7 @@ Modified to support MaterializeCSS and other customizations
 */
 
 import React from 'react'
+import { Row } from 'antd'
 import Suggestions from './Suggestions'
 import Promise from 'bluebird'
 
@@ -214,7 +215,7 @@ export default class SearchBar extends React.Component {
           </div>
         </form>
 
-        <div className='row no-margin'>
+        <Row>
           {!!this.state.suggestions.length &&
             <Suggestions
               ref={(el) => { this.suggestions = el }}
@@ -222,7 +223,7 @@ export default class SearchBar extends React.Component {
               highlightedItem={this.state.highlightedItem}
               onSelection={this.fillInSuggestion}
             />}
-        </div>
+        </Row>
       </div>
     )
   }

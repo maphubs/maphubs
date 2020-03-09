@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification } from 'antd'
+import { message, notification, Row, Col } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
@@ -117,13 +117,11 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
         )
       } else {
         searchResults = (
-          <div className='row'>
-            <div className='col s12'>
-              <h5>{t('Search Results')}</h5>
-              <div className='divider' />
-              <p><b>{t('No Results Found')}</b></p>
-            </div>
-          </div>
+          <Row style={{marginBottom: '20px'}}>
+            <h5>{t('Search Results')}</h5>
+            <div className='divider' />
+            <p><b>{t('No Results Found')}</b></p>
+          </Row>
         )
       }
     }
@@ -146,31 +144,28 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header activePage='groups' {...this.props.headerConfig} />
         <main>
-          <div style={{marginTop: '20px', marginBottom: '10px'}}>
-            <div className='row' style={{marginBottom: '0px'}}>
-              <div className='col l8 m7 s12'>
-                <h4 className='no-margin'>{t('Groups')}</h4>
-                <p style={{fontSize: '16px', margin: 0}}>{t('Create a group for your organization or browse the content of existing groups.')}</p>
-              </div>
-              <div className='col l3 m4 s12 right' style={{paddingRight: '15px'}}>
-                <SearchBox label={t('Search Groups')} suggestionUrl='/api/groups/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
-              </div>
-            </div>
-          </div>
-          <div>
+          <Row style={{marginTop: '20px', marginBottom: '10px'}}>
+            <Col sm={12} md={14} lg={16}>
+              <h4 className='no-margin'>{t('Groups')}</h4>
+            </Col>
+            <Col sm={12} md={8} lg={6} style={{paddingRight: '15px'}}>
+              <SearchBox label={t('Search Groups')} suggestionUrl='/api/groups/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
+            </Col>
+          </Row>
+          <Row>
 
             {searchResults}
 
-            <div className='row'>
+            <Row style={{marginBottom: '20px'}}>
               <div className='left-align' style={{marginLeft: '15px', marginTop: '25px'}}>
                 <Formsy>
                   <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={this.state.showList} />
                 </Formsy>
               </div>
-              <div className='row'>
+              <Row style={{marginBottom: '20px'}}>
                 {groups}
-              </div>
-            </div>
+              </Row>
+            </Row>
 
             <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
               <FloatingButton
@@ -178,7 +173,7 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
                 tooltip={t('Create New Group')} tooltipPosition='top'
               />
             </div>
-          </div>
+          </Row>
         </main>
         <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>

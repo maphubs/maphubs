@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
-import { notification, Row, Col } from 'antd'
+import { notification, Row, Col, Button } from 'antd'
 import MultiTextArea from '../forms/MultiTextArea'
 import MultiTextInput from '../forms/MultiTextInput'
 import SelectGroup from '../Groups/SelectGroup'
@@ -139,6 +139,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
+    const { showGroup } = this.props
     if (this.props.showGroup && (!this.props.groups || this.props.groups.length === 0)) {
       return (
         <div className='container'>
@@ -161,7 +162,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
     if (this.props.showPrev) {
       prevButton = (
         <div className='left'>
-          <a className='waves-effect waves-light btn' onClick={this.onPrev}><i className='material-icons left'>arrow_back</i>{this.props.prevText}</a>
+          <Button type='primary' onClick={this.onPrev}><i className='material-icons left'>arrow_back</i>{this.props.prevText}</Button>
         </div>
       )
 
@@ -171,15 +172,6 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
     }
 
     const license = this.state.license ? this.state.license : 'none'
-
-    let selectGroup = ''
-    if (this.props.showGroup) {
-      selectGroup = (
-        <div className='row'>
-          <SelectGroup groups={this.props.groups} type='layer' canChangeGroup={canChangeGroup} editing={!canChangeGroup} />
-        </div>
-      )
-    }
 
     return (
       <div style={{marginRight: '2%', marginLeft: '2%', marginTop: '10px'}}>
@@ -192,7 +184,6 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   label={{
                     en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome', id: 'Nama', pt: 'Nome'
                   }}
-                  className='col s12'
                   value={this.state.name}
                   validations='maxLength:100' validationErrors={{
                     maxLength: t('Must be 100 characters or less.')
@@ -212,7 +203,6 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                     id: 'Deskripsi',
                     pt: 'Descrição'
                   }}
-                  className='col s12'
                   value={this.state.description}
                   validations='maxLength:1000' validationErrors={{
                     maxLength: t('Description must be 1000 characters or less.')
@@ -221,14 +211,17 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   required
                 />
               </Row>
-              {selectGroup}
+              {showGroup &&
+                <Row style={{marginBottom: '20px'}}>
+                  <SelectGroup groups={this.props.groups} type='layer' canChangeGroup={canChangeGroup} editing={!canChangeGroup} />
+                </Row>}
             </Col>
             <Col sm={24} md={12} style={{padding: '0px 20px'}}>
               <Row style={{marginBottom: '20px'}}>
                 <MultiTextInput
                   name='source' id='layer-source' label={{
                     en: 'Source', fr: 'Source', es: 'Source', it: 'Source'
-                  }} className='col s12'
+                  }}
                   value={this.state.source}
                   validations='maxLength:300' validationErrors={{
                     maxLength: t('Must be 300 characters or less.')
@@ -242,7 +235,6 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   name='license' id='layer-license-select' label={t('License')} startEmpty={false}
                   value={license} options={licenseOptions}
                   note={t('Select a license for more information')}
-                  className='col s12'
                   dataPosition='top' dataTooltip={t('Layer License')}
                   required
                 />
@@ -252,7 +244,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
           <div className='container'>
             {prevButton}
             <div className='right'>
-              <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}>{submitIcon}{this.props.submitText}</button>
+              <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{submitIcon}{this.props.submitText}</Button>
             </div>
           </div>
 

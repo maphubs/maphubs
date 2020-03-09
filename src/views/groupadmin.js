@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
-import { message, notification, Modal, Row, Col } from 'antd'
+import { message, notification, Modal, Row, Col, Button, PageHeader } from 'antd'
 import EditList from '../components/EditList'
 import Header from '../components/header'
 import MultiTextArea from '../components/forms/MultiTextArea'
@@ -291,17 +291,19 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
         <main>
 
           <div className='container'>
-            <div className='row'>
-              <div className='col s12'>
-                <p>&larr; <a href={groupUrl}>{t('Back to Group')}</a></p>
-              </div>
-            </div>
+            <Row style={{marginBottom: '20px'}}>
+                <PageHeader
+                    onBack={() => window.location = groupUrl}
+                    style={{padding: '5px'}}
+                    title={t('Back to Group')}
+                  />
+            </Row>
             <Row style={{marginTop: '20px', marginBottom: '20px'}}>
               <Col sm={24} md={12}>
-                <img alt={t('Group Photo')} width='300' className='' src={'/group/' + groupId + '/image?' + new Date().getTime()} />
+                <img alt={t('Group Photo')} width='300' src={'/group/' + groupId + '/image?' + new Date().getTime()} />
               </Col>
               <Col sm={24} md={12}>
-                <button className='waves-effect waves-light btn' onClick={this.showImageCrop}>{t('Change Image')}</button>
+                <Button type='primary' onClick={this.showImageCrop}>{t('Change Image')}</Button>
               </Col>
             </Row>
             <Row style={{marginBottom: '20px'}}>
@@ -317,7 +319,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                       en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome', id: 'Nama', pt: 'Nome'
                     }}
                     icon='info'
-                    className='col s12' validations='maxLength:100' validationErrors={{
+                    validations='maxLength:100' validationErrors={{
                       maxLength: t('Must be 100 characters or less.')
                     }} length={100}
                     dataPosition='top' dataTooltip={t('Short Descriptive Name for the Group')}
@@ -336,7 +338,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                       id: 'Deskripsi',
                       pt: 'Descrição'
                     }}
-                    icon='description' className='col s12' validations='maxLength:500' validationErrors={{
+                    icon='description' validations='maxLength:500' validationErrors={{
                       maxLength: t('Description must be 500 characters or less.')
                     }} length={500}
                     dataPosition='top' dataTooltip={t('Brief Description of the Group')}
@@ -346,7 +348,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                 </Row>
                 <Row style={{marginBottom: '20px'}}>
                   <TextInput
-                    name='location' label={t('Location')} icon='navigation' className='col s12' validations='maxLength:100' validationErrors={{
+                    name='location' label={t('Location')} icon='navigation' validations='maxLength:100' validationErrors={{
                       maxLength: t('Location must be 100 characters or less.')
                     }} length={100}
                     dataPosition='top' dataTooltip={t('Country or City Where the Group is Located')}
@@ -356,13 +358,13 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                 </Row>
                 <Row style={{marginBottom: '20px'}}>
                   <Toggle
-                    name='published' labelOff={t('Draft')} labelOn={t('Published')} className='col s12'
+                    name='published' labelOff={t('Draft')} labelOn={t('Published')}
                     dataPosition='top' dataTooltip={t('Include in Public Group Listings')}
                     checked={isPublished}
                   />
                 </Row>
                 <div className='right'>
-                  <button className='btn waves-effect waves-light' type='submit' name='action'>{t('Update')}</button>
+                  <Button htmlType='submit' name='action'>{t('Update')}</Button>
                 </div>
               </Formsy>
             </Row>

@@ -4,7 +4,7 @@ import Formsy from 'formsy-react'
 import TextInput from '../components/forms/textInput'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { Modal, Tooltip, message, notification, Row } from 'antd'
+import { Modal, Tooltip, message, notification, Row, Col, Button} from 'antd'
 import request from 'superagent'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -233,8 +233,8 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
         <Header {...this.props.headerConfig} />
         <main className='container'>
           <h4 className='center'>{t('Manage Users')}</h4>
-          <div className='row valign-wrapper'>
-            <div className='col s12 m8 l8 valign' style={{margin: 'auto'}}>
+          <Row style={{marginBottom: '20px'}} justify='center' align='middle'>
+            <Col sm={24} md={16}>
               <Formsy onValidSubmit={this.onSubmit} onValid={this.enableButton} onInvalid={this.disableButton}>
                 <Row style={{margin: '25px'}}>
                   <TextInput
@@ -245,15 +245,12 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
                     required
                   />
                 </Row>
-                <Row>
-                  <div className='valign-wrapper'>
-                    <button type='submit' className='valign waves-effect waves-light btn' style={{margin: 'auto'}} disabled={!this.state.canSubmit}>{t('Send Invite')}</button>
-                  </div>
+                <Row style={{textAlign: 'center'}}>
+                  <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Send Invite')}</Button>
                 </Row>
               </Formsy>
-            </div>
-
-          </div>
+            </Col>
+          </Row>
           <Row>
             <table>
               <thead>

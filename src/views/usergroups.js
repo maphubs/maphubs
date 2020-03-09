@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row } from 'antd'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import CardCarousel from '../components/CardCarousel/CardCarousel'
@@ -63,21 +64,19 @@ export default class UserGroups extends MapHubsComponent<Props, void> {
     if (this.props.groups && this.props.groups.length > 0) {
       const cards = this.props.groups.map(cardUtil.getGroupCard)
       groups = (
-        <div className='row'>
-          <div className='col s12 no-padding'>
-            <CardCarousel infinite={false} cards={cards} t={this.t} />
-          </div>
-        </div>
+        <Row style={{marginBottom: '20px'}}>
+          <CardCarousel infinite={false} cards={cards} t={this.t} />
+        </Row>
       )
     } else {
       groups = (
-        <div className='row' style={{height: 'calc(100% - 100px)'}}>
+        <Row style={{marginBottom: '20px', height: 'calc(100% - 100px)'}}>
           <div className='valign-wrapper' style={{height: '100%'}}>
             <div className='valign align-center center-align' style={{width: '100%'}}>
               <h5>{t('Click the button below to create your first group')}</h5>
             </div>
           </div>
-        </div>
+        </Row>
       )
     }
     return (

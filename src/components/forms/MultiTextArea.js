@@ -32,7 +32,6 @@ type Props = {
   successText: string,
   disabled: boolean,
   icon: string,
-  className: string,
   dataTooltip: string,
   dataDelay: number,
   dataPosition: string,

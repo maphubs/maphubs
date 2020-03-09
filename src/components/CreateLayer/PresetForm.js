@@ -10,7 +10,7 @@ import _debounce from 'lodash.debounce'
 import MapHubsComponent from '../MapHubsComponent'
 import Locales from '../../services/locales'
 import _isequal from 'lodash.isequal'
-import { Modal, Row, Col } from 'antd'
+import { Modal, Row, Col, Button } from 'antd'
 const { confirm } = Modal
 
 type Props = {
@@ -126,14 +126,16 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
 
     if (this.props.type === 'combo' || this.props.type === 'radio') {
       typeOptions = (
-        <TextArea
-          name='options' label={t('Options(seperate with commas)')} icon='list'
-          className='row no-margin' validations='maxLength:500' validationErrors={{
-            maxLength: t('Description must be 500 characters or less.')
-          }} length={500}
-          value={this.props.options}
-          dataPosition='top' dataTooltip={t('Comma seperated list of options to show for the Combo or Radio field. Ex: red, blue, green')}
-        />
+        <Row>
+          <TextArea
+            name='options' label={t('Options(seperate with commas)')} icon='list'
+            validations='maxLength:500' validationErrors={{
+              maxLength: t('Description must be 500 characters or less.')
+            }} length={500}
+            value={this.props.options}
+            dataPosition='top' dataTooltip={t('Comma seperated list of options to show for the Combo or Radio field. Ex: red, blue, green')}
+          />
+        </Row>
       )
     }
 
@@ -180,7 +182,6 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                   name='isRequired'
                   labelOff={t('Optional')}
                   labelOn={t('Required')}
-                  className='row no-margin'
                   style={{paddingTop: '25px'}}
                   checked={this.props.isRequired}
                 />
@@ -188,7 +189,6 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                   name='showOnMap'
                   labelOff={t('Hide in Map')}
                   labelOn={t('Show in Map')}
-                  className='row no-margin'
                   style={{paddingTop: '25px'}}
                   checked={this.props.showOnMap}
                 />
@@ -196,7 +196,6 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                   name='isName'
                   labelOff={t('Regular Field')}
                   labelOn={t('Name Field')}
-                  className='row no-margin'
                   style={{paddingTop: '25px'}}
                   checked={this.props.isName}
                 />
@@ -204,7 +203,6 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                   name='isDescription'
                   labelOff={t('Regular Field')}
                   labelOn={t('Description Field')}
-                  className='row no-margin'
                   style={{paddingTop: '25px'}}
                   checked={this.props.isDescription}
                 />
@@ -216,11 +214,11 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
         </Row>
         <Row style={{marginBottom: '20px'}}>
           <Col span={16}>
-            <a className='waves-effect waves-light btn' onClick={this.onMoveUp}><i className='material-icons left'>arrow_upward</i>{t('Move Up')}</a>
-            <a className='waves-effect waves-light btn' style={{marginLeft: '5px'}} onClick={this.onMoveDown}><i className='material-icons left'>arrow_downward</i>{t('Move Down')}</a>
+            <Button type='primary' onClick={this.onMoveUp}><i className='material-icons left'>arrow_upward</i>{t('Move Up')}</Button>
+            <Button type='primary' style={{marginLeft: '5px'}} onClick={this.onMoveDown}><i className='material-icons left'>arrow_downward</i>{t('Move Down')}</Button>
           </Col>
-          <Col span={8}>
-            <a className='waves-effect waves-light btn right' onClick={this.onRemove}><i className='material-icons left'>delete</i>{t('Remove')}</a>
+          <Col span={8} style={{textAlign: 'right'}}>
+            <Button type='primary' onClick={this.onRemove}><i className='material-icons left'>delete</i>{t('Remove')}</Button>
           </Col>
         </Row>
       </div>

@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row, Col, Button } from 'antd'
 import LabelSettings from './LabelSettings'
 import MarkerSettings from './MarkerSettings'
 import AdvancedLayerSettings from './AdvancedLayerSettings'
@@ -207,14 +208,14 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
               </div>
               <div className='collapsible-body'>
                 <AdvancedLayerSettings layer={layer} style={style} onChange={this.onAdvancedSettingsChange} />
-                <div className='row'>
-                  <div className='col s12, m6'>
-                    <button onClick={this.showStyleEditor} className='btn'>{t('Style')}</button>
-                  </div>
-                  <div className='col s12, m6'>
-                    <button onClick={this.showLegendEditor} className='btn'>{t('Legend')}</button>
-                  </div>
-                </div>
+                <Row justify='center' align='middle' style={{marginBottom: '20px'}}>
+                  <Col sm={24} md={12}>
+                    <Button type='primary' onClick={this.showStyleEditor}>{t('Style')}</Button>
+                  </Col>
+                  <Col sm={24} md={12}>
+                    <Button type='primary' onClick={this.showLegendEditor}>{t('Legend')}</Button>
+                  </Col>
+                </Row>
               </div>
             </li>}
         </ul>

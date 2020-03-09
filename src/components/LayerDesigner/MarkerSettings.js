@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
+import { Row } from 'antd'
 import Toggle from '../forms/toggle'
 import Select from '../forms/select'
 import _assignIn from 'lodash.assignin'
@@ -171,51 +172,48 @@ export default class MarkerSettings extends React.Component<Props, State> {
     ]
 
     return (
-      <div>
-        <div className='row'>
-          <Formsy ref='form' onChange={this.onFormChange}>
-            <div className='row' style={{marginTop: '10px', marginBottom: '0px', padding: '0 .75rem'}}>
-              <b>{t('Enable Markers')}</b>
-              <Toggle
-                name='enabled' labelOff={t('Off')} labelOn={t('On')}
-                checked={this.state.options.enabled}
-              />
-            </div>
-            <div className='row no-margin'>
-              <Select
-                name='shape' id='markers-shape-select' label={t('Marker Shape')} options={shapeOptions} className='col s12  no-margin'
-                value={this.state.options.shape} startEmpty={!this.state.options.shape}
-                dataPosition='right' dataTooltip={t('Shape of the map marker')}
-                required
-              />
-            </div>
-            <div className='row no-margin'>
-              <Select
-                name='size' id='markers-size-select' label={t('Marker Size')} options={sizeOptions} className='col s12 no-margin'
-                value={this.state.options.size} startEmpty={!this.state.options.size}
-                dataPosition='right' dataTooltip={t('Size of the map marker')}
-                required
-              />
-
-            </div>
-            <div className='row no-margin'>
-              <Select
-                name='icon' id='markers-icon-select' label={t('Marker Icon')} options={iconOptions} className='col s12 no-margin'
-                value={this.state.options.icon} startEmpty={!this.state.options.icon}
-                dataPosition='right' dataTooltip={t('Marker icon overlay')}
-                required
-              />
-            </div>
-            <div className='row no-margin' style={{padding: '0 .75rem'}}>
-              <b>{t('Invert Colors')}</b>
-              <Toggle
-                name='inverted' labelOff={t('Off')} labelOn={t('On')}
-                checked={this.state.options.inverted}
-              />
-            </div>
-          </Formsy>
-        </div>
-      </div>
+      <Row style={{marginBottom: '20px'}}>
+        <Formsy ref='form' onChange={this.onFormChange}>
+          <Row style={{marginTop: '10px', marginBottom: '0px', padding: '0 .75rem'}}>
+            <b>{t('Enable Markers')}</b>
+            <Toggle
+              name='enabled' labelOff={t('Off')} labelOn={t('On')}
+              checked={this.state.options.enabled}
+            />
+          </Row>
+          <Row>
+            <Select
+              name='shape' id='markers-shape-select' label={t('Marker Shape')} options={shapeOptions}
+              value={this.state.options.shape} startEmpty={!this.state.options.shape}
+              dataPosition='right' dataTooltip={t('Shape of the map marker')}
+              required
+            />
+          </Row>
+          <Row>
+            <Select
+              name='size' id='markers-size-select' label={t('Marker Size')} options={sizeOptions}
+              value={this.state.options.size} startEmpty={!this.state.options.size}
+              dataPosition='right' dataTooltip={t('Size of the map marker')}
+              required
+            />
+          </Row>
+          <Row>
+            <Select
+              name='icon' id='markers-icon-select' label={t('Marker Icon')} options={iconOptions}
+              value={this.state.options.icon} startEmpty={!this.state.options.icon}
+              dataPosition='right' dataTooltip={t('Marker icon overlay')}
+              required
+            />
+          </Row>
+          <Row style={{padding: '0 .75rem'}}>
+            <b>{t('Invert Colors')}</b>
+            <Toggle
+              name='inverted' labelOff={t('Off')} labelOn={t('On')}
+              checked={this.state.options.inverted}
+            />
+          </Row>
+        </Formsy>
+      </Row>
     )
   }
 }

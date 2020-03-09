@@ -89,9 +89,9 @@ export default class Stories extends MapHubsComponent<Props, State> {
                 })}
               </Col>}
             {(!hasRecent && !hasPopular) &&
-              <div className='col s12' style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
+              <Row style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
                 <b>{t('No Stories Found')}</b>
-              </div>}
+              </Row>}
           </Row>
           <div className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton

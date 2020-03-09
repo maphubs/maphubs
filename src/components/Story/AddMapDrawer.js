@@ -103,13 +103,11 @@ export default class AddMapDrawer extends React.Component<Props, State> {
                 <p><b>{t('No Results Found')}</b></p>}
             </Row>}
           {(myMaps && myMaps.length > 0) &&
-            <div className='row' style={{width: '100%'}}>
-              <div className='col s12 no-padding' style={{width: '100%'}}>
-                <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('My Maps')}</h5>
-                <div className='divider' />
-                <CardCarousel cards={myCards} infinite={false} t={t} />
-              </div>
-            </div>}
+            <Row style={{width: '100%', marginBottom: '20px'}}>
+              <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('My Maps')}</h5>
+              <div className='divider' />
+              <CardCarousel cards={myCards} infinite={false} t={t} />
+            </Row>}
           <Row>
             <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('Popular Maps')}</h5>
             <Divider />

@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
+import { Row } from 'antd'
 import Toggle from '../forms/toggle'
 import MapStyles from '../Map/Styles'
 import MapHubsComponent from '../MapHubsComponent'
@@ -115,7 +116,7 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
     let toggleFill
     if (this.props.layer.data_type === 'polygon') {
       toggleFill = (
-        <div className='row'>
+        <Row style={{marginBottom: '20px'}}>
           <b>{t('Fill')}</b>
           <Toggle
             name='fill'
@@ -125,32 +126,32 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
             dataPosition='right'
             dataTooltip={t('Hide polygon fill and only show the outline in the selected color')}
           />
-        </div>
+        </Row>
       )
     }
 
     return (
-      <div className='row' style={{marginLeft: '10px'}}>
+      <Row style={{marginLeft: '10px', marginBottom: '20px'}}>
         <Formsy ref='form' onChange={this.onFormChange}>
           {toggleFill}
-          <div className='row'>
+          <Row style={{marginBottom: '20px'}}>
             <b>{t('Interactive')}</b>
             <Toggle
               name='interactive' labelOff={t('Off')} labelOn={t('On')}
               checked={this.state.interactive}
               dataPosition='right' dataTooltip={t('Allow users to interact with this layer by clicking the map')}
             />
-          </div>
-          <div className='row'>
+          </Row>
+          <Row style={{marginBottom: '20px'}}>
             <b>{t('Show Below Base Map Labels')}</b>
             <Toggle
               name='showBehindBaseMapLabels' labelOff={t('Off')} labelOn={t('On')}
               checked={this.state.showBehindBaseMapLabels}
               dataPosition='right' dataTooltip={t('Allow base map labels to display on top of this layer')}
             />
-          </div>
+          </Row>
         </Formsy>
-      </div>
+      </Row>
     )
   }
 }

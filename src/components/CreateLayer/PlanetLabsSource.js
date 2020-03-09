@@ -2,7 +2,7 @@
 import React from 'react'
 import Formsy from 'formsy-react'
 import TextArea from '../forms/textArea'
-import { message, notification } from 'antd'
+import { message, notification, Row, Button } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
@@ -113,23 +113,23 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     return (
-      <div className='row'>
+      <Row style={{marginBottom: '20px'}}>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
           <div>
             <p>{t('Paste the selected IDs from the Planet Explorer API box')}</p>
-            <div className='row'>
+            <Row style={{marginBottom: '20px'}}>
               <TextArea
                 name='selectedIDs' label={t('Planet Explorer Selected IDs')}
                 length={2000}
-                icon='info' className='col s12' required
+                icon='info' required
               />
-            </div>
+            </Row>
           </div>
           <div className='right'>
-            <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</button>
+            <Button type='primary' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
           </div>
         </Formsy>
-      </div>
+      </Row>
     )
   }
 }

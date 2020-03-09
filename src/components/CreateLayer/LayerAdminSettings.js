@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
-import { Row, Col, notification } from 'antd'
+import { Row, Col, notification, Button } from 'antd'
 import SelectGroup from '../Groups/SelectGroup'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
@@ -133,14 +133,14 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
     let elcEditor = ''
     if (is_external && external_layer_config) {
       elcEditor = (
-        <div className='row' style={{height: '300px'}}>
+        <Row style={{height: '300px'}}>
           <CodeEditor
             id='layer-elc-editor' mode='json'
             code={JSON.stringify(external_layer_config, undefined, 2)}
             title={t('External Layer Config')}
             onSave={this.saveExternalLayerConfig} visible modal={false} t={t}
           />
-        </div>
+        </Row>
       )
     }
     return (
@@ -179,7 +179,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
           </Row>
           <div className='container'>
             <div className='right'>
-              <button type='submit' className='waves-effect waves-light btn' disabled={!this.state.canSubmit}>{this.props.submitText}</button>
+              <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{this.props.submitText}</Button>
             </div>
           </div>
         </Formsy>
