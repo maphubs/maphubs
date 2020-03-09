@@ -35,7 +35,8 @@ module.exports = function (app: any) {
             scope: 'openid profile email',
             allowlogin: existingAccount ? 'true' : 'false',
             allowsignup: existingAccount ? 'false' : 'true',
-            login_hint: email
+            login_hint: email,
+            screen_hint: !existingAccount ? 'signup' : undefined
           })
           return middleware(req, res, next)
         } else {
@@ -62,11 +63,9 @@ module.exports = function (app: any) {
       audience: 'https://' + local.AUTH0_DOMAIN + '/userinfo',
       responseType: 'code',
       scope: 'openid profile email',
-      allowlogin: 'false'
-    }),
-    (req, res) => {
-      res.redirect('/')
-    })
+      allowlogin: 'false',
+      screen_hint: 'signup'
+    }))
 
   app.post('/api/user/setlocale', (req, res) => {
     const data = req.body

@@ -60,11 +60,15 @@ const createMapHubsUser = async function (profile: Object) {
 const Auth0Strategy = require('passport-auth0')
 
 Auth0Strategy.prototype.authorizationParams = function (options) {
-  options = options || {}
+  var options = options || {}
 
   var params = {}
   if (options.connection && typeof options.connection === 'string') {
     params.connection = options.connection
+
+    if (options.connection_scope && typeof options.connection_scope === 'string') {
+      params.connection_scope = options.connection_scope
+    }
   }
   if (options.audience && typeof options.audience === 'string') {
     params.audience = options.audience
@@ -72,16 +76,24 @@ Auth0Strategy.prototype.authorizationParams = function (options) {
   if (options.prompt && typeof options.prompt === 'string') {
     params.prompt = options.prompt
   }
-
-  if (options.allowsignup && typeof options.allowsignup === 'string') {
-    params.allowsignup = options.allowsignup
-  }
-  if (options.allowlogin && typeof options.allowlogin === 'string') {
-    params.allowlogin = options.allowlogin
-  }
-
   if (options.login_hint && typeof options.login_hint === 'string') {
     params.login_hint = options.login_hint
+  }
+  if (options.acr_values && typeof options.acr_values === 'string') {
+    params.acr_values = options.acr_values
+  }
+
+  var strategyOptions = this.options
+  if (strategyOptions && typeof strategyOptions.maxAge === 'number') {
+    params.max_age = strategyOptions.maxAge
+  }
+
+  if (this.authParams && typeof this.authParams.nonce === 'string') {
+    params.nonce = this.authParams.nonce
+  }
+
+  if (options.screen_hint && typeof options.screen_hint === 'string') {
+    params.screen_hint = options.screen_hint
   }
 
   return params
@@ -92,7 +104,8 @@ const strategy = new Auth0Strategy({
   domain: local.AUTH0_DOMAIN,
   clientID: local.AUTH0_CLIENT_ID,
   clientSecret: local.AUTH0_CLIENT_SECRET,
-  callbackURL: local.AUTH0_CALLBACK_URL || 'http://maphubs.test:4000/callback'
+  callbackURL: local.AUTH0_CALLBACK_URL || 'http://maphubs.test:4000/callback',
+  authorizationURL: `https://${local.AUTH0_DOMAIN}/authorize?test=1234`
 }, (accessToken, refreshToken, extraParams, profile, done) => {
   // accessToken is the token to call Auth0 API (not needed in the most cases)
   // extraParams.id_token has the JSON Web Token

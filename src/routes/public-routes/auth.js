@@ -12,7 +12,7 @@ module.exports = function (app: any) {
       // Maybe unnecessary, but just to be sure.
       req.session = req.session || {}
 
-      // Set returnTo to the absolute path you want to be redirect to after the authentication succeeds.
+      // Set returnTo to the absolute path you want to be redirected to after the authentication succeeds.
       req.session.returnTo = urlencode.decode(returnTo)
     }
     next()
@@ -25,14 +25,12 @@ module.exports = function (app: any) {
       redirectUri: local.AUTH0_CALLBACK_URL,
       audience: 'https://' + local.AUTH0_DOMAIN + '/userinfo',
       responseType: 'code',
-      scope: 'openid profile email',
-      allowsignup: 'false'
+      scope: 'openid email profile'
     }),
     (req, res) => {
       res.redirect('/')
     })
-
-  // Perform the final stage of authentication and redirect to '/user'
+  /*
   app.get('/callback',
     passport.authenticate('auth0', {failureRedirect: '/login/failed'}),
     (req, res) => {
@@ -45,13 +43,30 @@ module.exports = function (app: any) {
         res.redirect(req.session.returnTo || '/')
       })
     })
+ */
+  app.get('/callback', function (req, res, next) {
+    passport.authenticate('auth0', function (err, user, info) {
+      if (err) { return res.redirect(`/login/failed?err=${err.message}`) }
+      if (!user) { return res.redirect('/login') }
+      req.logIn(user, (err) => {
+        if (err) { return res.redirect(`/login/failed?err=${err.message}`) }
+        req.session.user = req.user
+        req.session.save(() => {
+          const returnTo = req.session.returnTo
+          delete req.session.returnTo
+          res.redirect(returnTo || '/')
+        })
+      })
+    })(req, res, next)
+  })
 
   app.get('/login/failed', async (req, res) => {
     return app.next.render(req, res, '/auth0error', await pageOptions(req, {
       title: req.__('Login Failed') + ' - ' + local.productName,
       props: {
         requireInvite: local.requireInvite,
-        adminEmail: local.adminEmail
+        adminEmail: local.adminEmail,
+        error: req.query.err
       },
       login: true
     }))

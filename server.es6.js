@@ -8,6 +8,7 @@ const nextApp = next({dev})
 const handle = nextApp.getRequestHandler()
 
 const passport = require('passport')
+const flash = require('connect-flash')
 const logger = require('morgan')
 const cors = require('cors')
 const bodyParser = require('body-parser')
@@ -127,19 +128,32 @@ nextApp.prepare()
     server.use(passport.initialize())
     server.use(passport.session())
 
+    server.use(flash())
+
+    // Handle auth failure error messages
+    server.use(function (req, res, next) {
+      if (req && req.query && req.query.error) {
+        req.flash('error', req.query.error)
+      }
+      if (req && req.query && req.query.error_description) {
+        req.flash('error_description', req.query.error_description)
+      }
+      next()
+    })
+
     // load public routes - routes that should always be public, for example login or signup
     console.log('loading public routes')
     require('./src/routes/public-routes')(server)
 
     // option to require require login for everything after this point
-    let checkLogin
     if (local.requireLogin) {
-      checkLogin = require('connect-ensure-login').ensureLoggedIn()
       server.use((req, res, next) => {
         if (req.path.startsWith('/_next')) {
           next()
         } else {
-          checkLogin(req, res, next)
+          if (req.user) { return next() }
+          req.session.returnTo = req.originalUrl
+          res.redirect('/login')
         }
       })
     }
@@ -147,7 +161,7 @@ nextApp.prepare()
     // load secure routes
     console.log('loading secure routes')
     require('./src/routes/secure')(server)
-  
+
     try {
       await CMSPages(server)
     } catch (err) {
@@ -157,8 +171,8 @@ nextApp.prepare()
 
     server.use((err, req, res, next) => {
       if (req.session && req.session.user) {
-        let username = req.session.user.username || req.session.user.display_name
-        let email = req.session.user._json.email || req.session.user.email
+        const username = req.session.user.username || req.session.user.display_name
+        const email = req.session.user._json.email || req.session.user.email
 
         Raven.mergeContext({
           user: {
