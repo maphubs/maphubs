@@ -192,7 +192,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     const slides = (
       <Row key={key} style={{...style}}>
         {typeof window !== 'undefined' &&
-          <Carousel autoplay>
+          <Carousel autoplay pauseOnFocus pauseOnDotsHover>
             {config.slides.map((slide, i) => {
               return (
                 <div key={i}>
@@ -225,6 +225,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
             overflow: hidden;
           }
           .slide-text {
+            text-align: left;
             display: block;
             margin-left: 5%;
             max-width: 80%;
@@ -260,7 +261,8 @@ export default class HomePro extends MapHubsComponent<Props, State> {
 
           .slide-button {
             position: absolute;
-            margin-left: calc(50vw - 66px);
+            width: 100vw;
+            text-align: center;
             bottom: -5px;
           }
           @media only screen and (max-width : 480px) {
