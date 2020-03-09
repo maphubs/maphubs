@@ -12,8 +12,8 @@ services:
       - ./env/dev/secret/web-secret.env
     depends_on:
       - db
-    expose:
-      - '4000'
+    ports:
+      - '4000:4000'
     volumes:
       - './src:/app/src'
       - './assets:/app/assets'

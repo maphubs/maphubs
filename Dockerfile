@@ -1,28 +1,25 @@
-FROM node:12 as base
+FROM osgeo/gdal:alpine-small-3.0.4 as builder
+WORKDIR /app
 
 LABEL maintainer="Kristofor Carle <kris@maphubs.com>"
 
 ENV NODE_ENV=production
 
-RUN apt-get update && \
-    apt-get install -y libssl-dev openssl unzip build-essential gdal-bin zip && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    mkdir -p /app
+RUN apk add --no-cache --upgrade nodejs npm git python make gcc g++ zip postgresql-dev
 
-WORKDIR /app
-
-FROM base AS dependencies
 COPY package.json package-lock.json /app/
-
 RUN npm config set '@bit:registry' https://node.bitsrc.io && \
     npm install --production
 
-FROM base AS release 
-COPY --from=dependencies /app /app  
 COPY ./src /app/src
 COPY ./pages /app/pages
 COPY ./.next /app/.next
 COPY .babelrc next.config.js server.js server.es6.js docker-entrypoint.sh version.json theme.less /app/
+
+FROM osgeo/gdal:alpine-small-3.0.4
+WORKDIR /app
+RUN apk add --no-cache --upgrade nodejs libpq
+COPY --from=builder /app .
 
 RUN chmod +x /app/docker-entrypoint.sh && \
     mkdir -p css && mkdir -p /app/temp/uploads

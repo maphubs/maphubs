@@ -1,20 +1,33 @@
-FROM node:10-slim
-
-ENV DEBIAN_FRONTEND=noninteractive NODE_ENV=development DEBUG="maphubs:*,maphubs-error:*"
+FROM osgeo/gdal:alpine-small-3.0.4 as builder
+WORKDIR /app
 
 LABEL maintainer="Kristofor Carle <kris@maphubs.com>"
 
-RUN apt-get update && \
-    apt-get install -y wget git curl libssl-dev openssl nano unzip python build-essential g++ gdal-bin zip imagemagick libpq-dev && \
-    apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    mkdir -p /app
+ENV NODE_ENV=development DEBUG="maphubs:*,maphubs-error:*"
 
-WORKDIR /app
+RUN apk add --no-cache --upgrade nodejs npm git python make gcc g++ zip postgresql-dev
 
 COPY package.json package-lock.json /app/
-RUN npm install
+RUN npm config set '@bit:registry' https://node.bitsrc.io && \
+    npm install --production
 
-COPY docker-entrypoint-dev.sh /app/docker-entrypoint.sh
-RUN chmod +x /app/docker-entrypoint.sh
+COPY ./src /app/src
+COPY ./pages /app/pages
+COPY ./.next /app/.next
+COPY .babelrc next.config.js server.js server.es6.js docker-entrypoint.sh version.json theme.less /app/
+
+FROM osgeo/gdal:alpine-small-3.0.4
+WORKDIR /app
+RUN apk add --no-cache --upgrade nodejs libpq
+COPY --from=builder /app .
+
+RUN chmod +x /app/docker-entrypoint.sh && \
+    mkdir -p css && mkdir -p /app/temp/uploads
+
+VOLUME ["/app/temp/uploads"]
+VOLUME ["/app/logs"]
+
+EXPOSE 4000
 
 CMD /app/docker-entrypoint.sh
+
