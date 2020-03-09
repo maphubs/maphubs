@@ -87,7 +87,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
               <Row style={{marginBottom: '20px'}}>
                 {!imageFailed &&
                   <Avatar
-                    alt={t(group.name)} shape='square' size={256} src={'/img/resize/600?format=webp&quality=80&progressive=true&url=/group/' + groupId + '/image.jpg'} onError={() => {
+                    alt={t(group.name)} shape='square' size={256} src={'/img/resize/600?format=webp&quality=80&progressive=true&url=/group/' + groupId + '/image.png'} onError={() => {
                       this.setState({imageFailed: true})
                     }}
                   />}

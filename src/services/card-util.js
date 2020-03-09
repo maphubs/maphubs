@@ -62,7 +62,7 @@ export default {
   getGroupCard (group: Object, id: number, arr: Array<Object>, onClick?: Function): CardConfig {
     let image_url
     if (group.hasimage) {
-      image_url = `/img/resize/400?format=webp&quality=80&progressive=true&url=/group/${group.group_id}/image.jpg`
+      image_url = `/img/resize/400?format=webp&url=/group/${group.group_id}/image.png`
     }
     return {
       id: `group-${group.group_id}`,
