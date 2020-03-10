@@ -168,6 +168,7 @@
     "prop-types": "^15.6.1",
     "raven": "^2.6.3",
     "raw-loader": "^4.0.0",
+    "rc-slider": "^9.2.2",
     "react": "^16.13.0",
     "react-ace": "^8.0.0",
     "react-addons-update": "^15.6.2",

@@ -8,8 +8,7 @@ node --max_old_space_size=8124 node_modules/next/dist/bin/next build
 node node_modules/next/dist/bin/next export -o .next-export
 
 #docker build
-docker pull node:10
-docker build . --compress -t quay.io/maphubs/web:latest
+docker build . --compress -t quay.io/maphubs/web:v$PACKAGE_VERSION
 
 #commit version tag
 git add version.json
@@ -23,8 +22,7 @@ git push origin v$PACKAGE_VERSION
 aws s3 sync .next-export/ s3://maphubs-cdn/maphubs --acl public-read
 
 #push Docker image to repo
-docker tag quay.io/maphubs/web:latest quay.io/maphubs/web:v$PACKAGE_VERSION
 docker push quay.io/maphubs/web:v$PACKAGE_VERSION
 
 #update changelog
-npm run changelog
+#npm run changelog
