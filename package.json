@@ -51,7 +51,7 @@
     "@bit/kriscarle.maphubs-utils.maphubs-utils.email-util": "^1.1.1",
     "@bit/kriscarle.maphubs-utils.maphubs-utils.importers": "^1.1.8",
     "@bit/kriscarle.maphubs-utils.maphubs-utils.log": "^1.1.0",
-    "@bit/kriscarle.maphubs-utils.maphubs-utils.url-util": "^1.0.0",
+    "@bit/kriscarle.maphubs-utils.maphubs-utils.url-util": "^1.1.0",
     "@ckeditor/ckeditor5-dev-utils": "^12.0.9",
     "@ckeditor/ckeditor5-react": "^2.1.0",
     "@ckeditor/ckeditor5-theme-lark": "^17.0.0",
