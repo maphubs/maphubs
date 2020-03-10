@@ -19,7 +19,6 @@ import type {LocaleStoreState} from '../stores/LocaleStore'
 import type {FeaturePhotoStoreState} from '../stores/FeaturePhotoStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import FloatingButton from '../components/FloatingButton'
 import {getLayer} from '../components/Feature/Map/layer-feature'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
@@ -107,25 +106,6 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     }
   }
 
-  // Build edit link
-  getEditLink = (map?: Object) => {
-    // get map position
-    let zoom = 10
-    let position = {lng: 0, lat: 0}
-    if (map) {
-      position = map.getPosition()
-      zoom = Math.ceil(position.zoom)
-      if (zoom < 10) zoom = 10
-    }
-    const baseUrl = urlUtil.getBaseUrl()
-    return `${baseUrl}/map/new?editlayer=${this.props.layer.layer_id}#${zoom}/${position.lat}/${position.lng}`
-  }
-
-  openEditor = (map?: Object) => {
-    const editLink = this.getEditLink(map)
-    window.location = editLink
-  }
-
   selectTab = (tab: string) => {
     let frActive
     if (tab === 'forestreport' || this.state.tab === 'forestreport') {
@@ -139,7 +119,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const {openEditor, selectTab, t} = this
+    const {selectTab, t} = this
     const {canEdit, layer, feature, headerConfig, notes} = this.props
     const {frActive} = this.state
     let geojsonFeature
@@ -249,21 +229,6 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                     />
                   </Col>
                 </Row>
-                {canEdit &&
-                  <div ref='menuButton' className='fixed-action-btn action-button-bottom-right'>
-                    <a className='btn-floating btn-large red red-text'>
-                      <i className='large material-icons'>more_vert</i>
-                    </a>
-                    <ul>
-                      {!layer.is_external &&
-                        <li>
-                          <FloatingButton
-                            onClick={() => { openEditor(MapState.state.map) }} icon='mode_edit'
-                            tooltip={t('Edit Map Data')} tooltipPosition='left'
-                          />
-                        </li>}
-                    </ul>
-                  </div>}
               </main>
             )}
           </Subscribe>
