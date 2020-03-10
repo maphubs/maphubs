@@ -21,7 +21,9 @@
     "deploy-minor": "node minor && npm run deploy",
     "deploy-patch": "node patch && npm run deploy",
     "deploy": "/bin/sh deploy.sh",
-    "upgrade-rancher": "cd ../maphubs-rancher-catalog && /bin/sh new_version.sh"
+    "upgrade-rancher": "cd ../maphubs-rancher-catalog && /bin/sh new_version.sh",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -204,7 +206,8 @@
     "uuid": "^7.0.2",
     "webpack-filter-warnings-plugin": "^1.2.1",
     "wgs84-util": "3.0.0",
-    "xcomponent": "6.0.62"
+    "xcomponent": "6.0.62",
+    "snyk": "^1.298.1"
   },
   "optionalDependencies": {
     "fsevents": "^1.2.4",
@@ -229,5 +232,6 @@
     "semver": "^7.1.3",
     "unstated-debug": "^0.4.0",
     "webpack-bundle-analyzer": "^3.6.0"
-  }
+  },
+  "snyk": true
 }
