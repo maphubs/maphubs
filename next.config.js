@@ -1,7 +1,7 @@
 const withCSS = require('@zeit/next-css')
 const withLess = require('@zeit/next-less')
 const path = require('path')
-const withTM = require('next-transpile-modules')(['react-dnd', 'react-dnd-html5-backend'])
+const withTM = require('next-transpile-modules')(['react-dnd', 'dnd-core', 'react-dnd-html5-backend'])
 const lessToJS = require('less-vars-to-js')
 const config = require('./src/local')
 const fs = require('fs')

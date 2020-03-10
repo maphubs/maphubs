@@ -5,11 +5,13 @@ LABEL maintainer="Kristofor Carle <kris@maphubs.com>"
 
 ENV NODE_ENV=production
 
-RUN apk add --no-cache --upgrade nodejs npm git python make gcc g++ zip postgresql-dev
+RUN apk add --no-cache --upgrade nodejs npm yarn git python make gcc g++ zip postgresql-dev
 
-COPY package.json package-lock.json /app/
+COPY package.json yarn.lock /app/
 RUN npm config set '@bit:registry' https://node.bitsrc.io && \
-    npm install --production
+    yarn --production --pure-lockfile && \
+    yarn global add modclean && \
+    yarn run modclean
 
 COPY ./src /app/src
 COPY ./pages /app/pages
@@ -17,6 +19,7 @@ COPY ./.next /app/.next
 COPY .babelrc next.config.js server.js server.es6.js docker-entrypoint.sh version.json theme.less /app/
 
 FROM osgeo/gdal:alpine-small-3.0.4
+ENV NODE_ENV=production
 WORKDIR /app
 RUN apk add --no-cache --upgrade nodejs libpq
 COPY --from=builder /app .

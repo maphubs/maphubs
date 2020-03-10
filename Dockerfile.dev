@@ -5,11 +5,13 @@ LABEL maintainer="Kristofor Carle <kris@maphubs.com>"
 
 ENV NODE_ENV=development DEBUG="maphubs:*,maphubs-error:*"
 
-RUN apk add --no-cache --upgrade nodejs npm git python make gcc g++ zip postgresql-dev
+RUN apk add --no-cache --upgrade nodejs npm yarn git python make gcc g++ zip postgresql-dev
 
-COPY package.json package-lock.json /app/
+COPY package.json yarn.lock /app/
 RUN npm config set '@bit:registry' https://node.bitsrc.io && \
-    npm install --production
+    yarn --production --pure-lockfile && \
+    yarn global add modclean && \
+    yarn run modclean
 
 COPY ./src /app/src
 COPY ./pages /app/pages
