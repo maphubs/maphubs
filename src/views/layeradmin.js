@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Header from '../components/header'
-import { message, notification, Modal, Row, Button, Tabs, PageHeader, Col, Divider } from 'antd'
+import { message, notification, Modal, Row, Button, Tabs, PageHeader, Divider } from 'antd'
 import LayerSettings from '../components/CreateLayer/LayerSettings'
 import LayerAdminSettings from '../components/CreateLayer/LayerAdminSettings'
 import PresetEditor from '../components/CreateLayer/PresetEditor'
@@ -25,7 +25,6 @@ import type {Layer} from '../types/layer'
 import type {LayerStoreState} from '../stores/layer-store'
 import type {Group} from '../stores/GroupStore'
 import type {UserStoreState} from '../stores/UserStore'
-import FloatingButton from '../components/FloatingButton'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { confirm } = Modal
@@ -207,17 +206,9 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
       })
   }
 
-  selectTab = (tab: string) => {
-    this.setState({tab})
-  }
-
   render () {
     const {t} = this
-    const _this = this
-    let tabContentDisplay = 'none'
-    if (typeof window !== 'undefined') {
-      tabContentDisplay = 'inherit'
-    }
+
     const layerId = this.props.layer.layer_id ? this.props.layer.layer_id : 0
     const layerName = slugify(this.t(this.props.layer.name))
     const layerInfoUrl = `/layer/info/${layerId}/${layerName}`
@@ -229,11 +220,13 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
           <main>
             <div className='container'>
               <Row style={{marginBottom: '20px'}}>
-                  <PageHeader
-                    onBack={() => window.location = layerInfoUrl}
-                    style={{padding: '5px'}}
-                    title={t('Back to Layer')}
-                  />
+                <PageHeader
+                  onBack={() => {
+                    window.location = layerInfoUrl
+                  }}
+                  style={{padding: '5px'}}
+                  title={t('Back to Layer')}
+                />
               </Row>
               <Row style={{marginBottom: '20px', textAlign: 'center'}}>
                 <h5>{t('Unable to modify remote layers.')}</h5>
@@ -261,7 +254,9 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
             <main>
               <Row style={{marginBottom: '20px'}}>
                 <PageHeader
-                  onBack={() => window.location = layerInfoUrl}
+                  onBack={() => {
+                    window.location = layerInfoUrl
+                  }}
                   style={{padding: '5px'}}
                   title={t('Back to Layer')}
                 />
@@ -284,57 +279,56 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                   tabBarStyle={{marginBottom: 0}}
                   animated={false}
                 >
-                <TabPane tab={t('Info')} key='settings' style={{position: 'relative'}}>
-                  <LayerSettings
-                    groups={this.props.groups}
-                    showGroup={false}
-                    warnIfUnsaved
-                    onSubmit={this.onSave}
-                    submitText={t('Save')}
-                  />
-                  <Divider style={{marginBottom: '20px'}} />  
-                  <Row style={{marginBottom: '20px', padding: '20px'}} justify='center'>
-                    <h5>{t('Modify Data')}</h5>
-                    <Row style={{marginBottom: '20px'}}>
-                      <Button type='primary' href={`/layer/replace/${layerId}/${layerName}`}>{t('Replace Layer Data')}</Button>
-                    </Row>
-                    <Row style={{marginBottom: '20px'}}>
-                      <Button type='danger' onClick={this.deleteLayer}>{t('Delete Layer')}</Button>
-                    </Row>
-                  </Row>
-                </TabPane>
-                <TabPane tab={t('Fields')} key='fields' style={{position: 'relative'}}>
-                  <div className='container'>
-                    <h5>{t('Data Fields')}</h5>
-                    <div className='right'>
-                      <Button type='primary' onClick={this.savePresets} disabled={!this.state.canSavePresets}>{t('Save')}</Button>
-                    </div>
-                    <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid} />
-                    <div className='right'>
-                      <Button type='primary' onClick={this.savePresets} disabled={!this.state.canSavePresets}>{t('Save')}</Button>
-                    </div>
-                  </div>
-                </TabPane>
-                <TabPane tab={t('Style/Display')} key='style' style={{position: 'relative'}}>
-                  <LayerStyle
-                      showPrev={false}
-                      onSubmit={this.onSave}
-                      mapConfig={this.props.mapConfig}
-                    />
-                </TabPane>
-                {this.state.user && this.state.user.admin &&
-                  <TabPane tab={t('Admin Only')} key='admin' style={{position: 'relative'}}>
-                    <LayerAdminSettings
+                  <TabPane tab={t('Info')} key='settings' style={{position: 'relative'}}>
+                    <LayerSettings
                       groups={this.props.groups}
+                      showGroup={false}
                       warnIfUnsaved
                       onSubmit={this.onSave}
                       submitText={t('Save')}
                     />
+                    <Divider style={{marginBottom: '20px'}} />
+                    <Row style={{marginBottom: '20px', padding: '20px'}} justify='center'>
+                      <h5>{t('Modify Data')}</h5>
+                      <Row style={{marginBottom: '20px'}}>
+                        <Button type='primary' href={`/layer/replace/${layerId}/${layerName}`}>{t('Replace Layer Data')}</Button>
+                      </Row>
+                      <Row style={{marginBottom: '20px'}}>
+                        <Button type='danger' onClick={this.deleteLayer}>{t('Delete Layer')}</Button>
+                      </Row>
+                    </Row>
                   </TabPane>
-                  }
+                  <TabPane tab={t('Fields')} key='fields' style={{position: 'relative'}}>
+                    <div className='container'>
+                      <h5>{t('Data Fields')}</h5>
+                      <Row style={{textAlign: 'right'}}>
+                        <Button type='primary' onClick={this.savePresets} disabled={!this.state.canSavePresets}>{t('Save')}</Button>
+                      </Row>
+                      <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid} />
+                      <Row style={{textAlign: 'right'}}>
+                        <Button type='primary' onClick={this.savePresets} disabled={!this.state.canSavePresets}>{t('Save')}</Button>
+                      </Row>
+                    </div>
+                  </TabPane>
+                  <TabPane tab={t('Style/Display')} key='style' style={{position: 'relative'}}>
+                    <LayerStyle
+                      showPrev={false}
+                      onSubmit={this.onSave}
+                      mapConfig={this.props.mapConfig}
+                    />
+                  </TabPane>
+                  {this.state.user && this.state.user.admin &&
+                    <TabPane tab={t('Admin Only')} key='admin' style={{position: 'relative'}}>
+                      <LayerAdminSettings
+                        groups={this.props.groups}
+                        warnIfUnsaved
+                        onSubmit={this.onSave}
+                        submitText={t('Save')}
+                      />
+                    </TabPane>}
                 </Tabs>
               </Row>
-              
+
             </main>
           </Provider>
         </ErrorBoundary>
