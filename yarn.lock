@@ -1191,9 +1191,9 @@
     winston-daily-rotate-file "4.4.2"
 
 "@bit/kriscarle.maphubs-utils.maphubs-utils.url-util@^1.1.0":
-  version "1.1.1"
-  resolved "https://node.bit.dev/kriscarle.maphubs-utils.maphubs-utils.url-util/-/kriscarle.maphubs-utils.maphubs-utils.url-util-1.1.1.tgz#9c45921f2f8de7f2b125efe2f29128c59acf5015"
-  integrity sha1-nEWSHy+N5/KxJe/i8pEoxZrPUBU=
+  version "1.1.2"
+  resolved "https://node.bit.dev/kriscarle.maphubs-utils.maphubs-utils.url-util/-/kriscarle.maphubs-utils.maphubs-utils.url-util-1.1.2.tgz#1fbbd4f06cd70041592f53b89f64702fddc2bdf3"
+  integrity sha1-H7vU8GzXAEFZL1O4n2RwL93CvfM=
   dependencies:
     next "9.2.2"
 
