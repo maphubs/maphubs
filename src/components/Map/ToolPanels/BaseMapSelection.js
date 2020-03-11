@@ -3,6 +3,7 @@ import React from 'react'
 import { Subscribe } from 'unstated'
 import BaseMapContainer from '../containers/BaseMapContainer'
 import type {BaseMapOption} from '../containers/BaseMapContainer'
+import { GlobalOutlined } from '@ant-design/icons'
 import { Row, Col, Avatar } from 'antd'
 
 type Props = {
@@ -45,7 +46,7 @@ export default class BaseMapSelection extends React.Component<Props, void> {
                         {baseMapOption.icon &&
                           <Avatar shape='square' size={64} src={baseMapOption.icon} />}
                         {!baseMapOption.icon &&
-                          <Avatar shape='square' size={64} icon='global' />}
+                          <Avatar shape='square' size={64} icon={<GlobalOutlined />} />}
                       </Col>
                       <Col span={18} style={{paddingLeft: '5px'}}>
                         <p style={{marginBottom: '0.5em'}}><b>{t(baseMapOption.label)}</b></p>

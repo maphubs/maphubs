@@ -9,7 +9,8 @@ import LocaleStore from '../stores/LocaleStore'
 import type {Group} from '../stores/GroupStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import { Row, Col, Avatar, List, Button, Icon, Tooltip } from 'antd'
+import { PlusOutlined, SettingOutlined } from '@ant-design/icons'
+import { Row, Col, Avatar, List, Button, Tooltip } from 'antd'
 import Person from '@material-ui/icons/Person'
 import SupervisorAccount from '@material-ui/icons/SupervisorAccount'
 
@@ -99,16 +100,16 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
               {canEdit &&
                 <Row>
                   <Col span={6}>
-                    <Button style={{margin: 'auto'}} href={'/map/new?group_id=' + groupId}><Icon type='plus' />{t('Map')}</Button>
+                    <Button style={{margin: 'auto'}} href={'/map/new?group_id=' + groupId}><PlusOutlined />{t('Map')}</Button>
                   </Col>
                   <Col span={6}>
-                    <Button style={{margin: 'auto'}} href={'/createlayer?group_id=' + groupId}><Icon type='plus' />{t('Layer')}</Button>
+                    <Button style={{margin: 'auto'}} href={'/createlayer?group_id=' + groupId}><PlusOutlined />{t('Layer')}</Button>
                   </Col>
                   <Col span={6}>
-                    <Button style={{margin: 'auto'}} href={'/createstory?group_id=' + groupId}><Icon type='plus' />{t('Story')}</Button>
+                    <Button style={{margin: 'auto'}} href={'/createstory?group_id=' + groupId}><PlusOutlined />{t('Story')}</Button>
                   </Col>
                   <Col span={6}>
-                    <Button style={{margin: 'auto'}} href={`/group/${groupId}/admin`}><Icon type='setting' />{t('Manage')}</Button>
+                    <Button style={{margin: 'auto'}} href={`/group/${groupId}/admin`}><SettingOutlined />{t('Manage')}</Button>
                   </Col>
                 </Row>}
             </Col>

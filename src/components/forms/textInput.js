@@ -13,7 +13,6 @@ type Props = {|
   icon: string,
   className: string,
   dataTooltip: string,
-  dataDelay: number,
   dataPosition: string,
   name: string,
   label: string,

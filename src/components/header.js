@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
-import { Layout, Menu, Drawer, Icon } from 'antd'
+import { MenuOutlined } from '@ant-design/icons'
+import { Layout, Menu, Drawer } from 'antd'
 import MapHubsComponent from './MapHubsComponent'
 import ExploreDropdown from './Header/ExploreDropdown'
 import AddDropdown from './Header/AddDropdown'
@@ -173,8 +174,8 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
         </style>
         {NavMenu}
 
-        <Icon
-          type='menu' className='hamburger-menu'
+        <MenuOutlined
+          className='hamburger-menu'
           style={{
             fontSize: '24px',
             color: fontColor || 'inherit',

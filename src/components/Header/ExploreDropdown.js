@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
-import { Menu, Dropdown, Icon } from 'antd'
+import { DownOutlined } from '@ant-design/icons'
+import { Menu, Dropdown } from 'antd'
 
 type Props = {
   t: Function
@@ -36,7 +37,7 @@ export default class ExploreDropdown extends React.PureComponent<Props, void> {
     return (
       <Dropdown overlay={menu} trigger={['click']}>
         <a href='#'>
-          {t('Explore')} <Icon type='down' />
+          {t('Explore')} <DownOutlined />
         </a>
       </Dropdown>
     )

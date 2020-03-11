@@ -3,7 +3,8 @@ import React from 'react'
 import Formsy from 'formsy-react'
 import slugify from 'slugify'
 import dynamic from 'next/dynamic'
-import { Row, Col, message, notification, Button, Popconfirm, Switch, DatePicker, Icon } from 'antd'
+import { DeleteOutlined, RightOutlined } from '@ant-design/icons'
+import { Row, Col, message, notification, Button, Popconfirm, Switch, DatePicker } from 'antd'
 import AddMapDrawer from './AddMapDrawer'
 import ImageCrop from '../ImageCrop'
 import LocalizedInput from '../forms/ant/LocalizedInput'
@@ -201,7 +202,7 @@ class StoryEditor extends React.Component<Props, State> {
                   type='primary' ghost disabled={modified} onClick={() => {
                     window.location = `/story/${slugify(title[locale])}/${story_id}`
                   }}
-                >{t('View Story')}<Icon type='right' />
+                >{t('View Story')}<RightOutlined />
                 </Button>
               </Col>
             </Row>
@@ -271,7 +272,7 @@ class StoryEditor extends React.Component<Props, State> {
                   okText='Yes' cancelText='No'
                   onConfirm={this.delete}
                 >
-                  <Button type='danger' icon='delete'>{t('Delete')}</Button>
+                  <Button type='danger' icon={<DeleteOutlined />}>{t('Delete')}</Button>
                 </Popconfirm>
               </Col>}
           </Row>

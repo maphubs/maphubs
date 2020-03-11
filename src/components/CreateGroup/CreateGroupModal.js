@@ -1,7 +1,8 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { Modal, Button, Row, notification, Icon, message } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
+import { Modal, Button, Row, notification, message } from 'antd'
 import TextInput from '../forms/textInput'
 import MultiTextInput from '../forms/MultiTextInput'
 import MultiTextArea from '../forms/MultiTextArea'
@@ -129,7 +130,7 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
     return (
       <>
         {!visible &&
-          <Button size='small' onClick={this.showModal}><Icon type='plus' />{t('New Group')}</Button>}
+          <Button size='small' onClick={this.showModal}><PlusOutlined />{t('New Group')}</Button>}
         <Modal
           title={t('Create Group')}
           visible={visible}

@@ -4,7 +4,8 @@ import MapHubsComponent from '../components/MapHubsComponent'
 import LocaleActions from '../actions/LocaleActions'
 import debugFactory from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import localeUtil from '../locales/util'
-import { Menu, Dropdown, Icon } from 'antd'
+import { DownOutlined } from '@ant-design/icons'
+import { Menu, Dropdown } from 'antd'
 import getConfig from 'next/config'
 const debug = debugFactory('MapHubsComponent')
 
@@ -64,7 +65,7 @@ export default class LocaleChooser extends MapHubsComponent<Props, State> {
     return (
       <Dropdown overlay={menu} trigger={['click']}>
         <a className='nav-link-item' href='#'>
-          {label} <Icon type='down' />
+          {label} <DownOutlined />
         </a>
       </Dropdown>
     )

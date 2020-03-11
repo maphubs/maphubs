@@ -1,6 +1,7 @@
 //  @flow
 import * as React from 'react'
-import { Tag, Input, Tooltip, Icon } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
+import { Tag, Input, Tooltip } from 'antd'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -93,7 +94,7 @@ export default class Tags extends React.Component<Props, State> {
         )}
         {!inputVisible && (
           <Tag onClick={this.showInput} style={{ background: '#fff', borderStyle: 'dashed' }}>
-            <Icon type='plus' /> New Tag
+            <PlusOutlined /> New Tag
           </Tag>
         )}
       </div>

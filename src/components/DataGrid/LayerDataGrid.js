@@ -302,7 +302,7 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
           toolbar={<Toolbar
             enableFilter
             filterRowsButtonText={t('Filter Data')}
-          >
+                   >
             {canEdit &&
               <Button type='primary' style={{marginLeft: '5px'}} onClick={this.onEditSelectedFeature}>
                 {t('Edit Selected')}
@@ -320,7 +320,7 @@ class LayerDataGrid extends MapHubsComponent<Props, State> {
                 t={t}
                 layer_id={layer_id}
               />}
-          </Toolbar>}
+                   </Toolbar>}
           onAddFilter={this.handleFilterChange}
           onClearFilters={this.onClearFilters}
         />

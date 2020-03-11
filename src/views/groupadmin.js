@@ -292,11 +292,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
 
           <div className='container'>
             <Row style={{marginBottom: '20px'}}>
-                <PageHeader
-                    onBack={() => window.location = groupUrl}
-                    style={{padding: '5px'}}
-                    title={t('Back to Group')}
-                  />
+              <PageHeader
+                onBack={() => window.location = groupUrl}
+                style={{padding: '5px'}}
+                title={t('Back to Group')}
+              />
             </Row>
             <Row style={{marginTop: '20px', marginBottom: '20px'}}>
               <Col sm={24} md={12}>

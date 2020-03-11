@@ -13,7 +13,6 @@ type Props = {|
   name: string,
   options: Array<Object>,
   dataTooltip: string,
-  dataDelay: number,
   dataPosition: string,
   label: string,
   successText: string,

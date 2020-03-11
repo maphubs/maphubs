@@ -1,7 +1,8 @@
 // @flow
 import React from 'react'
 import LayerListStatic from './LayerListStatic'
-import { Dropdown, Icon } from 'antd'
+import { DownOutlined } from '@ant-design/icons'
+import { Dropdown } from 'antd'
 
 type Props = {
   name: string,
@@ -24,7 +25,7 @@ export default class LayerListDropDown extends React.PureComponent<Props, void> 
           getPopupContainer={trigger => trigger.parentNode}
         >
           <span className='ant-dropdown-link' style={{cursor: 'pointer', height: '35px', lineHeight: '35px'}}>
-            {t(name)} <Icon type='down' />
+            {t(name)} <DownOutlined />
           </span>
         </Dropdown>
       </div>

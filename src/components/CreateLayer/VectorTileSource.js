@@ -2,7 +2,7 @@
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import TextInput from '../forms/textInput'
-import { message, notification, Row } from 'antd'
+import { message, notification, Row, Button } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
