@@ -185,7 +185,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
           {styleForm}
           {tilesForm}
           <div className='right'>
-            <Button type='primary' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
+            <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
           </div>
         </Formsy>
       </Row>
