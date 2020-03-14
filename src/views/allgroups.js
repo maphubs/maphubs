@@ -145,10 +145,10 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
         <Header activePage='groups' {...this.props.headerConfig} />
         <main>
           <Row style={{marginTop: '20px', marginBottom: '10px'}}>
-            <Col sm={12} md={14} lg={16}>
+            <Col sm={12} md={8}>
               <h4 className='no-margin'>{t('Groups')}</h4>
             </Col>
-            <Col sm={12} md={8} lg={6} style={{paddingRight: '15px'}}>
+            <Col sm={12} md={8} offset={8} style={{paddingRight: '15px'}}>
               <SearchBox label={t('Search Groups')} suggestionUrl='/api/groups/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
             </Col>
           </Row>
@@ -156,15 +156,15 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
 
             {searchResults}
 
-            <Row style={{marginBottom: '20px'}}>
-              <div className='left-align' style={{marginLeft: '15px', marginTop: '25px'}}>
+            <Row justify='end'>
+              <Col style={{margin: '20px'}}>
                 <Formsy>
                   <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={this.state.showList} />
                 </Formsy>
-              </div>
-              <Row style={{marginBottom: '20px'}}>
-                {groups}
-              </Row>
+              </Col>
+            </Row>
+            <Row style={{marginBottom: '20px'}}>
+              {groups}
             </Row>
 
             <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>

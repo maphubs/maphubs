@@ -185,7 +185,7 @@ export default class MarkerSettings extends React.Component<Props, State> {
             <Select
               name='shape' id='markers-shape-select' label={t('Marker Shape')} options={shapeOptions}
               value={this.state.options.shape} startEmpty={!this.state.options.shape}
-              dataPosition='right' dataTooltip={t('Shape of the map marker')}
+              tooltipPosition='right' tooltip={t('Shape of the map marker')}
               required
             />
           </Row>
@@ -193,7 +193,7 @@ export default class MarkerSettings extends React.Component<Props, State> {
             <Select
               name='size' id='markers-size-select' label={t('Marker Size')} options={sizeOptions}
               value={this.state.options.size} startEmpty={!this.state.options.size}
-              dataPosition='right' dataTooltip={t('Size of the map marker')}
+              tooltipPosition='right' tooltip={t('Size of the map marker')}
               required
             />
           </Row>
@@ -201,7 +201,7 @@ export default class MarkerSettings extends React.Component<Props, State> {
             <Select
               name='icon' id='markers-icon-select' label={t('Marker Icon')} options={iconOptions}
               value={this.state.options.icon} startEmpty={!this.state.options.icon}
-              dataPosition='right' dataTooltip={t('Marker icon overlay')}
+              tooltipPosition='right' tooltip={t('Marker icon overlay')}
               required
             />
           </Row>

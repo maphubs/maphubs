@@ -1,35 +1,31 @@
 // @flow
-import React from 'react'
+import * as React from 'react'
 import {withFormsy} from 'formsy-react'
 import _isequal from 'lodash.isequal'
-import {Tooltip} from 'antd'
-import classNames from 'classnames'
+import {Tooltip, Input} from 'antd'
 
 type Props = {|
   value: string,
   length: number,
   successText: string,
   disabled: boolean,
-  icon: string,
-  className: string,
-  dataTooltip: string,
-  dataPosition: string,
+  icon: React.Node,
+  tooltip: string,
+  tooltipPosition: string,
   name: string,
   label: string,
   placeholder: string,
   id: string,
-  type: string,
-  style: Object,
   showCharCount: boolean,
-  useMaterialize: boolean,
-  onClick: Function,
   // Added by Formsy
   showRequired: boolean,
+  isRequired: boolean,
   isValid: boolean,
   showError: boolean,
   setValue: Function,
   value: string,
-  errorMessage: string
+  errorMessage: string,
+  t: Function
 |}
 
 type State = {
@@ -37,19 +33,13 @@ type State = {
 }
 
 class TextInput extends React.Component<Props, State> {
-  props: Props
-
   static defaultProps = {
     length: 100,
     successText: '',
     defaultValue: '',
     disabled: false,
     value: '',
-    dataDelay: 100,
-    type: 'text',
-    style: {},
-    showCharCount: true,
-    useMaterialize: true
+    showCharCount: true
   }
 
   constructor (props: Props) {
@@ -81,60 +71,52 @@ class TextInput extends React.Component<Props, State> {
     if (!_isequal(this.state, nextState)) {
       return true
     }
+    return false
   }
 
-  changeValue = (event) => {
-    event.stopPropagation()
-    this.props.setValue(event.currentTarget.value)
-
+  changeValue = (value: string) => {
     this.setState({
-      charCount: event.currentTarget.value.length
+      charCount: value?.length ?? 0
     })
+    this.props.setValue(value)
   }
 
   render () {
-    const { id, name, showRequired, isValid, showError, value, icon, showCharCount, errorMessage, length } = this.props
+    const { id, name, icon, showRequired, isRequired, isValid, showError, value, showCharCount, errorMessage, length, placeholder, disabled, successText, t } = this.props
     const { charCount } = this.state
 
-    let className
-    let inputClassName = ''
-    if (this.props.useMaterialize) {
-      className = classNames('input-field', this.props.className)
-      inputClassName = classNames(
-        {
-          required: showRequired,
-          valid: isValid,
-          invalid: showError
-        }
-      )
-    } else {
-      className = classNames(this.props.className)
-    }
-
     return (
-      <Tooltip
-        title={this.props.dataTooltip}
-        placement={this.props.dataPosition}
-      >
-        <div ref='inputWrapper' className={className} style={this.props.style}>
-          {icon &&
-            <i className='material-icons prefix'>{icon}</i>}
-          <input
-            ref='input' id={id || name} type={this.props.type} className={inputClassName} placeholder={this.props.placeholder} value={value}
-            disabled={this.props.disabled}
-            onClick={this.props.onClick}
-            onChange={this.changeValue}
-          />
-          <label htmlFor={id || name} className={value ? 'active' : ''} data-error={errorMessage} data-success={this.props.successText}>{this.props.label}</label>
+      <>
+        <div style={{width: '100%'}}>
+          <Tooltip
+            title={this.props.tooltip}
+            placement={this.props.tooltipPosition}
+          >
+            <label htmlFor={id || name}>{this.props.label} {isRequired && '*'}</label>
+            <Input
+              type='text'
+              prefix={icon}
+              id={id || name}
+              value={value}
+              disabled={disabled}
+              placeholder={placeholder}
+              onChange={(e) => {
+                const val = e.target.value
+                this.changeValue(val)
+              }}
+            />
+          </Tooltip>
           {showCharCount &&
             <span
-              className='character-counter'
               style={{float: 'right', fontSize: '12px', height: '1px', color: charCount > length ? 'red' : 'black'}}
             >
               {charCount} / {length}
             </span>}
+          {showRequired && <p style={{color: 'red'}}>{t('Required')}</p>}
+          {showError && <p style={{color: 'red'}}>{errorMessage}</p>}
+          {isValid && <p style={{color: 'red'}}>{successText}</p>}
         </div>
-      </Tooltip>
+      </>
     )
   }
 }

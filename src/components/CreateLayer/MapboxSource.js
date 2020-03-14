@@ -139,7 +139,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
               name='mapboxStyleID' label={t('Mapbox Style URL')} icon='info' validations={{isValidMapboxStyleURL: true}} validationErrors={{
                 isValidMapboxStyleURL: t('Invalid Mapbox Style URL, must be in the format mapbox://styles/...')
               }} length={100}
-              dataPosition='top' dataTooltip={t('Mapbox Style URL in the format mapbox://styles/...')}
+              tooltipPosition='top' tooltip={t('Mapbox Style URL in the format mapbox://styles/...')}
               required
             />
           </Row>
@@ -157,7 +157,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
               validations={{isValidMapboxMapID: true}} validationErrors={{
                 isValidMapboxMapID: t('Invalid Mapbox Map ID, should be in the format accountname.mapid')
               }} length={100}
-              dataPosition='top' dataTooltip={t('Mapbox Map ID')}
+              tooltipPosition='top' tooltip={t('Mapbox Map ID')}
               required
             />
           </Row>

@@ -106,9 +106,11 @@ export default class Layers extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
+    const { layers } = this.props
+    const { showList, searchActive } = this.state
     let searchResults = ''
 
-    if (this.state.searchActive) {
+    if (searchActive) {
       if (this.state.searchResults.length > 0) {
         const searchCards = this.state.searchResults.map(cardUtil.getLayerCard)
         searchResults = (
@@ -125,45 +127,36 @@ export default class Layers extends MapHubsComponent<Props, State> {
       }
     }
 
-    let layers = ''
-    if (this.state.showList) {
-      layers = (
-        <div className='container'>
-          <LayerList showTitle={false} layers={this.props.layers} />
-        </div>
-      )
-    } else {
-      const cards = this.props.layers.map(cardUtil.getLayerCard)
-      layers = (
-        <CardGrid cards={cards} t={t} />
-      )
-    }
-
     return (
       <ErrorBoundary>
         <Header activePage='layers' {...this.props.headerConfig} />
         <main>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <Row>
-              <Col sm={12} md={14} lg={16}>
+              <Col sm={12} md={8}>
                 <h4 className='no-margin'>{t('Layers')}</h4>
               </Col>
-              <Col sm={12} md={8} lg={6} style={{paddingRight: '15px', textAlign: 'right'}}>
+              <Col sm={12} md={8} offset={8} style={{paddingRight: '15px', textAlign: 'right'}}>
                 <SearchBox label={t('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
               </Col>
             </Row>
           </div>
           {searchResults}
 
-          <Row>
-            <div className='left-align' style={{marginLeft: '15px', marginTop: '25px'}}>
+          <Row justify='end' style={{marginBottom: '20px'}}>
+            <Col style={{margin: '20px'}}>
               <Formsy>
                 <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={this.state.showList} />
               </Formsy>
-            </div>
-            <Row>
-              {layers}
-            </Row>
+            </Col>
+          </Row>
+          <Row>
+            {showList &&
+              <div className='container'>
+                <LayerList showTitle={false} layers={this.props.layers} t={t} />
+              </div>}
+            {!showList &&
+              <CardGrid cards={layers.map(cardUtil.getLayerCard)} t={t} />}
           </Row>
 
           <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>

@@ -2,10 +2,10 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { Row, Carousel, Divider, Button } from 'antd'
+import { Row, Divider, Button } from 'antd'
 import CardCarousel from '../components/CardCarousel/CardCarousel'
 import StorySummary from '../components/Story/StorySummary'
-import PublicOnboardingLinks from '../components/Home/PublicOnboardingLinks'
+import Slides from '../components/Home/Slides'
 import OnboardingLinks from '../components/Home/OnboardingLinks'
 import MapHubsProLinks from '../components/Home/MapHubsProLinks'
 import InteractiveMap from '../components/Map/InteractiveMap'
@@ -189,107 +189,11 @@ export default class HomePro extends MapHubsComponent<Props, State> {
 
   renderSlides = (config: Object, key: string) => {
     const style = config.style || {}
-    const slides = (
+    return (
       <Row key={key} style={{...style}}>
-        {typeof window !== 'undefined' &&
-          <Carousel autoplay pauseOnFocus pauseOnDotsHover>
-            {config.slides.map((slide, i) => {
-              return (
-                <div key={i}>
-                  <div
-                    key={i} className='valign-wrapper'
-                    style={{
-                      height: '500px',
-                      backgroundSize: 'cover',
-                      backgroundImage: 'url(' + slide.img + ')'
-                    }}
-                  >
-                    <div className='slide-text'>
-                      <h2 className='no-margin'>{this.t(slide.title)}</h2>
-                      <h3 className='no-margin'>{this.t(slide.text)}</h3>
-                    </div>
-                    <div className='slide-button'>
-                      <Button type='primary' size='large' href={slide.link}>{this.t(slide.buttonText)}</Button>
-                    </div>
-                  </div>
-                </div>
-              )
-            })}
-          </Carousel>}
-        <style jsx global>{`
-          .ant-carousel .slick-slide {
-            text-align: center;
-            height: 500px;
-            width: 100vw;
-            line-height: 160px;
-            overflow: hidden;
-          }
-          .slide-text {
-            text-align: left;
-            display: block;
-            margin-left: 5%;
-            max-width: 80%;
-            padding: 0;
-            bottom: auto;
-            width: auto;
-            background: none;
-          }
-
-          .slide-text h2 {
-            background: rgba(0,0,0,0.55);
-              font-size: 61px;
-              padding: 10px 5px 5px;
-              color: rgba(255,255,255,0.85);
-              border: none;
-              font-weight: 400;
-              text-transform: uppercase;
-          }
-
-          .slide-text h3 {
-            display: inline-block;
-            float: left;
-            clear: both;
-            background: rgba(0,0,0,0.55);
-            font-size: 31px;
-            padding: 5px;
-            overflow: hidden;
-            color: rgba(255,255,255,0.85);
-            border: none;
-            text-transform: uppercase;
-            font-weight: 300;
-          }
-
-          .slide-button {
-            position: absolute;
-            width: 100vw;
-            text-align: center;
-            bottom: -5px;
-          }
-          @media only screen and (max-width : 480px) {
-            .slide-text h2 {
-              font-size: 40px;
-            }
-
-            .slide-text h3 {
-              font-size: 20px;
-            }
-          }
-        `}
-        </style>
+        <Slides config={config} t={this.t} />
       </Row>
     )
-    return slides
-  }
-
-  renderLinks = (config: Object, key: string) => {
-    const bgColor = config.bgColor ? config.bgColor : 'inherit'
-    const style = config.style || {}
-    const links = (
-      <Row key={key} style={{backgroundColor: bgColor, ...style}}>
-        <PublicOnboardingLinks t={this.t} {...config} />
-      </Row>
-    )
-    return links
   }
 
   renderOnboardingLinks = (config: Object, key: string) => {
@@ -392,13 +296,11 @@ export default class HomePro extends MapHubsComponent<Props, State> {
 
     const carousel = (
       <Row key={key} style={{marginBottom: '50px', backgroundColor: bgColor, ...style}}>
-        <Row style={{height: '50px'}}>
-          <div>
-            <h5 className='no-margin center-align' style={{lineHeight: '50px'}}>
-              {title}
-              {trendingIcon}
-            </h5>
-          </div>
+        <Row style={{height: '50px', width: '100%', textAlign: 'center'}}>
+          <h5 style={{lineHeight: '50px', width: '100%'}}>
+            {title}
+            {trendingIcon}
+          </h5>
         </Row>
         <ErrorBoundary>
           <Row>
@@ -492,6 +394,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
       >
         <Button
           type='primary'
+          size='large'
           style={{margin: 'auto'}}
           href={config.href}
         >
@@ -512,15 +415,17 @@ export default class HomePro extends MapHubsComponent<Props, State> {
         <p>Invalid page config: {JSON.stringify(pageConfig)}</p>
       )
     }
+
     return (
       <ErrorBoundary>
         <Provider inject={[this.BaseMapState]}>
           <div style={{margin: 0, height: '100%'}}>
             <Header {...this.props.headerConfig} />
-            <main style={{margin: 0, height: 'calc(100% - 50px)'}}>
+            <main style={{margin: 0}}>
 
               {this.props.pageConfig.components.map((component, i) => {
                 const key = `homepro-component-${component.id || i}`
+                const style = component.style || {}
                 if (!component.disabled) {
                   if (component.type === 'map') {
                     return _this.renderHomePageMap(component, key)
@@ -532,14 +437,16 @@ export default class HomePro extends MapHubsComponent<Props, State> {
                     return _this.renderText(component, key)
                   } else if (component.type === 'html') {
                     return _this.renderHtml(component, key)
-                  } else if (component.type === 'links') {
-                    return _this.renderLinks(component, key)
-                  } else if (component.type === 'onboarding-links') {
+                  } else if (component.type === 'links' || component.type === 'onboarding-links') {
                     return _this.renderOnboardingLinks(component, key)
                   } else if (component.type === 'pro-links') {
                     return _this.renderProLinks(component, key)
                   } else if (component.type === 'slides') {
-                    return _this.renderSlides(component, key)
+                    return (
+                      <Row key={key} style={{...style}}>
+                        <Slides config={component} t={this.t} />
+                      </Row>
+                    )
                   } else if (component.type === 'xcomponent') {
                     return _this.renderXComponent(component, key)
                   } else if (component.type === 'button') {

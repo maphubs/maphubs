@@ -160,7 +160,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
           <Header {...headerConfig} />
           <main>
             <div style={{marginLeft: '10px', marginRight: '10px', marginTop: '10px'}}>
-              <Row style={{margin: '20px'}}>
+              <Row style={{padding: '20px'}}>
                 <Steps size='small' current={step - 1}>
                   <Step title={t('Data')} />
                   <Step title={t('Metadata')} />

@@ -107,7 +107,7 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='featureid' label={t('DG Image ID')} icon='info'
-                dataPosition='top' dataTooltip={t('DigitalGlobe Image ID / Legacy ID')}
+                tooltipPosition='top' tooltip={t('DigitalGlobe Image ID / Legacy ID')}
                 required
               />
             </Row>

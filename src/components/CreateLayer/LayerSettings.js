@@ -188,7 +188,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   validations='maxLength:100' validationErrors={{
                     maxLength: t('Must be 100 characters or less.')
                   }} length={100}
-                  dataPosition='top' dataTooltip={t('Short Descriptive Name for the Layer')}
+                  tooltipPosition='top' tooltip={t('Short Descriptive Name for the Layer')}
                   required
                 />
               </Row>
@@ -207,7 +207,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   validations='maxLength:1000' validationErrors={{
                     maxLength: t('Description must be 1000 characters or less.')
                   }} length={1000}
-                  dataPosition='top' dataTooltip={t('Brief Description of the Layer')}
+                  tooltipPosition='top' tooltip={t('Brief Description of the Layer')}
                   required
                 />
               </Row>
@@ -226,7 +226,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   validations='maxLength:300' validationErrors={{
                     maxLength: t('Must be 300 characters or less.')
                   }} length={300}
-                  dataPosition='top' dataTooltip={t('Short Description of the Layer Source')}
+                  tooltipPosition='top' tooltip={t('Short Description of the Layer Source')}
                   required
                 />
               </Row>
@@ -235,7 +235,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   name='license' id='layer-license-select' label={t('License')} startEmpty={false}
                   value={license} options={licenseOptions}
                   note={t('Select a license for more information')}
-                  dataPosition='top' dataTooltip={t('Layer License')}
+                  tooltipPosition='top' tooltip={t('Layer License')}
                   required
                 />
               </Row>

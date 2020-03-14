@@ -90,7 +90,7 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
                 name='image_id' label={t('Image ID/Asset ID')} icon='info' validations='maxLength:200' validationErrors={{
                   maxLength: t('Must be 200 characters or less.')
                 }} length={200}
-                dataPosition='top' dataTooltip={t('EarthEngine Image ID or Asset ID')}
+                tooltipPosition='top' tooltip={t('EarthEngine Image ID or Asset ID')}
                 required
               />
             </Row>

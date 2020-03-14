@@ -10,8 +10,7 @@ import GroupTag from '../components/Groups/GroupTag'
 import Licenses from '../components/CreateLayer/licenses'
 import LayerNotes from '../components/CreateLayer/LayerNotes'
 import EditButton from '../components/EditButton'
-import LayerDataGrid from '../components/DataGrid/LayerDataGrid'
-import LayerDataEditorGrid from '../components/DataGrid/LayerDataEditorGrid'
+import DataGrid from '../components/DataGrid/DataGrid'
 import MapStyles from '../components/Map/Styles'
 import { Provider, Subscribe } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
@@ -393,6 +392,10 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                   .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
                     display: none;
                   }
+
+                  .ant-tabs-nav-container {
+                    margin-left: 5px;
+                  }
                 `}
                 </style>
                 <Tabs
@@ -477,24 +480,13 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                           <Row style={{height: '100%'}}>
                             <AutoSizer disableWidth>
                               {({ height }) => (
-                                <>
-                                  {editingData &&
-                                    <LayerDataEditorGrid
-                                      layer={layer}
-                                      height={height}
-                                      geoJSON={this.state.geoJSON}
-                                      presets={presets}
-                                      canEdit
-                                    />}
-                                  {!editingData &&
-                                    <LayerDataGrid
-                                      layer_id={layer.layer_id}
-                                      height={height}
-                                      geoJSON={this.state.geoJSON}
-                                      presets={presets}
-                                      canEdit={canEdit}
-                                    />}
-                                </>
+                                <DataGrid
+                                  layer_id={layer.layer_id}
+                                  height={height}
+                                  geoJSON={this.state.geoJSON}
+                                  presets={presets}
+                                  canEdit={canEdit}
+                                />
                               )}
                             </AutoSizer>
                             {canEdit &&

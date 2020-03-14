@@ -108,29 +108,29 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
                   isHttps: t('SSL required for external links, URLs must start with https://')
                 }}
                 length={500}
-                dataPosition='top'
-                dataTooltip={t('Vector Tile URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.pbf'}
+                tooltipPosition='top'
+                tooltip={t('Vector Tile URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.pbf'}
                 required
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='minzoom' label={t('MinZoom')} icon='info'
-                dataPosition='top' dataTooltip={t('Lowest tile zoom level available in data')}
+                tooltipPosition='top' tooltip={t('Lowest tile zoom level available in data')}
                 required
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='maxzoom' label={t('MaxZoom')} icon='info'
-                dataPosition='top' dataTooltip={t('Highest tile zoom level available in data')}
+                tooltipPosition='top' tooltip={t('Highest tile zoom level available in data')}
                 required
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='bounds' label={t('Bounds')} icon='info'
-                dataPosition='top' dataTooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
+                tooltipPosition='top' tooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
                 required
               />
             </Row>

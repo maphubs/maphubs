@@ -123,8 +123,8 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
             labelOff={t('Outline Only')}
             labelOn={t('Fill')}
             checked={this.state.fill}
-            dataPosition='right'
-            dataTooltip={t('Hide polygon fill and only show the outline in the selected color')}
+            tooltipPosition='right'
+            tooltip={t('Hide polygon fill and only show the outline in the selected color')}
           />
         </Row>
       )
@@ -139,7 +139,7 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
             <Toggle
               name='interactive' labelOff={t('Off')} labelOn={t('On')}
               checked={this.state.interactive}
-              dataPosition='right' dataTooltip={t('Allow users to interact with this layer by clicking the map')}
+              tooltipPosition='right' tooltip={t('Allow users to interact with this layer by clicking the map')}
             />
           </Row>
           <Row style={{marginBottom: '20px'}}>
@@ -147,7 +147,7 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
             <Toggle
               name='showBehindBaseMapLabels' labelOff={t('Off')} labelOn={t('On')}
               checked={this.state.showBehindBaseMapLabels}
-              dataPosition='right' dataTooltip={t('Allow base map labels to display on top of this layer')}
+              tooltipPosition='right' tooltip={t('Allow base map labels to display on top of this layer')}
             />
           </Row>
         </Formsy>

@@ -33,9 +33,9 @@ type Props = {
   successText: string,
   disabled: boolean,
   className?: string,
-  dataTooltip?: string,
+  tooltip?: string,
   dataDelay?: number,
-  dataPosition?: string,
+  tooltipPosition?: string,
   name: string,
   required: boolean,
   placeholder?: string,
@@ -114,8 +114,8 @@ export default class MultiTextInput extends MapHubsComponent<Props, State> {
     const commonProps = {
       length: this.props.length,
       showCharCount: this.props.showCharCount,
-      dataPosition: this.props.dataPosition,
-      dataTooltip: this.props.dataTooltip,
+      tooltipPosition: this.props.tooltipPosition,
+      tooltip: this.props.tooltip,
       dataDelay: this.props.dataDelay,
       validations: this.props.validations,
       validationErrors: this.props.validationErrors,
@@ -127,6 +127,7 @@ export default class MultiTextInput extends MapHubsComponent<Props, State> {
         type='card'
         tabBarStyle={{marginBottom: 0}}
         animated={false}
+        style={{width: '100%'}}
       >
         {langs.map(locale => {
           return (

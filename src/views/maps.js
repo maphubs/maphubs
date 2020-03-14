@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification, Row, Divider, Col } from 'antd'
+import { message, notification, Row, Divider, Col, Button } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
@@ -131,10 +131,10 @@ export default class Maps extends MapHubsComponent<Props, State> {
         <main style={{margin: '10px'}}>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <Row>
-              <Col sm={24} md={14} lg={16}>
+              <Col sm={24} md={8}>
                 <h4 className='no-margin'>{t('Maps')}</h4>
               </Col>
-              <Col sm={24} md={8} lg={6} style={{paddingRight: '15px'}}>
+              <Col sm={24} md={8} offset={8} style={{paddingRight: '15px'}}>
                 <SearchBox label={t('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
               </Col>
             </Row>
@@ -153,8 +153,8 @@ export default class Maps extends MapHubsComponent<Props, State> {
               />
             </div>
           </div>
-          <Row style={{textAlign: 'center'}}>
-            <a className='btn' href='/maps/all'>{t('View All Maps')}</a>
+          <Row justify='center' style={{textAlign: 'center'}}>
+            <Button type='primary' href='/maps/all'>{t('View All Maps')}</Button>
           </Row>
         </main>
         <Footer t={t} {...this.props.footerConfig} />

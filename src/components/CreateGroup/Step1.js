@@ -183,7 +183,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                     isAvailable: t('ID already taken, please try another.')
                   }} length={25}
                   successText='ID is Available'
-                  dataPosition='right' dataTooltip={t("Identifier for the Group. This will be used in links and URLs for your group's content.")}
+                  tooltipPosition='right' tooltip={t("Identifier for the Group. This will be used in links and URLs for your group's content.")}
                   required
                 />
               </Row>
@@ -196,7 +196,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   icon='info' validations='maxLength:100' validationErrors={{
                     maxLength: t('Must be 100 characters or less.')
                   }} length={100}
-                  dataPosition='top' dataTooltip={t('Short Descriptive Name for the Group')}
+                  tooltipPosition='top' tooltip={t('Short Descriptive Name for the Group')}
                   required
                 />
               </Row>
@@ -214,7 +214,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   icon='description' validations='maxLength:500' validationErrors={{
                     maxLength: t('Description must be 500 characters or less.')
                   }} length={500}
-                  dataPosition='top' dataTooltip={t('Brief Description of the Group')}
+                  tooltipPosition='top' tooltip={t('Brief Description of the Group')}
                   required
                 />
               </Row>
@@ -223,14 +223,14 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   name='location' label='Location' icon='navigation' validations='maxLength:100' validationErrors={{
                     maxLength: t('Location must be 100 characters or less.')
                   }} length={100}
-                  dataPosition='top' dataTooltip={t('Country or City Where the Group is Located')}
+                  tooltipPosition='top' tooltip={t('Country or City Where the Group is Located')}
                   required
                 />
               </Row>
               <Row style={{marginBottom: '20px'}}>
                 <Toggle
                   name='published' labelOff={t('Draft')} labelOn={t('Published')} defaultChecked
-                  dataPosition='top' dataTooltip={t('Include in Public Group Listings')}
+                  tooltipPosition='top' tooltip={t('Include in Public Group Listings')}
                 />
               </Row>
               <div className='left'>

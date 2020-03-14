@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { Row } from 'antd'
+import { Row, Col } from 'antd'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import UserStore from '../stores/UserStore'
@@ -69,31 +69,32 @@ export default class AllStories extends MapHubsComponent<Props, State> {
     return (
       <ErrorBoundary>
         <Header activePage='stories' {...this.props.headerConfig} />
-        <main>
+        <main style={{padding: '10px'}}>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <Row>
               <h4 className='no-margin'>{t('Stories')}</h4>
             </Row>
-            <Row>
-              <div className='left-align' style={{marginLeft: '15px', marginTop: '25px'}}>
+            <Row justify='end'>
+              <Col style={{margin: '20px'}}>
                 <Formsy>
                   <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={showList} />
                 </Formsy>
-              </div>
-              {hasStories &&
-                <Row>
-                  {showList &&
-                    <div className='container'>
-                      <StoryList showTitle={false} stories={stories} />
-                    </div>}
-                  {!showList &&
-                    <CardGrid cards={stories.map(s => cardUtil.getStoryCard(s, t))} t={t} />}
-                </Row>}
-              {!hasStories &&
-                <Row style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
-                  <b>{t('No Stories Found')}</b>
-                </Row>}
+              </Col>
             </Row>
+            {hasStories &&
+              <Row>
+                {showList &&
+                  <div className='container'>
+                    <StoryList showTitle={false} stories={stories} />
+                  </div>}
+                {!showList &&
+                  <CardGrid cards={stories.map(s => cardUtil.getStoryCard(s, t))} t={t} />}
+              </Row>}
+            {!hasStories &&
+              <Row style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
+                <b>{t('No Stories Found')}</b>
+              </Row>}
+
           </div>
           <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
             <FloatingButton

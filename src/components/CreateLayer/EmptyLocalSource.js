@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { Row, message, notification, Button } from 'antd'
+import { Row, Col, message, notification, Button } from 'antd'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
 import MapHubsComponent from '../MapHubsComponent'
@@ -47,11 +47,13 @@ export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStor
   render () {
     const {t} = this
     return (
-      <Row style={{marginBottom: '20px'}}>
-        <p>{t('Creating a new layer of type:') + ' ' + this.props.type}</p>
-        <div className='right'>
+      <Row justify='end' style={{marginBottom: '20px'}}>
+        <Col sm={24} md={12}>
+          <p>{t('Creating a new layer of type:') + ' ' + this.props.type}</p>
+        </Col>
+        <Col sm={24} md={12} style={{textAlign: 'right'}}>
           <Button type='primary' onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
-        </div>
+        </Col>
       </Row>
     )
   }

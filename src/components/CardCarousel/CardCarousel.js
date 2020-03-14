@@ -21,7 +21,7 @@ export default class CardCarousel extends React.Component<Props, void> {
     const count = cards.length
     if (count === 0) {
       return (
-        <Row style={{height: '330px', paddingTop: '100px'}}>
+        <Row style={{height: '330px', paddingTop: '100px', width: '100%'}}>
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             description={<span style={{color: '#323333'}}>{t(emptyMessage)}</span>}
@@ -47,7 +47,7 @@ export default class CardCarousel extends React.Component<Props, void> {
     }
 
     return (
-      <div style={{height: '330px'}}>
+      <div style={{height: '330px', width: '100%'}}>
         <AutoSizer disableHeight>
           {({ width }) => {
             let maxWidth = width

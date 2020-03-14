@@ -261,7 +261,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                       isHttps: t('MapHubs requires encryption for external links, URLs must start with https://'),
                       validMapHubsLayerPath: t('Not a valid MapHubs Layer URL')
                     }} length={250}
-                    dataPosition='top' dataTooltip={t('MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer')}
+                    tooltipPosition='top' tooltip={t('MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer')}
                     required
                   />
                   <SelectGroup groups={this.props.groups} type='layer' />

@@ -11,9 +11,9 @@ type Props = {
   value: string,
   icon: string,
   className: string,
-  dataTooltip: string,
+  tooltip: string,
   dataDelay: number,
-  dataPosition: string,
+  tooltipPosition: string,
   name: string,
   label: string,
   // Added by Formsy
@@ -78,7 +78,7 @@ class TextArea extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const { icon, name, label, errorMessage, dataTooltip, dataPosition, length } = this.props
+    const { icon, name, label, errorMessage, tooltip, tooltipPosition, length } = this.props
     const { value, charCount } = this.state
     const className = classNames('input-field', this.props.className)
     const textAreaClassName = classNames(
@@ -91,7 +91,7 @@ class TextArea extends MapHubsComponent<Props, State> {
     )
 
     return (
-      <Tooltip title={dataTooltip} position={dataPosition}>
+      <Tooltip title={tooltip} position={tooltipPosition}>
         <div ref='inputWrapper' className={className}>
           {icon &&
             <i className='material-icons prefix'>{icon}</i>}

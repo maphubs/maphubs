@@ -2,6 +2,9 @@
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import TextInput from '../forms/textInput'
+import LinkIcon from '@material-ui/icons/Link'
+import HeightIcon from '@material-ui/icons/Height'
+import AspectRatioIcon from '@material-ui/icons/AspectRatio'
 import { Row, message, notification, Button } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
@@ -98,35 +101,39 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
     const {t} = this
     return (
       <Row style={{marginBottom: '20px'}}>
-        <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+        <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton} style={{width: '100%'}}>
           <div>
             <p>{t('Raster Tile Source')}</p>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='rasterTileUrl' label={t('Raster Tile URL')} icon='info' validations='maxLength:500,isHttps' validationErrors={{
+                name='rasterTileUrl' label={t('Raster Tile URL')}
+                icon={<LinkIcon />}
+                validations='maxLength:500,isHttps' validationErrors={{
                   maxLength: t('Must be 500 characters or less.'),
                   isHttps: t('SSL required for external links, URLs must start with https://')
-                }} length={500}
-                dataPosition='top' dataTooltip={t('Raster URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.png'}
+                }}
+                length={500}
+                tooltipPosition='top'
+                tooltip={t('Raster URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.png'}
                 required
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='minzoom' label={t('MinZoom (Optional)')} icon='info'
-                dataPosition='top' dataTooltip={t('Lowest tile zoom level available in data')}
+                name='minzoom' label={t('MinZoom (Optional)')} icon={<HeightIcon />}
+                tooltipPosition='top' tooltip={t('Lowest tile zoom level available in data')}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='maxzoom' label={t('MaxZoom (Optional)')} icon='info'
-                dataPosition='top' dataTooltip={t('Highest tile zoom level available in data')}
+                name='maxzoom' label={t('MaxZoom (Optional)')} icon={<HeightIcon />}
+                tooltipPosition='top' tooltip={t('Highest tile zoom level available in data')}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='bounds' label={t('Bounds (Optional)')} icon='info'
-                dataPosition='top' dataTooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
+                name='bounds' label={t('Bounds (Optional)')} icon={<AspectRatioIcon />}
+                tooltipPosition='top' tooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
               />
             </Row>
           </div>

@@ -9,9 +9,9 @@ const debug = DebugService('Toggle')
 
 type Props = {|
   className: string,
-  dataTooltip: string,
+  tooltip: string,
   dataDelay: number,
-  dataPosition: string,
+  tooltipPosition: string,
   labelOn: string,
   labelOff: string,
   name: string,
@@ -81,8 +81,8 @@ class Toggle extends MapHubsComponent<Props, void> {
 
     return (
       <Tooltip
-        title={this.props.dataTooltip}
-        placement={this.props.dataPosition}
+        title={this.props.tooltip}
+        placement={this.props.tooltipPosition}
       >
         <div
           ref='toggle'

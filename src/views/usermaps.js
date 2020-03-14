@@ -89,7 +89,7 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
     return (
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
-        <main style={{height: 'calc(100% - 70px)'}}>
+        <main style={{height: 'calc(100% - 70px)', padding: '10px'}}>
           {myMaps}
           {createMaps}
         </main>

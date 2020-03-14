@@ -44,15 +44,17 @@ export default {
       return (<EarthEngineSource onSubmit={this.onSubmit} t={t} />)
     } else if (type === 'remote') {
       return (
-        <Row justify='center' align='middle' style={{marginTop: '20px', textAlign: 'center'}}>
+        <>
           <p style={{marginBottom: '20px'}}>{t('Note: This will exit this page and take you to the import tool')}</p>
-          <Col sm={24} md={12}>
-            <Button type='primary' href='/createremotelayer'>{t('Link a Remote Layer')}</Button>
-          </Col>
-          <Col sm={24} md={12}>
-            <Button type='primary' href='/importlayer'>{t('Import MapHubs File')}</Button>
-          </Col>
-        </Row>
+          <Row justify='center' align='middle' style={{marginTop: '20px', textAlign: 'center'}}>
+            <Col sm={24} md={12}>
+              <Button type='primary' href='/createremotelayer'>{t('Link a Remote Layer')}</Button>
+            </Col>
+            <Col sm={24} md={12}>
+              <Button type='primary' href='/importlayer'>{t('Import MapHubs File')}</Button>
+            </Col>
+          </Row>
+        </>
       )
     } else if (type === 'point' || type === 'line' || type === 'polygon') {
       return (<EmptyLocalSource type={type} onSubmit={this.onSubmit} t={t} />)

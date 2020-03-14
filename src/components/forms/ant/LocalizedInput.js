@@ -73,11 +73,12 @@ export default class LocalizedInput extends React.Component<Props, State> {
     const {placeholder, type} = this.props
     const {handleChange} = this
     return (
-      <div>
+      <>
         <style jsx>{`
 
           .localized-input {
             padding-bottom: 0px;
+            width: 100%;
           }
           
         `}
@@ -113,7 +114,7 @@ export default class LocalizedInput extends React.Component<Props, State> {
             })}
           </Tabs>
         </div>
-      </div>
+      </>
     )
   }
 }

@@ -128,16 +128,14 @@ export default class Layers extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header activePage='layers' {...this.props.headerConfig} />
         <main style={{margin: '10px'}}>
-          <div style={{marginTop: '20px', marginBottom: '10px'}}>
-            <Row>
-              <Col sm={24} md={14} lg={16}>
-                <h4 className='no-margin'>{t('Layers')}</h4>
-              </Col>
-              <Col sm={24} md={8} lg={6} style={{paddingRight: '15px', textAlign: 'right'}}>
-                <SearchBox label={t('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
-              </Col>
-            </Row>
-          </div>
+          <Row style={{marginTop: '20px', marginBottom: '10px'}}>
+            <Col sm={24} md={8}>
+              <h4 className='no-margin'>{t('Layers')}</h4>
+            </Col>
+            <Col sm={24} md={8} offset={8} style={{paddingRight: '15px', textAlign: 'right'}}>
+              <SearchBox label={t('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
+            </Col>
+          </Row>
           {searchResults}
           {featured}
           <CardCollection title={t('Popular')} cards={popularCards} viewAllLink='/layers/all' />
@@ -151,7 +149,7 @@ export default class Layers extends MapHubsComponent<Props, State> {
               icon='add'
             />
           </div>
-          <Row style={{paddingBottom: '20px', textAlign: 'center'}}>
+          <Row justify='center' style={{paddingBottom: '20px', textAlign: 'center'}}>
             <Button type='primary' href='/layers/all'>{t('View All Layers')}</Button>
           </Row>
         </main>

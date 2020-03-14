@@ -2,6 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
+import { Row } from 'antd'
 import StorySummary from '../components/Story/StorySummary'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -58,13 +59,13 @@ export default class UserStories extends MapHubsComponent<Props, void> {
         <main style={{minHeight: 'calc(100% - 70px)'}}>
           <div className='container' style={{height: '100%'}}>
             {(!stories || stories.length === 0) &&
-              <div className='row' style={{height: 'calc(100% - 100px)'}}>
+              <Row style={{height: 'calc(100% - 100px)'}}>
                 <div className='valign-wrapper' style={{height: '100%'}}>
                   <div className='valign align-center center-align' style={{width: '100%'}}>
                     <h5>{t('Click the button below to create your first story')}</h5>
                   </div>
                 </div>
-              </div>}
+              </Row>}
             {stories.map((story) => {
               return (
                 <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>

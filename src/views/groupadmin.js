@@ -322,7 +322,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     validations='maxLength:100' validationErrors={{
                       maxLength: t('Must be 100 characters or less.')
                     }} length={100}
-                    dataPosition='top' dataTooltip={t('Short Descriptive Name for the Group')}
+                    tooltipPosition='top' tooltip={t('Short Descriptive Name for the Group')}
                     value={this.state.group.name}
                     required
                   />
@@ -341,7 +341,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     icon='description' validations='maxLength:500' validationErrors={{
                       maxLength: t('Description must be 500 characters or less.')
                     }} length={500}
-                    dataPosition='top' dataTooltip={t('Brief Description of the Group')}
+                    tooltipPosition='top' tooltip={t('Brief Description of the Group')}
                     value={this.state.group.description}
                     required
                   />
@@ -351,7 +351,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     name='location' label={t('Location')} icon='navigation' validations='maxLength:100' validationErrors={{
                       maxLength: t('Location must be 100 characters or less.')
                     }} length={100}
-                    dataPosition='top' dataTooltip={t('Country or City Where the Group is Located')}
+                    tooltipPosition='top' tooltip={t('Country or City Where the Group is Located')}
                     value={this.state.group.location}
                     required
                   />
@@ -359,7 +359,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                 <Row style={{marginBottom: '20px'}}>
                   <Toggle
                     name='published' labelOff={t('Draft')} labelOn={t('Published')}
-                    dataPosition='top' dataTooltip={t('Include in Public Group Listings')}
+                    tooltipPosition='top' tooltip={t('Include in Public Group Listings')}
                     checked={isPublished}
                   />
                 </Row>
@@ -380,7 +380,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
-              <LayerList layers={this.props.layers} />
+              <LayerList layers={this.props.layers} t={t} />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <MapList maps={this.props.maps} t={t} />

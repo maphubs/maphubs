@@ -1,6 +1,6 @@
 // @flow
-import React from 'react'
-import { Row } from 'antd'
+import * as React from 'react'
+import { Row, Col } from 'antd'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -8,7 +8,7 @@ type Props = {|
   onSelect: Function,
   name: string,
   value: string,
-  icon: string,
+  icon: any,
   selected: boolean
 |}
 
@@ -36,27 +36,25 @@ export default class SourceSelectionBox extends React.Component<Props, void> {
         className=''
         style={{
           textAlign: 'center',
-          width: '105px',
+          width: '100px',
           height: '90px',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          marginBottom: '20px',
+          margin: 'auto',
           border,
-          boxShadow: '5px 5px 10px -5px rgba(0,0,0,0.75)'
+          boxShadow: '5px 5px 10px -5px rgba(0,0,0,0.75)',
+          position: 'relative'
         }}
         onClick={this.onSelect}
       >
-        <Row>
-          {icon &&
-            <i className='material-icons omh-accent-text' style={{fontSize: '48px'}}>{icon}</i>}
+        <Row justify='center' align='middle' style={{height: '100%'}}>
+          <Col>
+            {icon}
+          </Col>
         </Row>
-        <Row>
-          <p className='no-margin'>
-            <label>
-              <span className='omh-accent-text' style={{fontSize: '13px'}}>{name}</span>
-            </label>
-          </p>
-        </Row>
+        <div style={{position: 'absolute', bottom: 0, width: '100px'}}>
+          <label>
+            <span className='omh-accent-text' style={{fontSize: '12px'}}>{name}</span>
+          </label>
+        </div>
       </div>
     )
   }

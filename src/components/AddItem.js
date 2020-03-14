@@ -255,7 +255,7 @@ export default class AddItem extends React.Component<Props, State> {
          <Formsy>
            <Toggle
              name='admin' onChange={this.handleAddWithOptionChecked} labelOff={t('Member')} labelOn={t('Administrator')} checked={this.state.option}
-             dataPosition='top' dataTooltip={this.props.optionLabel}
+             tooltipPosition='top' tooltip={this.props.optionLabel}
            />
          </Formsy>
 

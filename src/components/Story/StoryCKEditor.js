@@ -86,7 +86,7 @@ export default class StoryCKEditor extends React.Component<Props, void> {
           <div>
             <style jsx global>{`
               .ck.ck-editor__main>.ck-editor__editable {
-                height: ${height - 40}px;
+                height: ${height - 80}px;
                 overflow-y: scroll;
               }
               .ck-content p {
@@ -111,7 +111,7 @@ export default class StoryCKEditor extends React.Component<Props, void> {
             </style>
             <Tabs
               size='small'
-              tabBarStyle={{marginBottom: 0}}
+              tabBarStyle={{marginBottom: 0, paddingLeft: '10px'}}
               animated={false}
             >
               {langs.map(locale => {

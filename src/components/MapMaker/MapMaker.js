@@ -27,7 +27,6 @@ import MapContainer from '../Map/containers/MapContainer'
 import BaseMapContainer from '../Map/containers/BaseMapContainer'
 import { subscribe } from '../Map/containers/unstated-props'
 import BaseMapSelection from '../Map/ToolPanels/BaseMapSelection'
-import ErrorBoundary from '../ErrorBoundary'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { confirm } = Modal
@@ -311,7 +310,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
     const {mapState, baseMapState} = this.props.containers
     const baseMapStyle = await baseMapState.setBaseMap(mapName)
     this.setState({allowLayersToMoveMap: false})
-    baseMapState.state.map.setBaseMapStyle(baseMapStyle, true)
+    mapState.state.map.setBaseMapStyle(baseMapStyle, true)
 
     if (mapState.state.insetMap) {
       mapState.state.insetMap.reloadInset(baseMapStyle)
@@ -362,8 +361,8 @@ class MapMaker extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <div className='row no-margin' style={{width: '100%', height: '100%'}}>
-        <div className='create-map-side-nav col s6 m4 l3 no-padding' style={{height: '100%'}}>
+      <Row style={{width: '100%', height: '100%'}}>
+        <Col sm={12} md={8} lg={6} style={{height: '100%'}}>
           {showMapLayerDesigner &&
             <Drawer
               title={t(layerDesignerLayer.name)}
@@ -389,6 +388,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
           <style jsx global>{`
             .ant-tabs-content {
               height: 100%;
+              width: 100%;
             }
             .ant-tabs-tabpane {
               height: 100%;
@@ -396,6 +396,10 @@ class MapMaker extends MapHubsComponent<Props, State> {
 
             .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
               display: none;
+            }
+
+            .ant-tabs-bar {
+              padding-left: 3px;
             }
           `}
           </style>
@@ -408,29 +412,25 @@ class MapMaker extends MapHubsComponent<Props, State> {
             onChange={(activeTab) => { this.setState({ activeTab }) }}
           >
             <TabPane tab={t('Base Map')} key='basemap' style={{height: '100%'}}>
-              <ErrorBoundary>
-                <BaseMapSelection onChange={this.changeBaseMap} t={t} />
-              </ErrorBoundary>
+              <BaseMapSelection onChange={this.changeBaseMap} t={t} />
             </TabPane>
             <TabPane tab={t('Layers')} key='overlays' style={{height: '100%'}}>
-              <ErrorBoundary>
-                <Row style={{height: 'calc(100% - 100px'}}>
-                  <LayerList
-                    layers={mapLayers}
-                    showVisibility={showVisibility}
-                    showRemove showDesign showInfo showEdit={!editingLayer}
-                    toggleVisibility={toggleVisibility}
-                    removeFromMap={removeFromMap}
-                    showLayerDesigner={showLayerDesigner}
-                    updateLayers={Actions.setMapLayers}
-                    editLayer={editLayer}
-                    openAddLayer={() => { this.setState({showAddLayer: true}) }}
-                    t={t}
-                  />
-                </Row>
-              </ErrorBoundary>
-              <Row style={{height: '50px', textAlign: 'center'}}>
-                <Button style={{marginTop: '9px'}} type='primary' onClick={() => { this.setState({showAddLayer: true}) }}>{t('Add Layer')}</Button>
+              <Row style={{height: 'calc(100% - 100px', width: '100%'}}>
+                <LayerList
+                  layers={mapLayers}
+                  showVisibility={showVisibility}
+                  showRemove showDesign showInfo showEdit={!editingLayer}
+                  toggleVisibility={toggleVisibility}
+                  removeFromMap={removeFromMap}
+                  showLayerDesigner={showLayerDesigner}
+                  updateLayers={Actions.setMapLayers}
+                  editLayer={editLayer}
+                  openAddLayer={() => { this.setState({showAddLayer: true}) }}
+                  t={t}
+                />
+              </Row>
+              <Row style={{height: '50px', textAlign: 'center', width: '100%'}}>
+                <Button style={{margin: 'auto'}} type='primary' onClick={() => { this.setState({showAddLayer: true}) }}>{t('Add Layer')}</Button>
               </Row>
             </TabPane>
             {editingLayer &&
@@ -439,7 +439,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
               </TabPane>}
           </Tabs>
           <hr style={{margin: 0}} />
-          <Row style={{padding: '10px'}}>
+          <Row style={{padding: '10px', width: '100%'}}>
             <Col span={12}>
               <MapSettingsPanel />
             </Col>
@@ -447,9 +447,9 @@ class MapMaker extends MapHubsComponent<Props, State> {
               <SaveMapModal {...this.state} editing={this.props.edit} onSave={this.onSave} />
             </Col>
           </Row>
-        </div>
-        <div className='col s6 m8 l9 no-padding' style={{height: '100%'}}>
-          <div className='row' style={{height: '100%', width: '100%', margin: 0, position: 'relative'}}>
+        </Col>
+        <Col sm={12} md={16} lg={18} style={{height: '100%'}}>
+          <Row style={{height: '100%', width: '100%', margin: 0, position: 'relative'}}>
             <Map
               id='create-map-map' style={{height: '100%', width: '100%', margin: 'auto'}}
               glStyle={this.state.mapStyle}
@@ -488,8 +488,8 @@ class MapMaker extends MapHubsComponent<Props, State> {
               maxHeight='calc(100vh - 300px)'
               hideInactive showLayersButton={false}
             />
-          </div>
-        </div>
+          </Row>
+        </Col>
         <Drawer
           title={t('Add Layer')}
           placement='bottom'
@@ -507,7 +507,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
             onAdd={this.addLayer} t={t}
           />
         </Drawer>
-      </div>
+      </Row>
     )
   }
 }

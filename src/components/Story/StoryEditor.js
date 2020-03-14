@@ -241,7 +241,7 @@ class StoryEditor extends React.Component<Props, State> {
           </ErrorBoundary>
           <ErrorBoundary>
             <Row style={{marginBottom: '10px'}}>
-              <Formsy>
+              <Formsy style={{width: '100%'}}>
                 <SelectGroup
                   groups={this.props.groups}
                   type='layer'

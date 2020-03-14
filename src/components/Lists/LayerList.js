@@ -1,61 +1,47 @@
 // @flow
 import React from 'react'
-import MapHubsComponent from '../MapHubsComponent'
+import { List } from 'antd'
 import slugify from 'slugify'
 import type {Layer} from '../../types/layer'
-import _isequal from 'lodash.isequal'
 
 type Props = {|
   layers: Array<Layer>,
-  showTitle: boolean
+  showTitle: boolean,
+  t: Function
 |}
 
-export default class LayerList extends MapHubsComponent<Props, void> {
+export default class LayerList extends React.Component<Props, void> {
   static defaultProps = {
     showTitle: true
   }
 
-  shouldComponentUpdate (nextProps: Props) {
-    // only update if something changes
-    if (!_isequal(this.props, nextProps)) {
-      return true
-    }
+  shouldComponentUpdate () {
     return false
   }
 
   render () {
-    const {t} = this
-    let title = ''
-    let className = 'collection'
-    if (this.props.showTitle) {
-      className = 'collection with-header'
-      title = (
-        <li className='collection-header'>
-          <h4>{t('Layers')}</h4>
-        </li>
-      )
-    }
+    const { layers, showTitle, t } = this.props
 
     return (
-      <ul className={className}>
-        {title}
-        {this.props.layers.map((layer, i) => {
+      <List
+        header={showTitle && (<h4>{t('Layers')}</h4>)}
+        dataSource={layers}
+        renderItem={layer => {
           const layerId = layer && layer.layer_id ? layer.layer_id : 0
-          const slugName = slugify(this.t(layer.name))
+          const slugName = slugify(t(layer.name))
           return (
-            <li className='collection-item' key={layerId}>
-              <div>{this.t(layer.name)}
-                <a className='secondary-content' href={`/layer/map/${layerId}/${slugName}`}>
-                  <i className='material-icons'>map</i>
-                </a>
-                <a className='secondary-content' href={`/layer/info/${layerId}/${slugName}`}>
-                  <i className='material-icons'>info</i>
-                </a>
-              </div>
-            </li>
+            <List.Item
+              actions={[
+                <a key='open-layer-map' href={`/layer/map/${layerId}/${slugName}`}><i className='material-icons'>map</i></a>,
+                <a key='open-layer-info' href={`/layer/info/${layerId}/${slugName}`}><i className='material-icons'>info</i></a>]}
+            >
+              <span>
+                {t(layer.name)}
+              </span>
+            </List.Item>
           )
-        })}
-      </ul>
+        }}
+      />
     )
   }
 }

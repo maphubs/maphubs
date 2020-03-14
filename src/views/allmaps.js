@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification, Row, Divider } from 'antd'
+import { message, notification, Row, Divider, Col } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
@@ -144,28 +144,26 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
         <Header activePage='maps' {...this.props.headerConfig} />
         <main>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
-            <div className='row' style={{marginBottom: '0px'}}>
-              <div className='col l8 m7 s12'>
+            <Row style={{marginBottom: '0px'}}>
+              <Col sm={24} md={8}>
                 <h4 className='no-margin'>{t('Maps')}</h4>
-              </div>
-              <div className='col l3 m4 s12 right' style={{paddingRight: '15px'}}>
+              </Col>
+              <Col sm={24} md={8} offset={8} style={{paddingRight: '15px', textAlign: 'right'}}>
                 <SearchBox label={t('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
-              </div>
-            </div>
+              </Col>
+            </Row>
           </div>
           {searchResults}
-          <div className='row'>
-
-            <div className='left-align' style={{marginLeft: '15px', marginTop: '25px'}}>
+          <Row justify='end' style={{marginBottom: '20px'}}>
+            <Col style={{margin: '20px'}}>
               <Formsy>
                 <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={this.state.showList} />
               </Formsy>
-            </div>
-            <div className='row'>
+            </Col>
+            <Row style={{marginBottom: '20px'}}>
               {maps}
-            </div>
-
-          </div>
+            </Row>
+          </Row>
           <div>
             <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
               <FloatingButton

@@ -140,8 +140,8 @@ export default class AddLayerPanel extends React.Component<Props, State> {
     }
 
     return (
-      <Row style={{height: '100%'}}>
-        <Row>
+      <Row style={{height: '100%', width: '100%'}}>
+        <Row style={{width: '100%'}}>
           <Col span={12} style={{padding: '20px'}}>
             <SearchBox label={t('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
           </Col>
@@ -172,15 +172,15 @@ export default class AddLayerPanel extends React.Component<Props, State> {
             </style>
           </Col>
         </Row>
-        <Row style={{height: 'calc(100% - 100px)', overflowY: 'auto', padding: '10px'}}>
+        <Row style={{height: 'calc(100% - 100px)', width: '100%', overflowY: 'auto', padding: '10px'}}>
           {searchResultDisplay}
           {myCards.length > 0 &&
-            <Row>
+            <Row style={{width: '100%'}}>
               <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('My Layers')}</h5>
               <Divider />
               <CardCarousel cards={myCards} showAddButton t={t} />
             </Row>}
-          <Row>
+          <Row style={{width: '100%'}}>
             <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('Popular Layers')}</h5>
             <Divider />
             <CardCarousel cards={popularCards} showAddButton t={t} />

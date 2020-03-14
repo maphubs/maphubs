@@ -133,7 +133,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
               maxLength: t('Description must be 500 characters or less.')
             }} length={500}
             value={this.props.options}
-            dataPosition='top' dataTooltip={t('Comma seperated list of options to show for the Combo or Radio field. Ex: red, blue, green')}
+            tooltipPosition='top' tooltip={t('Comma seperated list of options to show for the Combo or Radio field. Ex: red, blue, green')}
           />
         </Row>
       )

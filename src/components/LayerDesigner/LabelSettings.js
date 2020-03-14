@@ -126,7 +126,7 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
              <Select
                name='field' id='label-field-select' label={t('Label Field')} options={fieldOptions}
                value={this.state.field} startEmpty={!this.state.field}
-               dataPosition='right' dataTooltip={t('Data field to use in map labels.')}
+               tooltipPosition='right' tooltip={t('Data field to use in map labels.')}
                required
              />
            </Row>

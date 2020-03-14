@@ -12,8 +12,8 @@ type Props = {|
   value: string,
   name: string,
   options: Array<Object>,
-  dataTooltip: string,
-  dataPosition: string,
+  tooltip: string,
+  tooltipPosition: string,
   label: string,
   successText: string,
   id: string,
@@ -90,42 +90,43 @@ class SelectFormItem extends React.Component<Props, State> {
   }
 
   render () {
-    const { id, name, options, icon, label, dataTooltip, dataPosition, errorMessage, successText, emptyText, showSearch, value } = this.props
+    const { id, name, options, icon, label, tooltip, tooltipPosition, errorMessage, successText, emptyText, showSearch, value } = this.props
     const { note } = this.state
 
     /* eslint-disable react/no-danger */
-
     return (
-      <Tooltip
-        title={dataTooltip}
-        placement={dataPosition}
-      >
-        <div ref='selectwrapper' className='input-field no-margin' id={id}>
+      <>
+        <Row id={id}>
           {icon &&
             <i className='material-icons prefix'>{icon}</i>}
           {label &&
-            <div className='row' style={{height: '10px'}}>
+            <Row style={{height: '25px'}}>
               <label htmlFor={name} data-error={errorMessage} data-success={successText}>{label}</label>
-            </div>}
+            </Row>}
           <Row>
-            <Select
-              showSearch={showSearch}
-              defaultValue={value}
-              onChange={this.handleSelectChange}
-              allowClear
-              placeholder={emptyText}
-              style={{ width: '100%' }}
-              filterOption={(input, option) => {
-                // eslint-disable-next-line unicorn/prefer-includes
-                return option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
-              }}
+            <Tooltip
+              title={tooltip}
+              placement={tooltipPosition}
             >
-              {options.map((option) =>
-                <Option key={option.value} value={option.value}>{option.label}</Option>
-              )}
-            </Select>
+              <Select
+                showSearch={showSearch}
+                defaultValue={value}
+                onChange={this.handleSelectChange}
+                allowClear
+                placeholder={emptyText}
+                style={{ width: '100%' }}
+                filterOption={(input, option) => {
+                // eslint-disable-next-line unicorn/prefer-includes
+                  return option.props.children
+                    .toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0
+                }}
+              >
+                {options.map((option) =>
+                  <Option key={option.value} value={option.value}>{option.label}</Option>
+                )}
+              </Select>
+            </Tooltip>
             <style jsx global>{`
               .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
                 color: #FFF;
@@ -133,10 +134,10 @@ class SelectFormItem extends React.Component<Props, State> {
             `}
             </style>
           </Row>
-        </div>
+        </Row>
         {note &&
           <div dangerouslySetInnerHTML={{__html: note}} />}
-      </Tooltip>
+      </>
     )
   }
 }

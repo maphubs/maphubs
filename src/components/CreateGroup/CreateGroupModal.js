@@ -147,18 +147,19 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
           onCancel={handleCancel}
         >
           <Row style={{marginBottom: '20px'}}>
-            <Formsy onChange={this.onFormChange} onValid={this.enableButton} onInvalid={this.disableButton}>
+            <Formsy style={{width: '100%'}} onChange={this.onFormChange} onValid={this.enableButton} onInvalid={this.disableButton}>
               <Row style={{marginBottom: '20px'}}>
                 <TextInput
-                  name='group_id' label={t('Group ID')} icon='group_work' className='col s6'
+                  name='group_id' label={t('Group ID')} icon='group_work'
                   validations={{matchRegexp: /^[\dA-Za-z-]*$/, maxLength: 25, isAvailable: true}} validationErrors={{
                     maxLength: t('ID must be 25 characters or less.'),
                     matchRegexp: t('Can only contain letters, numbers, or dashes.'),
                     isAvailable: t('ID already taken, please try another.')
                   }} length={25}
                   successText={t('ID is Available')}
-                  dataPosition='right' dataTooltip={t("Identifier for the Group. This will be used in links and URLs for your group's content.")}
+                  tooltipPosition='right' tooltip={t("Identifier for the Group. This will be used in links and URLs for your group's content.")}
                   required
+                  t={t}
                 />
               </Row>
               <Row style={{marginBottom: '20px'}}>
@@ -170,7 +171,7 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
                   icon='info' validations='maxLength:100' validationErrors={{
                     maxLength: t('Must be 100 characters or less.')
                   }} length={100}
-                  dataPosition='top' dataTooltip={t('Short Descriptive Name for the Group')}
+                  tooltipPosition='top' tooltip={t('Short Descriptive Name for the Group')}
                   required
                 />
               </Row>
@@ -188,7 +189,7 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
                   icon='description' validations='maxLength:500' validationErrors={{
                     maxLength: t('Description must be 500 characters or less.')
                   }} length={500}
-                  dataPosition='top' dataTooltip={t('Brief Description of the Group')}
+                  tooltipPosition='top' tooltip={t('Brief Description of the Group')}
                   required
                 />
               </Row>

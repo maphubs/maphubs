@@ -137,32 +137,32 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
                   maxLength: t('Must be 500 characters or less.'),
                   isHttps: t('SSL required for external links, URLs must start with https://')
                 }} length={500}
-                dataPosition='top' dataTooltip={t('Only layers paramater is required, others will be ignored unless pasted in Other Parameters below. Example:') + 'https://geodata.state.nj.us/imagerywms/Natural2015?layers=Natural2015'}
+                tooltipPosition='top' tooltip={t('Only layers paramater is required, others will be ignored unless pasted in Other Parameters below. Example:') + 'https://geodata.state.nj.us/imagerywms/Natural2015?layers=Natural2015'}
                 required
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='other' label={t('Other Parameters (Optional)')} icon='info'
-                dataPosition='top' dataTooltip={t('Additional needed URL parmeters, for example: apikey=1234&query=value>0')}
+                tooltipPosition='top' tooltip={t('Additional needed URL parmeters, for example: apikey=1234&query=value>0')}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='minzoom' label={t('MinZoom (Optional)')} icon='info'
-                dataPosition='top' dataTooltip={t('Lowest tile zoom level available in data')}
+                tooltipPosition='top' tooltip={t('Lowest tile zoom level available in data')}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='maxzoom' label={t('MaxZoom (Optional)')} icon='info'
-                dataPosition='top' dataTooltip={t('Highest tile zoom level available in data')}
+                tooltipPosition='top' tooltip={t('Highest tile zoom level available in data')}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='bounds' label={t('Bounds (Optional)')} icon='info'
-                dataPosition='top' dataTooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
+                tooltipPosition='top' tooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
               />
             </Row>
           </div>

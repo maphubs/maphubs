@@ -8,7 +8,6 @@ import Select from '../forms/select'
 type Props = {|
   preset: Object,
   value: any,
-  style?: Object,
   t: Function
 |}
 
@@ -16,13 +15,11 @@ export default class FormField extends React.Component<Props, void> {
   props: Props
 
   render () {
-    const {preset, style, value, t} = this.props
+    const {preset, value, t} = this.props
     let field = (
       <TextInput
         name={preset.tag}
         label={t(preset.label)}
-        className='no-margin'
-        style={style}
         required={preset.isRequired}
         showCharCount={false}
         value={value}
@@ -36,8 +33,6 @@ export default class FormField extends React.Component<Props, void> {
         <TextInput
           name={preset.tag}
           label={t(preset.label)}
-          className='no-margin'
-          style={style}
           validations='isNumeric' validationErrors={{
             isNumeric: t('Value must be a number')
           }}

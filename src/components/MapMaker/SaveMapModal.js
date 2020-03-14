@@ -99,6 +99,7 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
           title={t('Save Map')}
           visible={visible}
           onOk={this.save}
+          bodyStyle={{padding: '10px'}}
           centered
           footer={[
             <Button key='back' onClick={this.cancel}>

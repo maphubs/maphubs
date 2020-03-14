@@ -13,7 +13,7 @@ import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import getConfig from 'next/config'
-import { Row, Button, Divider } from 'antd'
+import { Row, Col, Button, Divider } from 'antd'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {
@@ -117,11 +117,13 @@ export default class Home extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header activePage='explore' {...this.props.headerConfig} />
         <main style={{margin: 0, padding: '10px'}}>
-          <Row style={{marginTop: '20px', marginBottom: 0, marginRight: '5px', paddingLeft: '25%', paddingRight: '25%'}}>
-            <SearchBox label={t('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} />
+          <Row justify='end'>
+            <Col sm={24} md={6}>
+              <SearchBox label={t('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} />
+            </Col>
           </Row>
-          <Row>
-            <Row style={{height: '50px'}}>
+          <Row style={{width: '100%', marginBottom: '20px'}}>
+            <Row style={{height: '50px', width: '100%', position: 'relative'}}>
               <div style={{position: 'absolute', right: '10px', top: '5px'}}>
                 <CardFilter defaultValue={this.state.storyMode} onChange={(value) => { _this.setState({storyMode: value}) }} />
               </div>
@@ -129,16 +131,16 @@ export default class Home extends MapHubsComponent<Props, State> {
                 <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Stories')}</h5>
               </a>
             </Row>
-            <Row>
+            <Row style={{width: '100%', marginBottom: '20px'}}>
               <CardCarousel cards={storyCards} infinite={false} t={t} />
             </Row>
-            <Row style={{marginTop: '35px', marginBottom: '10px', textAlign: 'center'}}>
+            <Row justify='center' align='middle' style={{height: '45px', width: '100%'}}>
               <Button type='primary' href='/stories'>{t('More Stories')}</Button>
             </Row>
           </Row>
           <div className='divider' />
-          <Row>
-            <Row style={{height: '50px'}}>
+          <Row style={{width: '100%', marginBottom: '20px'}}>
+            <Row style={{height: '50px', width: '100%', position: 'relative'}}>
               <div style={{position: 'absolute', right: '10px', top: '5px'}}>
                 <CardFilter defaultValue={this.state.mapMode} onChange={(value) => { _this.setState({mapMode: value}) }} />
               </div>
@@ -146,16 +148,16 @@ export default class Home extends MapHubsComponent<Props, State> {
                 <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Maps')}</h5>
               </a>
             </Row>
-            <Row>
+            <Row style={{width: '100%', marginBottom: '20px'}}>
               <CardCarousel cards={mapCards} infinite={false} t={this.t} />
             </Row>
-            <Row style={{marginTop: '35px', marginBottom: '10px', textAlign: 'center'}}>
+            <Row justify='center' align='middle' style={{height: '45px', width: '100%'}}>
               <Button type='primary' href='/maps'>{t('More Maps')}</Button>
             </Row>
           </Row>
           <div className='divider' />
-          <Row>
-            <Row style={{height: '50px'}}>
+          <Row style={{width: '100%', marginBottom: '20px'}}>
+            <Row style={{height: '50px', width: '100%', position: 'relative'}}>
               <div style={{position: 'absolute', right: '10px', top: '5px'}}>
                 <CardFilter defaultValue={this.state.groupMode} onChange={(value) => { _this.setState({groupMode: value}) }} />
               </div>
@@ -163,16 +165,16 @@ export default class Home extends MapHubsComponent<Props, State> {
                 <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Groups')}</h5>
               </a>
             </Row>
-            <Row>
+            <Row style={{width: '100%', marginBottom: '20px'}}>
               <CardCarousel cards={groupCards} infinite={false} t={this.t} />
             </Row>
-            <Row style={{marginTop: '35px', marginBottom: '10px', textAlign: 'center'}}>
+            <Row justify='center' align='middle' style={{height: '45px', width: '100%'}}>
               <Button type='primary' href='/groups'>{t('More Groups')}</Button>
             </Row>
           </Row>
           <Divider />
-          <Row>
-            <Row style={{height: '50px'}}>
+          <Row style={{width: '100%', marginBottom: '20px'}}>
+            <Row style={{height: '50px', width: '100%', position: 'relative'}}>
               <div style={{position: 'absolute', right: '10px', top: '5px'}}>
                 <CardFilter defaultValue={this.state.layerMode} onChange={(value) => { _this.setState({layerMode: value}) }} />
               </div>
@@ -180,10 +182,10 @@ export default class Home extends MapHubsComponent<Props, State> {
                 <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Layers')}</h5>
               </a>
             </Row>
-            <Row>
+            <Row style={{width: '100%', marginBottom: '20px'}}>
               <CardCarousel cards={layerCards} infinite={false} t={t} />
             </Row>
-            <Row style={{marginTop: '35px', marginBottom: '10px', textAlign: 'center'}}>
+            <Row justify='center' align='middle' style={{height: '45px', width: '100%'}}>
               <Button type='primary' href='/layers'>{t('More Layers')}</Button>
             </Row>
           </Row>

@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { Row, Col } from 'antd'
 
 type Props = {
   views: number,
@@ -12,19 +13,19 @@ type Props = {
 
 export default function LayerInfoStats ({views, stats, t}: Props) {
   return (
-    <div className='row no-margin' style={{position: 'absolute', bottom: 0, width: '100%', backgroundColor: '#FFF'}}>
-      <div className='col s8 m4 l4 center-align'>
-        <b className='center-align'>{t('Views')}</b>
-        <p className='center-align'>{views}</p>
-      </div>
-      <div className='col s8 m4 l4 center-align'>
-        <b className='center-align'>{t('Maps')}</b>
-        <p className='center-align'>{stats && stats.maps}</p>
-      </div>
-      <div className='col s8 m4 l4 center-align'>
-        <b className='center-align'>{t('Stories')}</b>
-        <p className='center-align'>{stats && stats.stories}</p>
-      </div>
-    </div>
+    <Row justify='center' style={{position: 'absolute', bottom: 0, width: '100%', backgroundColor: '#FFF'}}>
+      <Col sm={16} md={8} style={{textAlign: 'center'}}>
+        <b>{t('Views')}</b>
+        <p>{views}</p>
+      </Col>
+      <Col sm={16} md={8} style={{textAlign: 'center'}}>
+        <b>{t('Maps')}</b>
+        <p>{stats && stats.maps}</p>
+      </Col>
+      <Col sm={16} md={8} style={{textAlign: 'center'}}>
+        <b>{t('Stories')}</b>
+        <p>{stats && stats.stories}</p>
+      </Col>
+    </Row>
   )
 }

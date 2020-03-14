@@ -55,12 +55,12 @@ export default class Stories extends MapHubsComponent<Props, State> {
         <main>
           <Row style={{padding: '20px'}}>
             {(hasRecent || hasPopular) &&
-              <Row style={{textAlign: 'right'}}>
+              <Row justify='end' style={{textAlign: 'right'}}>
                 <Button type='link' href='/stories/all'>{t('View All Stories')}</Button>
               </Row>}
             {hasRecent &&
               <Col sm={24} med={12} style={{margin: '20px'}}>
-                <Row style={{textAlign: 'center'}}>
+                <Row justify='center' style={{textAlign: 'center'}}>
                   <h4>{t('Recent Stories')}</h4>
                 </Row>
                 {recentStories.map((story) => {
@@ -75,7 +75,7 @@ export default class Stories extends MapHubsComponent<Props, State> {
               </Col>}
             {hasPopular &&
               <Col sm={24} med={12} style={{margin: '20px'}}>
-                <Row style={{textAlign: 'center'}}>
+                <Row justify='center' style={{textAlign: 'center'}}>
                   <h4>{t('Popular Stories')}</h4>
                 </Row>
                 {popularStories.map((story) => {

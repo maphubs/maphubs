@@ -6,8 +6,8 @@ import MapHubsPureComponent from '../MapHubsPureComponent'
 
 type Props = {
   className: string,
-  dataTooltip: string,
-  dataPosition: string,
+  tooltip: string,
+  tooltipPosition: string,
   defaultValue: string,
   label: string,
   name: string,
@@ -39,13 +39,13 @@ class Radio extends MapHubsPureComponent<Props, void> {
   }
 
   render () {
-    const {name, className, dataPosition, dataTooltip, options, label, value} = this.props
+    const {name, className, tooltipPosition, tooltip, options, label, value} = this.props
     const _this = this
 
     return (
       <Tooltip
-        title={dataTooltip}
-        placement={dataPosition}
+        title={tooltip}
+        placement={tooltipPosition}
       >
         <div className={className}>
 

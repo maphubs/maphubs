@@ -133,11 +133,10 @@ export default class Groups extends MapHubsComponent<Props, State> {
         <main style={{margin: '10px'}}>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <Row>
-              <Col sm={24} md={14} lg={16}>
+              <Col sm={24} md={8}>
                 <h4 className='no-margin'>{t('Groups')}</h4>
-                <p style={{fontSize: '16px', margin: 0}}>{t('Create a group for your organization or browse the content of existing groups.')}</p>
               </Col>
-              <Col sm={24} md={8} lg={6} style={{paddingRight: '15px', textAlign: 'right'}}>
+              <Col sm={24} md={8} offset={8} style={{paddingRight: '15px', textAlign: 'right'}}>
                 <SearchBox label={t('Search Groups')} suggestionUrl='/api/groups/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
               </Col>
             </Row>
@@ -157,7 +156,7 @@ export default class Groups extends MapHubsComponent<Props, State> {
               />
             </div>
           </div>
-          <Row style={{marginBottom: '20px', textAlign: 'center'}}>
+          <Row justify='center' style={{marginBottom: '20px', textAlign: 'center'}}>
             <Button type='primary' href='/groups/all'>{t('View All Groups')}</Button>
           </Row>
         </main>
