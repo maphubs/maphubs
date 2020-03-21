@@ -50,12 +50,10 @@ class StoryEditor extends React.Component<Props, State> {
 
   componentDidMount () {
     const _this = this
-    const {t} = this.props
     window.addEventListener('beforeunload', (e) => {
       if (_this.props.containers.story.state.modified) {
-        const msg = t('You have not saved the edits for your story, your changes will be lost.')
-        e.returnValue = msg
-        return msg
+        e.preventDefault()
+        e.returnValue = ''
       }
     })
   }

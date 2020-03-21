@@ -219,7 +219,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
           <Header {...this.props.headerConfig} />
           <main>
             <div className='container'>
-              <Row style={{marginBottom: '20px'}}>
+              <Row>
                 <PageHeader
                   onBack={() => {
                     window.location = layerInfoUrl
@@ -228,7 +228,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                   title={t('Back to Layer')}
                 />
               </Row>
-              <Row style={{marginBottom: '20px', textAlign: 'center'}}>
+              <Row style={{textAlign: 'center'}}>
                 <h5>{t('Unable to modify remote layers.')}</h5>
                 <div className='center-align center'>
                   <Button
@@ -251,8 +251,8 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
         <ErrorBoundary>
           <Provider inject={[this.BaseMapState, this.MapState]}>
             <Header {...this.props.headerConfig} />
-            <main>
-              <Row style={{marginBottom: '20px'}}>
+            <main style={{height: 'calc(100% - 50px)'}}>
+              <Row>
                 <PageHeader
                   onBack={() => {
                     window.location = layerInfoUrl
@@ -260,12 +260,18 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                   style={{padding: '5px'}}
                   title={t('Back to Layer')}
                 />
+              </Row>
+              <Row style={{height: 'calc(100% - 50px)'}}>
                 <style jsx global>{`
                   .ant-tabs-content {
                     height: calc(100% - 44px)
                   }
                   .ant-tabs-tabpane {
                     height: 100%;
+                  }
+
+                  .ant-tabs-nav-wrap {
+                    padding-left: 10px;
                   }
 
                   .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
@@ -275,7 +281,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                 </style>
                 <Tabs
                   defaultActiveKey='settings'
-                  style={{height: '100%'}}
+                  style={{height: '100%', width: '100%'}}
                   tabBarStyle={{marginBottom: 0}}
                   animated={false}
                 >
@@ -287,9 +293,9 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                       onSubmit={this.onSave}
                       submitText={t('Save')}
                     />
-                    <Divider style={{marginBottom: '20px'}} />
-                    <Row style={{marginBottom: '20px', padding: '20px'}} justify='center'>
-                      <h5>{t('Modify Data')}</h5>
+                    <Row style={{marginBottom: '20px'}}><Divider /></Row>
+                    <Row style={{marginBottom: '20px', padding: '0px 20px'}}>
+                      <h5 style={{fontSize: '18px'}}>{t('Modify Data')}</h5>
                       <Row style={{marginBottom: '20px'}}>
                         <Button type='primary' href={`/layer/replace/${layerId}/${layerName}`}>{t('Replace Layer Data')}</Button>
                       </Row>

@@ -162,7 +162,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
               </div>}
           </Row>
         </div>
-        <div className='right'>
+        <div style={{float: 'right'}}>
           <Button type='primary' disabled={!canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
         </div>
       </Row>

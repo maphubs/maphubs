@@ -33,13 +33,11 @@ export default class FeatureNotes extends React.Component<Props, State> {
   }
 
   componentDidMount () {
-    const {t} = this.props
     const {editing} = this.state
     window.addEventListener('beforeunload', (e) => {
       if (editing) {
-        const msg = t('You have not saved your edits, your changes will be lost.')
-        e.returnValue = msg
-        return msg
+        e.preventDefault()
+        e.returnValue = ''
       }
     })
   }

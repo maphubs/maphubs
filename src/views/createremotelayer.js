@@ -108,13 +108,11 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    const {t} = this
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (_this.state.layer && !_this.state.complete) {
-        const msg = t('You have not finished creating your layer.')
-        e.returnValue = msg
-        return msg
+        e.preventDefault()
+        e.returnValue = ''
       }
     })
   }
@@ -265,7 +263,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                     required
                   />
                   <SelectGroup groups={this.props.groups} type='layer' />
-                  <div className='right'>
+                  <div style={{float: 'right'}}>
                     <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Load Remote Layer')}</Button>
                   </div>
                 </Formsy>

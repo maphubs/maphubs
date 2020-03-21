@@ -8,7 +8,7 @@ import LocaleStore from '../stores/LocaleStore'
 import FileUpload from '../components/forms/FileUpload'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import { Steps, Row, notification, message, Button } from 'antd'
+import { Steps, Row, Col, notification, message, Button } from 'antd'
 
 const Step = Steps.Step
 
@@ -48,13 +48,11 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    const {t} = this
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (_this.state.group_id && !_this.state.layer_id) {
-        const msg = t('You have not finished importing your layer.')
-        e.returnValue = msg
-        return msg
+        e.preventDefault()
+        e.returnValue = ''
       }
     })
   }
@@ -75,15 +73,6 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
         duration: 0
       })
     }
-  }
-
-  onUploadError = (err: string) => {
-    const {t} = this
-    notification.error({
-      message: t('Error'),
-      description: err,
-      duration: 0
-    })
   }
 
   onProcessingStart = () => {
@@ -111,10 +100,12 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
     let groupSelection
     if (!this.state.group_id) {
       groupSelection = (
-        <Row style={{marginBottom: '10px', maxWidth: '400px'}}>
-          <Formsy>
-            <SelectGroup groups={this.props.groups} onGroupChange={this.onGroupChange} type='layer' />
-          </Formsy>
+        <Row justify='center' style={{marginBottom: '10px'}}>
+          <Col>
+            <Formsy>
+              <SelectGroup groups={this.props.groups} onGroupChange={this.onGroupChange} type='layer' />
+            </Formsy>
+          </Col>
         </Row>
       )
     }
@@ -123,9 +114,13 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
     if (this.state.layer_id) {
       step = 2
       importComplete = (
-        <Row>
-          <p>{t('Import Complete')}</p>
-          <Button type='primary' href={`/lyr/${this.state.layer_id}`}>{t('Go to Layer')}</Button>
+        <Row justify='center' align='middle' style={{height: '100%'}}>
+          <Col span={8}>
+            <p>{t('Import Complete')}</p>
+          </Col>
+          <Col span={16}>
+            <Button type='primary' href={`/lyr/${this.state.layer_id}`}>{t('Go to Layer')}</Button>
+          </Col>
         </Row>
       )
     }
@@ -135,9 +130,13 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
       step = 1
       const url = `/api/import/layer/${this.state.group_id}/upload`
       uploadBox = (
-        <Row>
-          <p>{t('Please upload a MapHubs (.maphubs) file')}</p>
-          <FileUpload onUpload={this.onUpload} onFinishTx={this.onProcessingStart} onError={this.onUploadError} action={url} />
+        <Row justify='center' align='middle' style={{height: '100%'}}>
+          <Col span={8}>
+            <p>{t('Please upload a MapHubs (.maphubs) file')}</p>
+          </Col>
+          <Col span={16}>
+            <FileUpload onUpload={this.onUpload} beforeUpload={this.onProcessingStart} action={url} t={t} />
+          </Col>
         </Row>
       )
     }
@@ -154,7 +153,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
                 <Step title='Finished' />
               </Steps>
             </Row>
-            <Row style={{textAlign: 'center', paddingTop: '20px'}}>
+            <Row style={{padding: '40px'}}>
               {groupSelection}
               {uploadBox}
               {importComplete}

@@ -187,9 +187,8 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
 
     window.addEventListener('beforeunload', (e) => {
       if (editingData) {
-        const msg = t('You have not saved your edits, your changes will be lost.')
-        e.returnValue = msg
-        return msg
+        e.preventDefault()
+        e.returnValue = ''
       }
     })
   }

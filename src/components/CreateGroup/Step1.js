@@ -236,7 +236,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
               <div className='left'>
                 <Button type='danger' onClick={this.handleCancel}><i className='material-icons left'>delete</i>{t('Cancel')}</Button>
               </div>
-              <div className='right'>
+              <div style={{float: 'right'}}>
                 <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
               </div>
             </Formsy>

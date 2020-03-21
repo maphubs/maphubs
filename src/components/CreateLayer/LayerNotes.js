@@ -35,9 +35,8 @@ export default class LayerNotes extends React.Component<Props, State> {
   componentDidMount () {
     window.addEventListener('beforeunload', (e) => {
       if (this.state.editing) {
-        const msg = this.props.t('You have not saved your edits, your changes will be lost.')
-        e.returnValue = msg
-        return msg
+        e.preventDefault()
+        e.returnValue = ''
       }
     })
   }

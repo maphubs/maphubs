@@ -225,7 +225,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
           {map}
         </Row>
         {multipleShapefilesDisplay}
-        <div className='right'>
+        <div style={{float: 'right'}}>
           <Button type='primary' disabled={!canSubmit} onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
         </div>
       </Row>

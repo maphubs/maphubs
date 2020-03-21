@@ -115,9 +115,8 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
 
     window.addEventListener('beforeunload', (e) => {
       if (!_this.state.complete) {
-        const msg = t('You have not finished creating your layer, if you leave now your layer will be deleted.')
-        e.returnValue = msg
-        return msg
+        e.preventDefault()
+        e.returnValue = ''
       }
     })
   }

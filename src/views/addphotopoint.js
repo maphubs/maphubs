@@ -78,13 +78,11 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    const {t} = this
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (!_this.state.submitted) {
-        const msg = t('You have not saved your data, your work will be lost.')
-        e.returnValue = msg
-        return msg
+        e.preventDefault()
+        e.returnValue = ''
       }
     })
   }

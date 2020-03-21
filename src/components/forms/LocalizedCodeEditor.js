@@ -122,7 +122,7 @@ export default class LocalizedCodeEditor extends MapHubsComponent<Props, State> 
             }}
           />
         </Row>
-        <div className='right'>
+        <div style={{float: 'right'}}>
           <Button type='primary' style={{float: 'none', marginTop: '15px'}} disabled={!canSave} onClick={this.onSave}>{t('Save')}</Button>
         </div>
       </div>

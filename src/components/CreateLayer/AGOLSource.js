@@ -204,7 +204,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
           {msqForm}
           {fsqForm}
           {tilesForm}
-          <div className='right'>
+          <div style={{float: 'right'}}>
             <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
           </div>
         </Formsy>

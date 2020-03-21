@@ -363,7 +363,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     checked={isPublished}
                   />
                 </Row>
-                <div className='right'>
+                <div style={{float: 'right'}}>
                   <Button htmlType='submit' name='action'>{t('Update')}</Button>
                 </div>
               </Formsy>

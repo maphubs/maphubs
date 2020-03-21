@@ -53,13 +53,11 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    const {t} = this
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (_this.props.warnIfUnsaved && _this.state.pendingChanges) {
-        const msg = t('You have not saved your edits, your changes will be lost.')
-        e.returnValue = msg
-        return msg
+        e.preventDefault()
+        e.returnValue = ''
       }
     })
   }
@@ -178,7 +176,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
             </Col>
           </Row>
           <div className='container'>
-            <div className='right'>
+            <div style={{float: 'right'}}>
               <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{this.props.submitText}</Button>
             </div>
           </div>

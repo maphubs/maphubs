@@ -81,9 +81,8 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
     const _this = this
     window.addEventListener('beforeunload', (e) => {
       if (!_this.state.submitted) {
-        const msg = t('You have not finished. Layer data replacement may be incomplete.')
-        e.returnValue = msg
-        return msg
+        e.preventDefault()
+        e.returnValue = ''
       }
     })
   }

@@ -115,9 +115,9 @@ export default class MiniLegend extends React.Component<Props, State> {
 
       titleDisplay = (
         <Row style={{height: '32px', width: '100%'}}>
-          <Col span={20} className='valign-wrapper' style={{height: '32px'}}>
+          <Col span={20} style={{height: '32px'}}>
             <h6
-              className='black-text valign word-wrap' style={{
+              className='word-wrap' style={{
                 padding: '0.2rem',
                 marginLeft: '2px',
                 marginTop: '0px',
@@ -128,7 +128,7 @@ export default class MiniLegend extends React.Component<Props, State> {
             >{titleText}
             </h6>
           </Col>
-          <Col span={4} className='no-padding valign'>
+          <Col span={4}>
             {layersButton}
             <span style={{
               float: 'right',
@@ -148,9 +148,9 @@ export default class MiniLegend extends React.Component<Props, State> {
       )
     } else {
       titleDisplay = (
-        <Row className='valign-wrapper' style={{height: '32px', width: '100%'}}>
+        <Row style={{height: '32px', width: '100%'}}>
           <h6
-            className='black-text valign' style={{
+            style={{
               padding: '0.2rem',
               marginLeft: '2px',
               marginBottom: '2px',
@@ -231,10 +231,20 @@ export default class MiniLegend extends React.Component<Props, State> {
             -webkit-hyphens: auto;
             hyphens: auto;
           }
+
+          .collapsible-header {
+            display: flex;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            line-height: 1.5;
+            padding: 1rem;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+          }
         `}
         </style>
         <ul
-          ref='legend' className='collapsible'
+          ref='legend'
           style={{
             zIndex: 1,
             textAlign: 'left',

@@ -110,9 +110,8 @@ class MapMaker extends MapHubsComponent<Props, State> {
         window.addEventListener('beforeunload', (e) => {
           const {saved, mapLayers} = _this.state
           if (!saved && mapLayers && mapLayers.length > 0) {
-            const msg = t('Please save your map to avoid losing your work!')
-            e.returnValue = msg
-            return msg
+            e.preventDefault()
+            e.returnValue = ''
           }
         })
     */

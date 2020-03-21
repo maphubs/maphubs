@@ -101,7 +101,7 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
               <TextInput name='max' label={t('Max (Optional)')} icon='info' />
             </Row>
           </div>
-          <div className='right'>
+          <div style={{float: 'right'}}>
             <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
           </div>
         </Formsy>

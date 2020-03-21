@@ -133,7 +133,16 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     }
 
     const baseUrl = urlUtil.getBaseUrl()
-    const layerUrl = `${baseUrl}/layer/info/${layer.layer_id}/${slugify(this.t(layer.name))}`
+
+    // fix possible error if layer.name doesn't translate correctly
+    let layerName = 'unknown'
+    if (layer?.name) {
+      const translatedLayerName = this.t(layer.name)
+      if (translatedLayerName && typeof translatedLayerName === 'string') {
+        layerName = translatedLayerName
+      }
+    }
+    const layerUrl = `${baseUrl}/layer/info/${layer.layer_id}/${slugify(layerName)}`
     const mhid = feature.mhid.split(':')[1]
 
     let gpxLink

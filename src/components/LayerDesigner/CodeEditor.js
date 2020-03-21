@@ -135,7 +135,7 @@ export default class CodeEditor extends React.Component<Props, State> {
               </Button>
             ]}
           >
-            <div className='left-align' style={{height: '100%'}}>
+            <div style={{height: '100%'}}>
               {editor}
             </div>
           </Modal>
@@ -144,9 +144,9 @@ export default class CodeEditor extends React.Component<Props, State> {
     } else {
       return (
         <div style={{height: 'calc(100% - 100px)', width: '100%'}}>
-          <p className='left no-padding'>{title}</p>
+          <p>{title}</p>
           {editor}
-          <div className='right'>
+          <div style={{float: 'right'}}>
             <Button type='primary' style={{float: 'none', marginTop: '15px'}} disabled={!canSave} onClick={this.onSave}>{t('Save')}</Button>
           </div>
         </div>

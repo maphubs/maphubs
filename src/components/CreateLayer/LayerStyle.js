@@ -154,45 +154,51 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <Row style={{marginBottom: '20px'}}>
-        <Row style={{marginBottom: '20px', textAlign: 'center'}}>
+      <Row style={{height: 'calc(100% - 50px)'}}>
+        <Row style={{height: '100%', textAlign: 'center'}}>
           <Col sm={24} md={12}>
-            <h5>{t('Choose Preview')}</h5>
+            <h5 style={{margin: 0}}>{t('Choose Preview')}</h5>
             {(layer_id !== undefined && layer_id !== -1 && showMap) &&
-              <div>
-                <Row>
-                  <Map
-                    id='layer-style-map' className='z-depth-2' insetMap={false} style={{height: '300px', width: '400px', margin: 'auto'}}
-                    glStyle={style}
-                    showLogo
-                    mapConfig={this.props.mapConfig}
-                    fitBounds={mapExtent}
-                    primaryColor={MAPHUBS_CONFIG.primaryColor}
-                    logoSmall={MAPHUBS_CONFIG.logoSmall}
-                    logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-                    logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-                    t={t}
-                    locale={this.state.locale}
-                    mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-                    DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-                    earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
-                  />
-                </Row>
-                <Row style={{width: '400px', position: 'relative', margin: 'auto'}}>
+              <Row style={{height: 'calc(100% - 30px)', padding: '20px'}}>
+                <Map
+                  id='layer-style-map' className='z-depth-2'
+                  style={{height: '100%', width: '100%', margin: 'auto'}}
+                  glStyle={style}
+                  showLogo
+                  mapConfig={this.props.mapConfig}
+                  fitBounds={mapExtent}
+                  primaryColor={MAPHUBS_CONFIG.primaryColor}
+                  logoSmall={MAPHUBS_CONFIG.logoSmall}
+                  logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+                  logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+                  t={t}
+                  locale={this.state.locale}
+                  mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+                  DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+                  earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+                >
                   <MiniLegend
-                    t={t} style={{position: 'absolute', height: 'auto', width: '400px', margin: 'auto'}}
-                    collapsible={false} hideInactive={false} showLayersButton={false}
+                    t={t}
+                    style={{
+                      position: 'absolute',
+                      top: '5px',
+                      left: '5px',
+                      minWidth: '200px',
+                      width: '20%',
+                      zIndex: 2
+                    }}
+                    collapsible hideInactive={false} showLayersButton={false}
                     layers={[this.state]}
                   />
-                </Row>
-              </div>}
+                </Map>
+              </Row>}
           </Col>
           <Subscribe to={[MapContainer]}>
             {MapState => (
-              <Col sm={24} md={12} style={{width: '425px'}}>
+              <Col sm={24} md={12}>
+                <h5 style={{margin: 0}}>{t('Choose Style')}</h5>
                 {colorChooserMode === 'default' &&
-                  <div>
-                    <h5>{t('Choose Style')}</h5>
+                  <Row style={{height: 'calc(100% - 130px)', padding: '20px'}}>
                     <LayerDesigner
                       onColorChange={this.onColorChange}
                       style={cssStyle} onStyleChange={this.setStyle}
@@ -200,10 +206,9 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
                       layer={this.state}
                       legend={legendCode} onLegendChange={this.setLegend}
                     />
-                  </div>}
+                  </Row>}
                 {colorChooserMode === 'external' &&
-                  <div>
-                    <h5>{t('Choose Style')}</h5>
+                  <Row style={{height: 'calc(100% - 100px)', padding: '20px'}}>
                     <OpacityChooser
                       value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
                       style={cssStyle} onStyleChange={this.setStyle} onColorChange={this.onColorChange}
@@ -211,21 +216,23 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
                       legendCode={legendCode} onLegendChange={this.setLegend} showAdvanced
                       t={t}
                     />
-                  </div>}
+                  </Row>}
                 {colorChooserMode === 'mapbox' &&
-                  <div style={{marginTop: '20px', marginBottom: '20px', padding: '20px', border: '1px solid #b1b1b1'}}>
-                    <b>{t('Mapbox Studio Style Layer')}</b>
-                    <p>{t('If you are the owner of this layer, click here to edit in Mapbox Studio on mapbox.com')}</p>
-                    <Button type='primary' target='_blank' rel='noopener noreferrer' href={'https://www.mapbox.com/studio/styles/' + externalLayerConfig.mapboxid + '/edit'}>{t('Edit in Mapbox Studio')}</Button>
-                    <p>{t('Once you have published your style on Mapbox,click refresh the preview map.')}
-                      <b>{t('It may take a few minutes for the changes to appear, your layer will update automatically.')}</b>
-                    </p>
-                    <Button type='primary' onClick={() => { reloadMap(MapState) }}> {t('Reload')}</Button>
-                  </div>}
-                <div className='right'>
-                  <Button type='primary' onClick={this.resetStyle} style={{marginRight: '10px'}}>{t('Reset')}</Button>
-                  <Button type='primary' onClick={() => { this.onSubmit(MapState) }}>{t('Save')}</Button>
-                </div>
+                  <Row style={{height: 'calc(100% - 100px)', padding: '20px'}}>
+                    <div style={{marginTop: '20px', marginBottom: '20px', padding: '20px', border: '1px solid #b1b1b1'}}>
+                      <b>{t('Mapbox Studio Style Layer')}</b>
+                      <p>{t('If you are the owner of this layer, click here to edit in Mapbox Studio on mapbox.com')}</p>
+                      <Button type='primary' target='_blank' rel='noopener noreferrer' href={'https://www.mapbox.com/studio/styles/' + externalLayerConfig.mapboxid + '/edit'}>{t('Edit in Mapbox Studio')}</Button>
+                      <p>{t('Once you have published your style on Mapbox,click refresh the preview map.')}
+                        <b>{t('It may take a few minutes for the changes to appear, your layer will update automatically.')}</b>
+                      </p>
+                      <Button type='primary' onClick={() => { reloadMap(MapState) }}> {t('Reload')}</Button>
+                    </div>
+                  </Row>}
+                <Row justify='end' align='middle'>
+                  <Col span={6}><Button type='primary' onClick={this.resetStyle} style={{marginRight: '10px'}}>{t('Reset')}</Button></Col>
+                  <Col span={6} offset={12}><Button type='primary' onClick={() => { this.onSubmit(MapState) }}>{t('Save')}</Button></Col>
+                </Row>
               </Col>
             )}
           </Subscribe>
