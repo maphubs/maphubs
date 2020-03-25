@@ -26,7 +26,8 @@ type Props = {
   value?: Object,
   onChange?: Function,
   placeholder?: string,
-  type: string
+  type: string,
+  t: Function
 }
 
 type State = {
@@ -70,7 +71,7 @@ export default class LocalizedInput extends React.Component<Props, State> {
 
   render () {
     const {value} = this.state
-    const {placeholder, type} = this.props
+    const {placeholder, type, t} = this.props
     const {handleChange} = this
     return (
       <>
@@ -108,6 +109,7 @@ export default class LocalizedInput extends React.Component<Props, State> {
                         const val = e.target.value
                         handleChange(locale.value, val)
                       }}
+                      t={t}
                     />}
                 </TabPane>
               )

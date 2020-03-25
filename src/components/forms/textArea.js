@@ -1,10 +1,9 @@
 // @flow
 import React from 'react'
-import {withFormsy} from 'formsy-react'
+import { withFormsy } from 'formsy-react'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
-import {Tooltip} from 'antd'
-import classNames from 'classnames'
+import { Tooltip, Input } from 'antd'
 
 type Props = {
   length: number,
@@ -13,15 +12,22 @@ type Props = {
   className: string,
   tooltip: string,
   dataDelay: number,
+  successText: string,
+  disabled: boolean,
   tooltipPosition: string,
+  placeholder: string,
+  id: string,
   name: string,
   label: string,
   // Added by Formsy
   showRequired: boolean,
   isValid: boolean,
+  isRequired: boolean,
   showError: boolean,
   setValue: Function,
-  errorMessage: string
+  errorMessage: string,
+  showCharCount: boolean,
+  t: Function
 }
 
 type State = {
@@ -35,7 +41,8 @@ class TextArea extends MapHubsComponent<Props, State> {
   static defaultProps = {
     length: 0,
     value: '',
-    dataDelay: 100
+    dataDelay: 100,
+    showCharCount: true
   }
 
   constructor (props: Props) {
@@ -78,32 +85,34 @@ class TextArea extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const { icon, name, label, errorMessage, tooltip, tooltipPosition, length } = this.props
-    const { value, charCount } = this.state
-    const className = classNames('input-field', this.props.className)
-    const textAreaClassName = classNames(
-      'materialize-textarea',
-      {
-        required: this.props.showRequired,
-        valid: this.props.isValid,
-        invalid: this.props.showError
-      }
-    )
+    const { id, name, icon, showRequired, isRequired, isValid, showError, value, showCharCount, errorMessage, length, placeholder, disabled, successText, t, tooltip, tooltipPosition } = this.props
+    const { charCount } = this.state
 
     return (
       <Tooltip title={tooltip} position={tooltipPosition}>
-        <div ref='inputWrapper' className={className}>
-          {icon &&
-            <i className='material-icons prefix'>{icon}</i>}
-          <textarea ref='textarea' id={name} className={textAreaClassName} value={value} onChange={this.changeValue} />
-          <label htmlFor={name} className={value ? 'active' : ''} data-error={errorMessage} data-success=''>{label}</label>
+        <label htmlFor={id || name}>{this.props.label} {isRequired && '*'}</label>
+        <Input.TextArea
+          autoSize={{ minRows: 2, maxRows: 6 }}
+          type='text'
+          prefix={icon}
+          id={id || name}
+          value={value}
+          disabled={disabled}
+          placeholder={placeholder}
+          onChange={(e) => {
+            const val = e.target.value
+            this.changeValue(val)
+          }}
+        />
+        {showCharCount &&
           <span
-            className='character-counter'
             style={{float: 'right', fontSize: '12px', height: '1px', color: charCount > length ? 'red' : 'black'}}
           >
             {charCount} / {length}
-          </span>
-        </div>
+          </span>}
+        {showRequired && <p style={{color: 'red'}}>{t('Required')}</p>}
+        {showError && <p style={{color: 'red'}}>{errorMessage}</p>}
+        {isValid && <p style={{color: 'red'}}>{successText}</p>}
       </Tooltip>
     )
   }

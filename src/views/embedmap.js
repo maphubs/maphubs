@@ -16,6 +16,7 @@ import UserStore from '../stores/UserStore'
 import {Tooltip} from 'antd'
 import StyleHelper from '../components/Map/Styles/style'
 import getConfig from 'next/config'
+import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
@@ -256,10 +257,10 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
             placement='right'
           >
             <a
-              onClick={this.startInteractive} className='embed-map-btn btn-floating waves-effect waves-light'
+              onClick={this.startInteractive} className='embed-map-btn'
               style={{position: 'absolute', left: 'calc(50% - 30px)', bottom: 'calc(50% - 30px)', backgroundColor: 'rgba(25,25,25,0.35)', height: '60px', width: '60px', zIndex: '999'}}
             >
-              <i style={{lineHeight: '60px', fontSize: '30px'}} className='material-icons'>play_arrow</i>
+              <PlayCircleFilledWhiteIcon style={{lineHeight: '60px', fontSize: '30px'}} />
             </a>
           </Tooltip>
         </div>

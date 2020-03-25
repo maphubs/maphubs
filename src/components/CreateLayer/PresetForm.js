@@ -11,6 +11,7 @@ import MapHubsComponent from '../MapHubsComponent'
 import Locales from '../../services/locales'
 import _isequal from 'lodash.isequal'
 import { Modal, Row, Col, Button } from 'antd'
+import { ArrowUpOutlined, ArrowDownOutlined, DeleteOutlined } from '@ant-design/icons'
 const { confirm } = Modal
 
 type Props = {
@@ -134,6 +135,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
             }} length={500}
             value={this.props.options}
             tooltipPosition='top' tooltip={t('Comma seperated list of options to show for the Combo or Radio field. Ex: red, blue, green')}
+            t={t}
           />
         </Row>
       )
@@ -143,11 +145,12 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
     if (this.props.type) typeStartEmpty = false
 
     return (
-      <div>
-        <Row style={{marginBottom: '20px'}}>
+      <>
+        <Row>
           <Formsy
             ref='form' onChange={this.onFormChange}
             onValid={this.onValid} onInvalid={this.onInvalid}
+            style={{width: '100%'}}
           >
             <Row style={{marginBottom: '20px'}}>
               <Col sm={24} md={12}>
@@ -178,50 +181,59 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                 </Row>
               </Col>
               <Col sm={24} md={12} style={{textAlign: 'center'}}>
-                <Toggle
-                  name='isRequired'
-                  labelOff={t('Optional')}
-                  labelOn={t('Required')}
-                  style={{paddingTop: '25px'}}
-                  checked={this.props.isRequired}
-                />
-                <Toggle
-                  name='showOnMap'
-                  labelOff={t('Hide in Map')}
-                  labelOn={t('Show in Map')}
-                  style={{paddingTop: '25px'}}
-                  checked={this.props.showOnMap}
-                />
-                <Toggle
-                  name='isName'
-                  labelOff={t('Regular Field')}
-                  labelOn={t('Name Field')}
-                  style={{paddingTop: '25px'}}
-                  checked={this.props.isName}
-                />
-                <Toggle
-                  name='isDescription'
-                  labelOff={t('Regular Field')}
-                  labelOn={t('Description Field')}
-                  style={{paddingTop: '25px'}}
-                  checked={this.props.isDescription}
-                />
+                <Row justify='center' style={{marginBottom: '20px'}}>
+                  <Toggle
+                    name='isRequired'
+                    labelOff={t('Optional')}
+                    labelOn={t('Required')}
+                    style={{paddingTop: '25px'}}
+                    checked={this.props.isRequired}
+                  />
+                </Row>
+                <Row justify='center' style={{marginBottom: '20px'}}>
+                  <Toggle
+                    name='showOnMap'
+                    labelOff={t('Hide in Map')}
+                    labelOn={t('Show in Map')}
+                    style={{paddingTop: '25px'}}
+                    checked={this.props.showOnMap}
+                  />
+                </Row>
+                <Row justify='center' style={{marginBottom: '20px'}}>
+                  <Toggle
+                    name='isName'
+                    labelOff={t('Regular Field')}
+                    labelOn={t('Name Field')}
+                    style={{paddingTop: '25px'}}
+                    checked={this.props.isName}
+                  />
+                </Row>
+                <Row justify='center' style={{marginBottom: '20px'}}>
+                  <Toggle
+                    name='isDescription'
+                    labelOff={t('Regular Field')}
+                    labelOn={t('Description Field')}
+                    style={{paddingTop: '25px'}}
+                    checked={this.props.isDescription}
+                  />
+                </Row>
               </Col>
             </Row>
             {typeOptions}
 
           </Formsy>
+          <Row style={{marginBottom: '20px'}}>
+            <Col span={16}>
+              <Button type='primary' onClick={this.onMoveUp} icon={<ArrowUpOutlined />}>{t('Move Up')}</Button>
+              <Button type='primary' style={{marginLeft: '5px'}} onClick={this.onMoveDown} icon={<ArrowDownOutlined />}>{t('Move Down')}</Button>
+            </Col>
+            <Col span={8} style={{textAlign: 'right'}}>
+              <Button type='danger' onClick={this.onRemove} icon={<DeleteOutlined />}>{t('Remove')}</Button>
+            </Col>
+          </Row>
         </Row>
-        <Row style={{marginBottom: '20px'}}>
-          <Col span={16}>
-            <Button type='primary' onClick={this.onMoveUp}><i className='material-icons left'>arrow_upward</i>{t('Move Up')}</Button>
-            <Button type='primary' style={{marginLeft: '5px'}} onClick={this.onMoveDown}><i className='material-icons left'>arrow_downward</i>{t('Move Down')}</Button>
-          </Col>
-          <Col span={8} style={{textAlign: 'right'}}>
-            <Button type='primary' onClick={this.onRemove}><i className='material-icons left'>delete</i>{t('Remove')}</Button>
-          </Col>
-        </Row>
-      </div>
+
+      </>
     )
   }
 }

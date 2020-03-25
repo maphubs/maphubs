@@ -126,7 +126,7 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
             </Row>
           </div>
           <div style={{float: 'right'}}>
-            <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
+            <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Save and Continue')}</Button>
           </div>
         </Formsy>
       </Row>

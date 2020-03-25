@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy from 'formsy-react'
-import { message, notification, Modal, Row, Col, Button, PageHeader } from 'antd'
+import { message, notification, Modal, Row, Col, Button, PageHeader, Card, Divider } from 'antd'
 import EditList from '../components/EditList'
 import Header from '../components/header'
 import MultiTextArea from '../components/forms/MultiTextArea'
@@ -23,6 +23,7 @@ import MapList from '../components/Lists/MapList'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
+import Delete from '@material-ui/icons/Delete'
 const { confirm } = Modal
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/GroupAdmin')
 
@@ -264,36 +265,33 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
-    const membersList = []
-    const groupId = this.props.group.group_id ? this.props.group.group_id : ''
-    this.state.members.forEach((user) => {
-      membersList.push({
+    const { layers, maps, headerConfig } = this.props
+    const { members, group } = this.state
+
+    const groupId = group.group_id || ''
+    const membersList = members.map((user) => {
+      return {
         key: user.id,
         label: user.display_name,
         type: user.role,
-        image: user.image,
-        icon: 'person',
-        actionIcon: 'supervisor_account',
-        actionLabel: t('Add/Remove Administrator Access')
-      })
+        image: user.image
+      }
     })
 
-    let isPublished = false
-    if (this.state.group.published) {
-      isPublished = true
-    }
-
-    const groupUrl = '/group/' + groupId
+    const isPublished = group.published
+    const groupUrl = `/group/${groupId}`
 
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
+        <Header {...headerConfig} />
         <main>
 
           <div className='container'>
             <Row style={{marginBottom: '20px'}}>
               <PageHeader
-                onBack={() => window.location = groupUrl}
+                onBack={() => {
+                  window.location = groupUrl
+                }}
                 style={{padding: '5px'}}
                 title={t('Back to Group')}
               />
@@ -306,12 +304,9 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                 <Button type='primary' onClick={this.showImageCrop}>{t('Change Image')}</Button>
               </Col>
             </Row>
-            <Row style={{marginBottom: '20px'}}>
-              <h4>{this.t(this.props.group.name)}</h4>
-            </Row>
-            <div className='divider' />
-            <Row style={{marginBottom: '20px'}}>
-              <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+            <Divider />
+            <Row justify='center' style={{marginBottom: '20px'}}>
+              <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton} style={{width: '100%', maxWidth: '800px'}}>
                 <Row style={{marginBottom: '20px'}}>
                   <MultiTextInput
                     name='name' id='name'
@@ -325,6 +320,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     tooltipPosition='top' tooltip={t('Short Descriptive Name for the Group')}
                     value={this.state.group.name}
                     required
+                    t={t}
                   />
                 </Row>
                 <Row style={{marginBottom: '20px'}}>
@@ -342,18 +338,20 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                       maxLength: t('Description must be 500 characters or less.')
                     }} length={500}
                     tooltipPosition='top' tooltip={t('Brief Description of the Group')}
-                    value={this.state.group.description}
+                    value={group.description}
                     required
+                    t={t}
                   />
                 </Row>
                 <Row style={{marginBottom: '20px'}}>
                   <TextInput
-                    name='location' label={t('Location')} icon='navigation' validations='maxLength:100' validationErrors={{
+                    name='location' label={t('Location')} validations='maxLength:100' validationErrors={{
                       maxLength: t('Location must be 100 characters or less.')
                     }} length={100}
                     tooltipPosition='top' tooltip={t('Country or City Where the Group is Located')}
-                    value={this.state.group.location}
+                    value={group.location}
                     required
+                    t={t}
                   />
                 </Row>
                 <Row style={{marginBottom: '20px'}}>
@@ -368,30 +366,35 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                 </div>
               </Formsy>
             </Row>
+            <Divider />
             <Row style={{marginBottom: '20px'}}>
-              <EditList title='Members' items={membersList} onDelete={this.handleMemberDelete} onAction={this.handleMemberMakeAdmin} onError={this.onError} />
+              <Col sm={24} md={12} style={{padding: '2px'}}>
+                <EditList title='Members' items={membersList} onDelete={this.handleMemberDelete} onAction={this.handleMemberMakeAdmin} onError={this.onError} t={t} />
+              </Col>
+              <Col sm={24} md={12} style={{padding: '2px'}}>
+                <Card title={<b>{t('Add Group Member')}</b>} size='small'>
+                  <AddItem
+                    t={t} placeholder={t('Search for User Name')} suggestionUrl='/api/user/search/suggestions'
+                    optionLabel={t('Add as Administrator')} addButtonLabel={t('Add and Send Invite')}
+                    onAdd={this.handleAddMember} onError={this.onError}
+                  />
+                </Card>
+              </Col>
             </Row>
+            <Divider />
             <Row style={{marginBottom: '20px'}}>
-              <h5>{t('Add Group Member')}</h5>
-              <AddItem
-                t={t} placeholder={t('Search for User Name')} suggestionUrl='/api/user/search/suggestions'
-                optionLabel={t('Add as Administrator')} addButtonLabel={t('Add and Send Invite')}
-                onAdd={this.handleAddMember} onError={this.onError}
-              />
+              <Col sm={24} md={12} style={{padding: '2px'}}>
+                <LayerList layers={layers} t={t} />
+              </Col>
+              <Col sm={24} md={12} style={{padding: '2px'}}>
+                <MapList maps={maps} t={t} />
+              </Col>
             </Row>
-            <Row style={{marginBottom: '20px'}}>
-              <LayerList layers={this.props.layers} t={t} />
-            </Row>
-            <Row style={{marginBottom: '20px'}}>
-              <MapList maps={this.props.maps} t={t} />
-            </Row>
-            <div className='fixed-action-btn action-button-bottom-right'>
-              <FloatingButton
-                onClick={this.handleGroupDelete}
-                tooltip={t('Delete Group')}
-                color='red' icon='delete'
-              />
-            </div>
+            <FloatingButton
+              onClick={this.handleGroupDelete}
+              tooltip={t('Delete Group')}
+              style={{color: '#fff', backgroundColor: 'red'}} icon={<Delete />}
+            />
           </div>
           <ImageCrop ref='imagecrop' aspectRatio={1} lockAspect resize_width={600} resize_height={600} onCrop={this.onCrop} />
         </main>

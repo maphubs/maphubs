@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { Row, Col } from 'antd'
+import { Row, Col, Button } from 'antd'
 import AdvancedLayerSettings from './AdvancedLayerSettings'
 import _isequal from 'lodash.isequal'
 
@@ -41,12 +41,6 @@ export default class OpacityChooser extends React.Component<Props, State> {
       style: props.style,
       legendCode: props.legendCode
     }
-  }
-
-  componentDidMount () {
-    M.Collapsible.init(this.refs.collapsible, {
-      accordion: true
-    })
   }
 
   shouldComponentUpdate (nextProps: Props, nextState: State) {
@@ -136,10 +130,10 @@ export default class OpacityChooser extends React.Component<Props, State> {
                 <AdvancedLayerSettings layer={this.props.layer} style={style} onChange={this.onAdvancedSettingsChange} />
                 <Row style={{marginBottom: '20px'}}>
                   <Col sm={24} md={12}>
-                    <button onClick={this.showStyleEditor} className='btn'>{t('Style')}</button>
+                    <Button onClick={this.showStyleEditor} type='primary'>{t('Style')}</Button>
                   </Col>
                   <Col sm={24} md={12}>
-                    <button onClick={this.showLegendEditor} className='btn'>{t('Legend')}</button>
+                    <Button onClick={this.showLegendEditor} type='primary'>{t('Legend')}</Button>
                   </Col>
                 </Row>
               </div>

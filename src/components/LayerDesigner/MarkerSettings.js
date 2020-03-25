@@ -174,14 +174,18 @@ export default class MarkerSettings extends React.Component<Props, State> {
     return (
       <Row style={{marginBottom: '20px'}}>
         <Formsy ref='form' onChange={this.onFormChange}>
-          <Row style={{marginTop: '10px', marginBottom: '0px', padding: '0 .75rem'}}>
-            <b>{t('Enable Markers')}</b>
-            <Toggle
-              name='enabled' labelOff={t('Off')} labelOn={t('On')}
-              checked={this.state.options.enabled}
-            />
+          <Row style={{marginTop: '10px', marginBottom: '20px', padding: '0 .75rem'}}>
+            <Row>
+              <b>{t('Enable Markers')}</b>
+            </Row>
+            <Row>
+              <Toggle
+                name='enabled' labelOff={t('Off')} labelOn={t('On')}
+                checked={this.state.options.enabled}
+              />
+            </Row>
           </Row>
-          <Row>
+          <Row style={{marginBottom: '20px', padding: '0 .75rem'}}>
             <Select
               name='shape' id='markers-shape-select' label={t('Marker Shape')} options={shapeOptions}
               value={this.state.options.shape} startEmpty={!this.state.options.shape}
@@ -189,7 +193,7 @@ export default class MarkerSettings extends React.Component<Props, State> {
               required
             />
           </Row>
-          <Row>
+          <Row style={{marginBottom: '20px', padding: '0 .75rem'}}>
             <Select
               name='size' id='markers-size-select' label={t('Marker Size')} options={sizeOptions}
               value={this.state.options.size} startEmpty={!this.state.options.size}
@@ -197,7 +201,7 @@ export default class MarkerSettings extends React.Component<Props, State> {
               required
             />
           </Row>
-          <Row>
+          <Row style={{marginBottom: '20px', padding: '0 .75rem'}}>
             <Select
               name='icon' id='markers-icon-select' label={t('Marker Icon')} options={iconOptions}
               value={this.state.options.icon} startEmpty={!this.state.options.icon}
@@ -206,11 +210,15 @@ export default class MarkerSettings extends React.Component<Props, State> {
             />
           </Row>
           <Row style={{padding: '0 .75rem'}}>
-            <b>{t('Invert Colors')}</b>
-            <Toggle
-              name='inverted' labelOff={t('Off')} labelOn={t('On')}
-              checked={this.state.options.inverted}
-            />
+            <Row>
+              <b>{t('Invert Colors')}</b>
+            </Row>
+            <Row>
+              <Toggle
+                name='inverted' labelOff={t('Off')} labelOn={t('On')}
+                checked={this.state.options.inverted}
+              />
+            </Row>
           </Row>
         </Formsy>
       </Row>

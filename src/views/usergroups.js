@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
-import { Row } from 'antd'
+import { Row, Result, Button, Typography } from 'antd'
+import GroupIcon from '@material-ui/icons/Group'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import CardCarousel from '../components/CardCarousel/CardCarousel'
@@ -13,6 +14,10 @@ import type {Group} from '../stores/GroupStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
+const { Title } = Typography
 
 type Props = {|
   groups: Array<Group>,
@@ -58,46 +63,36 @@ export default class UserGroups extends MapHubsComponent<Props, void> {
 
   render () {
     const {t} = this
-    const {canEdit, user} = this.props
+    const {canEdit, user, groups} = this.props
 
-    let groups = ''
-    if (this.props.groups && this.props.groups.length > 0) {
-      const cards = this.props.groups.map(cardUtil.getGroupCard)
-      groups = (
-        <Row style={{marginBottom: '20px'}}>
-          <CardCarousel infinite={false} cards={cards} t={this.t} />
-        </Row>
-      )
-    } else {
-      groups = (
-        <Row style={{marginBottom: '20px', height: 'calc(100% - 100px)'}}>
-          <div className='valign-wrapper' style={{height: '100%'}}>
-            <div className='valign align-center center-align' style={{width: '100%'}}>
-              <h5>{t('Click the button below to create your first group')}</h5>
-            </div>
-          </div>
-        </Row>
-      )
-    }
     return (
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main style={{marginLeft: '10px', marginRight: '10px'}}>
           {canEdit &&
-            <h4>{t('My Groups')}</h4>}
+            <Title level={2}>{t('My Groups')}</Title>}
           {!canEdit &&
-            <h4>{t('Groups for user: ') + user.display_name}</h4>}
-          {groups}
+            <Title level={2}>{t('Groups for user: ') + user.display_name}</Title>}
+          {groups?.length > 0 &&
+            <Row style={{marginBottom: '20px'}}>
+              <CardCarousel infinite={false} cards={groups.map(cardUtil.getGroupCard)} t={this.t} />
+            </Row>}
+          {(!groups || groups.length === 0) &&
+            <Row style={{height: 'calc(100% - 100px)', marginBottom: '20px'}}>
+              <Result
+                style={{margin: 'auto'}}
+                icon={<GroupIcon style={{color: MAPHUBS_CONFIG.primaryColor, fontSize: '72px'}} />}
+                title={t('Click the button below to create your first group')}
+                extra={<Button type='primary' href='/creategroup'>{t('Create New Group')}</Button>}
+              />
+            </Row>}
           {canEdit &&
-            <div>
-              <div className='fixed-action-btn action-button-bottom-right'>
-                <FloatingButton
-                  href='/creategroup'
-                  tooltip={t('Create New Group')} tooltipPosition='top'
-                  icon='add'
-                />
-              </div>
-            </div>}
+            <FloatingButton
+              onClick={() => {
+                window.location = '/creategroup'
+              }}
+              tooltip={t('Create New Group')}
+            />}
         </main>
         <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>

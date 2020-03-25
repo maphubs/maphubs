@@ -14,6 +14,7 @@ import ShareButtons from '../components/ShareButtons'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
+import Edit from '@material-ui/icons/Edit'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -67,21 +68,7 @@ export default class Story extends MapHubsComponent<Props, void> {
 
   render () {
     const {t} = this
-    const story = this.props.story
-
-    let button = ''
-    if (this.props.canEdit) {
-      button = (
-        <div className='fixed-action-btn action-button-bottom-right'>
-          <FloatingButton
-            href={`/editstory/${this.props.story.story_id}/${slugify(t(this.props.story.title))}`}
-            tooltip={t('Edit')}
-            tooltipPosition='left'
-            icon='mode_edit'
-          />
-        </div>
-      )
-    }
+    const { story, canEdit } = this.props
 
     let shareAndDiscuss = ''
     if (MAPHUBS_CONFIG.enableComments) {
@@ -130,7 +117,14 @@ export default class Story extends MapHubsComponent<Props, void> {
               <hr />
               {shareAndDiscuss}
             </div>
-            {button}
+            {canEdit &&
+              <FloatingButton
+                onClick={() => {
+                  window.location = `/editstory/${this.props.story.story_id}/${slugify(t(this.props.story.title))}`
+                }}
+                tooltip={t('Edit')}
+                icon={<Edit />}
+              />}
             <style jsx global>{`
               body {
                 font-family: 'Roboto', sans-serif !important;

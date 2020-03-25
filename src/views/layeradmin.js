@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Header from '../components/header'
-import { message, notification, Modal, Row, Button, Tabs, PageHeader, Divider } from 'antd'
+import { message, notification, Modal, Row, Button, Tabs, PageHeader, Divider, Typography } from 'antd'
 import LayerSettings from '../components/CreateLayer/LayerSettings'
 import LayerAdminSettings from '../components/CreateLayer/LayerAdminSettings'
 import PresetEditor from '../components/CreateLayer/PresetEditor'
@@ -30,6 +30,7 @@ const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { confirm } = Modal
 const checkClientError = require('../services/client-error-response').checkClientError
 
+const { Title } = Typography
 const TabPane = Tabs.TabPane
 
 type Props = {
@@ -229,7 +230,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                 />
               </Row>
               <Row style={{textAlign: 'center'}}>
-                <h5>{t('Unable to modify remote layers.')}</h5>
+                <Title level={3}>{t('Unable to modify remote layers.')}</Title>
                 <div className='center-align center'>
                   <Button
                     type='primary' style={{marginTop: '20px'}}
@@ -295,7 +296,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                     />
                     <Row style={{marginBottom: '20px'}}><Divider /></Row>
                     <Row style={{marginBottom: '20px', padding: '0px 20px'}}>
-                      <h5 style={{fontSize: '18px'}}>{t('Modify Data')}</h5>
+                      <Title level={3} style={{fontSize: '18px'}}>{t('Modify Data')}</Title>
                       <Row style={{marginBottom: '20px'}}>
                         <Button type='primary' href={`/layer/replace/${layerId}/${layerName}`}>{t('Replace Layer Data')}</Button>
                       </Row>
@@ -305,14 +306,13 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                     </Row>
                   </TabPane>
                   <TabPane tab={t('Fields')} key='fields' style={{position: 'relative'}}>
-                    <div className='container'>
-                      <h5>{t('Data Fields')}</h5>
-                      <Row style={{textAlign: 'right'}}>
+                    <div className='container' style={{height: '100%'}}>
+                      <Title level={3}>{t('Data Fields')}</Title>
+                      <Row justify='end'>
                         <Button type='primary' onClick={this.savePresets} disabled={!this.state.canSavePresets}>{t('Save')}</Button>
                       </Row>
-                      <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid} />
-                      <Row style={{textAlign: 'right'}}>
-                        <Button type='primary' onClick={this.savePresets} disabled={!this.state.canSavePresets}>{t('Save')}</Button>
+                      <Row style={{height: 'calc(100% - 100px)', overflowY: 'auto'}}>
+                        <PresetEditor onValid={this.presetsValid} onInvalid={this.presetsInvalid} />
                       </Row>
                     </div>
                   </TabPane>

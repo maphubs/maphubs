@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification, Row, Divider, Col } from 'antd'
+import { message, notification, Row, Divider, Col, Typography } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
@@ -15,9 +15,11 @@ import Formsy from 'formsy-react'
 import CardGrid from '../components/CardCarousel/CardGrid'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import FloatingButton from '../components/FloatingButton'
+import FloatingAddButton from '../components/FloatingAddButton'
 
 import cardUtil from '../services/card-util'
+const { Title } = Typography
+
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/maps')
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const checkClientError = require('../services/client-error-response').checkClientError
@@ -60,10 +62,6 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-  }
-
-  componentDidMount () {
-    M.FloatingActionButton.init(this.refs.addButton, {})
   }
 
   handleSearch = (input: string) => {
@@ -146,9 +144,9 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <Row style={{marginBottom: '0px'}}>
               <Col sm={24} md={8}>
-                <h4 className='no-margin'>{t('Maps')}</h4>
+                <Title level={2}>{t('Maps')}</Title>
               </Col>
-              <Col sm={24} md={8} offset={8} style={{paddingRight: '15px', textAlign: 'right'}}>
+              <Col sm={24} md={8} offset={8} style={{textAlign: 'right', paddingTop: '2px'}}>
                 <SearchBox label={t('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
               </Col>
             </Row>
@@ -165,14 +163,12 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
             </Row>
           </Row>
           <div>
-            <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
-              <FloatingButton
-                href='/map/new'
-                tooltip={t('Create New Map')}
-                tooltipPosition='top'
-                icon='add'
-              />
-            </div>
+            <FloatingAddButton
+              onClick={() => {
+                window.location = '/map/new'
+              }}
+              tooltip={t('Create New Map')}
+            />
           </div>
         </main>
         <Footer t={t} {...this.props.footerConfig} />

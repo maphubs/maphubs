@@ -1,10 +1,12 @@
 //  @flow
 import React from 'react'
-import { Row } from 'antd'
+import { Row, Typography } from 'antd'
 import { QRCode } from 'react-qr-svg'
 import {IntlProvider, FormattedNumber} from 'react-intl'
 import turf_centroid from '@turf/centroid'
 import {OpenLocationCode} from 'open-location-code'
+
+const { Title } = Typography
 
 if (!Intl.PluralRules) {
   require('@formatjs/intl-pluralrules/polyfill')
@@ -31,7 +33,7 @@ export default class FeatureLocation extends React.PureComponent<Props, void> {
     if (!geojson) {
       return (
         <Row style={{marginBottom: '20px'}}>
-          <h5>{t('Data Not Available')}</h5>
+          <Title level={4}>{t('Data Not Available')}</Title>
         </Row>
       )
     }

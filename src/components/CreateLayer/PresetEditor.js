@@ -1,11 +1,12 @@
 // @flow
 import React from 'react'
-import { Row, Button } from 'antd'
+import { Row, Button, List } from 'antd'
 import PresetForm from './PresetForm'
 import LayerStore from '../../stores/layer-store'
 import Actions from '../../actions/LayerActions'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
+import { PlusOutlined } from '@ant-design/icons'
 import type {MapHubsField} from '../../types/maphubs-field'
 import type {LayerStoreState} from '../../stores/layer-store'
 
@@ -66,28 +67,26 @@ export default class PresetEditor extends MapHubsComponent<Props, State> {
       presets = this.state.presets.toArray()
     }
     return (
-      <div>
-        <Row>
-          <div className='left'>
-            <Button type='primary' onClick={this.addPreset}><i className='material-icons right'>add</i>{t('Add Field')}</Button>
-          </div>
+      <>
+        <Row style={{marginBottom: '20px'}}>
+          <Button type='primary' icon={<PlusOutlined />} onClick={this.addPreset}>{t('Add Field')}</Button>
         </Row>
-        <ul className='collection'>
-          {
-            presets.map((preset: MapHubsField) => {
-              return (
-                <li key={preset.id} className='collection-item attribute-collection-item'>
-                  <PresetForm
-                    ref={preset.tag} {...preset}
-                    onValid={_this.onValid}
-                    onInvalid={_this.onInvalid}
-                  />
-                </li>
-              )
-            })
-          }
-        </ul>
-      </div>
+        <Row justify='center' style={{marginBottom: '20px'}}>
+          <List
+            dataSource={presets}
+            bordered
+            renderItem={preset => (
+              <List.Item>
+                <PresetForm
+                  {...preset}
+                  onValid={_this.onValid}
+                  onInvalid={_this.onInvalid}
+                />
+              </List.Item>
+            )}
+          />
+        </Row>
+      </>
     )
   }
 }

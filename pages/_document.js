@@ -6,7 +6,7 @@ import version from '../version.json'
 
 export default class MyDocument extends Document {
   render () {
-    const data = this.props['__NEXT_DATA__']
+    const data = this.props.__NEXT_DATA__
     const options = data.query
     const props = options.props || {}
 
@@ -60,8 +60,7 @@ export default class MyDocument extends Document {
         <Head>
           <meta name='viewport' content='width=device-width, initial-scale=1' />
           {options.description &&
-            <meta name='description' content={options.description} />
-          }
+            <meta name='description' content={options.description} />}
           <link rel='apple-touch-icon-precomposed' sizes='57x57' href={`${themeUrl}/apple-touch-icon-57x57.png`} />
           <link rel='apple-touch-icon-precomposed' sizes='114x14' href={`${themeUrl}/apple-touch-icon-114x114.png`} />
           <link rel='apple-touch-icon-precomposed' sizes='72x72' href={`${themeUrl}/apple-touch-icon-72x72.png`} />
@@ -83,64 +82,45 @@ export default class MyDocument extends Document {
           <meta name='msapplication-wide310x150logo' content={`${themeUrl}/mstile-310x150.png`} />
           <meta name='msapplication-square310x310logo' content={`${themeUrl}/mstile-310x310.png`} />
           {options.oembed &&
-            <link rel='alternate' type='application/json+oembed' href={`${oembedUrl}&format=json`} title={oembedTitle} />
-          }
+            <link rel='alternate' type='application/json+oembed' href={`${oembedUrl}&format=json`} title={oembedTitle} />}
           {options.oembed &&
-            <link rel='alternate' type='text/xml+oembed' href={`${oembedUrl}&format=xml`} title={oembedTitle} />
-          }
+            <link rel='alternate' type='text/xml+oembed' href={`${oembedUrl}&format=xml`} title={oembedTitle} />}
           {(options.twitterCard && options.twitterCard.card) &&
-            <meta name='twitter:card' content={options.twitterCard.card} />
-          }
+            <meta name='twitter:card' content={options.twitterCard.card} />}
           {(options.twitterCard && !options.twitterCard.card) &&
-            <meta name='twitter:card' content='summary_large_image' />
-          }
+            <meta name='twitter:card' content='summary_large_image' />}
           {options.twitterCard &&
-            <meta name='twitter:site' content={`@${local.twitter}`} />
-          }
+            <meta name='twitter:site' content={`@${local.twitter}`} />}
           {options.twitterCard &&
-            <meta name='twitter:title' content={options.twitterCard.title} />
-          }
+            <meta name='twitter:title' content={options.twitterCard.title} />}
           {(options.twitterCard && options.twitterCard.description) &&
-            <meta name='twitter:description' content={options.twitterCard.description} />
-          }
+            <meta name='twitter:description' content={options.twitterCard.description} />}
           {(options.twitterCard && options.twitterCard.image) &&
-            <meta name='twitter:image' content={options.twitterCard.image} />
-          }
+            <meta name='twitter:image' content={options.twitterCard.image} />}
           {local.FACEBOOK_APP_ID &&
-            <meta property='fb:app_id' content={local.FACEBOOK_APP_ID} />
-          }
+            <meta property='fb:app_id' content={local.FACEBOOK_APP_ID} />}
           {(options.twitterCard && options.twitterCard.title) &&
-            <meta property='og:title' content={options.twitterCard.title} />
-          }
+            <meta property='og:title' content={options.twitterCard.title} />}
           {(options.twitterCard && options.twitterCard.description) &&
-            <meta property='og:description' content={options.twitterCard.description} />
-          }
+            <meta property='og:description' content={options.twitterCard.description} />}
           {options.twitterCard &&
-            <meta property='og:type' content='website' />
-          }
+            <meta property='og:type' content='website' />}
           {options.twitterCard &&
-            <meta property='og:url' content={options.baseUrl + options.reqUrl} />
-          }
+            <meta property='og:url' content={options.baseUrl + options.reqUrl} />}
           {(options.twitterCard && options.twitterCard.image) &&
-            <meta property='og:image' content={options.twitterCard.image} />
-          }
+            <meta property='og:image' content={options.twitterCard.image} />}
           {(options.twitterCard && options.twitterCard.image && options.twitterCard.imageType) &&
-            <meta property='og:image:type' content={options.twitterCard.imageType} />
-          }
+            <meta property='og:image:type' content={options.twitterCard.imageType} />}
           {(options.twitterCard && options.twitterCard.image && !options.twitterCard.imageType) &&
-            <meta property='og:image:type' content='image/png' />
-          }
+            <meta property='og:image:type' content='image/png' />}
           {(options.twitterCard && options.twitterCard.image && options.twitterCard.imageWidth) &&
-            <meta property='og:image:width' content={options.twitterCard.imageWidth} />
-          }
+            <meta property='og:image:width' content={options.twitterCard.imageWidth} />}
           {(options.twitterCard && options.twitterCard.image && options.twitterCard.imageHeight) &&
-            <meta property='og:image:height' content={options.twitterCard.imageHeight} />
-          }
-          {materialicons &&
-            <link href={assetHost + '/assets/css/material-icons.css'} rel='stylesheet' />
-          }
+            <meta property='og:image:height' content={options.twitterCard.imageHeight} />}
           <link rel='stylesheet' type='text/css' href='/css/maphubs.css' />
-          <script type='text/javascript' dangerouslySetInnerHTML={{__html: `
+          <script
+            type='text/javascript' dangerouslySetInnerHTML={{
+              __html: `
               var MAPHUBS_CONFIG = {
                 host: "${local.host}",
                 port: ${local.port},
@@ -180,23 +160,27 @@ export default class MyDocument extends Document {
                 RASTER_UPLOAD_API_KEY: "${local.RASTER_UPLOAD_API_KEY}",
                 requireLogin: ${local.requireLogin}
               }
-          `}}
+          `
+            }}
           />
           <script src='https://cdn.ravenjs.com/3.20.1/raven.min.js' crossOrigin='anonymous' />
-          <script type='text/javascript' dangerouslySetInnerHTML={{__html: `
+          <script
+            type='text/javascript' dangerouslySetInnerHTML={{
+              __html: `
               Raven.config('${ravenConfig}', {
               release: '${version.version}',
               environment: '${local.ENV_TAG}',
               tags: {host: '${local.host}'}
             }).install();
-          `}} />
+          `
+            }}
+          />
           {options.talkComments &&
-            <script type='text/javascript' src='https://talk.maphubs.com/embed.js' />
-          }
+            <script type='text/javascript' src='https://talk.maphubs.com/embed.js' />}
           {(!options.hideFeedback && !local.HIDE_FEEDBACK) &&
-          <script
-            type='text/javascript' dangerouslySetInnerHTML={{
-              __html: `
+            <script
+              type='text/javascript' dangerouslySetInnerHTML={{
+                __html: `
               Userback = window.Userback || {};
               Userback.access_token = '4787|6504|RgiVFuqtlpoFGgSIaXOnXXCwp21uxY9nDFXK8dnA6eNxb4jfph';
 
@@ -222,16 +206,16 @@ export default class MyDocument extends Document {
                   var parent_node = document.head || document.body;parent_node.appendChild(s);
               })('userback-sdk');
           `
-            }}
-          />
-          }
+              }}
+            />}
         </Head>
         <body>
           <Main />
           <NextScript />
 
           {(process.env.NODE_ENV === 'production' && !local.disableTracking && !options.disableGoogleAnalytics) &&
-            <script dangerouslySetInnerHTML={{__html: `
+            <script dangerouslySetInnerHTML={{
+              __html: `
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -239,8 +223,9 @@ export default class MyDocument extends Document {
 
               ga('create', '${local.GOOGLE_ANALYTICS_ID}', 'auto');
               ga('send', 'pageview');
-              `}} />
-          }
+              `
+            }}
+            />}
         </body>
       </html>
     )

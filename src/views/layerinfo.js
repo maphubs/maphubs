@@ -3,13 +3,12 @@ import React from 'react'
 import InteractiveMap from '../components/Map/InteractiveMap'
 import Header from '../components/header'
 import _find from 'lodash.find'
-import { Row, Col, notification, message, Tabs, Tooltip } from 'antd'
+import { Row, Col, notification, message, Tabs, Tooltip, Typography, Card } from 'antd'
 import Comments from '../components/Comments'
 import TerraformerGL from '../services/terraformerGL'
 import GroupTag from '../components/Groups/GroupTag'
 import Licenses from '../components/CreateLayer/licenses'
 import LayerNotes from '../components/CreateLayer/LayerNotes'
-import EditButton from '../components/EditButton'
 import DataGrid from '../components/DataGrid/DataGrid'
 import MapStyles from '../components/Map/Styles'
 import { Provider, Subscribe } from 'unstated'
@@ -27,7 +26,14 @@ import LayerExport from '../components/LayerInfo/LayerExport'
 import Stats from '../components/LayerInfo/Stats'
 import ExternalLink from '../components/LayerInfo/ExternalLink'
 import DataEditorContainer from '../components/Map/containers/DataEditorContainer'
-
+import { Fab, Action } from 'react-tiny-fab'
+import 'react-tiny-fab/dist/styles.css'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
+import EditIcon from '@material-ui/icons/Edit'
+import SaveIcon from '@material-ui/icons/Save'
+import PhotoIcon from '@material-ui/icons/Photo'
+import MapIcon from '@material-ui/icons/Map'
+import SettingsIcon from '@material-ui/icons/Settings'
 import {IntlProvider, FormattedRelativeTime, FormattedDate, FormattedTime} from 'react-intl'
 import request from 'superagent'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -40,6 +46,7 @@ import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const TabPane = Tabs.TabPane
+const { Title } = Typography
 
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('layerinfo')
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
@@ -151,7 +158,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   async componentDidMount () {
     const _this = this
     const {t} = this
-    M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
+
     this.clipboard = require('clipboard-polyfill').default
 
     const {layer} = this.props
@@ -284,60 +291,52 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     const showAddPhotoPointButton = showMapEditButton && layer.data_type === 'point'
     if (canEdit) {
       editButton = (
-        <div ref={(el) => { this.menuButton = el }} style={{bottom: '85px'}} className='fixed-action-btn action-button-bottom-right'>
-          <a className='btn-floating btn-large red red-text'>
-            <i className='large material-icons'>more_vert</i>
-          </a>
-          <ul>
-            {showMapEditButton &&
-              <li>
-                <Tooltip
-                  title={t('Edit Map Data')}
-                  placement='left'
-                >
-                  <a onClick={openEditor} className='btn-floating blue darken-1'>
-                    <i className='material-icons'>mode_edit</i>
-                  </a>
-                </Tooltip>
-              </li>}
-            {showAddPhotoPointButton &&
-              <li>
-                <Tooltip
-                  title={t('Add a Photo')}
-                  placement='left'
-                >
-                  <a href={`/layer/adddata/${layer.layer_id}`} className='btn-floating blue darken-1'>
-                    <i className='material-icons'>photo</i>
-                  </a>
-                </Tooltip>
-              </li>}
-            <li>
-              <Tooltip
-                title={t('Manage Layer')}
-                placement='left'
-              >
-                <a className='btn-floating yellow' href={`/layer/admin/${layer.layer_id}/${slugify(t(layer.name))}`}>
-                  <i className='material-icons'>settings</i>
-                </a>
-              </Tooltip>
-            </li>
-          </ul>
-        </div>
+        <Fab
+          icon={<MoreVertIcon />}
+          mainButtonStyles={{backgroundColor: MAPHUBS_CONFIG.primaryColor}}
+          position={{ bottom: 65, right: 0 }}
+        >
+
+          <Action
+            text={t('Manage Layer')}
+            onClick={() => {
+              window.location = `/layer/admin/${layer.layer_id}/${slugify(t(layer.name))}`
+            }}
+          >
+            <SettingsIcon />
+          </Action>
+          {showMapEditButton &&
+            <Action
+              text={t('Edit Map Data')}
+              style={{backgroundColor: 'green'}}
+              onClick={openEditor}
+            >
+              <EditIcon />
+            </Action>}
+          {showAddPhotoPointButton &&
+            <Action
+              text={t('Add a Photo')}
+              style={{backgroundColor: '#2196F3'}}
+              onClick={() => {
+                window.location = `/layer/adddata/${layer.layer_id}`
+              }}
+            >
+              <PhotoIcon />
+            </Action>}
+        </Fab>
       )
     } else {
       editButton = (
-        <div ref={(el) => { this.menuButton = el }} className='fixed-action-btn action-button-bottom-right hide-on-med-and-up'>
-          <Tooltip
-            title={t('View Map')}
-            placement='left'
-          >
-            <a
-              className='btn-floating btn-large red'
-              href={`/layer/map/${layer.layer_id}/${slugify(t(layer.name))}`}
-            >
-              <i className='material-icons'>map</i>
-            </a>
-          </Tooltip>
+        <div ref={(el) => { this.menuButton = el }} className='hide-on-med-and-up'>
+          <Fab
+            icon={<MapIcon />}
+            text={t('View Map')}
+            mainButtonStyles={{backgroundColor: MAPHUBS_CONFIG.primaryColor}}
+            event='click'
+            onClick={() => {
+              window.location = `/layer/map/${layer.layer_id}/${slugify(t(layer.name))}`
+            }}
+          />
         </div>
       )
     }
@@ -409,16 +408,31 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                         sm={24} md={12}
                         style={{height: '100%', padding: '5px', border: '1px solid #ddd', minHeight: '200px', overflowY: 'auto'}}
                       >
-                        <div style={{width: '100%'}}>
-                          <h5 className='word-wrap' style={{marginTop: 0}}>{t(layer.name)}</h5>
-                          <GroupTag group={layer.owned_by_group_id} size={48} />
-                          <p style={{fontSize: '16px', maxHeight: '55px', overflow: 'auto'}}><b>{t('Data Source:')}</b> {t(layer.source)}</p>
-                          <p style={{fontSize: '16px'}}><b>{t('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
+                        <Row>
+                          <Title level={2} style={{marginTop: 0}}>{t(layer.name)}</Title>
+                        </Row>
+                        <Row>
+                          <Col span={4}>
+                            <GroupTag group={layer.owned_by_group_id} size={32} />
+                          </Col>
+                          <Col span={20}>
+                            <span style={{lineHeight: '32px'}}><b>{t('Group: ')}</b>{layer.owned_by_group_id}</span>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <p style={{maxHeight: '55px', overflow: 'auto'}}><b>{t('Data Source:')}</b> {t(layer.source)}</p>
+                        </Row>
+                        <Row>
+                          <p><b>{t('License:')}</b> {license.label}</p><div dangerouslySetInnerHTML={{__html: license.note}} />
+                        </Row>
+                        <Row>
                           <ExternalLink layer={layer} t={t} />
-                        </div>
+                        </Row>
                       </Col>
-                      <Col sm={24} md={12} style={{height: '100%', padding: '5px', minHeight: '200px', overflow: 'auto', border: '1px solid #ddd'}}>
-                        <p className='word-wrap' style={{fontSize: '16px'}}><b>{`${t('Description')}:`}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
+                      <Col sm={24} md={12} style={{height: '100%', minHeight: '200px', overflow: 'auto', border: '1px solid #ddd'}}>
+                        <Card size='small' bordered={false} title={t('Description')} style={{ width: '100S%', height: '100%' }}>
+                          <div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
+                        </Card>
                       </Col>
                     </Row>
                     <Row style={{height: 'calc(50% - 58px)'}}>
@@ -453,12 +467,14 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                             {t('by') + ' ' + this.props.updatedByUser.display_name}
                           </p>}
                       </Col>
-                      <Col sm={24} md={12} style={{height: '100%', padding: '5px', border: '1px solid #ddd'}}>
-                        <p style={{fontSize: '16px'}}><b>{t('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
-                        {this.state.area &&
-                          <p style={{fontSize: '16px'}}><b>{t('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>}
-                        {this.state.length > 0 &&
-                          <p style={{fontSize: '16px'}}><b>{t('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>}
+                      <Col sm={24} md={12} style={{height: '100%', border: '1px solid #ddd'}}>
+                        <Card size='small' bordered={false} title={t('Info')} style={{ width: '100S%', height: '100%' }}>
+                          <p><b>{t('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
+                          {this.state.area &&
+                            <p><b>{t('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>}
+                          {this.state.length > 0 &&
+                            <p><b>{t('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>}
+                        </Card>
                       </Col>
                     </Row>
                     <Stats views={layer.views} stats={this.props.stats} t={t} />
@@ -489,10 +505,18 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                               )}
                             </AutoSizer>
                             {canEdit &&
-                              <EditButton
-                                editing={editingData}
-                                style={{position: 'absolute', bottom: '10px'}}
-                                startEditing={startEditingData} stopEditing={() => { stopEditingData(DataEditor) }}
+                              <Fab
+                                icon={editingData ? <EditIcon /> : <SaveIcon />}
+                                mainButtonStyles={{backgroundColor: MAPHUBS_CONFIG.primaryColor}}
+                                position={{bottom: 10}}
+                                event='click'
+                                onClick={() => {
+                                  if (editingData) {
+                                    stopEditingData(DataEditor)
+                                  } else {
+                                    startEditingData()
+                                  }
+                                }}
                               />}
                           </Row>
                         )

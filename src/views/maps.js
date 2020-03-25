@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification, Row, Divider, Col, Button } from 'antd'
+import { message, notification, Row, Divider, Col, Button, Typography } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
@@ -11,13 +11,15 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import FloatingButton from '../components/FloatingButton'
+import FloatingAddButton from '../components/FloatingAddButton'
 import cardUtil from '../services/card-util'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/maps')
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const checkClientError = require('../services/client-error-response').checkClientError
+
+const { Title } = Typography
 
 type Props = {
   featuredMaps: Array<Object>,
@@ -110,7 +112,7 @@ export default class Maps extends MapHubsComponent<Props, State> {
       } else {
         searchResults = (
           <Row>
-            <h5>{t('Search Results')}</h5>
+            <Title level={3}>{t('Search Results')}</Title>
             <Divider />
             <p><b>{t('No Results Found')}</b></p>
           </Row>
@@ -132,9 +134,9 @@ export default class Maps extends MapHubsComponent<Props, State> {
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <Row>
               <Col sm={24} md={8}>
-                <h4 className='no-margin'>{t('Maps')}</h4>
+                <Title level={2}>{t('Maps')}</Title>
               </Col>
-              <Col sm={24} md={8} offset={8} style={{paddingRight: '15px'}}>
+              <Col sm={24} md={8} offset={8}>
                 <SearchBox label={t('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
               </Col>
             </Row>
@@ -143,16 +145,12 @@ export default class Maps extends MapHubsComponent<Props, State> {
           {featured}
           <CardCollection title={t('Popular')} cards={popularCards} viewAllLink='/maps/all' />
           <CardCollection title={t('Recent')} cards={recentCards} viewAllLink='/maps/all' />
-
-          <div>
-            <div className='fixed-action-btn action-button-bottom-right'>
-              <FloatingButton
-                href='/map/new'
-                tooltip={t('Create New Map')} tooltipPosition='top'
-                icon='add'
-              />
-            </div>
-          </div>
+          <FloatingAddButton
+            onClick={() => {
+              window.location = '/map/new'
+            }}
+            tooltip={t('Create New Map')}
+          />
           <Row justify='center' style={{textAlign: 'center'}}>
             <Button type='primary' href='/maps/all'>{t('View All Maps')}</Button>
           </Row>

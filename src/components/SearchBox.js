@@ -1,5 +1,6 @@
 // @flow
 import React from 'react'
+import { notification } from 'antd'
 import request from 'superagent'
 import SearchBar from './SearchBar/SearchBar'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
@@ -27,20 +28,28 @@ export default class SearchBox extends React.Component<Props, void> {
   }
 
   onChange = (input: string, resolve: Function) => {
-    const _this = this
-    if (typeof window !== 'undefined' && this.props.suggestionUrl) {
-      request.get(this.props.suggestionUrl + '?q=' + input)
+    const { suggestionUrl } = this.props
+    if (suggestionUrl) {
+      request.get(suggestionUrl + '?q=' + input)
         .type('json').accept('json')
         .end((err, res) => {
           if (err) {
             debug.error(err)
-            if (_this.props.onError) _this.props.onError(JSON.stringify(err))
+            notification.error({
+              message: 'Error',
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
           } else {
             if (res.body.suggestions) {
               resolve(res.body.suggestions)
             } else {
               debug.log(JSON.stringify(res.body))
-              if (_this.props.onError) _this.props.onError(JSON.stringify(res.body))
+              notification.error({
+                message: 'Error',
+                description: err.message || err.toString() || err,
+                duration: 0
+              })
             }
           }
         })

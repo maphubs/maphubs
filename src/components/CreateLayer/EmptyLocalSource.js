@@ -52,7 +52,7 @@ export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStor
           <p>{t('Creating a new layer of type:') + ' ' + this.props.type}</p>
         </Col>
         <Col sm={24} md={12} style={{textAlign: 'right'}}>
-          <Button type='primary' onClick={this.onSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
+          <Button type='primary' onClick={this.onSubmit}>{t('Save and Continue')}</Button>
         </Col>
       </Row>
     )

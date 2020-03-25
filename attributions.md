@@ -6,7 +6,6 @@ MapHubs is built largely on open source including code, icons, fonts, and more.
 
 * Mapbox GL [https://github.com/maphubs/maphubs/blob/master/package.json](https://github.com/mapbox/mapbox-gl-js)
 * React [https://facebook.github.io/react/](https://facebook.github.io/react/)
-* Materialize CSS [http://materializecss.com/](http://materializecss.com/)
 * NodeJS [https://nodejs.org/en/](https://nodejs.org/en/)
 
 And many many more, see [package.json](https://github.com/maphubs/maphubs/blob/master/package.json) for the full list.

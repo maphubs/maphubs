@@ -1,9 +1,11 @@
 // @flow
 import React from 'react'
-import { Row, Col } from 'antd'
+import { Row, Col, Typography } from 'antd'
 import { UploadOutlined, CloudDownloadOutlined, UsergroupAddOutlined, ReadOutlined } from '@ant-design/icons'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
+const { Title } = Typography
 
 type Props = {
   t: Function
@@ -20,7 +22,7 @@ export default class MapHubsProLinks extends React.PureComponent<Props, void> {
               <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
                 <UploadOutlined />
               </div>
-              <h5>{t('Create a Layer')}</h5>
+              <Title level={4}>{t('Create a Layer')}</Title>
             </a>
           </div>
         </Col>
@@ -30,7 +32,7 @@ export default class MapHubsProLinks extends React.PureComponent<Props, void> {
               <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
                 <CloudDownloadOutlined />
               </div>
-              <h5>{t('Link Remote Layer')}</h5>
+              <Title level={4}>{t('Link Remote Layer')}</Title>
             </a>
           </div>
         </Col>
@@ -40,7 +42,7 @@ export default class MapHubsProLinks extends React.PureComponent<Props, void> {
               <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
                 <UsergroupAddOutlined />
               </div>
-              <h5>{t('Create a Group')}</h5>
+              <Title level={4}>{t('Create a Group')}</Title>
             </a>
           </div>
         </Col>
@@ -50,7 +52,7 @@ export default class MapHubsProLinks extends React.PureComponent<Props, void> {
               <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
                 <ReadOutlined />
               </div>
-              <h5>{t('Create a Story')}</h5>
+              <Title level={4}>{t('Create a Story')}</Title>
             </a>
           </div>
         </Col>

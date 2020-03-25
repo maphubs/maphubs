@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification, Row, Col, Button } from 'antd'
+import { message, notification, Row, Col, Button, Typography } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
@@ -13,7 +13,9 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import FloatingButton from '../components/FloatingButton'
+import FloatingAddButton from '../components/FloatingAddButton'
+
+const { Title } = Typography
 
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/groups')
 const checkClientError = require('../services/client-error-response').checkClientError
@@ -113,7 +115,7 @@ export default class Groups extends MapHubsComponent<Props, State> {
       } else {
         searchResults = (
           <Row style={{marginBottom: '20px'}}>
-            <h5>{t('Search Results')}</h5>
+            <Title level={3}>{t('Search Results')}</Title>
             <div className='divider' />
             <p><b>{t('No Results Found')}</b></p>
           </Row>
@@ -134,9 +136,9 @@ export default class Groups extends MapHubsComponent<Props, State> {
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <Row>
               <Col sm={24} md={8}>
-                <h4 className='no-margin'>{t('Groups')}</h4>
+                <Title level={2}>{t('Groups')}</Title>
               </Col>
-              <Col sm={24} md={8} offset={8} style={{paddingRight: '15px', textAlign: 'right'}}>
+              <Col sm={24} md={8} offset={8} style={{textAlign: 'right'}}>
                 <SearchBox label={t('Search Groups')} suggestionUrl='/api/groups/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
               </Col>
             </Row>
@@ -149,12 +151,12 @@ export default class Groups extends MapHubsComponent<Props, State> {
             <CardCollection title={t('Popular')} cards={popularCards} viewAllLink='/groups/all' />
             <CardCollection title={t('Recent')} cards={recentCards} viewAllLink='/groups/all' />
 
-            <div className='fixed-action-btn action-button-bottom-right'>
-              <FloatingButton
-                href='/creategroup' icon='add'
-                tooltip={t('Create New Group')} tooltipPosition='top'
-              />
-            </div>
+            <FloatingAddButton
+              onClick={() => {
+                window.location = '/creategroup'
+              }}
+              tooltip={t('Create New Group')}
+            />
           </div>
           <Row justify='center' style={{marginBottom: '20px', textAlign: 'center'}}>
             <Button type='primary' href='/groups/all'>{t('View All Groups')}</Button>

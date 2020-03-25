@@ -13,7 +13,7 @@ export default ({t, searchLink}: Props) => (
     title={t('Search')}
     placement='bottom'
   >
-    <a style={{paddingTop: '6px', height: '50px', textAlign: 'center'}} href={searchLink}>
+    <a style={{paddingTop: '7px', height: '50px', textAlign: 'center'}} href={searchLink}>
       <Search
         style={{
           fill: 'currentColor',

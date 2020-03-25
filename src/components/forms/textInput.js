@@ -82,15 +82,15 @@ class TextInput extends React.Component<Props, State> {
   }
 
   render () {
-    const { id, name, icon, showRequired, isRequired, isValid, showError, value, showCharCount, errorMessage, length, placeholder, disabled, successText, t } = this.props
+    const { id, name, icon, showRequired, isRequired, isValid, showError, value, showCharCount, errorMessage, length, placeholder, disabled, successText, t, tooltip, tooltipPosition } = this.props
     const { charCount } = this.state
 
     return (
       <>
         <div style={{width: '100%'}}>
           <Tooltip
-            title={this.props.tooltip}
-            placement={this.props.tooltipPosition}
+            title={tooltip}
+            placement={tooltipPosition}
           >
             <label htmlFor={id || name}>{this.props.label} {isRequired && '*'}</label>
             <Input

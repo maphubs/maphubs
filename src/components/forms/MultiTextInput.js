@@ -42,7 +42,6 @@ type Props = {
   type: string,
   style: Object,
   showCharCount: boolean,
-  useMaterialize: boolean,
   onClick?: Function,
   validations: string,
   validationErrors: Object
@@ -61,7 +60,6 @@ export default class MultiTextInput extends MapHubsComponent<Props, State> {
     type: 'text',
     style: {},
     showCharCount: true,
-    useMaterialize: true,
     validations: '',
     validationErrors: {}
   }

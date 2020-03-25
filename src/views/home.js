@@ -3,6 +3,7 @@ import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import { Row, Divider, Button } from 'antd'
+import TrendingUpIcon from '@material-ui/icons/TrendingUp'
 import CardCarousel from '../components/CardCarousel/CardCarousel'
 import StorySummary from '../components/Story/StorySummary'
 import Slides from '../components/Home/Slides'
@@ -284,14 +285,6 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     const bgColor = config.bgColor ? config.bgColor : 'inherit'
     const style = config.style || {}
 
-    let trendingIcon = ''
-    if (config.trendingIcon) {
-      trendingIcon = (
-        <i className='material-icons' style={{fontWeight: 'bold', color: MAPHUBS_CONFIG.primaryColor, fontSize: '40px', verticalAlign: '-25%', marginLeft: '5px'}}>trending_up</i>
-
-      )
-    }
-
     const title = config.title ? t(config.title) : t('Trending')
 
     const carousel = (
@@ -299,7 +292,8 @@ export default class HomePro extends MapHubsComponent<Props, State> {
         <Row style={{height: '50px', width: '100%', textAlign: 'center'}}>
           <h5 style={{lineHeight: '50px', width: '100%'}}>
             {title}
-            {trendingIcon}
+            {config.trendingIcon &&
+              <TrendingUpIcon style={{fontWeight: 'bold', color: MAPHUBS_CONFIG.primaryColor, fontSize: '40px', verticalAlign: '-25%', marginLeft: '5px'}} />}
           </h5>
         </Row>
         <ErrorBoundary>

@@ -21,21 +21,6 @@ html, body {
   color: $primary-color !important;
 }
 
-.omh-btn-text-color {
-  color: white  !important;
-}
-
-.omh-btn{
-  border-color: $primary-color;
-  border-style: solid;
-  border-width: 1px;
-}
-
-.omh-btn i{
-  background-color: rgba(0, 0, 0, 0);
-  color: $primary-color;
-}
-
 main {
   margin-top: 2px;
 }
@@ -72,19 +57,6 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 
 .collapsible-body {
   padding: 0;
-}
-
-.home-section {
-  color: #323333;
-}
-
-.home-section:hover {
-  color: $primary-color;
-  -o-transition:.5s;
-  -ms-transition:.5s;
-  -moz-transition:.5s;
-  -webkit-transition:.5s;
-  transition:.5s;
 }
 
 .category-dropdown-button {
@@ -195,10 +167,6 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
     background-color: $footer-bg-color !important;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    color: $header-font-color;
-  }
-
 @mixin word-wrap() {
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -212,12 +180,6 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 
 .word-wrap {
   @include word-wrap;
-}
-
-/*MaterializeCSS has a bug where the invalid labels don't resize with the dynamically resizing text area */
-textarea.materialize-textarea+label:after {
-  position: relative!important;
-  top: 0px!important;
 }
 
 .LabelColumn {

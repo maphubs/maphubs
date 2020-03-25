@@ -8,7 +8,6 @@ const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('store
 const _findIndex = require('lodash.findindex')
 const _reject = require('lodash.reject')
 const _find = require('lodash.find')
-// var $ = require('jquery');
 // var urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util');
 const checkClientError = require('../services/client-error-response').checkClientError
 

@@ -4,6 +4,7 @@ import { Modal, Row, Col, Button, Switch, notification } from 'antd'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import superagent from 'superagent'
+import LaunchIcon from '@material-ui/icons/Launch'
 
 const { confirm } = Modal
 
@@ -153,7 +154,7 @@ export default class PublicShareModal extends React.Component<Props, State> {
                 <p style={{fontSize: '16px'}}><b>{t('Share Link: ')}</b>
                 &nbsp;-&nbsp;
                   <a href={shareUrl} target='_blank' rel='noopener noreferrer'>{shareUrl}</a>
-                  <i className='material-icons omh-accent-text' style={{cursor: 'pointer'}} onClick={this.writeToClipboard}>launch</i>
+                  <LaunchIcon className='omh-accent-text' style={{cursor: 'pointer'}} onClick={this.writeToClipboard} />
                 </p>
                 <p className='no-margin'>{t('Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.')}</p>
               </div>}

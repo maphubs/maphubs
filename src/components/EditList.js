@@ -1,18 +1,19 @@
 // @flow
 import React from 'react'
-import MapHubsComponent from './MapHubsComponent'
-import {Tooltip} from 'antd'
+import { Tooltip, List, Avatar } from 'antd'
+import { UserOutlined } from '@ant-design/icons'
+import DeleteIcon from '@material-ui/icons/Delete'
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
 
 type Props = {
   title: string,
   items: Array<Object>, // Array of objects with key, label, optional type, optional icon or avatar, and optional action button [{key,label, icon, image, actionIcon, actionLabel}]
   onDelete: Function,
-  onAction: Function
+  onAction: Function,
+  t: Function
 }
 
-export default class EditList extends MapHubsComponent<Props, void> {
-  props: Props
-
+export default class EditList extends React.Component<Props, void> {
   static defaultProps = {
     items: []
   }
@@ -26,78 +27,46 @@ export default class EditList extends MapHubsComponent<Props, void> {
   }
 
   render () {
-    const {t} = this
+    const {t, title, items} = this.props
     const _this = this
 
     return (
-      <ul className='collection with-header'>
-        <li className='collection-header'>
-          <h5>{this.props.title}</h5>
-        </li>
-        {this.props.items.map((item) => {
-          let icon = ''
-          let className = 'collection-item'
-          if (item.image) {
-            icon = (
-              <img alt='' className='circle' src={item.image} />
-            )
-            className = 'collection-item avatar'
-          } else if (item.icon) {
-            icon = (
-              <i className='material-icons circle'>{item.icon}</i>
-            )
-            className = 'collection-item avatar'
-          }
-
-          let action = ''
-          if (item.actionIcon && item.actionLabel) {
-            action = (
-              <Tooltip title={item.actionLabel} placement='bottom'>
-                <a>
-                  <i
-                    className='material-icons' onClick={() => {
-                      _this.onAction(item)
-                    }} style={{cursor: 'pointer'}}
-                  >{item.actionIcon}
-                  </i>
-                </a>
-              </Tooltip>
-            )
-          }
-
-          let type = ''
-          if (item.type) {
-            type = (
-              <p>{item.type}</p>
-            )
-          }
+      <List
+        header={<b>{title}</b>}
+        dataSource={items}
+        bordered
+        renderItem={item => {
+          const adminAction = (
+            <Tooltip title={t('Add/Remove Administrator Access')} placement='bottom'>
+              <a>
+                <SupervisorAccountIcon
+                  onClick={() => {
+                    _this.onAction(item)
+                  }} style={{cursor: 'pointer'}}
+                />
+              </a>
+            </Tooltip>
+          )
 
           return (
-            <li className={className} key={item.key}>
-              {icon}
-              <span className='title'>
-                <b>{item.label}</b>
-              </span>
-              {type}
-              <div className='secondary-content'>
-                {action}
-                <Tooltip title={t('Remove')} placement='bottom'>
-                  <a>
-                    <i
-                      className='material-icons' onClick={() => {
-                        _this.onDelete(item)
-                      }} style={{
-                        cursor: 'pointer'
-                      }}
-                    >delete
-                    </i>
-                  </a>
-                </Tooltip>
-              </div>
-            </li>
+            <List.Item
+              actions={[
+                adminAction,
+                <Tooltip key='remove' title={t('Remove')} placement='bottom'><a><DeleteIcon onClick={() => { _this.onDelete(item) }} /></a></Tooltip>
+              ]}
+
+            >
+              <List.Item.Meta
+                avatar={
+                  item.image ? <Avatar src={item.image} /> : <Avatar size={32} icon={<UserOutlined />} />
+                }
+                title={item.label}
+                description={item.type}
+              />
+            </List.Item>
           )
-        })}
-      </ul>
+        }}
+      />
     )
   }
 }

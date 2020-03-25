@@ -2,8 +2,7 @@
 import React from 'react'
 import {withFormsy} from 'formsy-react'
 import MapHubsComponent from '../MapHubsComponent'
-import {Tooltip} from 'antd'
-import classNames from 'classnames'
+import {Tooltip, Switch} from 'antd'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('Toggle')
 
@@ -51,52 +50,29 @@ class Toggle extends MapHubsComponent<Props, void> {
     }
   }
 
-  changeValue = (event) => {
-    event.stopPropagation()
-    const checked = event.currentTarget.checked
+  changeValue = (checked) => {
     debug.log('change value: ' + checked)
     if (checked !== this.props.value) { this.props.setValue(checked) }
-    if (this.props.onChange) { this.props.onChange(event.currentTarget.checked) }
+    if (this.props.onChange) { this.props.onChange(checked) }
   }
 
   render () {
-    const props = {...this.props}
-    // Remove React warning.
-    // Warning: Input elements must be either controlled or uncontrolled
-    // (specify either the value prop, or the defaultValue prop, but not both).
-    delete props.defaultChecked
-
-    const className = classNames('switch', this.props.className)
-
-    let checked = this.props.value
-
-    if (typeof checked === 'boolean') {
-      checked = checked ? 1 : 0
-    }
-
-    let leverClass = 'lever'
-    if (!props.labelOn || props.labelOn === '') {
-      leverClass = 'lever no-margin'
-    }
+    const { value, labelOff, labelOn, tooltip, tooltipPosition, disabled } = this.props
 
     return (
-      <Tooltip
-        title={this.props.tooltip}
-        placement={this.props.tooltipPosition}
-      >
-        <div
-          ref='toggle'
-          className={className}
-          disabled={props.disabled}
-          style={props.style}
-        >
-          <label>
-            {props.labelOff}
-            <input type='checkbox' id={props.name} checked={!!checked} disabled={props.disabled} onChange={this.changeValue} />
-            <span className={leverClass} />
-            {props.labelOn}
-          </label>
-        </div>
+      <Tooltip title={tooltip} placement={tooltipPosition}>
+        <style jsx>{`
+          .toggle-label {
+            margin-right: 5px;
+            margin-left: 5px;
+            font-weight: bold;
+            font-size: 12px;
+          }
+        `}
+        </style>
+        <span className='toggle-label'>{labelOff}</span>
+        <Switch disabled={disabled} checked={value} onChange={this.changeValue} />
+        <span className='toggle-label'>{labelOn}</span>
       </Tooltip>
     )
   }

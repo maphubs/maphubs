@@ -117,15 +117,19 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
     if (this.props.layer.data_type === 'polygon') {
       toggleFill = (
         <Row style={{marginBottom: '20px'}}>
-          <b>{t('Fill')}</b>
-          <Toggle
-            name='fill'
-            labelOff={t('Outline Only')}
-            labelOn={t('Fill')}
-            checked={this.state.fill}
-            tooltipPosition='right'
-            tooltip={t('Hide polygon fill and only show the outline in the selected color')}
-          />
+          <Row>
+            <b>{t('Fill')}</b>
+          </Row>
+          <Row>
+            <Toggle
+              name='fill'
+              labelOff={t('Outline Only')}
+              labelOn={t('Fill')}
+              checked={this.state.fill}
+              tooltipPosition='right'
+              tooltip={t('Hide polygon fill and only show the outline in the selected color')}
+            />
+          </Row>
         </Row>
       )
     }
@@ -135,20 +139,28 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
         <Formsy ref='form' onChange={this.onFormChange}>
           {toggleFill}
           <Row style={{marginBottom: '20px'}}>
-            <b>{t('Interactive')}</b>
-            <Toggle
-              name='interactive' labelOff={t('Off')} labelOn={t('On')}
-              checked={this.state.interactive}
-              tooltipPosition='right' tooltip={t('Allow users to interact with this layer by clicking the map')}
-            />
+            <Row>
+              <b>{t('Interactive')}</b>
+            </Row>
+            <Row>
+              <Toggle
+                name='interactive' labelOff={t('Off')} labelOn={t('On')}
+                checked={this.state.interactive}
+                tooltipPosition='right' tooltip={t('Allow users to interact with this layer by clicking the map')}
+              />
+            </Row>
           </Row>
           <Row style={{marginBottom: '20px'}}>
-            <b>{t('Show Below Base Map Labels')}</b>
-            <Toggle
-              name='showBehindBaseMapLabels' labelOff={t('Off')} labelOn={t('On')}
-              checked={this.state.showBehindBaseMapLabels}
-              tooltipPosition='right' tooltip={t('Allow base map labels to display on top of this layer')}
-            />
+            <Row>
+              <b>{t('Show Below Base Map Labels')}</b>
+            </Row>
+            <Row>
+              <Toggle
+                name='showBehindBaseMapLabels' labelOff={t('Off')} labelOn={t('On')}
+                checked={this.state.showBehindBaseMapLabels}
+                tooltipPosition='right' tooltip={t('Allow base map labels to display on top of this layer')}
+              />
+            </Row>
           </Row>
         </Formsy>
       </Row>

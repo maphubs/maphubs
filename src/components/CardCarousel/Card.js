@@ -2,8 +2,13 @@
 import React from 'react'
 import GroupTag from '../Groups/GroupTag'
 import Lock from '@material-ui/icons/Lock'
+import AddCircle from '@material-ui/icons/AddCircle'
 import LockOpen from '@material-ui/icons/LockOpenTwoTone'
 import { Card, Tooltip } from 'antd'
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
+import MapIcon from '@material-ui/icons/Map'
+import LayersIcon from '@material-ui/icons/Layers'
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks'
 
 export type CardConfig = {|
   title?: LocalizedString,
@@ -42,20 +47,21 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
   render () {
     const {group, showAddButton, type, t, image_url, showDescription} = this.props
 
-    let iconName = ''
+    let icon = ''
     let toolTipText = ''
+    const iconStyle = {position: 'absolute', bottom: '6px', right: '6px'}
     if (type) {
       if (type === 'layer') {
-        iconName = 'layers'
+        icon = <LayersIcon style={iconStyle} />
         toolTipText = t('Layer')
       } else if (type === 'group') {
-        iconName = 'supervisor_account'
+        icon = <SupervisorAccountIcon style={iconStyle} />
         toolTipText = t('Group')
       } else if (type === 'story') {
-        iconName = 'library_books'
+        icon = <LibraryBooksIcon style={iconStyle} />
         toolTipText = t('Story')
       } else if (type === 'map') {
-        iconName = 'map'
+        icon = <MapIcon style={iconStyle} />
         toolTipText = t('Map')
       }
     }
@@ -64,10 +70,9 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
     if (showAddButton) {
       addButton = (
         <a
-          className='btn-floating halfway-fab waves-effect waves-light red'
-          style={{top: '10px', right: '10px'}}
+          style={{position: 'absolute', top: '10px', right: '10px'}}
         >
-          <i className='material-icons'>add</i>
+          <AddCircle style={{fontSize: '32px', color: 'red'}} />
         </a>
       )
     }
@@ -89,7 +94,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
     } else if (type === 'group' && !image_url) {
       image = (
         <div className='card-image valign-wrapper' style={{width: '200px', height: '150px'}}>
-          <i className='material-icons omh-accent-text valign center-align' style={{fontSize: '80px', margin: 'auto'}}>supervisor_account</i>
+          <SupervisorAccountIcon className='omh-accent-text valign center-align' style={{fontSize: '80px', margin: 'auto'}} />
           {addButton}
         </div>
       )
@@ -161,12 +166,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
               </div>
             </>}
           <Tooltip title={toolTipText} placement='top'>
-            <i
-              className='material-icons'
-              style={{position: 'absolute', bottom: '6px', right: '6px'}}
-            >
-              {iconName}
-            </i>
+            {icon}
           </Tooltip>
         </div>
       </Card>

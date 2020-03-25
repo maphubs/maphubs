@@ -1,9 +1,11 @@
 // @flow
 import React from 'react'
-import { Row, Col } from 'antd'
+import { Row, Col, Typography } from 'antd'
 import { CompassOutlined, EnvironmentOutlined, ReadOutlined, SearchOutlined } from '@ant-design/icons'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
+const { Title } = Typography
 
 type Props = {
   t: Function
@@ -20,7 +22,7 @@ export default class OnboardingLinks extends React.PureComponent<Props, void> {
               <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
                 <CompassOutlined />
               </div>
-              <h5 className='center-align'>{t('Maps')}</h5>
+              <Title level={4} className='center-align'>{t('Maps')}</Title>
             </a>
           </div>
         </Col>
@@ -30,7 +32,7 @@ export default class OnboardingLinks extends React.PureComponent<Props, void> {
               <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
                 <EnvironmentOutlined />
               </div>
-              <h5 className='center-align'>{t('Explore')}</h5>
+              <Title level={4} className='center-align'>{t('Explore')}</Title>
             </a>
           </div>
         </Col>
@@ -40,7 +42,7 @@ export default class OnboardingLinks extends React.PureComponent<Props, void> {
               <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
                 <ReadOutlined />
               </div>
-              <h5 className='center-align'>{t('Stories')}</h5>
+              <Title level={4} className='center-align'>{t('Stories')}</Title>
             </a>
           </div>
         </Col>
@@ -50,7 +52,7 @@ export default class OnboardingLinks extends React.PureComponent<Props, void> {
               <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
                 <SearchOutlined />
               </div>
-              <h5 className='center-align'>{t('Search')}</h5>
+              <Title level={4} className='center-align'>{t('Search')}</Title>
             </a>
           </div>
         </Col>

@@ -9187,11 +9187,6 @@ material-colors@^1.2.1:
   resolved "https://registry.yarnpkg.com/material-colors/-/material-colors-1.2.6.tgz#6d1958871126992ceecc72f4bcc4d8f010865f46"
   integrity sha512-6qE4B9deFBIa9YSpOc9O0Sgc43zTeVYbgDT5veRKSlB2+ZuHNoVVxA1L/ckMUayV9Ay9y7Z/SZCLcGteW9i7bg==
 
-materialize-css@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/materialize-css/-/materialize-css-1.0.0.tgz#8d5db1c4a81c6d65f3b2e2ca83a8e08daa24d1be"
-  integrity sha512-4/oecXl8y/1i8RDZvyvwAICyqwNoKU4or5uf8uoAd74k76KzZ0Llym4zhJ5lLNUskcqjO0AuMcvNyDkpz8Z6zw==
-
 math-interval-parser@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/math-interval-parser/-/math-interval-parser-2.0.1.tgz#e22cd6d15a0a7f4c03aec560db76513da615bed4"
@@ -12695,6 +12690,11 @@ react-share@^4.0.1:
   dependencies:
     classnames "^2.2.5"
     jsonp "^0.2.1"
+
+react-tiny-fab@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/react-tiny-fab/-/react-tiny-fab-3.4.0.tgz#65edafa65826aaab8da8cca5f6e099ee81c52eaa"
+  integrity sha512-8R1z0k5I/tcQFDDJHGRycyiAm991htdvgpaSgT1dB83SiG89L1VQJE7TVEaoDng8R50+fxLZaoOCUkNFmZBKgA==
 
 react-transition-group@^4.3.0:
   version "4.3.0"

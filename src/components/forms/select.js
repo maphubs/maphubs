@@ -101,7 +101,7 @@ class SelectFormItem extends React.Component<Props, State> {
             <i className='material-icons prefix'>{icon}</i>}
           {label &&
             <Row style={{height: '25px'}}>
-              <label htmlFor={name} data-error={errorMessage} data-success={successText}>{label}</label>
+              <label htmlFor={name} data-error={errorMessage} data-success={successText}><b>{label}</b></label>
             </Row>}
           <Row>
             <Tooltip

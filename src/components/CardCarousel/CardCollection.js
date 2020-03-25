@@ -1,10 +1,12 @@
 // @flow
 import React from 'react'
-import { Row, Divider } from 'antd'
+import { Row, Col, Typography } from 'antd'
 import CardCarousel from './CardCarousel'
 import MapHubsComponent from '../MapHubsComponent'
 
 import type {CardConfig} from './Card'
+
+const { Title } = Typography
 
 type Props = {
   cards: Array<CardConfig>,
@@ -22,17 +24,23 @@ export default class CardCollection extends MapHubsComponent<Props, void> {
     const {title, viewAllLink} = this.props
 
     return (
-      <Row style={{marginBottom: '20px', position: 'relative'}}>
-        {title && <h5>{title}</h5>}
-        {viewAllLink &&
-          <a
-            style={{position: 'absolute', right: '5px', top: '14px'}}
-            href={viewAllLink}
-          >
-            {t('View All')}
-          </a>}
-        <Divider />
-        <CardCarousel cards={this.props.cards} infinite={false} t={t} />
+      <Row style={{marginBottom: '20px'}}>
+        <Row style={{marginBottom: '20px'}}>
+          <Col span={12}>
+            {title && <Title level={3} style={{margin: 0}}>{title}</Title>}
+          </Col>
+          <Col span={12} style={{textAlign: 'right'}}>
+            {viewAllLink &&
+              <a
+                href={viewAllLink}
+              >
+                {t('View All')}
+              </a>}
+          </Col>
+        </Row>
+        <Row>
+          <CardCarousel cards={this.props.cards} infinite={false} t={t} />
+        </Row>
       </Row>
     )
   }

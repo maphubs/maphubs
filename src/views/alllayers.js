@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification, Row, Col } from 'antd'
+import { message, notification, Row, Col, Typography } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import request from 'superagent'
@@ -16,9 +16,10 @@ import CardGrid from '../components/CardCarousel/CardGrid'
 import type {Layer} from '../types/layer'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import FloatingButton from '../components/FloatingButton'
-
+import FloatingAddButton from '../components/FloatingAddButton'
 import cardUtil from '../services/card-util'
+
+const { Title } = Typography
 const checkClientError = require('../services/client-error-response').checkClientError
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/layers')
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
@@ -60,10 +61,6 @@ export default class Layers extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-  }
-
-  componentDidMount () {
-    M.FloatingActionButton.init(this.refs.addButton, {})
   }
 
   handleSearch = (input: string) => {
@@ -134,9 +131,9 @@ export default class Layers extends MapHubsComponent<Props, State> {
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <Row>
               <Col sm={12} md={8}>
-                <h4 className='no-margin'>{t('Layers')}</h4>
+                <Title level={2}>{t('Layers')}</Title>
               </Col>
-              <Col sm={12} md={8} offset={8} style={{paddingRight: '15px', textAlign: 'right'}}>
+              <Col sm={12} md={8} offset={8} style={{textAlign: 'right', paddingTop: '2px'}}>
                 <SearchBox label={t('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
               </Col>
             </Row>
@@ -158,15 +155,12 @@ export default class Layers extends MapHubsComponent<Props, State> {
             {!showList &&
               <CardGrid cards={layers.map(cardUtil.getLayerCard)} t={t} />}
           </Row>
-
-          <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
-            <FloatingButton
-              href='/createlayer'
-              tooltip={t('Create New Layer')}
-              tooltipPosition='top'
-              icon='add'
-            />
-          </div>
+          <FloatingAddButton
+            onClick={() => {
+              window.location = '/createlayer'
+            }}
+            tooltip={t('Create New Layer')}
+          />
         </main>
         <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>

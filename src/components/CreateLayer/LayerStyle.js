@@ -239,7 +239,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
         </Row>
         {showPrev &&
           <div className='left'>
-            <Button type='primary' onClick={this.onPrev}><i className='material-icons left'>arrow_back</i>{this.props.prevText}</Button>
+            <Button type='primary' onClick={this.onPrev}>{this.props.prevText}</Button>
           </div>}
       </Row>
     )

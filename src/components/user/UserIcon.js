@@ -1,29 +1,34 @@
 // @flow
 import React from 'react'
+import { Avatar } from 'antd'
+import PersonIcon from '@material-ui/icons/Person'
 
 type Props = {
-  picture: string,
-  size: number
+  src?: string,
+  size: number,
+  t: Function
 }
 
 export default class UserIcon extends React.PureComponent<Props, void> {
-  props: Props
-
   static defaultProps = {
-    size: 30
+    size: 32
   }
 
   render () {
-    return (
-      <img
-        className='circle'
-        height={this.props.size} width={this.props.size}
-        style={{
-          height: this.props.size.toString() + 'px',
-          width: this.props.size.toString() + 'px',
-          border: '1px solid #bbbbbb'
-        }}
-        src={this.props.picture} alt='User Profile Photo'
-      />)
+    const { size, src, t } = this.props
+    if (src) {
+      return (
+        <Avatar
+          size={size}
+          src={src} alt={t('User Profile Photo')}
+        />)
+    } else {
+      return (
+        <Avatar
+          size={size}
+          icon={<PersonIcon style={{fontSize: `${size}px`}} />}
+          alt={t('User Profile Photo')}
+        />)
+    }
   }
 }

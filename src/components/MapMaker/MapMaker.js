@@ -366,7 +366,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
             <Drawer
               title={t(layerDesignerLayer.name)}
               placement='left'
-              width='300px'
+              width='350px'
               closable
               destroyOnClose
               bodyStyle={{ height: 'calc(100vh - 55px)', padding: '0px' }}
@@ -374,13 +374,15 @@ class MapMaker extends MapHubsComponent<Props, State> {
               visible
               mask={false}
             >
-              <MapLayerDesigner
-                ref='LayerDesigner'
-                layer={layerDesignerLayer}
-                onStyleChange={this.onLayerStyleChange}
-                onClose={this.closeLayerDesigner}
-              />
-              <Row style={{textAlign: 'center', marginTop: '20px'}}>
+              <Row style={{height: 'calc(100% - 55px)', marginBottom: '10px'}}>
+                <MapLayerDesigner
+                  ref='LayerDesigner'
+                  layer={layerDesignerLayer}
+                  onStyleChange={this.onLayerStyleChange}
+                  onClose={this.closeLayerDesigner}
+                />
+              </Row>
+              <Row justify='center' align='middle' style={{textAlign: 'center'}}>
                 <Button type='primary' onClick={this.closeLayerDesigner}>{t('Close')}</Button>
               </Row>
             </Drawer>}
@@ -399,6 +401,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
 
             .ant-tabs-bar {
               padding-left: 3px;
+              margin: 0;
             }
           `}
           </style>

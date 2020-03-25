@@ -227,13 +227,13 @@ class StoryEditor extends React.Component<Props, State> {
           <ErrorBoundary>
             <Row style={{marginBottom: '10px'}}>
               <Row style={{marginBottom: '10px'}}>
-                <LocalizedInput value={title} placeholder='Title' onChange={story.titleChange} />
+                <LocalizedInput value={title} placeholder='Title' onChange={story.titleChange} t={t} />
               </Row>
               <Row>
-                <LocalizedInput value={author} placeholder='Author' onChange={story.authorChange} />
+                <LocalizedInput value={author} placeholder='Author' onChange={story.authorChange} t={t} />
               </Row>
               <Row>
-                <LocalizedInput type='area' value={summary} placeholder='Summary' onChange={story.summaryChange} />
+                <LocalizedInput type='area' value={summary} placeholder='Summary' onChange={story.summaryChange} t={t} />
               </Row>
             </Row>
           </ErrorBoundary>

@@ -13,8 +13,10 @@ import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import getConfig from 'next/config'
-import { Row, Col, Button, Divider } from 'antd'
+import { Row, Col, Button, Divider, Typography } from 'antd'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
+const { Title } = Typography
 
 type Props = {
   featuredLayers: Array<Object>,
@@ -117,7 +119,7 @@ export default class Home extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header activePage='explore' {...this.props.headerConfig} />
         <main style={{margin: 0, padding: '10px'}}>
-          <Row justify='end'>
+          <Row justify='end' style={{marginBottom: '20px'}}>
             <Col sm={24} md={6}>
               <SearchBox label={t('Search') + ' ' + MAPHUBS_CONFIG.productName} onSearch={this.handleSearch} />
             </Col>
@@ -128,7 +130,7 @@ export default class Home extends MapHubsComponent<Props, State> {
                 <CardFilter defaultValue={this.state.storyMode} onChange={(value) => { _this.setState({storyMode: value}) }} />
               </div>
               <a href='/stories'>
-                <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Stories')}</h5>
+                <Title level={2}>{t('Stories')}</Title>
               </a>
             </Row>
             <Row style={{width: '100%', marginBottom: '20px'}}>
@@ -145,7 +147,7 @@ export default class Home extends MapHubsComponent<Props, State> {
                 <CardFilter defaultValue={this.state.mapMode} onChange={(value) => { _this.setState({mapMode: value}) }} />
               </div>
               <a href='/maps'>
-                <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Maps')}</h5>
+                <Title level={2}>{t('Maps')}</Title>
               </a>
             </Row>
             <Row style={{width: '100%', marginBottom: '20px'}}>
@@ -162,7 +164,7 @@ export default class Home extends MapHubsComponent<Props, State> {
                 <CardFilter defaultValue={this.state.groupMode} onChange={(value) => { _this.setState({groupMode: value}) }} />
               </div>
               <a href='/groups'>
-                <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Groups')}</h5>
+                <Title level={2}>{t('Groups')}</Title>
               </a>
             </Row>
             <Row style={{width: '100%', marginBottom: '20px'}}>
@@ -179,7 +181,7 @@ export default class Home extends MapHubsComponent<Props, State> {
                 <CardFilter defaultValue={this.state.layerMode} onChange={(value) => { _this.setState({layerMode: value}) }} />
               </div>
               <a href='/layers'>
-                <h5 className='home-section no-margin' style={{lineHeight: '50px'}}>{t('Layers')}</h5>
+                <Title level={2}>{t('Layers')}</Title>
               </a>
             </Row>
             <Row style={{width: '100%', marginBottom: '20px'}}>

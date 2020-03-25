@@ -114,7 +114,7 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
           {user &&
             <>
               <Row>
-                <LocalizedInput value={title} placeholder={t('Title')} onChange={this.titleChange} />
+                <LocalizedInput value={title} placeholder={t('Title')} onChange={this.titleChange} t={t} />
               </Row>
               <Row>
                 <Formsy>

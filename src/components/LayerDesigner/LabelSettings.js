@@ -115,14 +115,18 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
      return (
        <Row style={{marginBottom: '20px'}}>
          <Formsy ref='form' onChange={this.onFormChange}>
-           <Row style={{marginTop: '10px', marginBottom: '0px', padding: '0 .75rem'}}>
-             <b>{t('Enable Labels')}</b>
-             <Toggle
-               name='enabled' labelOff={t('Off')} labelOn={t('On')}
-               checked={this.state.enabled}
-             />
+           <Row style={{marginTop: '10px', marginBottom: '20px', padding: '0 .75rem'}}>
+             <Row>
+               <b>{t('Enable Labels')}</b>
+             </Row>
+             <Row>
+               <Toggle
+                 name='enabled' labelOff={t('Off')} labelOn={t('On')}
+                 checked={this.state.enabled}
+               />
+             </Row>
            </Row>
-           <Row>
+           <Row style={{marginBottom: '20px', padding: '0 .75rem'}}>
              <Select
                name='field' id='label-field-select' label={t('Label Field')} options={fieldOptions}
                value={this.state.field} startEmpty={!this.state.field}

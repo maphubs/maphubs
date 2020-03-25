@@ -5,6 +5,8 @@ import StoryHeader from './StoryHeader'
 import MapHubsComponent from '../../components/MapHubsComponent'
 import ShareButtons from '../../components/ShareButtons'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import {Typography} from 'antd'
+const { Title } = Typography
 
 type Props = {|
   story: Object,
@@ -50,7 +52,7 @@ export default class StorySummary extends MapHubsComponent<Props, void> {
             </a>
           </div>}
         <a href={linkUrl}>
-          <h5 className='story-title'>{title}</h5>
+          <Title level={3}>{title}</Title>
         </a>
         <div className='story-content'>
           <p className='fade'>

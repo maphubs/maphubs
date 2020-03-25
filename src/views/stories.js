@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { Row, Col, Button } from 'antd'
+import { Row, Col, Button, Typography, Card } from 'antd'
 import StorySummary from '../components/Story/StorySummary'
 import UserStore from '../stores/UserStore'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -10,7 +10,9 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import type {UserStoreState} from '../stores/UserStore'
 import ErrorBoundary from '../components/ErrorBoundary'
-import FloatingButton from '../components/FloatingButton'
+import FloatingAddButton from '../components/FloatingAddButton'
+
+const { Title } = Typography
 
 type Props = {|
   popularStories: Array<Object>,
@@ -61,30 +63,38 @@ export default class Stories extends MapHubsComponent<Props, State> {
             {hasRecent &&
               <Col sm={24} med={12} style={{margin: '20px'}}>
                 <Row justify='center' style={{textAlign: 'center'}}>
-                  <h4>{t('Recent Stories')}</h4>
+                  <Title level={2}>{t('Recent Stories')}</Title>
                 </Row>
                 {recentStories.map((story) => {
                   return (
-                    <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
-                      <div className='card-content'>
-                        <StorySummary story={story} />
-                      </div>
-                    </div>
+                    <Card
+                      key={story.story_id}
+                      style={{
+                        maxWidth: '800px',
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                        marginBottom: '20px',
+                        border: '1px solid #ddd'
+                      }}
+                    >
+                      <StorySummary story={story} />
+                    </Card>
                   )
                 })}
               </Col>}
             {hasPopular &&
               <Col sm={24} med={12} style={{margin: '20px'}}>
                 <Row justify='center' style={{textAlign: 'center'}}>
-                  <h4>{t('Popular Stories')}</h4>
+                  <Title level={2}>{t('Popular Stories')}</Title>
                 </Row>
                 {popularStories.map((story) => {
                   return (
-                    <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
-                      <div className='card-content'>
-                        <StorySummary story={story} />
-                      </div>
-                    </div>
+                    <Card
+                      key={story.story_id}
+                      style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto', marginBottom: '20px'}}
+                    >
+                      <StorySummary story={story} />
+                    </Card>
                   )
                 })}
               </Col>}
@@ -93,13 +103,12 @@ export default class Stories extends MapHubsComponent<Props, State> {
                 <b>{t('No Stories Found')}</b>
               </Row>}
           </Row>
-          <div className='fixed-action-btn action-button-bottom-right'>
-            <FloatingButton
-              href='/createstory'
-              icon='add'
-              tooltip={t('Create New Story')} tooltipPosition='top'
-            />
-          </div>
+          <FloatingAddButton
+            onClick={() => {
+              window.location = '/createstory'
+            }}
+            tooltip={t('Create New Story')}
+          />
         </main>
         <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>

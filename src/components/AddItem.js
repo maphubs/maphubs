@@ -2,7 +2,7 @@
 import React from 'react'
 import Formsy from 'formsy-react'
 import Toggle from './forms/toggle'
-import { notification, Row, Button } from 'antd'
+import { notification, Row, Col, Button } from 'antd'
 import Suggestions from './SearchBar/Suggestions'
 import LocaleStore from '../stores/LocaleStore'
 
@@ -234,32 +234,22 @@ export default class AddItem extends React.Component<Props, State> {
                data-activates={this.suggestions}
                required
              />
-
-             <label
-               htmlFor={this.props.id}
-               style={{
-                 height: 'inherit',
-                 lineHeight: 'inherit',
-                 position: 'absolute',
-                 top: '0px',
-                 left: '0px',
-                 marginLeft: '5px',
-                 marginRight: '5px',
-                 transform: 'inherit'
-               }}
-             >
-               <i className='material-icons' style={{height: 'inherit', lineHeight: 'inherit'}}>search</i>
-             </label>
            </div>
          </form>
-         <Formsy>
-           <Toggle
-             name='admin' onChange={this.handleAddWithOptionChecked} labelOff={t('Member')} labelOn={t('Administrator')} checked={this.state.option}
-             tooltipPosition='top' tooltip={this.props.optionLabel}
-           />
-         </Formsy>
+         <Row justify='center' align='middle'>
+           <Col span={12}>
+             <Formsy>
+               <Toggle
+                 name='admin' onChange={this.handleAddWithOptionChecked} labelOff={t('Member')} labelOn={t('Administrator')} checked={this.state.option}
+                 tooltipPosition='top' tooltip={this.props.optionLabel}
+               />
+             </Formsy>
+           </Col>
 
-         <Button type='primary' onClick={this.submit}>{this.props.addButtonLabel}</Button>
+           <Col span={12}>
+             <Button type='primary' onClick={this.submit}>{this.props.addButtonLabel}</Button>
+           </Col>
+         </Row>
        </div>
        <Row>
          {!!this.state.suggestions.length &&

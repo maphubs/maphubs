@@ -36,7 +36,7 @@ export default class AddDropdown extends React.PureComponent<Props, void> {
     )
     return (
       <Dropdown overlay={menu} trigger={['click']}>
-        <a style={{paddingTop: '6px', height: '50px', textAlign: sidenav ? 'left' : 'center'}} href='#'>
+        <a style={{paddingTop: '7px', height: '50px', textAlign: sidenav ? 'left' : 'center'}} href='#'>
           {sidenav &&
             <a href='#!'>{t('Add')}</a>}
           {!sidenav &&

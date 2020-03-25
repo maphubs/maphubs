@@ -1,7 +1,8 @@
 // @flow
 import React from 'react'
 import slugify from 'slugify'
-import _isequal from 'lodash.isequal'
+import { List } from 'antd'
+import MapIcon from '@material-ui/icons/Map'
 
 type Props = {|
   maps: Array<Object>,
@@ -15,37 +16,31 @@ export default class MapList extends React.Component<Props, void> {
   }
 
   shouldComponentUpdate (nextProps: Props) {
-    // only update if something changes
-    if (!_isequal(this.props, nextProps)) {
-      return true
-    }
     return false
   }
 
   render () {
     const {t, showTitle, maps} = this.props
-    const className = showTitle ? 'collection with-header' : 'collection'
 
     return (
-      <ul className={className}>
-        {showTitle &&
-          <li className='collection-header'>
-            <h4>{t('Maps')}</h4>
-          </li>}
-        {maps.map((map, i) => {
+      <List
+        header={showTitle ? <b>{t('Maps')}</b> : undefined}
+        bordered
+        dataSource={maps}
+        renderItem={map => {
           const mapTitle = t(map.title)
           const slugTitle = slugify(mapTitle)
           return (
-            <li className='collection-item' key={map.map_id}>
-              <div>{mapTitle}
-                <a className='secondary-content' href={`/map/view/${map.map_id}/${slugTitle}`}>
-                  <i className='material-icons'>map</i>
-                </a>
+            <List.Item
+              actions={[<a key='map' href={`/map/view/${map.map_id}/${slugTitle}`}><MapIcon /></a>]}
+            >
+              <div>
+                {mapTitle}
               </div>
-            </li>
+            </List.Item>
           )
-        })}
-      </ul>
+        }}
+      />
     )
   }
 }

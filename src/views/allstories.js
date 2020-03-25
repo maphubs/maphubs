@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { Row, Col } from 'antd'
+import { Row, Col, Typography } from 'antd'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import UserStore from '../stores/UserStore'
@@ -14,7 +14,9 @@ import CardGrid from '../components/CardCarousel/CardGrid'
 import cardUtil from '../services/card-util'
 import type {UserStoreState} from '../stores/UserStore'
 import ErrorBoundary from '../components/ErrorBoundary'
-import FloatingButton from '../components/FloatingButton'
+import FloatingAddButton from '../components/FloatingAddButton'
+
+const { Title } = Typography
 
 type Props = {|
   stories: Array<Object>,
@@ -53,10 +55,6 @@ export default class AllStories extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentDidMount () {
-    M.FloatingActionButton.init(this.refs.addButton, {})
-  }
-
   onModeChange = (showList: boolean) => {
     this.setState({showList})
   }
@@ -72,7 +70,7 @@ export default class AllStories extends MapHubsComponent<Props, State> {
         <main style={{padding: '10px'}}>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <Row>
-              <h4 className='no-margin'>{t('Stories')}</h4>
+              <Title>{t('Stories')}</Title>
             </Row>
             <Row justify='end'>
               <Col style={{margin: '20px'}}>
@@ -85,7 +83,7 @@ export default class AllStories extends MapHubsComponent<Props, State> {
               <Row>
                 {showList &&
                   <div className='container'>
-                    <StoryList showTitle={false} stories={stories} />
+                    <StoryList showTitle={false} stories={stories} t={t} />
                   </div>}
                 {!showList &&
                   <CardGrid cards={stories.map(s => cardUtil.getStoryCard(s, t))} t={t} />}
@@ -96,14 +94,12 @@ export default class AllStories extends MapHubsComponent<Props, State> {
               </Row>}
 
           </div>
-          <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
-            <FloatingButton
-              href='/createstory'
-              tooltip={t('Create New Story')}
-              tooltipPosition='top'
-              icon='add'
-            />
-          </div>
+          <FloatingAddButton
+            onClick={() => {
+              window.location = '/createstory'
+            }}
+            tooltip={t('Create New Story')}
+          />
         </main>
         <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>

@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification, Row, Col } from 'antd'
+import { message, notification, Row, Col, Typography } from 'antd'
 import SearchBox from '../components/SearchBox'
 import CardCollection from '../components/CardCarousel/CardCollection'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
@@ -18,7 +18,9 @@ import CardGrid from '../components/CardCarousel/CardGrid'
 import type {Group} from '../stores/GroupStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import FloatingButton from '../components/FloatingButton'
+import FloatingAddButton from '../components/FloatingAddButton'
+
+const { Title } = Typography
 
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/groups')
 const checkClientError = require('../services/client-error-response').checkClientError
@@ -61,10 +63,6 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-  }
-
-  componentDidMount () {
-    M.FloatingActionButton.init(this.refs.addButton, {})
   }
 
   handleSearch = (input: string) => {
@@ -146,9 +144,9 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
         <main>
           <Row style={{marginTop: '20px', marginBottom: '10px'}}>
             <Col sm={12} md={8}>
-              <h4 className='no-margin'>{t('Groups')}</h4>
+              <Title level={2}>{t('Groups')}</Title>
             </Col>
-            <Col sm={12} md={8} offset={8} style={{paddingRight: '15px'}}>
+            <Col sm={12} md={8} offset={8} style={{textAlign: 'right', paddingTop: '2px'}}>
               <SearchBox label={t('Search Groups')} suggestionUrl='/api/groups/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
             </Col>
           </Row>
@@ -166,13 +164,12 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
             <Row style={{marginBottom: '20px'}}>
               {groups}
             </Row>
-
-            <div ref='addButton' className='fixed-action-btn action-button-bottom-right'>
-              <FloatingButton
-                href='/creategroup' icon='add'
-                tooltip={t('Create New Group')} tooltipPosition='top'
-              />
-            </div>
+            <FloatingAddButton
+              onClick={() => {
+                window.location = '/creategroup'
+              }}
+              tooltip={t('Create New Group')}
+            />
           </Row>
         </main>
         <Footer t={t} {...this.props.footerConfig} />

@@ -41,7 +41,6 @@ type Props = {
   type: string,
   style: Object,
   showCharCount: boolean,
-  useMaterialize: boolean,
   onClick: Function,
   validations: string,
   validationErrors: Object
@@ -62,7 +61,6 @@ export default class MultiTextArea extends MapHubsComponent<Props, State> {
     type: 'text',
     style: {},
     showCharCount: true,
-    useMaterialize: true,
     validations: '',
     validationErrors: {}
   }
@@ -112,6 +110,7 @@ export default class MultiTextArea extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const commonProps = {
       length: this.props.length,
       showCharCount: this.props.showCharCount,
@@ -143,6 +142,7 @@ export default class MultiTextArea extends MapHubsComponent<Props, State> {
                   label={this.props.label[locale.value]}
                   required={this.props.required}
                   {...commonProps}
+                  t={t}
                 />
               </div>
             </TabPane>

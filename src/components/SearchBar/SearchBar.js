@@ -1,230 +1,129 @@
-/*
-From https://github.com/vakhtang/react-search-bar/
-License: MIT
-
-Modified to support MaterializeCSS and other customizations
-
-*/
+// @flow
 
 import React from 'react'
-import { Row } from 'antd'
+import { Row, Input } from 'antd'
 import Suggestions from './Suggestions'
 import Promise from 'bluebird'
 
-const KEY_CODES = {
-  UP: 38,
-  DOWN: 40,
-  ENTER: 13
+const { Search } = Input
+
+type Suggestion = {key: string, value: string}
+
+type Props = {
+  autosuggestDelay: number,
+  placeholder: string,
+  onReset: Function,
+  onSubmit: Function,
+  onChange: Function
 }
 
-export default class SearchBar extends React.Component {
-  displayName: 'SearchBar'
+type State = {
+  value: string,
+  suggestions: Array<Suggestion>
+}
 
-  props: {
-    autoFocus: boolean,
-    autosuggestDelay: number,
-    inputName: string,
-    placeholder: string,
-    onReset: Function,
-    onSubmit: Function,
-    onChange: Function,
-    id: string
-  }
-
+export default class SearchBar extends React.Component<Props, State> {
   static defaultProps = {
-    autoFocus: false,
-    autosuggestDelay: 250,
-    inputName: 'query',
-    style: {},
-    id: 'search'
+    autosuggestDelay: 250
   }
 
   state = {
     value: '',
-    suggestions: [],
-    highlightedItem: -1
+    suggestions: []
   }
 
+  suggestions: any
+  _timerId: any
+
   componentDidMount () {
-    if (this.props.autoFocus) {
-      this.refs.value.focus()
-    }
+    document.body.addEventListener('click', this.hideSuggestions)
   }
 
   componentWillUnmount () {
     document.body.removeEventListener('click', this.hideSuggestions)
   }
 
-  handleClick = (e) => {
-    e.nativeEvent.stopImmediatePropagation()
-  }
-
-  handleKeyDown = (e) => {
-    if (e.which === KEY_CODES.ENTER) {
-      e.preventDefault()
-      this.submit(e)
-    }
-    if (e.which !== KEY_CODES.UP && e.which !== KEY_CODES.DOWN) return
-    e.preventDefault()
-    let highlightedItem = this.state.highlightedItem
-
-    if (e.which === KEY_CODES.UP) {
-      if (highlightedItem <= 0) return
-      --highlightedItem
-    }
-    if (e.which === KEY_CODES.DOWN) {
-      if (highlightedItem === this.state.suggestions.length - 1) return
-      ++highlightedItem
-    }
-
+  displaySuggestions = (suggestions: Array<Suggestion>) => {
     this.setState({
-      highlightedItem,
-      value: this.state.suggestions[highlightedItem]
+      suggestions
     })
   }
 
-  displaySuggestions = (suggestions) => {
-    this.setState({
-      suggestions,
-      highlightedItem: -1
-    })
-    if (this.suggestions) {
-      this.suggestions.show()
-    }
+  hideSuggestions = (e: any) => {
+    console.log(e)
+    if (e?.target?.parentElement?.classList.contains('dropdown-content-item')) return
+    this.setState({suggestions: []})
   }
 
-  hideSuggestions = () => {
-    if (this.suggestions) {
-      this.suggestions.hide()
-    }
-  }
-
-  fillInSuggestion = (suggestion) => {
-    this.setState({value: suggestion.value})
+  fillInSuggestion = (suggestion: Suggestion) => {
     this.search(suggestion.value)
   }
 
-  handleChange = (e) => {
+  handleChange = (e: any) => {
     clearTimeout(this._timerId)
     const input = e.target.value
-    if (!input) {
-      return this.setState({
-        value: '',
-        suggestions: [],
-        highlightedItem: -1
-      })
-    }
+
     this.setState({value: input})
 
-    this._timerId = setTimeout(() => {
-      new Promise((resolve) => {
-        this.props.onChange(input, resolve)
-      }).then((suggestions) => {
-        if (!this.state.value) return
-        this.displaySuggestions(suggestions)
-      })
-    }, this.props.autosuggestDelay)
-  }
-
-  submit = (e) => {
-    e.preventDefault()
-    if (this.state.value && typeof this.state.value === 'string') {
-      this.search(this.state.value.trim())
+    if (input) {
+      this._timerId = setTimeout(() => {
+        new Promise((resolve) => {
+          this.props.onChange(input, resolve)
+        }).then((suggestions) => {
+          if (!this.state.value) return
+          this.displaySuggestions(suggestions)
+        })
+      }, this.props.autosuggestDelay)
+    } else {
+      this.reset()
     }
-    this.hideSuggestions()
   }
 
-  search = (value) => {
-    clearTimeout(this._timerId)
-    this.setState({
-      suggestions: [],
-      highlightedItem: -1
-    })
-    this.props.onSubmit(value)
+  search = (value: string) => {
+    if (this.state.value && typeof this.state.value === 'string') {
+      clearTimeout(this._timerId)
+      this.props.onSubmit(value)
+      this.setState({suggestions: []})
+    } else {
+      this.reset()
+    }
   }
 
   reset = () => {
     clearTimeout(this._timerId)
     this.setState({
-      value: {key: '', value: ''},
-      suggestions: [],
-      highlightedItem: -1
+      value: '',
+      suggestions: []
     })
     if (this.props.onReset) this.props.onReset()
   }
 
   render () {
+    const { placeholder } = this.props
+    const { suggestions, value } = this.state
     return (
-      <div
-        className='white no-margin'
-        style={{
-          borderRadius: '25px',
-          border: '1px solid #323333',
-          boxSizing: 'content-box',
-          height: '2.2pc',
-          lineHeight: '2.2pc'
-        }}
-      >
-
-        <form style={{boxSizing: 'content-box'}}>
-
-          <div className='input-field no-margin' style={{position: 'relative'}}>
-            <input
-              id={this.props.id}
-              className='truncate'
-              type='search'
-              style={{
-                margin: 0,
-                border: 'none',
-                color: '#323333',
-                height: '2.2pc',
-                lineHeight: '2.2pc',
-                fontSize: '1rem',
-                background: 'transparent'
-              }}
-              name={this.props.inputName}
-              maxLength='100'
-              autoComplete='off'
-              ref='value'
-              value={this.state.value.value}
-              placeholder={this.props.placeholder}
-              onChange={this.handleChange}
-              onKeyDown={this.handleKeyDown}
-              onClick={this.handleClick}
-              data-beloworigin='true'
-              data-activates={this.refs.suggestions}
-              required
-            />
-
-            <label
-              htmlFor={this.props.id}
-              style={{
-                height: 'inherit',
-                lineHeight: 'inherit',
-                position: 'absolute',
-                top: '0px',
-                left: '0px',
-                marginLeft: '5px',
-                marginRight: '5px',
-                transform: 'inherit'
-              }}
-            >
-              <i className='material-icons' style={{height: 'inherit', lineHeight: 'inherit'}}>search</i>
-            </label>
-            <i className='material-icons' style={{height: 'inherit', lineHeight: 'inherit'}} onClick={this.reset}>close</i>
-          </div>
-        </form>
-
+      <>
         <Row>
-          {!!this.state.suggestions.length &&
+          <Search
+            placeholder={placeholder}
+            onSearch={this.search}
+            enterButton size='large'
+            onPressEnter={(e) => {
+              this.search(e.target.value)
+            }}
+            onChange={this.handleChange}
+            allowClear
+            value={value}
+          />
+        </Row>
+        <Row>
+          {suggestions?.length > 0 &&
             <Suggestions
-              ref={(el) => { this.suggestions = el }}
-              suggestions={this.state.suggestions}
-              highlightedItem={this.state.highlightedItem}
+              suggestions={suggestions}
               onSelection={this.fillInSuggestion}
             />}
         </Row>
-      </div>
+      </>
     )
   }
 }

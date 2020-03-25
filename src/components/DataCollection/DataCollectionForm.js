@@ -69,7 +69,7 @@ export default class DataCollectionForm extends MapHubsComponent<Props, State> {
     if (showSubmit) {
       submit = (
         <div style={{float: 'right'}}>
-          <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{this.state.submitText}</Button>
+          <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{this.state.submitText}</Button>
         </div>
       )
     }

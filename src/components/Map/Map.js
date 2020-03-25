@@ -689,7 +689,7 @@ class Map extends React.Component<Props, State> {
             </div>}
           {(!this.state.interactive && this.props.showPlayButton) &&
             <a
-              onClick={this.startInteractive} className='btn-floating waves-effect waves-light'
+              onClick={this.startInteractive}
               style={{position: 'absolute', left: '50%', bottom: '50%', backgroundColor: 'rgba(25,25,25,0.1)', zIndex: '999'}}
             >
               <PlayArrow />

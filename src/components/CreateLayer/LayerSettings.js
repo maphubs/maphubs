@@ -156,16 +156,11 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
     const licenseOptions = Licenses.getLicenses(t)
 
     let prevButton = ''
-    let submitIcon = ''
     if (this.props.showPrev) {
       prevButton = (
         <div className='left'>
-          <Button type='primary' onClick={this.onPrev}><i className='material-icons left'>arrow_back</i>{this.props.prevText}</Button>
+          <Button type='primary' onClick={this.onPrev}>{this.props.prevText}</Button>
         </div>
-      )
-
-      submitIcon = (
-        <i className='material-icons right'>arrow_forward</i>
       )
     }
 
@@ -242,7 +237,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
           <div className='container'>
             {prevButton}
             <div style={{float: 'right'}}>
-              <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{submitIcon}{this.props.submitText}</Button>
+              <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{this.props.submitText}</Button>
             </div>
           </div>
 

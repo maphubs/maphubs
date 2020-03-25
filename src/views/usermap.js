@@ -89,19 +89,6 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  componentDidMount () {
-    M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
-  }
-
-  componentDidUpdate (prevProps: Props, prevState: State) {
-    debounce(() => {
-      fireResizeEvent()
-    }, 300)
-    if (this.state.user && !prevState.user) {
-      M.FloatingActionButton.init(this.menuButton, {hoverEnabled: false})
-    }
-  }
-
   onMouseEnterMenu = () => {
     // still needed?
   }

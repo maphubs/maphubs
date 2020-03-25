@@ -60,10 +60,6 @@ export default class Footer extends React.Component<Props, void> {
                     <a href='http://maphubs.com' className='valign page-footer no-padding' style={{float: 'left'}}>
                       <img width='111' height='30' style={{marginTop: '10px'}} src='https://hpvhe47439ygwrt.belugacdn.link/maphubs/assets/maphubs-logo-small.png' alt='MapHubs.com' />
                     </a>
-
-                  </li>
-                  <li>
-                    {t('View the open source code on ')}<a className='page-footer  no-padding' href='https://github.com/maphubs'>GitHub</a>
                   </li>
                 </ul>}
               <ul style={{marginTop: '0px'}}>
