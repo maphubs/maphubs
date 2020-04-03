@@ -75,6 +75,7 @@ export default class PresetEditor extends MapHubsComponent<Props, State> {
           <List
             dataSource={presets}
             bordered
+            style={{width: '100%'}}
             renderItem={preset => (
               <List.Item>
                 <PresetForm

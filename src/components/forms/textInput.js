@@ -114,7 +114,7 @@ class TextInput extends React.Component<Props, State> {
             </span>}
           {showRequired && <p style={{color: 'red'}}>{t('Required')}</p>}
           {showError && <p style={{color: 'red'}}>{errorMessage}</p>}
-          {isValid && <p style={{color: 'red'}}>{successText}</p>}
+          {isValid && <p style={{color: 'green'}}>{successText}</p>}
         </div>
       </>
     )

@@ -3,6 +3,8 @@ import React from 'react'
 import dynamic from 'next/dynamic'
 import { Row, Button, notification, message } from 'antd'
 import request from 'superagent'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('stores/layer-notes')
 
 const NoteCKEditor = dynamic(() => import('../forms/NoteCKEditor.js'), {
@@ -90,6 +92,62 @@ export default class LayerNotes extends React.Component<Props, State> {
 
     return (
       <>
+        <style jsx global>{`
+        .notes-content p {
+                font-size: 20px;
+              }
+              .notes-content ul {
+                list-style: initial;
+                font-size: 20px;
+                padding-left: 40px;
+              }
+              .notes-content ul li {
+                list-style-type: inherit;
+              }
+              .notes-content ol {
+                font-size: 20px;
+              }
+              .notes-content a {
+                color: ${MAPHUBS_CONFIG.primaryColor};
+                text-decoration: underline;
+              }
+              .notes-content table {
+                width: 80%;
+                margin: auto auto;
+              }
+              .notes-content table th{
+                border:1px solid #323333;
+                padding-left: 5px;
+                background-color: #d9d9d9;
+              }
+              .notes-content table td{
+                border:1px solid #d9d9d9;
+                padding-left:5px;
+              }
+
+              .notes-content blockquote {
+                overflow: hidden;
+                padding-right: 1.5em;
+                padding-left: 1.5em;
+                margin-left: 0;
+                font-style: italic;
+                border-left: 5px solid #ccc;
+              }
+            
+              .image {
+                text-align: center;
+              }
+
+              .image img {
+                max-width: 100%;
+              }
+
+              .image-style-side {
+                float: right;
+              }
+              
+            `}
+        </style>
         <Row style={{marginLeft: '0px', height: 'calc(100% - 50px)'}}>
           {editing &&
             <Row style={{height: '100%', overflow: 'auto'}}>
@@ -98,7 +156,7 @@ export default class LayerNotes extends React.Component<Props, State> {
           {!editing &&
             <div className='notes-content' style={{height: '100%', overflow: 'auto', padding: '20px'}} dangerouslySetInnerHTML={{__html: notes}} />}
         </Row>
-        <Row style={{textAlign: 'right', marginRight: '20px', marginTop: '10px'}}>
+        <Row justify='end' align='middle' style={{textAlign: 'right', height: '50px', padding: '10px'}}>
           {editing &&
             <Button type='primary' onClick={this.saveNotes}>{t('Save')}</Button>}
           {(!editing && canEdit) &&

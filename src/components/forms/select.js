@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import * as React from 'react'
 import {withFormsy} from 'formsy-react'
 import { Select, Row, Tooltip } from 'antd'
 import find from 'lodash.find'
@@ -19,7 +19,7 @@ type Props = {|
   id: string,
   onChange: Function,
   startEmpty: boolean,
-  icon: string,
+  icon: React.Node,
   note: string, // optional note that displays below the select, will be updated on selection if option contains a note
   setValue: Function,
   value: string,
@@ -97,8 +97,7 @@ class SelectFormItem extends React.Component<Props, State> {
     return (
       <>
         <Row id={id}>
-          {icon &&
-            <i className='material-icons prefix'>{icon}</i>}
+          {icon}
           {label &&
             <Row style={{height: '25px'}}>
               <label htmlFor={name} data-error={errorMessage} data-success={successText}><b>{label}</b></label>

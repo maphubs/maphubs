@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { notification, Modal, message, Row, Col, Button } from 'antd'
+import { notification, Modal, message, Row, Col, Button, Typography } from 'antd'
 import MapStyles from '../Map/Styles'
 import Map from '../Map'
 import MiniLegend from '../Map/MiniLegend'
@@ -18,6 +18,7 @@ import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const { confirm } = Modal
+const { Title } = Typography
 
 type Props = {|
   onSubmit: Function,
@@ -157,7 +158,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
       <Row style={{height: 'calc(100% - 50px)'}}>
         <Row style={{height: '100%', textAlign: 'center'}}>
           <Col sm={24} md={12}>
-            <h5 style={{margin: 0}}>{t('Choose Preview')}</h5>
+            <Title level={3}>{t('Choose Preview')}</Title>
             {(layer_id !== undefined && layer_id !== -1 && showMap) &&
               <Row style={{height: 'calc(100% - 30px)', padding: '20px'}}>
                 <Map
@@ -196,7 +197,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
           <Subscribe to={[MapContainer]}>
             {MapState => (
               <Col sm={24} md={12}>
-                <h5 style={{margin: 0}}>{t('Choose Style')}</h5>
+                <Title level={3}>{t('Choose Style')}</Title>
                 {colorChooserMode === 'default' &&
                   <Row style={{height: 'calc(100% - 130px)', padding: '20px'}}>
                     <LayerDesigner

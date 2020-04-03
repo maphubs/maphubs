@@ -213,7 +213,12 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
               <Row style={{marginBottom: '20px'}}>
                 <MultiTextInput
                   name='source' id='layer-source' label={{
-                    en: 'Source', fr: 'Source', es: 'Source', it: 'Source'
+                    en: 'Source',
+                    fr: 'Source',
+                    es: 'Fuente',
+                    it: 'Sorgente',
+                    pt: 'Fonte',
+                    id: 'Sumber'
                   }}
                   value={this.state.source}
                   validations='maxLength:300' validationErrors={{

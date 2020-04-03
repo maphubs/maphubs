@@ -20,18 +20,17 @@ export default {
     return theme
   },
 
-  editFeature (feature: Object) {
+  async editFeature (editFeature: Object) {
     const {dataEditorState} = this.props.containers
     // get the feature from the database, since features from vector tiles can be incomplete or simplified
-    dataEditorState.selectFeature(feature.properties.mhid, feature => {
-      if (this.draw) {
-        if (!this.draw.get(feature.id)) {
-        // if not already editing this feature
-          this.draw.add(feature)
-          this.updateMapLayerFilters()
-        }
+    const feature = await dataEditorState.selectFeature(editFeature.properties.mhid)
+    if (this.draw) {
+      if (!this.draw.get(feature.id)) {
+      // if not already editing this feature
+        this.draw.add(feature)
+        this.updateMapLayerFilters()
       }
-    })
+    }
   },
 
   startEditingTool (layer: Layer) {
@@ -80,16 +79,16 @@ export default {
       }
     })
 
-    this.map.on('draw.selectionchange', e => {
+    this.map.on('draw.selectionchange', async (e) => {
       debug.log('draw selection')
       // if in simple mode (e.g. not selecting vertices) then check if selected feature changed
       const mode = this.draw.getMode()
       if (mode === 'simple_select') {
         const features = e.features
         if (features && features.length > 0) {
-          features.forEach(feature => {
-            dataEditorState.selectFeature(feature.id, () => {})
-          })
+          await Promise.all(features.map(feature => {
+            return dataEditorState.selectFeature(feature.id)
+          }))
         }
       }
     })

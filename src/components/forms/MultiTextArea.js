@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import * as React from 'react'
 import TextArea from './textArea'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
@@ -31,7 +31,7 @@ type Props = {
   length: number,
   successText: string,
   disabled: boolean,
-  icon: string,
+  icon?: React.Node,
   tooltip: string,
   dataDelay: number,
   tooltipPosition: string,
@@ -119,7 +119,8 @@ export default class MultiTextArea extends MapHubsComponent<Props, State> {
       dataDelay: this.props.dataDelay,
       validations: this.props.validations,
       validationErrors: this.props.validationErrors,
-      successText: this.props.successText
+      successText: this.props.successText,
+      icon: this.props.icon
     }
 
     return (
@@ -140,7 +141,7 @@ export default class MultiTextArea extends MapHubsComponent<Props, State> {
                   name={`${this.props.name}-${locale.value}`}
                   value={this.state.value[locale.value]}
                   label={this.props.label[locale.value]}
-                  required={this.props.required}
+                  required={this.props.required && locale.value === 'en'}
                   {...commonProps}
                   t={t}
                 />

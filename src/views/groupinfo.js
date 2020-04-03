@@ -9,10 +9,12 @@ import LocaleStore from '../stores/LocaleStore'
 import type {Group} from '../stores/GroupStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
-import { PlusOutlined, SettingOutlined } from '@ant-design/icons'
-import { Row, Col, Avatar, List, Button, Tooltip } from 'antd'
+import { PlusOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
+import { Row, Col, Avatar, List, Button, Tooltip, Typography, Divider } from 'antd'
 import Person from '@material-ui/icons/Person'
 import SupervisorAccount from '@material-ui/icons/SupervisorAccount'
+
+const { Title } = Typography
 
 type Props = {
   group: Group,
@@ -61,7 +63,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
-    const { group, maps, layers, stories, canEdit } = this.props
+    const { group, maps, layers, stories, canEdit, members } = this.props
     const { imageFailed } = this.state
     const groupId = group.group_id ? group.group_id : ''
 
@@ -83,8 +85,8 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <div style={{marginLeft: '10px', marginRight: '10px'}}>
-          <Row style={{padding: '20px', height: '50vh'}}>
-            <Col span={8} style={{padding: '5px'}}>
+          <Row style={{padding: '20px'}}>
+            <Col sm={24} md={6} style={{padding: '5px'}}>
               <Row style={{marginBottom: '20px'}}>
                 {!imageFailed &&
                   <Avatar
@@ -97,65 +99,69 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
                     {groupId.charAt(0).toUpperCase()}
                   </Avatar>}
               </Row>
-              {canEdit &&
-                <Row>
-                  <Col span={6}>
-                    <Button style={{margin: 'auto'}} href={'/map/new?group_id=' + groupId}><PlusOutlined />{t('Map')}</Button>
-                  </Col>
-                  <Col span={6}>
-                    <Button style={{margin: 'auto'}} href={'/createlayer?group_id=' + groupId}><PlusOutlined />{t('Layer')}</Button>
-                  </Col>
-                  <Col span={6}>
-                    <Button style={{margin: 'auto'}} href={'/createstory?group_id=' + groupId}><PlusOutlined />{t('Story')}</Button>
-                  </Col>
-                  <Col span={6}>
-                    <Button style={{margin: 'auto'}} href={`/group/${groupId}/admin`}><SettingOutlined />{t('Manage')}</Button>
-                  </Col>
-                </Row>}
+
             </Col>
-            <Col span={8}>
-              <h4>{t(group.name)}</h4>
+            <Col sm={24} md={8} style={{padding: '5px'}}>
+              <Title>{t(group.name)}</Title>
               <Row>
-                <p><b>{`${t('Description')}: `}</b></p><div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
+                <div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
               </Row>
               {this.props.group.unofficial &&
                 <Row>
                   <p><b>{t('Unofficial Group')}</b> - {t('This group is maintained by Maphubs using public data and is not intended to represent the listed organization. If you represent this group and would like to take ownership please contact us.')}</p>
                 </Row>}
             </Col>
-            <Col span={8}>
-              <List
-                size='small'
-                header={<div><b>{t('Members')}</b></div>}
-                bordered
-                dataSource={this.props.members}
-                renderItem={user => {
-                  if (user.display_name === 'maphubs') {
-                    return <span> </span>
-                  }
-                  return (
-                    <List.Item>
-                      {user.image &&
-                        <Avatar alt={t('Profile Photo')} size={24} src={user.image} />}
-                      {!user.image &&
-                        <Person />}
-                      <span className='title'>{user.display_name}</span>
-                      <span style={{position: 'absolute', right: '5px'}}>
-                        {(user.role === 'Administrator') &&
-                          <Tooltip
-                            title={t('Group Administrator')}
-                            placement='top'
-                          >
-                            <SupervisorAccount />
-                          </Tooltip>}
-                      </span>
-                    </List.Item>
-                  )
-                }}
-              />
+            <Col sm={24} md={10}>
+              {canEdit &&
+                <Row justify='end' align='middle' style={{marginBottom: '20px'}}>
+                  <Col sm={24} md={6} style={{textAlign: 'right'}}>
+                    <Button style={{margin: 'auto'}} href={'/map/new?group_id=' + groupId}><PlusOutlined />{t('Map')}</Button>
+                  </Col>
+                  <Col sm={24} md={6} style={{textAlign: 'right'}}>
+                    <Button style={{margin: 'auto'}} href={'/createlayer?group_id=' + groupId}><PlusOutlined />{t('Layer')}</Button>
+                  </Col>
+                  <Col sm={24} md={6} style={{textAlign: 'right'}}>
+                    <Button style={{margin: 'auto'}} href={'/createstory?group_id=' + groupId}><PlusOutlined />{t('Story')}</Button>
+                  </Col>
+                  <Col sm={24} md={6} style={{textAlign: 'right'}}>
+                    <Button style={{margin: 'auto'}} href={`/group/${groupId}/admin`}><SettingOutlined />{t('Manage')}</Button>
+                  </Col>
+                </Row>}
+              <Row>
+                <List
+                  size='small'
+                  header={<div><b>{t('Members')}</b></div>}
+                  bordered
+                  dataSource={members}
+                  style={{width: '100%'}}
+                  renderItem={user => {
+                    if (user.display_name === 'maphubs' && members.length > 1) {
+                      return <span />
+                    }
+                    let adminIcon = ''
+                    if (user.role === 'Administrator') {
+                      adminIcon = (
+                        <Tooltip title={t('Group Administrator')} placement='top'>
+                          <SupervisorAccount />
+                        </Tooltip>
+                      )
+                    }
+                    return (
+                      <List.Item actions={[adminIcon]}>
+                        <List.Item.Meta
+                          avatar={
+                            user.image ? <Avatar src={user.image} alt={t('Profile Photo')} /> : <Avatar size={24} icon={<UserOutlined />} />
+                          }
+                          title={user.display_name}
+                        />
+                      </List.Item>
+                    )
+                  }}
+                />
+              </Row>
             </Col>
           </Row>
-          <div className='divider' />
+          <Divider />
           <Row>
             <CardCarousel cards={allCards} infinite={false} t={this.t} />
           </Row>

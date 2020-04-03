@@ -1,14 +1,17 @@
 // @flow
 import React from 'react'
-import { Row, Col, Button } from 'antd'
+import { Row, Col, Button, Slider, InputNumber, Tabs, Tooltip } from 'antd'
 import AdvancedLayerSettings from './AdvancedLayerSettings'
 import _isequal from 'lodash.isequal'
-
+import OpacityIcon from '@material-ui/icons/Opacity'
+import CodeIcon from '@material-ui/icons/Code'
 import type {GLStyle} from '../../types/mapbox-gl-style'
 import dynamic from 'next/dynamic'
 const CodeEditor = dynamic(() => import('./CodeEditor'), {
   ssr: false
 })
+
+const { TabPane } = Tabs
 
 type Props = {|
   onChange: Function,
@@ -43,19 +46,7 @@ export default class OpacityChooser extends React.Component<Props, State> {
     }
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
-    // only update if something changes
-    if (!_isequal(this.props, nextProps)) {
-      return true
-    }
-    if (!_isequal(this.state, nextState)) {
-      return true
-    }
-    return false
-  }
-
-  onChange = (e: any) => {
-    const opacity = e.target.valueAsNumber
+  onChange = (opacity) => {
     this.setState({opacity})
     this.props.onChange(opacity)
   }
@@ -98,48 +89,88 @@ export default class OpacityChooser extends React.Component<Props, State> {
     const { showStyleEditor, showLegendEditor, opacity } = this.state
 
     return (
-      <div>
-        <ul ref='collapsible' className='collapsible' data-collapsible='accordion'>
-          <li className='active'>
-            <div className='collapsible-header'>
-              <i className='material-icons'>opacity</i>{t('Opacity')}
-            </div>
-            <div className='collapsible-body'>
-              <Row style={{marginBottom: '20px'}}>
-                <form action='#'>
-                  <p className='range-field'>
-                    <input type='range' id='opacity' min='0' max='100' value={opacity} onChange={this.onChange} />
-                  </p>
-                </form>
-              </Row>
-              <Row style={{marginBottom: '20px'}}>
-                <div className='valign-wrapper'>
-                  <h5 className='valign' style={{margin: 'auto'}}>
-                    {opacity}%
-                  </h5>
-                </div>
-              </Row>
-            </div>
-          </li>
-          {showAdvanced &&
-            <li>
-              <div className='collapsible-header'>
-                <i className='material-icons'>code</i>{t('Advanced')}
-              </div>
-              <div className='collapsible-body'>
-                <AdvancedLayerSettings layer={this.props.layer} style={style} onChange={this.onAdvancedSettingsChange} />
-                <Row style={{marginBottom: '20px'}}>
-                  <Col sm={24} md={12}>
-                    <Button onClick={this.showStyleEditor} type='primary'>{t('Style')}</Button>
-                  </Col>
-                  <Col sm={24} md={12}>
-                    <Button onClick={this.showLegendEditor} type='primary'>{t('Legend')}</Button>
-                  </Col>
-                </Row>
-              </div>
-            </li>}
+      <>
+        <style jsx global>{`
+            .ant-tabs-content {
+              height: 100%;
+              width: 100%;
+            }
+            .ant-tabs-tabpane {
+              height: 100%;
+            }
 
-        </ul>
+            .ant-tabs-left-bar .ant-tabs-tab {
+              padding: 8px 12px !important;
+            }
+
+            .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
+              display: none;
+            }
+            .ant-tabs .ant-tabs-left-content {
+              padding-left: 0;
+            }
+          `}
+        </style>
+        <Tabs
+          defaultActiveKey='opacity'
+          tabPosition='left'
+          animated={false}
+          style={{height: '100%', width: '100%'}}
+        >
+          <TabPane
+            key='opacity'
+            tab={
+              <Tooltip title={t('Opacity')} placement='right'>
+                <span>
+                  <OpacityIcon />
+                </span>
+              </Tooltip>
+            }
+          >
+            <Row justify='center' align='middle' style={{minWidth: '400px', padding: '20px'}}>
+              <Col span={12}>
+                <Slider
+                  min={1}
+                  max={100}
+                  onChange={this.onChange}
+                  value={typeof opacity === 'number' ? opacity : 0}
+                />
+              </Col>
+              <Col span={4}>
+                <InputNumber
+                  min={1}
+                  max={100}
+                  style={{ marginLeft: 16 }}
+                  value={opacity}
+                  onChange={this.onChange}
+                />
+              </Col>
+            </Row>
+          </TabPane>
+          {showAdvanced &&
+            <TabPane
+              key='advanced'
+              tab={
+                <Tooltip title={t('Advanced')} placement='right'>
+                  <span>
+                    <CodeIcon />
+                  </span>
+                </Tooltip>
+              }
+            >
+              <Row justify='center' align='middle'>
+                <AdvancedLayerSettings layer={this.props.layer} style={style} onChange={this.onAdvancedSettingsChange} />
+              </Row>
+              <Row justify='center' align='middle' style={{marginBottom: '20px'}}>
+                <Col sm={24} md={12}>
+                  <Button onClick={this.showStyleEditor} type='primary'>{t('Style')}</Button>
+                </Col>
+                <Col sm={24} md={12}>
+                  <Button onClick={this.showLegendEditor} type='primary'>{t('Legend')}</Button>
+                </Col>
+              </Row>
+            </TabPane>}
+        </Tabs>
         <CodeEditor
           visible={showStyleEditor}
           id='raster-style-editor' mode='json'
@@ -158,7 +189,7 @@ export default class OpacityChooser extends React.Component<Props, State> {
           onCancel={this.hideLegendEditor}
           t={t}
         />
-      </div>
+      </>
     )
   }
 }

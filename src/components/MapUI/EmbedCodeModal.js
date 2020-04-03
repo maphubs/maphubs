@@ -63,12 +63,12 @@ export default class EmbedCodeModal extends React.Component<Props, State> {
   >
   </iframe>
   `
-    const html = `<pre style="height: 115px; overflow: auto">${htmlEncode(code)}</pre>`
 
     return (
       <Modal
         visible={show}
         title={t('Embed Code')}
+        width='75%'
         afterClose={this.onClose}
         onOk={() => {
           this.clipboard.writeText(code)
@@ -82,8 +82,8 @@ export default class EmbedCodeModal extends React.Component<Props, State> {
         <Row>
           <p>{t('Paste the following code into your website to embed a map:')}</p>
         </Row>
-        <Row>
-          <code dangerouslySetInnerHTML={{__html: html}} />
+        <Row style={{overflow: 'auto'}}>
+          <pre style={{width: '100%'}}><code style={{width: '100%'}} dangerouslySetInnerHTML={{__html: htmlEncode(code)}} /></pre>
         </Row>
         {(!share_id && MAPHUBS_CONFIG.requireLogin) &&
           <Row style={{marginBottom: '20px'}}>

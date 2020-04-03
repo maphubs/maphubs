@@ -111,7 +111,7 @@ export default class Story extends MapHubsComponent<Props, void> {
                 </Col>
               </Row>
               <Row>
-                <h3 className='story-title'>{t(story.title)}</h3>
+                <h1 className='story-title'>{t(story.title)}</h1>
                 <div className='story-content' dangerouslySetInnerHTML={{__html: t(story.body)}} />
               </Row>
               <hr />

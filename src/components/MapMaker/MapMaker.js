@@ -3,7 +3,8 @@ import React from 'react'
 import LayerList from '../Map/LayerList'
 import _isEqual from 'lodash.isequal'
 import _find from 'lodash.find'
-import { Drawer, Button, Row, Col, Tabs, Modal, message, notification } from 'antd'
+import { Drawer, Button, Row, Col, Tabs, Modal, message, notification, Tooltip } from 'antd'
+import { DeleteOutlined } from '@ant-design/icons'
 import Map from '../Map'
 import MiniLegend from '../Map/MiniLegend'
 import AddLayerPanel from './AddLayerPanel'
@@ -66,8 +67,6 @@ type Props = {
   } & LocaleStoreState & MapMakerStoreState & UserStoreState
 
 class MapMaker extends MapHubsComponent<Props, State> {
-  props: Props
-
   static defaultProps = {
     edit: false,
     popularLayers: [],
@@ -243,6 +242,30 @@ class MapMaker extends MapHubsComponent<Props, State> {
         })
       }
     }
+  }
+
+  onDelete = () => {
+    const {t} = this
+    const _this = this
+    confirm({
+      title: t('Confirm Deletion'),
+      content: t('Please confirm deletion of ') + t(this.props.title),
+      okText: t('Delete'),
+      okType: 'danger',
+      onOk () {
+        Actions.deleteMap(_this.props.map_id, _this.state._csrf, (err) => {
+          if (err) {
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
+          } else {
+            window.location = '/maps'
+          }
+        })
+      }
+    })
   }
 
   toggleVisibility = (layerId: number) => {
@@ -441,11 +464,12 @@ class MapMaker extends MapHubsComponent<Props, State> {
               </TabPane>}
           </Tabs>
           <hr style={{margin: 0}} />
-          <Row style={{padding: '10px', width: '100%'}}>
-            <Col span={12}>
+          <Row justify='center' align='middle' style={{width: '100%', height: '50px'}}>
+            <Col span={4}>
               <MapSettingsPanel />
             </Col>
-            <Col span={12} style={{textAlign: 'right'}}>
+            <Col span={16} style={{textAlign: 'right'}}>
+              <Tooltip title={t('Delete Map')} placement='left'><Button danger onClick={this.onDelete} icon={<DeleteOutlined />} style={{marginRight: '10px'}} /></Tooltip>
               <SaveMapModal {...this.state} editing={this.props.edit} onSave={this.onSave} />
             </Col>
           </Row>

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import * as React from 'react'
 import TextInput from './textInput'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
@@ -44,7 +44,8 @@ type Props = {
   showCharCount: boolean,
   onClick?: Function,
   validations: string,
-  validationErrors: Object
+  validationErrors: Object,
+  icon?: React.Node
 }
 
 type State = {
@@ -109,6 +110,7 @@ export default class MultiTextInput extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     const commonProps = {
       length: this.props.length,
       showCharCount: this.props.showCharCount,
@@ -117,7 +119,8 @@ export default class MultiTextInput extends MapHubsComponent<Props, State> {
       dataDelay: this.props.dataDelay,
       validations: this.props.validations,
       validationErrors: this.props.validationErrors,
-      successText: this.props.successText
+      successText: this.props.successText,
+      icon: this.props.icon
     }
 
     return (
@@ -138,8 +141,9 @@ export default class MultiTextInput extends MapHubsComponent<Props, State> {
                   name={`${this.props.name}-${locale.value}`}
                   value={this.state.value[locale.value]}
                   label={this.props.label[locale.value]}
-                  required={this.props.required}
+                  required={this.props.required && locale.value === 'en'}
                   {...commonProps}
+                  t={t}
                 />
               </div>
             </TabPane>

@@ -83,7 +83,7 @@ export default class SearchBar extends React.Component<Props, State> {
     if (this.state.value && typeof this.state.value === 'string') {
       clearTimeout(this._timerId)
       this.props.onSubmit(value)
-      this.setState({suggestions: []})
+      this.setState({suggestions: [], value})
     } else {
       this.reset()
     }
@@ -116,7 +116,7 @@ export default class SearchBar extends React.Component<Props, State> {
             value={value}
           />
         </Row>
-        <Row>
+        <Row style={{position: 'relative'}}>
           {suggestions?.length > 0 &&
             <Suggestions
               suggestions={suggestions}

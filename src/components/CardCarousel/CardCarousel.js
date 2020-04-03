@@ -21,7 +21,7 @@ export default class CardCarousel extends React.Component<Props, void> {
     const count = cards.length
     if (count === 0) {
       return (
-        <Row style={{height: '330px', paddingTop: '100px', width: '100%'}}>
+        <Row justify='center' align='middle' style={{height: '330px', width: '100%'}}>
           <Empty
             image={Empty.PRESENTED_IMAGE_SIMPLE}
             description={<span style={{color: '#323333'}}>{t(emptyMessage)}</span>}

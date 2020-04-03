@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import * as React from 'react'
 import { notification } from 'antd'
 import request from 'superagent'
 import SearchBar from './SearchBar/SearchBar'
@@ -10,13 +10,10 @@ type Props = {
   label: string,
   suggestionUrl: ?string,
   onSearch: Function,
-  onReset: Function,
-  id: string
+  onReset: Function
 }
 
 export default class SearchBox extends React.Component<Props, void> {
-  props: Props
-
   static defaultProps = {
     label: 'Search',
     style: {},
@@ -26,6 +23,8 @@ export default class SearchBox extends React.Component<Props, void> {
     onReset () {},
     suggestionUrl: null
   }
+
+  searchBar: any
 
   onChange = (input: string, resolve: Function) => {
     const { suggestionUrl } = this.props
@@ -61,10 +60,14 @@ export default class SearchBox extends React.Component<Props, void> {
    this.props.onSearch(input)
  }
 
+ reset = () => {
+   this.searchBar.reset()
+ }
+
  render () {
    return (
      <SearchBar
-       id={this.props.id}
+       ref={el => { this.searchBar = el }}
        placeholder={this.props.label}
        onChange={this.onChange}
        onSubmit={this.onSubmit}

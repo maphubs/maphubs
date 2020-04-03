@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import * as React from 'react'
 import { withFormsy } from 'formsy-react'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
@@ -8,7 +8,7 @@ import { Tooltip, Input } from 'antd'
 type Props = {
   length: number,
   value: string,
-  icon: string,
+  icon: React.Node,
   className: string,
   tooltip: string,
   dataDelay: number,
@@ -75,13 +75,11 @@ class TextArea extends MapHubsComponent<Props, State> {
     return false
   }
 
-  changeValue = (event) => {
-    event.stopPropagation()
-    this.props.setValue(event.currentTarget.value)
+  changeValue = (value: string) => {
     this.setState({
-      value: event.currentTarget.value,
-      charCount: event.currentTarget.value.length
+      charCount: value?.length ?? 0
     })
+    this.props.setValue(value)
   }
 
   render () {

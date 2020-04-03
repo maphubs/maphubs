@@ -3,7 +3,7 @@ import React from 'react'
 import InteractiveMap from '../components/Map/InteractiveMap'
 import Header from '../components/header'
 import _find from 'lodash.find'
-import { Row, Col, notification, message, Tabs, Tooltip, Typography, Card } from 'antd'
+import { Row, Col, notification, Tabs, Tooltip, Typography, Card, Result } from 'antd'
 import Comments from '../components/Comments'
 import TerraformerGL from '../services/terraformerGL'
 import GroupTag from '../components/Groups/GroupTag'
@@ -11,7 +11,7 @@ import Licenses from '../components/CreateLayer/licenses'
 import LayerNotes from '../components/CreateLayer/LayerNotes'
 import DataGrid from '../components/DataGrid/DataGrid'
 import MapStyles from '../components/Map/Styles'
-import { Provider, Subscribe } from 'unstated'
+import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
 import MapContainer from '../components/Map/containers/MapContainer'
 import geobuf from 'geobuf'
@@ -21,7 +21,6 @@ import turf_length from '@turf/length'
 import numeral from 'numeral'
 import slugify from 'slugify'
 import UserStore from '../stores/UserStore'
-import AutoSizer from 'react-virtualized-auto-sizer'
 import LayerExport from '../components/LayerInfo/LayerExport'
 import Stats from '../components/LayerInfo/Stats'
 import ExternalLink from '../components/LayerInfo/ExternalLink'
@@ -94,9 +93,6 @@ type DefaultProps = {
 }
 
 type State = {
-  editingData: boolean,
-  gridHeight: number,
-  gridHeightOffset: number,
   userResize?: boolean,
   geoJSON?: Object,
   dataMsg?: string,
@@ -122,9 +118,6 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
   }
 
   state: State = {
-    editingData: false,
-    gridHeight: 100,
-    gridHeightOffset: 48,
     length: 0,
     dataMsg: this.t('Data Loading')
   }
@@ -162,7 +155,6 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     this.clipboard = require('clipboard-polyfill').default
 
     const {layer} = this.props
-    const {editingData} = this.state
     const elc = layer.external_layer_config
     try {
       if (layer.is_external) {
@@ -191,20 +183,10 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
         duration: 0
       })
     }
-
-    window.addEventListener('beforeunload', (e) => {
-      if (editingData) {
-        e.preventDefault()
-        e.returnValue = ''
-      }
-    })
   }
 
   componentDidUpdate (prevProps: Props, prevState: State) {
     if (!this.state.userResize) {
-      fireResizeEvent()
-    }
-    if (this.state.editingData && !prevState.editingData) {
       fireResizeEvent()
     }
   }
@@ -252,38 +234,14 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     window.location = `${baseUrl}/map/new?editlayer=${this.props.layer.layer_id}${window.location.hash}`
   }
 
-  startEditingData = () => {
-    this.setState({editingData: true})
-  }
-
-  stopEditingData = (DataEditor: Object) => {
-    const _this = this
-    const {t} = this
-    DataEditor.saveEdits(this.state._csrf, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-      } else {
-        _this.setState({editingData: false})
-        DataEditor.stopEditing()
-        message.success(t('Data Saved - Reloading Page...'), 1, () => {
-          location.reload()
-        })
-      }
-    })
-  }
-
   copyToClipboard = (val: string) => {
     this.clipboard.writeText(val)
   }
 
   render () {
-    const {startEditingData, stopEditingData, openEditor, t} = this
+    const {openEditor, t} = this
     const {layer, canEdit} = this.props
-    const { editingData } = this.state
+    const { geoJSON, dataMsg } = this.state
     const glStyle = layer.style
 
     let editButton = ''
@@ -489,41 +447,20 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                       </ErrorBoundary>
                     </TabPane>}
                   <TabPane tab={t('Data')} key='data'>
-                    <Subscribe to={[DataEditorContainer]}>
-                      {DataEditor => {
-                        return (
-                          <Row style={{height: '100%'}}>
-                            <AutoSizer disableWidth>
-                              {({ height }) => (
-                                <DataGrid
-                                  layer_id={layer.layer_id}
-                                  height={height}
-                                  geoJSON={this.state.geoJSON}
-                                  presets={presets}
-                                  canEdit={canEdit}
-                                />
-                              )}
-                            </AutoSizer>
-                            {canEdit &&
-                              <Fab
-                                icon={editingData ? <EditIcon /> : <SaveIcon />}
-                                mainButtonStyles={{backgroundColor: MAPHUBS_CONFIG.primaryColor}}
-                                position={{bottom: 10}}
-                                event='click'
-                                onClick={() => {
-                                  if (editingData) {
-                                    stopEditingData(DataEditor)
-                                  } else {
-                                    startEditingData()
-                                  }
-                                }}
-                              />}
-                          </Row>
-                        )
-                      }}
-                    </Subscribe>
+                    <Row style={{height: '100%'}}>
+                      {geoJSON &&
+                        <DataGrid
+                          layer={layer}
+                          geoJSON={geoJSON}
+                          presets={presets}
+                          canEdit={canEdit}
+                          t={t}
+                          _csrf={this.state._csrf}
+                        />}
+                      {!geoJSON && <Result title={dataMsg} />}
+                    </Row>
                   </TabPane>
-                  <TabPane tab={t('Export')} key='export'>
+                  <TabPane tab={t('Download')} key='export'>
                     <LayerExport layer={layer} t={t} />
                   </TabPane>
                 </Tabs>

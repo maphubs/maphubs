@@ -89,8 +89,10 @@ export default class AddMapDrawer extends React.Component<Props, State> {
         onClose={onClose}
         visible={visible}
       >
-        <Row style={{marginTop: '10px', marginBottom: '10px', marginRight: '35px', marginLeft: '0px'}}>
-          <SearchBox label={t('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={handleSearch} onReset={resetSearch} />
+        <Row style={{marginTop: '10px', marginBottom: '20px', marginRight: '35px', marginLeft: '0px'}}>
+          <div style={{maxWidth: '600px', width: '100%', margin: 'auto'}}>
+            <SearchBox label={t('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={handleSearch} onReset={resetSearch} />
+          </div>
         </Row>
         <Row style={{height: 'calc(100% - 55px)', width: '100%', overflow: 'auto', paddingRight: '3%', paddingLeft: '3%'}}>
           {searchActive &&

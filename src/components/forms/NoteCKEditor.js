@@ -65,9 +65,9 @@ export default class NoteCKEditor extends React.Component<Props, void> {
     }
 
     return (
-      <AutoSizer disableWidth>
-        {({ height }) => (
-          <div>
+      <AutoSizer>
+        {({ height, width }) => (
+          <div style={{width: `${width}px`, height: `${height - 40}px`}}>
             <style jsx global>{`
               .ck.ck-editor__main>.ck-editor__editable {
                 height: ${height - 40}px;

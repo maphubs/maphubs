@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { Row, message, notification, Button } from 'antd'
+import { Row, Col, message, notification, Button } from 'antd'
 import MultiTextArea from '../forms/MultiTextArea'
 import TextInput from '../forms/textInput'
 import MultiTextInput from '../forms/MultiTextInput'
@@ -12,6 +12,10 @@ import MapHubsComponent from '../../components/MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {GroupStoreState} from '../../stores/GroupStore'
 import Locales from '../../services/locales'
+import NavigationIcon from '@material-ui/icons/Navigation'
+import GroupWorkIcon from '@material-ui/icons/GroupWork'
+import InfoIcon from '@material-ui/icons/Info'
+import DescriptionIcon from '@material-ui/icons/Description'
 
 import $ from 'jquery'
 import classNames from 'classnames'
@@ -172,10 +176,10 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
       <div className={className}>
         <div className='container'>
           <Row style={{marginBottom: '20px'}}>
-            <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+            <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton} style={{width: '100%'}}>
               <Row style={{marginBottom: '20px'}}>
                 <TextInput
-                  name='group_id' label={t('Group ID')} icon='group_work' className='col s6'
+                  name='group_id' label={t('Group ID')} icon={<GroupWorkIcon />} className='col s6'
                   disabled={this.state.group.created}
                   validations={{matchRegexp: /^[\dA-Za-z-]*$/, maxLength: 25, isAvailable: true}} validationErrors={{
                     maxLength: t('ID must be 25 characters or less.'),
@@ -185,6 +189,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   successText='ID is Available'
                   tooltipPosition='right' tooltip={t("Identifier for the Group. This will be used in links and URLs for your group's content.")}
                   required
+                  t={t}
                 />
               </Row>
               <Row style={{marginBottom: '20px'}}>
@@ -193,11 +198,12 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   label={{
                     en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome', id: 'Nama', pt: 'Nome'
                   }}
-                  icon='info' validations='maxLength:100' validationErrors={{
+                  icon={<InfoIcon />} validations='maxLength:100' validationErrors={{
                     maxLength: t('Must be 100 characters or less.')
                   }} length={100}
                   tooltipPosition='top' tooltip={t('Short Descriptive Name for the Group')}
                   required
+                  t={t}
                 />
               </Row>
               <Row style={{marginBottom: '20px'}}>
@@ -211,7 +217,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                     id: 'Deskripsi',
                     pt: 'Descrição'
                   }}
-                  icon='description' validations='maxLength:500' validationErrors={{
+                  icon={<DescriptionIcon />} validations='maxLength:500' validationErrors={{
                     maxLength: t('Description must be 500 characters or less.')
                   }} length={500}
                   tooltipPosition='top' tooltip={t('Brief Description of the Group')}
@@ -220,11 +226,12 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
               </Row>
               <Row style={{marginBottom: '20px'}}>
                 <TextInput
-                  name='location' label='Location' icon='navigation' validations='maxLength:100' validationErrors={{
+                  name='location' label='Location' icon={<NavigationIcon />} validations='maxLength:100' validationErrors={{
                     maxLength: t('Location must be 100 characters or less.')
                   }} length={100}
                   tooltipPosition='top' tooltip={t('Country or City Where the Group is Located')}
                   required
+                  t={t}
                 />
               </Row>
               <Row style={{marginBottom: '20px'}}>
@@ -233,12 +240,14 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   tooltipPosition='top' tooltip={t('Include in Public Group Listings')}
                 />
               </Row>
-              <div className='left'>
-                <Button type='danger' onClick={this.handleCancel}><i className='material-icons left'>delete</i>{t('Cancel')}</Button>
-              </div>
-              <div style={{float: 'right'}}>
-                <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Save and Continue')}</Button>
-              </div>
+              <Row justify='center' align='middle'>
+                <Col span={4}>
+                  <Button danger onClick={this.handleCancel}>{t('Cancel')}</Button>
+                </Col>
+                <Col span={4} offset={16}>
+                  <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Save and Continue')}</Button>
+                </Col>
+              </Row>
             </Formsy>
           </Row>
         </div>

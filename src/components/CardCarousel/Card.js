@@ -33,7 +33,16 @@ type Props = {
   showAddButton?: boolean
 } & CardConfig
 
-export default class MapHubsCard extends React.PureComponent<Props, void> {
+type State = {
+  imageFailed?: boolean
+}
+
+export default class MapHubsCard extends React.Component<Props, State> {
+  constructor (props: Props) {
+    super(props)
+    this.state = {}
+  }
+
   onClick = () => {
     if (this.props.onClick) {
       this.props.onClick(this.props.data)
@@ -44,8 +53,18 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
     }
   }
 
+  shouldComponentUpdate (nextProps: Props, nextState: State) {
+    if (nextState.imageFailed && !this.state.imageFailed) return true
+    return false
+  }
+
+  onImageFailed = () => {
+    this.setState({imageFailed: true})
+  }
+
   render () {
     const {group, showAddButton, type, t, image_url, showDescription} = this.props
+    const { imageFailed } = this.state
 
     let icon = ''
     let toolTipText = ''
@@ -77,10 +96,10 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
       )
     }
     let image = ''
-    if (type === 'story' && !image_url) {
+    if (type === 'story' && (!image_url || imageFailed)) {
       image = (
         <div className='card-image valign-wrapper' style={{width: '200px', height: '150px'}}>
-          <i className='material-icons omh-accent-text valign center-align' style={{fontSize: '80px', margin: 'auto'}}>library_books</i>
+          <LibraryBooksIcon className='omh-accent-text valign center-align' style={{fontSize: '80px', margin: 'auto'}} />
           {addButton}
         </div>
       )
@@ -91,7 +110,7 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
         </div>
 
       )
-    } else if (type === 'group' && !image_url) {
+    } else if (type === 'group' && (!image_url || imageFailed)) {
       image = (
         <div className='card-image valign-wrapper' style={{width: '200px', height: '150px'}}>
           <SupervisorAccountIcon className='omh-accent-text valign center-align' style={{fontSize: '80px', margin: 'auto'}} />
@@ -101,14 +120,28 @@ export default class MapHubsCard extends React.PureComponent<Props, void> {
     } else if (type === 'group' && image_url) {
       image = (
         <div className='card-image'>
-          <img className='responsive-img' style={{height: '150px', width: 'auto', margin: 'auto'}} src={image_url} />
+          <img className='responsive-img' style={{height: '150px', width: 'auto', margin: 'auto'}} src={image_url} onError={this.onImageFailed} />
+          {addButton}
+        </div>
+      )
+    } else if (type === 'layer' && (!image_url || imageFailed)) {
+      image = (
+        <div className='card-image valign-wrapper' style={{width: '200px', height: '150px'}}>
+          <LayersIcon className='omh-accent-text valign center-align' style={{fontSize: '80px', margin: 'auto'}} />
+          {addButton}
+        </div>
+      )
+    } else if (type === 'map' && (!image_url || imageFailed)) {
+      image = (
+        <div className='card-image valign-wrapper' style={{width: '200px', height: '150px'}}>
+          <MapIcon className='omh-accent-text valign center-align' style={{fontSize: '80px', margin: 'auto'}} />
           {addButton}
         </div>
       )
     } else {
       image = (
         <div className='card-image'>
-          <img width='200' height='150' src={image_url} />
+          <img width='200' height='150' src={image_url} onError={this.onImageFailed} />
           {addButton}
         </div>
       )

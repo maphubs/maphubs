@@ -258,9 +258,9 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
           >
             <a
               onClick={this.startInteractive} className='embed-map-btn'
-              style={{position: 'absolute', left: 'calc(50% - 30px)', bottom: 'calc(50% - 30px)', backgroundColor: 'rgba(25,25,25,0.35)', height: '60px', width: '60px', zIndex: '999'}}
+              style={{position: 'absolute', left: 'calc(50% - 30px)', bottom: 'calc(50% - 30px)', zIndex: '999'}}
             >
-              <PlayCircleFilledWhiteIcon style={{lineHeight: '60px', fontSize: '30px'}} />
+              <PlayCircleFilledWhiteIcon style={{lineHeight: '60px', fontSize: '60px', color: 'rgba(25,25,25,0.35)'}} />
             </a>
           </Tooltip>
         </div>

@@ -48,7 +48,7 @@ export default class LayerExport extends React.Component<Props, State> {
       return (
         <>
           <Row>
-            <Card size='small' title={t('Full Data')} bodyStyle={{padding: '10px'}}>
+            <Card size='small' title={t('Full Data')} style={{width: '100%'}} bodyStyle={{padding: '10px', width: '100%'}}>
               <List size='small'>
                 <List.Item>{t('MapHubs Format:')} <a href={maphubsFileURL}>{maphubsFileURL}</a></List.Item>
                 {!layer.is_external &&

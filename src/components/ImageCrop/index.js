@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import MapHubsComponent from '../MapHubsComponent'
-import { Row, Modal, Button, notification } from 'antd'
+import { Row, Modal, Button, notification, Upload } from 'antd'
 import Promise from 'bluebird'
 import 'cropperjs/dist/cropper.css'
 import $ from 'jquery'
@@ -9,6 +9,12 @@ import ImageCropToolbar from './ImageCropToolbar'
 
 import EXIF from 'exif-js'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate'
+import getConfig from 'next/config'
+const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
+const { Dragger } = Upload
+
 const debug = DebugService('ImageCrop')
 
 let Cropper
@@ -41,8 +47,6 @@ type State = {
   visible: boolean,
   preview: ?Object,
   loading: boolean,
-  autoCropArea: number,
-  aspectRatio: number,
   cropWidth: number,
   cropHeight: number,
   cropScaleX?: number,
@@ -54,12 +58,10 @@ type State = {
 }
 
 export default class ImageCrop extends MapHubsComponent<Props, State> {
-  props: Props
-
   static defaultProps = {
     lockAspect: false,
     autoCropArea: 1,
-    allowedExtensions: ['jpg', 'jpeg', 'png'],
+    allowedExtensions: '.jpg,.jpeg,.png',
     max_size: 5242880, // 5MB
     skip_size: 10000, // 10kb
     jpeg_quality: 75
@@ -71,24 +73,13 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
     visible: false,
     preview: null,
     loading: false,
-    autoCropArea: 1,
-    aspectRatio: 1,
     cropWidth: 0,
     cropHeight: 0,
     selectedFile: '',
     exif: {}
   }
 
-  constructor (props: Props) {
-    super(props)
-    this.state.autoCropArea = props.autoCropArea
-    if (props.aspectRatio) {
-      this.state.aspectRatio = props.aspectRatio
-    }
-    if (props.imageData) {
-      this.state.src = props.imageData
-    }
-  }
+  cropperInstance: any
 
   componentDidMount () {
     Cropper = require('react-cropper').default
@@ -115,17 +106,6 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
 
   show = () => {
     this.setState({visible: true})
-  }
-
-  checkFile = (file: Object) => {
-    const allowedFileExt = new RegExp('\.(' + this.props.allowedExtensions.join('|') + ')$', 'i')
-    let message
-
-    if (!allowedFileExt.test(file.name)) {
-      message = 'Unsupported File Extension: ' + file.name
-
-      return new Error(message)
-    }
   }
 
   checkFileSize = (file: Object) => {
@@ -248,121 +228,105 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
   })
 }
 
-  _onChange = (e: any) => {
+  _onFileUpload = async (getFile: Promise) => {
     const {t} = this
     const _this = this
+    const file = await getFile
+    console.log(file)
     _this.setState({loading: true})
-    let files: Array<Object>
-    if (e.dataTransfer) {
-      files = e.dataTransfer.files
-    } else if (e.target) {
-      files = e.target.files
-    }
-    if (files && files.length > 0) {
-      const file = files[0]
 
+    if (file) {
       const ext = file.name.split('.').pop()
 
       // check if file is supported
-      const err = this.checkFile(file)
-      if (err) {
+      try {
+        await this.checkFileSize(file)
+        // read the file
+        const img = new Image()
+
+        img.addEventListener('load', () => {
+          // get the original size
+          const width = img.width
+          const height = img.height
+          // save exif data and image to state
+          EXIF.getData(img, () => {
+            const exifdata = img.exifdata
+
+            const tempCanvas = document.createElement('canvas')
+            tempCanvas.width = width
+            tempCanvas.height = height
+
+            if (exifdata.Orientation && exifdata.Orientation !== 1) {
+              // transfrom the canvas
+              const ctx: any = tempCanvas.getContext('2d')
+              switch (exifdata.Orientation) {
+                case 1:
+                  ctx.transform(1, 0, 0, 1, 0, 0)
+                  break
+                case 2:
+                  ctx.transform(-1, 0, 0, 1, width, 0)
+                  break
+                case 3:
+                  ctx.transform(-1, 0, 0, -1, width, height)
+                  break
+                case 4:
+                  ctx.transform(1, 0, 0, -1, 0, height)
+                  break
+                case 5:
+                  // swap width/height
+                  tempCanvas.width = height
+                  tempCanvas.height = width
+                  ctx.transform(0, 1, 1, 0, 0, 0)
+                  break
+                case 6:
+                  // swap width/height
+                  tempCanvas.width = height
+                  tempCanvas.height = width
+                  ctx.transform(0, 1, -1, 0, height, 0)
+                  break
+                case 7:
+                  // swap width/height
+                  tempCanvas.width = height
+                  tempCanvas.height = width
+                  ctx.transform(0, -1, -1, 0, height, width)
+                  break
+                case 8:
+                  // swap width/height
+                  tempCanvas.width = height
+                  tempCanvas.height = width
+                  ctx.transform(0, -1, 1, 0, 0, width)
+                  break
+              }
+            }
+            const context = tempCanvas.getContext('2d')
+            if (context) {
+              context.drawImage(img, 0, 0, img.width, img.height)
+            }
+            const data = tempCanvas.toDataURL(file.type, 1)
+            _this.setState({src: data, exif: exifdata, file, img, ext, loading: false})
+            $(tempCanvas).remove()
+          })
+        })
+
+        img.addEventListener('error', () => {
+          const message = t('Bad Image:') + ' ' + file.name
+          debug.log(message)
+          notification.error({
+            message: t('Error'),
+            description: message,
+            duration: 0
+          })
+        })
+
+        img.src = window.URL.createObjectURL(file)
+      } catch (err) {
         debug.error(err)
         notification.error({
           message: t('Error'),
           description: err.message || err.toString() || err,
           duration: 0
         })
-        return
       }
-
-      this.checkFileSize(file)
-        .then(() => {
-          // read the file
-          const img = new Image()
-
-          img.addEventListener('load', () => {
-            // get the original size
-            const width = img.width
-            const height = img.height
-            // save exif data and image to state
-            EXIF.getData(img, () => {
-              const exifdata = img.exifdata
-
-              const tempCanvas = document.createElement('canvas')
-              tempCanvas.width = width
-              tempCanvas.height = height
-
-              if (exifdata.Orientation && exifdata.Orientation !== 1) {
-                // transfrom the canvas
-                const ctx: any = tempCanvas.getContext('2d')
-                switch (exifdata.Orientation) {
-                  case 1:
-                    ctx.transform(1, 0, 0, 1, 0, 0)
-                    break
-                  case 2:
-                    ctx.transform(-1, 0, 0, 1, width, 0)
-                    break
-                  case 3:
-                    ctx.transform(-1, 0, 0, -1, width, height)
-                    break
-                  case 4:
-                    ctx.transform(1, 0, 0, -1, 0, height)
-                    break
-                  case 5:
-                    // swap width/height
-                    tempCanvas.width = height
-                    tempCanvas.height = width
-                    ctx.transform(0, 1, 1, 0, 0, 0)
-                    break
-                  case 6:
-                    // swap width/height
-                    tempCanvas.width = height
-                    tempCanvas.height = width
-                    ctx.transform(0, 1, -1, 0, height, 0)
-                    break
-                  case 7:
-                    // swap width/height
-                    tempCanvas.width = height
-                    tempCanvas.height = width
-                    ctx.transform(0, -1, -1, 0, height, width)
-                    break
-                  case 8:
-                    // swap width/height
-                    tempCanvas.width = height
-                    tempCanvas.height = width
-                    ctx.transform(0, -1, 1, 0, 0, width)
-                    break
-                }
-              }
-              const context = tempCanvas.getContext('2d')
-              if (context) {
-                context.drawImage(img, 0, 0, img.width, img.height)
-              }
-              const data = tempCanvas.toDataURL(file.type, 1)
-              _this.setState({src: data, exif: exifdata, file, img, ext, loading: false})
-              $(tempCanvas).remove()
-            })
-          })
-
-          img.addEventListener('error', () => {
-            const message = t('Bad Image:') + ' ' + file.name
-            debug.log(message)
-            notification.error({
-              message: t('Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          })
-
-          img.src = window.URL.createObjectURL(file)
-        }).catch((err) => {
-          debug.error(err)
-          notification.error({
-            message: t('Error'),
-            description: err.message || err.toString() || err,
-            duration: 0
-          })
-        })
     }
   }
 
@@ -377,7 +341,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
 
   onSave = () => {
     const _this = this
-    const cropper = this.refs.cropper
+    const cropper = this.cropperInstance
     const canvas = cropper.getCroppedCanvas()
 
     // resize the image
@@ -407,46 +371,44 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
   }
 
   zoomIn = () => {
-    this.refs.cropper.zoom(0.1)
+    this.cropperInstance.zoom(0.1)
   }
 
   zoomOut = () => {
-    this.refs.cropper.zoom(-0.1)
+    this.cropperInstance.zoom(-0.1)
   }
 
   cropOriginal = () => {
     this.resetCropPosition()
-    this.setState({autoCropArea: 1, aspectRatio: NaN})
+    const { img } = this.state
+    if (img) {
+      this.cropperInstance.setAspectRatio(img.width / img.height)
+    }
   }
 
   aspect16by9 = () => {
-    this.setState({aspectRatio: 16 / 9})
+    this.cropperInstance.setAspectRatio(16 / 9)
   }
 
   aspect3by2 = () => {
-    this.setState({aspectRatio: 3 / 2})
+    this.cropperInstance.setAspectRatio(3 / 2)
   }
 
   aspectSquare = () => {
-    this.setState({aspectRatio: 1 / 1})
+    this.cropperInstance.setAspectRatio(1)
   }
 
   resetCropPosition = () => {
-    this.setState({
-      autoCropArea: 1,
-      aspectRatio: NaN
-    })
-    this.refs.cropper.reset()
+    console.log('resetting crop position')
+    if (this.cropperInstance?.reset) this.cropperInstance.reset()
   }
 
   resetImageCrop = () => {
-    if (this.refs.cropper && this.refs.cropper.reset) this.refs.cropper.reset()
-    if (this.refs.cropper && this.refs.cropper.clear) this.refs.cropper.clear()
+    if (this.cropperInstance?.reset) this.cropperInstance.reset()
+    if (this.cropperInstance?.clear) this.cropperInstance.clear()
     this.setState({
       src: null,
       visible: false,
-      autoCropArea: this.props.autoCropArea,
-      aspectRatio: this.props.aspectRatio,
       img: null,
       file: {size: 0, type: ''},
       preview: null,
@@ -460,8 +422,8 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
 
   render () {
     const { t, _crop } = this
-    const { lockAspect } = this.props
-    const { autoCropArea, aspectRatio, src } = this.state
+    const { lockAspect, autoCropArea, aspectRatio, allowedExtensions } = this.props
+    const { src, img } = this.state
 
     return (
       <div>
@@ -477,7 +439,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
           destroyOnClose
           onOk={this.onSave}
           centered
-          bodyStyle={{height: 'calc(100% - 110px)'}}
+          bodyStyle={{height: 'calc(100% - 110px)', padding: '2px'}}
           width='80vw'
           height='90vh'
           footer={[
@@ -491,47 +453,53 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
           onCancel={this.handleCloseSelected}
         >
           {!src &&
-            <Row style={{height: '80px', marginRight: '35px', marginLeft: '0px', marginBottom: '0px'}}>
-              <div className='file-field input-field'>
-                <div className='btn'>
-                  <span>{t('Choose File')}</span>
-                  <input type='file' onChange={this._onChange} value={this.state.selectedFile} />
-                </div>
-                <div className='file-path-wrapper'>
-                  <input className='file-path validate' type='text' value={this.state.selectedFile} />
-                </div>
-              </div>
+            <Row justify='center' align='middle' style={{height: '100%'}}>
+              <Dragger
+                name='file'
+                action={this._onFileUpload}
+                style={{width: '400px'}}
+                accept={allowedExtensions}
+              >
+                <p className='ant-upload-drag-icon'>
+                  <AddPhotoAlternateIcon style={{color: MAPHUBS_CONFIG.primaryColor, fontSize: 64}} />
+                </p>
+                <p className='ant-upload-text'>{t('Click or drag file to this area to upload')}</p>
+                <p className='ant-upload-hint'>
+                  PNG (.png), JPEG (.jpg, .jpeg)
+                </p>
+              </Dragger>
             </Row>}
           {src &&
-            <ImageCropToolbar
-              lockAspect={lockAspect}
-              zoomIn={this.zoomIn}
-              zoomOut={this.zoomOut}
-              cropOriginal={this.cropOriginal}
-              aspect16by9={this.aspect16by9}
-              aspect3by2={this.aspect3by2}
-              aspectSquare={this.aspectSquare}
-              resetCropPosition={this.resetCropPosition}
-              t={t}
-            />}
-          <Row style={{height: 'calc(100% - 50px)'}}>
-            {src &&
-              <Cropper
-                style={{height: 'calc(100% - 10px)', paddingBottom: '10px', width: '100%'}}
-                autoCropArea={autoCropArea}
-                aspectRatio={aspectRatio}
-                guides={false}
-                minContainerWidth='100%'
-                minContainerHeight='200'
-                src={src}
-                ref='cropper'
-                crop={_crop}
-              />}
-            {!src &&
-              <div className='valign-wrapper' style={{height: '75%'}}>
-                <h5 className='center-align valign' style={{margin: 'auto'}}>{t('Choose an image file')}</h5>
-              </div>}
-          </Row>
+            <>
+              <Row align='middle' style={{height: '50px'}}>
+                <ImageCropToolbar
+                  lockAspect={lockAspect}
+                  zoomIn={this.zoomIn}
+                  zoomOut={this.zoomOut}
+                  cropOriginal={this.cropOriginal}
+                  aspect16by9={this.aspect16by9}
+                  aspect3by2={this.aspect3by2}
+                  aspectSquare={this.aspectSquare}
+                  resetCropPosition={this.resetCropPosition}
+                  t={t}
+                />
+              </Row>
+              <Row style={{height: 'calc(100% - 50px)'}}>
+                <Cropper
+                  style={{height: '100%', width: '100%'}}
+                  autoCropArea={autoCropArea}
+                  aspectRatio={aspectRatio || (img?.width ?? 1) / (img?.height ?? 1)}
+                  guides={false}
+                  minContainerWidth='100%'
+                  minContainerHeight='200'
+                  src={src}
+                  ref={el => {
+                    this.cropperInstance = el
+                  }}
+                  crop={_crop}
+                />
+              </Row>
+            </>}
         </Modal>
       </div>
     )

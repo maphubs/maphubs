@@ -8,6 +8,7 @@ import MapHubsComponent from '../../components/MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {GroupStoreState} from '../../stores/GroupStore'
 import classNames from 'classnames'
+import GroupIcon from '@material-ui/icons/Group'
 
 type Props = {|
   onSubmit: Function,
@@ -74,13 +75,13 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
     // if group has an image use link,
     if (group && group.group_id && group.hasImage) {
       groupImage = (
-        <img className='responsive-img' width={200} height={200} src={'/group/' + group.group_id + '/image?' + new Date().getTime()} />
+        <img className='responsive-img' width={200} height={200} src={'/group/' + group.group_id + '/image.png?' + new Date().getTime()} />
       )
     } else {
     // else show default image
       groupImage = (
         <div className='circle valign-wrapper' style={{width: '200px', height: '200px'}}>
-          <i className='material-icons' style={{fontSize: '100px', margin: 'auto'}}>group</i>
+          <GroupIcon style={{fontSize: '100px', margin: 'auto'}} />
         </div>
 
       )
@@ -98,14 +99,14 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
               <p>{t('Upload an Image or Logo for Your Group (Optional)')}</p>
             </Col>
           </Row>
-          <Row style={{marginBottom: '20px'}}>
+          <Row justify='center' align='middle' style={{marginBottom: '20px'}}>
             {showPrev &&
-              <div className='left'>
+              <Col span={4}>
                 <Button type='primary' onClick={this.props.onPrev}>{t('Previous Step')}</Button>
-              </div>}
-            <div style={{float: 'right'}}>
+              </Col>}
+            <Col span={4} offset={16}>
               <Button type='primary' onClick={this.submit}>{t('Save')}</Button>
-            </div>
+            </Col>
           </Row>
         </div>
         <ImageCrop ref='imagecrop' aspectRatio={1} lockAspect resize_width={600} resize_height={600} onCrop={this.onCrop} />

@@ -298,7 +298,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
             </Row>
             <Row style={{marginTop: '20px', marginBottom: '20px'}}>
               <Col sm={24} md={12}>
-                <img alt={t('Group Photo')} width='300' src={'/group/' + groupId + '/image?' + new Date().getTime()} />
+                <img alt={t('Group Photo')} width='300' src={'/group/' + groupId + '/image.png?' + new Date().getTime()} />
               </Col>
               <Col sm={24} md={12}>
                 <Button type='primary' onClick={this.showImageCrop}>{t('Change Image')}</Button>
@@ -374,8 +374,12 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
               <Col sm={24} md={12} style={{padding: '2px'}}>
                 <Card title={<b>{t('Add Group Member')}</b>} size='small'>
                   <AddItem
-                    t={t} placeholder={t('Search for User Name')} suggestionUrl='/api/user/search/suggestions'
-                    optionLabel={t('Add as Administrator')} addButtonLabel={t('Add and Send Invite')}
+                    placeholder={t('Search for User Name')}
+                    suggestionUrl='/api/user/search/suggestions'
+                    optionLabel={t('Add as Administrator')}
+                    optionLabelOn={t('Administrator')}
+                    optionLabelOff={t('Member')}
+                    addButtonLabel={t('Add and Send Invite')}
                     onAdd={this.handleAddMember} onError={this.onError}
                   />
                 </Card>
