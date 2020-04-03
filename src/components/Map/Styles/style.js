@@ -12,7 +12,7 @@ const debug = DebugService('MapStyles/style')
 export default {
   defaultStyle (layer_id: number, shortid: string, source: GLSource, dataType: string): GLStyle {
     const settings = Settings.defaultLayerSettings()
-    return this.styleWithColor(layer_id, shortid, source, 'red', dataType, settings.interactive, settings.showBehindBaseMapLabels)
+    return this.styleWithColor(layer_id, shortid, source, 'rgba(255,0,0,0.5)', dataType, settings.interactive, settings.showBehindBaseMapLabels)
   },
 
   styleWithColor (

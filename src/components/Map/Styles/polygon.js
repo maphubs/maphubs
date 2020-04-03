@@ -22,10 +22,10 @@ export default {
         paint: {
           'fill-color': color,
           'fill-outline-color': color,
-          'fill-opacity': 0.5
+          'fill-opacity': 1
         }
       }, {
-        id: `omh-data-doublestroke-polygon--${layer_id}-${shortid}`,
+        id: `omh-data-doublestroke-polygon-${layer_id}-${shortid}`,
         type: 'line',
         metadata: {
           'maphubs:layer_id': layer_id,
