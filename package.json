@@ -154,7 +154,7 @@
     "moment-timezone": "^0.5.28",
     "morgan": "^1.8.2",
     "multer": "^1.4.2",
-    "next": "9.2.2",
+    "next": "9.3.2",
     "next-transpile-modules": "^3.0.2",
     "node-sass": "^4.13.1",
     "null-loader": "^3.0.0",
