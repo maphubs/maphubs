@@ -15,6 +15,11 @@ type Props = {
   dataSource: Array<Object>,
   editing?: boolean,
   rowKey: string,
+  rowSelection: {
+    type: string,
+    onChange: Function,
+    getCheckboxProps: Function
+  },
   onChange: Function // called each time a cell is changed
 }
 
@@ -55,7 +60,7 @@ export default class EditableTable extends React.Component<Props, State> {
   };
 
   render () {
-    const { editing, columns, rowKey } = this.props
+    const { editing, columns, rowKey, rowSelection } = this.props
     const { dataSource } = this.state
 
     console.log('table render')
@@ -67,7 +72,7 @@ export default class EditableTable extends React.Component<Props, State> {
         cell: EditableCell
       }
     }
-    let tableTotalWidth = 100
+    let tableTotalWidth = 150
     const columnsWithUI = columns.map(col => {
       // track total width for X scroll size
       if (col.width && typeof col.width === 'number') tableTotalWidth += col.width
@@ -104,6 +109,7 @@ export default class EditableTable extends React.Component<Props, State> {
               dataSource={dataSource}
               columns={columnsWithUI}
               scroll={{ y: height - 100, x: tableTotalWidth }}
+              rowSelection={rowSelection}
               pagination={{
                 position: 'bottom',
                 pageSize: 100,

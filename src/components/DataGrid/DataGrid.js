@@ -8,6 +8,8 @@ import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import { subscribe } from '../Map/containers/unstated-props'
 import slugify from 'slugify'
 import Highlighter from 'react-highlight-words'
+import turf_bbox from '@turf/bbox'
+import GetNameField from '../Map/Styles/get-name-field'
 
 import type {MapHubsField} from '../../types/maphubs-field'
 const { confirm } = Modal
@@ -37,7 +39,8 @@ type State = {
   rows: Array<Object>,
   rowKey: string, // the data index of the unique ID attribute, usually the 'mhid'
   activeSearchTag?: string,
-  searchText?: string
+  searchText?: string,
+  selectedRowKeys: Array<string>
 }
 
 const getRowKey = (exampleRow: Object) => {
@@ -192,14 +195,20 @@ class DataGrid extends React.Component<Props, State> {
               setTimeout(() => this.searchInputs[[preset.tag]].select())
             }
           },
-          render: (text) => (
-            <Highlighter
-              highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
-              searchWords={[this.state.searchText]}
-              autoEscape
-              textToHighlight={text}
-            />
-          )
+          render: (text) => {
+            if (typeof text === 'string') {
+              return (
+                <Highlighter
+                  highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                  searchWords={[this.state.searchText]}
+                  autoEscape
+                  textToHighlight={text}
+                />
+              )
+            } else {
+              return (<span>{text}</span>)
+            }
+          }
         })
       })
     } else {
@@ -326,18 +335,79 @@ class DataGrid extends React.Component<Props, State> {
     })
   }
 
+  onViewSelectedFeature = () => {
+    const { layer, presets } = this.props
+    const { selectedFeature, rowKey } = this.state
+    if (!selectedFeature) {
+      return
+    }
+
+    let idVal = selectedFeature[rowKey]
+
+    let featureName = 'unknown'
+    const nameField = GetNameField.getNameField(selectedFeature, presets)
+    if (nameField) {
+      featureName = selectedFeature[nameField]
+    }
+    if (rowKey === 'mhid') {
+      idVal = idVal.split(':')[1]
+    }
+    const url = `/feature/${layer.layer_id}/${idVal}/${slugify(featureName)}`
+    window.location = url
+  }
+
+  onClearSelection = () => {
+    this.setState({selectedFeature: null, selectedRowKeys: []})
+  }
+
   render () {
     const {layer, containers, canEdit, t} = this.props
-    const { editing, columns, rows, rowKey } = this.state
+    const { editing, columns, rows, rowKey, selectedFeature, selectedRowKeys } = this.state
     const { dataEditorState } = containers
 
     const name = slugify(t(layer.name))
     const layerId = layer.layer_id
     const csvURL = `/api/layer/${layerId}/export/csv/${name}.csv`
 
+    const rowSelection = {
+      type: 'radio',
+      // selectedRowKeys,
+      onChange: (selectedRowKeys, selectedRows) => {
+        const { rowKey } = this.state
+        const { geoJSON, containers } = this.props
+        const {mapState} = containers
+        const selected = selectedRows[0]
+        const idVal = selected[rowKey]
+
+        this.setState({selectedFeature: selected, selectedRowKeys})
+        if (geoJSON) {
+          geoJSON.features.forEach((feature) => {
+            if (idVal === feature.properties[rowKey]) {
+              const bbox = turf_bbox(feature)
+              mapState.state.map.fitBounds(bbox, 16, 25)
+            }
+          })
+        } else {
+          console.log('GeoJSON not found, unable to update the map')
+        }
+      },
+      getCheckboxProps: record => ({
+        name: record[this.state.rowKey]
+      })
+    }
+
     return (
       <Row>
         <Row justify='end' align='middle' style={{height: '50px', padding: '0px 10px'}}>
+          {(!editing && selectedFeature) &&
+            <>
+              <Button style={{marginRight: '10px'}} onClick={this.onClearSelection}>
+                {t('Clear Selection')}
+              </Button>
+              <Button style={{marginRight: '10px'}} onClick={this.onViewSelectedFeature}>
+                {t('View Selected')}
+              </Button>
+            </>}
           {(!editing && !layer.disable_export) && <Button href={csvURL} style={{marginRight: '10px'}} icon={<DownloadOutlined />}>{t('Download CSV')}</Button>}
           {(!editing && canEdit) && <Button onClick={this.onStartEditing}>{t('Edit')}</Button>}
           {editing &&
@@ -349,7 +419,15 @@ class DataGrid extends React.Component<Props, State> {
             </>}
         </Row>
         <Row style={{height: 'calc(100% - 50px)'}}>
-          <EditableTable ref={el => { this.tableRef = el }} columns={columns} rowKey={rowKey} dataSource={rows} editing={editing} onChange={this.onDataChange} />
+          <EditableTable
+            ref={el => { this.tableRef = el }}
+            columns={columns}
+            rowKey={rowKey}
+            dataSource={rows}
+            editing={editing}
+            onChange={this.onDataChange}
+            rowSelection={rowSelection}
+          />
         </Row>
       </Row>
     )
