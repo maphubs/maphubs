@@ -2,11 +2,8 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification, Row, Col, Typography } from 'antd'
-import SearchBox from '../components/SearchBox'
-import CardCollection from '../components/CardCarousel/CardCollection'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import request from 'superagent'
+import { Row, Col, Typography } from 'antd'
+import CardSearch from '../components/CardCarousel/CardSearch'
 import cardUtil from '../services/card-util'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -22,9 +19,6 @@ import FloatingAddButton from '../components/FloatingAddButton'
 
 const { Title } = Typography
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/groups')
-const checkClientError = require('../services/client-error-response').checkClientError
-
 type Props = {
   groups: Array<Group>,
   locale: string,
@@ -35,8 +29,6 @@ type Props = {
 }
 
 type State = {
-  searchResults: Array<Object>,
-  searchActive: boolean,
   showList: boolean
 }
 
@@ -52,8 +44,6 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
   }
 
   state = {
-    searchResults: [],
-    searchActive: false,
     showList: false
   }
 
@@ -65,104 +55,38 @@ export default class AllGroups extends MapHubsComponent<Props, State> {
     }
   }
 
-  handleSearch = (input: string) => {
-    const {t} = this
-    const _this = this
-    debug.log('searching for: ' + input)
-    request.get(urlUtil.getBaseUrl() + '/api/groups/search?q=' + input)
-      .type('json').accept('json')
-      .end((err, res) => {
-        checkClientError(res, err, (err) => {
-          if (err) {
-            notification.error({
-              message: t('Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            if (res.body.groups && res.body.groups.length > 0) {
-              _this.setState({searchActive: true, searchResults: res.body.groups})
-              message.info(`${res.body.groups.length} ${t('Results')}`)
-            } else {
-              message.info(t('No Results Found'), 5)
-            }
-          }
-        },
-        (cb) => {
-          cb()
-        }
-        )
-      })
-  }
-
-  resetSearch = () => {
-    this.setState({searchActive: false, searchResults: []})
-  }
-
   onModeChange = (showList: boolean) => {
     this.setState({showList})
   }
 
   render () {
     const {t} = this
-    let searchResults = ''
-
-    if (this.state.searchActive) {
-      if (this.state.searchResults.length > 0) {
-        const searchCards = this.state.searchResults.map(cardUtil.getGroupCard)
-        searchResults = (
-          <CardCollection title={t('Search Results')} cards={searchCards} t={t} />
-        )
-      } else {
-        searchResults = (
-          <Row style={{marginBottom: '20px'}}>
-            <h5>{t('Search Results')}</h5>
-            <div className='divider' />
-            <p><b>{t('No Results Found')}</b></p>
-          </Row>
-        )
-      }
-    }
-
-    let groups = ''
-    if (this.state.showList) {
-      groups = (
-        <div className='container'>
-          <GroupList showTitle={false} groups={this.props.groups} t={t} />
-        </div>
-      )
-    } else {
-      const cards = this.props.groups.map(cardUtil.getGroupCard)
-      groups = (
-        <CardGrid cards={cards} t={t} />
-      )
-    }
+    const { groups } = this.props
+    const { showList } = this.state
 
     return (
       <ErrorBoundary>
         <Header activePage='groups' {...this.props.headerConfig} />
-        <main>
+        <main style={{margin: '10px'}}>
           <Row style={{marginTop: '20px', marginBottom: '10px'}}>
-            <Col sm={12} md={8}>
-              <Title level={2}>{t('Groups')}</Title>
-            </Col>
-            <Col sm={12} md={8} offset={8} style={{textAlign: 'right', paddingTop: '2px'}}>
-              <SearchBox label={t('Search Groups')} suggestionUrl='/api/groups/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
-            </Col>
+            <Title level={2}>{t('Groups')}</Title>
           </Row>
+          <CardSearch cardType='group' t={t} />
           <Row>
-
-            {searchResults}
-
             <Row justify='end'>
               <Col style={{margin: '20px'}}>
                 <Formsy>
-                  <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={this.state.showList} />
+                  <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={showList} />
                 </Formsy>
               </Col>
             </Row>
             <Row style={{marginBottom: '20px'}}>
-              {groups}
+              {showList &&
+                <div className='container'>
+                  <GroupList showTitle={false} groups={groups} t={t} />
+                </div>}
+              {!showList &&
+                <CardGrid cards={groups.map(cardUtil.getGroupCard)} t={t} />}
             </Row>
             <FloatingAddButton
               onClick={() => {

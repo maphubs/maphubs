@@ -2,11 +2,9 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification, Row, Col, Button, Typography } from 'antd'
-import SearchBox from '../components/SearchBox'
+import { Row, Button, Typography } from 'antd'
 import CardCollection from '../components/CardCarousel/CardCollection'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import request from 'superagent'
+import CardSearch from '../components/CardCarousel/CardSearch'
 import cardUtil from '../services/card-util'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -16,9 +14,6 @@ import UserStore from '../stores/UserStore'
 import FloatingAddButton from '../components/FloatingAddButton'
 
 const { Title } = Typography
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/groups')
-const checkClientError = require('../services/client-error-response').checkClientError
 
 type Props = {
   featuredGroups: Array<Object>,
@@ -31,12 +26,7 @@ type Props = {
   user: Object
 }
 
-type State = {
-  searchResults: Array<Object>,
-  searchActive: boolean
-}
-
-export default class Groups extends MapHubsComponent<Props, State> {
+export default class Groups extends MapHubsComponent<Props, void> {
   static async getInitialProps ({ req, query }: {req: any, query: Object}) {
     const isServer = !!req
 
@@ -51,11 +41,6 @@ export default class Groups extends MapHubsComponent<Props, State> {
     groups: []
   }
 
-  state = {
-    searchResults: [],
-    searchActive: false
-  }
-
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
@@ -64,70 +49,11 @@ export default class Groups extends MapHubsComponent<Props, State> {
     }
   }
 
-  handleSearch = (input: string) => {
-    const {t} = this
-    const _this = this
-    debug.log('searching for: ' + input)
-    request.get(urlUtil.getBaseUrl() + '/api/groups/search?q=' + input)
-      .type('json').accept('json')
-      .end((err, res) => {
-        checkClientError(res, err, (err) => {
-          if (err) {
-            notification.error({
-              message: t('Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            if (res.body.groups && res.body.groups.length > 0) {
-              _this.setState({searchActive: true, searchResults: res.body.groups})
-              message.info(`${res.body.layers.length} ${t('Results')}`)
-            } else {
-              message.info(t('No Results Found'), 5)
-            }
-          }
-        },
-        (cb) => {
-          cb()
-        }
-        )
-      })
-  }
-
-  resetSearch = () => {
-    this.setState({searchActive: false, searchResults: []})
-  }
-
   render () {
     const {t} = this
     const featuredCards = this.props.featuredGroups.map(cardUtil.getGroupCard)
     const popularCards = this.props.popularGroups.map(cardUtil.getGroupCard)
     const recentCards = this.props.recentGroups.map(cardUtil.getGroupCard)
-
-    let searchResults = ''
-
-    if (this.state.searchActive) {
-      if (this.state.searchResults.length > 0) {
-        const searchCards = this.state.searchResults.map(cardUtil.getGroupCard)
-        searchResults = (
-          <CardCollection title={t('Search Results')} cards={searchCards} />
-        )
-      } else {
-        searchResults = (
-          <Row style={{marginBottom: '20px'}}>
-            <Title level={3}>{t('Search Results')}</Title>
-            <div className='divider' />
-            <p><b>{t('No Results Found')}</b></p>
-          </Row>
-        )
-      }
-    }
-    let featured = ''
-    if (featuredCards.length > 0) {
-      featured = (
-        <CardCollection title={t('Featured')} cards={featuredCards} viewAllLink='/groups/all' />
-      )
-    }
 
     return (
       <ErrorBoundary>
@@ -135,19 +61,13 @@ export default class Groups extends MapHubsComponent<Props, State> {
         <main style={{margin: '10px'}}>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <Row>
-              <Col sm={24} md={8}>
-                <Title level={2}>{t('Groups')}</Title>
-              </Col>
-              <Col sm={24} md={8} offset={8} style={{textAlign: 'right'}}>
-                <SearchBox label={t('Search Groups')} suggestionUrl='/api/groups/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
-              </Col>
+              <Title level={2}>{t('Groups')}</Title>
             </Row>
           </div>
           <div>
-
-            {searchResults}
-
-            {featured}
+            <CardSearch cardType='group' t={t} />
+            {featuredCards.length > 0 &&
+              <CardCollection title={t('Featured')} cards={featuredCards} viewAllLink='/groups/all' />}
             <CardCollection title={t('Popular')} cards={popularCards} viewAllLink='/groups/all' />
             <CardCollection title={t('Recent')} cards={recentCards} viewAllLink='/groups/all' />
 

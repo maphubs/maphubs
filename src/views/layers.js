@@ -2,10 +2,9 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification, Row, Col, Divider, Button, Typography } from 'antd'
-import SearchBox from '../components/SearchBox'
+import { Row, Button, Typography } from 'antd'
 import CardCollection from '../components/CardCarousel/CardCollection'
-import request from 'superagent'
+import CardSearch from '../components/CardCarousel/CardSearch'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
@@ -16,10 +15,6 @@ import FloatingAddButton from '../components/FloatingAddButton'
 import cardUtil from '../services/card-util'
 
 const { Title } = Typography
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/layers')
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-const checkClientError = require('../services/client-error-response').checkClientError
 
 type Props = {
   featuredLayers: Array<Layer>,
@@ -32,11 +27,7 @@ type Props = {
   user: Object
 }
 
-type State = {
-  searchResults: Array<Object>,
-  searchActive: boolean
-}
-export default class Layers extends MapHubsComponent<Props, State> {
+export default class Layers extends MapHubsComponent<Props, void> {
   static async getInitialProps ({ req, query }: {req: any, query: Object}) {
     const isServer = !!req
 
@@ -47,11 +38,6 @@ export default class Layers extends MapHubsComponent<Props, State> {
     }
   }
 
-  state = {
-    searchResults: [],
-    searchActive: false
-  }
-
   constructor (props: Props) {
     super(props)
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
@@ -60,86 +46,22 @@ export default class Layers extends MapHubsComponent<Props, State> {
     }
   }
 
-  handleSearch = (input: string) => {
-    const {t} = this
-    const _this = this
-    debug.log('searching for: ' + input)
-    request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
-      .type('json').accept('json')
-      .end((err, res) => {
-        checkClientError(res, err, (err) => {
-          if (err) {
-            notification.error({
-              message: t('Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            if (res.body.layers && res.body.layers.length > 0) {
-              _this.setState({searchActive: true, searchResults: res.body.layers})
-              message.info(`${res.body.layers.length} ${t('Results')}`)
-            } else {
-              message.info(t('No Results Found'), 5)
-            }
-          }
-        },
-        (cb) => {
-          cb()
-        }
-        )
-      })
-  }
-
-  resetSearch = () => {
-    this.setState({searchActive: false, searchResults: []})
-  }
-
   render () {
     const {t} = this
     const featuredCards = this.props.featuredLayers.map(cardUtil.getLayerCard)
     const recentCards = this.props.recentLayers.map(cardUtil.getLayerCard)
     const popularCards = this.props.popularLayers.map(cardUtil.getLayerCard)
 
-    let searchResults = ''
-
-    if (this.state.searchActive) {
-      if (this.state.searchResults.length > 0) {
-        const searchCards = this.state.searchResults.map(cardUtil.getLayerCard)
-        searchResults = (
-          <CardCollection title={t('Search Results')} cards={searchCards} />
-        )
-      } else {
-        searchResults = (
-          <Row>
-            <Title level={3}>{t('Search Results')}</Title>
-            <Divider />
-            <p><b>{t('No Results Found')}</b></p>
-          </Row>
-        )
-      }
-    }
-
-    let featured = ''
-    if (featuredCards.length > 0) {
-      featured = (
-        <CardCollection title={t('Featured')} cards={featuredCards} viewAllLink='/layers/all' />
-      )
-    }
-
     return (
       <ErrorBoundary>
         <Header activePage='layers' {...this.props.headerConfig} />
         <main style={{margin: '10px'}}>
           <Row style={{marginTop: '20px', marginBottom: '10px'}}>
-            <Col sm={24} md={8}>
-              <Title level={2}>{t('Layers')}</Title>
-            </Col>
-            <Col sm={24} md={8} offset={8} style={{textAlign: 'right', paddingTop: '2px'}}>
-              <SearchBox label={t('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
-            </Col>
+            <Title level={2}>{t('Layers')}</Title>
           </Row>
-          {searchResults}
-          {featured}
+          <CardSearch cardType='layer' t={t} />
+          {featuredCards.length > 0 &&
+            <CardCollection title={t('Featured')} cards={featuredCards} viewAllLink='/layers/all' />}
           <CardCollection title={t('Popular')} cards={popularCards} viewAllLink='/layers/all' />
           <CardCollection title={t('Recent')} cards={recentCards} viewAllLink='/layers/all' />
 

@@ -2,10 +2,8 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification, Row, Col, Typography } from 'antd'
-import SearchBox from '../components/SearchBox'
-import CardCollection from '../components/CardCarousel/CardCollection'
-import request from 'superagent'
+import { Row, Col, Typography } from 'antd'
+import CardSearch from '../components/CardCarousel/CardSearch'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
@@ -20,9 +18,6 @@ import FloatingAddButton from '../components/FloatingAddButton'
 import cardUtil from '../services/card-util'
 
 const { Title } = Typography
-const checkClientError = require('../services/client-error-response').checkClientError
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/layers')
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 
 type Props = {
   layers: Array<Layer>,
@@ -50,8 +45,6 @@ export default class Layers extends MapHubsComponent<Props, State> {
   }
 
   state = {
-    searchResults: [],
-    searchActive: false,
     showList: false
   }
 
@@ -61,36 +54,6 @@ export default class Layers extends MapHubsComponent<Props, State> {
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})
     }
-  }
-
-  handleSearch = (input: string) => {
-    const {t} = this
-    const _this = this
-    debug.log('searching for: ' + input)
-    request.get(urlUtil.getBaseUrl() + '/api/layers/search?q=' + input)
-      .type('json').accept('json')
-      .end((err, res) => {
-        checkClientError(res, err, (err) => {
-          if (err) {
-            notification.error({
-              message: t('Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            if (res.body.layers && res.body.layers.length > 0) {
-              _this.setState({searchActive: true, searchResults: res.body.layers})
-              message.info(`${res.body.layers.length} ${t('Results')}`)
-            } else {
-              message.info(t('No Results Found'), 5)
-            }
-          }
-        },
-        (cb) => {
-          cb()
-        }
-        )
-      })
   }
 
   resetSearch = () => {
@@ -104,42 +67,18 @@ export default class Layers extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     const { layers } = this.props
-    const { showList, searchActive } = this.state
-    let searchResults = ''
-
-    if (searchActive) {
-      if (this.state.searchResults.length > 0) {
-        const searchCards = this.state.searchResults.map(cardUtil.getLayerCard)
-        searchResults = (
-          <CardCollection title={t('Search Results')} cards={searchCards} />
-        )
-      } else {
-        searchResults = (
-          <Row>
-            <h5>{t('Search Results')}</h5>
-            <div className='divider' />
-            <p><b>{t('No Results Found')}</b></p>
-          </Row>
-        )
-      }
-    }
+    const { showList } = this.state
 
     return (
       <ErrorBoundary>
         <Header activePage='layers' {...this.props.headerConfig} />
-        <main>
+        <main style={{margin: '10px'}}>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
             <Row>
-              <Col sm={12} md={8}>
-                <Title level={2}>{t('Layers')}</Title>
-              </Col>
-              <Col sm={12} md={8} offset={8} style={{textAlign: 'right', paddingTop: '2px'}}>
-                <SearchBox label={t('Search Layers')} suggestionUrl='/api/layers/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
-              </Col>
+              <Title level={2}>{t('Layers')}</Title>
             </Row>
           </div>
-          {searchResults}
-
+          <CardSearch cardType='layer' t={t} />
           <Row justify='end' style={{marginBottom: '20px'}}>
             <Col style={{margin: '20px'}}>
               <Formsy>

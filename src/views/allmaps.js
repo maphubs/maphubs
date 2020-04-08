@@ -2,10 +2,8 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { message, notification, Row, Divider, Col, Typography } from 'antd'
-import SearchBox from '../components/SearchBox'
-import CardCollection from '../components/CardCarousel/CardCollection'
-import request from 'superagent'
+import { Row, Col, Typography } from 'antd'
+import CardSearch from '../components/CardCarousel/CardSearch'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
@@ -20,10 +18,6 @@ import FloatingAddButton from '../components/FloatingAddButton'
 import cardUtil from '../services/card-util'
 const { Title } = Typography
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/maps')
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-const checkClientError = require('../services/client-error-response').checkClientError
-
 type Props = {
   maps: Array<Object>,
   locale: string,
@@ -34,8 +28,6 @@ type Props = {
 }
 
 type State = {
-  searchResults: Array<Object>,
-  searchActive: boolean,
   showList: boolean
 }
 
@@ -51,8 +43,6 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
   }
 
   state: State = {
-    searchResults: [],
-    searchActive: false,
     showList: false
   }
 
@@ -64,102 +54,38 @@ export default class AllMaps extends MapHubsComponent<Props, State> {
     }
   }
 
-  handleSearch = (input: string) => {
-    const {t} = this
-    const _this = this
-    debug.log('searching for: ' + input)
-    request.get(urlUtil.getBaseUrl() + '/api/maps/search?q=' + input)
-      .type('json').accept('json')
-      .end((err, res) => {
-        checkClientError(res, err, (err) => {
-          if (err) {
-            notification.error({
-              message: t('Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            if (res.body.maps && res.body.maps.length > 0) {
-              _this.setState({searchActive: true, searchResults: res.body.maps})
-              message.info(`${res.body.layers.length} ${t('Results')}`)
-            } else {
-              message.info(t('No Results Found'), 5)
-            }
-          }
-        },
-        (cb) => {
-          cb()
-        }
-        )
-      })
-  }
-
-  resetSearch = () => {
-    this.setState({searchActive: false, searchResults: []})
-  }
-
   onModeChange = (showList: boolean) => {
     this.setState({showList})
   }
 
   render () {
     const {t} = this
-    let searchResults = ''
-    if (this.state.searchActive) {
-      if (this.state.searchResults.length > 0) {
-        const searchCards = this.state.searchResults.map(cardUtil.getMapCard)
-
-        searchResults = (
-          <CardCollection title={t('Search Results')} cards={searchCards} t={t} />
-        )
-      } else {
-        searchResults = (
-          <Row style={{marginBottom: '20px'}}>
-            <h5>{t('Search Results')}</h5>
-            <Divider />
-            <p><b>{t('No Results Found')}</b></p>
-          </Row>
-        )
-      }
-    }
-
-    let maps = ''
-    if (this.state.showList) {
-      maps = (
-        <div className='container'>
-          <MapList showTitle={false} maps={this.props.maps} t={t} />
-        </div>
-      )
-    } else {
-      const cards = this.props.maps.map(cardUtil.getMapCard)
-      maps = (
-        <CardGrid cards={cards} t={t} />
-      )
-    }
+    const { maps } = this.props
+    const { showList } = this.state
 
     return (
       <ErrorBoundary>
         <Header activePage='maps' {...this.props.headerConfig} />
-        <main>
+        <main style={{margin: '10px'}}>
           <div style={{marginTop: '20px', marginBottom: '10px'}}>
-            <Row style={{marginBottom: '0px'}}>
-              <Col sm={24} md={8}>
-                <Title level={2}>{t('Maps')}</Title>
-              </Col>
-              <Col sm={24} md={8} offset={8} style={{textAlign: 'right', paddingTop: '2px'}}>
-                <SearchBox label={t('Search Maps')} suggestionUrl='/api/maps/search/suggestions' onSearch={this.handleSearch} onReset={this.resetSearch} />
-              </Col>
+            <Row>
+              <Title level={2}>{t('Maps')}</Title>
             </Row>
           </div>
-          {searchResults}
+          <CardSearch cardType='map' t={t} />
           <Row justify='end' style={{marginBottom: '20px'}}>
             <Col style={{margin: '20px'}}>
               <Formsy>
-                <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={this.state.showList} />
+                <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={showList} />
               </Formsy>
             </Col>
             <Row style={{marginBottom: '20px'}}>
-              {maps}
+              {showList &&
+                <div className='container'>
+                  <MapList showTitle={false} maps={maps} t={t} />
+                </div>}
+              {!showList &&
+                <CardGrid cards={maps.map(cardUtil.getMapCard)} t={t} />}
             </Row>
           </Row>
           <div>
