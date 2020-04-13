@@ -118,7 +118,7 @@
     "immutability-helper": "^3.0.1",
     "immutable": "4.0.0-rc.2",
     "intl": "1.2.5",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "js-htmlencode": "^0.3.0",
     "knex": "0.20.10",
     "less": "^3.11.1",
