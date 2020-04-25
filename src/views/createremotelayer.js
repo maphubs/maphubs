@@ -264,7 +264,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                   />
                   <SelectGroup groups={this.props.groups} type='layer' />
                   <div style={{float: 'right'}}>
-                    <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}><i className='material-icons right'>arrow_forward</i>{t('Load Remote Layer')}</Button>
+                    <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Load Remote Layer')}</Button>
                   </div>
                 </Formsy>
               </Row>

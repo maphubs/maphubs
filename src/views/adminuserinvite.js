@@ -4,7 +4,8 @@ import Formsy from 'formsy-react'
 import TextInput from '../components/forms/textInput'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { Modal, Tooltip, message, notification, Row, Col, Button } from 'antd'
+import { Modal, Tooltip, message, notification, Row, Col, Button, Typography, Table } from 'antd'
+import { MailFilled } from '@ant-design/icons'
 import request from 'superagent'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -12,9 +13,18 @@ import LocaleStore from '../stores/LocaleStore'
 import type {LocaleStoreState} from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+import WarningIcon from '@material-ui/icons/Warning'
+import DoneIcon from '@material-ui/icons/Done'
+import EmailIcon from '@material-ui/icons/Email'
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
+import LinkIcon from '@material-ui/icons/Link'
+import DeleteIcon from '@material-ui/icons/Delete'
+
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 const { confirm } = Modal
 const checkClientError = require('../services/client-error-response').checkClientError
+
+const { Title } = Typography
 
 type User = {
   email: string,
@@ -228,113 +238,137 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
     const {t} = this
     const _this = this
 
+    const columns = [
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+        render: (text, record) => {
+          let status = 'Disabled'
+          let icon = <WarningIcon style={{color: 'red'}} />
+          if (record.key) {
+            if (record.used) {
+              status = 'Active'
+              icon = <DoneIcon style={{color: 'green'}} />
+            } else {
+              status = 'Invite Sent'
+              icon = <EmailIcon style={{color: 'orange'}} />
+            }
+          }
+
+          if (record.admin) {
+            status = 'Admin'
+            icon = <SupervisorAccountIcon style={{color: 'purple'}} />
+          }
+          return (
+            <span>
+              <Tooltip title={status} placement='bottom'>
+                {icon}
+              </Tooltip>
+            </span>
+          )
+        }
+      },
+      {
+        title: 'Username',
+        dataIndex: 'display_name',
+        key: 'username'
+      },
+      {
+        title: 'Email',
+        dataIndex: 'email',
+        key: 'email',
+        render: (text, record) => (
+          <span>
+            {record.email || record.invite_email}
+          </span>
+        )
+      },
+      {
+        title: 'Invite Key',
+        key: 'key',
+        dataIndex: 'key'
+      },
+      {
+        title: 'Action',
+        key: 'action',
+        render: (text, record) => {
+          let status = 'Disabled'
+          if (record.key) {
+            if (record.used) {
+              status = 'Active'
+            } else {
+              status = 'Invite Sent'
+            }
+          }
+          if (record.admin) {
+            status = 'Admin'
+          }
+          return (
+            <span>
+              {(status !== 'Disabled' && status !== 'Admin') &&
+                <>
+                  <Tooltip title={t('Resend Invite')} placement='bottom'>
+                    <a onClick={() => {
+                      _this.handleResendInvite(record)
+                    }}
+                    >
+                      <EmailIcon style={{cursor: 'pointer'}} />
+                    </a>
+                  </Tooltip>
+                  <Tooltip title={t('Copy Invite Link')} placement='bottom'>
+                    <a onClick={() => {
+                      _this.copyInviteLink(record)
+                    }}
+                    >
+                      <LinkIcon style={{cursor: 'pointer'}} />
+                    </a>
+                  </Tooltip>
+                  <Tooltip title={t('Remove User')} placement='bottom'>
+                    <a onClick={() => {
+                      _this.handleDeauthorize(record)
+                    }}
+                    >
+                      <DeleteIcon style={{cursor: 'pointer'}} />
+                    </a>
+                  </Tooltip>
+                </>}
+            </span>
+          )
+        }
+      }
+    ]
+
     return (
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main className='container'>
-          <h4 className='center'>{t('Manage Users')}</h4>
+          <Title>{t('Manage Users')}</Title>
           <Row style={{marginBottom: '20px'}} justify='center' align='middle'>
-            <Col sm={24} md={16}>
-              <Formsy onValidSubmit={this.onSubmit} onValid={this.enableButton} onInvalid={this.disableButton}>
-                <Row style={{margin: '25px'}}>
+            <Formsy
+              onValidSubmit={this.onSubmit} onValid={this.enableButton} onInvalid={this.disableButton}
+              style={{width: '100%', maxWidth: '800px'}}
+            >
+              <Row justify='center' align='top' style={{height: '80px'}}>
+                <Col sm={24} md={16}>
                   <TextInput
-                    name='email' label={t('Email to Invite')} icon='email'
+                    name='email' label={t('Email to Invite')}
+                    icon={<MailFilled />}
                     validations={{isEmail: true}} validationErrors={{
                       isEmail: t('Not a valid email address.')
                     }} length={50}
                     required
+                    t={t}
                   />
-                </Row>
-                <Row style={{textAlign: 'center'}}>
-                  <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Send Invite')}</Button>
-                </Row>
-              </Formsy>
-            </Col>
+                </Col>
+                <Col sm={24} md={8} style={{padding: '0px 20px'}}>
+                  <Button style={{marginTop: '20px'}} type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Send Invite')}</Button>
+                </Col>
+              </Row>
+            </Formsy>
           </Row>
           <Row>
-            <table>
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>Username</th>
-                  <th>Email</th>
-                  <th>Invite Key</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.members.map((member) => {
-                  let status = 'Disabled'
-                  let icon = 'warning'
-                  let color = 'red'
-                  if (member.key) {
-                    if (member.used) {
-                      status = 'Active'
-                      icon = 'done'
-                      color = 'green'
-                    } else {
-                      status = 'Invite Sent'
-                      icon = 'email'
-                      color = 'orange'
-                    }
-                  }
-
-                  if (member.admin) {
-                    status = 'Admin'
-                    color = 'purple'
-                    icon = 'supervisor_account'
-                  }
-
-                  const email = member.email || member.invite_email
-                  return (
-                    <tr key={member.id}>
-                      <td>
-                        <Tooltip title={status} placement='bottom'>
-                          <i className='material-icons' style={{color}}>{icon}</i>
-                        </Tooltip>
-                      </td>
-                      <td>{member.display_name}</td>
-                      <td>{email}</td>
-                      <td>{member.key}</td>
-                      <td>
-                        {(status !== 'Disabled' && status !== 'Admin') &&
-                          <>
-                            <Tooltip title={t('Resend Invite')} placement='bottom'>
-                              <a onClick={() => {
-                                _this.handleResendInvite(member)
-                              }}
-                              >
-                                <i className='material-icons' style={{cursor: 'pointer'}}>email</i>
-                              </a>
-                            </Tooltip>
-                            <Tooltip title={t('Copy Invite Link')} placement='bottom'>
-                              <a onClick={() => {
-                                _this.copyInviteLink(member)
-                              }}
-                              >
-                                <i className='material-icons' style={{cursor: 'pointer'}}>link</i>
-                              </a>
-                            </Tooltip>
-                            <Tooltip title={t('Remove User')} placement='bottom'>
-                              <a onClick={() => {
-                                _this.handleDeauthorize(member)
-                              }}
-                              >
-                                <i
-                                  className='material-icons' style={{
-                                    cursor: 'pointer'
-                                  }}
-                                >delete
-                                </i>
-                              </a>
-                            </Tooltip>
-                          </>}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+            <Table columns={columns} dataSource={this.state.members} />
           </Row>
           <Row>
             <p>

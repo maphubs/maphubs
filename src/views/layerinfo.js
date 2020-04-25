@@ -29,7 +29,7 @@ import { Fab, Action } from 'react-tiny-fab'
 import 'react-tiny-fab/dist/styles.css'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import EditIcon from '@material-ui/icons/Edit'
-import SaveIcon from '@material-ui/icons/Save'
+import LockIcon from '@material-ui/icons/Lock'
 import PhotoIcon from '@material-ui/icons/Photo'
 import MapIcon from '@material-ui/icons/Map'
 import SettingsIcon from '@material-ui/icons/Settings'
@@ -333,7 +333,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                       title={t('Private')}
                       placement='left'
                     >
-                      <i className='material-icons'>lock</i>
+                      <LockIcon />
                     </Tooltip>
                   </div>}
 
