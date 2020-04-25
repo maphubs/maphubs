@@ -244,7 +244,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     if (config.datasets) {
       const cards = config.datasets.map((dataset) => {
         const {type, filter} = dataset
-        if (type === 'layer' && filter === 'featured') {
+        if (type === 'layer') {
           if (filter === 'featured') return featuredLayersCards
           if (filter === 'popular') return popularLayersCards
           if (filter === 'recent') return recentLayersCards
