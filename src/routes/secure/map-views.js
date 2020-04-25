@@ -98,7 +98,7 @@ module.exports = function (app: any) {
   app.get('/maps/all', csrfProtection, async (req, res, next) => {
     try {
       const locale = req.locale ? req.locale : 'en'
-      const maps = await Map.getAllMaps().orderByRaw(`omh.maps.title -> '${locale}'`)
+      const maps = await Map.getAllMaps().orderByRaw(`lower((omh.maps.title -> '${locale}')::text)`)
       return app.next.render(req, res, '/allmaps', await pageOptions(req, {
         title: req.__('Maps') + ' - ' + local.productName,
         props: {maps}

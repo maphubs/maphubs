@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { List } from 'antd'
+import { List, Avatar } from 'antd'
 import _isequal from 'lodash.isequal'
 import InfoIcon from '@material-ui/icons/Info'
 
@@ -31,14 +31,23 @@ export default class GroupList extends React.Component<Props, void> {
         header={showTitle && (<b>{t('Groups')}</b>)}
         dataSource={groups}
         bordered
+        style={{width: '100%', maxWidth: '800px'}}
         renderItem={group => (
           <List.Item
             actions={[
-              <a key='open-group-info' href={`/group/${group.group_id}`}><InfoIcon /></a>]}
+              <a key='open-group-icon' href={`/group/${group.group_id}`}><InfoIcon /></a>]}
           >
-            <span>
-              {t(group.name)}
-            </span>
+            <List.Item.Meta
+              avatar={
+                <a href={`/group/${group.group_id}`}>
+                  <Avatar
+                    alt={t(group.name)} shape='square' size={64} src={`/img/resize/128?format=webp&url=/group/${group.group_id}/image.png`}
+                  />
+                </a>
+              }
+              title={t(group.name)}
+              description={t(group.description)}
+            />
           </List.Item>
         )}
       />

@@ -32,7 +32,7 @@ module.exports = function (app: any) {
   app.get('/groups/all', csrfProtection, async (req, res, next) => {
     try {
       const locale = req.locale ? req.locale : 'en'
-      const groups = await Group.getAllGroups().orderByRaw(`omh.groups.name -> '${locale}'`)
+      const groups = await Group.getAllGroups().orderByRaw(`lower((omh.groups.name -> '${locale}')::text)`)
       return app.next.render(req, res, '/allgroups', await pageOptions(req, {
         title: req.__('Groups') + ' - ' + local.productName,
         props: {

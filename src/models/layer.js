@@ -31,7 +31,7 @@ module.exports = {
         'status', 'source', 'license', 'presets',
         'allow_public_submit',
         'is_external', 'external_layer_type', 'external_layer_config', 'disable_export',
-        'owned_by_group_id', db.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views',
+        'owned_by_group_id', db.raw('timezone(\'UTC\', last_updated)::text as last_updated'), 'views',
         'style', 'legend_html', 'labels', 'settings', 'extent_bbox', 'preview_position')
         .table('omh.layers').where({private: false, status: 'published'}).orderBy(db.raw('name -> \'en\''))
     } else {
@@ -39,7 +39,7 @@ module.exports = {
         'remote', 'remote_host', 'remote_layer_id',
         'status', 'source', 'license', 'presets',
         'is_external', 'external_layer_type', 'external_layer_config', 'disable_export', 'owned_by_group_id',
-        db.raw('timezone(\'UTC\', last_updated) as last_updated'), 'views')
+        db.raw('timezone(\'UTC\', last_updated)::text as last_updated'), 'views')
         .table('omh.layers').where({private: false, status: 'published'}).orderBy(db.raw('name -> \'en\''))
     }
   },

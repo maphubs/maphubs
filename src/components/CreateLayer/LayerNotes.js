@@ -16,7 +16,7 @@ type Props = {|
   t: Function,
   layer_id: number,
   canEdit: boolean,
-  _csrf: string
+  _csrf?: string
 |}
 
 type State = {
