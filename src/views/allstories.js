@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { Row, Col, Typography } from 'antd'
+import { Row, Typography } from 'antd'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import UserStore from '../stores/UserStore'
@@ -8,10 +8,6 @@ import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import StoryList from '../components/Lists/StoryList'
-import Toggle from '../components/forms/toggle'
-import Formsy from 'formsy-react'
-import CardGrid from '../components/CardCarousel/CardGrid'
-import cardUtil from '../services/card-util'
 import type {UserStoreState} from '../stores/UserStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import FloatingAddButton from '../components/FloatingAddButton'
@@ -27,9 +23,7 @@ type Props = {|
   user: Object
 |}
 
-type State = {
-  showList?: boolean
-} & UserStoreState;
+type State = UserStoreState
 
 export default class AllStories extends MapHubsComponent<Props, State> {
   static async getInitialProps ({ req, query }: {req: any, query: Object}) {
@@ -55,14 +49,9 @@ export default class AllStories extends MapHubsComponent<Props, State> {
     }
   }
 
-  onModeChange = (showList: boolean) => {
-    this.setState({showList})
-  }
-
   render () {
     const {t} = this
     const {stories} = this.props
-    const {showList} = this.state
     const hasStories = stories && stories.length > 0
     return (
       <ErrorBoundary>
@@ -72,21 +61,11 @@ export default class AllStories extends MapHubsComponent<Props, State> {
             <Row>
               <Title>{t('Stories')}</Title>
             </Row>
-            <Row justify='end'>
-              <Col style={{margin: '20px'}}>
-                <Formsy>
-                  <Toggle name='mode' onChange={this.onModeChange} labelOff={t('Grid')} labelOn={t('List')} checked={showList} />
-                </Formsy>
-              </Col>
-            </Row>
             {hasStories &&
               <Row>
-                {showList &&
-                  <div className='container'>
-                    <StoryList showTitle={false} stories={stories} t={t} />
-                  </div>}
-                {!showList &&
-                  <CardGrid cards={stories.map(s => cardUtil.getStoryCard(s, t))} t={t} />}
+                <div className='container'>
+                  <StoryList showTitle={false} stories={stories} t={t} />
+                </div>
               </Row>}
             {!hasStories &&
               <Row style={{height: '400px', textAlign: 'center', paddingTop: '200px'}}>
