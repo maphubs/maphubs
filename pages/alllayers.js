@@ -3,7 +3,6 @@ import React from 'react'
 import Header from '../src/components/header'
 import Footer from '../src/components/footer'
 import { Row, Typography } from 'antd'
-import CardSearch from '../src/components/CardCarousel/CardSearch'
 import MapHubsComponent from '../src/components/MapHubsComponent'
 import Reflux from '../src/components/Rehydrate'
 import LocaleStore from '../src/stores/LocaleStore'
@@ -24,14 +23,6 @@ type Props = {
   _csrf: string,
   user: Object
 }
-
-/*
-export async function getServerSideProps ({ query }: {query: Object}) {
-  return {
-    props: query.props
-  }
-}
-*/
 
 export default class Layers extends MapHubsComponent<Props, void> {
   static async getInitialProps ({ req, query }: {req: any, query: Object}) {
