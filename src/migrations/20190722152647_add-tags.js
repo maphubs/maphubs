@@ -25,7 +25,7 @@ exports.up = async (knex) => {
 }
 
 exports.down = async (knex) => {
-  await knex.raw(`DROP TABLE omh.map_tags;`)
-  await knex.raw(`DROP TABLE omh.story_tags;`)
-  return knex.raw(`DROP TABLE omh.tags;`)
+  await knex.raw('DROP TABLE omh.map_tags;')
+  await knex.raw('DROP TABLE omh.story_tags;')
+  return knex.raw('DROP TABLE omh.tags;')
 }

@@ -71,7 +71,7 @@ module.exports = function (app: any) {
 
   app.get('/api/layer/info/:layer_id', privateLayerCheck, async (req, res) => {
     try {
-      const layerId = parseInt(req.params.layer_id || '', 10)
+      const layerId = Number.parseInt(req.params.layer_id || '', 10)
       return res.status(200).send({
         success: true,
         layer: await Layer.getLayerInfo(layerId)
@@ -80,7 +80,7 @@ module.exports = function (app: any) {
   })
 
   app.get('/api/layer/metadata/:layer_id', privateLayerCheck, (req, res) => {
-    const layerId = parseInt(req.params.layer_id || '', 10)
+    const layerId = Number.parseInt(req.params.layer_id || '', 10)
     Layer.getLayerByID(layerId)
       .then((layer) => {
       // inject this site's URL into the style source, to support remote layers

@@ -11,7 +11,7 @@ const debug = DebugService('MapInteractionMixin')
  */
 export default {
   setSelectionFilter (features: Array<Object>) {
-    if (this?.glStyle?.layers) {
+    if (this.glStyle?.layers) {
       this.glStyle.layers.forEach((layer) => {
         const filter = ['in', 'mhid']
         features.forEach((feature) => {
@@ -70,9 +70,7 @@ export default {
     const containers: Object = this.props.containers
     const {dataEditorState} = containers
 
-    if (this.state.enableMeasurementTools) {
-
-    } else {
+    if (!this.state.enableMeasurementTools) {
       // feature selection
       if (!this.state.selected && this.state.selectedFeature) {
         this.setState({selected: true})
@@ -157,7 +155,7 @@ export default {
       const debounced = _debounce(() => {
         if (_this.state.mapLoaded && _this.state.restoreBounds) {
           debug.log('(' + _this.state.id + ') ' + 'clearing restoreBounds')
-          _this.setState({restoreBounds: null})
+          _this.setState({restoreBounds: undefined})
           // stop restoring map possition after user has moved the map
         }
         try {
@@ -178,7 +176,7 @@ export default {
             } else {
               $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', 'pointer')
             }
-          } else if (!_this.state.selected && _this.state.selectedFeatures !== null) {
+          } else if (!_this.state.selected && _this.state.selectedFeatures) {
             _this.clearSelection()
             $(_this.refs.map).find('.mapboxgl-canvas-container').css('cursor', '')
           } else {

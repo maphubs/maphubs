@@ -77,8 +77,8 @@ export default class MarkerSettings extends React.Component<Props, State> {
 
   onFormChange = (model: Object) => {
     if (model.size) {
-      model.width = parseInt(model.size)
-      model.height = parseInt(model.size)
+      model.width = Number.parseInt(model.size, 10)
+      model.height = Number.parseInt(model.size, 10)
     }
 
     const options = JSON.parse(JSON.stringify(this.state.options))

@@ -47,14 +47,21 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
     }
   }
 
+  unloadHandler: any
+
   componentDidMount () {
     const _this = this
-    window.addEventListener('beforeunload', (e) => {
+    this.unloadHandler = (e) => {
       if (_this.state.group_id && !_this.state.layer_id) {
         e.preventDefault()
         e.returnValue = ''
       }
-    })
+    }
+    window.addEventListener('beforeunload', this.unloadHandler)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
   onGroupChange = (groupId: string) => {

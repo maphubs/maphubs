@@ -62,17 +62,15 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
 
     let userMenu
     if (user) {
-      const {admin, picture} = user
-
-      const displayName = user?.display_name
+      const {admin, picture, display_name} = user
 
       const menu = (
         <Menu>
           <Menu.Item>
-            <a href={`/user/${displayName}/maps`}>{t('My Maps')}</a>
+            <a href={`/user/${display_name}/maps`}>{t('My Maps')}</a>
           </Menu.Item>
           <Menu.Item>
-            <a href={`/user/${displayName}/groups`}>{t('My Groups')}</a>
+            <a href={`/user/${display_name}/groups`}>{t('My Groups')}</a>
           </Menu.Item>
           <Menu.Item>
             <a href='/user/profile'>{t('Settings')}</a>

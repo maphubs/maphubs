@@ -41,7 +41,7 @@ export default class LegendItem extends React.Component<Props, void> {
 
     let html = ''
     if (layer.legend_html) {
-      html = layer.legend_html.replace(/\{NAME\}/i, name)
+      html = layer.legend_html.replace(/{name}/i, name)
     }
 
     let legendItem = (

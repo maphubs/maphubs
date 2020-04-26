@@ -92,7 +92,6 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
   }
 
   componentDidMount () {
-    const {t} = this
     const _this = this
     window.addEventListener('onunload', (e) => {
       if (_this.state.layer_id && _this.state.layer_id !== -1 && !_this.state.complete) {
@@ -113,12 +112,19 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
       }
     })
 
-    window.addEventListener('beforeunload', (e) => {
+    this.unloadHandler = (e) => {
       if (!_this.state.complete) {
         e.preventDefault()
         e.returnValue = ''
       }
-    })
+    }
+    window.addEventListener('beforeunload', this.unloadHandler)
+  }
+
+  unloadHandler: any
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
   submit = (layerId: number, name: LocalizedString) => {

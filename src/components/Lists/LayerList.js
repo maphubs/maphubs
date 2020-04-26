@@ -30,8 +30,8 @@ export default class LayerList extends React.Component<Props, State> {
   }
 
   state = {
-    sortedInfo: null,
-    filteredInfo: null,
+    sortedInfo: undefined,
+    filteredInfo: undefined,
     searchText: undefined
   }
 
@@ -111,7 +111,7 @@ export default class LayerList extends React.Component<Props, State> {
           </div>
         ),
         filterIcon: filtered => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-        filteredValue: filteredInfo.name || null,
+        filteredValue: filteredInfo.name,
         onFilter: (value, record) => {
           const currentValue = t(record.name).toString().toLowerCase()
           const compareValue = value.toLowerCase()
@@ -153,7 +153,7 @@ export default class LayerList extends React.Component<Props, State> {
         key: 'group',
         width: 250,
         filters: groups.map(group => { return { text: group.group_id, value: group.group_id } }),
-        filteredValue: filteredInfo.group || null,
+        filteredValue: filteredInfo.group,
         onFilter: (value, record) => record.owned_by_group_id === value,
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
           <div style={{ padding: 8 }}>

@@ -46,19 +46,14 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
     const {t} = this
     let { user, title, group } = this.state
 
-    if (!title || this.t(title) === '') {
+    if (!title || t(title) === '') {
       message.error(t('Please Add a Title'))
       return
     }
 
-    if (!group && user && user.groups.length === 1) {
-      if (user && user.groups.length === 1) {
-        // creating a new layer when user is only the member of a single group (not showing the group dropdown)
-        group = user.groups[0].group_id
-      } else {
-        message.error(t('Please Select a Group'))
-        return
-      }
+    if (!group && user?.groups.length === 1) {
+      // creating a new layer when user is only the member of a single group (not showing the group dropdown)
+      group = user.groups[0].group_id
     }
     const closeSavingMessage = message.loading(t('Saving'), 0)
     this.props.onSave({title, group}, () => {

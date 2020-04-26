@@ -94,7 +94,7 @@ module.exports = function (app: any) {
 
   app.get('/group/:id/admin', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
     try {
-      const user_id = parseInt(req.session.user.maphubsUser.id)
+      const user_id = Number.parseInt(req.session.user.maphubsUser.id)
       const group_id = req.params.id
 
       // confirm that this user is allowed to administer this group

@@ -79,7 +79,7 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
                 {isBuffered &&
                   <div style={{height: '75px', padding: '25px'}}>
                     <Slider
-                      min={1} max={50} marks={marks} step={null}
+                      min={1} max={50} marks={marks} step={undefined}
                       onChange={FRState.changeBuffer}
                       defaultValue={25}
                     />

@@ -21,7 +21,7 @@ const pageOptions = require('../../services/page-options-helper')
 module.exports = function (app: any) {
   app.get('/layer/replace/:id/*', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
     const user_id = req.session.user.maphubsUser.id
-    const layer_id = parseInt(req.params.id || '', 10)
+    const layer_id = Number.parseInt(req.params.id || '', 10)
 
     // confirm that this user is allowed to administer this layeradmin
     try {
@@ -46,7 +46,7 @@ module.exports = function (app: any) {
 
   app.post('/api/layer/:id/replace', isAuthenticated, multer({dest: local.tempFilePath + '/uploads/'}).single('file'),
     async (req, res) => {
-      const layer_id = parseInt(req.params.id || '', 10)
+      const layer_id = Number.parseInt(req.params.id || '', 10)
       try {
         const layer = await Layer.getLayerByID(layer_id)
         if (layer) {
@@ -82,7 +82,7 @@ module.exports = function (app: any) {
 
   app.post('/api/layer/:id/replace/save', csrfProtection, isAuthenticated, async (req, res) => {
     try {
-      const layer_id = parseInt(req.params.id || '', 10)
+      const layer_id = Number.parseInt(req.params.id || '', 10)
       if (layer_id) {
         if (await Layer.allowedToModify(layer_id, req.user_id)) {
           await knex.transaction(async (trx) => {

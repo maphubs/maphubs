@@ -76,15 +76,21 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
     LayerActions.loadLayer()
   }
 
+  unloadHandler: any
+
   componentDidMount () {
-    const {t} = this
     const _this = this
-    window.addEventListener('beforeunload', (e) => {
+    this.unloadHandler = (e) => {
       if (!_this.state.submitted) {
         e.preventDefault()
         e.returnValue = ''
       }
-    })
+    }
+    window.addEventListener('beforeunload', this.unloadHandler)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
   onDownload = () => {

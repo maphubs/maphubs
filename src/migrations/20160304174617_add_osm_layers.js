@@ -64,11 +64,11 @@ exports.down = function (knex) {
   return knex.raw(`DELETE FROM omh.layer_views
     WHERE layer_id IN (select layer_id FROM omh.layers WHERE owned_by_group_id = 'OpenStreetMap')`)
     .then(() => {
-      return knex.raw(`DELETE FROM omh.layers WHERE owned_by_group_id = 'OpenStreetMap'`)
+      return knex.raw('DELETE FROM omh.layers WHERE owned_by_group_id = \'OpenStreetMap\'')
         .then(() => {
-          return knex.raw(`DELETE FROM omh.group_memberships WHERE group_id = 'OpenStreetMap'`)
+          return knex.raw('DELETE FROM omh.group_memberships WHERE group_id = \'OpenStreetMap\'')
             .then(() => {
-              return knex.raw(`DELETE FROM omh.groups WHERE group_id = 'OpenStreetMap'`)
+              return knex.raw('DELETE FROM omh.groups WHERE group_id = \'OpenStreetMap\'')
             })
         })
     })

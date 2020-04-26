@@ -194,7 +194,7 @@ export default {
 
     const layerId = this.state.editingLayer.layer_id
 
-    if (this?.glStyle?.layers) {
+    if (this.glStyle?.layers) {
       this.glStyle.layers.forEach(layer => {
         // check if the layer_id matches
         let foundMatch

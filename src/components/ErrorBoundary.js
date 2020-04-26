@@ -18,7 +18,7 @@ type State = {
 export default class ErrorBoundary extends MapHubsComponent<Props, State> {
   constructor (props: Props) {
     super(props)
-    this.state = {error: null}
+    this.state = {error: undefined}
   }
 
   componentDidCatch (error: any, errorInfo: any) {

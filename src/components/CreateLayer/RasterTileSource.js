@@ -69,8 +69,8 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
       external_layer_type: 'Raster Tile Service',
       external_layer_config: {
         type: 'raster',
-        minzoom: parseInt(model.minzoom, 10),
-        maxzoom: parseInt(model.maxzoom, 10),
+        minzoom: Number.parseInt(model.minzoom, 10),
+        maxzoom: Number.parseInt(model.maxzoom, 10),
         bounds: boundsArr,
         tiles: [model.rasterTileUrl]
       }

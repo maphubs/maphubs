@@ -19,7 +19,6 @@ let Lightbox
 
 type Props = {
   features: Array<Feature>,
-  showButtons: boolean,
   t: Function
 }
 
@@ -177,7 +176,13 @@ export default class FeaturePopup extends React.Component<Props, State> {
     let descriptionField
     let descriptionFieldValue
 
-    let photoUrl = null
+    if (!feature || !feature.properties) {
+      return (
+        <p key={`popup-feature-${i}`}>{t('Error Invalid Feature')}</p>
+      )
+    }
+
+    let photoUrl
     if (feature.properties.photo_url) {
       photoUrl = feature.properties.photo_url
     } else if (feature.properties['Photo URL']) {
@@ -199,11 +204,6 @@ export default class FeaturePopup extends React.Component<Props, State> {
       }
     }
 
-    if (!feature || !feature.properties) {
-      return (
-        <p key={`popup-feature-${i}`}>{t('Error Invalid Feature')}</p>
-      )
-    }
     let content
     if (!showAttributes && photoUrl) {
       content = this.renderContentWithImage(nameFieldValue, descriptionFieldValue, photoUrl, featureName, feature.properties)

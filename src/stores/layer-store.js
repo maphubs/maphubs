@@ -583,7 +583,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
           showOnMap: true,
           mapTo: tag,
           id: idSeq++
-}
+        }
       })
 
       const newPresets = _differenceBy(importedPresets, presets, 'tag')

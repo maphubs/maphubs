@@ -25,15 +25,15 @@ const middleware = function (view) {
       }
       let map_id
       if (req.params.map_id) {
-        map_id = parseInt(req.params.map_id || '', 10)
+        map_id = Number.parseInt(req.params.map_id, 10)
       } else if (req.body.map_id) {
         map_id = req.body.map_id
       } else if (req.params.map) {
-        map_id = parseInt(req.params.map || '', 10)
+        map_id = Number.parseInt(req.params.map, 10)
       } else if (req.params.id) {
-        map_id = parseInt(req.params.id || '', 10)
+        map_id = Number.parseInt(req.params.id, 10)
       } else {
-        apiDataError(res, 'Unable to determine hub_id')
+        apiDataError(res, 'Unable to determine map_id')
       }
 
       if (map_id && Number.isInteger(map_id) && map_id > 0) {

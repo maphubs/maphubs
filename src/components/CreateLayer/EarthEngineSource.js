@@ -52,8 +52,8 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
       external_layer_type: 'Earth Engine',
       external_layer_config: {
         type: 'earthengine',
-        min: parseInt(model.min, 10),
-        max: parseInt(model.max, 10),
+        min: Number.parseInt(model.min, 10),
+        max: Number.parseInt(model.max, 10),
         image_id: model.image_id
       }
     }, _this.state._csrf, (err) => {

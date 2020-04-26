@@ -14,7 +14,7 @@ const exportUtils = require('../../services/export-utils')
 
 module.exports = function (app: any) {
   app.get('/api/layer/:layer_id/export/json/*', privateLayerCheck, async (req, res) => {
-    const layer_id = parseInt(req.params.layer_id || '', 10)
+    const layer_id = Number.parseInt(req.params.layer_id || '', 10)
     let aggFields
     if (req.query.agg) {
       aggFields = req.query.agg.split(',')
@@ -34,7 +34,7 @@ module.exports = function (app: any) {
 
   app.get('/api/layer/:layer_id/export/svg/*', privateLayerCheck, async (req, res) => {
     try {
-      const layer_id = parseInt(req.params.layer_id || '', 10)
+      const layer_id = Number.parseInt(req.params.layer_id || '', 10)
       const layer = await Layer.getLayerByID(layer_id)
       if (layer) {
         const table = `layers.data_${layer.layer_id}`
@@ -83,7 +83,7 @@ module.exports = function (app: any) {
   })
 
   app.get('/api/layer/:layer_id/export/csv/*', privateLayerCheck, async (req, res) => {
-    const layer_id = parseInt(req.params.layer_id || '', 10)
+    const layer_id = Number.parseInt(req.params.layer_id || '', 10)
 
     let aggFields
     if (req.query.agg) {
@@ -118,18 +118,18 @@ module.exports = function (app: any) {
   })
 
   app.get('/api/layer/:layer_id/export/geobuf/*', privateLayerCheck, (req, res) => {
-    const layer_id = parseInt(req.params.layer_id || '', 10)
+    const layer_id = Number.parseInt(req.params.layer_id || '', 10)
     exportUtils.completeGeoBufExport(req, res, layer_id)
   })
 
   app.get('/api/layer/:layer_id/export/maphubs/*', privateLayerCheck, (req, res) => {
-    const layer_id = parseInt(req.params.layer_id || '', 10)
+    const layer_id = Number.parseInt(req.params.layer_id || '', 10)
     exportUtils.completeMapHubsExport(req, res, layer_id)
   })
 
   app.get('/api/layer/:layer_id/export/kml/*', privateLayerCheck, async (req, res) => {
     try {
-      const layer_id = parseInt(req.params.layer_id || '', 10)
+      const layer_id = Number.parseInt(req.params.layer_id || '', 10)
       let aggFields
       if (req.query.agg) {
         aggFields = req.query.agg.split(',')
@@ -192,12 +192,11 @@ module.exports = function (app: any) {
 
   app.get('/api/feature/:layer_id/:id/export/kml/*', privateLayerCheck, async (req, res, next) => {
     try {
-      const layer_id = parseInt(req.params.layer_id || '', 10)
+      const layer_id = Number.parseInt(req.params.layer_id || '', 10)
       const id = req.params.id
 
-      const mhid = `${layer_id}:${id}`
-
-      if (mhid && layer_id) {
+      if (id && layer_id) {
+        const mhid = `${layer_id}:${id}`
         const layer = await Layer.getLayerByID(layer_id)
         if (layer) {
           const geoJSON = await Feature.getGeoJSON(mhid, layer.layer_id)
@@ -251,7 +250,7 @@ module.exports = function (app: any) {
   })
 
   app.get('/api/layer/:layer_id/export/gpx/*', privateLayerCheck, (req, res) => {
-    const layer_id = parseInt(req.params.layer_id || '', 10)
+    const layer_id = Number.parseInt(req.params.layer_id || '', 10)
     Layer.getGeoJSON(layer_id).then((geoJSON) => {
       const resultStr = JSON.stringify(geoJSON)
       const hash = require('crypto').createHash('md5').update(resultStr).digest('hex')
@@ -275,7 +274,7 @@ module.exports = function (app: any) {
   })
 
   app.get('/api/layer/:layer_id/export/shp/*', privateLayerCheck, async (req, res) => {
-    const layer_id = parseInt(req.params.layer_id || '', 10)
+    const layer_id = Number.parseInt(req.params.layer_id || '', 10)
     let aggFields
     if (req.query.agg) {
       aggFields = req.query.agg.split(',')

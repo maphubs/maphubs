@@ -10,7 +10,7 @@ const local = require('../../local')
 module.exports = function (app: any) {
   // create a map view that we will use to screenshot the layer
   app.get('/api/layer/:layer_id/static/render/', manetCheck, (req, res, next) => {
-    const layer_id = parseInt(req.params.layer_id || '', 10)
+    const layer_id = Number.parseInt(req.params.layer_id || '', 10)
     if (!layer_id) {
       return res.status(404).send()
     }
@@ -98,7 +98,7 @@ module.exports = function (app: any) {
   }
 
   app.get('/api/map/:mapid/static/render/', manetCheck, async (req, res, next) => {
-    const map_id = parseInt(req.params.mapid || '', 10)
+    const map_id = Number.parseInt(req.params.mapid || '', 10)
     if (map_id) {
       await completeMapStaticRender(req, res, next, map_id)
     } else {
@@ -108,7 +108,7 @@ module.exports = function (app: any) {
 
   app.get('/api/map/:mapid/static/render/thumbnail', manetCheck, async (req, res, next) => {
     try {
-      const map_id = parseInt(req.params.mapid || '', 10)
+      const map_id = Number.parseInt(req.params.mapid || '', 10)
 
       if (!map_id) {
         return res.status(404).send()

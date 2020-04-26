@@ -11,7 +11,6 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import { PlusOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 import { Row, Col, Avatar, List, Button, Tooltip, Typography, Divider } from 'antd'
-import Person from '@material-ui/icons/Person'
 import SupervisorAccount from '@material-ui/icons/SupervisorAccount'
 
 const { Title } = Typography

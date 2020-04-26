@@ -13,8 +13,8 @@ const AGSMapServerQuery = {
             mapComponent.zoomToData(geoJSON)
           }
           return mapComponent.addSource(key, {type: 'geojson', data: geoJSON})
-        }, (error) => {
-          debug.log('(' + mapComponent.state.id + ') ' + error)
+        }, (err) => {
+          debug.log('(' + mapComponent.state.id + ') ' + err)
         })
     } else {
       throw new Error('source missing url parameter')

@@ -8,6 +8,7 @@ export default {
 // attempt to update a style color without recreating other parts of the style
   // needed for custom style support
   updateStyleColor (glStyle: GLStyle, newColor: string) {
+    let isOutlineOnly = false
     if (glStyle.layers && Array.isArray(glStyle.layers) && glStyle.layers.length > 0) {
       // treat style as immutable and return a copy
       glStyle = JSON.parse(JSON.stringify(glStyle))
@@ -57,6 +58,7 @@ export default {
           }
         } else if (id.startsWith('omh-data-outline') &&
           metadata && metadata['maphubs:outline-only']) {
+          isOutlineOnly = true
           paint['line-color'] = newColor
         } else if (id.startsWith('omh-data-doublestroke-polygon')) {
           if (type === 'line' && paint) {
@@ -88,6 +90,6 @@ export default {
         markerLayer.layout['icon-image'] = markerImageName
       }
     }
-    return glStyle
+    return {style: glStyle, isOutlineOnly}
   }
 }

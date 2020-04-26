@@ -5,7 +5,7 @@ module.exports = function (app: any) {
     '/wp-login.php', '/xmlrpc.php'
   ]
 
-  quick404ErrorPages.map(page => {
+  quick404ErrorPages.forEach(page => {
     app.get(page, (req, res) => {
       res.status(404).send()
     })

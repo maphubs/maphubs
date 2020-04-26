@@ -11,7 +11,7 @@ export default class Comments extends React.PureComponent<Props, void> {
   componentDidMount () {
     // eslint-disable-next-line no-undef
     if (Coral && Coral.Talk) {
-      // eslint-disable-next-line no-undef
+      // eslint-disable-next-line no-undef, unicorn/prefer-query-selector
       Coral.Talk.render(document.getElementById(MAPHUBS_CONFIG.CORAL_TALK_ID), {
         talk: MAPHUBS_CONFIG.CORAL_TALK_HOST
       })

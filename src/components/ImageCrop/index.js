@@ -42,16 +42,16 @@ type File = {
 }
 
 type State = {
-  img: ?Object,
-  file: ?File,
+  img?: Object,
+  file?: File,
   visible: boolean,
-  preview: ?Object,
+  preview?: Object,
   loading: boolean,
   cropWidth: number,
   cropHeight: number,
   cropScaleX?: number,
   cropScaleY?: number,
-  selectedFile: ?string,
+  selectedFile?: string,
   exif: Object,
   ext?: string,
   src?: any
@@ -68,10 +68,8 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
   }
 
   state: State = {
-    img: null,
     file: {size: 0, type: ''},
     visible: false,
-    preview: null,
     loading: false,
     cropWidth: 0,
     cropHeight: 0,
@@ -126,7 +124,7 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
   }
 
 resizeImage = (sourceCanvas: any): Promise<Object> => {
-  let pica = null
+  let pica
   if (typeof window === 'undefined') {
     return new Promise((resolve) => {
       resolve()
@@ -260,42 +258,42 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
               // transfrom the canvas
               const ctx: any = tempCanvas.getContext('2d')
               switch (exifdata.Orientation) {
-                case 1:
-                  ctx.transform(1, 0, 0, 1, 0, 0)
-                  break
-                case 2:
-                  ctx.transform(-1, 0, 0, 1, width, 0)
-                  break
-                case 3:
-                  ctx.transform(-1, 0, 0, -1, width, height)
-                  break
-                case 4:
-                  ctx.transform(1, 0, 0, -1, 0, height)
-                  break
-                case 5:
-                  // swap width/height
-                  tempCanvas.width = height
-                  tempCanvas.height = width
-                  ctx.transform(0, 1, 1, 0, 0, 0)
-                  break
-                case 6:
-                  // swap width/height
-                  tempCanvas.width = height
-                  tempCanvas.height = width
-                  ctx.transform(0, 1, -1, 0, height, 0)
-                  break
-                case 7:
-                  // swap width/height
-                  tempCanvas.width = height
-                  tempCanvas.height = width
-                  ctx.transform(0, -1, -1, 0, height, width)
-                  break
-                case 8:
-                  // swap width/height
-                  tempCanvas.width = height
-                  tempCanvas.height = width
-                  ctx.transform(0, -1, 1, 0, 0, width)
-                  break
+              case 1:
+                ctx.transform(1, 0, 0, 1, 0, 0)
+                break
+              case 2:
+                ctx.transform(-1, 0, 0, 1, width, 0)
+                break
+              case 3:
+                ctx.transform(-1, 0, 0, -1, width, height)
+                break
+              case 4:
+                ctx.transform(1, 0, 0, -1, 0, height)
+                break
+              case 5:
+                // swap width/height
+                tempCanvas.width = height
+                tempCanvas.height = width
+                ctx.transform(0, 1, 1, 0, 0, 0)
+                break
+              case 6:
+                // swap width/height
+                tempCanvas.width = height
+                tempCanvas.height = width
+                ctx.transform(0, 1, -1, 0, height, 0)
+                break
+              case 7:
+                // swap width/height
+                tempCanvas.width = height
+                tempCanvas.height = width
+                ctx.transform(0, -1, -1, 0, height, width)
+                break
+              case 8:
+                // swap width/height
+                tempCanvas.width = height
+                tempCanvas.height = width
+                ctx.transform(0, -1, 1, 0, 0, width)
+                break
               }
             }
             const context = tempCanvas.getContext('2d')
@@ -407,11 +405,11 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
     if (this.cropperInstance?.reset) this.cropperInstance.reset()
     if (this.cropperInstance?.clear) this.cropperInstance.clear()
     this.setState({
-      src: null,
+      src: undefined,
       visible: false,
-      img: null,
+      img: undefined,
       file: {size: 0, type: ''},
-      preview: null,
+      preview: undefined,
       loading: false,
       cropWidth: 0,
       cropHeight: 0,

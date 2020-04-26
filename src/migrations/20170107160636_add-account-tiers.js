@@ -16,16 +16,16 @@ exports.up = function (knex) {
         PRIMARY KEY (tier_id)
       )
   `),
-    knex.raw(`ALTER TABLE omh.groups ADD COLUMN tier_id text;`),
-    knex.raw(`ALTER TABLE omh.groups ADD COLUMN account_id text;`),
-    knex.raw(`ALTER TABLE omh.groups ADD FOREIGN KEY(tier_id) REFERENCES omh.account_tiers(tier_id);`)
+    knex.raw('ALTER TABLE omh.groups ADD COLUMN tier_id text;'),
+    knex.raw('ALTER TABLE omh.groups ADD COLUMN account_id text;'),
+    knex.raw('ALTER TABLE omh.groups ADD FOREIGN KEY(tier_id) REFERENCES omh.account_tiers(tier_id);')
   ])
 }
 
 exports.down = function (knex) {
   return Promise.all([
-    knex.raw(`ALTER TABLE omh.groups DROP COLUMN tier_id;`),
-    knex.raw(`ALTER TABLE omh.groups DROP COLUMN account_id;`),
-    knex.raw(`DROP TABLE omh.account_tiers;`)
+    knex.raw('ALTER TABLE omh.groups DROP COLUMN tier_id;'),
+    knex.raw('ALTER TABLE omh.groups DROP COLUMN account_id;'),
+    knex.raw('DROP TABLE omh.account_tiers;')
   ])
 }

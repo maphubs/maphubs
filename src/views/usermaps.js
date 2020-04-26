@@ -56,7 +56,6 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
   render () {
     const {t} = this
     const { myMaps, maps } = this.props
-    const cards = this.props.maps.map(cardUtil.getMapCard)
 
     return (
       <ErrorBoundary>
@@ -71,10 +70,10 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
                 extra={<Button type='primary' href='/map/new'>{t('Create a Map')}</Button>}
               />
             </Row>}
-          {(maps?.length > 0) &&
+          {(maps.length > 0) &&
             <Row style={{marginBottom: '20px'}}>
               <Title level={2}>{t('My Maps')}</Title>
-              <CardCarousel infinite={false} cards={cards} t={this.t} />
+              <CardCarousel infinite={false} cards={maps.map(cardUtil.getMapCard)} t={this.t} />
             </Row>}
           {myMaps &&
             <FloatingButton

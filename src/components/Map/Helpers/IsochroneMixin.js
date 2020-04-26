@@ -118,7 +118,7 @@ export default {
       map.removeLayer(layer.id)
     })
     map.removeSource(this.isochroneLayerStyle.id)
-    this.setState({isochroneResult: null})
+    this.setState({isochroneResult: undefined})
     this.props.onToggleIsochroneLayer(false)
   },
 

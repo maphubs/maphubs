@@ -49,7 +49,7 @@ module.exports = function (app: any) {
   app.get('/editstory/:story_id/*', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
     try {
       const user_id = req.session.user.maphubsUser.id
-      const story_id = parseInt(req.params.story_id || '', 10)
+      const story_id = Number.parseInt(req.params.story_id || '', 10)
       const locale = req.session.locale || 'en'
       const story = await Story.getStoryById(story_id)
       let firstEdit
@@ -76,7 +76,7 @@ module.exports = function (app: any) {
   })
 
   app.get('/story/:title/:story_id', (req, res, next) => {
-    const story_id = parseInt(req.params.story_id || '', 10)
+    const story_id = Number.parseInt(req.params.story_id || '', 10)
     const username = req.params.username
     const locale = req.session.locale || 'en'
 

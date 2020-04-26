@@ -51,7 +51,7 @@ export default {
         _map(this.baseMapStyle.layers, 'id').map(this.removeLayer)
       }
 
-      sourcesToAdd.map((key) => {
+      sourcesToAdd.forEach((key) => {
         const source = style.sources[key]
         this.addSource(key, source)
       })
@@ -102,7 +102,7 @@ export default {
     this.removeLayers(layerIds, this.overlayMapStyle)
     this.removeSources(sourceKeys, this.overlayMapStyle)
     const customSources = await this.loadSources(sourceKeys, this.overlayMapStyle)
-    const customSourceLayers = this.addLayers(layerIdsWithPosition, this.overlayMapStyle)
+    const customSourceLayers = await this.addLayers(layerIdsWithPosition, this.overlayMapStyle)
 
     if (this.map) {
       try {

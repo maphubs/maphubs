@@ -50,7 +50,7 @@ Disallow: /xml/map/*
       // not support on private sites
       if (local.requireLogin) return res.status(404).send()
 
-      const layer_id = parseInt(req.params.layer_id || '', 10)
+      const layer_id = Number.parseInt(req.params.layer_id || '', 10)
 
       const baseUrl = urlUtil.getBaseUrl()
       const smStream = new SitemapStream({ hostname: baseUrl })

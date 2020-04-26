@@ -36,7 +36,7 @@ export default {
     if (object.metadata) {
       return object.metadata[`maphubs:${key}`]
     } else {
-      return undefined
+      return null
     }
   },
 
@@ -46,7 +46,7 @@ export default {
       const layer = style.layers[index]
       return this.get(layer, key)
     } else {
-      return undefined
+      return null
     }
   },
 

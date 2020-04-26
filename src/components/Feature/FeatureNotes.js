@@ -32,14 +32,21 @@ export default class FeatureNotes extends React.Component<Props, State> {
     }
   }
 
+  unloadHandler: any
+
   componentDidMount () {
-    const {editing} = this.state
-    window.addEventListener('beforeunload', (e) => {
-      if (editing) {
+    const _this = this
+    this.unloadHandler = (e) => {
+      if (_this.state.editing) {
         e.preventDefault()
         e.returnValue = ''
       }
-    })
+    }
+    window.addEventListener('beforeunload', this.unloadHandler)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
   saveNotes = async () => {

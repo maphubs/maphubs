@@ -43,12 +43,9 @@ module.exports = {
       user_id = null
     }
     const viewsResult = await knex('omh.layer_views').select(knex.raw('count(view_id)')).where({layer_id})
-    let views: number = parseInt(viewsResult[0].count)
-    if (views === undefined || isNaN(views)) {
-      views = 1
-    } else {
-      views = views + 1
-    }
+    let views: number = Number.parseInt(viewsResult[0].count, 10)
+    views = Number.isNaN(views) ? 1 : views + 1
+
     await knex('omh.layer_views').insert({
       layer_id,
       user_id,
@@ -64,12 +61,9 @@ module.exports = {
     }
     const viewsResult = await knex('omh.map_views').select(knex.raw('count(view_id)')).where({map_id})
 
-    let views: number = parseInt(viewsResult[0].count)
-    if (views === undefined || isNaN(views)) {
-      views = 1
-    } else {
-      views = views + 1
-    }
+    let views: number = Number.parseInt(viewsResult[0].count)
+    views = Number.isNaN(views) ? 1 : views + 1
+
     await knex('omh.map_views').insert({
       map_id, user_id, time: knex.raw('now()')
     })
@@ -83,12 +77,9 @@ module.exports = {
     }
     const viewsResult = await knex('omh.story_views').select(knex.raw('count(view_id)')).where({story_id})
 
-    let views: number = parseInt(viewsResult[0].count)
-    if (views === undefined || isNaN(views)) {
-      views = 1
-    } else {
-      views = views + 1
-    }
+    let views: number = Number.parseInt(viewsResult[0].count)
+    views = Number.isNaN(views) ? 1 : views + 1
+
     await knex('omh.story_views').insert({
       story_id, user_id, time: knex.raw('now()')
     })

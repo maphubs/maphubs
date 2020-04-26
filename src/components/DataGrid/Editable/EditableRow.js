@@ -3,7 +3,7 @@ import { Input, Form } from 'antd'
 
 const EditableContext = React.createContext()
 
-const EditableRow = ({ index, ...props }) => {
+const EditableRow = ({ index, ...props }: { index: number }) => {
   const [form] = Form.useForm()
   return (
     <Form form={form} component={false}>
@@ -23,6 +23,14 @@ const EditableCell = ({
   handleSave,
   dataType,
   ...restProps
+}:{
+  title: string,
+  editable: boolean,
+  children: any,
+  dataIndex: number,
+  record: Object,
+  handleSave: Function,
+  dataType: string
 }) => {
   const [editing, setEditing] = useState(false)
   const inputRef = useRef()

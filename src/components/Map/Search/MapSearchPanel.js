@@ -63,7 +63,7 @@ export default class MapSearchPanel extends React.Component<Props, State> {
   }
 
   onReset = () => {
-    this.setState({results: null, locationSearchResults: null, query: undefined})
+    this.setState({results: undefined, locationSearchResults: undefined, query: undefined})
     this.props.onSearchReset()
   }
 

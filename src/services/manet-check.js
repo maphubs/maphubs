@@ -45,11 +45,11 @@ const middleware = async (req: any, res: any, next: any) => {
     }
     let layer_id, map_id
     if (req.params.layer_id) {
-      layer_id = parseInt(req.params.layer_id || '', 10)
+      layer_id = Number.parseInt(req.params.layer_id, 10)
     } else if (req.body.layer_id) {
       layer_id = req.body.layer_id
     } else if (req.params.map_id) {
-      map_id = parseInt(req.params.map_id || '', 10)
+      map_id = Number.parseInt(req.params.map_id, 10)
     } else if (req.body.map_id) {
       map_id = req.body.map_id
     }

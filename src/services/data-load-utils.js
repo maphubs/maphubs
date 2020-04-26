@@ -116,7 +116,7 @@ module.exports = {
 
       // get count and create sequence
       const result = await trx.raw(`SELECT count(*) as cnt FROM layers.data_${layer_id};`)
-      const maxVal = parseInt(result.rows[0].cnt) + 1
+      const maxVal = Number.parseInt(result.rows[0].cnt) + 1
       debug.log('creating sequence starting at: ' + maxVal)
       return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START ${maxVal}`)
     })

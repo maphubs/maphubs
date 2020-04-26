@@ -27,7 +27,7 @@ export type BaseMapState = {
   baseMap: string,
   baseMapStyle?: Object,
   attribution: string,
-  bingImagerySet: ?string,
+  bingImagerySet?: string,
   updateWithMapPosition: boolean,
   baseMapOptions: Array<BaseMapOption>,
   bingKey?: string,
@@ -41,7 +41,6 @@ export default class BaseMapContainer extends Container<BaseMapState> {
     const state = {
       baseMap: 'default',
       attribution: '© Mapbox © OpenStreetMap',
-      bingImagerySet: null,
       updateWithMapPosition: false,
       baseMapOptions: defaultBaseMapOptions,
       mapboxAccessToken: ''
@@ -105,44 +104,46 @@ export default class BaseMapContainer extends Container<BaseMapState> {
     const lat = position.lat
     const lng = position.lng
     const zoom = Math.round(position.zoom)
-    const url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${this.state.bingImagerySet}/${lat},${lng}?zl=${zoom}&include=ImageryProviders&key=${this.state.bingKey}`
-    let attributionString = '© Bing Maps'
-    request.get(url)
-      .end((err, res) => {
-        if (err) {
-          debug.error(err)
-        } else {
-          const metadata = res.body
-          const attributions = []
+    if (this.state.bingImagerySet) {
+      const url = `https://dev.virtualearth.net/REST/v1/Imagery/Metadata/${this.state.bingImagerySet}/${lat},${lng}?zl=${zoom}&include=ImageryProviders&key=${this.state.bingKey}`
+      let attributionString = '© Bing Maps'
+      request.get(url)
+        .end((err, res) => {
+          if (err) {
+            debug.error(err)
+          } else {
+            const metadata = res.body
+            const attributions = []
 
-          const bboxFeature = _bboxPolygon(bounds)
-          if (metadata.resourceSets && metadata.resourceSets.length > 0 &&
-            metadata.resourceSets[0].resources && metadata.resourceSets[0].resources.length > 0 &&
-            metadata.resourceSets[0].resources[0].imageryProviders && metadata.resourceSets[0].resources[0].imageryProviders.length > 0) {
-            const resource = metadata.resourceSets[0].resources[0]
-            let imageryTime = ''
-            if (resource.vintageEnd) {
-              imageryTime = '<b class="no-margin no-padding">(' + resource.vintageEnd + ')</b>'
-            }
-            const imageryProviders = resource.imageryProviders
-            imageryProviders.forEach((provider) => {
-              for (let i = 0; i < provider.coverageAreas.length; i++) {
-                const providerBboxFeature = _bboxPolygon(provider.coverageAreas[i].bbox)
-
-                if (_intersect(bboxFeature, providerBboxFeature) &&
-                zoom >= provider.coverageAreas[i].zoomMin &&
-                zoom <= provider.coverageAreas[i].zoomMax) {
-                  attributions.push(provider.attribution)
-                }
+            const bboxFeature = _bboxPolygon(bounds)
+            if (metadata.resourceSets && metadata.resourceSets.length > 0 &&
+              metadata.resourceSets[0].resources && metadata.resourceSets[0].resources.length > 0 &&
+              metadata.resourceSets[0].resources[0].imageryProviders && metadata.resourceSets[0].resources[0].imageryProviders.length > 0) {
+              const resource = metadata.resourceSets[0].resources[0]
+              let imageryTime = ''
+              if (resource.vintageEnd) {
+                imageryTime = '<b class="no-margin no-padding">(' + resource.vintageEnd + ')</b>'
               }
-            })
-            attributionString = attributionString + ': ' + imageryTime + ' ' + attributions.toString()
+              const imageryProviders = resource.imageryProviders
+              imageryProviders.forEach((provider) => {
+                for (let i = 0; i < provider.coverageAreas.length; i++) {
+                  const providerBboxFeature = _bboxPolygon(provider.coverageAreas[i].bbox)
+
+                  if (_intersect(bboxFeature, providerBboxFeature) &&
+                  zoom >= provider.coverageAreas[i].zoomMin &&
+                  zoom <= provider.coverageAreas[i].zoomMax) {
+                    attributions.push(provider.attribution)
+                  }
+                }
+              })
+              attributionString = attributionString + ': ' + imageryTime + ' ' + attributions.toString()
+            }
+            _this.position = position
+            _this.setState({attribution: attributionString})
           }
-          _this.position = position
-          _this.setState({attribution: attributionString})
-        }
-      })
-  });
+        })
+    }
+  })
 
   // Inspired by: https://github.com/gmaclennan/leaflet-bing-layer
   updateMapPosition = (position: any, bbox: any) => {

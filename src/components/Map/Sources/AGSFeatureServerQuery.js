@@ -12,8 +12,8 @@ const AGSFeatureServerQuery = {
             mapComponent.zoomToData(geoJSON)
           }
           return mapComponent.addSource(key, {type: 'geojson', data: geoJSON})
-        }, (error) => {
-          mapComponent.debugLog(error)
+        }, (err) => {
+          mapComponent.debugLog(err)
         })
     }
   },

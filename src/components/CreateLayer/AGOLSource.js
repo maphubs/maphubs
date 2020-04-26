@@ -53,7 +53,7 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
   submit = (model: Object) => {
     const {t} = this
     const _this = this
-    let dataSettings = null
+    let dataSettings
     if (model.mapServiceUrl) {
       dataSettings = {
         is_external: true,
@@ -117,17 +117,17 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
     let fsqOption = false
     let tilesOption = false
     switch (this.state.selectedOption) {
-      case 'mapserverquery':
-        msqOption = true
-        break
-      case 'featureserverquery':
-        fsqOption = true
-        break
-      case 'mapservertiles':
-        tilesOption = true
-        break
-      default:
-        break
+    case 'mapserverquery':
+      msqOption = true
+      break
+    case 'featureserverquery':
+      fsqOption = true
+      break
+    case 'mapservertiles':
+      tilesOption = true
+      break
+    default:
+      break
     }
 
     let msqForm = ''

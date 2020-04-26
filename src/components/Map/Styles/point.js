@@ -12,7 +12,7 @@ export default {
           'maphubs:showBehindBaseMapLabels': showBehindBaseMapLabels
         },
         source: 'omh-' + shortid,
-        'source-layer': '',
+        'source-layer': 'data',
         filter: ['in', '$type', 'Point'],
         paint: {
           'circle-color': color,
@@ -27,7 +27,7 @@ export default {
           'maphubs:globalid': shortid
         },
         source: 'omh-' + shortid,
-        'source-layer': '',
+        'source-layer': 'data',
         filter: ['==', 'mhid', ''],
         paint: {
           'circle-radius': 15,
@@ -36,12 +36,6 @@ export default {
         }
       }
     ]
-
-    if (layer_id !== 'geojson') {
-      layers.forEach((layer) => {
-        layer['source-layer'] = 'data'
-      })
-    }
     return layers
   }
 }

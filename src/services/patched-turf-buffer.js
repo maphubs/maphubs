@@ -51,22 +51,22 @@ function buffer (geojson, radius, options) {
 
   var results = []
   switch (geojson.type) {
-    case 'GeometryCollection':
-      geomEach(geojson, function (geometry) {
-        var buffered = bufferFeature(geometry, radius, units, steps)
-        if (buffered) results.push(buffered)
-      })
-      return featureCollection(results)
-    case 'FeatureCollection':
-      featureEach(geojson, function (feature) {
-        var multiBuffered = bufferFeature(feature, radius, units, steps)
-        if (multiBuffered) {
-          featureEach(multiBuffered, function (buffered) {
-            if (buffered) results.push(buffered)
-          })
-        }
-      })
-      return featureCollection(results)
+  case 'GeometryCollection':
+    geomEach(geojson, function (geometry) {
+      var buffered = bufferFeature(geometry, radius, units, steps)
+      if (buffered) results.push(buffered)
+    })
+    return featureCollection(results)
+  case 'FeatureCollection':
+    featureEach(geojson, function (feature) {
+      var multiBuffered = bufferFeature(feature, radius, units, steps)
+      if (multiBuffered) {
+        featureEach(multiBuffered, function (buffered) {
+          if (buffered) results.push(buffered)
+        })
+      }
+    })
+    return featureCollection(results)
   }
   return bufferFeature(geojson, radius, units, steps)
 }
@@ -143,7 +143,7 @@ function bufferFeature (geojson, radius, units, steps) {
  */
 function coordsIsNaN (coords) {
   if (Array.isArray(coords[0])) return coordsIsNaN(coords[0])
-  return isNaN(coords[0])
+  return Number.isNaN(coords[0])
 }
 
 /**

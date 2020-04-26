@@ -137,7 +137,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
       } else if (result.success) {
         LayerActions.setDataType(result.data_type)
         LayerActions.setImportedTags(result.uniqueProps, true)
-        _this.setState({canSubmit: true, multipleShapefiles: null})
+        _this.setState({canSubmit: true, multipleShapefiles: undefined})
       } else {
         notification.error({
           message: t('Error'),

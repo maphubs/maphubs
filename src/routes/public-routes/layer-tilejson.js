@@ -31,8 +31,8 @@ module.exports = function (app: any) {
       } else if (layer.extent_bbox) {
         bounds = layer.extent_bbox
       }
-      const minzoom = layer.external_layer_config.minzoom ? parseInt(layer.external_layer_config.minzoom) : 0
-      const maxzoom = layer.external_layer_config.maxzoom ? parseInt(layer.external_layer_config.maxzoom) : 19
+      const minzoom = layer.external_layer_config.minzoom ? Number.parseInt(layer.external_layer_config.minzoom, 10) : 0
+      const maxzoom = layer.external_layer_config.maxzoom ? Number.parseInt(layer.external_layer_config.maxzoom, 10) : 19
 
       const centerZoom = Math.floor((maxzoom - minzoom) / 2)
       const centerX = Math.floor((bounds[2] - bounds[0]) / 2)
@@ -62,8 +62,8 @@ module.exports = function (app: any) {
     } else if (layer.is_external && layer.external_layer_config.type === 'vector') {
       let bounds = [-180, -85.05112877980659, 180, 85.0511287798066]
       if (layer.extent_bbox) bounds = layer.extent_bbox
-      const minzoom = layer.external_layer_config.minzoom ? parseInt(layer.external_layer_config.minzoom) : 0
-      const maxzoom = layer.external_layer_config.maxzoom ? parseInt(layer.external_layer_config.maxzoom) : 19
+      const minzoom = layer.external_layer_config.minzoom ? Number.parseInt(layer.external_layer_config.minzoom, 10) : 0
+      const maxzoom = layer.external_layer_config.maxzoom ? Number.parseInt(layer.external_layer_config.maxzoom, 10) : 19
 
       const centerZoom = Math.floor((maxzoom - minzoom) / 2)
       const centerX = Math.floor((bounds[2] - bounds[0]) / 2)
@@ -131,7 +131,7 @@ module.exports = function (app: any) {
 
   app.get('/api/layer/:layer_id/tile.json', async (req, res) => {
     try {
-      const layer_id = parseInt(req.params.layer_id || '', 10)
+      const layer_id = Number.parseInt(req.params.layer_id || '', 10)
 
       let user_id = -1
       if (req.isAuthenticated && req.isAuthenticated() && req.session.user) {
@@ -143,7 +143,7 @@ module.exports = function (app: any) {
       if (layer) {
         if (local.requireLogin) {
           if (manetCheck.check(req) || // screenshot service
-            (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) // logged in and allowed to see this layer
+            (user_id > 0 && await privateLayerCheck(layer.layer_id, user_id)) // logged in and allowed to see this layer
           ) {
             completeLayerTileJSONRequest(req, res, layer)
           } else {
@@ -151,7 +151,7 @@ module.exports = function (app: any) {
           }
         } else {
           // only do the private layer check
-          if (privateLayerCheck(layer.layer_id, user_id)) {
+          if (await privateLayerCheck(layer.layer_id, user_id)) {
             completeLayerTileJSONRequest(req, res, layer)
           } else {
             res.status(404).send()
@@ -179,7 +179,7 @@ module.exports = function (app: any) {
           if (
             isShared || // in public shared map
           manetCheck.check(req) || // screenshot service
-          (user_id > 0 && privateLayerCheck(layer.layer_id, user_id)) // logged in and allowed to see this layer
+          (user_id > 0 && await privateLayerCheck(layer.layer_id, user_id)) // logged in and allowed to see this layer
           ) {
             completeLayerTileJSONRequest(req, res, layer)
           } else {
@@ -187,7 +187,7 @@ module.exports = function (app: any) {
           }
         } else {
         // only do the private layer check
-          if (privateLayerCheck(layer.layer_id, user_id)) {
+          if (await privateLayerCheck(layer.layer_id, user_id)) {
             completeLayerTileJSONRequest(req, res, layer)
           } else {
             res.status(404).send()

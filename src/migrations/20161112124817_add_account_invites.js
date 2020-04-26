@@ -22,7 +22,7 @@ exports.up = function (knex) {
 
 exports.down = function (knex) {
   return Promise.all([
-    knex.raw(`DROP TABLE omh.account_invites`),
-    knex.raw(`DROP TABLE omh.admins`)
+    knex.raw('DROP TABLE omh.account_invites'),
+    knex.raw('DROP TABLE omh.admins')
   ])
 }

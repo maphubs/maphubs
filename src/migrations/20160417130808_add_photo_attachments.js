@@ -28,7 +28,7 @@ exports.up = function (knex) {
 
 exports.down = function (knex) {
   Promise.all([
-    knex.raw(`DROP TABLE omh.feature_photo_attachments`),
-    knex.raw(`DROP TABLE omh.photo_attachments`)
+    knex.raw('DROP TABLE omh.feature_photo_attachments'),
+    knex.raw('DROP TABLE omh.photo_attachments')
   ])
 }

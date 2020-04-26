@@ -91,7 +91,7 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
      let presets
      if (layer.style && layer.style.sources) {
        const sourceKeys = Object.keys(layer.style.sources)
-       if (sourceKeys && sourceKeys.length > 0) {
+       if (sourceKeys.length > 0) {
          const firstSource = Object.keys(layer.style.sources)[0]
          presets = MapStyles.settings.getSourceSetting(this.props.style, firstSource, 'presets')
        }

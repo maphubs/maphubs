@@ -6,7 +6,7 @@ export default {
     layer_id: number, shortid: string,
     color: string, hoverColor: string, hoverOutlineColor: string,
     interactive: boolean, showBehindBaseMapLabels: boolean) {
-    const layers = [
+    return [
       {
         id: `omh-data-polygon-${layer_id}-${shortid}`,
         type: 'fill',
@@ -17,7 +17,7 @@ export default {
           'maphubs:showBehindBaseMapLabels': showBehindBaseMapLabels
         },
         source: 'omh-' + shortid,
-        'source-layer': '',
+        'source-layer': 'data',
         filter: ['in', '$type', 'Polygon'],
         paint: {
           'fill-color': color,
@@ -32,7 +32,7 @@ export default {
           'maphubs:globalid': shortid
         },
         source: 'omh-' + shortid,
-        'source-layer': '',
+        'source-layer': 'data',
         filter: ['in', '$type', 'Polygon'],
         paint: {
           'line-color': color,
@@ -59,6 +59,9 @@ export default {
               [10, 3]
             ]
           }
+        },
+        layout: {
+          visibility: 'none'
         }
       }, {
         id: `omh-data-outline-polygon-${layer_id}-${shortid}`,
@@ -68,7 +71,7 @@ export default {
           'maphubs:globalid': shortid
         },
         source: 'omh-' + shortid,
-        'source-layer': '',
+        'source-layer': 'data',
         filter: ['in', '$type', 'Polygon'],
         paint: {
           'line-color': '#222222',
@@ -96,7 +99,7 @@ export default {
           'maphubs:globalid': shortid
         },
         source: 'omh-' + shortid,
-        'source-layer': '',
+        'source-layer': 'data',
         filter: ['==', 'mhid', ''],
         paint: {
           'fill-color': hoverColor,
@@ -105,13 +108,6 @@ export default {
         }
       }
     ]
-
-    if (layer_id !== 'geojson') {
-      layers.forEach((layer) => {
-        layer['source-layer'] = 'data'
-      })
-    }
-    return layers
   },
 
   toggleFill (style: GLStyle, fill: boolean) {
@@ -144,7 +140,6 @@ export default {
         if (fill) {
           // re-enable fill
           outlineColor = '#222222'
-          legendColor = paint['fill-color']
           paint['fill-opacity'] = 0.7
         } else {
           // remove fill

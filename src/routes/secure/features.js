@@ -22,7 +22,7 @@ const local = require('../../local')
 module.exports = function (app: any) {
   app.get('/feature/:layer_id/:id/*', csrfProtection, privateLayerCheck.middlewareView, async (req, res, next) => {
     const id = req.params.id
-    const layer_id = parseInt(req.params.layer_id || '', 10)
+    const layer_id = Number.parseInt(req.params.layer_id || '', 10)
 
     let mhid
     if (id.includes(':')) {
@@ -104,7 +104,7 @@ module.exports = function (app: any) {
 
   app.get('/api/feature/json/:layer_id/:id/*', privateLayerCheck.middleware, async (req, res) => {
     const id = req.params.id
-    const layer_id = parseInt(req.params.layer_id || '', 10)
+    const layer_id = Number.parseInt(req.params.layer_id || '', 10)
 
     let mhid
     if (id.includes(':')) {
@@ -138,12 +138,11 @@ module.exports = function (app: any) {
 
   app.get('/api/feature/gpx/:layer_id/:id/*', privateLayerCheck.middleware, async (req, res, next) => {
     const id = req.params.id
-    const layer_id = parseInt(req.params.layer_id || '', 10)
+    const layer_id = Number.parseInt(req.params.layer_id || '', 10)
 
-    const mhid = `${layer_id}:${id}`
-
-    if (mhid && layer_id) {
+    if (id && layer_id) {
       try {
+        const mhid = `${layer_id}:${id}`
         const layer = await Layer.getLayerByID(layer_id)
         if (layer) {
           const geoJSON = await Feature.getGeoJSON(mhid, layer.layer_id)

@@ -41,7 +41,7 @@ export default class StoryCKEditor extends React.Component<Props, void> {
 
   constructor (props: Props) {
     super(props)
-    this.editorInstance = null
+    this.editorInstance = undefined
   }
 
   static defaultProps = {

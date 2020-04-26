@@ -8,8 +8,8 @@ module.exports = function (app: any) {
   // needed for generating screenshots on local MapHubs Pro deployments
   app.use('/tiles', proxy(local.tileServiceInternalUrl, {
     proxyReqPathResolver (req) {
-      const url: Object = require('url').parse(req.url)
-      const path = '/tiles' + url.path
+      const url = new URL(req.url)
+      const path = '/tiles' + url.pathname
       debug.log(path)
       return path
     }
@@ -17,8 +17,8 @@ module.exports = function (app: any) {
 
   app.use('/screenshots/*', proxy(local.manetUrl, {
     proxyReqPathResolver (req) {
-      const url: Object = require('url').parse(req.url)
-      const path = url.path
+      const url = new URL(req.url)
+      const path = url.pathname
       debug.log(path)
       return path
     }

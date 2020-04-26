@@ -9,7 +9,7 @@ export default {
     if (this.map) {
       if (data && data.features && Array.isArray(data.features) && data.features.length > 0) {
         this.map.addSource('omh-geojson', {type: 'geojson', data})
-        const glStyle = MapStyles.style.defaultStyle('geojson', 'geojson', null, null)
+        const glStyle = MapStyles.style.defaultStyle('geojson', 'geojson', undefined, undefined)
         // glStyle.sources["omh-geojson"] = {"type": "geojson", data};
         glStyle.layers.map((layer) => {
           _this.map.addLayer(layer)
@@ -57,7 +57,7 @@ export default {
       let e = bbox[3]
       if (e > 85) e = 85
 
-      const bounds = [[bbox[0], bbox[1]], [bbox[2], bbox[3]]]
+      const bounds = [[s, w], [n, e]]
       this.map.fitBounds(bounds, {padding: 25, curve: 3, speed: 0.6, maxZoom: 12})
     }
   }

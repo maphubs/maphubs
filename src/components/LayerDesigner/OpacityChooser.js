@@ -2,7 +2,6 @@
 import React from 'react'
 import { Row, Col, Button, Slider, InputNumber, Tabs, Tooltip } from 'antd'
 import AdvancedLayerSettings from './AdvancedLayerSettings'
-import _isequal from 'lodash.isequal'
 import OpacityIcon from '@material-ui/icons/Opacity'
 import CodeIcon from '@material-ui/icons/Code'
 import type {GLStyle} from '../../types/mapbox-gl-style'

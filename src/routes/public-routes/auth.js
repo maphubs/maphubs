@@ -5,19 +5,19 @@ const local = require('../../local')
 const urlencode = require('urlencode')
 const pageOptions = require('../../services/page-options-helper')
 
-module.exports = function (app: any) {
-  function checkReturnTo (req, res, next) {
-    const returnTo = req.query.returnTo
-    if (returnTo) {
-      // Maybe unnecessary, but just to be sure.
-      req.session = req.session || {}
+function checkReturnTo (req, res, next) {
+  const returnTo = req.query.returnTo
+  if (returnTo) {
+    // Maybe unnecessary, but just to be sure.
+    req.session = req.session || {}
 
-      // Set returnTo to the absolute path you want to be redirected to after the authentication succeeds.
-      req.session.returnTo = urlencode.decode(returnTo)
-    }
-    next()
+    // Set returnTo to the absolute path you want to be redirected to after the authentication succeeds.
+    req.session.returnTo = urlencode.decode(returnTo)
   }
+  next()
+}
 
+module.exports = function (app: any) {
   app.get('/login', checkReturnTo,
     passport.authenticate('auth0', {
       clientID: local.AUTH0_CLIENT_ID,

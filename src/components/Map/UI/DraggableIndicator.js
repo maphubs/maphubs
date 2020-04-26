@@ -28,16 +28,15 @@ export default class DraggableIndicator extends React.PureComponent<Props> {
   }
 
   render () {
-    const _this = this
-
+    const { numX, numY, dotWidth, initialX, initialY, offset } = this.props
     const rows = []
-    for (let i = 0; i < _this.props.numX; i++) {
-      for (let j = 0; j < _this.props.numY; j++) {
+    for (let i = 0; i < numX; i++) {
+      for (let j = 0; j < numY; j++) {
         rows.push(
           <rect
-            key={i + '-' + j} x={(_this.props.initialX + i * _this.props.offset)}
-            y={(_this.props.initialY + j * _this.props.offset)} fill='#ccc'
-            width={_this.props.dotWidth} height={_this.props.dotWidth}
+            key={i + '-' + j} x={(initialX + i * offset)}
+            y={(initialY + j * offset)} fill='#ccc'
+            width={dotWidth} height={dotWidth}
           />
         )
       }

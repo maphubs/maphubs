@@ -2,7 +2,7 @@ var updateStyle = function (style) {
   if (style && Array.isArray(style.layers) && style.layers.length > 0) {
     style.layers.map((layer) => {
       if (layer.id.includes('doublestroke-polygon')) {
-        var stops = layer['paint']['line-offset']['stops']
+        var stops = layer.paint['line-offset'].stops
         stops.map((stopArr) => {
           stopArr[1] = Math.abs(stopArr[1])
         })

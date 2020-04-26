@@ -32,7 +32,7 @@ module.exports = function (app) {
           provider_url: baseUrl,
           author_name: user.display_name,
           author_url: '',
-          author_id: parseInt(map.created_by),
+          author_id: Number.parseInt(map.created_by, 10),
           title,
           height: 630,
           width: 1200,

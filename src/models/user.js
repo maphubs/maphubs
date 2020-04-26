@@ -98,7 +98,7 @@ module.exports = {
         creation_ip,
         creation_time: knex.raw('now()')
       })
-    return parseInt(user_id)
+    return Number.parseInt(user_id, 10)
   },
 
   getSearchSuggestions (input: string) {

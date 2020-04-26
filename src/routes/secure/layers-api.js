@@ -20,7 +20,7 @@ const isAuthenticated = require('../../services/auth-check')
 module.exports = function (app: any) {
   app.post('/api/layer/create/empty/:id', csrfProtection, isAuthenticated, async (req, res) => {
     try {
-      const layer_id = parseInt(req.params.id || '', 10)
+      const layer_id = Number.parseInt(req.params.id || '', 10)
       if (await Layer.allowedToModify(layer_id, req.user_id)) {
         await knex.transaction(async (trx) => {
           const layer = await Layer.getLayerByID(layer_id, trx)
@@ -45,102 +45,102 @@ module.exports = function (app: any) {
     if (data) {
       let actionData = []
       switch (action) {
-        case 'createLayer':
-          actionData = [req.user_id]
-          break
-        case 'saveSettings':
-          if (!data.layer_id) {
-            apiDataError(res)
-            return
-          }
-          actionData = [
-            data.layer_id,
-            data.name,
-            data.description,
-            data.group_id,
-            data.private,
-            data.source,
-            data.license,
-            data.disable_feature_indexing,
-            req.user_id
-          ]
-          break
-        case 'saveAdminSettings':
-          if (!data.layer_id) {
-            apiDataError(res)
-            return
-          }
-          actionData = [
-            data.layer_id,
-            data.group_id,
-            data.disable_export,
-            data.allow_public_submit,
-            req.user_id
-          ]
-          break
-        case 'saveExternalLayerConfig':
-          if (!data.layer_id) {
-            apiDataError(res)
-            return
-          }
-          actionData = [
-            data.layer_id,
-            data.external_layer_config,
-            req.user_id
-          ]
-          break
-        case 'saveDataSettings':
-          if (!data.layer_id) {
-            apiDataError(res)
-            return
-          }
-          actionData = [
-            data.layer_id,
-            data.is_empty,
-            data.empty_data_type,
-            data.is_external,
-            data.external_layer_type,
-            data.external_layer_config,
-            req.user_id
-          ]
-          break
-        case 'saveStyle':
-          if (!data.layer_id || !data.style) {
-            apiDataError(res)
-            return
-          }
-          actionData = [
-            data.layer_id,
-            data.style,
-            data.labels,
-            data.legend_html,
-            data.settings,
-            data.preview_position,
-            req.user_id
-          ]
-          break
-        case 'delete':
-          if (!data.layer_id) {
-            apiDataError(res)
-            return
-          }
-          actionData = [
-            data.layer_id,
-            data.app = app
-          ]
-          break
-        case 'setComplete':
-          if (!data.layer_id) {
-            apiDataError(res)
-            return
-          }
-          actionData = [
-            data.layer_id
-          ]
-          break
-        default:
-          res.status(400).send({success: false, error: 'Bad Request: not a valid option'})
+      case 'createLayer':
+        actionData = [req.user_id]
+        break
+      case 'saveSettings':
+        if (!data.layer_id) {
+          apiDataError(res)
           return
+        }
+        actionData = [
+          data.layer_id,
+          data.name,
+          data.description,
+          data.group_id,
+          data.private,
+          data.source,
+          data.license,
+          data.disable_feature_indexing,
+          req.user_id
+        ]
+        break
+      case 'saveAdminSettings':
+        if (!data.layer_id) {
+          apiDataError(res)
+          return
+        }
+        actionData = [
+          data.layer_id,
+          data.group_id,
+          data.disable_export,
+          data.allow_public_submit,
+          req.user_id
+        ]
+        break
+      case 'saveExternalLayerConfig':
+        if (!data.layer_id) {
+          apiDataError(res)
+          return
+        }
+        actionData = [
+          data.layer_id,
+          data.external_layer_config,
+          req.user_id
+        ]
+        break
+      case 'saveDataSettings':
+        if (!data.layer_id) {
+          apiDataError(res)
+          return
+        }
+        actionData = [
+          data.layer_id,
+          data.is_empty,
+          data.empty_data_type,
+          data.is_external,
+          data.external_layer_type,
+          data.external_layer_config,
+          req.user_id
+        ]
+        break
+      case 'saveStyle':
+        if (!data.layer_id || !data.style) {
+          apiDataError(res)
+          return
+        }
+        actionData = [
+          data.layer_id,
+          data.style,
+          data.labels,
+          data.legend_html,
+          data.settings,
+          data.preview_position,
+          req.user_id
+        ]
+        break
+      case 'delete':
+        if (!data.layer_id) {
+          apiDataError(res)
+          return
+        }
+        actionData = [
+          data.layer_id,
+          data.app = app
+        ]
+        break
+      case 'setComplete':
+        if (!data.layer_id) {
+          apiDataError(res)
+          return
+        }
+        actionData = [
+          data.layer_id
+        ]
+        break
+      default:
+        res.status(400).send({success: false, error: 'Bad Request: not a valid option'})
+        return
       }
 
       try {
@@ -176,7 +176,7 @@ module.exports = function (app: any) {
 
   app.post('/api/layer/deletedata/:id', csrfProtection, isAuthenticated, async (req, res) => {
     try {
-      const layer_id = parseInt(req.params.id || '', 10)
+      const layer_id = Number.parseInt(req.params.id || '', 10)
       if (await Layer.allowedToModify(layer_id, req.user_id)) {
         await DataLoadUtils.removeLayerData(layer_id)
         return res.status(200).send({success: true})

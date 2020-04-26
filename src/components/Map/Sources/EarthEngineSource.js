@@ -46,7 +46,7 @@ const EarthEngineSource = {
         clientID = mapComponent.props.earthEngineClientID
       }
 
-      ee.data.authenticate(clientID, getEEMap, null, null, () => {
+      ee.data.authenticate(clientID, getEEMap, undefined, undefined, () => {
         ee.data.authenticateViaPopup(() => {
           getEEMap()
         })

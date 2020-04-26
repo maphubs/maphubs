@@ -153,7 +153,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
         active = true
       }
 
-      if (layer && layer.style && layer.style.layers) {
+      if (layer.style?.layers) {
         layer.style.layers.forEach((styleLayer) => {
           if (!styleLayer.layout) {
             styleLayer.layout = {}
@@ -239,7 +239,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
     } else if (position) {
       if (typeof window === 'undefined' || !window.location.hash) {
         // only update position if there isn't absolute hash in the URL
-        if (position && position.bbox) {
+        if (position.bbox) {
           const bbox = position.bbox
           bounds = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]]
         }

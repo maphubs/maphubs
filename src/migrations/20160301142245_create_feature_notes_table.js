@@ -17,5 +17,5 @@ exports.up = function (knex) {
 }
 
 exports.down = function (knex) {
-  return knex.raw(`DROP TABLE omh.feature_notes`)
+  return knex.raw('DROP TABLE omh.feature_notes')
 }

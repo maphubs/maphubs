@@ -7,7 +7,6 @@ import Actions from '../../actions/LayerActions'
 import MapHubsComponent from '../MapHubsComponent'
 import _isequal from 'lodash.isequal'
 import { PlusOutlined } from '@ant-design/icons'
-import type {MapHubsField} from '../../types/maphubs-field'
 import type {LayerStoreState} from '../../stores/layer-store'
 
 type Props = {
@@ -30,14 +29,21 @@ export default class PresetEditor extends MapHubsComponent<Props, State> {
     this.stores.push(LayerStore)
   }
 
+  unloadHandler: any
+
   componentDidMount () {
     const _this = this
-    window.addEventListener('beforeunload', (e) => {
+    this.unloadHandler = (e) => {
       if (_this.props.warnIfUnsaved && _this.state.pendingPresetChanges) {
         e.preventDefault()
         e.returnValue = ''
       }
-    })
+    }
+    window.addEventListener('beforeunload', this.unloadHandler)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
   shouldComponentUpdate (nextProps: Props, nextState: State) {

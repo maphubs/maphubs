@@ -2,7 +2,7 @@
 import React from 'react'
 import InteractiveMap from '../components/Map/InteractiveMap'
 import Header from '../components/header'
-import { Modal, message } from 'antd'
+import { message } from 'antd'
 import UserStore from '../stores/UserStore'
 import MapMakerStore from '../stores/MapMakerStore'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -28,7 +28,6 @@ import 'react-tiny-fab/dist/styles.css'
 
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
-const { confirm } = Modal
 
 type Props = {
   map: Object,

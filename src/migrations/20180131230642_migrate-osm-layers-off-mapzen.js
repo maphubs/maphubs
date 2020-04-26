@@ -203,7 +203,7 @@ exports.up = (knex) => {
               }
             })
           }
-          updateCommands.push(knex('omh.layers').update({style, name, source: {'en': 'OpenMapTiles/OpenStreetMap contributors'}}).where({layer_id: layer.layer_id}))
+          updateCommands.push(knex('omh.layers').update({style, name, source: {en: 'OpenMapTiles/OpenStreetMap contributors'}}).where({layer_id: layer.layer_id}))
         })
         return Promise.all(updateCommands)
       } else {

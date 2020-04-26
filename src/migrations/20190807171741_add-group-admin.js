@@ -19,6 +19,4 @@ exports.up = async (knex) => {
   }))
 }
 
-exports.down = (knex) => {
- 
-}
+exports.down = (knex) => {}

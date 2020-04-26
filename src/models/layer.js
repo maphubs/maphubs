@@ -12,7 +12,6 @@ const Group = require('./group')
 const Map = require('./map')
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('model/layers')
 const ScreenshotUtils = require('../services/screenshot-utils')
-const geojsonUtils = require('../services/geojson-utils')
 const PhotoAttachment = require('./photo-attachment')
 
 const shortid = require('shortid')
@@ -361,9 +360,19 @@ module.exports = {
           log.error(error)
           reject(error)
         }
-        // convert tags to properties
+
         if (result.features) {
-          result.features = geojsonUtils.convertTagsToProps(result.features)
+          // convert tags to properties
+          result.features.forEach((feature) => {
+            const tags = feature.properties.tags
+            if (tags) {
+              Object.keys(tags).forEach((key) => {
+                const val = tags[key]
+                feature.properties[key] = val
+              })
+              delete feature.properties.tags
+            }
+          })
         }
         result.bbox = JSON.parse(bbox.rows[0].bbox)
         resolve(result)
@@ -423,7 +432,7 @@ module.exports = {
   /**
    * Can include private?: Yes
    */
-  async allowedToModify (layer_id: number, user_id: number, trx: knex.transtion = null): Promise<boolean> | any {
+  async allowedToModify (layer_id: number, user_id: number, trx: any = null): Promise<boolean> | any {
     if (!layer_id || user_id <= 0) {
       return false
     }
@@ -448,8 +457,8 @@ module.exports = {
   /**
    * Can include private?: Yes
    */
-  async createLayer (user_id: number, trx:any) {
-    let layer_id = await trx('omh.layers')
+  async createLayer (user_id: number, trx: any) {
+    const layer_id_result = await trx('omh.layers')
       .insert({
         status: 'incomplete',
         created_by_user_id: user_id,
@@ -458,7 +467,7 @@ module.exports = {
         extent_bbox: '[-175,-85,175,85]', // make sure we always init a default for this
         last_updated: knex.raw('now()')
       }).returning('layer_id')
-    layer_id = parseInt(layer_id)
+    const layer_id = Number.parseInt(layer_id_result, 10)
     await trx('omh.layers').update({shortid: shortid.generate()}).where({layer_id})
     return layer_id
   },

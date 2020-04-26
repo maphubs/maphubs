@@ -1,6 +1,6 @@
 // @flow
 import React from 'react'
-import { Row, Col, Button, Upload, Progress, message } from 'antd'
+import { Button, Upload, Progress, message } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 // import FileUploadProgress from 'react-fileupload-progress'
 

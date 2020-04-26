@@ -8,7 +8,7 @@ export default {
         id: props.id,
         item: props.item,
         index: props.index,
-        targetIndex: null
+        targetIndex: undefined
       }
     },
 

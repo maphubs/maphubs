@@ -77,14 +77,21 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
     }
   }
 
+  unloadHandler: any
+
   componentDidMount () {
     const _this = this
-    window.addEventListener('beforeunload', (e) => {
+    this.unloadHandler = (e) => {
       if (!_this.state.submitted) {
         e.preventDefault()
         e.returnValue = ''
       }
-    })
+    }
+    window.addEventListener('beforeunload', this.unloadHandler)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
   showImageCrop = () => {

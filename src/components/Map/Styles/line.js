@@ -6,7 +6,7 @@ export default {
   getLineLayers (layer_id: number, shortid: string,
     color: string, hoverColor: string,
     interactive: boolean, showBehindBaseMapLabels: boolean): Array<GLLayer> {
-    const layers = [
+    return [
       {
         id: `omh-data-line-${layer_id}-${shortid}`,
         type: 'line',
@@ -17,7 +17,7 @@ export default {
           'maphubs:showBehindBaseMapLabels': showBehindBaseMapLabels
         },
         source: 'omh-' + shortid,
-        'source-layer': '',
+        'source-layer': 'data',
         filter: ['in', '$type', 'LineString'],
         paint: {
           'line-color': color,
@@ -33,7 +33,7 @@ export default {
           'maphubs:globalid': shortid
         },
         source: 'omh-' + shortid,
-        'source-layer': '',
+        'source-layer': 'data',
         filter: ['==', 'mhid', ''],
         paint: {
           'line-color': hoverColor,
@@ -42,12 +42,5 @@ export default {
         }
       }
     ]
-
-    if (layer_id !== 'geojson') {
-      layers.forEach((layer) => {
-        layer['source-layer'] = 'data'
-      })
-    }
-    return layers
   }
 }

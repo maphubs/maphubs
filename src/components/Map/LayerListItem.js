@@ -15,9 +15,7 @@ import DragItemConfig from './UI/DragItemConfig'
 require('dnd-core/lib/actions/dragDrop')
 
 type Props = {
-  id: number,
   item: Layer,
-  moveItem: Function,
   showVisibility?: boolean,
   showRemove: boolean,
   showDesign: boolean,
@@ -30,7 +28,6 @@ type Props = {
   isDragging: boolean,
   connectDragSource: Function,
   connectDropTarget: Function,
-  index: number,
   t: Function
 }
 

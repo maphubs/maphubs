@@ -11,7 +11,7 @@ module.exports = function (app: any) {
     try {
       const data = req.body
       if (data && data.layer_id && data.geometry) {
-        const layer_id = parseInt(data.layer_id, 10)
+        const layer_id = Number.parseInt(data.layer_id, 10)
         const layer = await Layer.getLayerByID(layer_id)
         if (!layer) {
           return res.status(404).send()

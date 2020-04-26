@@ -34,13 +34,21 @@ export default class LayerNotes extends React.Component<Props, State> {
     }
   }
 
+  unloadHandler: any
+
   componentDidMount () {
-    window.addEventListener('beforeunload', (e) => {
-      if (this.state.editing) {
+    const _this = this
+    this.unloadHandler = (e) => {
+      if (_this.state.editing) {
         e.preventDefault()
         e.returnValue = ''
       }
-    })
+    }
+    window.addEventListener('beforeunload', this.unloadHandler)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
   startEditingNotes = () => {

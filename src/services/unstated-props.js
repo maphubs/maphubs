@@ -56,7 +56,7 @@ const provide = (WrappedComponent) => {
     render () {
       return (
         <Provider>
-          {<WrappedComponent {...this.props} />}
+          <WrappedComponent {...this.props} />
         </Provider>
       )
     }

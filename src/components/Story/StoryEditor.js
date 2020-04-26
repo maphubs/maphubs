@@ -48,19 +48,26 @@ class StoryEditor extends React.Component<Props, State> {
     imageData: ''
   }
 
+  unloadHandler: any
+
   componentDidMount () {
     const _this = this
-    window.addEventListener('beforeunload', (e) => {
+    this.unloadHandler = (e) => {
       if (_this.props.containers.story.state.modified) {
         e.preventDefault()
         e.returnValue = ''
       }
-    })
+    }
+    window.addEventListener('beforeunload', this.unloadHandler)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
   getFirstImage = () => {
     // attempt to find the first map or image
-    let firstImg = null
+    let firstImg
     const firstEmbed = $('.ck-content').find('img, .ck-media__wrapper').first()
     if (firstEmbed.is('.ck-media__wrapper')) {
       // console.log(firstEmbed)
@@ -154,7 +161,7 @@ class StoryEditor extends React.Component<Props, State> {
     message.info(this.props.t('Saving Image Crop'))
     // console.log(dataURL)
     // console.log(info)
-    this.setState({showImageCrop: false, imageData: null})
+    this.setState({showImageCrop: false, imageData: undefined})
     this.state.imageCropCallback(dataURL)
   }
 

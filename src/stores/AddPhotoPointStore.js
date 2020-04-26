@@ -47,11 +47,11 @@ export default class AddPhotoPointStore extends Reflux.Store {
   setImage (data: any, info: any, cb: any) {
     debug.log('set image')
 
-    if (info && info.exif && info.exif['GPSLatitude']) {
-      const lat = info.exif['GPSLatitude']
-      const latRef = info.exif['GPSLatitudeRef']
-      const lon = info.exif['GPSLongitude']
-      const lonRef = info.exif['GPSLongitudeRef']
+    if (info && info.exif && info.exif.GPSLatitude) {
+      const lat = info.exif.GPSLatitude
+      const latRef = info.exif.GPSLatitudeRef
+      const lon = info.exif.GPSLongitude
+      const lonRef = info.exif.GPSLongitudeRef
 
       const geoJSON = {
         type: 'FeatureCollection',
@@ -75,28 +75,28 @@ export default class AddPhotoPointStore extends Reflux.Store {
       const properties = {}
 
       // add optional exif metadata
-      if (info.exif['Make']) {
-        properties.photo_make = info.exif['Make']
+      if (info.exif.Make) {
+        properties.photo_make = info.exif.Make
       }
 
-      if (info.exif['Model']) {
-        properties.photo_model = info.exif['Model']
+      if (info.exif.Model) {
+        properties.photo_model = info.exif.Model
       }
 
-      if (info.exif['GPSAltitude']) {
-        properties.photo_gps_altitude = info.exif['GPSAltitude']
+      if (info.exif.GPSAltitude) {
+        properties.photo_gps_altitude = info.exif.GPSAltitude
       }
 
-      if (info.exif['GPSDestBearing']) {
-        properties.photo_gps_bearing = info.exif['GPSDestBearing']
+      if (info.exif.GPSDestBearing) {
+        properties.photo_gps_bearing = info.exif.GPSDestBearing
       }
 
-      if (info.exif['GPSDateStamp'] && info.exif['GPSTimeStamp']) {
-        const dateParts = info.exif['GPSDateStamp'].split(':')
+      if (info.exif.GPSDateStamp && info.exif.GPSTimeStamp) {
+        const dateParts = info.exif.GPSDateStamp.split(':')
         const year = dateParts[0]
         const month = dateParts[1]
         const day = dateParts[2]
-        const time = info.exif['GPSTimeStamp']
+        const time = info.exif.GPSTimeStamp
         const hour = time[0]
         const minute = time[1]
         const second = time[2]
@@ -129,7 +129,7 @@ export default class AddPhotoPointStore extends Reflux.Store {
       this.state.geoJSON.features.length > 0) {
       const firstFeature: any = this.state.geoJSON.features[0]
       if (firstFeature) {
-        Object.keys(fields).map((key) => {
+        Object.keys(fields).forEach((key) => {
           const val = fields[key]
           if (firstFeature.properties) {
             firstFeature.properties[key] = val

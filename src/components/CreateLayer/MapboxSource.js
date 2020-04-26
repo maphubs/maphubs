@@ -63,7 +63,7 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
   submit = (model: Object) => {
     const {t} = this
     const _this = this
-    let dataSettings = null
+    let dataSettings
     if (model.mapboxStyleID) {
       const mapboxStyleID = model.mapboxStyleID.replace(/mapbox:\/\/styles\//i, '')
       dataSettings = {
@@ -119,14 +119,14 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
     let styleOption = false
     let tilesOption = false
     switch (this.state.selectedOption) {
-      case 'style':
-        styleOption = true
-        break
-      case 'tiles':
-        tilesOption = true
-        break
-      default:
-        break
+    case 'style':
+      styleOption = true
+      break
+    case 'tiles':
+      tilesOption = true
+      break
+    default:
+      break
     }
 
     let styleForm = ''

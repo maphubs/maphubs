@@ -81,7 +81,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
   setRasterOpacity = (opacity: number) => {
     const elc = this.state.external_layer_config ? this.state.external_layer_config : {}
     const layer_id = this.state.layer_id ? this.state.layer_id : 0
-    let style = null
+    let style
     if (this.state.is_external && elc.type === 'ags-mapserver-tiles' && elc.url) {
       style = MapStyles.raster.rasterStyleTileJSON(layer_id, this.state.shortid, elc.url + '?f=json', opacity, 'arcgisraster')
     } else if (this.state.is_external && elc.type === 'multiraster' && elc.layers) {

@@ -43,7 +43,16 @@
     "standard/object-curly-even-spacing": [2, "either"],
     "unicorn/catch-error-name": ["error", {"name": "err"}],
     "unicorn/prevent-abbreviations": "off",
-    "react/jsx-handler-names": "off"
+    "unicorn/no-fn-reference-in-iterator": "off", // not compatible with old jquery().find() code
+    "unicorn/no-null": "off", // knexjs code expects nulls for DB queries 
+    "react/jsx-handler-names": "off",
+    // Adding next two rules to avoid bug in babel-eslint:
+    // https://github.com/babel/babel-eslint/issues/799
+    "indent": [
+      "warn", 2,
+      { "ignoredNodes": ["TemplateLiteral"] }
+    ],
+    "template-curly-spacing": "off"
   },
 
   "env": {

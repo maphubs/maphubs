@@ -35,7 +35,7 @@ module.exports = {
     if (result.length === 1) {
       const id = result[0].image_id
       debug.log('image found: ' + id)
-      return _this.getImageByID(parseInt(id))
+      return _this.getImageByID(Number.parseInt(id, 10))
     } else {
       // throw new Error('No Image Found for Group: '+ group_id);
     }
@@ -49,7 +49,7 @@ module.exports = {
     if (result.length === 1) {
       const id = result[0].image_id
       debug.log('image found: ' + id)
-      return this.getThumbnailImageByID(parseInt(id))
+      return this.getThumbnailImageByID(Number.parseInt(id, 10))
     } else {
       // throw new Error('No Image Found for Group: '+ group_id);
     }
@@ -59,7 +59,7 @@ module.exports = {
   async insertGroupImage (group_id: string, image: any, info: any, trx: any) {
     const thumbnail = await ImageUtils.resizeBase64(image, 40, 40)
     let image_id = await trx('omh.images').insert({image, thumbnail, info}).returning('image_id')
-    image_id = parseInt(image_id)
+    image_id = Number.parseInt(image_id, 10)
     return trx('omh.group_images').insert({group_id, image_id})
   },
 
@@ -108,7 +108,7 @@ module.exports = {
     return knex.transaction(async (trx) => {
       const thumbnail = await ImageUtils.resizeBase64(image, 800, 240, true)
       let image_id = await trx('omh.images').insert({image, thumbnail, info}).returning('image_id')
-      image_id = parseInt(image_id)
+      image_id = Number.parseInt(image_id, 10)
       await trx('omh.story_images').insert({story_id, image_id})
       return image_id
     })

@@ -145,7 +145,7 @@ module.exports = {
       updated_by: user_id
     }).returning('story_id')
 
-    story_id = parseInt(story_id)
+    story_id = Number.parseInt(story_id, 10)
     return story_id
   },
 

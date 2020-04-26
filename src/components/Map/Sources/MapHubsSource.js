@@ -23,10 +23,12 @@ GJV.define('Position', (position: Array<number>) => {
   return errors
 })
 
+/*
 let mapboxgl = {}
 if (typeof window !== 'undefined') {
   mapboxgl = require('mapbox-gl')
 }
+*/
 
 const MapHubsSource = {
   async load (key: string, source: GLSource, mapComponent: any) {
@@ -56,8 +58,8 @@ const MapHubsSource = {
               clusterMaxZoom: source.clusterMaxZoom || 14,
               clusterRadius: source.clusterRadius || 50
             })
-          }, (error) => {
-            debug.log('(' + mapComponent.state.id + ') ' + error)
+          }, (err) => {
+            debug.log('(' + mapComponent.state.id + ') ' + err)
           })
       } else if (typeof source.data === 'object') {
         return mapComponent.addSource(key, {
@@ -87,8 +89,8 @@ const MapHubsSource = {
             tileJSON.metadata = source.metadata
           }
           return mapComponent.addSource(key, tileJSON)
-        }, (error) => {
-          debug.log('(' + mapComponent.state.id + ') ' + error)
+        }, (err) => {
+          debug.log('(' + mapComponent.state.id + ') ' + err)
         })
     }
   },

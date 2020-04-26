@@ -102,18 +102,6 @@ class MapMaker extends MapHubsComponent<Props, State> {
     if (mapLayers) { Actions.setMapLayers(mapLayers) }
     if (basemap) { Actions.setMapBasemap(basemap) }
     if (settings) { Actions.setSettings(settings) }
-    // const _this = this
-    // const {t} = this
-
-    /*
-        window.addEventListener('beforeunload', (e) => {
-          const {saved, mapLayers} = _this.state
-          if (!saved && mapLayers && mapLayers.length > 0) {
-            e.preventDefault()
-            e.returnValue = ''
-          }
-        })
-    */
   }
 
   componentWillReceiveProps (nextProps: Props) {

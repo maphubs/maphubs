@@ -63,14 +63,21 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
     this.stores.push(LayerStore)
   }
 
+  unloadHandler: any
+
   componentDidMount () {
     const _this = this
-    window.addEventListener('beforeunload', (e) => {
+    this.unloadHandler = (e) => {
       if (_this.props.warnIfUnsaved && _this.state.pendingChanges) {
         e.preventDefault()
         e.returnValue = ''
       }
-    })
+    }
+    window.addEventListener('beforeunload', this.unloadHandler)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
   onFormChange = () => {

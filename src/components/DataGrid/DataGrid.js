@@ -16,10 +16,8 @@ const { confirm } = Modal
 type Props = {
   geoJSON: Object,
   presets: Object,
-  onRowSelected: Function,
   layer: Object,
   canEdit: boolean,
-  onSave?: Function,
   presets: Array<MapHubsField>,
   containers: {dataEditorState: any, mapState: any},
   t: Function,
@@ -40,7 +38,8 @@ type State = {
   rowKey: string, // the data index of the unique ID attribute, usually the 'mhid'
   activeSearchTag?: string,
   searchText?: string,
-  selectedRowKeys: Array<string>
+  selectedRowKeys: Array<string>,
+  selectedFeature?: Object
 }
 
 const getRowKey = (exampleRow: Object) => {
@@ -66,23 +65,29 @@ class DataGrid extends React.Component<Props, State> {
       editing: false,
       columns: this.getColumns(rows, props.presets, rowKey, props.t),
       rows,
-      rowKey
+      rowKey,
+      selectedRowKeys: []
     }
     this.searchInputs = {}
   }
 
   tableRef: any
   searchInputs: any
+  unloadHandler: any
 
   componentDidMount () {
     const _this = this
-    // display browser warning if there are pending edits
-    window.addEventListener('beforeunload', (e) => {
+    this.unloadHandler = (e) => {
       if (_this.state.editing && _this.props.containers.dataEditorState.state?.edits?.length > 0) {
         e.preventDefault()
         e.returnValue = ''
       }
-    })
+    }
+    window.addEventListener('beforeunload', this.unloadHandler)
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
   handleReset = (clearFilters: Function) => {
@@ -357,12 +362,12 @@ class DataGrid extends React.Component<Props, State> {
   }
 
   onClearSelection = () => {
-    this.setState({selectedFeature: null, selectedRowKeys: []})
+    this.setState({selectedFeature: undefined, selectedRowKeys: []})
   }
 
   render () {
     const {layer, containers, canEdit, t} = this.props
-    const { editing, columns, rows, rowKey, selectedFeature, selectedRowKeys } = this.state
+    const { editing, columns, rows, rowKey, selectedFeature } = this.state
     const { dataEditorState } = containers
 
     const name = slugify(t(layer.name))

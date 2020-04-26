@@ -129,7 +129,7 @@ module.exports = function (app: any) {
 
   app.post('/api/layer/create/savedata/:id', csrfProtection, isAuthenticated, async (req, res) => {
     try {
-      const layer_id = parseInt(req.params.id || '', 10)
+      const layer_id = Number.parseInt(req.params.id || '', 10)
       if (await Layer.allowedToModify(layer_id, req.user_id)) {
         await knex.transaction(async (trx) => {
           const layer = await Layer.getLayerByID(layer_id, trx)
@@ -149,7 +149,7 @@ module.exports = function (app: any) {
 
   app.post('/api/layer/:id/upload', isAuthenticated, multer({dest: local.tempFilePath + '/uploads/'}).single('file'),
     async (req, res) => {
-      const layer_id = parseInt(req.params.id || '', 10)
+      const layer_id = Number.parseInt(req.params.id || '', 10)
       try {
         const layer = await Layer.getLayerByID(layer_id)
         if (layer) {

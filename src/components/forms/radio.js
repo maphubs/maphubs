@@ -8,7 +8,7 @@ type Props = {
   className: string,
   tooltip: string,
   tooltipPosition: string,
-  defaultValue: string,
+  defaultValue?: string,
   label: string,
   name: string,
   onChange: Function,
@@ -22,7 +22,6 @@ class Radio extends MapHubsPureComponent<Props, void> {
 
   static defaultProps = {
     options: {},
-    defaultValue: null,
     dataDelay: 100
   }
 

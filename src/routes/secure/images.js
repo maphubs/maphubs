@@ -8,7 +8,7 @@ const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 
 module.exports = function (app: any) {
   app.get('/image/:id.*', (req, res, next) => {
-    const image_id = parseInt(req.params.id || '', 10)
+    const image_id = Number.parseInt(req.params.id || '', 10)
     // var ext = req.params.ext;
     debug.log('getting image: ' + image_id)
     Image.getImageByID(image_id)

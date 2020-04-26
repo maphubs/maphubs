@@ -23,8 +23,7 @@ type Props = {|
 type State = {
   canSubmit: boolean,
   geoJSON?: GeoJSONObject,
-  largeData: boolean,
-  multipleShapefiles: any
+  largeData: boolean
 } & LocaleStoreState & LayerStoreState
 
 export default class UploadLayerReplacement extends MapHubsComponent<Props, State> {
@@ -32,8 +31,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
 
   state: State = {
     canSubmit: false,
-    largeData: false,
-    multipleShapefiles: null
+    largeData: false
   }
 
   constructor (props: Props) {
@@ -48,9 +46,6 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
   componentDidUpdate () {
     if (this.state.geoJSON) {
       scrollToComponent(this.refs.mapSection)
-    }
-    if (this.state.multipleShapefiles) {
-      this.refs.chooseshape.show()
     }
   }
 

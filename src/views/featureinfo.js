@@ -125,18 +125,16 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     let geojsonFeature
     let geoJSONProps
 
-    if (feature && layer && feature.features) {
-      if (feature.features && feature.features.length > 0) {
-        geojsonFeature = feature.features[0]
-        geoJSONProps = feature.features[0].properties
-      }
+    if (feature.features && feature.features.length > 0) {
+      geojsonFeature = feature.features[0]
+      geoJSONProps = feature.features[0].properties
     }
 
     const baseUrl = urlUtil.getBaseUrl()
 
     // fix possible error if layer.name doesn't translate correctly
     let layerName = 'unknown'
-    if (layer?.name) {
+    if (layer.name) {
       const translatedLayerName = this.t(layer.name)
       if (translatedLayerName && typeof translatedLayerName === 'string') {
         layerName = translatedLayerName

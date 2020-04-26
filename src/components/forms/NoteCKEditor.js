@@ -15,13 +15,7 @@ type Props = {
 
 export default class NoteCKEditor extends React.Component<Props, void> {
   editorInstance: any
-
   domContainer: any
-
-  constructor (props: Props) {
-    super(props)
-    this.editorInstance = null
-  }
 
   static defaultProps = {
     initialData: '',
@@ -30,12 +24,6 @@ export default class NoteCKEditor extends React.Component<Props, void> {
 
   shouldComponentUpdate () {
     return false
-  }
-
-  componentWillReceiveProps (newProps: Props) {
-    if (this.editorInstance && newProps.data) {
-      // this.editorInstance.setData(newProps.data)
-    }
   }
 
   render () {

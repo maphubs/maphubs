@@ -48,7 +48,7 @@ module.exports = function (app: any) {
     const user_id = req.session.user.maphubsUser.id
     knex.transaction(async (trx) => {
       let layer_id = await Layer.createLayer(user_id, trx)
-      layer_id = parseInt(layer_id)
+      layer_id = Number.parseInt(layer_id, 10)
 
       return app.next.render(req, res, '/createlayer', await pageOptions(req, {
         title: req.__('Create Layer') + ' - ' + local.productName,
@@ -62,7 +62,7 @@ module.exports = function (app: any) {
 
   app.get('/layer/info/:layer_id/*', privateLayerCheck, csrfProtection, async (req, res, next) => {
     try {
-      const layer_id = parseInt(req.params.layer_id || '', 10)
+      const layer_id = Number.parseInt(req.params.layer_id || '', 10)
       const baseUrl = urlUtil.getBaseUrl()
 
       let user_id = -1
@@ -134,7 +134,7 @@ module.exports = function (app: any) {
 
   app.get('/layer/map/:layer_id/*', privateLayerCheck, csrfProtection, async (req, res, next) => {
     try {
-      const layer_id = parseInt(req.params.layer_id || '', 10)
+      const layer_id = Number.parseInt(req.params.layer_id || '', 10)
       const baseUrl = urlUtil.getBaseUrl()
 
       let user_id = -1
@@ -189,7 +189,7 @@ module.exports = function (app: any) {
 
   app.get('/layer/adddata/:id', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
     try {
-      const layer_id = parseInt(req.params.id || '', 10)
+      const layer_id = Number.parseInt(req.params.id || '', 10)
       const user_id = req.session.user.maphubsUser.id
       const allowed = await Layer.allowedToModify(layer_id, user_id)
       const layer = await Layer.getLayerByID(layer_id)
@@ -211,7 +211,7 @@ module.exports = function (app: any) {
   app.get('/layer/admin/:id/*', csrfProtection, login.ensureLoggedIn(), async (req, res, next) => {
     try {
       const user_id = req.session.user.maphubsUser.id
-      const layer_id = parseInt(req.params.id || '', 10)
+      const layer_id = Number.parseInt(req.params.id || '', 10)
 
       // confirm that this user is allowed to administer this layeradmin
       const allowed = await Layer.allowedToModify(layer_id, user_id)

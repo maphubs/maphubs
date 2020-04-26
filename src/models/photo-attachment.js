@@ -56,7 +56,7 @@ module.exports = {
       })
       .returning('photo_id')
 
-    photo_id = parseInt(photo_id)
+    photo_id = Number.parseInt(photo_id, 10)
     await db('omh.feature_photo_attachments').insert({layer_id, mhid, photo_id})
     return photo_id
   },

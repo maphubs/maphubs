@@ -1,7 +1,7 @@
 
 exports.up = function (knex) {
   return Promise.all([
-    knex.raw(`ALTER TABLE omh.hubs ADD COLUMN owned_by_group_id text;`),
+    knex.raw('ALTER TABLE omh.hubs ADD COLUMN owned_by_group_id text;'),
     knex.raw(`
       INSERT INTO omh.groups (group_id, name, description, published) 
         SELECT hub_id || '-Hub', name || ' - Hub', description, true FROM omh.hubs;

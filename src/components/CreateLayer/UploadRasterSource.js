@@ -75,8 +75,8 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
             external_layer_type: 'Raster Tile Service',
             external_layer_config: {
               type: 'raster',
-              minzoom: parseInt(result.minzoom, 10),
-              maxzoom: parseInt(result.maxzoom, 10),
+              minzoom: Number.parseInt(result.minzoom, 10),
+              maxzoom: Number.parseInt(result.maxzoom, 10),
               bounds: result.bounds,
               tiles: result.tiles,
               scheme: result.scheme

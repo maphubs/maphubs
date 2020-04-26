@@ -25,11 +25,11 @@ const middleware = (view) => {
       }
       let layer_id, shortid
       if (req.params.layer_id) {
-        layer_id = parseInt(req.params.layer_id || '', 10)
+        layer_id = Number.parseInt(req.params.layer_id, 10)
       } else if (req.body.layer_id) {
         layer_id = req.body.layer_id
       } else if (req.params.id) {
-        layer_id = parseInt(req.params.id || '', 10)
+        layer_id = Number.parseInt(req.params.id, 10)
       } else {
         if (req.params.shortid) {
           shortid = req.params.shortid

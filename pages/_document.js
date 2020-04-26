@@ -38,8 +38,6 @@ export default class MyDocument extends Document {
       }
     }
 
-    const materialicons = options.materialicons ? options.materialicons : true
-
     let ravenConfig = ''
     if (process.env.NODE_ENV === 'production' && !local.disableTracking) {
       ravenConfig = local.SENTRY_DSN_PUBLIC

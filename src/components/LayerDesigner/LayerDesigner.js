@@ -81,9 +81,15 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
   }
 
   onColorChange = (color: string) => {
-    let style = this.setColorInStyle(this.props.style, color)
-    style = MapStyles.color.updateStyleColor(style, color)
-    const legend = MapStyles.legend.legendWithColor(this.props.layer, color)
+    const oldStyle = this.setColorInStyle(this.props.style, color)
+    const { style, isOutlineOnly } = MapStyles.color.updateStyleColor(oldStyle, color)
+    let legend
+    if (isOutlineOnly) {
+      legend = MapStyles.legend.outlineLegendWithColor(this.props.layer, color)
+    } else {
+      legend = MapStyles.legend.legendWithColor(this.props.layer, color)
+    }
+
     this.setState({color})
     this.props.onColorChange(style, legend)
   }

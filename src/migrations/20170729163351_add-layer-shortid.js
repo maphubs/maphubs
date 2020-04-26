@@ -1,6 +1,6 @@
 var shortid = require('shortid')
 exports.up = function (knex) {
-  return knex.raw(`ALTER TABLE omh.layers ADD COLUMN shortid text;`)
+  return knex.raw('ALTER TABLE omh.layers ADD COLUMN shortid text;')
     .then(() => {
       return knex.select('layer_id').from('omh.layers').then(layers => {
         return Promise.all(layers.map(layer => {
@@ -11,5 +11,5 @@ exports.up = function (knex) {
 }
 
 exports.down = function (knex) {
-  return knex.raw(`ALTER TABLE omh.layers DROP COLUMN shortid;`)
+  return knex.raw('ALTER TABLE omh.layers DROP COLUMN shortid;')
 }

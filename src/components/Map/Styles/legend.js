@@ -27,13 +27,6 @@ export default {
 </div>
 <h3>{NAME}</h3>
 </div>`
-    } else if (layer.data_type === 'polygon') {
-      html = `<div class="omh-legend">
- <div class="block double-stroke" style="background-color: ` + color + `">
- </div>
- <h3>{NAME}</h3>
- </div>
-`
     } else {
       html = `<div class="omh-legend">
  <div class="block double-stroke" style="background-color: ` + color + `">
