@@ -179,13 +179,17 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
                       .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
                         display: none;
                       }
+
+                      .ant-tabs-nav-container {
+                        margin-left: 5px;
+                      }
                     `}
                     </style>
                     <Row style={{height: '100%', overflowY: 'hidden'}}>
                       <Tabs
                         defaultActiveKey='data'
                         onChange={selectTab}
-                        style={{height: '100%'}}
+                        style={{height: '100%', width: '100%'}}
                         tabBarStyle={{marginBottom: 0}}
                         animated={false}
                       >

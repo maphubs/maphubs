@@ -1,6 +1,9 @@
 //  @flow
 import React from 'react'
 import slugify from 'slugify'
+import { Typography } from 'antd'
+
+const { Title } = Typography
 
 type Props = {
   mhid: string,
@@ -28,7 +31,7 @@ export default class FeatureExport extends React.PureComponent<Props, void> {
       }
       return (
         <div>
-          <h5>{t('Export Data')}</h5>
+          <Title level={3}>{t('Export Data')}</Title>
           <ul className='no-margin'>
             <li><a href={geoJSONURL}>{t('GeoJSON')}</a></li>
             <li><a href={kmlURL}>{t('KML')}</a></li>

@@ -97,7 +97,7 @@ export default class FeatureNotes extends React.Component<Props, State> {
           {!editing &&
             <div className='notes-content' style={{height: '100%', overflow: 'auto', padding: '20px'}} dangerouslySetInnerHTML={{__html: notes}} />}
         </Row>
-        <Row style={{textAlign: 'right', marginRight: '20px', marginTop: '10px'}}>
+        <Row justify='end' style={{textAlign: 'right', marginRight: '20px', marginTop: '10px'}}>
           {editing &&
             <Button type='primary' onClick={saveNotes}>{t('Save')}</Button>}
           {(!editing && canEdit) &&

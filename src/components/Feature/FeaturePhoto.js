@@ -4,6 +4,9 @@ import MapHubsPureComponent from '../MapHubsPureComponent'
 import ImageCrop from '../ImageCrop'
 import { message, notification, Modal, Tooltip } from 'antd'
 import FeaturePhotoActions from '../../actions/FeaturePhotoActions'
+import AddAPhotoIcon from '@material-ui/icons/AddAPhoto'
+import GetAppIcon from '@material-ui/icons/GetApp'
+import DeleteIcon from '@material-ui/icons/Delete'
 const { confirm } = Modal
 
 type Props = {
@@ -82,7 +85,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                 title={t('Replace Photo')}
                 placement='left'
               >
-                <i
+                <AddAPhotoIcon
                   className='material-icons valign'
                   onClick={this.showImageCrop}
                   style={{
@@ -92,17 +95,14 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                     cursor: 'pointer',
                     right: '30px'
                   }}
-                >
-                  add_a_photo
-                </i>
+                />
               </Tooltip>
               <Tooltip
                 title={t('Download Photo')}
                 placement='left'
               >
                 <a href={photoUrl} download>
-                  <i
-                    className='material-icons valign'
+                  <GetAppIcon
                     style={{
                       fontSize: '24px',
                       position: 'absolute',
@@ -110,17 +110,14 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                       cursor: 'pointer',
                       right: '56px'
                     }}
-                  >
-                    get_app
-                  </i>
+                  />
                 </a>
               </Tooltip>
               <Tooltip
                 title={t('Remove Photo')}
                 placement='left'
               >
-                <i
-                  className='material-icons valign'
+                <DeleteIcon
                   onClick={this.deletePhoto}
                   style={{
                     fontSize: '24px',
@@ -129,9 +126,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                     cursor: 'pointer',
                     right: '5px'
                   }}
-                >
-                  delete
-                </i>
+                />
               </Tooltip>
             </div>}
           {imageCrop}
@@ -147,8 +142,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                 position='left'
                 inertia followCursor
               >
-                <i
-                  className='material-icons valign'
+                <AddAPhotoIcon
                   onClick={this.showImageCrop}
                   style={{
                     fontSize: '24px',
@@ -157,9 +151,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                     cursor: 'pointer',
                     right: '5px'
                   }}
-                >
-                  add_a_photo
-                </i>
+                />
               </Tooltip>
             </div>
             {imageCrop}
