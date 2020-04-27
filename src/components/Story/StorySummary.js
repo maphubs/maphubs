@@ -2,7 +2,6 @@
 import React from 'react'
 import slugify from 'slugify'
 import StoryHeader from './StoryHeader'
-import MapHubsComponent from '../../components/MapHubsComponent'
 import ShareButtons from '../../components/ShareButtons'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import {Typography} from 'antd'
@@ -10,17 +9,17 @@ const { Title } = Typography
 
 type Props = {|
   story: Object,
-  baseUrl: string
+  baseUrl: string,
+  t: Function
 |}
 
-export default class StorySummary extends MapHubsComponent<Props, void> {
+export default class StorySummary extends React.Component<Props, void> {
   static defaultProps = {
     baseUrl: ''
   }
 
   render () {
-    const {t} = this
-    const {story} = this.props
+    const { story, t } = this.props
     const baseUrl = urlUtil.getBaseUrl()
     const linkUrl = `${baseUrl}/story/${slugify(t(story.title))}/${story.story_id}`
 

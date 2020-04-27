@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
-import { Row, Divider, Button } from 'antd'
+import { Row, Col, Divider, Button, Typography, Card } from 'antd'
 import TrendingUpIcon from '@material-ui/icons/TrendingUp'
 import CardCarousel from '../components/CardCarousel/CardCarousel'
 import StorySummary from '../components/Story/StorySummary'
@@ -25,6 +25,8 @@ import XComponentReact from '../components/XComponentReact'
 import UserStore from '../stores/UserStore'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
+const { Title } = Typography
 
 // import Perf from 'react-addons-perf';
 
@@ -290,11 +292,11 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     const carousel = (
       <Row key={key} style={{marginBottom: '50px', backgroundColor: bgColor, ...style}}>
         <Row style={{height: '50px', width: '100%', textAlign: 'center'}}>
-          <h5 style={{lineHeight: '50px', width: '100%'}}>
+          <Title level={3} style={{lineHeight: '50px', width: '100%'}}>
             {title}
             {config.trendingIcon &&
               <TrendingUpIcon style={{fontWeight: 'bold', color: MAPHUBS_CONFIG.primaryColor, fontSize: '40px', verticalAlign: '-25%', marginLeft: '5px'}} />}
-          </h5>
+          </Title>
         </Row>
         <ErrorBoundary>
           <Row>
@@ -325,24 +327,33 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     } else {
       title = t('Stories')
     }
-    const style = config.style || {}
+    const style = Object.assign(config.style || {}, { width: '100%' })
     if (stories.length > 0) {
       return (
         <Row key={key} style={style}>
           <Divider />
-          <Row style={{marginBottom: '20px'}}>
-            <h5 style={{lineHeight: '50px', color: '#323333', margin: 0, textAlign: 'center'}}>
-              {title}
-            </h5>
-            {stories.map(story => {
-              return (
-                <div className='card' key={story.story_id} style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto'}}>
-                  <div className='card-content'>
+          <Row justify='center' style={{marginBottom: '20px', width: '100%'}}>
+            <Col sm={24} med={12} style={{margin: '20px'}}>
+              <Row justify='center' style={{textAlign: 'center'}}>
+                <Title level={3}>{title}</Title>
+              </Row>
+              {stories.map(story => {
+                return (
+                  <Card
+                    key={story.story_id}
+                    style={{
+                      maxWidth: '800px',
+                      marginLeft: 'auto',
+                      marginRight: 'auto',
+                      marginBottom: '20px',
+                      border: '1px solid #ddd'
+                    }}
+                  >
                     <StorySummary story={story} t={t} />
-                  </div>
-                </div>
-              )
-            })}
+                  </Card>
+                )
+              })}
+            </Col>
           </Row>
         </Row>
       )

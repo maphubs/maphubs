@@ -77,7 +77,7 @@ export default class Stories extends MapHubsComponent<Props, State> {
                         border: '1px solid #ddd'
                       }}
                     >
-                      <StorySummary story={story} />
+                      <StorySummary story={story} t={t} />
                     </Card>
                   )
                 })}
@@ -93,7 +93,7 @@ export default class Stories extends MapHubsComponent<Props, State> {
                       key={story.story_id}
                       style={{maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto', marginBottom: '20px'}}
                     >
-                      <StorySummary story={story} />
+                      <StorySummary story={story} t={t} />
                     </Card>
                   )
                 })}
