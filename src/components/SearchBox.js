@@ -8,7 +8,7 @@ const debug = DebugService('SearchBox')
 
 type Props = {
   label: string,
-  suggestionUrl: ?string,
+  suggestionUrl?: string,
   onSearch: Function,
   onReset: Function
 }
@@ -20,38 +20,28 @@ export default class SearchBox extends React.Component<Props, void> {
     id: 'search',
     onSearch () {},
     onError () {},
-    onReset () {},
-    suggestionUrl: null
+    onReset () {}
   }
 
   searchBar: any
 
-  onChange = (input: string, resolve: Function) => {
+  onChange = async (input: string, resolve: Function) => {
     const { suggestionUrl } = this.props
     if (suggestionUrl) {
-      request.get(suggestionUrl + '?q=' + input)
-        .type('json').accept('json')
-        .end((err, res) => {
-          if (err) {
-            debug.error(err)
-            notification.error({
-              message: 'Error',
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            if (res.body.suggestions) {
-              resolve(res.body.suggestions)
-            } else {
-              debug.log(JSON.stringify(res.body))
-              notification.error({
-                message: 'Error',
-                description: err.message || err.toString() || err,
-                duration: 0
-              })
-            }
-          }
+      try {
+        const res = await request.get(suggestionUrl + '?q=' + input)
+          .type('json').accept('json')
+        if (res.body.suggestions) {
+          resolve(res.body.suggestions)
+        }
+      } catch (err) {
+        debug.error(err)
+        notification.error({
+          message: 'Error',
+          description: err.message || err.toString() || err,
+          duration: 0
         })
+      }
     }
   }
 

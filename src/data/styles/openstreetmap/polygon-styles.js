@@ -15,13 +15,6 @@ module.exports = {
   </div>
   <h3>` + name + `</h3>
   </div>`
-    } else if (data_type === 'polygon') {
-      html = `<div class="omh-legend">
-   <div class="block double-stroke" style="background-color: ` + color + `">
-   </div>
-   <h3>` + name + `</h3>
-   </div>
-  `
     } else {
       html = `<div class="omh-legend">
    <div class="block double-stroke" style="background-color: ` + color + `">

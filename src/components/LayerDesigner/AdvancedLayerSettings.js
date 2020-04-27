@@ -50,9 +50,9 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
       }
 
       let fill = defaults.fill
-      const fillSetting = !MapStyles.settings.getLayerSetting(props.style, glLayerId, 'outline-only')
+      const fillSetting = MapStyles.settings.getLayerSetting(props.style, glLayerId, 'outline-only')
       if (typeof fillSetting !== 'undefined') {
-        fill = fillSetting
+        fill = !fillSetting
       }
 
       return {

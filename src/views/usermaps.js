@@ -70,7 +70,7 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
                 extra={<Button type='primary' href='/map/new'>{t('Create a Map')}</Button>}
               />
             </Row>}
-          {(maps.length > 0) &&
+          {(maps && maps.length > 0) &&
             <Row style={{marginBottom: '20px'}}>
               <Title level={2}>{t('My Maps')}</Title>
               <CardCarousel infinite={false} cards={maps.map(cardUtil.getMapCard)} t={this.t} />

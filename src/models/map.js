@@ -298,14 +298,11 @@ module.exports = {
     if (map.private && !isPrivate) {
       // private to public
       const layers = await this.getMapLayers(map_id)
-
-      if (layers && Array.isArray(layers) && layers.length > 0) {
-        if (!isPrivate) {
-          // confirm no private layers
-          layers.forEach((layer) => {
-            if (layer.private) throw new Error('Private layer not allowed in public map')
-          })
-        }
+      if (layers?.length > 0) {
+        // confirm no private layers
+        layers.forEach((layer) => {
+          if (layer.private) throw new Error('Private layer not allowed in public map')
+        })
       }
       return knex('omh.maps')
         .where('map_id', map_id)

@@ -53,7 +53,7 @@ export default class MapStore extends Reflux.Store {
         active = true
       }
 
-      if (layer && layer.style && layer.style.layers) {
+      if (layer.style?.layers) {
         layer.style.layers.forEach((styleLayer) => {
           if (!styleLayer.layout) {
             styleLayer.layout = {}
@@ -67,8 +67,8 @@ export default class MapStore extends Reflux.Store {
       }
 
       this.updateMap(mapLayers)
+      cb(layer.style)
     }
-    cb(layer.style)
   }
 
   updateLayers (layers: Array<Layer>, update: boolean = true) {

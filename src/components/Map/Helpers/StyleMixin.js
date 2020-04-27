@@ -48,7 +48,7 @@ export default {
       if (this.baseMapStyle) {
         // need to clear previous base map
         Object.keys(this.baseMapStyle.sources).map(this.removeSource)
-        _map(this.baseMapStyle.layers, 'id').map(this.removeLayer)
+        _map(this.baseMapStyle.layers, 'id').forEach(this.removeLayer)
       }
 
       sourcesToAdd.forEach((key) => {

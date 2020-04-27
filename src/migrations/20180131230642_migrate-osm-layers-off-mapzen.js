@@ -98,12 +98,6 @@ exports.up = (knex) => {
                 })
                 style.layers = [style.layers[0]]
                 styleLayer.filter = ['all', ['in', '$type', 'Polygon'], ['==', 'class', 'industrial']]
-              } else if (layer.layer_id === 10) { // industrial
-                style.layers.forEach((layer) => {
-                  layer['source-layer'] = 'landuse'
-                })
-                style.layers = [style.layers[0]]
-                styleLayer.filter = ['all', ['in', '$type', 'Polygon'], ['==', 'class', 'industrial']]
               } else if (layer.layer_id === 11) { // commercial
                 style.layers.forEach((layer) => {
                   layer['source-layer'] = 'landuse'
@@ -182,24 +176,24 @@ exports.up = (knex) => {
                 })
                 style.layers = [style.layers[0]]
                 styleLayer.filter = ['all', ['in', '$type', 'Polygon'], ['==', 'class', 'ice']]
-              } else if (layer.layer_id === 23) { // major roads
-                styleLayer = roadsUpdate(style, styleLayer, ['trunk', 'motorway', 'motorway_link', 'trunk_link'])
+              } else if (layer.layer_id === 24) { // major roads
+                roadsUpdate(style, styleLayer, ['trunk', 'motorway', 'motorway_link', 'trunk_link'])
               } else if (layer.layer_id === 25) { // primary roads
-                styleLayer = roadsUpdate(style, styleLayer, ['primary', 'primary_link'])
+                roadsUpdate(style, styleLayer, ['primary', 'primary_link'])
               } else if (layer.layer_id === 26) { // secondary roads
-                styleLayer = roadsUpdate(style, styleLayer, ['secondary', 'secondary_link'])
+                roadsUpdate(style, styleLayer, ['secondary', 'secondary_link'])
               } else if (layer.layer_id === 27) { // tertiary roads
-                styleLayer = roadsUpdate(style, styleLayer, ['tertiary', 'tertiary_link'])
+                roadsUpdate(style, styleLayer, ['tertiary', 'tertiary_link'])
               } else if (layer.layer_id === 28) { // minor roads
-                styleLayer = roadsUpdate(style, styleLayer, ['minor', 'unclassified', 'road'])
+                roadsUpdate(style, styleLayer, ['minor', 'unclassified', 'road'])
               } else if (layer.layer_id === 29) { // residential roads
-                styleLayer = roadsUpdate(style, styleLayer, ['residential', 'living_street'])
+                roadsUpdate(style, styleLayer, ['residential', 'living_street'])
               } else if (layer.layer_id === 30) { // tracks roads
-                styleLayer = roadsUpdate(style, styleLayer, ['track'])
+                roadsUpdate(style, styleLayer, ['track'])
               } else if (layer.layer_id === 31) { // paths roads
-                styleLayer = roadsUpdate(style, styleLayer, ['path', 'pedestrian', 'footpath', 'footway', 'steps', 'cycleway'])
+                roadsUpdate(style, styleLayer, ['path', 'pedestrian', 'footpath', 'footway', 'steps', 'cycleway'])
               } else if (layer.layer_id === 32) { // service roads
-                styleLayer = roadsUpdate(style, styleLayer, ['service', 'alley', 'parking_aisle', 'drive-through', 'driveway'])
+                roadsUpdate(style, styleLayer, ['service', 'alley', 'parking_aisle', 'drive-through', 'driveway'])
               }
             })
           }

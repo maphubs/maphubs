@@ -10,12 +10,16 @@ type Props = {|
   t: Function
 |}
 
-export default class MeasurementToolPanel extends React.PureComponent<Props, void> {
+export default class MeasurementToolPanel extends React.Component<Props, void> {
   props: Props
 
   toggleMeasurementTools = (enableMeasurementTools: boolean) => {
     if (enableMeasurementTools) this.props.closePanel()
     this.props.toggleMeasurementTools(enableMeasurementTools)
+  }
+
+  shouldComponentUpdate () {
+    return false
   }
 
   render () {

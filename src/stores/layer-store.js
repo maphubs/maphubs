@@ -612,7 +612,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
             label = preset.label.en
           } else {
             // otherwise set to first populated value in Localized String object
-            Object.values(preset.label).map(val => {
+            Object.values(preset.label).forEach(val => {
               if (!label && val) label = val
             })
           }

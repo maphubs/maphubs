@@ -231,7 +231,7 @@ export default class LayerList extends React.Component<Props, State> {
     ]
 
     let tableTotalWidth = 100
-    columns.map(col => {
+    columns.forEach(col => {
       if (col.width && typeof col.width === 'number') tableTotalWidth += col.width
     })
 

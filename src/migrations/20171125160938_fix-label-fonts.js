@@ -5,7 +5,7 @@ var fixStyleLayer = function (layer) {
   ) {
     var font = layer.layout['text-font']
     console.log(`current font: ${font}`)
-    if (font && font[0] === 'Arial Unicode MS Regular') {
+    if (font[0] === 'Arial Unicode MS Regular') {
       console.log('replacing with: Roboto Bold')
       layer.layout['text-font'][0] = 'Roboto Bold'
       return layer

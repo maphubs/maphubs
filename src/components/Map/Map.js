@@ -321,7 +321,7 @@ class Map extends React.Component<Props, State> {
         fitBounds // bounds are provided in Props
       ) {
         let bounds = fitBounds
-        if (bounds && bounds.length > 2) {
+        if (bounds.length > 2) {
           bounds = [[fitBounds[0], fitBounds[1]], [fitBounds[2], fitBounds[3]]]
         }
         debugLog(`fitting map to bounds: ${bounds.toString()}`)

@@ -106,57 +106,47 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
-    const legendCode: string = (this.props.layer && this.props.layer.legend_html) ? this.props.layer.legend_html : ''
-    const style = (this.props.layer && this.props.layer.style) ? this.props.layer.style : undefined
-
-    const elc = this.props.layer.external_layer_config
+    const { layer } = this.props
+    const { style, legend_html, is_external, external_layer_config } = layer
+    const legendCode: string = legend_html || ''
+    const elc = external_layer_config
 
     let designer = ''
-    if (this.props.layer) {
-      if (this.props.layer.is_external && elc &&
-        (
-          elc.type === 'raster' ||
-          elc.type === 'multiraster' ||
-          elc.type === 'ags-mapserver-tiles')) {
-        designer = (
-          <div style={{padding: '5px'}}>
-            <OpacityChooser
-              value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
-              style={style} onStyleChange={this.setStyle} onColorChange={this.onColorChange}
-              layer={this.props.layer}
-              legendCode={legendCode} onLegendChange={this.setLegend} showAdvanced
-              t={t}
-            />
-          </div>
-        )
-      } else if (this.props.layer.is_external && elc &&
-        elc.type === 'mapbox-style') {
-        designer = (
-          <div style={{marginTop: '20px', marginBottom: '20px', padding: '20px', border: '1px solid #b1b1b1'}}>
-            <p>{t('Unable to change this layer')}</p>
-          </div>
-        )
-      } else {
-        designer = (
-          <LayerDesigner
-            onColorChange={this.onColorChange}
-            style={style} onStyleChange={this.setStyle}
-            labels={this.props.layer.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setMarkers}
+    if (is_external && elc &&
+      (
+        elc.type === 'raster' ||
+        elc.type === 'multiraster' ||
+        elc.type === 'ags-mapserver-tiles')) {
+      designer = (
+        <div style={{padding: '5px'}}>
+          <OpacityChooser
+            value={this.state.rasterOpacity} onChange={this.setRasterOpacity}
+            style={style} onStyleChange={this.setStyle} onColorChange={this.onColorChange}
             layer={this.props.layer}
-            showAdvanced={this.props.showAdvanced}
-            legend={legendCode} onLegendChange={this.setLegend}
+            legendCode={legendCode} onLegendChange={this.setLegend} showAdvanced
+            t={t}
           />
-        )
-      }
+        </div>
+      )
+    } else if (is_external && elc &&
+      elc.type === 'mapbox-style') {
+      designer = (
+        <div style={{marginTop: '20px', marginBottom: '20px', padding: '20px', border: '1px solid #b1b1b1'}}>
+          <p>{t('Unable to change this layer')}</p>
+        </div>
+      )
+    } else {
+      designer = (
+        <LayerDesigner
+          onColorChange={this.onColorChange}
+          style={style} onStyleChange={this.setStyle}
+          labels={layer.labels} onLabelsChange={this.setLabels} onMarkersChange={this.setMarkers}
+          layer={layer}
+          showAdvanced={this.props.showAdvanced}
+          legend={legendCode} onLegendChange={this.setLegend}
+        />
+      )
     }
-    /*
-  var style = {};
-  if(this.state.show){
-    style.display = 'block';
-  }else{
-    style.display = 'none';
-  }
-  */
 
     return (
       <>

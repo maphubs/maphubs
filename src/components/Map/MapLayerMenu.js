@@ -12,13 +12,17 @@ type Props = {
   t: Function
 }
 
-export default class MapLayerMenu extends React.PureComponent<Props, void> {
+export default class MapLayerMenu extends React.Component<Props, void> {
   static defaultProps = {
     categories: [],
     layers: []
   }
 
   popupContainer: any
+
+  shouldComponentUpdate () {
+    return false
+  }
 
   render () {
     const {categories, layers, toggleVisibility, backgroundColor, textColor, t} = this.props

@@ -2,7 +2,7 @@
 /* eslint-disable no-console */
 var updateStyle = function (style) {
   if (style && style.sources) {
-    Object.keys(style.sources).map((key) => {
+    Object.keys(style.sources).forEach((key) => {
       var source = style.sources[key]
       var type = source.type
       if (key !== 'osm' && (type === 'vector' || type === 'raster') && source.url && !source.url.startsWith('mapbox://')) {

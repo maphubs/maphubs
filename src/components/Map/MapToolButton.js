@@ -23,7 +23,7 @@ type Props = {|
   disabled?: boolean
 |}
 
-export default class MapToolButton extends React.PureComponent<Props, void> {
+export default class MapToolButton extends React.Component<Props, void> {
   static defaultProps = {
     top: '10px',
     color: '#323333',
@@ -31,6 +31,10 @@ export default class MapToolButton extends React.PureComponent<Props, void> {
     bottom: 'auto',
     left: 'auto',
     show: true
+  }
+
+  shouldComponentUpdate () {
+    return false
   }
 
   onClick = (e) => {

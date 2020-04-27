@@ -104,7 +104,7 @@ export default class AddMapDrawer extends React.Component<Props, State> {
               {searchResults.length === 0 &&
                 <p><b>{t('No Results Found')}</b></p>}
             </Row>}
-          {(myMaps && myMaps.length > 0) &&
+          {(myMaps.length > 0) &&
             <Row style={{width: '100%', marginBottom: '20px'}}>
               <h5 style={{fontSize: '1.3rem', margin: '5px'}}>{t('My Maps')}</h5>
               <div className='divider' />

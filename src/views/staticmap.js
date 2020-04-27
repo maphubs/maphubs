@@ -115,7 +115,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     $(window).resize(function () {
       const debounced = _debounce(() => {
         _this.setState(getSize())
-      }, 2500).bind(this)
+      }, 2500)
       debounced()
     })
 

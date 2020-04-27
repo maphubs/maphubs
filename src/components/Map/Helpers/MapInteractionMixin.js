@@ -149,9 +149,7 @@ export default {
     const _this = this
     if (!map) return
 
-    if (_this.state.enableMeasurementTools) {
-
-    } else {
+    if (!this.state.enableMeasurementTools) {
       const debounced = _debounce(() => {
         if (_this.state.mapLoaded && _this.state.restoreBounds) {
           debug.log('(' + _this.state.id + ') ' + 'clearing restoreBounds')
@@ -185,7 +183,7 @@ export default {
         } catch (err) {
           console.log(err)
         }
-      }, 300).bind(this)
+      }, 300)
       debounced()
     }
   }

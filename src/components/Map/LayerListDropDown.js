@@ -11,7 +11,11 @@ type Props = {
   t: Function
 }
 
-export default class LayerListDropDown extends React.PureComponent<Props, void> {
+export default class LayerListDropDown extends React.Component<Props, void> {
+  shouldComponentUpdate () {
+    return false
+  }
+
   render () {
     const {name, layers, toggleVisibility, t} = this.props
     return (

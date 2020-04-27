@@ -107,7 +107,7 @@ export default {
           // otherwise just take the first preset
           nameField = presets[0].tag
         }
-      } else if (result) {
+      } else {
         // use props of first feature
         const propNames = Object.keys(result.properties)
         propNames.forEach(propName => {

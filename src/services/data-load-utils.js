@@ -143,7 +143,7 @@ module.exports = {
       const firstFeature = geoJSON.features[0]
       // get type and SRID from the first feature
       let geomType = ''
-      let firstFeatureGeom = firstFeature
+      let firstFeatureGeom
       if (GJV.isFeature(firstFeature)) {
         firstFeatureGeom = firstFeature.geometry
       } else {
