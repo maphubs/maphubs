@@ -171,7 +171,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
       }
       const dimensions = {width: '100%', height}
       let style = config.style || {}
-      style = Object.assign(style, dimensions)
+      style = Object.assign(dimensions, style)
       return (
         <Row key={key} style={style}>
           <XComponentReact
