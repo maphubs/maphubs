@@ -47,12 +47,12 @@ export default class LayerList extends React.Component<Props, State> {
       searchText: selectedKeys[0],
       searchedColumn: dataIndex
     })
-  };
+  }
 
   handleReset = (clearFilters: any) => {
     clearFilters()
     this.setState({ searchText: '' })
-  };
+  }
 
   render () {
     const { layers, groups, t } = this.props
@@ -201,8 +201,8 @@ export default class LayerList extends React.Component<Props, State> {
         width: 200,
         sortOrder: sortedInfo.columnKey === 'last_updated' && sortedInfo.order,
         sorter: (a, b) => {
-          const aVal = a.owned_by_group_id
-          const bVal = b.owned_by_group_id
+          const aVal = a.last_updated
+          const bVal = b.last_updated
           if (typeof aVal === 'string' && typeof bVal === 'string') {
             const aValLower = aVal.toLowerCase()
             const bValLower = bVal.toLowerCase()

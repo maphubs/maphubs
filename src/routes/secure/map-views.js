@@ -99,9 +99,10 @@ module.exports = function (app: any) {
     try {
       const locale = req.locale ? req.locale : 'en'
       const maps = await Map.getAllMaps().orderByRaw(`lower((omh.maps.title -> '${locale}')::text)`)
+      const groups = await Group.getAllGroups().orderByRaw(`lower((omh.groups.name -> '${locale}')::text)`)
       return app.next.render(req, res, '/allmaps', await pageOptions(req, {
         title: req.__('Maps') + ' - ' + local.productName,
-        props: {maps}
+        props: {maps, groups}
       }))
     } catch (err) { nextError(next)(err) }
   })

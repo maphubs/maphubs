@@ -2,7 +2,7 @@
 import React from 'react'
 import Header from '../src/components/header'
 import Footer from '../src/components/footer'
-import { Row, Typography } from 'antd'
+import { Row, Col, Button, Typography } from 'antd'
 import MapHubsComponent from '../src/components/MapHubsComponent'
 import Reflux from '../src/components/Rehydrate'
 import LocaleStore from '../src/stores/LocaleStore'
@@ -46,17 +46,20 @@ export default class Layers extends MapHubsComponent<Props, void> {
         <Header activePage='layers' {...this.props.headerConfig} />
         <main style={{margin: '10px'}}>
           <Row style={{marginTop: '20px', marginBottom: '10px'}}>
-            <Title level={2}>{t('Layers')}</Title>
+            <Col span={8}>
+              <Title level={2}>{t('Layers')}</Title>
+            </Col>
+            <Col span={8} offset={8} style={{textAlign: 'right'}}>
+              <Button onClick={() => {
+                window.location = '/createlayer'
+              }}
+              >{t('Create New Layer')}
+              </Button>
+            </Col>
           </Row>
           <Row style={{width: '100%', height: 'calc(100vh - 150px)'}}>
             <LayerList layers={layers} groups={groups} t={t} />
           </Row>
-          <FloatingAddButton
-            onClick={() => {
-              window.location = '/createlayer'
-            }}
-            tooltip={t('Create New Layer')}
-          />
         </main>
         <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>

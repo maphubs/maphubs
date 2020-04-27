@@ -45,8 +45,7 @@ export default {
       id: `map-${map.map_id.toString()}`,
       title: map.title, // LocalizedString
       group: {
-        group_id: map.owned_by_group_id,
-        name: map.groupname
+        group_id: map.owned_by_group_id
       },
       image_url,
       link: '/map/view/' + map.map_id + '/',

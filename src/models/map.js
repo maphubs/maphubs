@@ -111,15 +111,12 @@ module.exports = {
       'omh.maps.map_id',
       'omh.maps.title',
       'omh.maps.private',
-      'omh.maps.updated_at',
       'omh.maps.share_id',
       'omh.maps.owned_by_group_id',
       knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'),
-      'omh.maps.views',
-      'omh.groups.name as groupname'
+      'omh.maps.views'
     )
       .from('omh.maps')
-      .leftJoin('omh.groups', 'omh.maps.owned_by_group_id', 'omh.groups.group_id')
   },
 
   /**
@@ -178,8 +175,7 @@ module.exports = {
       'omh.maps.share_id',
       'omh.maps.owned_by_group_id',
       knex.raw('timezone(\'UTC\', omh.maps.updated_at) as updated_at'),
-      'omh.maps.views',
-      'omh.groups.name as groupname'
+      'omh.maps.views'
     )
       .from('omh.maps')
       .leftJoin('omh.groups', 'omh.maps.owned_by_group_id', 'omh.groups.group_id')

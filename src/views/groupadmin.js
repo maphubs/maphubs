@@ -391,7 +391,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                 <LayerList layers={layers} groups={[group]} t={t} />
               </Col>
               <Col sm={24} md={12} style={{padding: '2px'}}>
-                <MapList maps={maps} t={t} />
+                <MapList maps={maps} groups={[group]} t={t} />
               </Col>
             </Row>
             <FloatingButton
