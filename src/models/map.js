@@ -227,7 +227,7 @@ module.exports = {
   },
 
   async createMap (layers: Array<Object>, style: any, basemap: string, position: any, title: string, settings: Object, user_id: number, isPrivate: boolean) {
-    if (layers && Array.isArray(layers) && layers.length > 0) {
+    if (layers?.length > 0) {
       if (!isPrivate) {
       // confirm no private layers
         layers.forEach((layer) => {
@@ -254,7 +254,7 @@ module.exports = {
       debug.log('Created Map with ID: ' + map_id)
       // insert layers
       const mapLayers = []
-      if (layers && Array.isArray(layers) && layers.length > 0) {
+      if (layers?.length > 0) {
         layers.forEach((layer: Object, i: number) => {
           mapLayers.push({
             map_id,

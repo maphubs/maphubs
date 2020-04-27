@@ -186,7 +186,9 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
-    if (!this.props.groups || this.props.groups.length === 0) {
+    const { groups } = this.props
+    const { layer } = this.state
+    if (!groups || groups.length === 0) {
       return (
         <ErrorBoundary>
           <Header {...this.props.headerConfig} />
@@ -204,7 +206,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
 
     let layerReview = ''
 
-    if (this.state.layer) {
+    if (layer) {
       layerReview = (
         <Row style={{marginBottom: '20px'}}>
           <Row style={{marginBottom: '20px'}}>
@@ -213,8 +215,8 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
               id='remote-layer-preview-map'
               showFeatureInfoEditButtons={false}
               mapConfig={this.props.mapConfig}
-              glStyle={this.state.layer.style}
-              fitBounds={this.state.layer.preview_position.bbox}
+              glStyle={layer.style}
+              fitBounds={layer.preview_position?.bbox}
               primaryColor={MAPHUBS_CONFIG.primaryColor}
               logoSmall={MAPHUBS_CONFIG.logoSmall}
               logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
@@ -226,7 +228,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
               earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
             >
               <MiniLegend
-                t={this.t}
+                t={t}
                 style={{
                   position: 'absolute',
                   top: '5px',
@@ -239,8 +241,8 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                   flexDirection: 'column'
                 }}
                 collapsible hideInactive={false} showLayersButton={false}
-                title={this.state.layer.name}
-                layers={[this.state.layer]}
+                title={layer.name}
+                layers={[layer]}
               />
             </Map>
           </Row>
@@ -269,7 +271,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                     tooltipPosition='top' tooltip={t('MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer')}
                     required
                   />
-                  <SelectGroup groups={this.props.groups} type='layer' />
+                  <SelectGroup groups={groups} type='layer' />
                   <div style={{float: 'right'}}>
                     <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Load Remote Layer')}</Button>
                   </div>

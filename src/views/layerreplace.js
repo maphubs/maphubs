@@ -43,15 +43,14 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
     }
   }
 
-  state: State = {
-    downloaded: false,
-    submitted: false,
-    layer: {}
-  }
-
   constructor (props: Props) {
     super(props)
     this.stores.push(LayerStore)
+    this.state = {
+      downloaded: false,
+      submitted: false,
+      layer: props.layer
+    }
     Reflux.rehydrate(LocaleStore, {locale: props.locale, _csrf: props._csrf})
     if (props.user) {
       Reflux.rehydrate(UserStore, {user: props.user})

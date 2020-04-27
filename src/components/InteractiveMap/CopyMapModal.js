@@ -44,15 +44,15 @@ export default class CopyMapModal extends React.Component<Props, State> {
         .type('json').accept('json')
         .send(data)
       const mapId = res.body.map_id
-      if (!res.body || !mapId) {
+      if (mapId) {
+        message.info(t('Map Copied'), 3, () => {
+          window.location = `/map/edit/${mapId}`
+        })
+      } else {
         notification.error({
           message: t('Error'),
           description: res.body.error || 'Error saving map',
           duration: 0
-        })
-      } else {
-        message.info(t('Map Copied'), 3, () => {
-          window.location = `/map/edit/${mapId}`
         })
       }
     } catch (err) {

@@ -2,7 +2,7 @@
 import type {GeoJSONObject} from 'geojson-flow'
 
 export type GLSource = {
-  type: 'vector' | 'raster' | 'geojson' | 'image' | 'video' | 'canvas' | 'arcgisraster',
+  type: string, // 'vector' | 'raster' | 'geojson' | 'image' | 'video' | 'canvas' | 'arcgisraster',
   url?: string,
   tiles?: Array<string>,
   minzoom?: number,

@@ -1,9 +1,9 @@
+import type ReactComponent from 'react'
+
 declare var Raven: Object;
 declare var Auth0Lock: Class<Object>;
 declare var M: Object;
 declare var Coral: Object;
-
-import type ReactComponent from 'react'
 
 type JSXHelper<T> = Class<ReactComponent<T, T, mixed>>;
 
@@ -17,6 +17,7 @@ type $JSXIntrinsics = {
   footer: JSXHelper<{id: string, style: Object}>,
   small: JSXHelper<{id: string, style: Object}>,
   a: JSXHelper<{href: string, style: Object}>,
+  h1: JSXHelper<{className: string, style: Object}>,
   h2: JSXHelper<{className: string, style: Object}>,
   h3: JSXHelper<{className: string, style: Object}>,
   h4: JSXHelper<{className: string, style: Object}>,
@@ -51,7 +52,8 @@ type $JSXIntrinsics = {
   polygon: JSXHelper<{points: string}>,
   rect: JSXHelper<{x: number, y: number, width: number, height: number}>,
   style: JSXHelper<{jsx: boolean, global: boolean}>,
-  code: JSXHelper<{id: string}>
+  code: JSXHelper<{id: string}>,
+  script: JSXHelper<{id: string}>
 };
 
 declare type NestedArray<T> = Array<T | NestedArray<T>>

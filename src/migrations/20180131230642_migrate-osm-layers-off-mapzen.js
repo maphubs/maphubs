@@ -80,7 +80,7 @@ exports.up = (knex) => {
                 })
                 style.layers = [style.layers[0]]
                 styleLayer.filter = ['in', '$type', 'Polygon']
-              } else if (layer.layer_id === 9) { // national park
+              } else if (layer.layer_id === 8) { // national park
                 style.layers.forEach((layer) => {
                   layer['source-layer'] = 'park'
                 })

@@ -143,7 +143,7 @@ export default class MapMakerStore extends Reflux.Store {
         active = true
       }
 
-      if (layer && layer.style && layer.style.layers) {
+      if (layer.style?.layers) {
         layer.style.layers.forEach((styleLayer) => {
           if (!styleLayer.layout) {
             styleLayer.layout = {}

@@ -126,7 +126,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
           width: size.width,
           height: size.height
         })
-      }, 2500).bind(this)
+      }, 2500)
       debounced()
     })
   }

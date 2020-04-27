@@ -11,14 +11,14 @@ import LayersIcon from '@material-ui/icons/Layers'
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks'
 
 export type CardConfig = {|
+  id: string,
   title?: LocalizedString,
   description?: LocalizedString,
   showDescription?: boolean,
   image_url?: string,
   link: string,
-  group?: {
-    group_id: string,
-    name: LocalizedString
+  group: {
+    group_id: string
   },
   data: Object,
   type: string,
@@ -63,7 +63,7 @@ export default class MapHubsCard extends React.Component<Props, State> {
   }
 
   render () {
-    const {group, showAddButton, type, t, image_url, showDescription} = this.props
+    const {group, showAddButton, type, t, image_url, showDescription, id} = this.props
     const { imageFailed } = this.state
 
     let icon = ''
@@ -153,6 +153,7 @@ export default class MapHubsCard extends React.Component<Props, State> {
         style={{ width: 200, height: 300 }}
         onClick={this.onClick}
         bodyStyle={{height: '100%', padding: '0'}}
+        id={id}
       >
         <style jsx global>{`
           .card-image {

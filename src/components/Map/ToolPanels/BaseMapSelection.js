@@ -19,12 +19,6 @@ export default class BaseMapSelection extends React.Component<Props, void> {
       <Subscribe to={[BaseMapContainer]}>
         {BaseMap => {
           const {baseMapOptions} = BaseMap.state
-          const radioOptions:Array<{value: string, label: string}> = []
-          if (baseMapOptions && Array.isArray(BaseMap.state.baseMapOptions)) {
-            baseMapOptions.forEach((baseMapOption: BaseMapOption) => {
-              radioOptions.push({value: baseMapOption.value, label: t(baseMapOption.label)})
-            })
-          }
           return (
             <div style={{width: '100%', height: 'calc(100% - 50px)', overflow: 'auto', backgroundColor: 'white', textAlign: 'left', padding: '10px'}}>
               {baseMapOptions.map((baseMapOption: BaseMapOption) => {

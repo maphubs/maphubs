@@ -152,16 +152,15 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
 
   resetLegendHTML () {
     let legend_html
-    const externalLayerConfig = this.state.external_layer_config
-    const {type} = externalLayerConfig
-    if (this.state.is_external &&
-      externalLayerConfig &&
-      (type === 'raster' ||
-        type === 'earthengine' ||
-        type === 'multiraster' ||
-        type === 'ags-mapserver-tiles')) {
+    const { is_external, external_layer_config } = this.state
+    const elc = external_layer_config || {}
+    if (is_external &&
+      (elc.type === 'raster' ||
+        elc.type === 'earthengine' ||
+        elc.type === 'multiraster' ||
+        elc.type === 'ags-mapserver-tiles')) {
       legend_html = MapStyles.legend.rasterLegend(this.state)
-    } else if (this.state.is_external && externalLayerConfig && externalLayerConfig.type === 'mapbox-style') {
+    } else if (is_external && elc.type === 'mapbox-style') {
       legend_html = MapStyles.legend.rasterLegend(this.state)
     } else {
       legend_html = MapStyles.legend.defaultLegend(this.state)

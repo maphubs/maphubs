@@ -388,7 +388,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
             <Divider />
             <Row style={{marginBottom: '20px'}}>
               <Col sm={24} md={12} style={{padding: '2px'}}>
-                <LayerList layers={layers} t={t} />
+                <LayerList layers={layers} groups={[group]} t={t} />
               </Col>
               <Col sm={24} md={12} style={{padding: '2px'}}>
                 <MapList maps={maps} t={t} />

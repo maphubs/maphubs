@@ -34,7 +34,7 @@ module.exports = function (app: any) {
           recentLayers: await Layer.getRecentLayers(10),
           recentGroups: await Group.getRecentGroups(10),
           recentMaps: await Map.getRecentMaps(10),
-          recentStories: await Story.getRecentStories(10)
+          recentStories: await Story.getRecentStories({ number: 10 })
         }
       }))
     } catch (err) { nextError(next)(err) }

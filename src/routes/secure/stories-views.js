@@ -20,7 +20,7 @@ module.exports = function (app: any) {
         title: req.__('Stories') + ' - ' + local.productName,
         props: {
           popularStories: await Story.getPopularStories(10),
-          recentStories: await Story.getRecentStories(10)
+          recentStories: await Story.getRecentStories({ number: 10 })
         }
       }))
     } catch (err) { nextError(next)(err) }

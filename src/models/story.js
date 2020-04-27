@@ -41,7 +41,7 @@ module.exports = {
     return query
   },
 
-  getRecentStories (options: {number: number, tags: Array}) {
+  getRecentStories (options: {number: number, tags?: Array<string>}) {
     const { number, tags } = options
     let query = this.getStoriesBaseQuery()
     if (tags) {

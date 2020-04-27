@@ -16,7 +16,7 @@ export type Layer = {
   data_type?: string,
   legend_html?: ?string,
   license?: string,
-  owned_by_group_id?: string,
+  owned_by_group_id: string,
   private?: boolean,
   is_external?: boolean,
   external_layer_type?: string,

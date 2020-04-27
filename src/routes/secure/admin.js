@@ -39,7 +39,7 @@ module.exports = function (app: any) {
           if (data && data.email) {
             res.status(200).send({
               success: true,
-              key: await Admin.sendInviteEmail(data.email, req.__, null)
+              key: await Admin.sendInviteEmail(data.email, req.__, undefined)
             })
           } else {
             apiDataError(res)

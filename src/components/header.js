@@ -131,10 +131,10 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
   render () {
     const {t} = this
     const { logoLinkUrl, theme } = this.props
-    const {backgroundColor, fontColor} = theme || {}
+    const { fontColor } = theme || {}
 
-    const NavMenu = this.renderMenu('desktop-menu', 'horizontal', backgroundColor, fontColor)
-    const MobileMenu = this.renderMenu('mobile-menu', 'vertical', backgroundColor, fontColor)
+    const NavMenu = this.renderMenu('desktop-menu', 'horizontal')
+    const MobileMenu = this.renderMenu('mobile-menu', 'vertical')
     return (
       <Header
         style={{

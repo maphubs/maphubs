@@ -72,8 +72,8 @@ module.exports = {
         let val = props[key]
 
         // remove chars that can't be in database fields (used in PostGIS views)
-        key = key.replace('-', '_')
-        key = key.replace("'", "''")
+        key = key.replace(/-/g, '_')
+        key = key.replace(/'/g, "''")
 
         if (!uniqueProps.includes(key)) {
           uniqueProps.push(key)
@@ -126,8 +126,6 @@ module.exports = {
     const _this = this
     debug.log('storeTempGeoJSON')
     const db = trx || knex
-
-    let result = {success: false, error: 'Unknown Error'}
     const uniqueProps = []
 
     if (!geoJSON) {
@@ -181,7 +179,9 @@ module.exports = {
       geoJSON.features = cleanedFeatures
 
       const updateData = {
-        data_type: geomType
+        data_type: geomType,
+        style: undefined,
+        extent_bbox: undefined
       }
 
       if (setStyle) {
@@ -235,17 +235,14 @@ module.exports = {
         })
       }
 
-      debug.log('db updates complete')
-
-      result = {
+      debug.log('Upload Complete!')
+      return {
         success: true,
         error: null,
         uniqueProps,
         data_type: geomType,
         bbox
       }
-      debug.log('Upload Complete!')
-      return result
     } else {
       throw new Error('Data is not a valid GeoJSON FeatureCollection')
     }

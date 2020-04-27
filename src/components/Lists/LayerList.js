@@ -25,10 +25,6 @@ type State = {
 }
 
 export default class LayerList extends React.Component<Props, State> {
-  static defaultProps = {
-    showTitle: true
-  }
-
   state = {
     sortedInfo: undefined,
     filteredInfo: undefined,
