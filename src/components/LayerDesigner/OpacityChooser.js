@@ -126,7 +126,7 @@ export default class OpacityChooser extends React.Component<Props, State> {
               </Tooltip>
             }
           >
-            <Row justify='center' align='middle' style={{minWidth: '400px', padding: '20px'}}>
+            <Row justify='center' align='middle' style={{minWidth: '300px', padding: '10px'}}>
               <Col span={12}>
                 <Slider
                   min={1}

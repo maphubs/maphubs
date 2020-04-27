@@ -52,7 +52,7 @@ export default class MapToolPanel extends React.Component<Props, State> {
   render () {
     const {t, show, gpxLink} = this.props
     return (
-      <div>
+      <>
         <MapToolButton
           tooltipText={t('Tools')}
           top='10px'
@@ -94,7 +94,7 @@ export default class MapToolPanel extends React.Component<Props, State> {
             </Collapse>
           </div>
         </Drawer>
-      </div>
+      </>
     )
   }
 }

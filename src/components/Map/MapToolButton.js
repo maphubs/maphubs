@@ -33,7 +33,8 @@ export default class MapToolButton extends React.Component<Props, void> {
     show: true
   }
 
-  shouldComponentUpdate () {
+  shouldComponentUpdate (nextProps: Props) {
+    if (nextProps.show !== this.props.show) return true
     return false
   }
 
@@ -63,7 +64,6 @@ export default class MapToolButton extends React.Component<Props, void> {
           placement='bottom'
         >
           <a
-            ref='mapToolButton'
             onClick={this.onClick}
             onMouseDown={this.onMouseDown}
             style={{

@@ -117,6 +117,7 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
                   header={<b>Components</b>}
                   bordered
                   dataSource={components}
+                  style={{width: '100%'}}
                   renderItem={(item) => (
                     <List.Item>
                       <Row style={{width: '100%'}}>
