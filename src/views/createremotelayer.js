@@ -1,7 +1,7 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { Row, Button } from 'antd'
+import { Row, Button, Typography } from 'antd'
 import slugify from 'slugify'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../components/Map/containers/BaseMapContainer'
@@ -21,9 +21,12 @@ import type {Layer} from '../types/layer'
 import request from 'superagent'
 import $ from 'jquery'
 import {checkClientError} from '../services/client-error-response'
+import LinkIcon from '@material-ui/icons/Link'
 
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
+const { Title } = Typography
 
 type Props = {|
   groups: Array<Object>,
@@ -246,7 +249,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
               />
             </Map>
           </Row>
-          <Row style={{marginBottom: '20px', textAlign: 'right'}}>
+          <Row justify='end' style={{textAlign: 'right'}}>
             <Button type='primary' onClick={this.saveLayer}>{t('Save Layer')}</Button>
           </Row>
         </Row>
@@ -256,32 +259,34 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Provider inject={[this.BaseMapState, this.MapState]}>
           <Header {...this.props.headerConfig} />
-          <main>
-            <h4>{t('Link to a Remote Layer')}</h4>
-            <div className='container center'>
+          <main className='container'>
+            <Row justify='center'>
+              <Title>{t('Link to a Remote Layer')}</Title>
+            </Row>
+            <Row justify='center'>
               <p>{t('Please copy and paste a link to a remote MapHubs layer')}</p>
-              <Row>
-                <Formsy onValidSubmit={this.loadRemoteUrl} onValid={this.enableButton} onInvalid={this.disableButton}>
-                  <TextInput
-                    name='remoteLayerUrl' label={t('Remote MapHubs URL')} icon='link' validations='maxLength:250,isHttps,validMapHubsLayerPath' validationErrors={{
-                      maxLength: t('Must be 250 characters or less.'),
-                      isHttps: t('MapHubs requires encryption for external links, URLs must start with https://'),
-                      validMapHubsLayerPath: t('Not a valid MapHubs Layer URL')
-                    }} length={250}
-                    tooltipPosition='top' tooltip={t('MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer')}
-                    required
-                    t={t}
-                  />
-                  <SelectGroup groups={groups} type='layer' />
-                  <div style={{float: 'right'}}>
-                    <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Load Remote Layer')}</Button>
-                  </div>
-                </Formsy>
-              </Row>
+            </Row>
+            <Row style={{marginBottom: '20px'}}>
+              <Formsy onValidSubmit={this.loadRemoteUrl} onValid={this.enableButton} onInvalid={this.disableButton} style={{width: '100%'}}>
+                <TextInput
+                  name='remoteLayerUrl' label={t('Remote MapHubs URL')} icon={<LinkIcon />} validations='maxLength:250,isHttps,validMapHubsLayerPath' validationErrors={{
+                    maxLength: t('Must be 250 characters or less.'),
+                    isHttps: t('MapHubs requires encryption for external links, URLs must start with https://'),
+                    validMapHubsLayerPath: t('Not a valid MapHubs Layer URL')
+                  }} length={250}
+                  tooltipPosition='top' tooltip={t('MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer')}
+                  required
+                  t={t}
+                />
+                <SelectGroup groups={groups} type='layer' />
+                <div style={{float: 'right'}}>
+                  <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Load Remote Layer')}</Button>
+                </div>
+              </Formsy>
+            </Row>
+            <Row>
               {layerReview}
-
-            </div>
-
+            </Row>
           </main>
         </Provider>
       </ErrorBoundary>
