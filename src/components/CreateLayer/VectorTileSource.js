@@ -8,6 +8,9 @@ import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
+import LinkIcon from '@material-ui/icons/Link'
+import HeightIcon from '@material-ui/icons/Height'
+import AspectRatioIcon from '@material-ui/icons/AspectRatio'
 
 type Props = {|
     onSubmit: Function
@@ -95,14 +98,14 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
     const {t} = this
     return (
       <Row>
-        <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+        <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton} style={{width: '100%'}}>
           <div>
-            <p>{t('Vector Tile Source')}</p>
+            <p><b>{t('Vector Tile Source')}</b></p>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='vectorTileUrl'
                 label={t('Vector Tile URL')}
-                icon='info'
+                icon={<LinkIcon />}
                 validations='maxLength:500,isHttps' validationErrors={{
                   maxLength: t('Must be 500 characters or less.'),
                   isHttps: t('SSL required for external links, URLs must start with https://')
@@ -111,27 +114,30 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
                 tooltipPosition='top'
                 tooltip={t('Vector Tile URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.pbf'}
                 required
+                t={t}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='minzoom' label={t('MinZoom')} icon='info'
+                name='minzoom' label={t('MinZoom')} icon={<HeightIcon />}
                 tooltipPosition='top' tooltip={t('Lowest tile zoom level available in data')}
                 required
+                t={t}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='maxzoom' label={t('MaxZoom')} icon='info'
+                name='maxzoom' label={t('MaxZoom')} icon={<HeightIcon />}
                 tooltipPosition='top' tooltip={t('Highest tile zoom level available in data')}
                 required
+                t={t}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='bounds' label={t('Bounds')} icon='info'
+                name='bounds' label={t('Bounds')} icon={<AspectRatioIcon />}
                 tooltipPosition='top' tooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
-                required
+                t={t}
               />
             </Row>
           </div>

@@ -92,13 +92,14 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
                 }} length={200}
                 tooltipPosition='top' tooltip={t('EarthEngine Image ID or Asset ID')}
                 required
+                t={t}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
-              <TextInput name='min' label={t('Min (Optional)')} icon='info' />
+              <TextInput name='min' label={t('Min (Optional)')} icon='info' t={t} />
             </Row>
             <Row style={{marginBottom: '20px'}}>
-              <TextInput name='max' label={t('Max (Optional)')} icon='info' />
+              <TextInput name='max' label={t('Max (Optional)')} icon='info' t={t} />
             </Row>
           </div>
           <div style={{float: 'right'}}>

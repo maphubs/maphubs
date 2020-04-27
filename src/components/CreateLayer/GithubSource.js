@@ -58,6 +58,7 @@ export default class GithubSource extends MapHubsComponent<Props, State> {
   }
 
   render () {
+    const {t} = this
     return (
       <Row style={{marginBottom: '20px'}}>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
@@ -71,6 +72,7 @@ export default class GithubSource extends MapHubsComponent<Props, State> {
                 }} length={100}
                 tooltipPosition='top' tooltip='Github GeoJSON URL'
                 required
+                t={t}
               />
             </Row>
           </div>

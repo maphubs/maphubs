@@ -23,6 +23,7 @@ export default class FormField extends React.Component<Props, void> {
         required={preset.isRequired}
         showCharCount={false}
         value={value}
+        t={t}
       />
     )
 
@@ -38,6 +39,7 @@ export default class FormField extends React.Component<Props, void> {
           }}
           required={preset.isRequired}
           value={value}
+          t={t}
         />
       )
     } else if (preset.type === 'radio' || preset.type === 'combo') {

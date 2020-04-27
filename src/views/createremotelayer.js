@@ -270,6 +270,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
                     }} length={250}
                     tooltipPosition='top' tooltip={t('MapHubs Layer URL ex: https://maphubs.com/layer/info/123/my-layer')}
                     required
+                    t={t}
                   />
                   <SelectGroup groups={groups} type='layer' />
                   <div style={{float: 'right'}}>

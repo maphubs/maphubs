@@ -103,7 +103,7 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
       <Row style={{marginBottom: '20px'}}>
         <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton} style={{width: '100%'}}>
           <div>
-            <p>{t('Raster Tile Source')}</p>
+            <p><b>{t('Raster Tile Source')}</b></p>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='rasterTileUrl' label={t('Raster Tile URL')}
@@ -116,24 +116,28 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
                 tooltipPosition='top'
                 tooltip={t('Raster URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.png'}
                 required
+                t={t}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='minzoom' label={t('MinZoom (Optional)')} icon={<HeightIcon />}
                 tooltipPosition='top' tooltip={t('Lowest tile zoom level available in data')}
+                t={t}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='maxzoom' label={t('MaxZoom (Optional)')} icon={<HeightIcon />}
                 tooltipPosition='top' tooltip={t('Highest tile zoom level available in data')}
+                t={t}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='bounds' label={t('Bounds (Optional)')} icon={<AspectRatioIcon />}
                 tooltipPosition='top' tooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
+                t={t}
               />
             </Row>
           </div>

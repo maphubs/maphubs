@@ -2,6 +2,7 @@
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import { Row, message, notification, Button } from 'antd'
+import LinkIcon from '@material-ui/icons/Link'
 import TextInput from '../forms/textInput'
 import LayerActions from '../../actions/LayerActions'
 import Radio from '../forms/radio'
@@ -97,27 +98,28 @@ export default class GeoJSONUrlSource extends MapHubsComponent<Props, State> {
 
     return (
       <Row style={{marginBottom: '20px'}}>
-        <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+        <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton} style={{width: '100%'}}>
 
           <div>
             <p>{t('GeoJSON URL')}</p>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
                 name='geojsonUrl' label={t('GeoJSON URL')}
-                icon='info' validations='maxLength:500,isHttps'
+                icon={<LinkIcon />} validations='maxLength:500,isHttps'
                 validationErrors={{
                   maxLength: t('Must be 500 characters or less.'),
                   isHttps: t('SSL required for external links, URLs must start with https://')
                 }} length={500}
                 tooltipPosition='top' tooltip={t('Vector Tile URL for example:') + 'http://myserver/tiles/{z}/{x}/{y}.pbf'}
                 required
+                t={t}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='id' label={t('ID Property (Optional)')} icon='info'
+                name='id' label={t('ID Property (Optional)')}
                 tooltipPosition='top' tooltip={t('Some features require idenify a unique identifier that can be used to select features')}
-                required
+                t={t}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>

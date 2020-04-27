@@ -6,6 +6,9 @@ import { message, notification, Row, Button } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
 import MapHubsComponent from '../MapHubsComponent'
+import LinkIcon from '@material-ui/icons/Link'
+import HeightIcon from '@material-ui/icons/Height'
+import AspectRatioIcon from '@material-ui/icons/AspectRatio'
 
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import type {LayerStoreState} from '../../stores/layer-store'
@@ -128,41 +131,46 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
     const {t} = this
     return (
       <Row style={{marginBottom: '20px'}}>
-        <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+        <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton} style={{width: '100%'}}>
           <div>
-            <p>{t('WMS Source')}</p>
+            <p><b>{t('WMS Source')}</b></p>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='rasterTileUrl' label={t('WMS URL')} icon='info' validations='maxLength:500,isHttps' validationErrors={{
+                name='rasterTileUrl' label={t('WMS URL')} icon={<LinkIcon />} validations='maxLength:500,isHttps' validationErrors={{
                   maxLength: t('Must be 500 characters or less.'),
                   isHttps: t('SSL required for external links, URLs must start with https://')
                 }} length={500}
                 tooltipPosition='top' tooltip={t('Only layers paramater is required, others will be ignored unless pasted in Other Parameters below. Example:') + 'https://geodata.state.nj.us/imagerywms/Natural2015?layers=Natural2015'}
                 required
+                t={t}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='other' label={t('Other Parameters (Optional)')} icon='info'
+                name='other' label={t('Other Parameters (Optional)')} icon={<LinkIcon />}
                 tooltipPosition='top' tooltip={t('Additional needed URL parmeters, for example: apikey=1234&query=value>0')}
+                t={t}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='minzoom' label={t('MinZoom (Optional)')} icon='info'
+                name='minzoom' label={t('MinZoom (Optional)')} icon={<HeightIcon />}
                 tooltipPosition='top' tooltip={t('Lowest tile zoom level available in data')}
+                t={t}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='maxzoom' label={t('MaxZoom (Optional)')} icon='info'
+                name='maxzoom' label={t('MaxZoom (Optional)')} icon={<HeightIcon />}
                 tooltipPosition='top' tooltip={t('Highest tile zoom level available in data')}
+                t={t}
               />
             </Row>
             <Row style={{marginBottom: '20px'}}>
               <TextInput
-                name='bounds' label={t('Bounds (Optional)')} icon='info'
+                name='bounds' label={t('Bounds (Optional)')} icon={<AspectRatioIcon />}
                 tooltipPosition='top' tooltip={t('Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy')}
+                t={t}
               />
             </Row>
           </div>

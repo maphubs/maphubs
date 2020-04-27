@@ -1,25 +1,19 @@
 // @flow
 import React from 'react'
+import { Radio, Tooltip } from 'antd'
 import {withFormsy} from 'formsy-react'
-import {Tooltip} from 'antd'
-import MapHubsPureComponent from '../MapHubsPureComponent'
 
 type Props = {
-  className: string,
   tooltip: string,
   tooltipPosition: string,
   defaultValue?: string,
   label: string,
-  name: string,
   onChange: Function,
   options: Array<{value: string, label: string}>,
-  setValue: Function,
-  value: boolean
+  setValue: Function
 }
 
-class Radio extends MapHubsPureComponent<Props, void> {
-  props: Props
-
+class RadioForm extends React.Component<Props, void> {
   static defaultProps = {
     options: {},
     dataDelay: 100
@@ -30,42 +24,30 @@ class Radio extends MapHubsPureComponent<Props, void> {
   }
 
   changeValue = (event) => {
-    this.props.setValue(event.target.id)
-    this.setState({value: event.target.id})
+    this.props.setValue(event.target.value)
     if (this.props.onChange) {
-      this.props.onChange(event.target.id)
+      this.props.onChange(event.target.value)
     }
   }
 
   render () {
-    const {name, className, tooltipPosition, tooltip, options, label, value} = this.props
-    const _this = this
+    const {tooltipPosition, tooltip, options, label, defaultValue} = this.props
 
     return (
       <Tooltip
         title={tooltip}
         placement={tooltipPosition}
       >
-        <div className={className}>
-
+        <>
           <label>{label}</label>
-          {options.map((option) => {
-            let checked = false
-            if (option.value === value) {
-              checked = true
-            }
-            return (
-              <p key={option.value}>
-                <label>
-                  <input name={name} type='radio' id={option.value} onChange={_this.changeValue} checked={checked} />
-                  <span>{option.label}</span>
-                </label>
-              </p>
-            )
-          })}
-        </div>
+          <Radio.Group onChange={this.changeValue} defaultValue={defaultValue}>
+            {options.map(option => (
+              <Radio key={option.value} value={option.value}>{option.label}</Radio>
+            ))}
+          </Radio.Group>
+        </>
       </Tooltip>
     )
   }
 }
-export default withFormsy(Radio)
+export default withFormsy(RadioForm)

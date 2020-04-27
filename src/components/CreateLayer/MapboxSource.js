@@ -136,11 +136,12 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
           <p>{t('Mapbox Style Source')}</p>
           <Row style={{marginBottom: '20px'}}>
             <TextInput
-              name='mapboxStyleID' label={t('Mapbox Style URL')} icon='info' validations={{isValidMapboxStyleURL: true}} validationErrors={{
+              name='mapboxStyleID' label={t('Mapbox Style URL')} validations={{isValidMapboxStyleURL: true}} validationErrors={{
                 isValidMapboxStyleURL: t('Invalid Mapbox Style URL, must be in the format mapbox://styles/...')
               }} length={100}
               tooltipPosition='top' tooltip={t('Mapbox Style URL in the format mapbox://styles/...')}
               required
+              t={t}
             />
           </Row>
         </div>
@@ -153,12 +154,13 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
           <p>{t('Mapbox Tileset/Raster Source')}</p>
           <Row style={{marginBottom: '20px'}}>
             <TextInput
-              name='mapboxMapID' label={t('Mapbox Tileset Map ID')} icon='info'
+              name='mapboxMapID' label={t('Mapbox Tileset Map ID')}
               validations={{isValidMapboxMapID: true}} validationErrors={{
                 isValidMapboxMapID: t('Invalid Mapbox Map ID, should be in the format accountname.mapid')
               }} length={100}
               tooltipPosition='top' tooltip={t('Mapbox Map ID')}
               required
+              t={t}
             />
           </Row>
         </div>
@@ -168,26 +170,29 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
 
     return (
       <Row style={{marginBottom: '20px'}}>
-        <Formsy>
-          <b>{t('Choose an Option')}</b>
-          <Row style={{marginBottom: '20px'}}>
-            <Col span={20}>
-              <Radio
-                name='type' label=''
-                defaultValue={this.state.selectedOption}
-                options={mapboxOptions} onChange={this.optionChange}
-              />
-            </Col>
-          </Row>
-          <hr />
-        </Formsy>
-        <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
-          {styleForm}
-          {tilesForm}
-          <div style={{float: 'right'}}>
-            <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Save and Continue')}</Button>
-          </div>
-        </Formsy>
+        <Col span={12}>
+          <Formsy>
+            <b>{t('Choose an Option')}</b>
+            <Row style={{marginBottom: '20px'}}>
+              <Col span={20}>
+                <Radio
+                  name='type' label=''
+                  defaultValue={this.state.selectedOption}
+                  options={mapboxOptions} onChange={this.optionChange}
+                />
+              </Col>
+            </Row>
+          </Formsy>
+        </Col>
+        <Col span={12}>
+          <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+            {styleForm}
+            {tilesForm}
+            <div style={{float: 'right'}}>
+              <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Save and Continue')}</Button>
+            </div>
+          </Formsy>
+        </Col>
       </Row>
     )
   }

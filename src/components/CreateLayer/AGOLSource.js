@@ -1,7 +1,8 @@
 // @flow
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
-import { Row, message, notification, Button } from 'antd'
+import { Row, Col, message, notification, Button } from 'antd'
+import LinkIcon from '@material-ui/icons/Link'
 import TextInput from '../forms/textInput'
 import Radio from '../forms/radio'
 import LayerActions from '../../actions/LayerActions'
@@ -137,12 +138,13 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
           <p>{t('ArcGIS MapServer Query Source')}</p>
           <Row style={{marginBottom: '20px'}}>
             <TextInput
-              name='mapServiceUrl' label={t('Map Service URL')} icon='info' validations='maxLength:250,isHttps' validationErrors={{
+              name='mapServiceUrl' label={t('Map Service URL')} icon={<LinkIcon />} validations='maxLength:250,isHttps' validationErrors={{
                 maxLength: t('Must be 250 characters or less.'),
                 isHttps: t('SSL required for external links, URLs must start with https://')
               }} length={250}
               tooltipPosition='top' tooltip={t('Map Service URL: ex: http://myserver/arcgis/rest/services/MyMap/MapServer/0')}
               required
+              t={t}
             />
           </Row>
         </div>
@@ -156,12 +158,13 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
           <p>{t('ArcGIS FeatureService Query Source')}</p>
           <Row style={{marginBottom: '20px'}}>
             <TextInput
-              name='featureServiceUrl' label={t('Feature Service URL')} icon='info' validations='maxLength:250,isHttps' validationErrors={{
+              name='featureServiceUrl' label={t('Feature Service URL')} icon={<LinkIcon />} validations='maxLength:250,isHttps' validationErrors={{
                 maxLength: t('Must be 250 characters or less.'),
                 isHttps: t('SSL required for external links, URLs must start with https://')
               }} length={250}
               tooltipPosition='top' tooltip={t('Feature Service URL ex: http://myserver/arcgis/rest/services/MyMap/FeatureServer/0')}
               required
+              t={t}
             />
           </Row>
         </div>
@@ -175,12 +178,13 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
           <p>{t('ArcGIS MapServer Tiles')}</p>
           <Row style={{marginBottom: '20px'}}>
             <TextInput
-              name='tileServiceUrl' label={t('MapServer Service URL')} icon='info' validations='maxLength:250,isHttps' validationErrors={{
+              name='tileServiceUrl' label={t('MapServer Service URL')} icon={<LinkIcon />} validations='maxLength:250,isHttps' validationErrors={{
                 maxLength: t('Must be 250 characters or less.'),
                 isHttps: t('SSL required for external links, URLs must start with https://')
               }} length={250}
               tooltipPosition='top' tooltip={t('MapServer URL ex: http://myserver/arcgis/rest/services/MyMap/MapServer')}
               required
+              t={t}
             />
           </Row>
         </div>
@@ -189,25 +193,28 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
 
     return (
       <Row style={{marginBottom: '20px'}}>
-        <Formsy>
-          <b>{t('Choose an Option')}</b>
-          <Row style={{marginBottom: '20px'}}>
-            <Radio
-              name='type' label=''
-              defaultValue={this.state.selectedOption}
-              options={agolOptions} onChange={this.optionChange}
-            />
-          </Row>
-          <hr />
-        </Formsy>
-        <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
-          {msqForm}
-          {fsqForm}
-          {tilesForm}
-          <div style={{float: 'right'}}>
-            <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Save and Continue')}</Button>
-          </div>
-        </Formsy>
+        <Col span={12}>
+          <Formsy>
+            <b>{t('Choose an Option')}</b>
+            <Row style={{marginBottom: '20px'}}>
+              <Radio
+                name='type' label=''
+                defaultValue={this.state.selectedOption}
+                options={agolOptions} onChange={this.optionChange}
+              />
+            </Row>
+          </Formsy>
+        </Col>
+        <Col span={12}>
+          <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
+            {msqForm}
+            {fsqForm}
+            {tilesForm}
+            <div style={{float: 'right'}}>
+              <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Save and Continue')}</Button>
+            </div>
+          </Formsy>
+        </Col>
       </Row>
     )
   }
