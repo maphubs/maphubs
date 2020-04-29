@@ -45,3 +45,5 @@ uppy.env
 !.next/BUILD_ID
 assets/assets/themes
 dist
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
