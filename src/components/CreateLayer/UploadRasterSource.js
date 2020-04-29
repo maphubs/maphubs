@@ -123,48 +123,46 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
           }
         `}
         </style>
-        <div>
-          <Row style={{marginBottom: '20px'}}>
-            <div style={{margin: 'auto auto', maxWidth: '750px'}}>
-              <UppyFileUpload
-                endpoint={`${MAPHUBS_CONFIG.RASTER_UPLOAD_API}/upload/save`}
-                headers={{authorization: `Bearer ${MAPHUBS_CONFIG.RASTER_UPLOAD_API_KEY}`}}
-                note='Supports: GeoTiffs and MBTiles, GeoTiffs must have RGB visual bands'
-                maxFileSize={MAPHUBS_CONFIG.RASTER_UPLOAD_FILE_SIZE_LIMIT || 157286400}
-                allowedFileTypes={['.tif', '.tiff', '.mbtiles']}
-                meta={{layer_id}}
-                onComplete={this.onUpload}
-                onError={this.onUploadError}
+        <Row style={{marginBottom: '20px'}}>
+          <div style={{margin: 'auto auto', maxWidth: '750px'}}>
+            <UppyFileUpload
+              endpoint={`${MAPHUBS_CONFIG.RASTER_UPLOAD_API}/upload/save`}
+              headers={{authorization: `Bearer ${MAPHUBS_CONFIG.RASTER_UPLOAD_API_KEY}`}}
+              note='Supports: GeoTiffs and MBTiles, GeoTiffs must have RGB visual bands'
+              maxFileSize={MAPHUBS_CONFIG.RASTER_UPLOAD_FILE_SIZE_LIMIT || 157286400}
+              allowedFileTypes={['.tif', '.tiff', '.mbtiles']}
+              meta={{layer_id}}
+              onComplete={this.onUpload}
+              onError={this.onUploadError}
+            />
+          </div>
+        </Row>
+        <Row style={{marginBottom: '20px'}}>
+          {(canSubmit && style) &&
+            <div ref='mapSection' style={{width: '100%'}}>
+              <p>{t('Please review the data on the map to confirm the upload was successful.')}</p>
+              <Map
+                style={{width: '100%', height: '400px'}}
+                id='upload-preview-map'
+                showFeatureInfoEditButtons={false}
+                mapConfig={mapConfig}
+                glStyle={style}
+                fitBounds={bbox}
+                primaryColor={MAPHUBS_CONFIG.primaryColor}
+                logoSmall={MAPHUBS_CONFIG.logoSmall}
+                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+                t={this.t}
+                locale={this.state.locale}
+                mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+                DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+                earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
               />
-            </div>
-          </Row>
-          <Row style={{marginBottom: '20px'}}>
-            {(canSubmit && style) &&
-              <div ref='mapSection'>
-                <p>{t('Please review the data on the map to confirm the upload was successful.')}</p>
-                <Map
-                  style={{width: '100%', height: '400px'}}
-                  id='upload-preview-map'
-                  showFeatureInfoEditButtons={false}
-                  mapConfig={mapConfig}
-                  glStyle={style}
-                  fitBounds={bbox}
-                  primaryColor={MAPHUBS_CONFIG.primaryColor}
-                  logoSmall={MAPHUBS_CONFIG.logoSmall}
-                  logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-                  logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-                  t={this.t}
-                  locale={this.state.locale}
-                  mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-                  DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-                  earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
-                />
-              </div>}
-          </Row>
-        </div>
-        <div style={{float: 'right'}}>
+            </div>}
+        </Row>
+        <Row justify='end'>
           <Button type='primary' disabled={!canSubmit} onClick={this.onSubmit}>{t('Save and Continue')}</Button>
-        </div>
+        </Row>
       </Row>
     )
   }

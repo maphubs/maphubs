@@ -165,7 +165,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     let map = ''
     if (canSubmit && style) {
       map = (
-        <div ref='mapSection'>
+        <div ref='mapSection' style={{width: '100%'}}>
           <p>{t('Please review the data on the map to confirm the upload was successful.')}</p>
           <Map
             style={{width: '100%', height: '400px'}}
@@ -225,9 +225,9 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
           {map}
         </Row>
         {multipleShapefilesDisplay}
-        <div style={{float: 'right'}}>
+        <Row justify='end'>
           <Button type='primary' disabled={!canSubmit} onClick={this.onSubmit}>{t('Save and Continue')}</Button>
-        </div>
+        </Row>
       </Row>
     )
   }
