@@ -86,7 +86,6 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
                 placement='left'
               >
                 <AddAPhotoIcon
-                  className='material-icons valign'
                   onClick={this.showImageCrop}
                   style={{
                     fontSize: '24px',
