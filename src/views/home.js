@@ -165,15 +165,12 @@ export default class HomePro extends MapHubsComponent<Props, State> {
   /* eslint-disable react/display-name */
   renderXComponent = (config: Object, key: string) => {
     if (this.state.loaded) {
-      let height = '100%'
-      if (config.height) {
-        height = config.height
+      const dimensions = {
+        width: '100%',
+        height: config.height || '100%'
       }
-      const dimensions = {width: '100%', height}
-      let style = config.style || {}
-      style = Object.assign(dimensions, style)
       return (
-        <Row key={key} style={style}>
+        <Row key={key} style={config.style}>
           <XComponentReact
             tag={config.tag}
             url={config.url}
