@@ -30,7 +30,7 @@ export default class StorySummary extends React.Component<Props, void> {
         imageUrl = imageUrl.replace(baseUrl, '')
       }
       if (!imageUrl.startsWith('https')) {
-        imageUrl = '/img/resize/1200?format=webp&quality=80&progressive=true&url=' + imageUrl
+        imageUrl = '/img/resize/1200?quality=80&progressive=true&url=' + imageUrl
       }
     }
 

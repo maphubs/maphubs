@@ -41,7 +41,7 @@ export default class GroupList extends React.Component<Props, void> {
               avatar={
                 <a href={`/group/${group.group_id}`}>
                   <Avatar
-                    alt={t(group.name)} shape='square' size={64} src={`/img/resize/128?format=webp&url=/group/${group.group_id}/image.png`}
+                    alt={t(group.name)} shape='square' size={64} src={`/img/resize/128?url=/group/${group.group_id}/image.png`}
                   />
                 </a>
               }

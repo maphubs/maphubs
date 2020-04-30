@@ -41,7 +41,7 @@ export default class GroupTag extends React.Component<Props, State> {
           <a target='_blank' className='no-padding' rel='noopener noreferrer' href={`${baseUrl}/group/${group}`} style={{height: 'initial'}}>
             {!failed &&
               <Avatar
-                alt={group} size={size} src={`/img/resize/${size * 2}?format=webp&quality=80&progressive=true&url=/group/${group}/image.png`} onError={() => {
+                alt={group} size={size} src={`/img/resize/${size * 2}?quality=80&progressive=true&url=/group/${group}/image.png`} onError={() => {
                   this.setState({failed: true})
                 }}
               />}

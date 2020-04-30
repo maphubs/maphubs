@@ -70,7 +70,7 @@ export default class LayerList extends React.Component<Props, State> {
           <span>
             <a href={`/layer/info/${record.layer_id}/${slugify(t(record.name))}`}>
               <Avatar
-                alt={t(record.name)} shape='square' size={64} src={`/img/resize/128?format=webp&url=/api/screenshot/layer/thumbnail/${record.layer_id}.jpg`}
+                alt={t(record.name)} shape='square' size={64} src={`/img/resize/128?url=/api/screenshot/layer/thumbnail/${record.layer_id}.jpg`}
               />
             </a>
           </span>

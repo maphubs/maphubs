@@ -72,7 +72,7 @@ export default class MapList extends React.Component<Props, State> {
           <span>
             <a href={`/map/view/${record.map_id}/${slugify(t(record.title))}`}>
               <Avatar
-                alt={slugify(t(record.title))} shape='square' size={64} src={`/img/resize/128?format=webp&url=/api/screenshot/map/thumbnail/${record.map_id}.jpg`}
+                alt={slugify(t(record.title))} shape='square' size={64} src={`/img/resize/128?url=/api/screenshot/map/thumbnail/${record.map_id}.jpg`}
               />
             </a>
           </span>
