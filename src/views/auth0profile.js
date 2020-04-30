@@ -1,6 +1,7 @@
 // @flow
 import React from 'react'
 import Header from '../components/header'
+import { Typography } from 'antd'
 // import Gravatar from '../components/user/Gravatar';
 // import Password from '../components/forms/Password';
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -8,6 +9,8 @@ import Reflux from '../components/Rehydrate'
 import LocaleStore from '../stores/LocaleStore'
 import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
+
+const { Title } = Typography
 
 type Props = {
   user: Object,
@@ -42,9 +45,9 @@ export default class Auth0Profile extends MapHubsComponent<Props, void> {
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />
         <main className='container'>
-          <h5>{t('User Profile')}</h5>
+          <Title>{t('User Profile')}</Title>
           <div id='profile'>
-            <p><b>{t('User Name')}: </b>{this.props.user.username}</p>
+            <p><b>{t('User Name')}: </b>{this.props.user.display_name}</p>
             <p><b>{t('Email')}: </b>{this.props.user.email}</p>
             <div>
               <img className='circle' style={{width: '250px', height: '250px'}} src={this.props.user.picture} />
