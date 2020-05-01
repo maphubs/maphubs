@@ -8,6 +8,7 @@ const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const Promise = require('bluebird')
 const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 const knex = require('../connection')
+const moment = require('moment')
 
 module.exports = {
 
@@ -39,7 +40,7 @@ module.exports = {
 
     layers.forEach((layer) => {
       let lastmodISO = null
-      if (layer.last_updated) lastmodISO = layer.last_updated.toISOString()
+      if (layer.last_updated) lastmodISO = moment(layer.last_updated).toISOString()
       sm.write({
         url: baseUrl + '/layer/info/' + layer.layer_id + '/' + slugify(layer.name.en),
         changefreq: 'weekly',
@@ -100,7 +101,7 @@ module.exports = {
     if (layer && !layer.is_external && !layer.remote && !layer.private) {
       const layer_id = layer.layer_id
       let lastmodISO = null
-      if (layer.last_updated) lastmodISO = layer.last_updated.toISOString()
+      if (layer.last_updated) lastmodISO = moment(layer.last_updated).toISOString()
       const features = await knex(`layers.data_${layer_id}`).select('mhid')
       if (features && Array.isArray(features)) {
         features.forEach(feature => {
