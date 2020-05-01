@@ -16,6 +16,7 @@ type Props = {|
   bottom: string,
   left: string,
   tooltipText?: string,
+  tooltipPosition: string,
   color: string,
   onClick?: Function,
   onMouseDown?: Function,
@@ -30,11 +31,13 @@ export default class MapToolButton extends React.Component<Props, void> {
     right: '10px',
     bottom: 'auto',
     left: 'auto',
-    show: true
+    show: true,
+    tooltipPosition: 'bottom'
   }
 
   shouldComponentUpdate (nextProps: Props) {
     if (nextProps.show !== this.props.show) return true
+    if (nextProps.disabled !== this.props.disabled) return true
     return false
   }
 
@@ -49,7 +52,7 @@ export default class MapToolButton extends React.Component<Props, void> {
   }
 
   render () {
-    const {show, icon, color, disabled, tooltipText} = this.props
+    const {show, icon, color, disabled, tooltipText, tooltipPosition} = this.props
     if (show) {
       const iconStyle = {
         textAlign: 'center',
@@ -61,7 +64,7 @@ export default class MapToolButton extends React.Component<Props, void> {
         <Tooltip
           disabled={!tooltipText}
           title={tooltipText}
-          placement='bottom'
+          placement={tooltipPosition}
         >
           <a
             onClick={this.onClick}

@@ -684,7 +684,7 @@ class Map extends React.Component<Props, State> {
               </div>
               <MapToolButton
                 top='260px' right='10px' icon='close' show color='#000'
-                onClick={this.stopMeasurementTool} tooltipText={t('Exit Measurement')}
+                onClick={this.stopMeasurementTool} tooltipText={t('Exit Measurement')} tooltipPosition='left'
               />
             </div>}
           {(!this.state.interactive && this.props.showPlayButton) &&

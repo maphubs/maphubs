@@ -486,7 +486,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
               earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
             >
               {editingLayer &&
-                <EditorToolButtons stopEditingLayer={this.stopEditingLayer} onFeatureUpdate={mapState.state.map.onFeatureUpdate} />}
+                <EditorToolButtons stopEditingLayer={this.stopEditingLayer} onFeatureUpdate={mapState.state.map.onFeatureUpdate} t={t} _csrf={this.state._csrf} />}
             </Map>
 
             <MiniLegend

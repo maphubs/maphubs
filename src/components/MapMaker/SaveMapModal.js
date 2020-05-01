@@ -13,6 +13,7 @@ import type {UserStoreState} from '../../stores/UserStore'
 type Props = {|
   onSave: Function,
   editing?: boolean,
+  editingLayer?: boolean,
   owned_by_group_id: string,
   title: LocalizedString
 |}
@@ -79,7 +80,7 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
-    const { owned_by_group_id, editing } = this.props
+    const { owned_by_group_id, editing, editingLayer } = this.props
     const { title, visible, user } = this.state
     let groups = []
     if (user && user.groups) {
@@ -89,7 +90,7 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
     return (
       <>
         {!visible &&
-          <Button type='primary' onClick={this.showModal}>{t('Save Map')}</Button>}
+          <Button type='primary' disabled={editingLayer} onClick={this.showModal}>{t('Save Map')}</Button>}
         <Modal
           title={t('Save Map')}
           visible={visible}

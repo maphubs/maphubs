@@ -4,30 +4,23 @@ import { Subscribe } from 'unstated'
 import { Modal, message, notification } from 'antd'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapToolButton from '../Map/MapToolButton'
-import MapHubsComponent from '../MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 const { confirm } = Modal
 
 type Props = {
   stopEditingLayer: Function,
-  onFeatureUpdate: Function
+  onFeatureUpdate: Function,
+  t: Function,
+  _csrf: string
 }
 
 type State = {} & LocaleStoreState
 
-export default class EditorToolButtons extends MapHubsComponent<Props, State> {
-  props: Props
-
- state: State = {
-   edits: [],
-   redo: [],
-   originals: []
- }
-
+export default class EditorToolButtons extends React.Component<Props, State> {
   saveEdits = async (DataEditor: Object) => {
-    const {t} = this
+    const {t, _csrf} = this.props
     const closeMessage = message.loading(t('Saving'), 0)
-    await DataEditor.saveEdits(this.state._csrf, (err) => {
+    await DataEditor.saveEdits(_csrf, (err) => {
       closeMessage()
       if (err) {
         notification.error({
@@ -79,7 +72,8 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
   }
 
   render () {
-    const {undoEdit, redoEdit, saveEdits, stopEditing, t} = this
+    const { undoEdit, redoEdit, saveEdits, stopEditing } = this
+    const { t } = this.props
     return (
       <Subscribe to={[DataEditorContainer]}>
         {DataEditor => {
@@ -89,21 +83,21 @@ export default class EditorToolButtons extends MapHubsComponent<Props, State> {
               <MapToolButton
                 top='10px' right='125px' icon='undo' show color='#000'
                 disabled={edits.length === 0}
-                onClick={() => { undoEdit(DataEditor) }} tooltipText={t('Undo')}
+                onClick={() => { undoEdit(DataEditor) }} tooltipText={t('Undo')} tooltipPosition='left'
               />
               <MapToolButton
                 top='10px' right='90px' icon='redo' show color='#000'
                 disabled={redo.length === 0}
-                onClick={() => { redoEdit(DataEditor) }} tooltipText={t('Redo')}
+                onClick={() => { redoEdit(DataEditor) }} tooltipText={t('Redo')} tooltipPosition='left'
               />
               <MapToolButton
                 top='230px' right='10px' icon='save' show color='#000'
                 disabled={edits.length === 0}
-                onClick={() => { saveEdits(DataEditor) }} tooltipText={t('Save Edits')}
+                onClick={() => { saveEdits(DataEditor) }} tooltipText={t('Save Edits')} tooltipPosition='left'
               />
               <MapToolButton
                 top='265px' right='10px' icon='close' show color='#000'
-                onClick={() => { stopEditing(DataEditor) }} tooltipText={t('Stop Editing')}
+                onClick={() => { stopEditing(DataEditor) }} tooltipText={t('Stop Editing')} tooltipPosition='left'
               />
             </div>
           )
