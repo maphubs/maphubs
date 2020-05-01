@@ -190,6 +190,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   }} length={100}
                   tooltipPosition='top' tooltip={t('Short Descriptive Name for the Layer')}
                   required
+                  t={t}
                 />
               </Row>
               <Row style={{marginBottom: '20px'}}>
@@ -209,6 +210,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   }} length={1000}
                   tooltipPosition='top' tooltip={t('Brief Description of the Layer')}
                   required
+                  t={t}
                 />
               </Row>
               {showGroup &&
@@ -233,6 +235,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
                   }} length={300}
                   tooltipPosition='top' tooltip={t('Short Description of the Layer Source')}
                   required
+                  t={t}
                 />
               </Row>
               <Row style={{marginBottom: '20px'}}>

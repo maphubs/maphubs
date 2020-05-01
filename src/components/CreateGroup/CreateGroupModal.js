@@ -173,6 +173,7 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
                   }} length={100}
                   tooltipPosition='top' tooltip={t('Short Descriptive Name for the Group')}
                   required
+                  t={t}
                 />
               </Row>
               <Row style={{marginBottom: '20px'}}>
@@ -191,6 +192,7 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
                   }} length={500}
                   tooltipPosition='top' tooltip={t('Brief Description of the Group')}
                   required
+                  t={t}
                 />
               </Row>
             </Formsy>

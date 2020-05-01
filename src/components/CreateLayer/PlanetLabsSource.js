@@ -122,6 +122,7 @@ export default class PlanetLabsSource extends MapHubsComponent<Props, State> {
                 name='selectedIDs' label={t('Planet Explorer Selected IDs')}
                 length={2000}
                 icon='info' required
+                t={t}
               />
             </Row>
           </div>

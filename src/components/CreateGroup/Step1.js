@@ -222,6 +222,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
                   }} length={500}
                   tooltipPosition='top' tooltip={t('Brief Description of the Group')}
                   required
+                  t={t}
                 />
               </Row>
               <Row style={{marginBottom: '20px'}}>

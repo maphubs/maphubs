@@ -177,6 +177,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
                     }} length={50}
                     value={this.props.label}
                     required
+                    t={t}
                   />
                 </Row>
               </Col>

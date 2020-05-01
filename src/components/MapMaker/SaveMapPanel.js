@@ -102,6 +102,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
                 maxLength: t('Must be 100 characters or less.')
               }} length={100}
               required
+              t={t}
             />
           </Row>
           <Row style={{width: '100%'}}>
