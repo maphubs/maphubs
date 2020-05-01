@@ -52,7 +52,7 @@ export default class AddMapDrawer extends React.Component<Props, State> {
           } else {
             if (res.body.maps && res.body.maps.length > 0) {
               _this.setState({searchActive: true, searchResults: res.body.maps})
-              message.info(`${res.body.layers.length} ${t('Results')}`)
+              message.info(`${res.body.maps.length} ${t('Results')}`)
             } else {
               message.info(t('No Results Found'), 5)
             }
