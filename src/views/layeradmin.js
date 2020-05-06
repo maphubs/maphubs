@@ -317,11 +317,13 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
                     </div>
                   </TabPane>
                   <TabPane tab={t('Style/Display')} key='style' style={{position: 'relative'}}>
-                    <LayerStyle
-                      showPrev={false}
-                      onSubmit={this.onSave}
-                      mapConfig={this.props.mapConfig}
-                    />
+                    <Row style={{height: 'calc(100% - 50px)'}}>
+                      <LayerStyle
+                        showPrev={false}
+                        onSubmit={this.onSave}
+                        mapConfig={this.props.mapConfig}
+                      />
+                    </Row>
                   </TabPane>
                   {this.state.user && this.state.user.admin &&
                     <TabPane tab={t('Admin Only')} key='admin' style={{position: 'relative'}}>

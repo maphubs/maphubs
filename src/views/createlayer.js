@@ -163,8 +163,8 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
       <ErrorBoundary>
         <Provider inject={[this.BaseMapState, this.MapState]}>
           <Header {...headerConfig} />
-          <main>
-            <div style={{marginLeft: '10px', marginRight: '10px', marginTop: '10px'}}>
+          <main style={{height: '100%'}}>
+            <div style={{marginLeft: '10px', marginRight: '10px', marginTop: '10px', height: '100%'}}>
               <Row style={{padding: '20px'}}>
                 <Steps size='small' current={step - 1}>
                   <Step title={t('Data')} />
@@ -173,12 +173,14 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
                   <Step title={t('Complete')} />
                 </Steps>
               </Row>
-              {step === 1 &&
-                <Step1 onSubmit={this.nextStep} mapConfig={mapConfig} />}
-              {step === 2 &&
-                <Step2 groups={groups} showPrev onPrev={this.prevStep} onSubmit={this.nextStep} />}
-              {step === 3 &&
-                <Step3 onPrev={this.prevStep} onSubmit={this.submit} mapConfig={mapConfig} />}
+              <Row style={{height: 'calc(100% - 65px)'}}>
+                {step === 1 &&
+                  <Step1 onSubmit={this.nextStep} mapConfig={mapConfig} />}
+                {step === 2 &&
+                  <Step2 groups={groups} showPrev onPrev={this.prevStep} onSubmit={this.nextStep} />}
+                {step === 3 &&
+                  <Step3 onPrev={this.prevStep} onSubmit={this.submit} mapConfig={mapConfig} />}
+              </Row>
             </div>
           </main>
         </Provider>

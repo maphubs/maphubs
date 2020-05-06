@@ -1,6 +1,5 @@
 // @flow
 import React from 'react'
-import { Row } from 'antd'
 import LayerStyle from './LayerStyle'
 import LayerActions from '../../actions/LayerActions'
 import MapHubsComponent from '../MapHubsComponent'
@@ -30,13 +29,11 @@ export default class Step3 extends MapHubsComponent<Props, State> {
 
   render () {
     return (
-      <Row>
-        <LayerStyle
-          waitForTileInit
-          mapConfig={this.props.mapConfig}
-          onSubmit={this.onSubmit}
-        />
-      </Row>
+      <LayerStyle
+        waitForTileInit
+        mapConfig={this.props.mapConfig}
+        onSubmit={this.onSubmit}
+      />
     )
   }
 }

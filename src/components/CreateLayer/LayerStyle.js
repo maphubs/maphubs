@@ -155,7 +155,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     }
 
     return (
-      <Row style={{height: 'calc(100% - 50px)'}}>
+      <Row style={{height: '100%'}}>
         <Row style={{height: '100%', textAlign: 'center'}}>
           <Col sm={24} md={12}>
             <Title level={3}>{t('Choose Preview')}</Title>
