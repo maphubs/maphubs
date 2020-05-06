@@ -103,7 +103,7 @@ module.exports = withCSS(withLess(withTM({
       })
     )
     if (dev) {
-      // config.devtool = 'cheap-eval-source-map'
+      config.devtool = 'cheap-eval-source-map'
     } else {
       config.devtool = 'source-map'
       if (config.optimization && config.optimization.minimizer) {

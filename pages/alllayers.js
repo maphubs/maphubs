@@ -10,7 +10,6 @@ import LayerList from '../src/components/Lists/LayerList'
 import type {Layer} from '../src/types/layer'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import UserStore from '../src/stores/UserStore'
-import FloatingAddButton from '../src/components/FloatingAddButton'
 
 const { Title } = Typography
 
