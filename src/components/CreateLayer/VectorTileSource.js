@@ -55,11 +55,13 @@ export default class RasterTileSource extends MapHubsComponent<Props, State> {
   submit = (model: Object) => {
     const {t} = this
     const _this = this
-
-    const boundsArr = model.bounds.split(',')
-    boundsArr.map((item) => {
-      return item.trim()
-    })
+    let boundsArr = []
+    if (model.bounds) {
+      boundsArr = model.bounds.split(',')
+      boundsArr = boundsArr.map((item) => {
+        return item.trim()
+      })
+    }
 
     LayerActions.saveDataSettings({
       is_external: true,

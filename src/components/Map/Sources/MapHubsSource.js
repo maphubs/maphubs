@@ -67,12 +67,10 @@ const MapHubsSource = {
           data: source.data
         })
       }
-    } else {
+    } else if (source.url) {
       // load as tilejson
-      let url
-      if (source.url) {
-        url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
-      }
+      const url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
+
       return superagent.get(url)
         .then((res) => {
           const tileJSON = res.body
@@ -92,6 +90,9 @@ const MapHubsSource = {
         }, (err) => {
           debug.log('(' + mapComponent.state.id + ') ' + err)
         })
+    } else {
+      // pass through the source as-is
+      return mapComponent.addSource(key, source)
     }
   },
   async addLayer (layer: GLLayer, source: GLSource, position: number, mapComponent: any) {
