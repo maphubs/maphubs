@@ -2,11 +2,12 @@
 import React from 'react'
 import { Row, Card, List, Select } from 'antd'
 import slugify from 'slugify'
+import type {Layer} from '../../types/layer'
 
 const {Option} = Select
 
 type Props = {
-  layer: Object,
+  layer: Layer,
   t: Function
 }
 
@@ -29,7 +30,7 @@ export default class LayerExport extends React.Component<Props, State> {
     const {layer, t} = this.props
     const {aggFields} = this.state
     const name = slugify(t(layer.name))
-    const layerId = layer.layer_id
+    const layerId = Number(layer.layer_id).toString()
     const maphubsFileURL = `/api/layer/${layerId}/export/maphubs/${name}.maphubs`
     const geoJSONURL = `/api/layer/${layerId}/export/json/${name}.geojson`
     const shpURL = `/api/layer/${layerId}/export/shp/${name}.zip`
@@ -74,7 +75,7 @@ export default class LayerExport extends React.Component<Props, State> {
                 defaultValue={[]}
                 onChange={handleAggregateChange}
               >
-                {layer.presets.map(preset => {
+                {layer.presets && layer.presets.map(preset => {
                   return (<Option key={preset.tag}>{preset.tag}</Option>)
                 })}
               </Select>

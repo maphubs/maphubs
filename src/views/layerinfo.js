@@ -460,9 +460,10 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                       {!geoJSON && <Result title={dataMsg} />}
                     </Row>
                   </TabPane>
-                  <TabPane tab={t('Download')} key='export'>
-                    <LayerExport layer={layer} t={t} />
-                  </TabPane>
+                  {!layer.is_external &&
+                    <TabPane tab={t('Download')} key='export'>
+                      <LayerExport layer={layer} t={t} />
+                    </TabPane>}
                 </Tabs>
               </Col>
               <Col sm={24} md={12} className='hide-on-small-only' style={{height: '100%'}}>
