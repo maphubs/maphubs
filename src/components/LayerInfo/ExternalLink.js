@@ -3,6 +3,7 @@ import React from 'react'
 import {Tooltip} from 'antd'
 import slugify from 'slugify'
 import type {Layer} from '../../types/layer'
+import LaunchIcon from '@material-ui/icons/Launch'
 
 type Props = {
   layer: Layer,
@@ -66,12 +67,10 @@ export default function LayerInfoExternalLink ({layer, t}: Props) {
           title={t('Copy to Clipboard')}
           placement='left'
         >
-          <i
-            className='material-icons omh-accent-text'
+          <LaunchIcon
             style={{cursor: 'pointer'}}
             onClick={() => { copyToClipboard(externalUrl) }}
-          >launch
-          </i>
+          />
         </Tooltip>
       </p>
     </div>
