@@ -218,10 +218,14 @@ class Map extends React.Component<Props, State> {
     if (style && style.sources) {
       return Promise.resolve(_this.setOverlayStyle(style, _this.props.allowLayerOrderOptimization))
         .catch((err) => {
+          console.error('error adding map data')
+          console.error(err)
           _this.debugLog(err)
         })
         .asCallback((err) => {
           if (err) {
+            console.error('error adding map data')
+            console.error(err)
             this.debugLog(err)
           }
           if (geoJSON) {
@@ -302,6 +306,7 @@ class Map extends React.Component<Props, State> {
 
     // catch generic errors so 404 tile errors etc don't cause unexpected issues
     map.on('error', (err) => {
+      console.log(err.error)
       debug.error(err.error)
     })
 
@@ -409,16 +414,21 @@ class Map extends React.Component<Props, State> {
       }
     }
 
-    if (nextProps.glStyle &&
+    if (this.state.mapLoaded && // only reload if the first load is complete
+        nextProps.glStyle &&
       !_isequal(this.props.glStyle, nextProps.glStyle)) {
       const nextGLStyle = nextProps.glStyle
       _this.debugLog('glstyle changing from props')
       await Promise.resolve(this.setOverlayStyle(nextGLStyle, _this.props.allowLayerOrderOptimization))
         .catch((err) => {
+          console.error('error glstyle changing')
+          console.error(err)
           _this.debugLog(err)
         })
         .asCallback((err) => {
           if (err) {
+            console.error('error glstyle changing')
+            console.error(err)
             _this.debugLog(err)
           }
           const interactiveLayers = this.getInteractiveLayers(nextGLStyle)

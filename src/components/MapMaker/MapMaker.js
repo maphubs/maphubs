@@ -359,10 +359,10 @@ class MapMaker extends MapHubsComponent<Props, State> {
   render () {
     const {editLayer, toggleVisibility, removeFromMap, showLayerDesigner, t} = this
     const {showVisibility} = this.props
-    const {showMapLayerDesigner, layerDesignerLayer, position, mapLayers, editingLayer, showAddLayer, activeTab} = this.state
+    const {showMapLayerDesigner, layerDesignerLayer, position, mapLayers, mapStyle, editingLayer, showAddLayer, activeTab} = this.state
     const {mapState} = this.props.containers
 
-    if (!Array.isArray(mapLayers)) return 'bad maplayers array'
+    if (!Array.isArray(mapLayers)) return ''
 
     let mapExtent
     if (position && position.bbox) {
@@ -463,46 +463,47 @@ class MapMaker extends MapHubsComponent<Props, State> {
           </Row>
         </Col>
         <Col sm={12} md={16} lg={18} style={{height: '100%'}}>
-          <Row style={{height: '100%', width: '100%', margin: 0, position: 'relative'}}>
-            <Map
-              id='create-map-map' style={{height: '100%', width: '100%', margin: 'auto'}}
-              glStyle={this.state.mapStyle}
-              insetMap
-              insetConfig={this.state.settings ? this.state.settings.insetConfig : undefined}
-              onChangeBaseMap={Actions.setMapBasemap}
-              onToggleIsochroneLayer={this.onToggleIsochroneLayer}
-              fitBounds={mapExtent}
-              mapConfig={this.props.mapConfig}
-              onLoad={this.initEditLayer}
-              hash
-              primaryColor={MAPHUBS_CONFIG.primaryColor}
-              logoSmall={MAPHUBS_CONFIG.logoSmall}
-              logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-              logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-              t={this.t}
-              locale={this.state.locale}
-              mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-              DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-              earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
-            >
-              {editingLayer &&
-                <EditorToolButtons stopEditingLayer={this.stopEditingLayer} onFeatureUpdate={mapState.state.map.onFeatureUpdate} t={t} _csrf={this.state._csrf} />}
-            </Map>
+          {(mapStyle && mapStyle.layers && mapStyle.sources) &&
+            <Row style={{height: '100%', width: '100%', margin: 0, position: 'relative'}}>
+              <Map
+                id='create-map-map' style={{height: '100%', width: '100%', margin: 'auto'}}
+                glStyle={mapStyle}
+                insetMap
+                insetConfig={this.state.settings ? this.state.settings.insetConfig : undefined}
+                onChangeBaseMap={Actions.setMapBasemap}
+                onToggleIsochroneLayer={this.onToggleIsochroneLayer}
+                fitBounds={mapExtent}
+                mapConfig={this.props.mapConfig}
+                onLoad={this.initEditLayer}
+                hash
+                primaryColor={MAPHUBS_CONFIG.primaryColor}
+                logoSmall={MAPHUBS_CONFIG.logoSmall}
+                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+                t={this.t}
+                locale={this.state.locale}
+                mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+                DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+                earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+              >
+                {editingLayer &&
+                  <EditorToolButtons stopEditingLayer={this.stopEditingLayer} onFeatureUpdate={mapState.state.map.onFeatureUpdate} t={t} _csrf={this.state._csrf} />}
+              </Map>
 
-            <MiniLegend
-              t={t}
-              style={{
-                position: 'absolute',
-                top: '5px',
-                left: '5px',
-                minWidth: '200px',
-                width: '25%'
-              }}
-              layers={mapLayers}
-              maxHeight='calc(100vh - 300px)'
-              hideInactive showLayersButton={false}
-            />
-          </Row>
+              <MiniLegend
+                t={t}
+                style={{
+                  position: 'absolute',
+                  top: '5px',
+                  left: '5px',
+                  minWidth: '200px',
+                  width: '25%'
+                }}
+                layers={mapLayers}
+                maxHeight='calc(100vh - 300px)'
+                hideInactive showLayersButton={false}
+              />
+            </Row>}
         </Col>
         <Drawer
           title={t('Add Layer')}
