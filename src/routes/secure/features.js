@@ -4,8 +4,6 @@ const Layer = require('../../models/layer')
 const LayerData = require('../../models/layer-data')
 const PhotoAttachment = require('../../models/photo-attachment')
 const knex = require('../../connection')
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-const imageUtils = require('../../services/image-utils')
 const layerViews = require('../../services/layer-views')
 // var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/features');
 const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
@@ -43,7 +41,7 @@ module.exports = function (app: any) {
           const geoJSON = await Feature.getGeoJSON(mhid, layer.layer_id)
           const notes = await Feature.getFeatureNotes(mhid, layer.layer_id)
           if (geoJSON) {
-            const photos = await PhotoAttachment.getPhotoIdsForFeature(layer_id, mhid)
+            const photos = await PhotoAttachment.getPhotosForFeature(layer_id, mhid)
             let photo
             if (photos && Array.isArray(photos)) {
               photo = photos[0]
@@ -193,36 +191,11 @@ module.exports = function (app: any) {
     }
   })
 
-  app.get('/feature/photo/:photo_id.jpg', async (req, res) => {
-    const photo_id = req.params.photo_id
-    let user_id = -1
-    if (req.isAuthenticated && req.isAuthenticated() && req.session.user) {
-      user_id = req.session.user.maphubsUser.id
-    }
-    try {
-      const layer = await Layer.getLayerForPhotoAttachment(photo_id)
-      const allowed = await privateLayerCheck.check(layer.layer_id, user_id)
-
-      if (allowed) {
-        const result = await PhotoAttachment.getPhotoAttachment(photo_id)
-        if (result) {
-          return imageUtils.processImage(result.data, req, res)
-        } else {
-          res.status(404).send('Not Found')
-        }
-      } else {
-        log.warn('Unauthorized attempt to access layer: ' + layer.layer_id)
-        throw new Error('Unauthorized')
-      }
-    } catch (err) { apiError(res, 404)(err) }
-  })
-
   app.post('/api/feature/notes/save', csrfProtection, isAuthenticated, async (req, res) => {
     const data = req.body
     if (data && data.layer_id && data.mhid && data.notes) {
       try {
-        const allowed = await Layer.allowedToModify(data.layer_id, req.user_id)
-        if (allowed) {
+        if (await Layer.allowedToModify(data.layer_id, req.user_id)) {
           return knex.transaction(async (trx) => {
             await Feature.saveFeatureNote(data.mhid, data.layer_id, req.user_id, data.notes, trx)
             return res.send({success: true})
@@ -236,35 +209,32 @@ module.exports = function (app: any) {
     }
   })
 
-  app.post('/api/feature/photo/add', csrfProtection, isAuthenticated, (req, res) => {
+  app.post('/api/feature/photo/add', csrfProtection, isAuthenticated, async (req, res) => {
     const data = req.body
     if (data && data.layer_id && data.mhid && data.image && data.info) {
-      Layer.allowedToModify(data.layer_id, req.user_id)
-        .then((allowed) => {
-          if (allowed) {
-            return knex.transaction(async (trx) => {
+      try {
+        if (await Layer.allowedToModify(data.layer_id, req.user_id)) {
+          return knex.transaction(async (trx) => {
             // set will replace existing photo
-              const photo_id = await PhotoAttachment.setPhotoAttachment(data.layer_id, data.mhid, data.image, data.info, req.alloweduser_id, trx)
+            const photo_url = await PhotoAttachment.setPhotoAttachment(data.layer_id, data.mhid, data.image, data.info, req.alloweduser_id, trx)
 
-              // add a tag to the feature and update the layer
-              const layer = await Layer.getLayerByID(data.layer_id, trx)
-              if (layer) {
-                const baseUrl = urlUtil.getBaseUrl()
-                const photo_url = baseUrl + '/feature/photo/' + photo_id + '.jpg'
-                await LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', photo_url, trx)
-                const presets = await PhotoAttachment.addPhotoUrlPreset(layer, req.user_id, trx)
-                await layerViews.replaceViews(data.layer_id, presets, trx)
-                await Layer.setUpdated(data.layer_id, req.user_id, trx)
+            // add a tag to the feature and update the layer
+            const layer = await Layer.getLayerByID(data.layer_id, trx)
+            if (layer) {
+              await LayerData.setStringTag(layer.layer_id, data.mhid, 'photo_url', photo_url, trx)
+              const presets = await PhotoAttachment.addPhotoUrlPreset(layer, req.user_id, trx)
+              await layerViews.replaceViews(data.layer_id, presets, trx)
+              await Layer.setUpdated(data.layer_id, req.user_id, trx)
 
-                return res.send({success: true, photo_id, photo_url})
-              } else {
-                return res.send({success: false, error: 'layer not found'})
-              }
-            }).catch(apiError(res, 500))
-          } else {
-            return notAllowedError(res, 'layer')
-          }
-        }).catch(apiError(res, 500))
+              return res.send({success: true, photo_url})
+            } else {
+              return res.send({success: false, error: 'layer not found'})
+            }
+          })
+        } else {
+          return notAllowedError(res, 'layer')
+        }
+      } catch (err) { apiError(res, 500)(err) }
     } else {
       apiDataError(res)
     }
@@ -272,13 +242,13 @@ module.exports = function (app: any) {
 
   app.post('/api/feature/photo/delete', csrfProtection, isAuthenticated, async (req, res) => {
     const data = req.body
-    if (data && data.layer_id && data.mhid && data.photo_id) {
+    if (data && data.layer_id && data.mhid) {
       Layer.allowedToModify(data.layer_id, req.user_id)
         .then((allowed) => {
           if (allowed) {
             return knex.transaction(async (trx) => {
             // set will replace existing photo
-              await PhotoAttachment.deletePhotoAttachment(data.layer_id, data.mhid, data.photo_id, trx)
+              await PhotoAttachment.deletePhotoAttachment(data.layer_id, data.mhid, trx)
               const layer = await Layer.getLayerByID(data.layer_id, trx)
               if (layer) {
                 // remove the photo URL from feature

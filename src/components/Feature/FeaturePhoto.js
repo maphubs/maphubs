@@ -73,17 +73,15 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
       )
     }
 
-    if (photo && photo.photo_id) {
-      const photoUrl = `/feature/photo/${photo.photo_id}.jpg`
-
+    if (photo?.photo_url) {
       return (
         <div>
-          <img style={{width: '100%'}} src={photoUrl} alt='feature photo attachment' />
+          <img style={{width: '100%'}} src={photo.photo_url} alt='feature photo attachment' />
           {canEdit &&
             <div style={{height: '30px', position: 'relative'}}>
               <Tooltip
                 title={t('Replace Photo')}
-                placement='left'
+                placement='bottom'
               >
                 <AddAPhotoIcon
                   onClick={this.showImageCrop}
@@ -98,9 +96,9 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
               </Tooltip>
               <Tooltip
                 title={t('Download Photo')}
-                placement='left'
+                placement='bottom'
               >
-                <a href={photoUrl} download>
+                <a href={photo.photo_url} download>
                   <GetAppIcon
                     style={{
                       fontSize: '24px',
@@ -114,7 +112,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
               </Tooltip>
               <Tooltip
                 title={t('Remove Photo')}
-                placement='left'
+                placement='bottom'
               >
                 <DeleteIcon
                   onClick={this.deletePhoto}

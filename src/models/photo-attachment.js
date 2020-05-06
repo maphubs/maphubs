@@ -3,84 +3,52 @@ import MapStyles from '../components/Map/Styles'
 const knex = require('../connection')
 const Promise = require('bluebird')
 const Presets = require('./presets')
+const assetUpload = require('../services/asset-upload')
 const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 
 module.exports = {
 
-  async getPhotoAttachment (photo_id: number, trx: any = null) {
+  getPhotosForFeature (layer_id: number, mhid: string, trx: any = null) {
     const db = trx || knex
-    const result = await db('omh.photo_attachments').where({photo_id})
-
-    if (result && result.length > 0) {
-      return result[0]
-    }
-    return null
-  },
-
-  getPhotoIdsForFeature (layer_id: number, mhid: string, trx: any = null) {
-    let db = knex
-    if (trx) { db = trx }
-    return db('omh.feature_photo_attachments').select('omh.photo_attachments.photo_id')
-      .leftJoin('omh.photo_attachments', 'omh.feature_photo_attachments.photo_id', 'omh.photo_attachments.photo_id')
+    return db('omh.feature_photo_attachments')
+      .select('photo_url')
       .where({layer_id, mhid})
   },
 
-  getPhotoAttachmentsForFeature (layer_id: number, mhid: string, trx: any = null) {
-    let db = knex
-    if (trx) { db = trx }
-    return db('omh.feature_photo_attachments').select('omh.photo_attachments.*')
-      .leftJoin('omh.photo_attachments', 'omh.feature_photo_attachments.photo_id', 'omh.photo_attachments.photo_id')
-      .where({layer_id, mhid})
-  },
-
-  async setPhotoAttachment (layer_id: number, mhid: string, data: string, info: string, user_id: number, trx: any = null) {
-    const _this = this
-    const results = await this.getPhotoAttachmentsForFeature(layer_id, mhid, trx)
-    if (results && results.length > 0) {
+  async setPhotoAttachment (layer_id: number, mhid: string, data: string, info: Object, user_id: number, trx: any = null) {
+    const db = trx || knex
+    const results = await db('omh.feature_photo_attachments').where({mhid})
+    if (results?.length > 0) {
       // delete previous
-      await Promise.map(results, async (result) => {
-        return _this.deletePhotoAttachment(layer_id, mhid, result.photo_id, trx)
-      })
+      await this.deletePhotoAttachment(mhid, trx)
     }
-    return _this.addPhotoAttachment(layer_id, mhid, data, info, user_id, trx)
-  },
 
-  async addPhotoAttachment (layer_id: number, mhid: string, data: string, info: string, user_id: number, trx: any = null) {
-    const db = trx || knex
-    let photo_id = await db('omh.photo_attachments')
-      .insert({
-        data,
-        info,
-        created_by: user_id,
-        created_at: knex.raw('now()')
-      })
-      .returning('photo_id')
+    // upload to asset API
+    const result = await assetUpload(mhid, data)
 
-    photo_id = Number.parseInt(photo_id, 10)
-    await db('omh.feature_photo_attachments').insert({layer_id, mhid, photo_id})
-    return photo_id
-  },
+    const assetInfo = Object.assign({}, info, result)
 
-  async updatePhotoAttachment (photo_id: number, data: string, info: string, trx: any = null) {
-    const db = trx || knex
-    return db('omh.photo_attachments').update({data, info}).where({photo_id})
-  },
-
-  async deletePhotoAttachment (layer_id: number, mhid: string, photo_id: number, trx: any = null) {
-    const db = trx || knex
     await db('omh.feature_photo_attachments')
-      .where({layer_id, mhid, photo_id}).del()
-    return db('omh.photo_attachments').where({photo_id}).del()
+      .insert({
+        layer_id,
+        mhid,
+        photo_url: result.webpcheckURL,
+        asset_info: assetInfo
+      })
+      .where({mhid})
+    return result.webpcheckURL
+  },
+
+  async deletePhotoAttachment (layer_id: number, mhid: string, trx: any = null) {
+    const db = trx || knex
+    return db('omh.feature_photo_attachments').where({mhid}).del()
+    // TODO: tell asset API to delete when supported
   },
 
   // need to call this before deleting a layer
   async removeAllLayerAttachments (layer_id: number, trx: any = null) {
-    const _this = this
     const db = trx || knex
-    const featurePhotoAttachments = await db('omh.feature_photo_attachments').where({layer_id})
-    return Promise.map(featurePhotoAttachments, fpa => {
-      return _this.deletePhotoAttachment(layer_id, fpa.mhid, fpa.photo_id)
-    })
+    return db('omh.feature_photo_attachments').where({layer_id}).del()
   },
 
   async addPhotoUrlPreset (layer: Object, user_id: number, trx: any) {

@@ -7,7 +7,6 @@ const Group = require('../../models/group')
 const DataLoadUtils = require('../../services/data-load-utils')
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/layers')
 const layerViews = require('../../services/layer-views')
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 
 const PhotoAttachment = require('../../models/photo-attachment')
 // var Tag = require('../../models/tag');
@@ -250,7 +249,7 @@ module.exports = function (app: any) {
   app.post('/api/layer/addphotopoint', csrfProtection, isAuthenticated, async (req, res) => {
     try {
       const data = req.body
-      if (data && data.layer_id && data.geoJSON && data.image && data.imageInfo) {
+      if (data && data.layer_id && data.geoJSON && data.imageUrl && data.imageInfo) {
         let geoJSON = data.geoJSON
         if (data.geoJSON.type === 'FeatureCollection') {
           const firstFeature = data.geoJSON.features[0]
@@ -265,14 +264,13 @@ module.exports = function (app: any) {
               if (mhid) {
               // get the mhid for the new feature
                 debug.log(`new mhid: ${mhid}`)
-                const photo_id = await PhotoAttachment.setPhotoAttachment(layer.layer_id, mhid, data.image, data.imageInfo, req.user_id, trx)
-                const photo_url = `${urlUtil.getBaseUrl()}/feature/photo/${photo_id}.jpg`
+                const photo_url = await PhotoAttachment.setPhotoAttachment(layer.layer_id, mhid, data.image, data.imageInfo, req.user_id, trx)
                 // add a tag to the feature
                 await LayerData.setStringTag(layer.layer_id, mhid, 'photo_url', photo_url, trx)
 
                 const presets = await PhotoAttachment.addPhotoUrlPreset(layer, req.user_id, trx)
                 await layerViews.replaceViews(data.layer_id, presets, trx)
-                return res.send({success: true, photo_id, photo_url, mhid})
+                return res.send({success: true, photo_url, mhid})
               } else {
                 return res.send({success: false, error: 'error creating feature'})
               }

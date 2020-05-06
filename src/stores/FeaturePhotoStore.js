@@ -52,7 +52,6 @@ addPhoto (data, info, _csrf, cb) {
         _this.setState({
           feature,
           photo: {
-            photo_id: res.body.photo_id,
             photo_url: res.body.photo_url
           }
         })
@@ -71,7 +70,6 @@ removePhoto (_csrf, cb) {
     .send({
       layer_id: this.state.feature.layer_id,
       mhid: this.state.feature.mhid,
-      photo_id: this.state.photo.photo_id,
       _csrf
     })
     .end((err, res) => {

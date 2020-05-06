@@ -227,23 +227,6 @@ module.exports = {
   /**
    * Can include private?: If Requested
    */
-  async getLayerForPhotoAttachment (photo_id: number, trx: any = null) {
-    const _this = this
-    let db = trx || knex
-    if (trx) { db = trx }
-    const results = await db('omh.feature_photo_attachments').select('layer_id').where({photo_id})
-
-    if (results && results.length > 0 && results[0].layer_id) {
-      const layer_id = results[0].layer_id
-      return _this.getLayerByID(layer_id, trx)
-    } else {
-      throw new Error('Not a layer photo')
-    }
-  },
-
-  /**
-   * Can include private?: If Requested
-   */
   getUserLayers (user_id: number, number: number, includePrivate: boolean = false): Promise<Array<Object>> {
     const subquery = knex.select().distinct('group_id').from('omh.group_memberships').where({user_id})
 
