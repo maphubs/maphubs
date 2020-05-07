@@ -82,6 +82,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
             const layer = res.body.layer
             _this.setState({layer, layerLoaded: true})
           } else {
+            _this.setState({layerLoaded: true})
             debug.error(`failed to load layer info for: ${layerId}`)
           }
           cb()
