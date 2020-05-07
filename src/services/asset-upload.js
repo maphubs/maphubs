@@ -1,11 +1,14 @@
 // @flow
 import request from 'superagent'
 import getConfig from 'next/config'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+const config = getConfig()
+const MAPHUBS_CONFIG = config ? config.publicRuntimeConfig : {}
 
 module.exports = async (mhid: string, imageData: string) => {
   const host = MAPHUBS_CONFIG.host ? MAPHUBS_CONFIG.host.replace(/\./g, '') : 'unknownhost'
-
+  if (!MAPHUBS_CONFIG.ASSET_UPLOAD_API || !MAPHUBS_CONFIG.ASSET_UPLOAD_API_KEY) {
+    throw new Error('Missing ASSET API config')
+  }
   const apiUrl = `${MAPHUBS_CONFIG.ASSET_UPLOAD_API}/image/upload`
   const token = MAPHUBS_CONFIG.ASSET_UPLOAD_API_KEY
   const res = await request.post(apiUrl)
