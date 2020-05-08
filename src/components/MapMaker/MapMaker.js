@@ -458,7 +458,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
             </Col>
             <Col span={16} style={{textAlign: 'right'}}>
               <Tooltip title={t('Delete Map')} placement='left'><Button danger onClick={this.onDelete} icon={<DeleteOutlined />} style={{marginRight: '10px'}} /></Tooltip>
-              <SaveMapModal {...this.state} editing={this.props.edit} onSave={this.onSave} />
+              <SaveMapModal {...this.state} editing={this.props.edit} onSave={this.onSave} _csrf={this.state._csrf} />
             </Col>
           </Row>
         </Col>

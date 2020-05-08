@@ -47,7 +47,6 @@ export default class MyDocument extends Document {
     let user_id = ''
     let display_name = ''
     if (props.user) {
-      //  username = req.session.user.display_name;
       email = props.user.email
       user_id = props.user.id
       display_name = props.user.display_name
@@ -116,51 +115,6 @@ export default class MyDocument extends Document {
           {(options.twitterCard && options.twitterCard.image && options.twitterCard.imageHeight) &&
             <meta property='og:image:height' content={options.twitterCard.imageHeight} />}
           <link rel='stylesheet' type='text/css' href='/css/maphubs.css' />
-          <script
-            type='text/javascript' dangerouslySetInnerHTML={{
-              __html: `
-              var MAPHUBS_CONFIG = {
-                host: "${local.host}",
-                port: ${local.port},
-                https: ${local.https},
-                productName: "${local.productName}",
-                logo: "${local.logo}",
-                logoSmall: "${local.logoSmall}",
-                logoWidth: ${local.logoWidth},
-                logoHeight: ${local.logoHeight},
-                logoSmallWidth: ${local.logoSmallWidth},
-                logoSmallHeight: ${local.logoSmallHeight},
-                primaryColor: "${local.primaryColor}",
-                betaText: "${local.betaText}",
-                twitter: "${local.twitter}",
-                contactEmail: "${local.contactEmail}",
-                mapHubsPro: ${local.mapHubsPro},
-                enableComments: ${local.enableComments},
-                CORAL_TALK_ID: "${!options.login ? local.CORAL_TALK_ID : ''}",
-                CORAL_TALK_HOST: "${local.CORAL_TALK_HOST}",
-                FR_ENABLE: ${local.FR_ENABLE},
-                FR_API: "${local.FR_API}",
-                FR_API_KEY: "${(!options.login || !options.publicShare) ? local.FR_API_KEY : ''}",
-                tileServiceUrl: "${local.tileServiceUrl}",
-                MAPBOX_ACCESS_TOKEN: "${!options.login ? local.MAPBOX_ACCESS_TOKEN : ''}",
-                TILEHOSTING_GEOCODING_API_KEY: "${!options.login ? local.TILEHOSTING_GEOCODING_API_KEY : ''}",
-                TILEHOSTING_MAPS_API_KEY: "${!options.login ? local.TILEHOSTING_MAPS_API_KEY : ''}",
-                PLANET_LABS_API_KEY: "${!options.login ? local.PLANET_LABS_API_KEY : ''}",
-                DG_WMS_CONNECT_ID: "${!options.login ? local.DG_WMS_CONNECT_ID : ''}",
-                BING_KEY:  "${!options.login ? local.BING_KEY : ''}",
-                SENTRY_DSN_PUBLIC:  "${local.SENTRY_DSN_PUBLIC}",
-                theme: "${local.theme}",
-                themeUrl: "${local.themeUrl}",
-                enableUserExport: "${local.enableUserExport}",
-                OPENROUTESERVICE_API_KEY:  "${local.OPENROUTESERVICE_API_KEY}",
-                EARTHENGINE_CLIENTID: "${local.EARTHENGINE_CLIENTID}",
-                RASTER_UPLOAD_API: "${local.RASTER_UPLOAD_API}",
-                RASTER_UPLOAD_API_KEY: "${local.RASTER_UPLOAD_API_KEY}",
-                requireLogin: ${local.requireLogin}
-              }
-          `
-            }}
-          />
           <script src='https://cdn.ravenjs.com/3.20.1/raven.min.js' crossOrigin='anonymous' />
           <script
             type='text/javascript' dangerouslySetInnerHTML={{
@@ -174,7 +128,7 @@ export default class MyDocument extends Document {
             }}
           />
           {options.talkComments &&
-            <script type='text/javascript' src='https://talk.maphubs.com/embed.js' />}
+            <script type='text/javascript' src='https://talk.maphubs.com/assets/js/embed.js' />}
           {(!options.hideFeedback && !local.HIDE_FEEDBACK) &&
             <script
               type='text/javascript' dangerouslySetInnerHTML={{

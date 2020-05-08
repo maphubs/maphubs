@@ -61,7 +61,6 @@ module.exports = withCSS(withLess(withTM({
     contactEmail: config.contactEmail,
     mapHubsPro: config.mapHubsPro,
     enableComments: config.enableComments,
-    CORAL_TALK_ID: config.CORAL_TALK_ID,
     CORAL_TALK_HOST: config.CORAL_TALK_HOST,
     FR_ENABLE: config.FR_ENABLE,
     FR_API: config.FR_API,

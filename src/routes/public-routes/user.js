@@ -77,7 +77,7 @@ module.exports = function (app: any) {
   })
 
   // can be used to dynamically check for login status, so should be public
-  app.all('/api/user/details/json', async (req, res) => {
+  app.all('/api/user/details/json', csrfProtection, async (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(200).send({user: null})
     } else {

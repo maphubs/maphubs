@@ -18,7 +18,6 @@ if (process.env.APP_ENV !== 'browser') {
     contactEmail: local.contactEmail,
     mapHubsPro: local.mapHubsPro,
     enableComments: local.enableComments,
-    CORAL_TALK_ID: local.CORAL_TALK_ID,
     CORAL_TALK_HOST: local.CORAL_TALK_HOST,
     FR_ENABLE: local.FR_ENABLE,
     FR_API: local.FR_API,

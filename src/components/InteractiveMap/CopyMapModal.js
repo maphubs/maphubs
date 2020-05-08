@@ -76,7 +76,7 @@ export default class CopyMapModal extends React.Component<Props, State> {
         onCancel={this.close}
         footer={[]}
       >
-        <SaveMapPanel title={title} onSave={this.onCopyMap} />
+        <SaveMapPanel title={title} onSave={this.onCopyMap} _csrf={this.props._csrf} />
       </Modal>
     )
   }

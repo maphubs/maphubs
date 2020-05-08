@@ -11,7 +11,8 @@ export type User = {
   display_name: string,
   picture?: string,
   groups: Array<Object>,
-  admin?: boolean
+  admin?: boolean,
+  coral_jwt?: string
 }
 
 export type UserStoreState = {
@@ -44,10 +45,11 @@ export default class UserStore extends Reflux.Store {
     this.setState({user})
   }
 
-  getUser (cb: Function) {
+  getUser (_csrf: string, cb: Function) {
     const _this = this
     request.post('/api/user/details/json')
       .type('json').accept('json')
+      .send({_csrf})
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
           if (err) {

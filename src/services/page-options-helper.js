@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid'
+var jwt = require('jsonwebtoken')
 const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 const Raven = require('raven')
 
@@ -8,6 +10,8 @@ const Admin = require('../models/admin')
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 
 const version = require('../../version.json').version
+
+const config = require('../local')
 
 module.exports = async (req, options) => {
   let locale = 'en'
@@ -49,7 +53,7 @@ module.exports = async (req, options) => {
 
         // add session content
         if (req.session.user && req.session.user._json) {
-          user.username = req.session.user._json.username
+          user.username = req.session.user._json.username || req.session.user.username || user.display_name
           user.picture = req.session.user._json.picture
         }
 
@@ -58,6 +62,24 @@ module.exports = async (req, options) => {
 
         const admin = await Admin.checkAdmin(user_id)
         user.admin = admin
+
+        // add Coral Talk jwt
+        if (config.CORAL_TALK_SECRET) {
+          let email = req.user['https://users.maphubs.com/email'] || user.email
+          if (user.username === 'maphubs') email = 'info@maphubs.com'
+          const token = jwt.sign({
+            user: {
+              id: req.session.user.sub || user_id,
+              email,
+              username: user.username
+            }
+          }, config.CORAL_TALK_SECRET, {
+            jwtid: uuidv4(),
+            expiresIn: '24h'
+          })
+          user.coral_jwt = token
+        }
+
         options.props.user = user
       }
     } catch (err) {

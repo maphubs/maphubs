@@ -15,7 +15,8 @@ type Props = {|
   editing?: boolean,
   editingLayer?: boolean,
   owned_by_group_id: string,
-  title: LocalizedString
+  title: LocalizedString,
+  _csrf: string
 |}
 
 type State = {
@@ -36,7 +37,7 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
 
   recheckLogin = () => {
     const {t} = this
-    UserActions.getUser((err) => {
+    UserActions.getUser(this.props._csrf, (err) => {
       if (err) {
         message.error(t('Not Logged In - Please Login Again'))
       }
