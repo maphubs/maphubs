@@ -148,7 +148,7 @@ nextApp.prepare()
     // option to require require login for everything after this point
     if (local.requireLogin) {
       server.use((req, res, next) => {
-        if (req.path.startsWith('/_next')) {
+        if (req.path.startsWith('/_next') || req.path.startsWith('/__get-internal-source')) {
           next()
         } else {
           if (req.user) { return next() }
@@ -205,18 +205,18 @@ nextApp.prepare()
         const errorDetail = (process.env.NODE_ENV === 'production') ? req.__('Looks like we have a problem. A message was automatically sent to our team.') : err.stack
 
         switch (statusCode) {
-          case 400:
-            statusText = 'Bad Request'
-            break
-          case 401:
-            statusText = 'Unauthorized'
-            break
-          case 403:
-            statusText = 'Forbidden'
-            break
-          case 500:
-            statusText = 'Internal Server Error'
-            break
+        case 400:
+          statusText = 'Bad Request'
+          break
+        case 401:
+          statusText = 'Unauthorized'
+          break
+        case 403:
+          statusText = 'Forbidden'
+          break
+        case 500:
+          statusText = 'Internal Server Error'
+          break
         }
 
         log.error(err.stack)
