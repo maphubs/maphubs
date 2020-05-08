@@ -428,7 +428,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
               <BaseMapSelection onChange={this.changeBaseMap} t={t} />
             </TabPane>
             <TabPane tab={t('Layers')} key='overlays' style={{height: '100%'}}>
-              <Row style={{height: 'calc(100% - 100px', width: '100%'}}>
+              <Row style={{height: 'calc(100% - 100px)', width: '100%'}}>
                 <LayerList
                   layers={mapLayers}
                   showVisibility={showVisibility}
