@@ -68,25 +68,31 @@ export default class FeaturePopup extends React.Component<Props, State> {
   getLayer = (layerId: number, host: string) => {
     debug.info(`Getting layer info for: ${layerId} from ${host}`)
     const _this = this
+
     let baseUrl
     if (host && host !== 'dev.docker' && host !== window.location.hostname) {
       baseUrl = 'https://' + host
     } else {
       baseUrl = urlUtil.getBaseUrl()
     }
+    if (window.location.href.startsWith(`${baseUrl}/map/share/`)) {
+      console.log(`layer lookup not supported on ${window.location.href}`)
+      this.setState({layerLoaded: true})
+      return
+    }
     request.get(baseUrl + '/api/layer/info/' + layerId)
       .type('json').accept('json')
       .end((err, res) => {
-        checkClientError(res, err, () => {}, (cb) => {
-          if (res.body && res.body.layer) {
-            const layer = res.body.layer
-            _this.setState({layer, layerLoaded: true})
-          } else {
-            _this.setState({layerLoaded: true})
-            debug.error(`failed to load layer info for: ${layerId}`)
-          }
-          cb()
-        })
+        console.log('getLayer()')
+        console.log(err)
+        console.log(res)
+        if (!err && res.body?.layer) {
+          const layer = res.body.layer
+          _this.setState({layer, layerLoaded: true})
+        } else {
+          _this.setState({layerLoaded: true})
+          debug.error(`failed to load layer info for: ${layerId}`)
+        }
       })
   }
 
