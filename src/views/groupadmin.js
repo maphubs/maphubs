@@ -24,6 +24,9 @@ import ErrorBoundary from '../components/ErrorBoundary'
 import UserStore from '../stores/UserStore'
 import FloatingButton from '../components/FloatingButton'
 import Delete from '@material-ui/icons/Delete'
+import InfoIcon from '@material-ui/icons/Info'
+import DescriptionIcon from '@material-ui/icons/Description'
+import MyLocationIcon from '@material-ui/icons/MyLocation'
 const { confirm } = Modal
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('views/GroupAdmin')
 
@@ -313,7 +316,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     label={{
                       en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome', id: 'Nama', pt: 'Nome'
                     }}
-                    icon='info'
+                    icon={<InfoIcon />}
                     validations='maxLength:100' validationErrors={{
                       maxLength: t('Must be 100 characters or less.')
                     }} length={100}
@@ -334,7 +337,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                       id: 'Deskripsi',
                       pt: 'Descrição'
                     }}
-                    icon='description' validations='maxLength:500' validationErrors={{
+                    icon={<DescriptionIcon />} validations='maxLength:500' validationErrors={{
                       maxLength: t('Description must be 500 characters or less.')
                     }} length={500}
                     tooltipPosition='top' tooltip={t('Brief Description of the Group')}
@@ -348,6 +351,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
                     name='location' label={t('Location')} validations='maxLength:100' validationErrors={{
                       maxLength: t('Location must be 100 characters or less.')
                     }} length={100}
+                    icon={<MyLocationIcon />}
                     tooltipPosition='top' tooltip={t('Country or City Where the Group is Located')}
                     value={group.location}
                     required
