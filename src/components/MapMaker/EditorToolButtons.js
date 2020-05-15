@@ -35,8 +35,8 @@ export default class EditorToolButtons extends React.Component<Props, State> {
   }
 
   stopEditing = (DataEditor: Object) => {
-    const {t, saveEdits} = this
-    const {stopEditingLayer} = this.props
+    const {saveEdits} = this
+    const {stopEditingLayer, t} = this.props
     if (DataEditor.state.edits.length > 0) {
       confirm({
         title: t('Unsaved Edits'),
