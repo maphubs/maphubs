@@ -107,7 +107,7 @@
     "express-async-handler": "^1.1.4",
     "express-http-proxy": "^1.6.0",
     "express-session": "^1.17.1",
-    "express-sharp": "^3.1.1",
+    "express-sharp": "^4.0.1",
     "file-loader": "^6.0.0",
     "formsy-react": "^2.0.2",
     "geobuf": "^3.0.0",
