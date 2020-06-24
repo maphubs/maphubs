@@ -55,6 +55,7 @@ type Props = {
   earthEngineClientID?: string,
   showLayerVisibility: boolean,
   showLayerInfo: boolean,
+  showPlayButton: boolean,
   onLoad?: Function
 }
 
@@ -86,7 +87,8 @@ export default class InteractiveMap extends React.Component<Props, State> {
     preserveDrawingBuffer: false,
     primaryColor: 'black',
     showLayerVisibility: true, // show toggles in layer menu
-    showLayerInfo: true // show info links in layer menu
+    showLayerInfo: true, // show info links in layer menu
+    showPlayButton: true
   }
 
   mobileMapLegend: any
@@ -226,7 +228,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
   }
 
   render () {
-    const {fitBounds, showShareButtons, t, primaryColor, logoSmall, logoSmallHeight, logoSmallWidth, hash, showLayerVisibility, showLayerInfo} = this.props
+    const {fitBounds, showShareButtons, t, primaryColor, logoSmall, logoSmallHeight, logoSmallWidth, hash, showLayerVisibility, showLayerInfo, showPlayButton} = this.props
     const {position, width} = this.state
     let border = 'none'
     if (this.props.border) {
@@ -327,6 +329,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
           mapLayers={this.state.layers}
           toggleVisibility={this.toggleVisibility}
           onLoad={this.props.onLoad}
+          showPlayButton={showPlayButton}
         >
           {legend}
           <div ref={(el) => { this.mobileMapLegend = el }} />
