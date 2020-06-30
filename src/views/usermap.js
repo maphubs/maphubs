@@ -161,10 +161,17 @@ export default class UserMap extends MapHubsComponent<Props, State> {
               {...map.settings}
               t={this.t}
             />
+            <style jsx global>{`
+              .rtf {
+                z-index: 999 !important;
+              }
+            `}
+            </style>
             {!publicShare &&
               <Fab
                 mainButtonStyles={{backgroundColor: MAPHUBS_CONFIG.primaryColor}}
                 position={{bottom: 75, right: 0}}
+                event='click'
                 icon={<MoreVertIcon />}
               >
                 <Action

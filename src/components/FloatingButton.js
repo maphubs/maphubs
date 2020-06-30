@@ -19,7 +19,8 @@ type Props = {
 export default class FloatingButton extends React.Component<Props, void> {
   static defaultProps = {
     style: {
-      backgroundColor: MAPHUBS_CONFIG.primaryColor
+      backgroundColor: MAPHUBS_CONFIG.primaryColor,
+      zIndex: 999
     },
     actionButtonStyles: {},
     onClick: () => {},
