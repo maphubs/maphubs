@@ -273,7 +273,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
             </Action>}
           {showAddPhotoPointButton &&
             <Action
-              text={t('Add a Photo')}
+              text={t('Add Photo')}
               style={{backgroundColor: '#2196F3'}}
               onClick={() => {
                 window.location = `/layer/adddata/${layer.layer_id}`
@@ -429,9 +429,9 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                         <Card size='small' bordered={false} title={t('Info')} style={{ width: '100S%', height: '100%' }}>
                           <p><b>{t('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
                           {this.state.area &&
-                            <p><b>{t('Area:')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>}
+                            <p><b>{t('Area')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>}
                           {this.state.length > 0 &&
-                            <p><b>{t('Length:')} </b>{numeral(this.state.length).format('0,0.00')} km</p>}
+                            <p><b>{t('Length')} </b>{numeral(this.state.length).format('0,0.00')} km</p>}
                         </Card>
                       </Col>
                     </Row>

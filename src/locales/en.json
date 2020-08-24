@@ -10,7 +10,6 @@
   "Add New Layer": "Add New Layer",
   "Add Photo": "Add Photo",
   "Add a Layer": "Add a Layer",
-  "Add a Photo": "Add a Photo",
   "Add and Send Invite": "Add and Send Invite",
   "Add as Administrator": "Add as Administrator",
   "Add data to:": "Add data to:",
@@ -32,7 +31,6 @@
   "ArcGIS Services": "ArcGIS Services",
   "Are you sure you want to remove this field?": "Are you sure you want to remove this field?",
   "Area": "Area",
-  "Area:": "Area:",
   "Attributes": "Attributes",
   "Author:": "Author:",
   "Back to ": "Back to ",
@@ -527,5 +525,6 @@
   "You have not finished creating your layer.": "You have not finished creating your layer.",
   "You must login or sign up before saving a map.": "You must login or sign up before saving a map.",
   "Your map has not been saved, please confirm that you want to cancel your map.": "Your map has not been saved, please confirm that you want to cancel your map.",
-  "by": "by"
+  "by": "by",
+  "Length": "Length"
 }
