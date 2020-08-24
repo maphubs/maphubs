@@ -97,7 +97,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
                 <Col span={12} style={{padding: '20px'}}>
                   <SourceSelectionBox
                     name={t('Upload File')} value='local'
-                    selected={source === 'local'} icon={<CloudDownloadIcon className='source-icon' />}
+                    selected={source === 'local'} icon={<PublishIcon className='source-icon' />}
                     onSelect={this.selectSource}
                   />
                 </Col>
