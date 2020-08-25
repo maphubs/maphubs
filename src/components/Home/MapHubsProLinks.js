@@ -28,11 +28,11 @@ export default class MapHubsProLinks extends React.PureComponent<Props, void> {
         </Col>
         <Col sm={24} md={6}>
           <div className='mhp-links-icon-wrapper' style={{textAlign: 'center'}}>
-            <a href='/createremotelayer' style={{margin: 'auto'}}>
+            <a href='/import' style={{margin: 'auto'}}>
               <div className='valign-wrapper' style={{height: '125px', position: 'relative', margin: 'auto'}}>
                 <CloudDownloadOutlined />
               </div>
-              <Title level={4}>{t('Link Remote Layer')}</Title>
+              <Title level={4}>{t('Import MapHubs File')}</Title>
             </a>
           </div>
         </Col>
