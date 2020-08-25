@@ -1,3 +1,4 @@
+// @flow
 import React from 'react'
 import Formsy from 'formsy-react'
 import Header from '../components/header'
@@ -13,14 +14,16 @@ import { Steps, Row, Col, notification, message, Button } from 'antd'
 const Step = Steps.Step
 
 type Props = {|
-  groups: Array,
+  groups: Array<Object>,
   locale: string,
   headerConfig: Object,
-  user: Object
+  user: Object,
+  _csrf: string
 |}
 
 type State = {
   layer_id?: number,
+  map_id?: number,
   group_id?: string
 }
 
@@ -52,7 +55,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
   componentDidMount () {
     const _this = this
     this.unloadHandler = (e) => {
-      if (_this.state.group_id && !_this.state.layer_id) {
+      if (_this.state.group_id && !(_this.state.layer_id || _this.state.map_id)) {
         e.preventDefault()
         e.returnValue = ''
       }
@@ -72,7 +75,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
     const {t} = this
     this.closeProcessingMessage()
     if (result.success) {
-      this.setState({layer_id: result.layer_id})
+      this.setState({layer_id: result.layer_id, map_id: result.map_id})
     } else {
       notification.error({
         message: t('Error'),
@@ -88,7 +91,10 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
 
   render () {
     const {t} = this
-    if (!this.props.groups || this.props.groups.length === 0) {
+    const { groups } = this.props
+    const { group_id, layer_id, map_id } = this.state
+
+    if (!groups || groups.length === 0) {
       return (
         <ErrorBoundary>
           <Header {...this.props.headerConfig} />
@@ -103,49 +109,12 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
         </ErrorBoundary>
       )
     }
+
     let step = 0
-    let groupSelection
-    if (!this.state.group_id) {
-      groupSelection = (
-        <Row justify='center' style={{marginBottom: '10px'}}>
-          <Col>
-            <Formsy>
-              <SelectGroup groups={this.props.groups} onGroupChange={this.onGroupChange} type='layer' />
-            </Formsy>
-          </Col>
-        </Row>
-      )
-    }
-
-    let importComplete
-    if (this.state.layer_id) {
+    if (layer_id || map_id) {
       step = 2
-      importComplete = (
-        <Row justify='center' align='middle' style={{height: '100%'}}>
-          <Col span={8}>
-            <p>{t('Import Complete')}</p>
-          </Col>
-          <Col span={16}>
-            <Button type='primary' href={`/lyr/${this.state.layer_id}`}>{t('Go to Layer')}</Button>
-          </Col>
-        </Row>
-      )
-    }
-
-    let uploadBox
-    if (this.state.group_id && !this.state.layer_id) {
+    } else if (group_id) {
       step = 1
-      const url = `/api/import/layer/${this.state.group_id}/upload`
-      uploadBox = (
-        <Row justify='center' align='middle' style={{height: '100%'}}>
-          <Col span={8}>
-            <p>{t('Please upload a MapHubs (.maphubs) file')}</p>
-          </Col>
-          <Col span={16}>
-            <FileUpload onUpload={this.onUpload} beforeUpload={this.onProcessingStart} action={url} t={t} />
-          </Col>
-        </Row>
-      )
     }
 
     return (
@@ -155,15 +124,44 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
           <div className='container' style={{paddingTop: '20px'}}>
             <Row>
               <Steps size='small' current={step}>
-                <Step title='Group' />
-                <Step title='Upload' />
-                <Step title='Finished' />
+                <Step title={t('Group')} />
+                <Step title={t('Upload')} />
+                <Step title={t('Finished')} />
               </Steps>
             </Row>
             <Row style={{padding: '40px'}}>
-              {groupSelection}
-              {uploadBox}
-              {importComplete}
+              {step === 0 &&
+                <Row justify='center' style={{marginBottom: '10px'}}>
+                  <Col>
+                    <Formsy>
+                      <SelectGroup groups={groups} onGroupChange={this.onGroupChange} type='layer' />
+                    </Formsy>
+                  </Col>
+                </Row>}
+              {step === 1 &&
+                <Row justify='center' align='middle' style={{height: '100%'}}>
+                  <Col span={8}>
+                    <p>{t('Please upload a MapHubs (.maphubs) file')}</p>
+                  </Col>
+                  <Col span={16}>
+                    <FileUpload
+                      onUpload={this.onUpload} beforeUpload={this.onProcessingStart}
+                      action={`/api/import/${group_id || ''}/upload`} t={t}
+                    />
+                  </Col>
+                </Row>}
+              {step === 2 &&
+                <Row justify='center' align='middle' style={{height: '100%'}}>
+                  <Col span={8}>
+                    <p>{t('Import Complete')}</p>
+                  </Col>
+                  <Col span={16}>
+                    {layer_id &&
+                      <Button type='primary' href={`/lyr/${layer_id}`}>{t('Go to Layer')}</Button>}
+                    {map_id &&
+                      <Button type='primary' href={`/map/view/${map_id}/`}>{t('Go to Map')}</Button>}
+                  </Col>
+                </Row>}
             </Row>
           </div>
         </main>

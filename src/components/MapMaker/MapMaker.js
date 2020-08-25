@@ -4,7 +4,7 @@ import LayerList from '../Map/LayerList'
 import _isEqual from 'lodash.isequal'
 import _find from 'lodash.find'
 import { Drawer, Button, Row, Col, Tabs, Modal, message, notification, Tooltip } from 'antd'
-import { DeleteOutlined } from '@ant-design/icons'
+import { DeleteOutlined, DownloadOutlined } from '@ant-design/icons'
 import Map from '../Map'
 import MiniLegend from '../Map/MiniLegend'
 import AddLayerPanel from './AddLayerPanel'
@@ -28,6 +28,7 @@ import MapContainer from '../Map/containers/MapContainer'
 import BaseMapContainer from '../Map/containers/BaseMapContainer'
 import { subscribe } from '../Map/containers/unstated-props'
 import BaseMapSelection from '../Map/ToolPanels/BaseMapSelection'
+import slugify from 'slugify'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { confirm } = Modal
@@ -359,7 +360,7 @@ class MapMaker extends MapHubsComponent<Props, State> {
   render () {
     const {editLayer, toggleVisibility, removeFromMap, showLayerDesigner, t} = this
     const {showVisibility} = this.props
-    const {showMapLayerDesigner, layerDesignerLayer, position, mapLayers, mapStyle, editingLayer, showAddLayer, activeTab} = this.state
+    const {map_id, title, showMapLayerDesigner, layerDesignerLayer, position, mapLayers, mapStyle, editingLayer, showAddLayer, activeTab} = this.state
     const {mapState} = this.props.containers
 
     if (!Array.isArray(mapLayers)) return ''
@@ -456,7 +457,10 @@ class MapMaker extends MapHubsComponent<Props, State> {
             <Col span={4}>
               <MapSettingsPanel />
             </Col>
-            <Col span={16} style={{textAlign: 'right'}}>
+            <Col span={4}>
+              <Tooltip title={map_id ? t('Export MapHubs File') : t('Save Map to Export')} placement='top'><Button download href={`/api/mapexport/${map_id}/${slugify(t(title))}.maphubs`} icon={<DownloadOutlined />} style={{marginRight: '10px'}} /></Tooltip>
+            </Col>
+            <Col span={12} style={{textAlign: 'right'}}>
               <Tooltip title={t('Delete Map')} placement='left'><Button danger onClick={this.onDelete} icon={<DeleteOutlined />} style={{marginRight: '10px'}} /></Tooltip>
               <SaveMapModal {...this.state} editing={this.props.edit} onSave={this.onSave} _csrf={this.state._csrf} />
             </Col>

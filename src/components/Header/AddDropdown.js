@@ -30,7 +30,7 @@ export default class AddDropdown extends React.PureComponent<Props, void> {
           <a href='/createremotelayer' className='nav-hover-menu-item'>{t('Remote Layer')}</a>
         </Menu.Item>
         <Menu.Item>
-          <a href='/importlayer' className='nav-hover-menu-item'>{t('Import MapHubs Layer')}</a>
+          <a href='/import' className='nav-hover-menu-item'>{t('Import MapHubs File')}</a>
         </Menu.Item>
       </Menu>
     )

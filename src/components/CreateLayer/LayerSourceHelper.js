@@ -51,7 +51,7 @@ export default {
               <Button type='primary' href='/createremotelayer'>{t('Link a Remote Layer')}</Button>
             </Col>
             <Col sm={24} md={12}>
-              <Button type='primary' href='/importlayer'>{t('Import MapHubs File')}</Button>
+              <Button type='primary' href='/import'>{t('Import MapHubs File')}</Button>
             </Col>
           </Row>
         </>

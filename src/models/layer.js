@@ -779,7 +779,11 @@ module.exports = {
     layer.source = JSON.stringify(layer.source)
     layer.style = JSON.stringify(layer.style)
 
-    // TODO: overwrite shortid so it doesn't conflict with remote layers if added to same map
+    // layers imported from Maps may have these
+    delete layer.default_style
+    delete layer.default_labels
+    delete layer.default_legend_html
+    delete layer.default_settings
 
     const result = await trx('omh.layers').insert(layer).returning('layer_id')
     let layer_id

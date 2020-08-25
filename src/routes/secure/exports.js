@@ -127,6 +127,11 @@ module.exports = function (app: any) {
     exportUtils.completeMapHubsExport(req, res, layer_id)
   })
 
+  app.get('/api/mapexport/:map_id/*', (req, res) => {
+    const map_id = Number.parseInt(req.params.map_id || '', 10)
+    exportUtils.completeMapHubsMapExport(req, res, map_id)
+  })
+
   app.get('/api/layer/:layer_id/export/kml/*', privateLayerCheck, async (req, res) => {
     try {
       const layer_id = Number.parseInt(req.params.layer_id || '', 10)

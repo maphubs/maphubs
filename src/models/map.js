@@ -52,8 +52,7 @@ module.exports = {
    * Can include private?: Yes
    */
   async getMapLayers (map_id: number, includePrivateLayers: boolean, trx: any) {
-    let db = knex
-    if (trx) { db = trx }
+    const db = trx || knex
     const query = db.select(
       'omh.layers.layer_id', 'omh.layers.shortid', 'omh.layers.name', 'omh.layers.description', 'omh.layers.data_type',
       'omh.layers.remote', 'omh.layers.remote_host', 'omh.layers.remote_layer_id',
@@ -105,8 +104,7 @@ module.exports = {
   },
 
   getMapsBaseQuery (trx: any) {
-    let db = knex
-    if (trx) { db = trx }
+    const db = trx || knex
     return db.select(
       'omh.maps.map_id',
       'omh.maps.title',
@@ -222,7 +220,8 @@ module.exports = {
       .orderBy('omh.maps.updated_at', 'desc')
   },
 
-  async createMap (layers: Array<Object>, style: any, basemap: string, position: any, title: string, settings: Object, user_id: number, isPrivate: boolean) {
+  async createMap (layers: Array<Object>, style: any, basemap: string, position: any, title: string, settings: Object, user_id: number, isPrivate: boolean, trx?: any) {
+    const db = trx || knex
     if (layers?.length > 0) {
       if (!isPrivate) {
       // confirm no private layers
@@ -231,40 +230,40 @@ module.exports = {
         })
       }
     }
-    return knex.transaction(async (trx) => {
-      const result = await trx('omh.maps')
-        .insert({
-          position,
-          style,
-          basemap,
-          title,
-          settings,
-          private: isPrivate,
-          created_by: user_id,
-          created_at: knex.raw('now()'),
-          updated_by: user_id,
-          updated_at: knex.raw('now()')
-        }).returning('map_id')
 
-      const map_id = result[0]
-      debug.log('Created Map with ID: ' + map_id)
-      // insert layers
-      const mapLayers = []
-      if (layers?.length > 0) {
-        layers.forEach((layer: Object, i: number) => {
-          mapLayers.push({
-            map_id,
-            layer_id: layer.layer_id,
-            style: layer.style,
-            labels: layer.labels,
-            legend_html: layer.legend_html,
-            position: i
-          })
+    const result = await db('omh.maps')
+      .insert({
+        position,
+        style,
+        basemap,
+        title,
+        settings,
+        private: isPrivate,
+        created_by: user_id,
+        created_at: db.raw('now()'),
+        updated_by: user_id,
+        updated_at: db.raw('now()')
+      }).returning('map_id')
+
+    const map_id = result[0]
+    debug.log('Created Map with ID: ' + map_id)
+    // insert layers
+    const mapLayers = []
+    if (layers?.length > 0) {
+      layers.forEach((layer: Object, i: number) => {
+        mapLayers.push({
+          map_id,
+          layer_id: layer.layer_id,
+          style: layer.style,
+          labels: layer.labels,
+          legend_html: layer.legend_html,
+          position: i
         })
-      }
-      await trx('omh.map_layers').insert(mapLayers)
-      return map_id
-    })
+      })
+    }
+    console.log(mapLayers)
+    await db('omh.map_layers').insert(mapLayers)
+    return map_id
   },
 
   /**
@@ -275,7 +274,9 @@ module.exports = {
     const map = await this.getMap(map_id)
     const layers = await this.getMapLayers(map_id)
     const copyTitle = title || map.title
-    return this.createGroupMap(layers, map.style, map.basemap, map.position, copyTitle, map.settings, user_id, to_group_id, map.private)
+    return knex.transaction(async (trx) => {
+      return this.createGroupMap(layers, map.style, map.basemap, map.position, copyTitle, map.settings, user_id, to_group_id, map.private, trx)
+    })
   },
 
   transferMapToGroup (map_id: number, group_id: string, user_id: number) {
@@ -370,7 +371,8 @@ module.exports = {
     })
   },
 
-  async createGroupMap (layers: Array<Object>, style: Object, basemap: string, position: any, title: string, settings: Object, user_id: number, group_id: string, isPrivate: boolean) {
+  async createGroupMap (layers: Array<Object>, style: Object, basemap: string, position: any, title: string, settings: Object, user_id: number, group_id: string, isPrivate: boolean, trx?: any) {
+    const db = trx || knex
     if (layers && Array.isArray(layers) && layers.length > 0) {
       if (isPrivate) {
         // confirm all private layers owned by same group
@@ -379,9 +381,9 @@ module.exports = {
         })
       }
     }
-    const map_id = await this.createMap(layers, style, basemap, position, title, settings, user_id, isPrivate)
+    const map_id = await this.createMap(layers, style, basemap, position, title, settings, user_id, isPrivate, db)
     debug.log('Saving User Map with ID: ' + map_id)
-    await knex('omh.maps').update({owned_by_group_id: group_id}).where({map_id})
+    await db('omh.maps').update({owned_by_group_id: group_id}).where({map_id})
     return map_id // pass on the new map_id
   },
 

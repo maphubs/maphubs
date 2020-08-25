@@ -10,6 +10,7 @@ const apiDataError = require('../../services/error-response').apiDataError
 const notAllowedError = require('../../services/error-response').notAllowedError
 const csrfProtection = require('csurf')({cookie: false})
 const isAuthenticated = require('../../services/auth-check')
+const knex = require('../../connection')
 
 module.exports = function (app: any) {
   app.post('/api/map/create', csrfProtection, isAuthenticated, async (req, res) => {
@@ -17,13 +18,14 @@ module.exports = function (app: any) {
       const data = req.body
       if (data && data.group_id && data.basemap && data.position && data.settings && data.title && data.private !== undefined) {
         if (await Group.allowedToModify(data.group_id, req.user_id)) {
-          const map_id = await Map.createGroupMap(data.layers, data.style, data.basemap, data.position, data.title, data.settings, req.user_id, data.group_id, data.private)
+          return knex.transaction(async (trx) => {
+            const map_id = await Map.createGroupMap(data.layers, data.style, data.basemap, data.position, data.title, data.settings, req.user_id, data.group_id, data.private, trx)
+            // intentionally not returning here since we don't want to wait for the reload
+            ScreenshotUtil.reloadMapThumbnail(map_id)
+            ScreenshotUtil.reloadMapImage(map_id)
 
-          // intentionally not returning here since we don't want to wait for the reload
-          ScreenshotUtil.reloadMapThumbnail(map_id)
-          ScreenshotUtil.reloadMapImage(map_id)
-
-          return res.status(200).send({success: true, map_id})
+            return res.status(200).send({success: true, map_id})
+          })
         } else {
           throw new Error('Unauthorized')
         }
