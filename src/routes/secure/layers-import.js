@@ -21,9 +21,10 @@ const DataLoadUtils = require('../../services/data-load-utils')
 const layerViews = require('../../services/layer-views')
 const pageOptions = require('../../services/page-options-helper')
 const Promise = require('bluebird')
+const csrfProtection = require('csurf')({cookie: false})
 
 module.exports = function (app: any) {
-  app.get('/import', login.ensureLoggedIn(), async (req, res, next) => {
+  app.get('/import', login.ensureLoggedIn(), csrfProtection, async (req, res, next) => {
     try {
       const user_id = req.session.user.maphubsUser.id
       return app.next.render(req, res, '/importlayer', await pageOptions(req, {
@@ -69,11 +70,11 @@ module.exports = function (app: any) {
                 })
 
                 importerResult.features.forEach((feature) => {
-                  const short_id = feature.layer_short_id
-                  if (short_id && layerMap[short_id]) {
-                    layerMap[short_id].geojson.features.push(feature)
+                  const shortid = feature.layer_short_id
+                  if (shortid && layerMap[shortid]) {
+                    layerMap[shortid].geojson.features.push(feature)
                   } else {
-                    console.error(`Failed to find layer with id: ${short_id}`)
+                    console.error(`Failed to find layer with id: ${shortid}`)
                   }
                 })
 
@@ -100,11 +101,23 @@ module.exports = function (app: any) {
                     delete maphubsLayer.geojson
                     delete maphubsLayer.map_id
                     delete maphubsLayer.position
+                    delete maphubsLayer.short_id // some FR layers have this
+
+                    // imports from FR may not have all metadata
+                    if (!maphubsLayer.description) maphubsLayer.description = maphubsLayer.title
+                    if (!maphubsLayer.license) maphubsLayer.license = 'none'
+                    if (!maphubsLayer.status) maphubsLayer.status = 'published'
+                    maphubsLayer.published = true
+
+                    // assign this user
+                    maphubsLayer.created_by_user_id = req.user_id
+                    maphubsLayer.creation_time = trx.raw('now()')
+
                     const layer_id = await Layer.importLayer(maphubsLayer, group_id, req.user_id, trx)
                     maphubsLayer.layer_id = layer_id
                     console.log(`created layer ${layer_id}`)
                     // insert layer data, if provided
-                    if (importerResult.features.length > 0) {
+                    if (layerGeoJSON.features.length > 0) {
                       await DataLoadUtils.storeTempGeoJSON(layerGeoJSON, req.file.path, layer_id, maphubsLayer.shortid, false, false, trx)
                       await DataLoadUtils.loadTempData(layer_id, trx)
                       await layerViews.createLayerViews(layer_id, presets, trx)

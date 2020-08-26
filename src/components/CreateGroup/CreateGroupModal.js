@@ -2,6 +2,8 @@
 import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import { PlusOutlined } from '@ant-design/icons'
+import GroupWorkIcon from '@material-ui/icons/GroupWork'
+import InfoIcon from '@material-ui/icons/Info'
 import { Modal, Button, Row, notification, message } from 'antd'
 import TextInput from '../forms/textInput'
 import MultiTextInput from '../forms/MultiTextInput'
@@ -150,7 +152,7 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
             <Formsy style={{width: '100%'}} onChange={this.onFormChange} onValid={this.enableButton} onInvalid={this.disableButton}>
               <Row style={{marginBottom: '20px'}}>
                 <TextInput
-                  name='group_id' label={t('Group ID')} icon='group_work'
+                  name='group_id' label={t('Group ID')} icon={<GroupWorkIcon />}
                   validations={{matchRegexp: /^[\dA-Za-z-]*$/, maxLength: 25, isAvailable: true}} validationErrors={{
                     maxLength: t('ID must be 25 characters or less.'),
                     matchRegexp: t('Can only contain letters, numbers, or dashes.'),
@@ -168,7 +170,7 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
                   label={{
                     en: 'Name', fr: 'Nom', es: 'Nombre', it: 'Nome', id: 'Nama', pt: 'Nome'
                   }}
-                  icon='info' validations='maxLength:100' validationErrors={{
+                  icon={<InfoIcon />} validations='maxLength:100' validationErrors={{
                     maxLength: t('Must be 100 characters or less.')
                   }} length={100}
                   tooltipPosition='top' tooltip={t('Short Descriptive Name for the Group')}

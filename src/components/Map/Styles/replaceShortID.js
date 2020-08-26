@@ -16,14 +16,14 @@ module.exports = (oldId: string, newId: string, style: GLStyle) => {
 
   if (style.layers) {
     style.layers = style.layers.map(layer => {
+      if (layer.source === `omh-${oldId}`) {
       // layer id
-      layer.id = layer.id.replace(oldId, newId)
-      // globalid in metadata
-      if (layer.metadata && layer.metadata['maphubs:globalid']) {
-        layer.metadata['maphubs:globalid'] = newId
-      }
-      // source
-      if (layer.source) {
+        layer.id = layer.id.replace(oldId, newId)
+        // globalid in metadata
+        if (layer.metadata && layer.metadata['maphubs:globalid']) {
+          layer.metadata['maphubs:globalid'] = newId
+        }
+        // source
         layer.source = `omh-${newId}`
       }
       return layer
