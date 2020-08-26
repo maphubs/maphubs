@@ -240,6 +240,10 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   position:relative;
 }
 
+.embed-image-container img {
+  max-width: 100%;
+}
+
 .label-field input {
  text-align: center;
   border-bottom: none !important;
@@ -247,19 +251,6 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   margin: 0  !important;
   padding-right: 5px;
   line-height: 50px !important;
-}
-
-.react-grid-checkbox:checked+.react-grid-checkbox-label:before {
-  background: inherit !important;
-  box-shadow: none !important;
-}
-
-.react-grid-checkbox-label {
-  opacity: 0 !important;
-}
-
-.react-grid-checkbox {
-  opacity: 1 !important;
 }
 
 .custom-scroll-bar::-webkit-scrollbar-track
@@ -282,38 +273,6 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
     background-color: $primary-color;
 }
 
-.react-grid-Canvas::-webkit-scrollbar-track
-{
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    border-radius: 10px;
-    background-color: #F5F5F5;
-}
-
-.react-grid-Canvas::-webkit-scrollbar
-{
-    width: 12px;
-    background-color: #F5F5F5;
-}
-
-.react-grid-Canvas::-webkit-scrollbar-thumb
-{
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-    background-color: $primary-color;
-}
-.react-grid-Canvas {
-  left: initial !important;
-  right: 2px !important;
-}
-
-.react-grid-Cell--locked {
-  background-color: #fff;
-}
-
-.color-picker {
-  width: 100%;
-  max-width: 350px;
-}
 
 .story-media-edit-button {
   height:30px;
@@ -335,16 +294,6 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 .story-title {
   font-display: auto;
   font-family: -apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', sans-serif
-}
-
-.story-content {
-  font-display: auto;
-  font-family: -apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', sans-serif
-}
-
-.story-content p {
-  font-size: 16px;
-  line-height: 1.5;
 }
 
 .notes-content {

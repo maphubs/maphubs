@@ -110,7 +110,7 @@ export default class Story extends MapHubsComponent<Props, void> {
                   />
                 </Col>
               </Row>
-              <Row>
+              <Row style={{width: '100%'}}>
                 <h1 className='story-title'>{t(story.title)}</h1>
                 <div className='story-content' dangerouslySetInnerHTML={{__html: t(story.body)}} />
               </Row>
@@ -129,6 +129,11 @@ export default class Story extends MapHubsComponent<Props, void> {
               body {
                 font-family: 'Roboto', sans-serif !important;
                 color: #323333;
+              }
+
+              .story-content {
+                width: 100%;
+                font-family: -apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', sans-serif
               }
 
               .story-content p {
