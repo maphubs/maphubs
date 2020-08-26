@@ -388,7 +388,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                         </Row>
                       </Col>
                       <Col sm={24} md={12} style={{height: '100%', minHeight: '200px', overflow: 'auto', border: '1px solid #ddd'}}>
-                        <Card size='small' bordered={false} title={t('Description')} style={{ width: '100S%', height: '100%' }}>
+                        <Card size='small' bordered={false} title={t('Description')} style={{ width: '100%', height: '100%' }}>
                           <div dangerouslySetInnerHTML={{__html: descriptionWithLinks}} />
                         </Card>
                       </Col>
@@ -426,7 +426,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
                           </p>}
                       </Col>
                       <Col sm={24} md={12} style={{height: '100%', border: '1px solid #ddd'}}>
-                        <Card size='small' bordered={false} title={t('Info')} style={{ width: '100S%', height: '100%' }}>
+                        <Card size='small' bordered={false} title={t('Info')} style={{ width: '100%', height: '100%' }}>
                           <p><b>{t('Feature Count:')} </b>{numeral(this.state.count).format('0,0')}</p>
                           {this.state.area &&
                             <p><b>{t('Area')} </b>{numeral(this.state.area).format('0,0.00')} ha</p>}
