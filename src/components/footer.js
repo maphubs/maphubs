@@ -22,10 +22,6 @@ export default class Footer extends React.Component<Props, void> {
     customLeftColumnItems: []
   }
 
-  shouldComponentUpdate () {
-    return false
-  }
-
   render () {
     const _this = this
     const {
