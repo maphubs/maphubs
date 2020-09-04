@@ -14,5 +14,6 @@
 
     "javascript.validate.enable": false,
     "vsicons.presets.angular": false,
-    "eslint.enable": true
+    "eslint.enable": true,
+    "deepscan.enable": true
   }
