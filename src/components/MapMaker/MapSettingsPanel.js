@@ -5,7 +5,7 @@ import MapMakerActions from '../../actions/MapMakerActions'
 import MapHubsComponent from '../MapHubsComponent'
 import type {MapMakerStoreState} from '../../stores/MapMakerStore'
 import { SettingOutlined } from '@ant-design/icons'
-import { Tooltip } from 'antd'
+import { Tooltip, Button } from 'antd'
 import dynamic from 'next/dynamic'
 const CodeEditor = dynamic(() => import('../LayerDesigner/CodeEditor'), {
   ssr: false
@@ -46,11 +46,8 @@ export default class MapSettingsPanel extends MapHubsComponent<Props, State> {
     const { showSettingsEditor, settings } = this.state
     return (
       <div>
-        <Tooltip title={t('Advanced Map Settings')} placement='right'>
-          <SettingOutlined
-            style={{fontSize: '24px', marginTop: '4px'}}
-            onClick={this.showSettingsEditor}
-          />
+        <Tooltip title={t('Advanced Map Settings')} placement='top'>
+          <Button onClick={this.showSettingsEditor} icon={<SettingOutlined />} />
         </Tooltip>
 
         <CodeEditor

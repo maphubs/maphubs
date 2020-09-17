@@ -453,15 +453,23 @@ class MapMaker extends MapHubsComponent<Props, State> {
               </TabPane>}
           </Tabs>
           <hr style={{margin: 0}} />
-          <Row justify='center' align='middle' style={{width: '100%', height: '50px'}}>
-            <Col span={4}>
-              <MapSettingsPanel />
+          <Row justify='center' align='middle' style={{width: '100%', height: '50px', padding: '0px 10px'}}>
+
+            <Col span={10}>
+              <Row justify='space-around' align='middle' style={{width: '100%', height: '50px'}}>
+                <Col span={8}>
+                  <MapSettingsPanel />
+                </Col>
+                <Col span={8}>
+                  <Tooltip title={map_id ? t('Export MapHubs File') : t('Download MapHubs File')} placement='top'><Button download href={`/api/mapexport/${map_id}/${slugify(t(title || 'New Map'))}.maphubs`} icon={<DownloadOutlined />} style={{marginRight: '10px'}} /></Tooltip>
+                </Col>
+                <Col span={8}>
+                  <Tooltip title={t('Delete Map')} placement='top'><Button danger onClick={this.onDelete} icon={<DeleteOutlined />} style={{marginRight: '10px'}} /></Tooltip>
+                </Col>
+
+              </Row>
             </Col>
-            <Col span={4}>
-              <Tooltip title={map_id ? t('Export MapHubs File') : t('Save Map to Export')} placement='top'><Button download href={`/api/mapexport/${map_id}/${slugify(t(title))}.maphubs`} icon={<DownloadOutlined />} style={{marginRight: '10px'}} /></Tooltip>
-            </Col>
-            <Col span={12} style={{textAlign: 'right'}}>
-              <Tooltip title={t('Delete Map')} placement='left'><Button danger onClick={this.onDelete} icon={<DeleteOutlined />} style={{marginRight: '10px'}} /></Tooltip>
+            <Col span={14} style={{textAlign: 'right'}}>
               <SaveMapModal {...this.state} editing={this.props.edit} onSave={this.onSave} _csrf={this.state._csrf} />
             </Col>
           </Row>
