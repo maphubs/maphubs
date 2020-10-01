@@ -23,7 +23,7 @@ module.exports = function (app: any) {
       clientID: local.AUTH0_CLIENT_ID,
       domain: local.AUTH0_DOMAIN,
       redirectUri: local.AUTH0_CALLBACK_URL,
-      audience: 'https://' + local.AUTH0_DOMAIN + '/userinfo',
+      audience: 'https://users.maphubs.com',
       responseType: 'code',
       scope: 'openid email profile'
     }),
