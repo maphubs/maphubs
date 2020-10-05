@@ -605,7 +605,8 @@ class Map extends React.Component<Props, State> {
 
           .map-position {
             height: 12px;
-            width: 125px;
+            max-width: 125px;
+            width: 100vw;
             position: absolute;
             top: 0;
             right: 0;
@@ -649,6 +650,24 @@ class Map extends React.Component<Props, State> {
             position: absolute;
             bottom: 0;
             right: 0;
+          }
+
+          @media(max-width: 350px) {
+            .metric-scale {
+              max-width: 100px;
+            }
+            .imperial-scale {
+              max-width: 100px;
+            }
+          }
+
+          @media(max-width: 280px) {
+            .metric-scale {
+              max-width: 75px;
+            }
+            .imperial-scale {
+              max-width: 75px;
+            }
           }
 
         `}
