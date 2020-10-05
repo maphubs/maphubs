@@ -100,13 +100,12 @@ export default class Story extends MapHubsComponent<Props, void> {
           <main>
             <div className='container'>
               <Row style={{marginTop: '20px'}}>
-                <Col md={18} sm={24}>
+                <Col flex='auto'>
                   <StoryHeader story={story} />
                 </Col>
-                <Col md={6} sm={24}>
+                <Col flex='0 1 125px' style={{textAlign: 'right'}}>
                   <ShareButtons
                     title={t(story.title)} t={t}
-                    style={{position: 'absolute', right: '10px'}}
                   />
                 </Col>
               </Row>

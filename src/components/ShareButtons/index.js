@@ -28,7 +28,7 @@ export default class MapHubsShareButtons extends React.Component<Props, State> {
   props: Props
 
   static defaultProps = {
-    iconSize: 32,
+    iconSize: 24,
     style: {}
   }
 
