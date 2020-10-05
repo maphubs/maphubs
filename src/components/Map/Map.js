@@ -653,6 +653,9 @@ class Map extends React.Component<Props, State> {
           }
 
           @media(max-width: 350px) {
+            .map-position {
+              display: none;
+            }
             .metric-scale {
               max-width: 100px;
             }
@@ -662,6 +665,12 @@ class Map extends React.Component<Props, State> {
           }
 
           @media(max-width: 280px) {
+            .maphubs-inset {
+              display: none;
+            }
+            .map-position {
+              display: none;
+            }
             .metric-scale {
               max-width: 75px;
             }
