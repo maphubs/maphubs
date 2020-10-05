@@ -49,6 +49,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
 
   recheckLogin = () => {
     const {t} = this
+    const {_csrf} = this.props
     UserActions.getUser(_csrf, (err) => {
       if (err) {
         message.error(t('Not Logged In - Please Login Again'))

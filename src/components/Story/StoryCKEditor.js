@@ -53,12 +53,6 @@ export default class StoryCKEditor extends React.Component<Props, void> {
     return false
   }
 
-  componentWillReceiveProps (newProps: Props) {
-    if (this.editorInstance && newProps.data) {
-      // this.editorInstance.setData(newProps.data)
-    }
-  }
-
   render () {
     const { initialData, language, getMap, cropImage, onImageUpload, story_id } = this.props
     const host = MAPHUBS_CONFIG.host ? MAPHUBS_CONFIG.host.replace('.', '') : 'unknownhost'

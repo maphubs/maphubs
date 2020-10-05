@@ -30,7 +30,7 @@ type Props = {
 }
 
 type State = {
-  pageConfig?: Object,
+  pageConfig: Object,
   editingComponent?: Object
 } & LocaleStoreState
 

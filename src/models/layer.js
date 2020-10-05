@@ -601,12 +601,14 @@ module.exports = {
     if (mapLayers && mapLayers.length > 0) {
       return Promise.map(mapLayers, async (mapLayer) => {
         const map = await Map.getMap(mapLayer.map_id, trx)
-        if (!map.private || map.owned_by_group_id !== layer.owned_by_group_id) {
-          // delete layer from this map
-          await db('omh.map_layers').where({layer_id}).del()
-          const layers = await Map.getMapLayers(map.map_id, trx)
-          const style = MapStyles.style.buildMapStyle(layers)
-          return db('omh.maps').where({map_id: map.map_id}).update({style, screenshot: null, thumbnail: null})
+        if (map) {
+          if (!map.private || map.owned_by_group_id !== layer.owned_by_group_id) {
+            // delete layer from this map
+            await db('omh.map_layers').where({layer_id}).del()
+            const layers = await Map.getMapLayers(map.map_id, trx)
+            const style = MapStyles.style.buildMapStyle(layers)
+            return db('omh.maps').where({map_id: map.map_id}).update({style, screenshot: null, thumbnail: null})
+          }
         }
       })
     }
