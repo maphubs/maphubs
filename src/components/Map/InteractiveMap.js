@@ -379,7 +379,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
           {children}
           {showShareButtons &&
             <ShareButtons
-              title={this.props.title} iconSize={24} t={t}
+              title={this.props.title} iconSize={20} t={t}
               style={{position: 'absolute', bottom: '40px', right: '4px', zIndex: '1'}}
             />}
         </Map>
