@@ -1,33 +1,10 @@
 // @flow
 import React from 'react'
 import { Avatar } from 'antd'
-import {IntlProvider, FormattedRelativeTime, FormattedDate} from 'react-intl'
+import {IntlProvider, FormattedDate} from 'react-intl'
 import MapHubsComponent from '../../components/MapHubsComponent'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import moment from 'moment-timezone'
-
-if (!Intl.PluralRules) {
-  require('@formatjs/intl-pluralrules/polyfill')
-  require('@formatjs/intl-pluralrules/dist/locale-data/en')
-  require('@formatjs/intl-pluralrules/dist/locale-data/es')
-  require('@formatjs/intl-pluralrules/dist/locale-data/fr')
-  require('@formatjs/intl-pluralrules/dist/locale-data/pt')
-  require('@formatjs/intl-pluralrules/dist/locale-data/id')
-  require('@formatjs/intl-pluralrules/dist/locale-data/it')
-  require('@formatjs/intl-pluralrules/dist/locale-data/de')
-}
-
-if (!Intl.RelativeTimeFormat) {
-  require('@formatjs/intl-relativetimeformat/polyfill')
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/en')
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/es')
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/pt')
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/fr')
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/id')
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/it')
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/de')
-}
 
 type Props = {
   story: Object,
@@ -49,10 +26,7 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
     const { t } = this
     const { story } = this.props
     const { locale, groupLogoFailed } = this.state
-    const guessedTz = moment.tz.guess()
-    const date = story.published_at
-    const publishedTime = moment.tz(date, guessedTz)
-    const daysSincePublished = publishedTime.diff(moment(), 'days')
+
     const baseUrl = urlUtil.getBaseUrl()
 
     let authorText = ''
@@ -97,14 +71,8 @@ export default class StoryHeader extends MapHubsComponent<Props, State> {
             </p>
             <p style={{fontSize: '14px', margin: 0, lineHeight: '1.4rem'}}>
               <IntlProvider locale={locale}>
-                <FormattedDate value={publishedTime} month='long' day='numeric' year={(daysSincePublished < -365) ? 'numeric' : undefined} />
-              </IntlProvider>&nbsp;
-              {(daysSincePublished > -365) &&
-                <span>(
-                  <IntlProvider locale={locale}>
-                    <FormattedRelativeTime value={daysSincePublished} numeric='auto' unit='day' />
-                  </IntlProvider>)
-                </span>}
+                <FormattedDate value={story.published_at} month='long' day='numeric' year='numeric' />
+              </IntlProvider>
             </p>
           </div>
         </div>
