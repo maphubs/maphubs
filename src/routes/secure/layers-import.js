@@ -128,7 +128,7 @@ module.exports = function (app: any) {
                   })
                   // now create the map
                   const map_id = await Map.createGroupMap(layersList, mapHubsMap.style, mapHubsMap.basemap, mapHubsMap.position, mapHubsMap.title, mapHubsMap.settings, req.user_id, group_id, false, trx)
-                  return res.status(200).send({success: true, map_id})
+                  return res.status(200).send({success: true, type: 'map', map_id})
                 })
               } else if (maphubsFile?.version <= 2 || maphubsFile?.type === 'layer') {
                 // Version 2 only supports layers
@@ -153,7 +153,7 @@ module.exports = function (app: any) {
                     debug.log('data load transaction complete')
                   }
                   await Layer.setComplete(layer_id, trx)
-                  return res.status(200).send({success: true, type: layer_id})
+                  return res.status(200).send({success: true, type: 'layer', layer_id})
                 })
               } else {
                 throw new Error('Unsupported MapHubs file format')

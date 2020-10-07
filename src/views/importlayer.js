@@ -75,6 +75,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
     const {t} = this
     this.closeProcessingMessage()
     if (result.success) {
+      message.success(t('Import Complete'))
       this.setState({layer_id: result.layer_id, map_id: result.map_id})
     } else {
       notification.error({
