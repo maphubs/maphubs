@@ -4,6 +4,7 @@ import EditBaseMapBox from './ToolPanels/EditBaseMapBox'
 import BaseMapSelection from './ToolPanels/BaseMapSelection'
 import MeasurementToolPanel from './ToolPanels/MeasurementToolPanel'
 import IsochronePanel from './ToolPanels/IsochronePanel'
+import CoordinatePanel from './ToolPanels/CoordinatePanel'
 // import AreaComparisonPanel from './ToolPanels/AreaComparisonPanel'
 import MapToolButton from './MapToolButton'
 import { Drawer, Collapse } from 'antd'
@@ -19,6 +20,7 @@ type Props = {|
   getIsochronePoint: Function,
   clearIsochroneLayers: Function,
   measureFeatureClick: Function,
+  zoomToCoordinates: Function,
   isochroneResult?: Object,
   t: Function
 |}
@@ -84,6 +86,9 @@ export default class MapToolPanel extends React.Component<Props, State> {
                   closePanel={() => { this.onSetOpen(false) }}
                   t={t}
                 />
+              </Panel>
+              <Panel header={t('Find Coordinates')} key='coordinate'>
+                <CoordinatePanel zoomToCoordinates={this.props.zoomToCoordinates} t={t} />
               </Panel>
               <Panel header={t('Travel Time')} key='traveltime'>
                 <IsochronePanel getIsochronePoint={this.props.getIsochronePoint} clearIsochroneLayers={this.props.clearIsochroneLayers} isochroneResult={this.props.isochroneResult} t={t} />

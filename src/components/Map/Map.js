@@ -701,6 +701,9 @@ class Map extends React.Component<Props, State> {
             getIsochronePoint={this.getIsochronePoint}
             clearIsochroneLayers={this.clearIsochroneLayers}
             isochroneResult={this.state.isochroneResult}
+            zoomToCoordinates={(lat, lon) => {
+              this.flyTo([lon, lat], this.map.getZoom())
+            }}
             t={t}
           />
           {this.state.enableMeasurementTools &&
