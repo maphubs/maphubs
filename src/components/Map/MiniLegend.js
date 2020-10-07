@@ -220,7 +220,7 @@ export default class MiniLegend extends React.Component<Props, State> {
           }
 
           .omh-legend  .double-stroke {
-            box-shadow: inset 0 0 0 3px rgba(100, 100, 100, 0.2);
+            box-shadow: 0 0 0 2px rgba(0,0,0,.1);
           }
 
           .word-wrap {

@@ -543,9 +543,9 @@ class Map extends React.Component<Props, State> {
           }
           
           .mapboxgl-ctrl-maphubs {
-            -moz-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
-            -webkit-box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
-            box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12) !important;
+            -moz-box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+            -webkit-box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+            box-shadow: 0 0 0 2px rgba(0,0,0,.1);
           }
 
           .mapboxgl-popup {
@@ -593,13 +593,11 @@ class Map extends React.Component<Props, State> {
           .maphubs-inset .mapboxgl-ctrl-logo {
             display: none;
           }
-          ${(showSearch || showMapTools) ? `
           .mapboxgl-ctrl-top-right {
-            top: 40px !important;
+            top: 40px;
           }
-          ` : ''}
-          
 
+        
           .maphubs-ctrl-scale {
             border: none !important;
             padding: 0  !important;

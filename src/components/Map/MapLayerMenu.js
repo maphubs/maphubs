@@ -31,7 +31,7 @@ export default class MapLayerMenu extends React.Component<Props, void> {
         <div ref={(el) => { this.popupContainer = el }} />
         <div
           style={{
-            boxShadow: '0 0 1px rgba(0,0,0,0.7)',
+            boxShadow: '0 0 0 2px rgba(0,0,0,.1)',
             borderTop: '1px #444 solid',
             height: '36px',
             padding: '0px 15px',

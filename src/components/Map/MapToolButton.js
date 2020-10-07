@@ -83,7 +83,7 @@ export default class MapToolButton extends React.Component<Props, void> {
               textAlign: 'center',
               color: disabled ? '#9F9F9F' : color,
               backgroundColor: disabled ? '#DFDFDF' : 'white',
-              boxShadow: '0 2px 5px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
+              boxShadow: '0 0 0 2px rgba(0,0,0,.1)',
               width: '30px'
             }}
           >
