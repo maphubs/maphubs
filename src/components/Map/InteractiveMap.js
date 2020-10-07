@@ -38,6 +38,9 @@ type Props = {
   hideInactive: boolean,
   showScale: boolean,
   showLegendLayersButton: boolean,
+  showMapTools: boolean,
+  showFeatureInfoEditButtons: boolean,
+  showFullScreen: boolean,
   insetMap: boolean,
   children?: any,
   basemap: string,
@@ -56,6 +59,7 @@ type Props = {
   showLayerVisibility: boolean,
   showLayerInfo: boolean,
   showPlayButton: boolean,
+  showSearch: boolean,
   onLoad?: Function
 }
 
@@ -88,7 +92,11 @@ export default class InteractiveMap extends React.Component<Props, State> {
     primaryColor: 'black',
     showLayerVisibility: true, // show toggles in layer menu
     showLayerInfo: true, // show info links in layer menu
-    showPlayButton: true
+    showPlayButton: true,
+    showMapTools: true,
+    showFeatureInfoEditButtons: true,
+    showSearch: true,
+    showFullScreen: true
   }
 
   mobileMapLegend: any
@@ -228,7 +236,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
   }
 
   render () {
-    const {fitBounds, showShareButtons, t, primaryColor, logoSmall, logoSmallHeight, logoSmallWidth, hash, showLayerVisibility, showLayerInfo, showPlayButton} = this.props
+    const {fitBounds, showShareButtons, t, primaryColor, logoSmall, logoSmallHeight, logoSmallWidth, hash, showLayerVisibility, showLayerInfo, showPlayButton, showFeatureInfoEditButtons, showMapTools, showSearch, showFullScreen} = this.props
     const {position, width} = this.state
     let border = 'none'
     if (this.props.border) {
@@ -330,6 +338,10 @@ export default class InteractiveMap extends React.Component<Props, State> {
           toggleVisibility={this.toggleVisibility}
           onLoad={this.props.onLoad}
           showPlayButton={showPlayButton}
+          showMapTools={showMapTools}
+          showFeatureInfoEditButtons={showFeatureInfoEditButtons}
+          showSearch={showSearch}
+          showFullScreen={showFullScreen}
         >
           {legend}
           <div ref={(el) => { this.mobileMapLegend = el }} />

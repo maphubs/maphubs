@@ -92,7 +92,10 @@ type Props = {|
     earthEngineClientID?: string,
     categories?: Array<Object>,
     mapLayers?: Array<Object>,
-    toggleVisibility?: Function
+    toggleVisibility?: Function,
+    showMapTools: boolean,
+    showSearch: boolean,
+    showFullScreen: boolean
   |}
 
   type State = {
@@ -113,11 +116,14 @@ class Map extends React.Component<Props, State> {
     className: '',
     interactive: true,
     showFeatureInfoEditButtons: true,
+    showMapTools: true,
+    showSearch: true,
     showPlayButton: true,
     navPosition: 'top-right',
     showLogo: true,
     insetMap: true,
     showScale: true,
+    showFullScreen: true,
     hoverInteraction: false,
     interactionBufferSize: 10,
     hash: true,
@@ -191,7 +197,7 @@ class Map extends React.Component<Props, State> {
     // switch to interactive
     if (this.state.interactive && !prevState.interactive) {
       this.map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), this.props.navPosition)
-      this.map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector(`#${this.state.id}-fullscreen-wrapper`)}), this.props.navPosition)
+      if (this.props.showFullScreen) this.map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector(`#${this.state.id}-fullscreen-wrapper`)}), this.props.navPosition)
       if (this.map.dragPan) this.map.dragPan.enable()
       if (this.map.scrollZoom) this.map.scrollZoom.enable()
       if (this.map.doubleClickZoom) this.map.doubleClickZoom.enable()
@@ -259,7 +265,8 @@ class Map extends React.Component<Props, State> {
       minZoom,
       maxZoom,
       t,
-      locale
+      locale,
+      showFullScreen
     } = this.props
     const {interactive, mapLoaded} = this.state
     const {baseMapState, mapState} = this.props.containers
@@ -364,7 +371,7 @@ class Map extends React.Component<Props, State> {
 
     if (interactive) {
       map.addControl(new mapboxgl.NavigationControl({ showCompass: false }), _this.props.navPosition)
-      map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector(`#${this.state.id}-fullscreen-wrapper`)}))
+      if (showFullScreen) map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector(`#${this.state.id}-fullscreen-wrapper`)}))
     }
 
     if (attributionControl) {
@@ -492,7 +499,7 @@ class Map extends React.Component<Props, State> {
 
   render () {
     const className = classNames('mode', 'map', 'active')
-    const {t, insetMap, showLogo, logoSmall, logoSmallHeight, logoSmallWidth, mapLayers, toggleVisibility} = this.props
+    const {t, insetMap, showLogo, logoSmall, logoSmallHeight, logoSmallWidth, mapLayers, toggleVisibility, showMapTools, showSearch} = this.props
     if (this.state.selectedFeature) {
       // close any existing popups
       if (this.mapboxPopup && this.mapboxPopup.isOpen()) {
@@ -586,10 +593,12 @@ class Map extends React.Component<Props, State> {
           .maphubs-inset .mapboxgl-ctrl-logo {
             display: none;
           }
-
+          ${(showSearch || showMapTools) ? `
           .mapboxgl-ctrl-top-right {
             top: 40px !important;
           }
+          ` : ''}
+          
 
           .maphubs-ctrl-scale {
             border: none !important;
@@ -691,21 +700,22 @@ class Map extends React.Component<Props, State> {
         <div id={this.state.id} className={className} style={{width: '100%', height: '100%'}}>
           {insetMap &&
             <InsetMap id={this.state.id} bottom={showLogo ? '30px' : '25px'} mapboxAccessToken={this.props.mapboxAccessToken} {...this.props.insetConfig} />}
-          <MapToolPanel
-            show={this.state.interactive && this.state.mapLoaded}
-            gpxLink={this.props.gpxLink}
-            toggleMeasurementTools={this.toggleMeasurementTools}
-            enableMeasurementTools={this.state.enableMeasurementTools}
-            measureFeatureClick={this.measureFeatureClick}
-            onChangeBaseMap={this.changeBaseMap}
-            getIsochronePoint={this.getIsochronePoint}
-            clearIsochroneLayers={this.clearIsochroneLayers}
-            isochroneResult={this.state.isochroneResult}
-            zoomToCoordinates={(lat, lon) => {
-              this.flyTo([lon, lat], this.map.getZoom())
-            }}
-            t={t}
-          />
+          {showMapTools &&
+            <MapToolPanel
+              show={this.state.interactive && this.state.mapLoaded}
+              gpxLink={this.props.gpxLink}
+              toggleMeasurementTools={this.toggleMeasurementTools}
+              enableMeasurementTools={this.state.enableMeasurementTools}
+              measureFeatureClick={this.measureFeatureClick}
+              onChangeBaseMap={this.changeBaseMap}
+              getIsochronePoint={this.getIsochronePoint}
+              clearIsochroneLayers={this.clearIsochroneLayers}
+              isochroneResult={this.state.isochroneResult}
+              zoomToCoordinates={(lat, lon) => {
+                this.flyTo([lon, lat], this.map.getZoom())
+              }}
+              t={t}
+            />}
           {this.state.enableMeasurementTools &&
             <div>
               <div style={{
@@ -740,15 +750,16 @@ class Map extends React.Component<Props, State> {
             this.props.children}
           {(this.state.mapLoaded && this.props.showLogo) &&
             <img style={{position: 'absolute', left: '5px', bottom: '2px', zIndex: '1'}} width={logoSmallWidth} height={logoSmallHeight} src={logoSmall} alt='Logo' />}
-          <MapSearchPanel
-            show={this.state.interactive && this.state.mapLoaded}
-            height={this.props.height}
-            onSearch={this.onSearch}
-            onSearchResultClick={this.onSearchResultClick}
-            onSearchReset={this.onSearchReset}
-            t={t}
-            mapboxAccessToken={this.props.mapboxAccessToken}
-          />
+          {showSearch &&
+            <MapSearchPanel
+              show={this.state.interactive && this.state.mapLoaded}
+              height={this.props.height}
+              onSearch={this.onSearch}
+              onSearchResultClick={this.onSearchResultClick}
+              onSearchReset={this.onSearchReset}
+              t={t}
+              mapboxAccessToken={this.props.mapboxAccessToken}
+            />}
         </div>
       </div>
     )
