@@ -168,7 +168,8 @@ export default class InteractiveMap extends React.Component<Props, State> {
           if (!styleLayer.layout) {
             styleLayer.layout = {}
           }
-          if (active) {
+          const markerSettings = MapStyles.settings.get(styleLayer, 'markers')
+          if (active && !markerSettings?.enabled) {
             styleLayer.layout.visibility = 'visible'
           } else {
             styleLayer.layout.visibility = 'none'
