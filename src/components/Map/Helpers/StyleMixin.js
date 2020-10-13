@@ -170,7 +170,7 @@ export default {
       sourcesInBoth.forEach((key) => {
         const prevSource = this.overlayMapStyle.sources[key]
         const newSource = overlayStyle.sources[key]
-        if (!_isequal(prevSource, newSource) || newSource.type === 'arcgisraster') {
+        if (!_isequal(prevSource, newSource) || newSource?.type === 'arcgisraster') {
           sourcesToUpdate.push(key)
         }
       })
@@ -182,7 +182,7 @@ export default {
         const prevLayer = _find(this.overlayMapStyle.layers, {id})
         const newLayer = _find(overlayStyle.layers, {id})
         const source = overlayStyle.sources[newLayer.source]
-        if (!_isequal(prevLayer, newLayer) || source.type === 'arcgisraster') {
+        if (!_isequal(prevLayer, newLayer) || source?.type === 'arcgisraster') {
           layersToUpdate.push(id)
         }
         const prevLayerPosition = _findIndex(this.overlayMapStyle.layers, {id})
