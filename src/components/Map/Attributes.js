@@ -44,7 +44,7 @@ export default class Attributes extends React.Component<Props, void> {
                 }
 
                 return (
-                  <li key={preset.tag} style={{paddingLeft: '5px', paddingRight: '5px', paddingTop: 0, paddingBottom: 0, lineHeight: '14px'}} className='collection-item attribute-collection-item'>
+                  <li key={preset.tag} style={{paddingLeft: '5px', paddingRight: '5px', paddingTop: 0, paddingBottom: 0, lineHeight: '14px', borderBottom: '1px solid #ddd'}} className='collection-item attribute-collection-item'>
                     <p style={{color: 'rgb(158, 158, 158)', fontSize: '9px'}}>{t(preset.label)}</p>
                     <p className='word-wrap' style={{fontSize: '11px'}}>
                       {val}
@@ -80,7 +80,7 @@ export default class Attributes extends React.Component<Props, void> {
                   }
 
                   return (
-                    <li key={key} style={{padding: 5, lineHeight: '14px'}} className='collection-item attribute-collection-item'>
+                    <li key={key} style={{padding: 5, lineHeight: '14px', borderBottom: '1px solid #ddd'}} className='collection-item attribute-collection-item'>
                       <p style={{color: 'rgb(158, 158, 158)', fontSize: '9px'}}>{key}</p>
                       <p className='word-wrap' style={{fontSize: '11px'}}>
                         {val}

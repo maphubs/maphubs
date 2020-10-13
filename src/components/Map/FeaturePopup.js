@@ -11,7 +11,6 @@ import ActionPanel from './FeaturePopup/ActionPanel'
 import type {Layer} from '../../types/layer'
 import 'react-image-lightbox/style.css'
 
-const checkClientError = require('../../services/client-error-response').checkClientError
 const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('map/featurepopup')
 
@@ -19,6 +18,7 @@ let Lightbox
 
 type Props = {
   features: Array<Feature>,
+  showButtons: boolean,
   t: Function
 }
 
@@ -30,6 +30,10 @@ type State = {
 }
 
 export default class FeaturePopup extends React.Component<Props, State> {
+  static defaultProps = {
+    showButtons: true
+  }
+
   image: any
 
   constructor (props: Props) {
@@ -176,7 +180,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
 
   renderFeature = (feature: Object, i: number) => {
     const {layer, showAttributes} = this.state
-    const {t} = this.props
+    const {t, showButtons} = this.props
     let nameField
     let nameFieldValue
     let featureName = ''
@@ -224,17 +228,18 @@ export default class FeaturePopup extends React.Component<Props, State> {
         bodyStyle={{height: '100%', padding: '0'}}
         style={{width: '150px', height: '200px', margin: 0, boxShadow: 'none'}}
       >
-        <div style={{height: 'calc(100% - 35px)'}}>
+        <div style={{height: showButtons ? 'calc(100% - 35px)' : '100%'}}>
           {content}
         </div>
-        <div style={{padding: '5px 5px'}}>
-          <ActionPanel
-            layer={layer} t={t}
-            selectedFeature={feature} featureName={featureName}
-            toggled={showAttributes}
-            enableToggle={photoUrl} toggleData={this.toggleAttributes}
-          />
-        </div>
+        {showButtons &&
+          <div style={{padding: '5px 5px'}}>
+            <ActionPanel
+              layer={layer} t={t}
+              selectedFeature={feature} featureName={featureName}
+              toggled={showAttributes}
+              enableToggle={photoUrl} toggleData={this.toggleAttributes}
+            />
+          </div>}
       </Card>
     )
   }
