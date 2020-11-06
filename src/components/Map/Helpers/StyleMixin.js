@@ -170,7 +170,7 @@ export default {
       sourcesInBoth.forEach((key) => {
         const prevSource = this.overlayMapStyle.sources[key]
         const newSource = overlayStyle.sources[key]
-        if (!_isequal(prevSource, newSource) || newSource?.type === 'arcgisraster') {
+        if (!_isequal(prevSource, newSource)) {
           sourcesToUpdate.push(key)
         }
       })
@@ -182,7 +182,7 @@ export default {
         const prevLayer = _find(this.overlayMapStyle.layers, {id})
         const newLayer = _find(overlayStyle.layers, {id})
         const source = overlayStyle.sources[newLayer.source]
-        if (!_isequal(prevLayer, newLayer) || source?.type === 'arcgisraster') {
+        if (!_isequal(prevLayer, newLayer)) {
           layersToUpdate.push(id)
         }
         const prevLayerPosition = _findIndex(this.overlayMapStyle.layers, {id})
@@ -290,6 +290,12 @@ export default {
     await Promise.map(sourceKeys, async (key) => {
       _this.debugLog(`loading source: ${key}`)
       const source = fromStyle.sources[key]
+      if (source.type === 'arcgisraster') {
+        source.type = 'raster'
+        source.tiles = [`${source.url.replace('?f=json', '')}/tile/{z}/{y}/{x}`]
+        delete source.url
+      }
+
       const sourceDriver = LayerSources.getSource(key, source)
       if (sourceDriver.custom) {
         _this.debugLog(`found custom source: ${key}`)

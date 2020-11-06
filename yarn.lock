@@ -1578,11 +1578,6 @@
   resolved "https://registry.yarnpkg.com/@mapbox/sexagesimal/-/sexagesimal-1.2.0.tgz#507dfb8fbb3843690bbb93be382e58943dab3c8e"
   integrity sha512-+C3+Azc4ObH2qmDYvg9MC+vvlGVfwB1BZNX8jt4XehJjfDGXwlElqJ6PS9BtgLHSjdinEoZTNanTG/WTc+dpRA==
 
-"@mapbox/sphericalmercator@^1.0.5":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@mapbox/sphericalmercator/-/sphericalmercator-1.1.0.tgz#f3b1af042620716a1289fc41e1e97f610823aefe"
-  integrity sha512-pEsfZyG4OMThlfFQbCte4gegvHUjxXCjz0KZ4Xk8NdOYTQBLflj6U8PL05RPAiuRAMAQNUUKJuL6qYZ5Y4kAWA==
-
 "@mapbox/tiny-sdf@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@mapbox/tiny-sdf/-/tiny-sdf-1.1.1.tgz#16a20c470741bfe9191deb336f46e194da4a91ff"
@@ -8448,13 +8443,6 @@ map-visit@^1.0.0:
   integrity sha1-7Nyo8TFE5mDxtb1B8S80edmN+48=
   dependencies:
     object-visit "^1.0.0"
-
-mapbox-gl-arcgis-tiled-map-service@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/mapbox-gl-arcgis-tiled-map-service/-/mapbox-gl-arcgis-tiled-map-service-0.5.0.tgz#f3553422fca53a8839854873eb4a983897bb31e3"
-  integrity sha512-tyOXmuM/w54Y+oMvf/uav6Ew1UnUF7BIYwhiwmHpw3wwut7M+rUKe1oA2IRxCS2yx2TZL+u7sqxxsUwnsr+EqA==
-  dependencies:
-    "@mapbox/sphericalmercator" "^1.0.5"
 
 mapbox-gl-dual-scale-control@^0.1.3:
   version "0.1.3"

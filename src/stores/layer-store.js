@@ -122,14 +122,12 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
 
     if (isExternal && this.state.external_layer_type === 'mapbox-map' && elc.url) {
       style = MapStyles.raster.rasterStyleTileJSON(layer_id, shortid, elc.url, 100, 'raster')
-    } else if (isExternal && (elc.type === 'raster' || elc.type === 'earthengine')) {
+    } else if (isExternal && (elc.type === 'raster' || elc.type === 'earthengine' || elc.type === 'ags-mapserver-tiles')) {
       style = MapStyles.raster.defaultRasterStyle(layer_id, shortid, elc, elc.type)
     } else if (isExternal && elc.type === 'multiraster' && elc.layers) {
       style = MapStyles.raster.defaultMultiRasterStyle(layer_id, shortid, elc.layers, 'raster', elc)
     } else if (isExternal && elc.type === 'mapbox-style' && elc.mapboxid) {
       style = MapStyles.style.getMapboxStyle(elc.mapboxid)
-    } else if (isExternal && elc.type === 'ags-mapserver-tiles' && elc.url) {
-      style = MapStyles.raster.rasterStyleTileJSON(layer_id, shortid, elc.url + '?f=json', 100, 'arcgisraster')
     } else if (isExternal && elc.type === 'geojson' && elc.data_type) {
       style = MapStyles.style.defaultStyle(layer_id, shortid, this.getSourceConfig(), elc.data_type)
     } else if (style.sources.osm) {

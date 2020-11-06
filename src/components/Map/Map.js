@@ -34,7 +34,6 @@ import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const debug = DebugService('map')
 
 let mapboxgl = {}
-let ArcGISTiledMapServiceSource
 let ScalePositionControl
 let MapboxLanguage
 
@@ -175,7 +174,6 @@ class Map extends React.Component<Props, State> {
       this.setState({interactiveLayers})
     }
     mapboxgl = require('mapbox-gl')
-    ArcGISTiledMapServiceSource = require('mapbox-gl-arcgis-tiled-map-service')
     ScalePositionControl = require('mapbox-gl-dual-scale-control')
     MapboxLanguage = require('@mapbox/mapbox-gl-language')
     this.lunr = require('lunr')
@@ -301,14 +299,6 @@ class Map extends React.Component<Props, State> {
             credentials: 'include'
           }
         }
-      }
-    })
-
-    map.addSourceType('arcgisraster', ArcGISTiledMapServiceSource, (err) => {
-      if (err) {
-        debug.error(err)
-      } else {
-        debugLog('Added custom source: arcgisraster')
       }
     })
 

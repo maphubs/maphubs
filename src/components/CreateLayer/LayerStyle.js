@@ -82,9 +82,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     const elc = this.state.external_layer_config ? this.state.external_layer_config : {}
     const layer_id = this.state.layer_id ? this.state.layer_id : 0
     let style
-    if (this.state.is_external && elc.type === 'ags-mapserver-tiles' && elc.url) {
-      style = MapStyles.raster.rasterStyleTileJSON(layer_id, this.state.shortid, elc.url + '?f=json', opacity, 'arcgisraster')
-    } else if (this.state.is_external && elc.type === 'multiraster' && elc.layers) {
+    if (this.state.is_external && elc.type === 'multiraster' && elc.layers) {
       style = MapStyles.raster.multiRasterStyleWithOpacity(layer_id, this.state.shortid, elc.layers, opacity, 'raster')
     } else {
       style = MapStyles.raster.rasterStyleWithOpacity(layer_id, this.state.shortid, elc, opacity)

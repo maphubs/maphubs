@@ -237,7 +237,6 @@
   "Link to Mapbox Data/Raster Tiles": "Lien vers des tuiles de données / raster Mapbox",
   "Link to a FeatureServer Query Service": "Lien vers un service de requête de serveur de fonctions",
   "Link to a MapServer Query Service": "Lien vers un service de requête MapServer",
-  "Link to a MapServer Tile Service": "Lien vers un service de tuile de MapServer",
   "Link to a Mapbox Style or Data Source": "Lien vers un style MapBox ou une source de données",
   "Link to a Mapbox Style or Tileset": "Lien vers un style ou un ensemble de tuiles Mapbox",
   "Link to a Raster Tile Service": "Lien vers un Service de tuiles Raster",

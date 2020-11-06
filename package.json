@@ -148,7 +148,6 @@
     "lodash.uniq": "4.5.0",
     "lunr": "^2.3.8",
     "mapbox-gl": "^1.8.1",
-    "mapbox-gl-arcgis-tiled-map-service": "^0.5.0",
     "mapbox-gl-dual-scale-control": "^0.1.3",
     "moment": "^2.22.1",
     "moment-timezone": "^0.5.28",

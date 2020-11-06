@@ -21,7 +21,7 @@ export type Layer = {
   is_external?: boolean,
   external_layer_type?: string,
   external_layer_config?: {
-    type?: 'ags-mapserver-tiles' | 'multiraster' | 'raster' | 'mapbox-style' | 'vector' | 'ags-featureserver-query' | 'ags-mapserver-query' | 'earthengine',
+    type?: 'multiraster' | 'raster' | 'mapbox-style' | 'vector' | 'ags-featureserver-query' | 'ags-mapserver-query' | 'earthengine',
     url?: string,
     layers?: Array<Object>,
     tiles?: Array<string>

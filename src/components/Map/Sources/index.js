@@ -1,5 +1,4 @@
 // @flow
-import AGSRaster from './AGSRaster'
 import AGSMapServerQuery from './AGSMapServerQuery'
 import AGSFeatureServerQuery from './AGSFeatureServerQuery'
 import MapboxSource from './MapboxSource'
@@ -32,9 +31,10 @@ export default {
     ) {
       return response(this['maphubs-vector'])
     } else if (
-      source.type === 'arcgisraster'
+      source.type === 'arcgisraster' // legacy support for old arcgis raster layers
     ) {
-      return response(this.arcgisraster, true)
+      source.type = 'raster'
+      return response(this.raster)
     } else if (
       this[source.type] &&
       this[source.type].addLayer
@@ -45,7 +45,6 @@ export default {
       return response(this.generic)
     }
   },
-  arcgisraster: AGSRaster,
   'ags-mapserver-query': AGSMapServerQuery,
   'ags-featureserver-query': AGSFeatureServerQuery,
   'mapbox-style': MapboxSource,

@@ -58,9 +58,10 @@ export default {
           url: source.url
         }
       } else if (source.type === 'ags-mapserver-tiles') {
+        // support existing deprecated raster tiles, new layers will use plain raster
         styles.sources['omh-' + shortid] = {
-          type: 'arcgisraster',
-          url: source.url + '?f=json'
+          type: 'raster',
+          url: source.url + '/tile/{z}/{y}/{x}'
         }
       } else if (source.type === 'geojson') {
         styles.sources['omh-' + shortid] = {

@@ -73,15 +73,6 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
           url: model.featureServiceUrl
         }
       }
-    } else if (model.tileServiceUrl) {
-      dataSettings = {
-        is_external: true,
-        external_layer_type: 'ArcGIS MapServer Tiles',
-        external_layer_config: {
-          type: 'ags-mapserver-tiles',
-          url: model.tileServiceUrl
-        }
-      }
     }
     LayerActions.saveDataSettings(dataSettings, _this.state._csrf, (err) => {
       if (err) {
@@ -110,22 +101,17 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
     const {t} = this
     const agolOptions = [
       {value: 'mapserverquery', label: t('Link to a MapServer Query Service')},
-      {value: 'featureserverquery', label: t('Link to a FeatureServer Query Service')},
-      {value: 'mapservertiles', label: t('Link to a MapServer Tile Service')}
+      {value: 'featureserverquery', label: t('Link to a FeatureServer Query Service')}
     ]
 
     let msqOption = false
     let fsqOption = false
-    let tilesOption = false
     switch (this.state.selectedOption) {
     case 'mapserverquery':
       msqOption = true
       break
     case 'featureserverquery':
       fsqOption = true
-      break
-    case 'mapservertiles':
-      tilesOption = true
       break
     default:
       break
@@ -171,26 +157,6 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
       )
     }
 
-    let tilesForm = ''
-    if (tilesOption) {
-      tilesForm = (
-        <div>
-          <p>{t('ArcGIS MapServer Tiles')}</p>
-          <Row style={{marginBottom: '20px'}}>
-            <TextInput
-              name='tileServiceUrl' label={t('MapServer Service URL')} icon={<LinkIcon />} validations='maxLength:250,isHttps' validationErrors={{
-                maxLength: t('Must be 250 characters or less.'),
-                isHttps: t('SSL required for external links, URLs must start with https://')
-              }} length={250}
-              tooltipPosition='top' tooltip={t('MapServer URL ex: http://myserver/arcgis/rest/services/MyMap/MapServer')}
-              required
-              t={t}
-            />
-          </Row>
-        </div>
-      )
-    }
-
     return (
       <Row style={{marginBottom: '20px'}}>
         <Col span={12}>
@@ -209,7 +175,6 @@ export default class AGOLSource extends MapHubsComponent<Props, State> {
           <Formsy onValidSubmit={this.submit} onValid={this.enableButton} onInvalid={this.disableButton}>
             {msqForm}
             {fsqForm}
-            {tilesForm}
             <div style={{float: 'right'}}>
               <Button type='primary' htmlType='submit' disabled={!this.state.canSubmit}>{t('Save and Continue')}</Button>
             </div>
