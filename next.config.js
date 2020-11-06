@@ -14,11 +14,7 @@ if (typeof require !== 'undefined') {
   require.extensions['.less'] = (file) => {}
 }
 
-const {ANALYZE, ASSET_CDN_PREFIX} = process.env
-
-if (ANALYZE) {
-  var { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
-}
+const {ASSET_CDN_PREFIX} = process.env
 
 const useCDN = (ASSET_CDN_PREFIX && process.env.NODE_ENV === 'production')
 const pathToMapboxGL = path.resolve(__dirname, './node_modules/mapbox-gl/dist/mapbox-gl.js')
@@ -161,14 +157,6 @@ module.exports = withCSS(withLess(withTM({
       config.module.noParse = []
     }
     config.module.noParse.push(pathToMapboxGL)
-
-    if (ANALYZE) {
-      config.plugins.push(new BundleAnalyzerPlugin({
-        analyzerMode: 'server',
-        analyzerPort: dev ? 8888 : 8889,
-        openAnalyzer: true
-      }))
-    }
 
     return config
   }
