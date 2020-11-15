@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import CardCarousel from '../components/CardCarousel/CardCarousel'
 import cardUtil from '../services/card-util'
@@ -33,7 +33,7 @@ type State = {
 }
 
 export default class GroupInfo extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -43,7 +43,15 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: 
+  | any
+  | {|
+    canEdit: boolean,
+    layers: Array<any>,
+    maps: Array<any>,
+    members: Array<any>,
+    stories: Array<any>,
+  |} = {
     maps: [],
     layers: [],
     stories: [],
@@ -60,7 +68,7 @@ export default class GroupInfo extends MapHubsComponent<Props, State> {
     this.state = {}
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const { group, maps, layers, stories, canEdit, members } = this.props
     const { imageFailed } = this.state

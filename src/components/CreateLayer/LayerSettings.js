@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import Formsy from 'formsy-react'
 import { notification, Row, Col, Button } from 'antd'
 import MultiTextArea from '../forms/MultiTextArea'
@@ -80,11 +80,11 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  onFormChange = () => {
+  onFormChange: any | (() => void) = () => {
     this.setState({pendingChanges: true})
   }
 
-  onValid = () => {
+  onValid: any | (() => void) = () => {
     this.setState({
       canSubmit: true
     })
@@ -93,7 +93,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
     }
   }
 
-  onInvalid = () => {
+  onInvalid: any | (() => void) = () => {
     this.setState({
       canSubmit: false
     })
@@ -102,7 +102,7 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
     }
   }
 
-  onSubmit = (model: Object) => {
+  onSubmit: any | ((model: any) => void) = (model: Object) => {
     const {t} = this
     const _this = this
     model.name = Locales.formModelToLocalizedString(model, 'name')
@@ -138,11 +138,11 @@ export default class LayerSettings extends MapHubsComponent<Props, State> {
     })
   }
 
-  onPrev = () => {
+  onPrev: any | (() => void) = () => {
     if (this.props.onPrev) this.props.onPrev()
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t} = this
     const { showGroup } = this.props
     if (this.props.showGroup && (!this.props.groups || this.props.groups.length === 0)) {

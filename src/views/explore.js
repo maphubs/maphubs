@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import SearchBox from '../components/SearchBox'
@@ -46,7 +46,7 @@ type State = {
 }
 
 export default class Home extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -70,11 +70,11 @@ export default class Home extends MapHubsComponent<Props, State> {
     }
   }
 
-  handleSearch = (input: string) => {
+  handleSearch: any | ((input: string) => void) = (input: string) => {
     window.location = '/search?q=' + input
   }
 
-  render () {
+  render (): Node {
     const {t, props} = this
     const _this = this
     const {storyMode, mapMode, groupMode, layerMode} = this.state

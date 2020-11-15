@@ -1,6 +1,6 @@
 // @flow
 import type {GLStyle} from '../../../types/mapbox-gl-style'
-module.exports = (oldId: string, newId: string, style: GLStyle) => {
+module.exports = (oldId: string, newId: string, style: GLStyle): GLStyle => {
   // source
   if (style.sources[`omh-${oldId}`]) {
     style.sources[`omh-${newId}`] = style.sources[`omh-${oldId}`]

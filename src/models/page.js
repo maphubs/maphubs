@@ -24,7 +24,7 @@ module.exports = {
     return configs
   },
 
-  async savePageConfig (page_id: string, config: string) {
+  async savePageConfig (page_id: string, config: string): Promise<any> {
     const existingResults = await knex('omh.page').where({page_id}).select('page_id')
     if (existingResults && existingResults.length === 1) {
       log.info(`updating page config for ${page_id}`)

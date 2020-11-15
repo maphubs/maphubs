@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import { Switch, Button } from 'antd'
 
 type Props = {|
@@ -13,16 +13,16 @@ type Props = {|
 export default class MeasurementToolPanel extends React.Component<Props, void> {
   props: Props
 
-  toggleMeasurementTools = (enableMeasurementTools: boolean) => {
+  toggleMeasurementTools: ((enableMeasurementTools: boolean) => void) = (enableMeasurementTools: boolean) => {
     if (enableMeasurementTools) this.props.closePanel()
     this.props.toggleMeasurementTools(enableMeasurementTools)
   }
 
-  shouldComponentUpdate () {
+  shouldComponentUpdate (): boolean {
     return false
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t, enableMeasurementTools} = this.props
     return (
       <div style={{textAlign: 'center'}}>

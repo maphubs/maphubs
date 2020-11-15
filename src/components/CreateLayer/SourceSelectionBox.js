@@ -13,20 +13,20 @@ type Props = {|
 |}
 
 export default class SourceSelectionBox extends React.Component<Props, void> {
-  static defaultProps = {
+  static defaultProps: {|selected: boolean|} = {
     selected: false
   }
 
-  shouldComponentUpdate (nextProps: Props) {
+  shouldComponentUpdate (nextProps: Props): boolean {
     if (nextProps.selected !== this.props.selected) return true
     return false
   }
 
-  onSelect = () => {
+  onSelect: (() => void) = () => {
     this.props.onSelect(this.props.value)
   }
 
-  render () {
+  render (): React.Element<"div"> {
     const { selected, icon, name } = this.props
 
     let border = `2px solid ${MAPHUBS_CONFIG.primaryColor}`

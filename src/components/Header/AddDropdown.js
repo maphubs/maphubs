@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Menu, Dropdown } from 'antd'
 import AddCircle from '@material-ui/icons/AddCircle'
 
@@ -9,7 +9,7 @@ type Props = {
 }
 
 export default class AddDropdown extends React.PureComponent<Props, void> {
-  render () {
+  render (): Node {
     const {t, sidenav} = this.props
 
     const menu = (

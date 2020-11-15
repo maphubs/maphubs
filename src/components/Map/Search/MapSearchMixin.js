@@ -10,7 +10,7 @@ const debug = DebugService('MapSearchMixin')
 
 export default {
 
-  getActiveLayerIds () {
+  getActiveLayerIds (): {|layerIds: Array<any>, sourceIds: Array<any>|} {
     const layerIds = []
     const sourceIds = []
     if (this.overlayMapStyle) {
@@ -38,7 +38,7 @@ export default {
     }
   },
 
-  getFirstLabelLayer () {
+  getFirstLabelLayer (): void | string {
     const glStyle = this.glStyle
     let firstLayer
     if (glStyle && glStyle.layers && glStyle.layers.length > 0) {
@@ -55,7 +55,7 @@ export default {
     return firstLayer
   },
 
-  async initIndex () {
+  async initIndex (): Promise<void> {
     const {layerIds, sourceIds} = this.getActiveLayerIds()
     this.searchSourceIds = sourceIds
     const features = this.map.queryRenderedFeatures({layers: layerIds})
@@ -81,7 +81,7 @@ export default {
     })
   },
 
-  getNameFieldForResult (result: Object) {
+  getNameFieldForResult (result: Object): any | string {
     const {t} = this.props
 
     const source = this.overlayMapStyle.sources[result.source]
@@ -127,7 +127,7 @@ export default {
     return nameField
   },
 
-  async onSearch (queryText: string) {
+  async onSearch (queryText: string): Promise<{|list: Array<any | {|id: any, name: any|}>|}> {
     const _this = this
     // clear prev display layers
     this.onSearchReset()

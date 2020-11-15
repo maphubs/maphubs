@@ -32,7 +32,7 @@ module.exports = {
     }).catch(apiError(res, 200))
   },
 
-  async completeMapHubsExport (req: any, res: any, layer_id: number) {
+  async completeMapHubsExport (req: any, res: any, layer_id: number): Promise<any> {
     try {
       const layer = await Layer.getLayerByID(layer_id)
 
@@ -73,7 +73,7 @@ module.exports = {
     } catch (err) { apiError(res, 200)(err) }
   },
 
-  async completeMapHubsMapExport (req: any, res: any, map_id: number) {
+  async completeMapHubsMapExport (req: any, res: any, map_id: number): Promise<any> {
     try {
       const map = await Map.getMap(map_id)
       const mapLayers = await Map.getMapLayers(map_id, true)

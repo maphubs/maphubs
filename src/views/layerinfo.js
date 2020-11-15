@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import InteractiveMap from '../components/Map/InteractiveMap'
 import Header from '../components/header'
 import _find from 'lodash.find'
@@ -102,7 +102,7 @@ type State = {
 } & LocaleStoreState
 
 export default class LayerInfo extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -191,7 +191,7 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     }
   }
 
-  getGeoJSON = async () => {
+  getGeoJSON: any | (() => Promise<void>) = async () => {
     const {layer} = this.props
     let baseUrl, dataUrl
     if (layer.remote) {
@@ -229,16 +229,16 @@ export default class LayerInfo extends MapHubsComponent<Props, State> {
     }
   }
 
-  openEditor = () => {
+  openEditor: any | (() => void) = () => {
     const baseUrl = urlUtil.getBaseUrl()
     window.location = `${baseUrl}/map/new?editlayer=${this.props.layer.layer_id}${window.location.hash}`
   }
 
-  copyToClipboard = (val: string) => {
+  copyToClipboard: any | ((val: string) => void) = (val: string) => {
     this.clipboard.writeText(val)
   }
 
-  render () {
+  render (): Node {
     const {openEditor, t} = this
     const {layer, canEdit} = this.props
     const { geoJSON, dataMsg } = this.state

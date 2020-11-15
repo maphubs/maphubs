@@ -8,11 +8,11 @@ export default class MapHubsComponent<Props, State> extends Reflux.PureComponent
     this.stores = [LocaleStore]
   }
 
-  t = (val: any) => {
+  t: ((val: any) => any | string) = (val: any) => {
     return this.__(val)
   }
 
-  __ = (val: any) => {
+  __: ((val: any) => any | string) = (val: any) => {
     if (typeof val === 'string') {
       if (this.state.locale) {
         return Locales.getLocaleString(this.state.locale, val)
@@ -24,7 +24,7 @@ export default class MapHubsComponent<Props, State> extends Reflux.PureComponent
     }
   }
 
-  _o_ = (localizedString: LocalizedString) => {
+  _o_: ((localizedString: LocalizedString) => any | string) = (localizedString: LocalizedString) => {
     if (this.state.locale && localizedString[this.state.locale]) {
       return localizedString[this.state.locale]
     } else if (localizedString.en) {

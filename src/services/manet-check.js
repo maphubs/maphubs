@@ -6,7 +6,7 @@ const Layer = require('../models/layer')
 const Map = require('../models/map')
 const compare = require('secure-compare')
 
-const check = function (req: any) {
+const check = function (req: any): boolean {
   // determine if this is the manet screenshot service
   // first check the cookie
   if (req.cookies) debug.log(JSON.stringify(req.cookies))
@@ -37,7 +37,7 @@ const middlewareCheck = function (req, res, next) {
   }
 }
 
-const middleware = async (req: any, res: any, next: any) => {
+const middleware = async (req: any, res: any, next: any): Promise<any> => {
   try {
     let user_id = -1
     if (req.isAuthenticated && req.isAuthenticated() && req.session.user) {

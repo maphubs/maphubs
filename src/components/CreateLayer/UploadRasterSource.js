@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import UppyFileUpload from '../forms/UppyFileUpload'
 import Map from '../Map'
 import LayerStore from '../../stores/layer-store'
@@ -47,13 +47,13 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
     }
   }
 
-  onSubmit = () => {
+  onSubmit: any | (() => void) = () => {
     const {t} = this
     message.success(t('Layer Saved'))
     this.props.onSubmit()
   }
 
-  onUpload = (file: Object) => {
+  onUpload: any | ((file: any) => void) = (file: Object) => {
     const {t} = this
     const _this = this
     const closeMessage = message.loading(t('Processing'), 0)
@@ -100,7 +100,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
       })
   }
 
-  onUploadError = (err: string) => {
+  onUploadError: any | ((err: string) => void) = (err: string) => {
     const {t} = this
     notification.error({
       message: t('Error'),
@@ -109,7 +109,7 @@ export default class UploadRasterSource extends MapHubsComponent<Props, State> {
     })
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const layer_id = this.state.layer_id ? this.state.layer_id : 0
     const { canSubmit, style, bbox } = this.state

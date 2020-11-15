@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Menu, Dropdown, message } from 'antd'
 import HelpOutline from '@material-ui/icons/HelpOutline'
 
@@ -10,7 +10,7 @@ type Props = {
 }
 
 export default class AddDropdown extends React.PureComponent<Props, void> {
-  render () {
+  render (): Node {
     const {t, sidenav, customHelpLink} = this.props
 
     const menu = (

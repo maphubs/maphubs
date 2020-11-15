@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Formsy from 'formsy-react'
 import { Row } from 'antd'
 import Toggle from '../forms/toggle'
@@ -64,7 +64,7 @@ export default class MarkerSettings extends React.Component<Props, State> {
     }
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
@@ -75,7 +75,7 @@ export default class MarkerSettings extends React.Component<Props, State> {
     return false
   }
 
-  onFormChange = (model: Object) => {
+  onFormChange: ((model: any) => void) = (model: Object) => {
     if (model.size) {
       model.width = Number.parseInt(model.size, 10)
       model.height = Number.parseInt(model.size, 10)
@@ -109,7 +109,7 @@ export default class MarkerSettings extends React.Component<Props, State> {
     this.props.onChange(style, options)
   }
 
-  render () {
+  render (): Node {
     const {t} = this.props
     const shapeOptions = [
       {value: 'MAP_PIN', label: t('Map Pin')},

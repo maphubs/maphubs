@@ -15,7 +15,7 @@ function translateUserObject (data: Object) {
   return user
 }
 
-exports.find = function (id: number) {
+exports.find = function (id: number): any {
   debug.log('find by id: ' + id)
   return knex.select('*')
     .from('users')
@@ -33,7 +33,7 @@ exports.find = function (id: number) {
     })
 }
 
-exports.findByEmail = function (email: string) {
+exports.findByEmail = function (email: string): any {
   debug.log(`find by email: ${email}`)
   return knex.select('*')
     .from('users')

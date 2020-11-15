@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Subscribe } from 'unstated'
 import BaseMapContainer from '../containers/BaseMapContainer'
 import type {BaseMapOption} from '../containers/BaseMapContainer'
@@ -12,7 +12,7 @@ type Props = {
 }
 
 export default class BaseMapSelection extends React.Component<Props, void> {
-  render () {
+  render (): Node {
     const { t, onChange } = this.props
 
     return (

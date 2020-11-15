@@ -1,5 +1,5 @@
 // @flow
-// $FlowFixMe
+import type {Node} from "React";// $FlowFixMe
 
 import React from 'react'
 import { Row, Col, Button } from 'antd'
@@ -37,11 +37,11 @@ export default class AddItem extends React.Component<Props, State> {
 
   searchBox: any
 
- handleAddWithOptionChecked = (option: any) => {
+ handleAddWithOptionChecked: ((option: any) => void) = (option: any) => {
    this.setState({option})
  }
 
- resetSearch = () => {
+ resetSearch: (() => void) = () => {
    this.setState({
      value: undefined,
      option: false
@@ -49,7 +49,7 @@ export default class AddItem extends React.Component<Props, State> {
    this.searchBox.reset()
  }
 
-  handleSearch = (input: string) => {
+  handleSearch: ((input: string) => void) = (input: string) => {
     if (!input) {
       this.resetSearch()
     } else {
@@ -57,7 +57,7 @@ export default class AddItem extends React.Component<Props, State> {
     }
   }
 
- submit = (e: any) => {
+ submit: ((e: any) => void) = (e: any) => {
    e.preventDefault()
    if (!this.state.value) return
    this.props.onAdd({value: this.state.value, option: this.state.option})
@@ -65,7 +65,7 @@ export default class AddItem extends React.Component<Props, State> {
    this.resetSearch()
  }
 
- render () {
+ render (): Node {
    const { suggestionUrl, placeholder, optionLabel, optionLabelOn, optionLabelOff, addButtonLabel } = this.props
 
    return (

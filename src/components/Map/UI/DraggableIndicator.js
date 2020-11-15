@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 
 type Props = {
   width: number,
@@ -16,7 +16,16 @@ type Props = {
 export default class DraggableIndicator extends React.PureComponent<Props> {
   props: Props
 
-  static defaultProps = {
+  static defaultProps: {|
+  dotWidth: number,
+  height: number,
+  initialX: number,
+  initialY: number,
+  numX: number,
+  numY: number,
+  offset: number,
+  width: number,
+|} = {
     width: 32,
     height: 32,
     dotWidth: 2,
@@ -27,7 +36,7 @@ export default class DraggableIndicator extends React.PureComponent<Props> {
     initialY: 0
   }
 
-  render () {
+  render (): Element<"svg"> {
     const { numX, numY, dotWidth, initialX, initialY, offset } = this.props
     const rows = []
     for (let i = 0; i < numX; i++) {

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import FileUpload from '../forms/FileUpload'
 import Map from '../Map'
 import { message, notification, Row, Button } from 'antd'
@@ -49,19 +49,19 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
     }
   }
 
-  enableButton = () => {
+  enableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: true
     })
   }
 
-  disableButton = () => {
+  disableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: false
     })
   }
 
-  onSubmit = () => {
+  onSubmit: any | (() => void) = () => {
     const {t} = this
     const _this = this
 
@@ -88,7 +88,7 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
     })
   }
 
-  onUpload = (result: Object) => {
+  onUpload: any | ((result: any) => void) = (result: Object) => {
     if (result.success) {
       this.setState({geoJSON: result.geoJSON, canSubmit: true, largeData: result.largeData})
       // LayerActions.setDataType(result.data_type);
@@ -98,11 +98,11 @@ export default class UploadLayerReplacement extends MapHubsComponent<Props, Stat
     this.closeMessage()
   }
 
-  onProcessingStart = () => {
+  onProcessingStart: any | (() => void) = () => {
     this.closeMessage = message.loading(this.t('Processing'), 0)
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const layer_id = this.state.layer_id ? this.state.layer_id : 0
     const url = `/api/layer/${layer_id}/replace`

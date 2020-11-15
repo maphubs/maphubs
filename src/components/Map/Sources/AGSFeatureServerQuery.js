@@ -4,7 +4,7 @@ import type {GeoJSONObject} from 'geojson-flow'
 import TerraformerGL from '../../../services/terraformerGL'
 
 const AGSFeatureServerQuery = {
-  load (key: string, source: GLSource, mapComponent: any) {
+  load (key: string, source: GLSource, mapComponent: any): any | void {
     if (source.url) {
       return TerraformerGL.getArcGISFeatureServiceGeoJSON(source.url)
         .then((geoJSON: GeoJSONObject) => {

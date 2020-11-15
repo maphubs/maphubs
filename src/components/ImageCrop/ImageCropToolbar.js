@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Button, Tooltip } from 'antd'
 import CropOriginal from '@material-ui/icons/CropOriginal'
 import Crop169 from '@material-ui/icons/Crop169'
@@ -22,11 +22,11 @@ type Props = {
 }
 
 export default class ImageCropToolbar extends React.Component<Props, void> {
-  shouldComponentUpdate () {
+  shouldComponentUpdate (): boolean {
     return false
   }
 
-  render () {
+  render (): Node {
     const { lockAspect, zoomIn, zoomOut, cropOriginal, aspect16by9, aspect3by2, aspectSquare, resetCropPosition, t } = this.props
     return (
       <Row align='middle' style={{height: '50px'}}>

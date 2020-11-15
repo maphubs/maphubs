@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Modal, message, notification } from 'antd'
 import superagent from 'superagent'
 import SaveMapPanel from '../MapMaker/SaveMapPanel'
@@ -23,15 +23,15 @@ export default class CopyMapModal extends React.Component<Props, State> {
     }
   }
 
-  show = () => {
+  show: (() => void) = () => {
     this.setState({visible: true})
   }
 
-  close = () => {
+  close: (() => void) = () => {
     this.setState({visible: false})
   }
 
-  onCopyMap = async (formData: Object) => {
+  onCopyMap: ((formData: any) => Promise<void>) = async (formData: Object) => {
     const { map_id, _csrf, t } = this.props
     const data = {
       map_id,
@@ -64,7 +64,7 @@ export default class CopyMapModal extends React.Component<Props, State> {
     }
   }
 
-  render () {
+  render (): Node {
     const { title, t } = this.props
     const { visible } = this.state
     return (

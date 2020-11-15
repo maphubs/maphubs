@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node, Element} from "React";import React from 'react'
 import Card from './Card'
 import { FixedSizeList as List } from 'react-window'
 import AutoSizer from 'react-virtualized-auto-sizer'
@@ -14,7 +14,7 @@ type Props = {
 }
 
 export default class CardCarousel extends React.Component<Props, void> {
-  render () {
+  render (): Node | Element<"div"> {
     const { t, emptyMessage } = this.props
     let { cards } = this.props
     if (!cards) cards = []

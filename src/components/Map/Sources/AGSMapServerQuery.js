@@ -5,7 +5,7 @@ import TerraformerGL from '../../../services/terraformerGL'
 const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('AGSFeatureServerQuery')
 
 const AGSMapServerQuery = {
-  load (key: string, source: GLSource, mapComponent: any) {
+  load (key: string, source: GLSource, mapComponent: any): any {
     if (source.url) {
       return TerraformerGL.getArcGISGeoJSON(source.url)
         .then((geoJSON) => {

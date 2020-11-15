@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { message, notification, Row } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import CreateLayer from './CreateLayer'
@@ -28,15 +28,15 @@ export default class Step1 extends MapHubsComponent<Props, State> {
     warnIfUnsaved: false
   }
 
-  sourceChange = (value: string) => {
+  sourceChange: any | ((value: string) => void) = (value: string) => {
     this.setState({selectedSource: value})
   }
 
-  onSubmit = () => {
+  onSubmit: any | (() => void) = () => {
     this.props.onSubmit()
   }
 
-  cancelCallback = () => {
+  cancelCallback: any | (() => void) = () => {
     const {t} = this
     this.setState({warnIfUnsaved: false})
     message.info(t('Layer Cancelled'), 1, () => {
@@ -44,7 +44,7 @@ export default class Step1 extends MapHubsComponent<Props, State> {
     })
   }
 
-   onCancel = () => {
+   onCancel: any | (() => void) = () => {
      const {t} = this
      const _this = this
      if (_this.state.created) {
@@ -65,7 +65,7 @@ export default class Step1 extends MapHubsComponent<Props, State> {
      }
    }
 
-   render () {
+   render (): Node {
      const {t} = this
      return (
        <Row>

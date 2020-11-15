@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Formsy from 'formsy-react'
 import { Row } from 'antd'
 import Toggle from '../forms/toggle'
@@ -71,7 +71,7 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
     this.setState(state)
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
@@ -82,7 +82,7 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
     return false
   }
 
-  onFormChange = (values: Object) => {
+  onFormChange: any | ((values: any) => void) = (values: Object) => {
     let legend = this.props.layer.legend_html
 
     let style = this.props.style
@@ -111,7 +111,7 @@ export default class AdvancedLayerSettings extends MapHubsComponent<Props, State
     this.props.onChange(style, legend)
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     let toggleFill
     if (this.props.layer.data_type === 'polygon') {

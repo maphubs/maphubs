@@ -44,7 +44,7 @@ export type GLSources = {
 
 export type GLLayer = {
  id: string,
- type: 'fill' | 'line' | 'symbol' | 'circle' | 'fill-extrusion' | 'raster' | 'background',
+ type: string, // 'fill' | 'line' | 'symbol' | 'circle' | 'fill-extrusion' | 'raster' | 'background',
  metadata?: Object,
  ref?: string,
  source?: string,
@@ -57,7 +57,7 @@ export type GLLayer = {
 }
 
 export type GLLight = {
-  anchor?: 'map' | 'viewport',
+  anchor?: string, // 'map' | 'viewport',
   position?: Array<number>,
   color?: string,
   intensity?: number

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import { Row, Col, Button, message, notification } from 'antd'
 import ImageCrop from '../ImageCrop'
 import GroupStore from '../../stores/GroupStore'
@@ -22,7 +22,7 @@ type State = {
 } & LocaleStoreState & GroupStoreState
 
 export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: any | {|active: boolean|} = {
     active: false
   }
 
@@ -37,15 +37,15 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
     this.stores.push(GroupStore)
   }
 
-  submit = () => {
+  submit: any | (() => void) = () => {
     this.props.onSubmit(this.state.group.group_id)
   }
 
-  showImageCrop = () => {
+  showImageCrop: any | (() => void) = () => {
     this.refs.imagecrop.show()
   }
 
-  onCrop = (data: Object) => {
+  onCrop: any | ((data: any) => void) = (data: Object) => {
     const {t} = this
     // send data to server
     GroupActions.setGroupImage(data, this.state._csrf, (err) => {
@@ -61,7 +61,7 @@ export default class CreateGroupStep2 extends MapHubsComponent<Props, State> {
     })
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t} = this
     const { showPrev } = this.props
     const { group } = this.state

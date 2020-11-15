@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import LayerDesigner from './LayerDesigner'
 import OpacityChooser from './OpacityChooser'
 import MapStyles from '../Map/Styles'
@@ -20,7 +20,7 @@ type State = {
 }
 
 export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: any | {|id: string, showAdvanced: boolean|} = {
     id: 'map-layer-designer',
     showAdvanced: true
   }
@@ -42,7 +42,7 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
     }
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
@@ -53,7 +53,25 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
     return false
   }
 
-  getSourceConfig = () => {
+  getSourceConfig: 
+  | any
+  | (() => 
+    | void
+    | {
+      layers?: Array<any>,
+      tiles?: Array<string>,
+      type?: 
+        | "multiraster"
+        | "raster"
+        | "mapbox-style"
+        | "vector"
+        | "ags-featureserver-query"
+        | "ags-mapserver-query"
+        | "earthengine",
+      url?: string,
+      ...,
+    }
+    | {|type: string|}) = () => {
     let sourceConfig = {
       type: 'vector'
     }
@@ -63,7 +81,7 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
     return sourceConfig
   }
 
-  setRasterOpacity = (opacity: number) => {
+  setRasterOpacity: any | ((opacity: number) => void) = (opacity: number) => {
     const {layer_id, shortid} = this.props.layer
     let style
     const elc = this.props.layer.external_layer_config
@@ -79,29 +97,29 @@ export default class MapLayerDesigner extends MapHubsComponent<Props, State> {
     this.setState({rasterOpacity: opacity})
   }
 
-   onColorChange = (style: GLStyle, legend: string) => {
+   onColorChange: any | ((style: GLStyle, legend: string) => void) = (style: GLStyle, legend: string) => {
      const {layer_id, labels} = this.props.layer
      this.props.onStyleChange(layer_id, style, labels, legend)
    }
 
-  setStyle = (style: GLStyle) => {
+  setStyle: any | ((style: GLStyle) => void) = (style: GLStyle) => {
     const {layer_id, labels, legend_html} = this.props.layer
     this.props.onStyleChange(layer_id, style, labels, legend_html)
   }
 
-  setLabels = (style: GLStyle, labels: Object) => {
+  setLabels: any | ((style: GLStyle, labels: any) => void) = (style: GLStyle, labels: Object) => {
     this.props.onStyleChange(this.props.layer.layer_id, style, labels, this.props.layer.legend_html)
   }
 
-  setMarkers = (style: GLStyle) => {
+  setMarkers: any | ((style: GLStyle) => void) = (style: GLStyle) => {
     this.props.onStyleChange(this.props.layer.layer_id, style, this.props.layer.labels, this.props.layer.legend_html)
   }
 
-  setLegend = (legend: string) => {
+  setLegend: any | ((legend: string) => void) = (legend: string) => {
     this.props.onStyleChange(this.props.layer.layer_id, this.props.layer.style, this.props.layer.labels, legend)
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const { layer } = this.props
     const { style, legend_html, is_external, external_layer_config } = layer

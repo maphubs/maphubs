@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import _isequal from 'lodash.isequal'
 
 type Props = {|
@@ -10,7 +10,7 @@ type Props = {|
 export default class Attributes extends React.Component<Props, void> {
   props: Props
 
-  shouldComponentUpdate (nextProps: Props) {
+  shouldComponentUpdate (nextProps: Props): boolean {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
@@ -18,7 +18,7 @@ export default class Attributes extends React.Component<Props, void> {
     return false
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t, attributes} = this.props
     const spacer = (<div style={{height: '50px'}} />)
 

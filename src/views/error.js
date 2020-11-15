@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Header from '../components/header'
 import Reflux from '../components/Rehydrate'
@@ -19,7 +19,7 @@ type Props = {
 }
 
 export default class Error extends MapHubsComponent<Props, void> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -43,7 +43,7 @@ export default class Error extends MapHubsComponent<Props, void> {
     }
   }
 
-  render () {
+  render (): Node {
     return (
       <ErrorBoundary>
         <Header {...this.props.headerConfig} />

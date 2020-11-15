@@ -26,7 +26,7 @@ const screenshotOptions = {
 
 module.exports = {
 
-  base64Download (url: string, data: any) {
+  base64Download (url: string, data: any): any {
     return request.post(url)
       .type('json')
       .send(data)
@@ -36,7 +36,7 @@ module.exports = {
       })
   },
 
-  getLayerThumbnail (layer_id: number) {
+  getLayerThumbnail (layer_id: number): any {
     const _this = this
     debug.log('get thumbnail image for layer: ' + layer_id)
     return knex('omh.layers').select('thumbnail').where({layer_id})
@@ -51,7 +51,7 @@ module.exports = {
       })
   },
 
-  async updateLayerThumbnail (layer_id: number) {
+  async updateLayerThumbnail (layer_id: number): Promise<any> {
     debug.log('updating image for layer: ' + layer_id)
 
     const width = 400
@@ -76,7 +76,7 @@ module.exports = {
     return image
   },
 
-  reloadLayerThumbnail (layer_id: number) {
+  reloadLayerThumbnail (layer_id: number): any {
     const _this = this
     return knex('omh.layers').update({thumbnail: null}).where({layer_id})
       .then(() => {
@@ -87,7 +87,7 @@ module.exports = {
   },
 
   // Layer image
-  getLayerImage (layer_id: number) {
+  getLayerImage (layer_id: number): any {
     const _this = this
     debug.log('get image for layer: ' + layer_id)
     return knex('omh.layers').select('screenshot').where({layer_id})
@@ -102,7 +102,7 @@ module.exports = {
       })
   },
 
-  async updateLayerImage (layer_id: number) {
+  async updateLayerImage (layer_id: number): Promise<any> {
     debug.log('updating image for layer: ' + layer_id)
     // get screenshot from the manet service
     const width = 1200
@@ -128,7 +128,7 @@ module.exports = {
     return image
   },
 
-  async reloadLayerImage (layer_id: number) {
+  async reloadLayerImage (layer_id: number): Promise<boolean> {
     await knex('omh.layers').update({screenshot: null}).where({layer_id})
     // don't return the promise because we want this to run async
     this.updateLayerImage(layer_id)
@@ -136,7 +136,7 @@ module.exports = {
   },
 
   // Map Image
-  getMapImage (map_id: number) {
+  getMapImage (map_id: number): any {
     const _this = this
     debug.log('get screenshot image for map: ' + map_id)
     return knex('omh.maps').select('screenshot').where({map_id})
@@ -151,7 +151,7 @@ module.exports = {
       })
   },
 
-  async updateMapImage (map_id: number) {
+  async updateMapImage (map_id: number): Promise<any> {
     debug.log('updating image for map: ' + map_id)
     // get screenshot from the manet service
     const width = 1200
@@ -176,14 +176,14 @@ module.exports = {
     return image
   },
 
-  async reloadMapImage (map_id: number) {
+  async reloadMapImage (map_id: number): Promise<boolean> {
     await knex('omh.maps').update({screenshot: null}).where({map_id})
     // don't return the promise because we want this to run async
     this.updateMapImage(map_id)
     return true
   },
 
-  async updateMapThumbnail (map_id: number) {
+  async updateMapThumbnail (map_id: number): Promise<any> {
     debug.log('updating thumbnail for map: ' + map_id)
     // get screenshot from the manet service
     const width = 400
@@ -209,7 +209,7 @@ module.exports = {
     return image
   },
 
-  getMapThumbnail (map_id: number) {
+  getMapThumbnail (map_id: number): any {
     const _this = this
     debug.log('get thumbnail image for map: ' + map_id)
     return knex('omh.maps').select('thumbnail').where({map_id})
@@ -224,7 +224,7 @@ module.exports = {
       })
   },
 
-  async reloadMapThumbnail (map_id: number) {
+  async reloadMapThumbnail (map_id: number): Promise<boolean> {
     await knex('omh.maps').update({thumbnail: null}).where({map_id})
     // don't return the promise because we want this to run async
     this.updateMapThumbnail(map_id)

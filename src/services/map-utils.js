@@ -8,7 +8,7 @@ const local = require('../local')
 const pageOptions = require('./page-options-helper')
 
 module.exports = {
-  async completeEmbedMapRequest (app: any, req: any, res: any, next: any, map_id: number, isStatic: boolean, canEdit: boolean, interactive: boolean, shared: boolean) {
+  async completeEmbedMapRequest (app: any, req: any, res: any, next: any, map_id: number, isStatic: boolean, canEdit: boolean, interactive: boolean, shared: boolean): Promise<any> {
     let showLogo = true
     if (req.query.hideLogo) {
       showLogo = false
@@ -86,7 +86,7 @@ module.exports = {
     } catch (err) { nextError(next)(err) }
   },
 
-  async completeMapRequest (app: any, req: any, res: any, next: any, map_id: number, canEdit: boolean, shared: boolean) {
+  async completeMapRequest (app: any, req: any, res: any, next: any, map_id: number, canEdit: boolean, shared: boolean): Promise<any> {
     debug.log('completeMapRequest')
     try {
       const map = await Map.getMap(map_id)

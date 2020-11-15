@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node, Element} from "React";import React from 'react'
 import slugify from 'slugify'
 import { Steps, Row } from 'antd'
 import Header from '../components/header'
@@ -42,7 +42,7 @@ type State = {
 } & LayerStoreState & LocaleStoreState
 
 export default class CreateLayer extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -52,7 +52,7 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: any | {|groups: Array<any>|} = {
     groups: []
   }
 
@@ -127,19 +127,19 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  submit = (layerId: number, name: LocalizedString) => {
+  submit: any | ((layerId: number, name: LocalizedString) => void) = (layerId: number, name: LocalizedString) => {
     window.location = '/layer/info/' + layerId + '/' + slugify(this.t(name))
   }
 
-  nextStep = () => {
+  nextStep: any | (() => void) = () => {
     this.setState({step: this.state.step + 1})
   }
 
-  prevStep = () => {
+  prevStep: any | (() => void) = () => {
     this.setState({step: this.state.step - 1})
   }
 
-  render () {
+  render (): Element<"div"> | Node {
     const {t} = this
     const { headerConfig, groups, mapConfig } = this.props
     const { step } = this.state

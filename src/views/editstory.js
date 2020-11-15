@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import StoryEditor from '../components/Story/StoryEditor'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -26,7 +26,7 @@ type Props = {|
 type State = LocaleStoreState
 
 export default class EditStory extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -36,7 +36,7 @@ export default class EditStory extends MapHubsComponent<Props, State> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: any | {|story: {...}|} = {
     story: {}
   }
 
@@ -54,7 +54,7 @@ export default class EditStory extends MapHubsComponent<Props, State> {
     })
   }
 
-  render () {
+  render (): Node {
     const { headerConfig, myMaps, popularMaps, groups } = this.props
     return (
       <ErrorBoundary>

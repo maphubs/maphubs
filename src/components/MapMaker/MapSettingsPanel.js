@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import MapMakerStore from '../../stores/MapMakerStore'
 import MapMakerActions from '../../actions/MapMakerActions'
 import MapHubsComponent from '../MapHubsComponent'
@@ -27,21 +27,21 @@ export default class MapSettingsPanel extends MapHubsComponent<Props, State> {
     this.stores.push(MapMakerStore)
   }
 
-  onSave = (settings: string) => {
+  onSave: any | ((settings: string) => void) = (settings: string) => {
     settings = JSON.parse(settings)
     MapMakerActions.setSettings(settings)
     this.setState({showSettingsEditor: false})
   }
 
-  showSettingsEditor = () => {
+  showSettingsEditor: any | (() => void) = () => {
     this.setState({showSettingsEditor: true})
   }
 
-  hideSettingsEditor = () => {
+  hideSettingsEditor: any | (() => void) = () => {
     this.setState({showSettingsEditor: false})
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t} = this
     const { showSettingsEditor, settings } = this.state
     return (

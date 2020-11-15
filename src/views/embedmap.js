@@ -1,5 +1,6 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";
+import type {GLLayerPaint, GLLayerLayout, GLFilter} from "../types/mapbox-gl-style";import React from 'react'
 import InteractiveMap from '../components/Map/InteractiveMap'
 import request from 'superagent'
 import _bbox from '@turf/bbox'
@@ -48,7 +49,7 @@ type State = {
 }
 
 export default class EmbedMap extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -58,7 +59,17 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: 
+  | any
+  | {|
+    insetMap: boolean,
+    interactive: boolean,
+    isStatic: boolean,
+    markerColor: string,
+    overlayName: string,
+    showLogo: boolean,
+    showScale: boolean,
+  |} = {
     isStatic: false,
     interactive: false,
     markerColor: '#FF0000',
@@ -116,11 +127,11 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  startInteractive = () => {
+  startInteractive: any | (() => void) = () => {
     this.setState({interactive: true})
   }
 
-  loadGeoJSON = (url: string) => {
+  loadGeoJSON: any | ((url: string) => void) = (url: string) => {
     const _this = this
     const {layers} = this.state
 
@@ -141,7 +152,31 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
       })
   }
 
-  getStyleLayers = (props: Props) => {
+  getStyleLayers: 
+  | any
+  | ((
+    props: Props
+  ) => Array<
+    {|
+      filter?: GLFilter,
+      id: string,
+      layout?: GLLayerLayout,
+      maxzoom?: number,
+      metadata?: any,
+      minzoom?: number,
+      paint?: GLLayerPaint,
+      ref?: string,
+      source?: string,
+      type: 
+        | "fill"
+        | "line"
+        | "symbol"
+        | "circle"
+        | "fill-extrusion"
+        | "raster"
+        | "background",
+    |},
+  >) = (props: Props) => {
     return [
       {
         id: 'omh-data-point-geojson-overlay-markers',
@@ -201,7 +236,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
     ]
   }
 
-  getLayerConfig = (props: Props, geoJSON: Object): Layer => {
+  getLayerConfig: any | ((props: Props, geoJSON: any) => Layer) = (props: Props, geoJSON: Object): Layer => {
     const emptyLocalizedString: LocalizedString = {en: '', fr: '', es: '', it: '', id: '', pt: ''}
     /*
     geoJSON.metadata = {
@@ -236,7 +271,7 @@ export default class EmbedMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     let map = ''
 

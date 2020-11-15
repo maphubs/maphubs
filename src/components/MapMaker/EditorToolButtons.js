@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Subscribe } from 'unstated'
 import { Modal, message, notification } from 'antd'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
@@ -17,7 +17,7 @@ type Props = {
 type State = {} & LocaleStoreState
 
 export default class EditorToolButtons extends React.Component<Props, State> {
-  saveEdits = async (DataEditor: Object) => {
+  saveEdits: ((DataEditor: any) => Promise<void>) = async (DataEditor: Object) => {
     const {t, _csrf} = this.props
     const closeMessage = message.loading(t('Saving'), 0)
     await DataEditor.saveEdits(_csrf, (err) => {
@@ -34,7 +34,7 @@ export default class EditorToolButtons extends React.Component<Props, State> {
     })
   }
 
-  stopEditing = (DataEditor: Object) => {
+  stopEditing: ((DataEditor: any) => void) = (DataEditor: Object) => {
     const {saveEdits} = this
     const {stopEditingLayer, t} = this.props
     if (DataEditor.state.edits.length > 0) {
@@ -61,17 +61,17 @@ export default class EditorToolButtons extends React.Component<Props, State> {
     }
   }
 
-  undoEdit = (DataEditor: Object) => {
+  undoEdit: ((DataEditor: any) => void) = (DataEditor: Object) => {
     const {onFeatureUpdate} = this.props
     DataEditor.undoEdit(onFeatureUpdate)
   }
 
-  redoEdit = (DataEditor: Object) => {
+  redoEdit: ((DataEditor: any) => void) = (DataEditor: Object) => {
     const {onFeatureUpdate} = this.props
     DataEditor.redoEdit(onFeatureUpdate)
   }
 
-  render () {
+  render (): Node {
     const { undoEdit, redoEdit, saveEdits, stopEditing } = this
     const { t } = this.props
     return (

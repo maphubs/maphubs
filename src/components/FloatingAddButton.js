@@ -22,12 +22,12 @@ export default class FloatingAddButton extends MapHubsComponent<Props, State> {
     this.stores.push(UserStore)
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     if (!this.state.user && nextState.user) return true
     return false
   }
 
-  render () {
+  render (): React.Node | string {
     // only render on the client side
     if (typeof window === 'undefined') {
       return ''

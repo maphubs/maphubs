@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import { Row, Button, Typography } from 'antd'
@@ -34,7 +34,7 @@ type State = {
 }
 
 export default class Maps extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -52,7 +52,7 @@ export default class Maps extends MapHubsComponent<Props, State> {
     }
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const featuredCards = this.props.featuredMaps.map(cardUtil.getMapCard)
     const recentCards = this.props.recentMaps.map(cardUtil.getMapCard)

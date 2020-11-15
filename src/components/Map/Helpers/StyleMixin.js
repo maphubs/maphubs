@@ -284,7 +284,7 @@ export default {
     }
   },
 
-  async loadSources (sourceKeys: Array<string>, fromStyle: GLStyle) {
+  async loadSources (sourceKeys: Array<string>, fromStyle: GLStyle): Promise<Array<any>> {
     const _this = this
     const customSources = []
     await Promise.map(sourceKeys, async (key) => {
@@ -316,7 +316,7 @@ export default {
     })
   },
 
-  async addLayers (layers: Array<{id: number, position: number}>, fromStyle: GLStyle) {
+  async addLayers (layers: Array<{id: number, position: number}>, fromStyle: GLStyle): Promise<Array<any | SourceDriverType>> {
     const _this = this
     const customSourceLayers = []
     await Promise.map(layers, (layerToAdd) => {

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import { Button, Row, Select } from 'antd'
 import dynamic from 'next/dynamic'
 import _isequal from 'lodash.isequal'
@@ -46,7 +46,7 @@ type State = {
 export default class LocalizedCodeEditor extends MapHubsComponent<Props, State> {
   props: Props
 
-  static defaultProps = {
+  static defaultProps: any | {|id: string, modal: boolean, mode: string, theme: string|} = {
     id: 'code-editor',
     mode: 'json',
     theme: 'monokai',
@@ -66,7 +66,7 @@ export default class LocalizedCodeEditor extends MapHubsComponent<Props, State> 
     this.setState({localizedCode: nextProps.localizedCode})
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
@@ -77,25 +77,25 @@ export default class LocalizedCodeEditor extends MapHubsComponent<Props, State> 
     return false
   }
 
-  onChange = (localizedCode: any) => {
+  onChange: any | ((localizedCode: any) => void) = (localizedCode: any) => {
     this.setState({localizedCode})
   }
 
-  onCancel = () => {
+  onCancel: any | (() => void) = () => {
     this.hide()
   }
 
-  onSave = () => {
+  onSave: any | (() => void) = () => {
     if (this.state.canSave) {
       this.props.onSave(this.state.localizedCode)
     }
   }
 
-  onLocaleChange = (locale: string) => {
+  onLocaleChange: any | ((locale: string) => void) = (locale: string) => {
     this.setState({locale})
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t} = this
     const { title, mode } = this.props
     const { canSave, localizedCode, locale } = this.state

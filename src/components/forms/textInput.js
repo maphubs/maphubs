@@ -120,4 +120,4 @@ class TextInput extends React.Component<Props, State> {
     )
   }
 }
-export default withFormsy(TextInput)
+export default (withFormsy(TextInput): any)

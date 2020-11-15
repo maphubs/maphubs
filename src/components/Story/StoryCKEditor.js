@@ -44,16 +44,16 @@ export default class StoryCKEditor extends React.Component<Props, void> {
     this.editorInstance = undefined
   }
 
-  static defaultProps = {
+  static defaultProps: {|initialData: string, language: string|} = {
     initialData: '',
     language: 'en'
   }
 
-  shouldComponentUpdate () {
+  shouldComponentUpdate (): boolean {
     return false
   }
 
-  render () {
+  render (): React.Node {
     const { initialData, language, getMap, cropImage, onImageUpload, story_id } = this.props
     const host = MAPHUBS_CONFIG.host ? MAPHUBS_CONFIG.host.replace('.', '') : 'unknownhost'
     const editorConfiguration = {

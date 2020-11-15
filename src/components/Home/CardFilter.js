@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import MapHubsComponent from '../MapHubsComponent'
 
 type Props = {|
@@ -12,7 +12,7 @@ type State = {
 }
 
 export default class CardFilter extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: any | {|defaultValue: string|} = {
     defaultValue: 'featured'
   }
 
@@ -23,22 +23,22 @@ export default class CardFilter extends MapHubsComponent<Props, State> {
     }
   }
 
-  onFeatured = () => {
+  onFeatured: any | (() => void) = () => {
     this.setState({value: 'featured'})
     this.props.onChange('featured')
   }
 
-  onPopular = () => {
+  onPopular: any | (() => void) = () => {
     this.setState({value: 'popular'})
     this.props.onChange('popular')
   }
 
-  onRecent = () => {
+  onRecent: any | (() => void) = () => {
     this.setState({value: 'recent'})
     this.props.onChange('recent')
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t} = this
     const activeClass = 'omh-accent-text'
     let featuredClass = ''

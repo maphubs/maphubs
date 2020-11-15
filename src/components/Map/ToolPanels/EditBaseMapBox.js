@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import { Button, List } from 'antd'
 
 type Props = {|
@@ -8,7 +8,7 @@ type Props = {|
 |}
 
 export default class EditBaseMapBox extends React.PureComponent<Props, void> {
-  getLinks = () => {
+  getLinks: (() => {|loggingroads: string, osm: string|}) = () => {
     const origHash = window.location.hash.replace('#', '')
     const hashParts = origHash.split('/')
     const zoom = Math.round(hashParts[0])
@@ -26,17 +26,17 @@ export default class EditBaseMapBox extends React.PureComponent<Props, void> {
     }
   }
 
-  openOSM = () => {
+  openOSM: (() => void) = () => {
     const links = this.getLinks()
     window.location = links.osm
   }
 
-  openLoggingRoads = () => {
+  openLoggingRoads: (() => void) = () => {
     const links = this.getLinks()
     window.location = links.loggingroads
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t} = this.props
     return (
       <div style={{width: '100%', textAlign: 'center'}}>

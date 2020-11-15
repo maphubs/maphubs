@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { MenuOutlined } from '@ant-design/icons'
 import { Layout, Menu, Drawer } from 'antd'
 import MapHubsComponent from './MapHubsComponent'
@@ -43,7 +43,18 @@ type State = {
 } & LocaleStoreState
 
 export default class MapHubsHeader extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: 
+  | any
+  | {|
+    customLinks: Array<any>,
+    logoLinkUrl: string,
+    showAdd: boolean,
+    showExplore: boolean,
+    showHelp: boolean,
+    showMakeAMap: boolean,
+    showOSM: boolean,
+    showSearch: boolean,
+  |} = {
     logoLinkUrl: '/',
     showSearch: true,
     showHelp: true,
@@ -54,19 +65,19 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
     customLinks: []
   }
 
-  showDrawer = () => {
+  showDrawer: any | (() => void) = () => {
     this.setState({
       visible: true
     })
   }
 
-  onClose = () => {
+  onClose: any | (() => void) = () => {
     this.setState({
       visible: false
     })
   }
 
-  renderMenu = (className: string, mode: string) => {
+  renderMenu: any | ((className: string, mode: string) => Node) = (className: string, mode: string) => {
     const {t} = this
     const {customHelpLink, showHelp, activePage, customLinks, showMakeAMap, showSearch, customSearchLink, showExplore, showAdd} = this.props
 
@@ -128,7 +139,7 @@ export default class MapHubsHeader extends MapHubsComponent<Props, State> {
     )
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const { logoLinkUrl, theme } = this.props
     const { fontColor } = theme || {}

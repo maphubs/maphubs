@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import {Modal, Switch, Row, message, Alert, Tooltip} from 'antd'
 import {htmlEncode} from 'js-htmlencode'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
@@ -39,12 +39,12 @@ export default class EmbedCodeModal extends React.Component<Props, State> {
     }
   }
 
-  onClose = () => {
+  onClose: (() => void) = () => {
     this.setState({show: false})
     this.props.onClose()
   }
 
-  render () {
+  render (): Node {
     const {share_id, map_id, t} = this.props
     const {interactive, show} = this.state
     const baseUrl = urlUtil.getBaseUrl()

@@ -3,7 +3,7 @@ import type {GLStyle} from '../../../types/mapbox-gl-style'
 import _remove from 'lodash.remove'
 
 export default {
-  removeStyleLabels (style: GLStyle) {
+  removeStyleLabels (style: GLStyle): GLStyle {
     if (style.layers && Array.isArray(style.layers) && style.layers.length > 0) {
       // treat style as immutable and return a copy
       style = JSON.parse(JSON.stringify(style))
@@ -14,7 +14,7 @@ export default {
     return style
   },
 
-  addStyleLabels (style: GLStyle, field: string, layer_id: number, shortid: string, data_type: string) {
+  addStyleLabels (style: GLStyle, field: string, layer_id: number, shortid: string, data_type: string): any {
     // treat style as immutable and return a copy
     style = JSON.parse(JSON.stringify(style))
     style = this.removeStyleLabels(style)

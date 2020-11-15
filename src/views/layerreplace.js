@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Button } from 'antd'
 import Header from '../components/header'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -33,7 +33,7 @@ type State = {
 } & LocaleStoreState & AddPhotoPointStoreState
 
 export default class LayerReplace extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -92,16 +92,16 @@ export default class LayerReplace extends MapHubsComponent<Props, State> {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  onDownload = () => {
+  onDownload: any | (() => void) = () => {
     this.setState({downloaded: true})
   }
 
-  onDataSubmit = () => {
+  onDataSubmit: any | (() => void) = () => {
     this.setState({submitted: true})
     window.location = '/layer/info/' + this.props.layer.layer_id + '/' + slugify(this.t(this.props.layer.name))
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const { layer } = this.props
     const { downloaded } = this.state

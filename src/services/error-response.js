@@ -3,7 +3,7 @@ const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 const Raven = require('raven')
 module.exports = {
 
-  apiError (res: any, code: number, userMessage?: string) {
+  apiError (res: any, code: number, userMessage?: string): ((err: Error) => void) {
     return function (err: Error) {
       log.error(err)
       if (Raven && Raven.isSetup && Raven.isSetup()) {
@@ -28,7 +28,7 @@ module.exports = {
     }
   },
 
-  nextError (next: Function) {
+  nextError (next: Function): ((err: Error) => void) {
     return function (err: Error) {
       log.error(err)
       next(err)
@@ -49,7 +49,7 @@ module.exports = {
     })
   },
 
-  logRethrow () {
+  logRethrow (): ((err: Error) => any) {
     return function (err: Error) {
       log.error(err)
       throw (err)

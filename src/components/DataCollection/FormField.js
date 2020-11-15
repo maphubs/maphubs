@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row } from 'antd'
 import TextInput from '../forms/textInput'
 import Toggle from '../forms/toggle'
@@ -14,7 +14,7 @@ type Props = {|
 export default class FormField extends React.Component<Props, void> {
   props: Props
 
-  render () {
+  render (): Node {
     const {preset, value, t} = this.props
     let field = (
       <TextInput

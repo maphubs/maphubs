@@ -1,5 +1,5 @@
 // @flow
-import React, { useState } from 'react'
+import type {Element} from "React";import React, { useState } from 'react'
 import { Switch, Row, Col, Tooltip } from 'antd'
 import Info from '@material-ui/icons/Info'
 import MapStyles from '../Map/Styles'
@@ -10,7 +10,7 @@ type Props = {|
   t: Function
 |}
 
-const LayerListItemStatic = ({t, toggleVisibility, item}: Props) => {
+const LayerListItemStatic = ({t, toggleVisibility, item}: Props): Element<"div"> => {
   const {name, source, layer_id, style} = item
   const active = MapStyles.settings.get(style, 'active')
   const [toggled, setToggled] = useState(active)

@@ -1,15 +1,28 @@
 // @flow
 import type {GLLayer} from '../../../types/mapbox-gl-style'
 export default {
-  defaultRasterStyle (layer_id: number, shortid: string, elc: Object, type: string = 'raster') {
+  defaultRasterStyle (layer_id: number, shortid: string, elc: Object, type: string = 'raster'): any {
     return this.rasterStyleWithOpacity(layer_id, shortid, elc, 100, type, elc)
   },
 
-  defaultMultiRasterStyle (layer_id: number, shortid: string, layers: Array<GLLayer>, type: string = 'raster', elc?: Object) {
+  defaultMultiRasterStyle (layer_id: number, shortid: string, layers: Array<GLLayer>, type: string = 'raster', elc?: Object): any {
     return this.multiRasterStyleWithOpacity(layer_id, shortid, layers, 100, type, elc)
   },
 
-  rasterStyleTileJSON (layer_id: number, shortid: string, sourceUrl: string, opacity: number, type: string = 'raster') {
+  rasterStyleTileJSON (layer_id: number, shortid: string, sourceUrl: string, opacity: number, type: string = 'raster'): {|
+  layers: Array<
+    {|
+      id: string,
+      maxzoom: number,
+      metadata: {|"maphubs:globalid": string, "maphubs:layer_id": number|},
+      minzoom: number,
+      paint: {|"raster-opacity": number|},
+      source: string,
+      type: string,
+    |},
+  >,
+  sources: {...},
+|} {
     opacity = opacity / 100
     const style = {
       sources: {},
@@ -40,7 +53,20 @@ export default {
     return style
   },
 
-  rasterStyleWithOpacity (layer_id: number, shortid: string, elc: Object, opacity: number, type: string = 'raster') {
+  rasterStyleWithOpacity (layer_id: number, shortid: string, elc: Object, opacity: number, type: string = 'raster'): {|
+  layers: Array<
+    {|
+      id: string,
+      maxzoom: number,
+      metadata: {|"maphubs:globalid": string, "maphubs:layer_id": number|},
+      minzoom: number,
+      paint: {|"raster-opacity": number|},
+      source: string,
+      type: string,
+    |},
+  >,
+  sources: {...},
+|} {
     opacity = opacity / 100
     const style = {
       sources: {},
@@ -80,7 +106,22 @@ export default {
     return style
   },
 
-  multiRasterStyleWithOpacity (layer_id: number, shortid: string, layers: Array<Object>, opacity: number, type: string = 'raster') {
+  multiRasterStyleWithOpacity (layer_id: number, shortid: string, layers: Array<Object>, opacity: number, type: string = 'raster'): {|
+  layers: Array<
+    
+      | any
+      | {|
+        id: string,
+        maxzoom: number,
+        metadata: {|"maphubs:globalid": string, "maphubs:layer_id": number|},
+        minzoom: number,
+        paint: {|"raster-opacity": number|},
+        source: string,
+        type: string,
+      |},
+  >,
+  sources: {...},
+|} {
     opacity = opacity / 100
     const style = {
       sources: {},

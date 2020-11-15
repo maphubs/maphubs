@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import MiniLegend from '../components/Map/MiniLegend'
 import Map from '../components/Map'
 import { Row, Col, Switch, Modal, message } from 'antd'
@@ -48,7 +48,7 @@ type State = {
 
 // A reponsive full window map used to render screenshots
 export default class StaticMap extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -58,7 +58,15 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: 
+  | any
+  | {|
+    insetMap: boolean,
+    settings: {...},
+    showLegend: boolean,
+    showLogo: boolean,
+    showScale: boolean,
+  |} = {
     showLegend: true,
     showLogo: true,
     showScale: true,
@@ -126,15 +134,15 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     })
   }
 
-  setShowInset = (userShowInset: boolean) => {
+  setShowInset: any | ((userShowInset: boolean) => void) = (userShowInset: boolean) => {
     this.setState({userShowInset})
   }
 
-  setShowScale = (userShowScale: boolean) => {
+  setShowScale: any | ((userShowScale: boolean) => void) = (userShowScale: boolean) => {
     this.setState({userShowScale})
   }
 
-  setShowLegend = (userShowLegend: boolean) => {
+  setShowLegend: any | ((userShowLegend: boolean) => void) = (userShowLegend: boolean) => {
     const _this = this
     const {t} = this
     if (!userShowLegend) {
@@ -152,7 +160,7 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  hideSettings = () => {
+  hideSettings: any | (() => void) = () => {
     const {t} = this
     this.setState({showSettings: false})
     fireResizeEvent()
@@ -160,14 +168,14 @@ export default class StaticMap extends MapHubsComponent<Props, State> {
       .then(() => fireResizeEvent())
   }
 
-  showSettings = () => {
+  showSettings: any | (() => void) = () => {
     if (!this.state.showSettings) {
       this.setState({showSettings: true})
       fireResizeEvent()
     }
   }
 
-  render () {
+  render (): Node {
     let legend, bottomLegend
     const {t, setShowLegend, setShowScale, setShowInset, hideSettings} = this
     const {name, layers, position, settings} = this.props

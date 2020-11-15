@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import getConfig from 'next/config'
 import { Row, Col } from 'antd'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
@@ -15,14 +15,19 @@ type Props = {
 }
 
 export default class Footer extends React.Component<Props, void> {
-  static defaultProps = {
+  static defaultProps: {|
+  customLeftColumnItems: Array<any>,
+  showContactUs: boolean,
+  showMapForEnvironmentMoabiLogo: boolean,
+  showPoweredByMapHubs: boolean,
+|} = {
     showPoweredByMapHubs: true,
     showMapForEnvironmentMoabiLogo: false,
     showContactUs: true,
     customLeftColumnItems: []
   }
 
-  render () {
+  render (): Element<"footer"> {
     const _this = this
     const {
       showMapForEnvironmentMoabiLogo,

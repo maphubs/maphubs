@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import LayerListItem from './LayerListItem'
 import _isEqual from 'lodash.isequal'
 import {List, Empty} from 'antd'
@@ -28,7 +28,13 @@ type State = {
 }
 
 export default class LayerList extends React.Component<Props, State> {
-  static defaultProps = {
+  static defaultProps: {|
+  showDesign: boolean,
+  showEdit: boolean,
+  showInfo: boolean,
+  showRemove: boolean,
+  showVisibility: boolean,
+|} = {
     showVisibility: false,
     showDesign: false,
     showRemove: false,
@@ -54,7 +60,7 @@ export default class LayerList extends React.Component<Props, State> {
     }
   }
 
-  moveLayer = (dragIndex: any, hoverIndex: any) => {
+  moveLayer: ((dragIndex: any, hoverIndex: any) => void) = (dragIndex: any, hoverIndex: any) => {
     const layers = this.state.layers
     const dragLayer = layers[dragIndex]
 
@@ -68,7 +74,7 @@ export default class LayerList extends React.Component<Props, State> {
     this.props.updateLayers(updatedLayers)
   }
 
-  render () {
+  render (): Element<"div"> {
     const _this = this
     const {layers} = this.state
     const {toggleVisibility, showVisibility, showRemove, showDesign, showEdit, showInfo, removeFromMap, showLayerDesigner, editLayer, t} = this.props

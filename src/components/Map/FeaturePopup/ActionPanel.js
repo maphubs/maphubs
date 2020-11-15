@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import {Row, Col, Tooltip} from 'antd'
 import Info from '@material-ui/icons/Info'
 import InsertPhoto from '@material-ui/icons/InsertPhoto'
@@ -55,7 +55,7 @@ const getLayerLink = (feature, layer) => {
   return layerLink
 }
 
-export default function ActionPanel ({ layer, selectedFeature, featureName, enableToggle, toggled, toggleData, t }: Props) {
+export default function ActionPanel ({ layer, selectedFeature, featureName, enableToggle, toggled, toggleData, t }: Props): Node {
   let layerName
   let layerLink
   if (layer) {

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import {Tooltip} from 'antd'
 import Search from '@material-ui/icons/Search'
 
@@ -8,7 +8,7 @@ type Props = {
   searchLink: string
 }
 
-export default ({t, searchLink}: Props) => (
+export default ({t, searchLink}: Props): Node => (
   <Tooltip
     title={t('Search')}
     placement='bottom'

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node, Element} from "React";import React from 'react'
 import { Modal, Button } from 'antd'
 import _isequal from 'lodash.isequal'
 
@@ -33,7 +33,7 @@ type State = {
 }
 
 export default class CodeEditor extends React.Component<Props, State> {
-  static defaultProps = {
+  static defaultProps: {|id: string, modal: boolean, mode: string, theme: string, visible: boolean|} = {
     id: 'code-editor',
     mode: 'json',
     theme: 'monokai',
@@ -56,7 +56,7 @@ export default class CodeEditor extends React.Component<Props, State> {
     this.setState({code: nextProps.code})
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
@@ -67,17 +67,17 @@ export default class CodeEditor extends React.Component<Props, State> {
     return false
   }
 
-  onChange = (code: any) => {
+  onChange: ((code: any) => void) = (code: any) => {
     this.setState({code})
   }
 
-  onSave = () => {
+  onSave: (() => void) = () => {
     if (this.state.canSave) {
       this.props.onSave(this.state.code)
     }
   }
 
-  render () {
+  render (): Node | Element<"div"> {
     const { title, modal, t, mode, theme, id, onCancel, visible } = this.props
     const { canSave, code } = this.state
     let editor = ''

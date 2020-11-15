@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import slugify from 'slugify'
 import StoryHeader from './StoryHeader'
 import ShareButtons from '../../components/ShareButtons'
@@ -14,11 +14,11 @@ type Props = {|
 |}
 
 export default class StorySummary extends React.Component<Props, void> {
-  static defaultProps = {
+  static defaultProps: {|baseUrl: string|} = {
     baseUrl: ''
   }
 
-  render () {
+  render (): Element<"div"> {
     const { story, t } = this.props
     const baseUrl = urlUtil.getBaseUrl()
     const linkUrl = `${baseUrl}/story/${slugify(t(story.title))}/${story.story_id}`

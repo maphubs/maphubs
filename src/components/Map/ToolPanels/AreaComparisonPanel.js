@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 
 type Props = {|
   t: Function
@@ -8,7 +8,7 @@ type Props = {|
 export default class AreaComparisonPanel extends React.Component<Props, void> {
   props: Props
 
-  render () {
+  render (): Element<"div"> {
     const {t} = this.props
     return (
       <div>

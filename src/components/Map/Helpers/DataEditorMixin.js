@@ -12,11 +12,11 @@ if (typeof window !== 'undefined') {
 
 export default {
 
-  getFirstDrawLayerID () {
+  getFirstDrawLayerID (): any {
     return this.getEditorStyles()[0].id + '.cold'
   },
 
-  getEditorStyles () {
+  getEditorStyles (): any {
     return theme
   },
 

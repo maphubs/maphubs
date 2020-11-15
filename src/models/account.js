@@ -3,7 +3,7 @@ const knex = require('../connection')
 
 module.exports = {
 
-  async setGroupTier (groupId: string, tierId: string, trx: any = undefined) {
+  async setGroupTier (groupId: string, tierId: string, trx: any = undefined): Promise<any> {
     const db = trx || knex
     return db('omh.groups').udpdate({tier_id: tierId}).where({group_id: groupId})
   },
@@ -12,7 +12,7 @@ module.exports = {
    * Get tiers current offer to end-users
    * otherwise tiers are hidden to support grandfathered and custom accounts
    */
-  async getAvailableTiers (trx: any = undefined) {
+  async getAvailableTiers (trx: any = undefined): Promise<any> {
     const db = trx || knex
     return db('omh.account_tiers').where({available: true})
   },

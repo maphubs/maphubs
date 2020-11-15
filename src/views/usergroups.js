@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Result, Button, Typography } from 'antd'
 import GroupIcon from '@material-ui/icons/Group'
 import Header from '../components/header'
@@ -37,7 +37,7 @@ type DefaultProps = {
 }
 
 export default class UserGroups extends MapHubsComponent<Props, void> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -61,7 +61,7 @@ export default class UserGroups extends MapHubsComponent<Props, void> {
     }
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const {canEdit, user, groups} = this.props
 

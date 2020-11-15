@@ -115,4 +115,4 @@ class TextArea extends MapHubsComponent<Props, State> {
     )
   }
 }
-export default withFormsy(TextArea)
+export default (withFormsy(TextArea): any)

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Col, message, notification, Button } from 'antd'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
@@ -20,7 +20,7 @@ export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStor
     this.stores.push(LayerStore)
   }
 
-  onSubmit = () => {
+  onSubmit: any | (() => void) = () => {
     const {t} = this
     const _this = this
     const data = {
@@ -44,7 +44,7 @@ export default class EmptyLocalSource extends MapHubsComponent<Props, LocaleStor
     })
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     return (
       <Row justify='end' style={{marginBottom: '20px'}}>

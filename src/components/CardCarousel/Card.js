@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import GroupTag from '../Groups/GroupTag'
 import Lock from '@material-ui/icons/Lock'
 import AddCircle from '@material-ui/icons/AddCircle'
@@ -10,7 +10,7 @@ import MapIcon from '@material-ui/icons/Map'
 import LayersIcon from '@material-ui/icons/Layers'
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks'
 
-export type CardConfig = {|
+export type CardConfig = {
   id: string,
   title?: LocalizedString,
   description?: LocalizedString,
@@ -26,7 +26,7 @@ export type CardConfig = {|
   public?: boolean,
   draft?: boolean,
   onClick?: Function
-|}
+}
 
 type Props = {
   t: Function,
@@ -43,7 +43,7 @@ export default class MapHubsCard extends React.Component<Props, State> {
     this.state = {}
   }
 
-  onClick = () => {
+  onClick: (() => void) = () => {
     if (this.props.onClick) {
       this.props.onClick(this.props.data)
     } else if (this.props.link) {
@@ -53,16 +53,16 @@ export default class MapHubsCard extends React.Component<Props, State> {
     }
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     if (nextState.imageFailed && !this.state.imageFailed) return true
     return false
   }
 
-  onImageFailed = () => {
+  onImageFailed: (() => void) = () => {
     this.setState({imageFailed: true})
   }
 
-  render () {
+  render (): Node {
     const {group, showAddButton, type, t, image_url, showDescription, id} = this.props
     const { imageFailed } = this.state
 

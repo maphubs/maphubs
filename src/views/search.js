@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import { Row, message, notification } from 'antd'
@@ -34,7 +34,7 @@ type State = {
 }
 
 export default class Search extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -57,7 +57,7 @@ export default class Search extends MapHubsComponent<Props, State> {
     }
   }
 
-  getParameterByName = (name: string, url: any) => {
+  getParameterByName: any | ((name: string, url: any) => null | string) = (name: string, url: any) => {
     if (!url) url = window.location.href
     url = url.toLowerCase() // This is just to avoid case sensitiveness
     name = name.replace(/[[\]]/g, '\\$&').toLowerCase()// This is just to avoid case sensitiveness for query parameter name
@@ -75,11 +75,11 @@ export default class Search extends MapHubsComponent<Props, State> {
     }
   }
 
-  onResetSearch = () => {
+  onResetSearch: any | (() => void) = () => {
     this.setState({searchResult: null, searchCards: []})
   }
 
-  handleSearch = async (input: string) => {
+  handleSearch: any | ((input: string) => Promise<void>) = async (input: string) => {
     const {t} = this
     const closeSearchingMessage = message.loading(t('Searching'), 0)
     try {
@@ -137,7 +137,7 @@ export default class Search extends MapHubsComponent<Props, State> {
     }
   }
 
-  getMixedCardSet (layers: Array<Object>, groups: Array<Object>, maps: Array<Object>, stories: Array<Object>) {
+  getMixedCardSet (layers: Array<Object>, groups: Array<Object>, maps: Array<Object>, stories: Array<Object>): any {
     return _shuffle(layers.map(cardUtil.getLayerCard)
       .concat(groups.map(cardUtil.getGroupCard))
       .concat(maps.map(cardUtil.getMapCard))
@@ -145,7 +145,7 @@ export default class Search extends MapHubsComponent<Props, State> {
     )
   }
 
-  render () {
+  render (): Node {
     const {t} = this
 
     return (

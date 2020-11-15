@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import { Row, Col, message, notification, Button } from 'antd'
 import MultiTextArea from '../forms/MultiTextArea'
@@ -33,7 +33,7 @@ type State = {
 } & LocaleStoreState & GroupStoreState
 
 export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: any | {|active: boolean|} = {
     active: false
   }
 
@@ -60,7 +60,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
     })
   }
 
-  checkGroupIdAvailable = (id: string) => {
+  checkGroupIdAvailable: any | ((id: string) => boolean) = (id: string) => {
     const {t} = this
     let result = false
     // only check if a valid value was provided and we are running in the browser
@@ -91,23 +91,23 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
     return result
   }
 
-  enableButton = () => {
+  enableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: true
     })
   }
 
-  disableButton = () => {
+  disableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: false
     })
   }
 
-  submit = (model: Object) => {
+  submit: any | ((model: any) => void) = (model: Object) => {
     this.saveGroup(model)
   }
 
-  saveGroup = (model: Object) => {
+  saveGroup: any | ((model: any) => void) = (model: Object) => {
     const {t} = this
     const _this = this
     model.name = Locales.formModelToLocalizedString(model, 'name')
@@ -140,7 +140,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
     }
   }
 
-  handleCancel = () => {
+  handleCancel: any | (() => void) = () => {
     const {t} = this
     const _this = this
     if (_this.state.group.created) {
@@ -164,7 +164,7 @@ export default class CreateGroupStep1 extends MapHubsComponent<Props, State> {
     }
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t} = this
     // hide if not active
     let className = classNames('row')

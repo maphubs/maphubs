@@ -11,7 +11,7 @@ module.exports = {
   /**
    * Can include private?: Yes
    */
-  async getMap (map_id: number, trx: any) {
+  async getMap (map_id: number, trx: any): Promise<any> {
     let db = knex
     if (trx) { db = trx }
     const result = await db('omh.maps')
@@ -32,7 +32,7 @@ module.exports = {
   /**
    * Can include private?: Yes
    */
-  getGroupMaps (owned_by_group_id: number, includePrivate: boolean, trx: any) {
+  getGroupMaps (owned_by_group_id: number, includePrivate: boolean, trx: any): any {
     let db = knex
     if (trx) { db = trx }
     const query = db('omh.maps')
@@ -51,7 +51,7 @@ module.exports = {
   /**
    * Can include private?: Yes
    */
-  async getMapLayers (map_id: number, includePrivateLayers: boolean, trx: any) {
+  async getMapLayers (map_id: number, includePrivateLayers: boolean, trx: any): Promise<any> {
     const db = trx || knex
     const query = db.select(
       'omh.layers.layer_id', 'omh.layers.shortid', 'omh.layers.name', 'omh.layers.description', 'omh.layers.data_type',
@@ -90,7 +90,7 @@ module.exports = {
     return layers
   },
 
-  async isPrivate (map_id: number) {
+  async isPrivate (map_id: number): Promise<any> | Promise<boolean> {
     const result = await knex.select('private').from('omh.maps').where({map_id})
     if (result && result.length === 1) {
       return result[0].private
@@ -98,12 +98,12 @@ module.exports = {
     return true // if we don't find the layer, assume it should be private
   },
 
-  async allowedToModify (map_id: number, user_id: number) {
+  async allowedToModify (map_id: number, user_id: number): Promise<any> {
     const map = await this.getMap(map_id)
     return Group.allowedToModify(map.owned_by_group_id, user_id)
   },
 
-  getMapsBaseQuery (trx: any) {
+  getMapsBaseQuery (trx: any): any {
     const db = trx || knex
     return db.select(
       'omh.maps.map_id',
@@ -120,7 +120,7 @@ module.exports = {
   /**
      * Can include private?: No
      */
-  getAllMaps (trx: any) {
+  getAllMaps (trx: any): any {
     const query = this.getMapsBaseQuery(trx)
     return query
       .where('omh.maps.private', false)
@@ -130,7 +130,7 @@ module.exports = {
   /**
      * Can include private?: No
      */
-  getFeaturedMaps (number: number = 10) {
+  getFeaturedMaps (number: number = 10): any {
     const query = this.getMapsBaseQuery()
     return query
       .where('omh.maps.featured', true).where('omh.maps.private', false)
@@ -141,7 +141,7 @@ module.exports = {
   /**
      * Can include private?: No
      */
-  getPopularMaps (number: number = 10) {
+  getPopularMaps (number: number = 10): any {
     const query = this.getMapsBaseQuery()
     return query
       .where('omh.maps.private', false)
@@ -153,7 +153,7 @@ module.exports = {
   /**
    * Can include private?: No
    */
-  getRecentMaps (number: number = 10) {
+  getRecentMaps (number: number = 10): any {
     const query = this.getMapsBaseQuery()
     return query
       .where('omh.maps.private', false)
@@ -164,7 +164,7 @@ module.exports = {
   /**
    * Can include private?: Yes
    */
-  getUserMaps (user_id: number) {
+  getUserMaps (user_id: number): any {
     return knex.select(
       'omh.maps.map_id',
       'omh.maps.title',
@@ -185,7 +185,7 @@ module.exports = {
   /**
    * Can include private?: No
    */
-  getSearchSuggestions (input: string) {
+  getSearchSuggestions (input: string): any {
     input = input.toLowerCase()
     return knex.select('title', 'map_id').table('omh.maps')
       .where(knex.raw(`
@@ -203,7 +203,7 @@ module.exports = {
   /**
    * Can include private?: No
    */
-  getSearchResults (input: string) {
+  getSearchResults (input: string): any {
     input = input.toLowerCase()
     const query = this.getMapsBaseQuery()
     return query
@@ -220,7 +220,7 @@ module.exports = {
       .orderBy('omh.maps.updated_at', 'desc')
   },
 
-  async createMap (layers: Array<Object>, style: any, basemap: string, position: any, title: string, settings: Object, user_id: number, isPrivate: boolean, trx?: any) {
+  async createMap (layers: Array<Object>, style: any, basemap: string, position: any, title: string, settings: Object, user_id: number, isPrivate: boolean, trx?: any): Promise<any> {
     const db = trx || knex
     if (layers?.length > 0) {
       if (!isPrivate) {
@@ -270,7 +270,7 @@ module.exports = {
    * Create a new map as a copy of the requested map an assign to the requested group
    * Can include private?: If requested
    */
-  async copyMapToGroup (map_id: number, to_group_id: string, user_id: number, title?: LocalizedString) {
+  async copyMapToGroup (map_id: number, to_group_id: string, user_id: number, title?: LocalizedString): Promise<any> {
     const map = await this.getMap(map_id)
     const layers = await this.getMapLayers(map_id)
     const copyTitle = title || map.title
@@ -279,7 +279,7 @@ module.exports = {
     })
   },
 
-  transferMapToGroup (map_id: number, group_id: string, user_id: number) {
+  transferMapToGroup (map_id: number, group_id: string, user_id: number): any {
     return knex('omh.maps')
       .update({
         owned_by_group_id: group_id,
@@ -289,7 +289,7 @@ module.exports = {
       .where({map_id})
   },
 
-  async setPrivate (map_id: string, isPrivate: boolean, user_id: number) {
+  async setPrivate (map_id: string, isPrivate: boolean, user_id: number): Promise<any> {
     const map = await this.getMap(map_id)
 
     if (map.private && !isPrivate) {
@@ -323,7 +323,7 @@ module.exports = {
     }
   },
 
-  async updateMap (map_id: number, layers: Array<Object>, style: Object, basemap: string, position: any, title: string, settings: Object, user_id: number) {
+  async updateMap (map_id: number, layers: Array<Object>, style: Object, basemap: string, position: any, title: string, settings: Object, user_id: number): Promise<any> {
     return knex.transaction(async (trx) => {
       await trx('omh.maps')
         .update({
@@ -361,7 +361,7 @@ module.exports = {
     })
   },
 
-  async deleteMap (map_id: number) {
+  async deleteMap (map_id: number): Promise<any> {
     return knex.transaction(async (trx) => {
       await trx('omh.map_views').where({map_id}).del()
       await trx('omh.user_maps').where({map_id}).del() // keep until all user maps migrated
@@ -371,7 +371,7 @@ module.exports = {
     })
   },
 
-  async createGroupMap (layers: Array<Object>, style: Object, basemap: string, position: any, title: string, settings: Object, user_id: number, group_id: string, isPrivate: boolean, trx?: any) {
+  async createGroupMap (layers: Array<Object>, style: Object, basemap: string, position: any, title: string, settings: Object, user_id: number, group_id: string, isPrivate: boolean, trx?: any): Promise<any> {
     const db = trx || knex
     if (layers && Array.isArray(layers) && layers.length > 0) {
       if (isPrivate) {
@@ -387,7 +387,7 @@ module.exports = {
     return map_id // pass on the new map_id
   },
 
-  async getMapByShareId (share_id: string, trx: any) {
+  async getMapByShareId (share_id: string, trx: any): Promise<any> {
     const db = trx || knex
     const result = await db('omh.maps')
       .select(knex.raw(
@@ -403,14 +403,14 @@ module.exports = {
     return null
   },
 
-  async addPublicShareID (map_id: number, trx: any) {
+  async addPublicShareID (map_id: number, trx: any): Promise<any> {
     const db = trx || knex
     const share_id = shortid.generate()
     await db('omh.maps').update({share_id}).where({map_id})
     return share_id
   },
 
-  async removePublicShareID (map_id: number, trx: any) {
+  async removePublicShareID (map_id: number, trx: any): Promise<any> {
     const db = trx || knex
     return db('omh.maps').update({share_id: null}).where({map_id})
   }

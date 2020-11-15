@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import EditBaseMapBox from './ToolPanels/EditBaseMapBox'
 import BaseMapSelection from './ToolPanels/BaseMapSelection'
 import MeasurementToolPanel from './ToolPanels/MeasurementToolPanel'
@@ -37,21 +37,21 @@ export default class MapToolPanel extends React.Component<Props, State> {
 
   drawerContainer: any
 
-  static defaultProps = {
+  static defaultProps: {|enableMeasurementTools: boolean, show: boolean|} = {
     show: false,
     enableMeasurementTools: false
   }
 
-  onSetOpen = (open: boolean) => {
+  onSetOpen: ((open: boolean) => void) = (open: boolean) => {
     this.setState({ open })
   }
 
-  onChangeBaseMap = (val: string) => {
+  onChangeBaseMap: ((val: string) => void) = (val: string) => {
     this.onSetOpen(false)
     this.props.onChangeBaseMap(val)
   }
 
-  render () {
+  render (): Node {
     const {t, show, gpxLink} = this.props
     return (
       <>

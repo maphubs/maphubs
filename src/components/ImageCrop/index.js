@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import MapHubsComponent from '../MapHubsComponent'
 import { Row, Modal, Button, notification, Upload } from 'antd'
 import Promise from 'bluebird'
@@ -58,7 +58,16 @@ type State = {
 }
 
 export default class ImageCrop extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: 
+  | any
+  | {|
+    allowedExtensions: string,
+    autoCropArea: number,
+    jpeg_quality: number,
+    lockAspect: boolean,
+    max_size: number,
+    skip_size: number,
+  |} = {
     lockAspect: false,
     autoCropArea: 1,
     allowedExtensions: '.jpg,.jpeg,.png',
@@ -102,11 +111,11 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
     this.setState(updateProps)
   }
 
-  show = () => {
+  show: any | (() => void) = () => {
     this.setState({visible: true})
   }
 
-  checkFileSize = (file: Object) => {
+  checkFileSize: any | ((file: any) => any) = (file: Object) => {
     const {t} = this
     const _this = this
     return new Promise((resolve, reject) => {
@@ -123,7 +132,7 @@ export default class ImageCrop extends MapHubsComponent<Props, State> {
     })
   }
 
-resizeImage = (sourceCanvas: any): Promise<Object> => {
+resizeImage: any | ((sourceCanvas: any) => any) = (sourceCanvas: any): Promise<Object> => {
   let pica
   if (typeof window === 'undefined') {
     return new Promise((resolve) => {
@@ -328,7 +337,11 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
     }
   }
 
-  _crop = (e:{width: number, height: number, scaleX: number, scaleY: number}) => {
+  _crop: 
+  | any
+  | ((
+    e: {height: number, scaleX: number, scaleY: number, width: number,...}
+  ) => void) = (e:{width: number, height: number, scaleX: number, scaleY: number}) => {
     this.setState({
       cropWidth: e.width,
       cropHeight: e.height,
@@ -337,7 +350,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
     })
   }
 
-  onSave = () => {
+  onSave: any | (() => void) = () => {
     const _this = this
     const cropper = this.cropperInstance
     const canvas = cropper.getCroppedCanvas()
@@ -363,20 +376,20 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
     })
   }
 
-  handleCloseSelected = () => {
+  handleCloseSelected: any | (() => void) = () => {
     this.resetImageCrop()
     this.setState({visible: false})
   }
 
-  zoomIn = () => {
+  zoomIn: any | (() => void) = () => {
     this.cropperInstance.zoom(0.1)
   }
 
-  zoomOut = () => {
+  zoomOut: any | (() => void) = () => {
     this.cropperInstance.zoom(-0.1)
   }
 
-  cropOriginal = () => {
+  cropOriginal: any | (() => void) = () => {
     this.resetCropPosition()
     const { img } = this.state
     if (img) {
@@ -384,24 +397,24 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
     }
   }
 
-  aspect16by9 = () => {
+  aspect16by9: any | (() => void) = () => {
     this.cropperInstance.setAspectRatio(16 / 9)
   }
 
-  aspect3by2 = () => {
+  aspect3by2: any | (() => void) = () => {
     this.cropperInstance.setAspectRatio(3 / 2)
   }
 
-  aspectSquare = () => {
+  aspectSquare: any | (() => void) = () => {
     this.cropperInstance.setAspectRatio(1)
   }
 
-  resetCropPosition = () => {
+  resetCropPosition: any | (() => void) = () => {
     console.log('resetting crop position')
     if (this.cropperInstance?.reset) this.cropperInstance.reset()
   }
 
-  resetImageCrop = () => {
+  resetImageCrop: any | (() => void) = () => {
     if (this.cropperInstance?.reset) this.cropperInstance.reset()
     if (this.cropperInstance?.clear) this.cropperInstance.clear()
     this.setState({
@@ -418,7 +431,7 @@ resizeImage = (sourceCanvas: any): Promise<Object> => {
     })
   }
 
-  render () {
+  render (): Element<"div"> {
     const { t, _crop } = this
     const { lockAspect, autoCropArea, aspectRatio, allowedExtensions } = this.props
     const { src, img } = this.state

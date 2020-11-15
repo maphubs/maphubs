@@ -374,6 +374,6 @@ class InsetMap extends React.Component<Props, State> {
     }
   }
 }
-export default subscribe(InsetMap, {
+export default (subscribe(InsetMap, {
   mapState: MapContainer
-})
+}): any)

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import { message, notification, Modal, Row, Button, Tabs, PageHeader, Divider, Typography } from 'antd'
 import LayerSettings from '../components/CreateLayer/LayerSettings'
@@ -49,7 +49,7 @@ type State = {
 } & LocaleStoreState & LayerStoreState & UserStoreState
 
 export default class LayerAdmin extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -95,7 +95,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
     LayerActions.loadLayer()
   }
 
-  saveStyle = () => {
+  saveStyle: any | (() => void) = () => {
     const {t} = this
     LayerActions.saveStyle(this.state, this.state._csrf, (err) => {
       if (err) {
@@ -110,12 +110,12 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
     })
   }
 
-  onSave = () => {
+  onSave: any | (() => void) = () => {
     const {t} = this
     message.success(t('Layer Saved'))
   }
 
-  savePresets = () => {
+  savePresets: any | (() => void) = () => {
     const {t} = this
     const _this = this
     // check for duplicate presets
@@ -146,15 +146,15 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
     }
   }
 
-  presetsValid = () => {
+  presetsValid: any | (() => void) = () => {
     this.setState({canSavePresets: true})
   }
 
-  presetsInvalid = () => {
+  presetsInvalid: any | (() => void) = () => {
     this.setState({canSavePresets: false})
   }
 
-  deleteLayer = () => {
+  deleteLayer: any | (() => void) = () => {
     const {t} = this
     const _this = this
     confirm({
@@ -184,7 +184,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
     })
   }
 
-  refreshRemoteLayer = () => {
+  refreshRemoteLayer: any | (() => void) = () => {
     const {t} = this
     request.post('/api/layer/refresh/remote')
       .type('json').accept('json')
@@ -207,7 +207,7 @@ export default class LayerAdmin extends MapHubsComponent<Props, State> {
       })
   }
 
-  render () {
+  render (): Node {
     const {t} = this
 
     const layerId = this.props.layer.layer_id ? this.props.layer.layer_id : 0

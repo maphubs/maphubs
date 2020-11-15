@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Col } from 'antd'
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
   t: Function
 }
 
-export default function LayerInfoStats ({views, stats, t}: Props) {
+export default function LayerInfoStats ({views, stats, t}: Props): Node {
   return (
     <Row justify='center' style={{position: 'absolute', bottom: 0, width: '100%', backgroundColor: '#FFF'}}>
       <Col sm={16} md={8} style={{textAlign: 'center'}}>

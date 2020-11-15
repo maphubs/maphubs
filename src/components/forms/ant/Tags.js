@@ -28,22 +28,22 @@ export default class Tags extends React.Component<Props, State> {
 
   input: any
 
-  handleClose = (removedTag: string) => {
+  handleClose: ((removedTag: string) => void) = (removedTag: string) => {
     const tags = this.state.tags.filter(tag => tag !== removedTag)
     console.log(tags)
     this.setState({ tags })
     if (this.props.onChange) this.props.onChange(tags)
   }
 
-  showInput = () => {
+  showInput: (() => void) = () => {
     this.setState({ inputVisible: true }, () => this.input.focus())
   }
 
-  handleInputChange = (e: any) => {
+  handleInputChange: ((e: any) => void) = (e: any) => {
     this.setState({ inputValue: e.target.value })
   }
 
-  handleInputConfirm = () => {
+  handleInputConfirm: (() => void) = () => {
     const { inputValue } = this.state
     let { tags } = this.state
     if (inputValue && !tags.includes(inputValue)) {
@@ -58,9 +58,9 @@ export default class Tags extends React.Component<Props, State> {
     if (this.props.onChange) this.props.onChange(tags)
   };
 
-  saveInputRef = (input: any) => (this.input = input);
+  saveInputRef: ((input: any) => any) = (input: any) => (this.input = input);
 
-  render () {
+  render (): React.Element<"div"> {
     const { tags, inputVisible, inputValue } = this.state
     return (
       <div>

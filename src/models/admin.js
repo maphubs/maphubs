@@ -8,16 +8,15 @@ const local = require('../local')
 
 module.exports = {
 
-  async resendInvite (key: string, __: Function) {
+  async resendInvite (key: string, __: Function): Promise<any> {
     const result = await knex('omh.account_invites').select('email').where({key})
     if (result && result.length === 1) {
       const email = result[0].email
       return this.sendInviteEmail(email, __, key)
     }
-    return null
   },
 
-  async sendInviteEmail (email: string, __: Function, resendKey?: string) {
+  async sendInviteEmail (email: string, __: Function, resendKey?: string): Promise<string> {
     // create confirm link
     email = email.toLowerCase()
     debug.log('sending email invite to: ' + email)
@@ -59,31 +58,31 @@ module.exports = {
     return key
   },
 
-  async checkInviteKey (key: string) {
+  async checkInviteKey (key: string): Promise<boolean> {
     debug.log('checking invite key')
     const result = await knex('omh.account_invites').select('email').where({key})
 
     if (result && result.length === 1) {
       return true
     }
-    return null
+    return false
   },
 
-  async checkInviteEmail (email: string) {
+  async checkInviteEmail (email: string): Promise<boolean> {
     debug.log('checking invite key')
     const result = await knex('omh.account_invites').select('email').where({email})
 
     if (result && result.length > 0) {
       return true
     }
-    return null
+    return false
   },
 
   /**
    * Check if the provide email has been invited and confirmed by the user
    * @param {*} email
    */
-  async checkInviteConfirmed (email: string) {
+  async checkInviteConfirmed (email: string): Promise<boolean> {
     email = email.toLowerCase()
     const results = await knex('omh.account_invites').where({email, used: true})
 
@@ -94,7 +93,7 @@ module.exports = {
     }
   },
 
-  async useInvite (key: string) {
+  async useInvite (key: string): Promise<any> {
     debug.log('using invite key')
     await knex('omh.account_invites').update({used: true}).where({key})
 
@@ -106,7 +105,7 @@ module.exports = {
     }
   },
 
-  getMembers (trx: any) {
+  getMembers (trx: any): any {
     const db = trx || knex
     return db('users')
       .fullOuterJoin('omh.account_invites', 'users.email', 'omh.account_invites.email')
@@ -115,18 +114,18 @@ module.exports = {
       .orderBy('users.id')
   },
 
-  getAdmins (trx: any) {
+  getAdmins (trx: any): any {
     const db = trx || knex
     return db('omh.admins').leftJoin('users', 'omh.admins.user_id', 'users.id')
       .select('users.id', 'users.email', 'users.display_name')
   },
 
-  deauthorize (email: string, key: string, trx: any) {
+  deauthorize (email: string, key: string, trx: any): any {
     const db = trx || knex
     return db('omh.account_invites').del().where({email, key})
   },
 
-  async checkAdmin (userId: number, trx: any) {
+  async checkAdmin (userId: number, trx: any): Promise<boolean> {
     const db = trx || knex
     const result = await db('omh.admins').select('user_id').where({user_id: userId})
 

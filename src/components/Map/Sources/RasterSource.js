@@ -5,7 +5,7 @@ import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const RasterSource = {
-  async load (key: string, source: GLSource, mapComponent: any) {
+  async load (key: string, source: GLSource, mapComponent: any): Promise<any> {
     if (source.url) {
       source.url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
     }
@@ -42,10 +42,10 @@ const RasterSource = {
       }
     }
   },
-  removeLayer (layer: GLLayer, mapComponent: any) {
+  removeLayer (layer: GLLayer, mapComponent: any): any {
     return mapComponent.removeLayer(layer.id)
   },
-  remove (key: string, mapComponent: any) {
+  remove (key: string, mapComponent: any): any {
     return mapComponent.removeSource(key)
   }
 }

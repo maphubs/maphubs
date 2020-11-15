@@ -124,7 +124,7 @@ module.exports = {
     return trx(`layers.data_${layer_id}`).where({mhid}).del()
   },
 
-  async updateLayerExtent (layer_id: number, trx: any) {
+  async updateLayerExtent (layer_id: number, trx: any): Promise<any> {
     const layerTable = 'layers.data_' + layer_id
     let bbox = await trx.raw(`select 
           '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox 

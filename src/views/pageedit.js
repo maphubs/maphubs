@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import { Row, Col, List, Button, Empty, message, notification } from 'antd'
@@ -35,7 +35,7 @@ type State = {
 } & LocaleStoreState
 
 export default class PageEdit extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -63,7 +63,7 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
     }
   }
 
-  savePageConfig = (pageConfig: string) => {
+  savePageConfig: any | ((pageConfig: string) => void) = (pageConfig: string) => {
     const {t} = this
     const _this = this
     request.post('/api/page/save')
@@ -102,7 +102,7 @@ export default class PageEdit extends MapHubsComponent<Props, State> {
     this.setState({pageConfig, editingComponent: null})
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const { pageConfig, editingComponent } = this.state
     const components = pageConfig.components

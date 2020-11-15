@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Col, Button, Divider } from 'antd'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
@@ -34,7 +34,7 @@ type State = {
 export default class CreateLayer extends MapHubsComponent<Props, State> {
    props: Props
 
-   state = {
+   state: State = {
      canSubmit: false,
      source: ''
    }
@@ -49,27 +49,27 @@ export default class CreateLayer extends MapHubsComponent<Props, State> {
      }
    }
 
-  getSource = LayerSourceHelper.getSource.bind(this)
+  getSource: any | ((type: string, mapConfig: any, t: any) => any) = LayerSourceHelper.getSource.bind(this)
 
   sourceDisplay: any
 
-  selectSource = (source: string) => {
+  selectSource: any | ((source: string) => void) = (source: string) => {
     this.setState({source})
   }
 
-  onCancel = () => {
+  onCancel: any | (() => void) = () => {
     if (this.props.onCancel) this.props.onCancel()
   }
 
-  onPrev = () => {
+  onPrev: any | (() => void) = () => {
     if (this.props.onPrev) this.props.onPrev()
   }
 
-  onSubmit = () => {
+  onSubmit: any | (() => void) = () => {
     this.props.onSubmit()
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const {source} = this.state
     const { showCancel, onCancel, cancelText } = this.props

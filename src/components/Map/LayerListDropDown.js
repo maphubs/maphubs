@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import LayerListStatic from './LayerListStatic'
 import { DownOutlined } from '@ant-design/icons'
 import { Dropdown } from 'antd'
@@ -12,11 +12,11 @@ type Props = {
 }
 
 export default class LayerListDropDown extends React.Component<Props, void> {
-  shouldComponentUpdate () {
+  shouldComponentUpdate (): boolean {
     return false
   }
 
-  render () {
+  render (): Element<"div"> {
     const {name, layers, toggleVisibility, t} = this.props
     return (
       <div style={{height: '35px'}}>

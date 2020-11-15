@@ -4,7 +4,7 @@ const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('model
 
 module.exports = {
 
-  async getLayerStats (layer_id: number) {
+  async getLayerStats (layer_id: number): Promise<{|maps: void, stories: void, viewsByDay: any|}> {
     let maps
     const mapsResult = await knex('omh.map_layers')
       .select(knex.raw('count(map_id)'))
@@ -38,7 +38,7 @@ module.exports = {
     }
   },
 
-  async addLayerView (layer_id: number, user_id: any) {
+  async addLayerView (layer_id: number, user_id: any): Promise<any> {
     if (user_id <= 0) {
       user_id = null
     }
@@ -55,7 +55,7 @@ module.exports = {
     return knex('omh.layers').update({views}).where({layer_id})
   },
 
-  async addMapView (map_id: number, user_id: any) {
+  async addMapView (map_id: number, user_id: any): Promise<any> {
     if (user_id <= 0) {
       user_id = null
     }
@@ -71,7 +71,7 @@ module.exports = {
     return knex('omh.maps').update({views}).where({map_id})
   },
 
-  async addStoryView (story_id: number, user_id: any) {
+  async addStoryView (story_id: number, user_id: any): Promise<any> {
     if (user_id <= 0) {
       user_id = null
     }

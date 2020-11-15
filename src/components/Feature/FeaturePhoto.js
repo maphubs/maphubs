@@ -1,5 +1,5 @@
 //  @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 import ImageCrop from '../ImageCrop'
 import { message, notification, Modal, Tooltip } from 'antd'
@@ -15,11 +15,11 @@ type Props = {
 }
 
 export default class FeatureExport extends MapHubsPureComponent<Props, void> {
-  showImageCrop = () => {
+  showImageCrop: any | (() => void) = () => {
     this.refs.imagecrop.show()
   }
 
-  onCrop = (data: Object, info: Object) => {
+  onCrop: any | ((data: any, info: any) => void) = (data: Object, info: Object) => {
     const {t} = this
     const {_csrf} = this.state
     // send data to server
@@ -38,7 +38,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
     })
   }
 
-  deletePhoto = () => {
+  deletePhoto: any | (() => void) = () => {
     const {t} = this
     const {_csrf} = this.state
     confirm({
@@ -62,7 +62,7 @@ export default class FeatureExport extends MapHubsPureComponent<Props, void> {
     })
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t} = this
     const {photo, canEdit} = this.props
 

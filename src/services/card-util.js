@@ -75,7 +75,16 @@ export default {
     }
   },
 
-  getStoryCard (story: Object, t: Function) {
+  getStoryCard (story: Object, t: Function): {|
+  data: any,
+  draft: any,
+  group: {|group_id: any, name: any|},
+  id: string,
+  image_url: any | void | string,
+  link: string,
+  title: any,
+  type: string,
+|} {
     let title = t(story.title)
     title = title
       .replace('<br>', '')

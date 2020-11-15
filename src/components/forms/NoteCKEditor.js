@@ -17,16 +17,16 @@ export default class NoteCKEditor extends React.Component<Props, void> {
   editorInstance: any
   domContainer: any
 
-  static defaultProps = {
+  static defaultProps: {|initialData: string, language: string|} = {
     initialData: '',
     language: 'en'
   }
 
-  shouldComponentUpdate () {
+  shouldComponentUpdate (): boolean {
     return false
   }
 
-  render () {
+  render (): React.Node {
     const { initialData, language } = this.props
     const editorConfiguration = {
       language,

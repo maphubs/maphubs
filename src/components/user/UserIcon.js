@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Avatar } from 'antd'
 import PersonIcon from '@material-ui/icons/Person'
 
@@ -10,11 +10,11 @@ type Props = {
 }
 
 export default class UserIcon extends React.PureComponent<Props, void> {
-  static defaultProps = {
+  static defaultProps: {|size: number|} = {
     size: 32
   }
 
-  render () {
+  render (): Node {
     const { size, src, t } = this.props
     if (src) {
       return (

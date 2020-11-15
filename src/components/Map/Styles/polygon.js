@@ -1,11 +1,11 @@
 // @flow
-import type {GLStyle} from '../../../types/mapbox-gl-style'
+import type {GLStyle, GLLayer} from '../../../types/mapbox-gl-style'
 
 export default {
   getPolygonLayers (
     layer_id: number, shortid: string,
     color: string, hoverColor: string, hoverOutlineColor: string,
-    interactive: boolean, showBehindBaseMapLabels: boolean) {
+    interactive: boolean, showBehindBaseMapLabels: boolean): Array<GLLayer> {
     return [
       {
         id: `omh-data-polygon-${layer_id}-${shortid}`,
@@ -110,7 +110,7 @@ export default {
     ]
   },
 
-  toggleFill (style: GLStyle, fill: boolean) {
+  toggleFill (style: GLStyle, fill: boolean): {|legendColor: void, style: any|} {
     // treat style as immutable and return a copy
     style = JSON.parse(JSON.stringify(style))
     // get color and update fill layer

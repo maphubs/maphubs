@@ -14,7 +14,14 @@ type Props = {
 }
 
 export default class SearchBox extends React.Component<Props, void> {
-  static defaultProps = {
+  static defaultProps: {|
+  id: string,
+  label: string,
+  onError: () => void,
+  onReset: () => void,
+  onSearch: () => void,
+  style: {...},
+|} = {
     label: 'Search',
     style: {},
     id: 'search',
@@ -25,7 +32,7 @@ export default class SearchBox extends React.Component<Props, void> {
 
   searchBar: any
 
-  onChange = async (input: string, resolve: Function) => {
+  onChange: ((input: string, resolve: any) => Promise<void>) = async (input: string, resolve: Function) => {
     const { suggestionUrl } = this.props
     if (suggestionUrl) {
       try {
@@ -45,16 +52,16 @@ export default class SearchBox extends React.Component<Props, void> {
     }
   }
 
- onSubmit = (input: string) => {
+ onSubmit: ((input: string) => void) = (input: string) => {
    if (!input) return
    this.props.onSearch(input)
  }
 
- reset = () => {
+ reset: (() => void) = () => {
    this.searchBar.reset()
  }
 
- render () {
+ render (): React.Node {
    return (
      <SearchBar
        ref={el => { this.searchBar = el }}

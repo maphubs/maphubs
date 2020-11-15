@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Typography } from 'antd'
 import Header from '../components/header'
 import Footer from '../components/footer'
@@ -26,7 +26,7 @@ type Props = {|
 type State = UserStoreState
 
 export default class AllStories extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -36,7 +36,7 @@ export default class AllStories extends MapHubsComponent<Props, State> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: any | {|stories: Array<any>|} = {
     stories: []
   }
 
@@ -49,7 +49,7 @@ export default class AllStories extends MapHubsComponent<Props, State> {
     }
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const {stories} = this.props
     const hasStories = stories && stories.length > 0

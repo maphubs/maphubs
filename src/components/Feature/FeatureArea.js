@@ -1,5 +1,5 @@
 //  @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import { Row } from 'antd'
 import MapHubsPureComponent from '../MapHubsPureComponent'
 import turf_area from '@turf/area'
@@ -112,7 +112,7 @@ const findComparision = (areaHa: number) => {
 }
 
 export default class FeatureArea extends MapHubsPureComponent<Props, void> {
-  render () {
+  render (): null | Element<"div"> {
     let featureAreaM2, featureAreaKM2, featureAreaHA
     try {
       featureAreaM2 = turf_area(this.props.geojson)

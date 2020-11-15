@@ -10,7 +10,7 @@ const jsonp = require('superagent-jsonp')
 
 export default {
 
-  getArcGISGeoJSON (url: string) {
+  getArcGISGeoJSON (url: string): any {
     const _this = this
     return _this.getArcGISJSON(url)
       .then((data) => {
@@ -22,7 +22,7 @@ export default {
       })
   },
 
-  getArcGISJSON (url: string) {
+  getArcGISJSON (url: string): any {
     const queryStr = 'query?where=1%3D1&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outSR=4326&outFields=&returnGeometry=true&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&resultOffset=&resultRecordCount=&f=json'
     if (!url.endsWith('/')) {
       url = url + '/'
@@ -35,7 +35,7 @@ export default {
       })
   },
 
-  getArcGISFeatureServiceGeoJSON (url: string) {
+  getArcGISFeatureServiceGeoJSON (url: string): any {
     const queryStr = 'query?where=1%3D1&outSR=4326&f=geojson'
     if (!url.endsWith('/')) {
       url = url + '/'
@@ -53,7 +53,7 @@ export default {
   },
 
   // http://gis.stackexchange.com/a/107660/14089
-  convertAGSData (data: Object) {
+  convertAGSData (data: Object): {|features: Array<any>, type: string|} {
     const FeatureCollection = {
       type: 'FeatureCollection',
       features: []

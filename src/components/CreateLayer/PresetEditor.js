@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Button, List } from 'antd'
 import PresetForm from './PresetForm'
 import LayerStore from '../../stores/layer-store'
@@ -20,7 +20,7 @@ type State = LayerStoreState;
 export default class PresetEditor extends MapHubsComponent<Props, State> {
   props: Props
 
-  static defaultProps = {
+  static defaultProps: any | {|warnIfUnsaved: boolean|} = {
     warnIfUnsaved: true
   }
 
@@ -46,26 +46,26 @@ export default class PresetEditor extends MapHubsComponent<Props, State> {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): any | boolean {
     if (nextState.presets && !this.state.presets) {
       return true
     }
     return !_isequal(nextState.presets, this.state.presets)
   }
 
-  addPreset = () => {
+  addPreset: any | (() => void) = () => {
     Actions.addPreset()
   }
 
-  onValid = () => {
+  onValid: any | (() => void) = () => {
     if (this.props.onValid) this.props.onValid()
   }
 
-  onInvalid = () => {
+  onInvalid: any | (() => void) = () => {
     if (this.props.onInvalid) this.props.onInvalid()
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const _this = this
     let presets = []

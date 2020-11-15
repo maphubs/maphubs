@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Formsy from 'formsy-react'
 import { message, notification, Modal, Row, Col, Button, PageHeader, Card, Divider } from 'antd'
 import EditList from '../components/EditList'
@@ -46,7 +46,7 @@ type State = {
 } & LocaleStoreState & GroupStoreState
 
 export default class GroupAdmin extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -56,7 +56,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: any | {|layers: Array<any>, maps: Array<any>, members: Array<any>|} = {
     layers: [],
     maps: [],
     members: []
@@ -82,19 +82,19 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     })
   }
 
-  enableButton = () => {
+  enableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: true
     })
   }
 
-  disableButton = () => {
+  disableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: false
     })
   }
 
-  onError = (msg: string) => {
+  onError: any | ((msg: string) => void) = (msg: string) => {
     notification.error({
       message: 'Error',
       description: msg,
@@ -102,7 +102,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     })
   }
 
-  submit = (model: Object) => {
+  submit: any | ((model: any) => void) = (model: Object) => {
     const {t} = this
     const {_csrf} = this.state
     const group_id = this.props.group.group_id
@@ -125,7 +125,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     })
   }
 
-  handleMemberDelete = (user: Object) => {
+  handleMemberDelete: any | ((user: any) => void) = (user: Object) => {
     const {t} = this
     const {_csrf} = this.state
     confirm({
@@ -150,7 +150,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     })
   }
 
-  handleGroupDelete = () => {
+  handleGroupDelete: any | (() => void) = () => {
     const {t} = this
     const _this = this
     confirm({
@@ -177,7 +177,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     })
   }
 
-  handleMemberMakeAdmin = (user: Object) => {
+  handleMemberMakeAdmin: any | ((user: any) => void) = (user: Object) => {
     const {t} = this
     const {_csrf} = this.state
     if (user.type === 'Administrator') {
@@ -204,7 +204,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     }
   }
 
-  handleRemoveMemberAdmin = (user: Object) => {
+  handleRemoveMemberAdmin: any | ((user: any) => void) = (user: Object) => {
     const {t} = this
     const {_csrf} = this.state
     confirm({
@@ -227,7 +227,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     })
   }
 
-  handleAddMember = (user: Object) => {
+  handleAddMember: any | ((user: any) => void) = (user: Object) => {
     const {t} = this
     const {_csrf} = this.state
     debug.log(user.value.value + ' as Admin:' + user.option)
@@ -244,11 +244,11 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     })
   }
 
-  showImageCrop = () => {
+  showImageCrop: any | (() => void) = () => {
     this.refs.imagecrop.show()
   }
 
-  onCrop = (data: Object) => {
+  onCrop: any | ((data: any) => void) = (data: Object) => {
     const {t} = this
     const {_csrf} = this.state
     // send data to server
@@ -266,7 +266,7 @@ export default class GroupAdmin extends MapHubsComponent<Props, State> {
     // this.pasteHtmlAtCaret('<img class="responsive-img" src="' + data + '" />');
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const { layers, maps, headerConfig } = this.props
     const { members, group } = this.state

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import LocalizedInput from '../forms/ant/LocalizedInput'
 import { Modal, Row, Button, message } from 'antd'
 import Formsy from 'formsy-react'
@@ -35,7 +35,7 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
     }
   }
 
-  recheckLogin = () => {
+  recheckLogin: any | (() => void) = () => {
     const {t} = this
     UserActions.getUser(this.props._csrf, (err) => {
       if (err) {
@@ -44,7 +44,7 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
     })
   }
 
-  save = () => {
+  save: any | (() => void) = () => {
     const {t} = this
     let { user, title, group } = this.state
 
@@ -63,23 +63,23 @@ export default class SaveMapModal extends MapHubsComponent<Props, State> {
     })
   }
 
-  showModal = () => {
+  showModal: any | (() => void) = () => {
     this.setState({visible: true})
   }
 
-  cancel = () => {
+  cancel: any | (() => void) = () => {
     this.setState({visible: false})
   }
 
-  titleChange = (title: Object) => {
+  titleChange: any | ((title: any) => void) = (title: Object) => {
     this.setState({title})
   }
 
-  groupChange = (group: string) => {
+  groupChange: any | ((group: string) => void) = (group: string) => {
     this.setState({group})
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const { owned_by_group_id, editing, editingLayer } = this.props
     const { title, visible, user } = this.state

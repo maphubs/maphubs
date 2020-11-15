@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Col, Button, Slider, InputNumber, Tabs, Tooltip } from 'antd'
 import AdvancedLayerSettings from './AdvancedLayerSettings'
 import OpacityIcon from '@material-ui/icons/Opacity'
@@ -32,7 +32,7 @@ type State = {
 }
 
 export default class OpacityChooser extends React.Component<Props, State> {
-  static defaultProps = {
+  static defaultProps: {|value: number|} = {
     value: 100
   }
 
@@ -50,40 +50,40 @@ export default class OpacityChooser extends React.Component<Props, State> {
     this.props.onChange(opacity)
   }
 
-  onStyleChange = (style: Object) => {
+  onStyleChange: ((style: any) => void) = (style: Object) => {
     this.props.onStyleChange(style)
   }
 
-  onCodeStyleChange = (style: string) => {
+  onCodeStyleChange: ((style: string) => void) = (style: string) => {
     style = JSON.parse(style)
     this.props.onStyleChange(style)
   }
 
-  onLegendChange = (legendCode: string) => {
+  onLegendChange: ((legendCode: string) => void) = (legendCode: string) => {
     this.props.onLegendChange(legendCode)
   }
 
-  onAdvancedSettingsChange = (style: GLStyle, legend: string) => {
+  onAdvancedSettingsChange: ((style: GLStyle, legend: string) => void) = (style: GLStyle, legend: string) => {
     this.props.onColorChange(style, legend)
   }
 
-  showStyleEditor = () => {
+  showStyleEditor: (() => void) = () => {
     this.setState({showStyleEditor: true})
   }
 
-  showLegendEditor = () => {
+  showLegendEditor: (() => void) = () => {
     this.setState({showLegendEditor: true})
   }
 
-  hideStyleEditor = () => {
+  hideStyleEditor: (() => void) = () => {
     this.setState({showStyleEditor: false})
   }
 
-  hideLegendEditor = () => {
+  hideLegendEditor: (() => void) = () => {
     this.setState({showLegendEditor: false})
   }
 
-  render () {
+  render (): Node {
     const { showAdvanced, style, legendCode, t } = this.props
     const { showStyleEditor, showLegendEditor, opacity } = this.state
 

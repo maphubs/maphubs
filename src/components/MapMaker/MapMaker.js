@@ -539,8 +539,8 @@ class MapMaker extends MapHubsComponent<Props, State> {
   }
 }
 
-export default subscribe(MapMaker, {
+export default (subscribe(MapMaker, {
   dataEditorState: DataEditorContainer,
   mapState: MapContainer,
   baseMapState: BaseMapContainer
-})
+}): any)

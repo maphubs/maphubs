@@ -1,17 +1,17 @@
 // @flow
 import type {Layer} from '../../../types/layer'
 export default {
-  defaultLegend (layer: Layer) {
+  defaultLegend (layer: Layer): any {
     return this.legendWithColor(layer, 'red')
   },
 
-  rasterLegend () {
+  rasterLegend (): string {
     // var name = this.htmlEncode(layer.name);
     const html = '<div class="omh-legend">\n<h3>{NAME}</h3>\n</div>'
     return html
   },
 
-  legendWithColor (layer: Layer, color: string) {
+  legendWithColor (layer: Layer, color: string): string {
     let html = ''
     // var name = this.htmlEncode(layer.name);
     if (layer.data_type === 'point') {
@@ -38,7 +38,7 @@ export default {
     return html
   },
 
-  outlineLegendWithColor (layer: Layer, color: string) {
+  outlineLegendWithColor (layer: Layer, color: string): string {
     return `<div class="omh-legend">
  <div class="block" style="border: ${color} solid 3px;">
  </div>

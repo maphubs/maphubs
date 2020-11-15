@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import Marker from './Marker'
 import _isequal from 'lodash.isequal'
 import type {Layer} from '../../types/layer'
@@ -11,11 +11,20 @@ type Props = {
 }
 
 export default class LegendItem extends React.Component<Props, void> {
-  static defaultProps = {
+  static defaultProps: {|
+  style: {|
+    borderBottom: string,
+    margin: string,
+    minHeight: string,
+    padding: string,
+    position: string,
+    width: string,
+  |},
+|} = {
     style: {padding: '2px', width: '100%', margin: 'auto', position: 'relative', minHeight: '25px', borderBottom: '1px solid #F1F1F1'}
   }
 
-  shouldComponentUpdate (nextProps: Props) {
+  shouldComponentUpdate (nextProps: Props): boolean {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
@@ -23,11 +32,11 @@ export default class LegendItem extends React.Component<Props, void> {
     return false
   }
 
-  htmlEncode = (str: string) => {
+  htmlEncode: ((str: string) => string) = (str: string) => {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t, layer, style} = this.props
     if (layer === undefined) return (<div />)
 

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { notification, Modal, message, Row, Col, Button, Typography } from 'antd'
 import MapStyles from '../Map/Styles'
 import Map from '../Map'
@@ -34,7 +34,7 @@ type State = {
 } & LayerStoreState & LocaleStoreState
 
 export default class LayerStyle extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: any | {|waitForTileInit: boolean|} = {
     waitForTileInit: false // wait for tile service before showing map
   }
 
@@ -46,7 +46,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     }
   }
 
-  onSubmit = (MapState: Object) => {
+  onSubmit: any | ((MapState: any) => void) = (MapState: Object) => {
     const _this = this
     const {t} = this
     const closeSavingMessage = message.loading(t('Saving'), 0)
@@ -74,11 +74,11 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     })
   }
 
-  onPrev = () => {
+  onPrev: any | (() => void) = () => {
     if (this.props.onPrev) this.props.onPrev()
   }
 
-  setRasterOpacity = (opacity: number) => {
+  setRasterOpacity: any | ((opacity: number) => void) = (opacity: number) => {
     const elc = this.state.external_layer_config ? this.state.external_layer_config : {}
     const layer_id = this.state.layer_id ? this.state.layer_id : 0
     let style
@@ -93,27 +93,27 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     this.setState({rasterOpacity: opacity})
   }
 
-  onColorChange = (style: GLStyle, legend_html: string) => {
+  onColorChange: any | ((style: GLStyle, legend_html: string) => void) = (style: GLStyle, legend_html: string) => {
     LayerActions.setStyle({style, legend_html})
   }
 
-  setStyle = (style: GLStyle) => {
+  setStyle: any | ((style: GLStyle) => void) = (style: GLStyle) => {
     LayerActions.setStyle({style})
   }
 
-  setLabels = (style: GLStyle, labels: Object) => {
+  setLabels: any | ((style: GLStyle, labels: any) => void) = (style: GLStyle, labels: Object) => {
     LayerActions.setStyle({style, labels})
   }
 
-  setLegend = (legend_html: string) => {
+  setLegend: any | ((legend_html: string) => void) = (legend_html: string) => {
     LayerActions.setStyle({legend_html})
   }
 
-  reloadMap = (MapState: Object) => {
+  reloadMap: any | ((MapState: any) => void) = (MapState: Object) => {
     MapState.state.map.reloadStyle()
   }
 
-  resetStyle = () => {
+  resetStyle: any | (() => void) = () => {
     const {t} = this
     confirm({
       title: t('Confirm Reset'),
@@ -127,7 +127,7 @@ export default class LayerStyle extends MapHubsComponent<Props, State> {
     })
   }
 
-  render () {
+  render (): Node {
     const {reloadMap, t} = this
     const showMap = this.props.waitForTileInit ? this.state.tileServiceInitialized : true
     const {layer_id, style, preview_position} = this.state

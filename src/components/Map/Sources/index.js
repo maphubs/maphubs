@@ -10,7 +10,7 @@ import EarthEngineSource from './EarthEngineSource'
 import type {GLSource} from '../../../types/mapbox-gl-style'
 
 export default {
-  getSource (key: string, source: GLSource) {
+  getSource (key: string, source: GLSource): {|custom: boolean, driver: any, key: string, source: GLSource|} {
     const response = function (driver: Function, custom: boolean = false) {
       return {
         key,

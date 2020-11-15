@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import { Row, Col, Button, Typography, Card } from 'antd'
@@ -27,7 +27,7 @@ type Props = {|
 type State = UserStoreState;
 
 export default class Stories extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -46,7 +46,7 @@ export default class Stories extends MapHubsComponent<Props, State> {
     }
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const {recentStories, popularStories} = this.props
     const hasRecent = recentStories && recentStories.length > 0

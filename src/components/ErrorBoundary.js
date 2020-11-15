@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element as $IMPORTED_TYPE$_Element} from "React";import React from 'react'
 import MapHubsComponent from './MapHubsComponent'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import type {Element} from 'react'
@@ -31,7 +31,7 @@ export default class ErrorBoundary extends MapHubsComponent<Props, State> {
     }
   }
 
-  render () {
+  render (): $IMPORTED_TYPE$_Element<"div"> | Element<any> {
     const {t} = this
     if (this.state.error) {
       return (

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Steps } from 'antd'
 import Header from '../components/header'
 import Step1 from '../components/CreateGroup/Step1'
@@ -24,7 +24,7 @@ type State = {
 }
 
 export default class CreateGroup extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -46,19 +46,19 @@ export default class CreateGroup extends MapHubsComponent<Props, State> {
     }
   }
 
-  onComplete = (groupId: string) => {
+  onComplete: any | ((groupId: string) => void) = (groupId: string) => {
     window.location = '/group/' + groupId
   }
 
-  nextStep = () => {
+  nextStep: any | (() => void) = () => {
     this.setState({step: this.state.step + 1})
   }
 
-  prevStep = () => {
+  prevStep: any | (() => void) = () => {
     this.setState({step: this.state.step - 1})
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const { step } = this.state
 

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import Formsy from 'formsy-react'
 import { Row, Col, notification, Button } from 'antd'
 import SelectGroup from '../Groups/SelectGroup'
@@ -34,7 +34,14 @@ type State = {
 export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
   props: Props
 
-  static defaultProps = {
+  static defaultProps: 
+  | any
+  | {|
+    groups: Array<any>,
+    showGroup: boolean,
+    showPrev: boolean,
+    warnIfUnsaved: boolean,
+  |} = {
     showGroup: true,
     warnIfUnsaved: false,
     showPrev: false,
@@ -69,11 +76,11 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  onFormChange = () => {
+  onFormChange: any | (() => void) = () => {
     this.setState({pendingChanges: true})
   }
 
-  onValid = () => {
+  onValid: any | (() => void) = () => {
     this.setState({
       canSubmit: true
     })
@@ -82,7 +89,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
     }
   }
 
-  onInvalid = () => {
+  onInvalid: any | (() => void) = () => {
     this.setState({
       canSubmit: false
     })
@@ -91,7 +98,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
     }
   }
 
-  onSubmit = (model: Object) => {
+  onSubmit: any | ((model: any) => void) = (model: Object) => {
     const {t} = this
     const _this = this
 
@@ -114,7 +121,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
     })
   }
 
-  saveExternalLayerConfig = (config: Object) => {
+  saveExternalLayerConfig: any | ((config: any) => void) = (config: Object) => {
     const {t} = this
     const _this = this
     LayerActions.saveExternalLayerConfig(config, _this.state._csrf, (err) => {
@@ -131,7 +138,7 @@ export default class LayerAdminSettings extends MapHubsComponent<Props, State> {
     })
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t} = this
     const {is_external, external_layer_config, allow_public_submit, disable_export, owned_by_group_id} = this.state
 

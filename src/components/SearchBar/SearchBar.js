@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Input } from 'antd'
 import Suggestions from './Suggestions'
 import Promise from 'bluebird'
@@ -23,11 +23,11 @@ type State = {
 }
 
 export default class SearchBar extends React.Component<Props, State> {
-  static defaultProps = {
+  static defaultProps: {|autosuggestDelay: number|} = {
     autosuggestDelay: 250
   }
 
-  state = {
+  state: State = {
     value: '',
     suggestions: []
   }
@@ -43,23 +43,23 @@ export default class SearchBar extends React.Component<Props, State> {
     document.body.removeEventListener('click', this.hideSuggestions)
   }
 
-  displaySuggestions = (suggestions: Array<Suggestion>) => {
+  displaySuggestions: ((suggestions: Array<Suggestion>) => void) = (suggestions: Array<Suggestion>) => {
     this.setState({
       suggestions
     })
   }
 
-  hideSuggestions = (e: any) => {
+  hideSuggestions: ((e: any) => void) = (e: any) => {
     console.log(e)
     if (e?.target?.parentElement?.classList.contains('dropdown-content-item')) return
     this.setState({suggestions: []})
   }
 
-  fillInSuggestion = (suggestion: Suggestion) => {
+  fillInSuggestion: ((suggestion: Suggestion) => void) = (suggestion: Suggestion) => {
     this.search(suggestion.value)
   }
 
-  handleChange = (e: any) => {
+  handleChange: ((e: any) => void) = (e: any) => {
     clearTimeout(this._timerId)
     const input = e.target.value
 
@@ -79,7 +79,7 @@ export default class SearchBar extends React.Component<Props, State> {
     }
   }
 
-  search = (value: string) => {
+  search: ((value: string) => void) = (value: string) => {
     if (this.state.value && typeof this.state.value === 'string') {
       clearTimeout(this._timerId)
       this.props.onSubmit(value)
@@ -89,7 +89,7 @@ export default class SearchBar extends React.Component<Props, State> {
     }
   }
 
-  reset = () => {
+  reset: (() => void) = () => {
     clearTimeout(this._timerId)
     this.setState({
       value: '',
@@ -98,7 +98,7 @@ export default class SearchBar extends React.Component<Props, State> {
     if (this.props.onReset) this.props.onReset()
   }
 
-  render () {
+  render (): Node {
     const { placeholder } = this.props
     const { suggestions, value } = this.state
     return (

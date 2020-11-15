@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import MapMaker from '../components/MapMaker/MapMaker'
 import slugify from 'slugify'
@@ -30,7 +30,7 @@ type Props = {
 }
 
 export default class Map extends MapHubsComponent<Props, void> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -40,7 +40,7 @@ export default class Map extends MapHubsComponent<Props, void> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: any | {|myLayers: Array<any>, popularLayers: Array<any>|} = {
     popularLayers: [],
     myLayers: []
   }
@@ -70,11 +70,11 @@ export default class Map extends MapHubsComponent<Props, void> {
     this.MapState = new MapContainer()
   }
 
-  mapCreated = (mapId: number, title: LocalizedString) => {
+  mapCreated: any | ((mapId: number, title: LocalizedString) => void) = (mapId: number, title: LocalizedString) => {
     window.location = '/map/view/' + mapId + '/' + slugify(this.t(title))
   }
 
-  render () {
+  render (): Node {
     return (
       <ErrorBoundary>
         <Provider inject={[this.BaseMapState, this.MapState]}>

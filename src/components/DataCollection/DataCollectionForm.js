@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import {Button} from 'antd'
 import Formsy from 'formsy-react'
 import FormField from './FormField'
@@ -24,7 +24,7 @@ type State = {
 }
 
 export default class DataCollectionForm extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: any | {|showSubmit: boolean|} = {
     showSubmit: true
   }
 
@@ -44,25 +44,25 @@ export default class DataCollectionForm extends MapHubsComponent<Props, State> {
     }
   }
 
-  onSubmit = (model: Object) => {
+  onSubmit: any | ((model: any) => void) = (model: Object) => {
     if (this.props.onSubmit) this.props.onSubmit(model)
   }
 
-  onValid = () => {
+  onValid: any | (() => void) = () => {
     this.setState({canSubmit: true})
     if (this.props.onValid) this.props.onValid()
   }
 
-  onInValid = () => {
+  onInValid: any | (() => void) = () => {
     this.setState({canSubmit: false})
     if (this.props.onInValid) this.props.onInValid()
   }
 
-  onChange = (model: Object) => {
+  onChange: any | ((model: any) => void) = (model: Object) => {
     if (this.props.onChange) this.props.onChange(model)
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t} = this
     const {style, showSubmit, presets, values} = this.props
     let submit = ''

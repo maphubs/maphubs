@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import InteractiveMap from '../components/Map/InteractiveMap'
 import MapHubsComponent from '../components/MapHubsComponent'
@@ -22,7 +22,7 @@ type Props = {
 }
 
 export default class LayerMap extends MapHubsComponent<Props, void> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -46,7 +46,7 @@ export default class LayerMap extends MapHubsComponent<Props, void> {
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
   }
 
-  render () {
+  render (): Node {
     return (
       <ErrorBoundary>
         <Provider inject={[this.BaseMapState]}>

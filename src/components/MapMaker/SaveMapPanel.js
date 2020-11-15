@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node, Element} from "React";import React from 'react'
 import { Row, message, Button } from 'antd'
 import UserStore from '../../stores/UserStore'
 import UserActions from '../../actions/UserActions'
@@ -35,19 +35,19 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
     }
   }
 
-  enableSaveButton = () => {
+  enableSaveButton: any | (() => void) = () => {
     this.setState({
       canSave: true
     })
   }
 
-  disableSaveButton = () => {
+  disableSaveButton: any | (() => void) = () => {
     this.setState({
       canSave: false
     })
   }
 
-  recheckLogin = () => {
+  recheckLogin: any | (() => void) = () => {
     const {t} = this
     const {_csrf} = this.props
     UserActions.getUser(_csrf, (err) => {
@@ -57,7 +57,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
     })
   }
 
-  onSave = (model: Object) => {
+  onSave: any | ((model: any) => void) = (model: Object) => {
     const {t} = this
     const _this = this
     model.title = Locales.formModelToLocalizedString(model, 'title')
@@ -76,7 +76,7 @@ export default class SaveMapPanel extends MapHubsComponent<Props, State> {
     })
   }
 
-  render () {
+  render (): Node | Element<"div"> {
     const {t} = this
     const {title, editing, owned_by_group_id} = this.props
     const {canSave, saving, user} = this.state

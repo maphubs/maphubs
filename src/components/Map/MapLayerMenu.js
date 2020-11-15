@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import _find from 'lodash.find'
 import LayerListDropDown from './LayerListDropDown'
 
@@ -13,18 +13,18 @@ type Props = {
 }
 
 export default class MapLayerMenu extends React.Component<Props, void> {
-  static defaultProps = {
+  static defaultProps: {|categories: Array<any>, layers: Array<any>|} = {
     categories: [],
     layers: []
   }
 
   popupContainer: any
 
-  shouldComponentUpdate () {
+  shouldComponentUpdate (): boolean {
     return false
   }
 
-  render () {
+  render (): Node {
     const {categories, layers, toggleVisibility, backgroundColor, textColor, t} = this.props
     return (
       <>

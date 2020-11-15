@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Formsy from 'formsy-react'
 import { Row, message, notification, Button } from 'antd'
 import TextInput from '../forms/textInput'
@@ -31,19 +31,19 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
     this.stores.push(LayerStore)
   }
 
-  enableButton = () => {
+  enableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: true
     })
   }
 
-  disableButton = () => {
+  disableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: false
     })
   }
 
-  submit = (model: Object) => {
+  submit: any | ((model: any) => void) = (model: Object) => {
     const {t} = this
     const _this = this
 
@@ -74,11 +74,11 @@ export default class EarthEngineSource extends MapHubsComponent<Props, State> {
     })
   }
 
-  sourceChange = (value: string) => {
+  sourceChange: any | ((value: string) => void) = (value: string) => {
     this.setState({selectedSource: value})
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     return (
       <Row style={{marginBottom: '20px'}}>

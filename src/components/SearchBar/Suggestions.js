@@ -1,5 +1,5 @@
 // @flow
-/*
+import type {Node} from "React";/*
 From https://github.com/vakhtang/react-search-bar/
 License: MIT
 
@@ -17,11 +17,11 @@ type Props = {
 }
 
 export default class Suggestions extends React.Component<Props, void> {
-  static defaultProps = {
+  static defaultProps: {|suggestions: Array<any>|} = {
     suggestions: []
   }
 
-  render () {
+  render (): Node {
     const { suggestions, onSelection } = this.props
 
     return (

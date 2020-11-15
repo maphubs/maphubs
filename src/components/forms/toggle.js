@@ -77,4 +77,4 @@ class Toggle extends MapHubsComponent<Props, void> {
     )
   }
 }
-export default withFormsy(Toggle)
+export default (withFormsy(Toggle): any)

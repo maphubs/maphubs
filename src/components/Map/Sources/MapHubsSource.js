@@ -31,7 +31,7 @@ if (typeof window !== 'undefined') {
 */
 
 const MapHubsSource = {
-  async load (key: string, source: GLSource, mapComponent: any) {
+  async load (key: string, source: GLSource, mapComponent: any): Promise<any> {
     const map = mapComponent.map
     if (source.type === 'geojson' && source.data) {
       if (typeof source.data === 'string') {

@@ -7,7 +7,7 @@ const debug = DebugService('map-styles-color')
 export default {
 // attempt to update a style color without recreating other parts of the style
   // needed for custom style support
-  updateStyleColor (glStyle: GLStyle, newColor: string) {
+  updateStyleColor (glStyle: GLStyle, newColor: string): {|isOutlineOnly: boolean, style: GLStyle|} {
     let isOutlineOnly = false
     if (glStyle.layers && Array.isArray(glStyle.layers) && glStyle.layers.length > 0) {
       // treat style as immutable and return a copy

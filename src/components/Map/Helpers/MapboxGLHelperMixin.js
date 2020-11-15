@@ -7,13 +7,13 @@ const debug = DebugService('mapboxGLHelperMixin')
  */
 export default {
 
-  getBounds () {
+  getBounds (): void {
     if (this.map) {
       return this.map.getBounds().toArray()
     }
   },
 
-  getPosition () {
+  getPosition (): void | {|lat: any, lng: any, zoom: any|} {
     if (this.map) {
       const center = this.map.getCenter()
       const zoom = this.map.getZoom()
@@ -35,7 +35,7 @@ export default {
     this.map.flyTo({center, zoom})
   },
 
-  getBoundsObject (bbox: Array<number>) {
+  getBoundsObject (bbox: Array<number>): Array<Array<number>> {
     return [[bbox[0], bbox[1]], [bbox[2], bbox[3]]]
   },
 

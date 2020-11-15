@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import { Button } from 'antd'
 
 type Props = {|
@@ -21,17 +21,17 @@ export default class IsochronePanel extends React.Component<Props, State> {
     }
   }
 
-  selectLocation = () => {
+  selectLocation: (() => void) = () => {
     this.setState({selectingLocation: true})
     this.props.getIsochronePoint()
   }
 
-  clear = () => {
+  clear: (() => void) = () => {
     this.setState({selectingLocation: false})
     this.props.clearIsochroneLayers()
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t, isochroneResult} = this.props
     const {selectingLocation} = this.state
     let message

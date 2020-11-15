@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import TextInput from '../forms/textInput'
 import { message, notification, Row, Button } from 'antd'
@@ -41,19 +41,19 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
     })
   }
 
-  enableButton = () => {
+  enableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: true
     })
   }
 
-  disableButton = () => {
+  disableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: false
     })
   }
 
-  submit = (model: Object) => {
+  submit: any | ((model: any) => void) = (model: Object) => {
     const {t} = this
     const _this = this
     let boundsArr
@@ -123,11 +123,11 @@ export default class WMSSource extends MapHubsComponent<Props, State> {
     }
   }
 
-  sourceChange = (value: string) => {
+  sourceChange: any | ((value: string) => void) = (value: string) => {
     this.setState({selectedSource: value})
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     return (
       <Row style={{marginBottom: '20px'}}>

@@ -98,7 +98,7 @@ export default {
     return style
   },
 
-  buildMapStyle (layers: Array<Layer>) {
+  buildMapStyle (layers: Array<Layer>): GLStyle {
     const mapStyle: GLStyle = {
       version: 8,
       sources: {},

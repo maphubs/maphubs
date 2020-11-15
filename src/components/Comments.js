@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import UserStore from '../stores/UserStore'
 import MapHubsComponent from './MapHubsComponent'
 import type {UserStoreState} from '../stores/UserStore'
@@ -11,7 +11,7 @@ type Props = {
 }
 
 export default class Comments extends MapHubsComponent<Props, UserStoreState> {
-  static defaultProps = {
+  static defaultProps: any | {|id: string|} = {
     id: 'coral-comments'
   }
 
@@ -40,7 +40,7 @@ export default class Comments extends MapHubsComponent<Props, UserStoreState> {
     }
   }
 
-  render () {
+  render (): Element<"div"> {
     return (
       <div style={{width: '100%'}} id={this.props.id} />
     )

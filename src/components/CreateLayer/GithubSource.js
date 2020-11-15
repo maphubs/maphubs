@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Button } from 'antd'
 import Formsy from 'formsy-react'
 import TextInput from '../forms/textInput'
@@ -36,28 +36,28 @@ export default class GithubSource extends MapHubsComponent<Props, State> {
     this.stores.push(LayerStore)
   }
 
-  enableButton = () => {
+  enableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: true
     })
   }
 
-  disableButton = () => {
+  disableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: false
     })
   }
 
-  submit = (model: Object) => {
+  submit: any | ((model: any) => void) = (model: Object) => {
     // #TODO:180 save step 2 to DB
     this.props.onSubmit(model)
   }
 
-  sourceChange = (value: string) => {
+  sourceChange: any | ((value: string) => void) = (value: string) => {
     this.setState({selectedSource: value})
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     return (
       <Row style={{marginBottom: '20px'}}>

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import { Avatar } from 'antd'
 import {IntlProvider, FormattedDate} from 'react-intl'
 import MapHubsComponent from '../../components/MapHubsComponent'
@@ -18,11 +18,11 @@ type State = {
 export default class StoryHeader extends MapHubsComponent<Props, State> {
   props: Props
 
-  static defaultProps = {
+  static defaultProps: any | {|baseUrl: string|} = {
     baseUrl: ''
   }
 
-  render () {
+  render (): Element<"div"> {
     const { t } = this
     const { story } = this.props
     const { locale, groupLogoFailed } = this.state

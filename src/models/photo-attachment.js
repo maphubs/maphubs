@@ -8,14 +8,14 @@ const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 
 module.exports = {
 
-  getPhotosForFeature (layer_id: number, mhid: string, trx: any = null) {
+  getPhotosForFeature (layer_id: number, mhid: string, trx: any = null): any {
     const db = trx || knex
     return db('omh.feature_photo_attachments')
       .select('photo_url')
       .where({layer_id, mhid})
   },
 
-  async setPhotoAttachment (layer_id: number, mhid: string, data: string, info: Object, user_id: number, trx: any = null) {
+  async setPhotoAttachment (layer_id: number, mhid: string, data: string, info: Object, user_id: number, trx: any = null): Promise<any> {
     const db = trx || knex
     const results = await db('omh.feature_photo_attachments').where({mhid})
     if (results?.length > 0) {
@@ -39,19 +39,19 @@ module.exports = {
     return result.webpcheckURL
   },
 
-  async deletePhotoAttachment (layer_id: number, mhid: string, trx: any = null) {
+  async deletePhotoAttachment (layer_id: number, mhid: string, trx: any = null): Promise<any> {
     const db = trx || knex
     return db('omh.feature_photo_attachments').where({mhid}).del()
     // TODO: tell asset API to delete when supported
   },
 
   // need to call this before deleting a layer
-  async removeAllLayerAttachments (layer_id: number, trx: any = null) {
+  async removeAllLayerAttachments (layer_id: number, trx: any = null): Promise<any> {
     const db = trx || knex
     return db('omh.feature_photo_attachments').where({layer_id}).del()
   },
 
-  async addPhotoUrlPreset (layer: Object, user_id: number, trx: any) {
+  async addPhotoUrlPreset (layer: Object, user_id: number, trx: any): Promise<any> {
     const style = layer.style
     if (style) {
       const firstSource:string = Object.keys(style.sources)[0]

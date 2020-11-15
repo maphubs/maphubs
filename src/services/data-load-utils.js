@@ -14,7 +14,7 @@ const ogr2ogr = require('ogr2ogr')
 
 module.exports = {
 
-  async removeLayerData (layer_id: number, trx: any = null) {
+  async removeLayerData (layer_id: number, trx: any = null): Promise<any> {
     debug.log('removeLayerData')
     let db = knex
     if (trx) { db = trx }
@@ -38,7 +38,7 @@ module.exports = {
     }
   },
 
-  async storeTempShapeUpload (uploadtmppath: string, layer_id: number, trx: any = null) {
+  async storeTempShapeUpload (uploadtmppath: string, layer_id: number, trx: any = null): Promise<any> {
     debug.log('storeTempShapeUpload')
     let db = knex
     if (trx) { db = trx }
@@ -49,7 +49,7 @@ module.exports = {
     })
   },
 
-  async getTempShapeUpload (layer_id: number, trx: any = null) {
+  async getTempShapeUpload (layer_id: number, trx: any = null): Promise<any> {
     debug.log('getTempShapeUpload')
     let db = knex
     if (trx) { db = trx }
@@ -57,13 +57,13 @@ module.exports = {
     return result[0].uploadtmppath
   },
 
-  async getBBox (layer_id: number) {
+  async getBBox (layer_id: number): Promise<any> {
     const layerTable = `layers.data_${layer_id}`
     const bbox = await knex.raw("select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(wkb_geometry) as bbox from :layerTable:) a", {layerTable})
     return JSON.parse(bbox.rows[0].bbox)
   },
 
-  cleanProps (props: Object, uniqueProps: Object) {
+  cleanProps (props: Object, uniqueProps: Object): {...} {
     // get unique list of properties
     const cleanedFeatureProps = {}
     Object.keys(props).forEach((key) => {
@@ -94,7 +94,7 @@ module.exports = {
     return cleanedFeatureProps
   },
 
-  async insertTempGeoJSONIntoDB (geoJSON: any, layer_id: number) {
+  async insertTempGeoJSONIntoDB (geoJSON: any, layer_id: number): Promise<any> {
     const ogr = ogr2ogr(geoJSON).format('PostgreSQL')
       .skipfailures()
       .options(['-t_srs', 'EPSG:4326', '-nln', `layers.temp_${layer_id}`])
@@ -122,7 +122,15 @@ module.exports = {
     })
   },
 
-  async storeTempGeoJSON (geoJSON: any, uploadtmppath: string, layer_id: number, shortid: string, update: boolean, setStyle: boolean, trx: any = null) {
+  async storeTempGeoJSON (geoJSON: any, uploadtmppath: string, layer_id: number, shortid: string, update: boolean, setStyle: boolean, trx: any = null): Promise<
+  {|
+    bbox: any,
+    data_type: string,
+    error: null,
+    success: boolean,
+    uniqueProps: Array<mixed>,
+  |},
+> {
     const _this = this
     debug.log('storeTempGeoJSON')
     const db = trx || knex
@@ -249,7 +257,7 @@ module.exports = {
     }
   },
 
-  async createEmptyDataTable (layer_id: number, trx: any) {
+  async createEmptyDataTable (layer_id: number, trx: any): Promise<any> {
     await trx.raw(`CREATE TABLE layers.data_${layer_id}
      (
        mhid text, 
@@ -264,7 +272,7 @@ module.exports = {
     return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START 1`)
   },
 
-  async loadTempData (layer_id: number, trx: any) {
+  async loadTempData (layer_id: number, trx: any): Promise<any> {
     return trx('omh.layers').update({status: 'loaded'}).where({layer_id})
   }
 }

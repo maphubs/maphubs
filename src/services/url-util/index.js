@@ -16,7 +16,7 @@ module.exports = {
     return url
   },
 
-  getUrlParameter (sParam: string) {
+  getUrlParameter (sParam: string): void | string | boolean {
     if (typeof window === 'undefined') return
     const sPageURL = decodeURIComponent(window.location.search.substring(1))
     const sURLVariables = sPageURL.split('&')

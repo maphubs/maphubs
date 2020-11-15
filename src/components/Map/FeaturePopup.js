@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node, Element} from "React";import React from 'react'
 import request from 'superagent'
 import slugify from 'slugify'
 import {Card, Spin} from 'antd'
@@ -30,7 +30,7 @@ type State = {
 }
 
 export default class FeaturePopup extends React.Component<Props, State> {
-  static defaultProps = {
+  static defaultProps: {|showButtons: boolean|} = {
     showButtons: true
   }
 
@@ -69,7 +69,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
     }
   }
 
-  getLayer = (layerId: number, host: string) => {
+  getLayer: ((layerId: number, host: string) => void) = (layerId: number, host: string) => {
     debug.info(`Getting layer info for: ${layerId} from ${host}`)
     const _this = this
 
@@ -100,11 +100,17 @@ export default class FeaturePopup extends React.Component<Props, State> {
       })
   }
 
-  renderContentWithoutImage = () => {
+  renderContentWithoutImage: (() => void) = () => {
 
   }
 
-  renderContentWithImage = (name?: string, description?: string, photoUrl: string, featureName: string, properties: Object) => {
+  renderContentWithImage: ((
+  name?: string,
+  description?: string,
+  photoUrl: string,
+  featureName: string,
+  properties: any
+) => Element<"div">) = (name?: string, description?: string, photoUrl: string, featureName: string, properties: Object) => {
     const {layerLoaded, lightboxOpen} = this.state
     const {t} = this.props
     let nameDisplay
@@ -178,7 +184,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
     )
   }
 
-  renderFeature = (feature: Object, i: number) => {
+  renderFeature: ((feature: any, i: number) => Node | Element<"p">) = (feature: Object, i: number) => {
     const {layer, showAttributes} = this.state
     const {t, showButtons} = this.props
     let nameField
@@ -244,11 +250,11 @@ export default class FeaturePopup extends React.Component<Props, State> {
     )
   }
 
-  toggleAttributes = () => {
+  toggleAttributes: (() => void) = () => {
     this.setState({showAttributes: !this.state.showAttributes})
   }
 
-  render () {
+  render (): Element<"div"> {
     const {features} = this.props
 
     return (

@@ -39,7 +39,7 @@ export default class StoryContainer extends Container<StoryContainerState> {
     }
   }
 
-  bodyChange = (lang:string, update: string) => {
+  bodyChange: ((lang: string, update: string) => void) = (lang:string, update: string) => {
     this.setState(state => {
       const body = state.body || {}
       body[lang] = update
@@ -47,39 +47,39 @@ export default class StoryContainer extends Container<StoryContainerState> {
     })
   }
 
-  titleChange = (title: Object) => {
+  titleChange: ((title: any) => void) = (title: Object) => {
     this.setState({title, modified: true})
   }
 
-  publishDateChange = (date: Object) => {
+  publishDateChange: ((date: any) => void) = (date: Object) => {
     this.setState({published_at: date.format(), modified: true})
   }
 
-  togglePublished = (published: boolean) => {
+  togglePublished: ((published: boolean) => void) = (published: boolean) => {
     this.setState({published, modified: true})
   }
 
-  authorChange = (author: Object) => {
+  authorChange: ((author: any) => void) = (author: Object) => {
     this.setState({author, modified: true})
   }
 
-  summaryChange = (summary: Object) => {
+  summaryChange: ((summary: any) => void) = (summary: Object) => {
     this.setState({summary, modified: true})
   }
 
-  groupChange = (owned_by_group_id: string) => {
+  groupChange: ((owned_by_group_id: string) => void) = (owned_by_group_id: string) => {
     this.setState({owned_by_group_id, modified: true})
   }
 
-  tagsChange = (tags: Array<string>) => {
+  tagsChange: ((tags: Array<string>) => void) = (tags: Array<string>) => {
     this.setState({tags, modified: true})
   }
 
-  setModified = (modified: boolean) => {
+  setModified: ((modified: boolean) => void) = (modified: boolean) => {
     this.setState({modified})
   }
 
-  save = async (firstimage: any) => {
+  save: ((firstimage: any) => Promise<any>) = async (firstimage: any) => {
     const { story_id, owned_by_group_id, body, title, author, summary, published, published_at, tags, _csrf } = this.state
 
     return request.post('/api/story/save')
@@ -99,7 +99,7 @@ export default class StoryContainer extends Container<StoryContainerState> {
       })
   }
 
-  delete = async () => {
+  delete: (() => Promise<any>) = async () => {
     return request.post('/api/story/delete')
       .type('json').accept('json')
       .send({story_id: this.state.story_id, _csrf: this.state._csrf})

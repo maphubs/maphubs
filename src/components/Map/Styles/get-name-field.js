@@ -7,7 +7,7 @@ export default {
 
   possibleNameFields: ['name', 'nom', 'nombre', 'nome'],
 
-  getNameFieldFromPresets (presets: Array<Object>) {
+  getNameFieldFromPresets (presets: Array<Object>): any | void {
     const nameFieldPreset = _find(presets, {isName: true})
     let nameField
     if (nameFieldPreset) {
@@ -16,7 +16,7 @@ export default {
     return nameField
   },
 
-  guessNameFieldFromProps (properties: Object) {
+  guessNameFieldFromProps (properties: Object): void {
     let nameField
     const _this = this
     Object.keys(properties).forEach(key => {
@@ -32,7 +32,7 @@ export default {
     return nameField
   },
 
-  getPresetsFromStyle (style?: GLStyle) {
+  getPresetsFromStyle (style?: GLStyle): any | void {
     if (style) {
       const firstSource = Object.keys(style.sources)[0]
       if (firstSource) {
@@ -41,7 +41,7 @@ export default {
     }
   },
 
-  getNameField (properties: Object, presets?: Array<Object>) {
+  getNameField (properties: Object, presets?: Array<Object>): empty {
     let nameField
     if (presets) {
       nameField = this.getNameFieldFromPresets(presets)
@@ -52,7 +52,7 @@ export default {
     return nameField
   },
 
-  getDescriptionFieldFromPresets (presets: Array<Object>) {
+  getDescriptionFieldFromPresets (presets: Array<Object>): any | void {
     const descriptionFieldPreset = _find(presets, {isDescription: true})
     let descriptionField
     if (descriptionFieldPreset) {
@@ -61,7 +61,7 @@ export default {
     return descriptionField
   },
 
-  getDescriptionField (properties: Object, presets?: Array<Object>) {
+  getDescriptionField (properties: Object, presets?: Array<Object>): void {
     let descriptionField
     if (presets) {
       descriptionField = this.getDescriptionFieldFromPresets(presets)

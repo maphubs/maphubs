@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import MapHubsComponent from '../components/MapHubsComponent'
 import LocaleActions from '../actions/LocaleActions'
 import debugFactory from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
@@ -33,23 +33,23 @@ type State = {
 }
 
 export default class LocaleChooser extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: any | {|id: string|} = {
     id: 'locale-dropdown'
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     if (this.state.locale !== nextState.locale) {
       return true
     }
     return false
   }
 
-  onChange = (e: Object) => {
+  onChange: any | ((e: any) => void) = (e: Object) => {
     debug.log('LOCALE CHANGE: ' + e.target.id)
     LocaleActions.changeLocale(e.target.id)
   }
 
-  render () {
+  render (): Node {
     const label = localeUtil.getConfig(this.state.locale).label
     const menu = (
       <Menu>

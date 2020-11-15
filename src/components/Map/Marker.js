@@ -1,5 +1,5 @@
 // @flow
-// Marker Shapes from Map Icons by Scott de Jonge https://github.com/scottdejonge/map-icons)
+import type {Node} from "React";// Marker Shapes from Map Icons by Scott de Jonge https://github.com/scottdejonge/map-icons)
 import React from 'react'
 import Icons from './Icons'
 
@@ -21,7 +21,20 @@ type Props = {
 export default class Marker extends React.PureComponent<Props> {
   props: Props
 
-  static defaultProps = {
+  static defaultProps: {|
+  height: number,
+  icon: string,
+  iconFill: string,
+  iconFillOpacity: number,
+  iconStroke: string,
+  iconStrokeWidth: number,
+  shape: string,
+  shapeFill: string,
+  shapeFillOpacity: number,
+  shapeStroke: string,
+  shapeStrokeWidth: number,
+  width: number,
+|} = {
     shape: 'MAP_PIN',
     width: 48,
     height: 48,
@@ -36,7 +49,7 @@ export default class Marker extends React.PureComponent<Props> {
     iconStrokeWidth: 0
   }
 
-  render () {
+  render (): Node {
     const {shape, icon} = this.props
     let markerBackground = ''
     let iconScale = 0.75

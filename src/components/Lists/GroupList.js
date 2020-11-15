@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { List, Avatar } from 'antd'
 import _isequal from 'lodash.isequal'
 import InfoIcon from '@material-ui/icons/Info'
@@ -11,11 +11,11 @@ type Props = {|
 |}
 
 export default class GroupList extends React.Component<Props, void> {
-  static defaultProps = {
+  static defaultProps: {|showTitle: boolean|} = {
     showTitle: true
   }
 
-  shouldComponentUpdate (nextProps: Props) {
+  shouldComponentUpdate (nextProps: Props): boolean {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
@@ -23,7 +23,7 @@ export default class GroupList extends React.Component<Props, void> {
     return false
   }
 
-  render () {
+  render (): Node {
     const {t, showTitle, groups} = this.props
 
     return (

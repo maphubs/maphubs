@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Button, Upload, Progress, message } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
 // import FileUploadProgress from 'react-fileupload-progress'
@@ -22,7 +22,7 @@ export default class FileUpload extends React.Component<Props, State> {
     this.state = {}
   }
 
-  render () {
+  render (): Node {
     const { action, onUpload, beforeUpload, t } = this.props
     const { progress } = this.state
     return (

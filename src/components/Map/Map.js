@@ -993,8 +993,8 @@ class Map extends React.Component<Props, State> {
   }
 }
 
-export default subscribe(Map, {
+export default (subscribe(Map, {
   baseMapState: BaseMapContainer,
   dataEditorState: DataEditorContainer,
   mapState: MapContainer
-})
+}): any)

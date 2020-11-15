@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import _isequal from 'lodash.isequal'
 import ErrorBoundary from '../ErrorBoundary'
 
@@ -27,7 +27,7 @@ type State = {
 }
 
 export default class CodeEditor extends React.Component<Props, State> {
-  static defaultProps = {
+  static defaultProps: {|mode: string, name: string, theme: string|} = {
     name: 'code-editor',
     mode: 'json',
     theme: 'monokai'
@@ -35,7 +35,7 @@ export default class CodeEditor extends React.Component<Props, State> {
 
   editor: any
 
-  shouldComponentUpdate (nextProps: Props) {
+  shouldComponentUpdate (nextProps: Props): boolean {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
@@ -43,11 +43,11 @@ export default class CodeEditor extends React.Component<Props, State> {
     return false
   }
 
-  onChange = (value: any) => {
+  onChange: ((value: any) => void) = (value: any) => {
     if (this.state.canSave) this.props.onChange(value)
   }
 
-  render () {
+  render (): Node {
     const { name, mode, theme, value } = this.props
 
     return (

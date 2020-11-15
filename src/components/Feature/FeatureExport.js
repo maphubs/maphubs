@@ -1,5 +1,5 @@
 //  @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import slugify from 'slugify'
 import { Typography } from 'antd'
 
@@ -15,7 +15,7 @@ type Props = {
 }
 
 export default class FeatureExport extends React.PureComponent<Props, void> {
-  render () {
+  render (): Element<"div"> {
     const {mhid, layer_id, name, disable_export, data_type, t} = this.props
 
     const geoJSONURL = `/api/feature/json/${layer_id}/${mhid}/${slugify(t(name))}.geojson`

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Formsy from 'formsy-react'
 import TextArea from '../forms/textArea'
 import MultiTextInput from '../forms/MultiTextInput'
@@ -33,7 +33,14 @@ type State = {
 }
 
 export default class PresetForm extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: 
+  | any
+  | {|
+    isDescription: boolean,
+    isName: boolean,
+    isRequired: boolean,
+    showOnMap: boolean,
+  |} = {
     showOnMap: true,
     isRequired: false,
     isName: false,
@@ -50,7 +57,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
     }
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
@@ -61,7 +68,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
     return false
   }
 
-  onFormChange = (values: Object) => {
+  onFormChange: any | ((values: any) => void) = (values: Object) => {
     const _this = this
     values.id = this.props.id
     values.label = Locales.formModelToLocalizedString(values, 'label')
@@ -69,7 +76,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
     Actions.updatePreset(_this.props.id, values)
   }
 
-  onValid = () => {
+  onValid: any | (() => void) = () => {
     this.setState({valid: true})
     const debounced = _debounce(function () {
       if (this.props.onValid) this.props.onValid()
@@ -77,7 +84,7 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
     debounced()
   }
 
-  onInvalid =() => {
+  onInvalid: any | (() => void) =() => {
     this.setState({valid: false})
     const debounced = _debounce(function () {
       if (this.props.onInvalid) this.props.onInvalid()
@@ -85,11 +92,11 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
     debounced()
   }
 
-  isValid = () => {
+  isValid: any | (() => boolean) = () => {
     return this.state.valid
   }
 
-  onRemove = () => {
+  onRemove: any | (() => void) = () => {
     const {t} = this
     const {id} = this.props
     confirm({
@@ -104,15 +111,15 @@ export default class PresetForm extends MapHubsComponent<Props, State> {
     })
   }
 
-  onMoveUp = () => {
+  onMoveUp: any | (() => void) = () => {
     Actions.movePresetUp(this.props.id)
   }
 
-  onMoveDown = () => {
+  onMoveDown: any | (() => void) = () => {
     Actions.movePresetDown(this.props.id)
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const presetOptions = [
       {value: 'text', label: t('Text')},

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import dynamic from 'next/dynamic'
 import { Row, Button, message, notification } from 'antd'
 import request from 'superagent'
@@ -49,7 +49,7 @@ export default class FeatureNotes extends React.Component<Props, State> {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  saveNotes = async () => {
+  saveNotes: (() => Promise<void>) = async () => {
     const { mhid, layer_id, _csrf, t } = this.props
     const closeSavingMessage = message.loading(t('Saving'), 0)
     try {
@@ -74,15 +74,15 @@ export default class FeatureNotes extends React.Component<Props, State> {
     }
   }
 
-  setNotes = (notes: string) => {
+  setNotes: ((notes: string) => void) = (notes: string) => {
     this.setState({notes, unsavedChanges: true})
   }
 
-  startEditingNotes = () => {
+  startEditingNotes: (() => void) = () => {
     this.setState({editing: true})
   }
 
-  render () {
+  render (): Node {
     const {setNotes, startEditingNotes, saveNotes} = this
     const {canEdit, t} = this.props
     const {editing, notes} = this.state

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import { PlusOutlined } from '@ant-design/icons'
 import GroupWorkIcon from '@material-ui/icons/GroupWork'
@@ -42,23 +42,23 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
     })
   }
 
-  showModal = () => {
+  showModal: any | (() => void) = () => {
     this.setState({visible: true})
   }
 
-  enableButton = () => {
+  enableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: true
     })
   }
 
-  disableButton = () => {
+  disableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: false
     })
   }
 
-  checkGroupIdAvailable = (id: string) => {
+  checkGroupIdAvailable: any | ((id: string) => boolean) = (id: string) => {
     const {t} = this
     let result = false
     // only check if a valid value was provided and we are running in the browser
@@ -89,11 +89,11 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
     return result
   }
 
-  onFormChange = (formModel: Object) => {
+  onFormChange: any | ((formModel: any) => void) = (formModel: Object) => {
     this.setState({formModel})
   }
 
-  saveGroup = () => {
+  saveGroup: any | (() => void) = () => {
     const {t} = this
     const _this = this
     const model = this.state.formModel
@@ -121,11 +121,11 @@ export default class CreateGroupModal extends MapHubsComponent<Props, State> {
     })
   }
 
-  handleCancel = () => {
+  handleCancel: any | (() => void) = () => {
     this.setState({visible: false})
   }
 
-  render () {
+  render (): Node {
     const { saveGroup, handleCancel } = this
     const { t } = this.props
     const { visible, canSubmit } = this.state

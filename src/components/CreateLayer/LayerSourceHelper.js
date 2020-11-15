@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Col, Button } from 'antd'
 import UploadLocalSource from './UploadLocalSource'
 import EmptyLocalSource from './EmptyLocalSource'
@@ -17,7 +17,7 @@ import UploadRasterSource from './UploadRasterSource'
 
 export default {
 
-  getSource (type: string, mapConfig: Object, t: Function) {
+  getSource (type: string, mapConfig: Object, t: Function): string | Node {
     if (type === 'local') {
       return (<UploadLocalSource onSubmit={this.onSubmit} mapConfig={mapConfig} t={t} />)
     } else if (type === 'geojson') {

@@ -1,5 +1,5 @@
 //  @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Typography } from 'antd'
 import { QRCode } from 'react-qr-svg'
 import {IntlProvider, FormattedNumber} from 'react-intl'
@@ -28,7 +28,7 @@ type Props = {
 }
 
 export default class FeatureLocation extends React.PureComponent<Props, void> {
-  render () {
+  render (): Node {
     const {geojson, t, locale} = this.props
     if (!geojson) {
       return (

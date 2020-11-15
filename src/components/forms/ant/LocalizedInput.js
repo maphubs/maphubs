@@ -35,7 +35,7 @@ type State = {
 }
 
 export default class LocalizedInput extends React.Component<Props, State> {
-  static defaultProps = {
+  static defaultProps: {|type: string|} = {
     type: 'input'
   }
 
@@ -45,7 +45,7 @@ export default class LocalizedInput extends React.Component<Props, State> {
     this.state = { value }
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     let shouldUpdate = false
     langs.forEach(lang => {
       if (nextState.value[lang.value] !== this.state.value[lang.value]) {
@@ -55,7 +55,7 @@ export default class LocalizedInput extends React.Component<Props, State> {
     return shouldUpdate
   }
 
-  handleChange = (lang: string, val: string) => {
+  handleChange: ((lang: string, val: string) => void) = (lang: string, val: string) => {
     const changedValue = {}
     changedValue[lang] = val
 
@@ -69,7 +69,7 @@ export default class LocalizedInput extends React.Component<Props, State> {
     }
   }
 
-  render () {
+  render (): React.Node {
     const {value} = this.state
     const {placeholder, type, t} = this.props
     const {handleChange} = this

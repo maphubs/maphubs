@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Col, Typography } from 'antd'
 import CardCarousel from './CardCarousel'
 import MapHubsComponent from '../MapHubsComponent'
@@ -15,11 +15,11 @@ type Props = {
 }
 
 export default class CardCollection extends MapHubsComponent<Props, void> {
-  static defaultProps = {
+  static defaultProps: any | {|cards: Array<any>|} = {
     cards: []
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const {title, viewAllLink} = this.props
 

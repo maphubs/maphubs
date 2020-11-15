@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import { Row, Button, Typography } from 'antd'
 import slugify from 'slugify'
@@ -46,7 +46,7 @@ type State = {
 } & LocaleStoreState
 
 export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -56,7 +56,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: any | {|groups: Array<any>|} = {
     groups: []
   }
 
@@ -127,19 +127,19 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  enableButton = () => {
+  enableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: true
     })
   }
 
-  disableButton = () => {
+  disableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: false
     })
   }
 
-  loadRemoteUrl = (model: Object) => {
+  loadRemoteUrl: any | ((model: any) => void) = (model: Object) => {
     const _this = this
     const remoteLayerUrl = model.remoteLayerUrl
     const group_id = model.group
@@ -164,7 +164,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
     }
   }
 
-  saveLayer = () => {
+  saveLayer: any | (() => void) = () => {
     const _this = this
     const {layer, group_id, remote_host} = this.state
     if (layer) {
@@ -187,7 +187,7 @@ export default class CreateRemoteLayer extends MapHubsComponent<Props, State> {
     }
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const { groups } = this.props
     const { layer } = this.state

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import {Button, Carousel} from 'antd'
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
 }
 
 export default class Slides extends React.Component<Props> {
-  render () {
+  render (): Node | string {
     const {config, t} = this.props
     if (!config?.slides) return ''
     return (

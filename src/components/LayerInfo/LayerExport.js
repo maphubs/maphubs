@@ -1,5 +1,5 @@
 //  @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Card, List, Select } from 'antd'
 import slugify from 'slugify'
 import type {Layer} from '../../types/layer'
@@ -21,11 +21,11 @@ export default class LayerExport extends React.Component<Props, State> {
     this.state = {}
   }
 
-  handleAggregateChange = (aggFields: Array<string>) => {
+  handleAggregateChange: ((aggFields: Array<string>) => void) = (aggFields: Array<string>) => {
     this.setState({aggFields})
   }
 
-  render () {
+  render (): Node {
     const {handleAggregateChange} = this
     const {layer, t} = this.props
     const {aggFields} = this.state

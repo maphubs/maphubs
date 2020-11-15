@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { List } from 'antd'
 import slugify from 'slugify'
 import InfoIcon from '@material-ui/icons/Info'
@@ -11,15 +11,15 @@ type Props = {|
 |}
 
 export default class StoryList extends React.Component<Props, void> {
-  static defaultProps = {
+  static defaultProps: {|showTitle: boolean|} = {
     showTitle: true
   }
 
-  shouldComponentUpdate () {
+  shouldComponentUpdate (): boolean {
     return false
   }
 
-  render () {
+  render (): Node {
     const { stories, showTitle, t } = this.props
 
     return (

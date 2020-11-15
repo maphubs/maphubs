@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { message, notification, Row } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
@@ -32,19 +32,19 @@ export default class SentinelSource extends MapHubsComponent<Props, State> {
     this.stores.push(LayerStore)
   }
 
-  enableButton = () => {
+  enableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: true
     })
   }
 
-  disableButton = () => {
+  disableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: false
     })
   }
 
-  getAPIUrl = (selected: string) => {
+  getAPIUrl: any | ((selected: string) => void) = (selected: string) => {
     // const selectedArr = selected.split(':')
     // const selectedType = selectedArr[0].trim()
     // const selectedScene = selectedArr[1].trim()
@@ -52,7 +52,7 @@ export default class SentinelSource extends MapHubsComponent<Props, State> {
     // return url
   }
 
-  submit = (model: Object) => {
+  submit: any | ((model: any) => void) = (model: Object) => {
     const {t} = this
     const _this = this
     const layers = []
@@ -96,15 +96,15 @@ export default class SentinelSource extends MapHubsComponent<Props, State> {
     })
   }
 
-  optionChange = (value: string) => {
+  optionChange: any | ((value: string) => void) = (value: string) => {
     this.setState({selectedOption: value})
   }
 
-  sceneOptionChange = (value: string) => {
+  sceneOptionChange: any | ((value: string) => void) = (value: string) => {
     this.setState({selectedSceneOption: value})
   }
 
-  render () {
+  render (): Node {
     return (
       <Row>
         <p>Coming Soon!</p>

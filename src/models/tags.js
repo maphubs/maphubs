@@ -3,7 +3,7 @@ const knex = require('../connection')
 const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 
 module.exports = {
-  async checkIfExists (tag: string, trx?: any) {
+  async checkIfExists (tag: string, trx?: any): Promise<boolean> {
     const db = trx || knex
     const result = await db('omh.tags').select('tag').where({tag})
     if (result && result.length > 0) {
@@ -12,7 +12,7 @@ module.exports = {
     return false
   },
 
-  async addTag (tag: string, trx?: any) {
+  async addTag (tag: string, trx?: any): Promise<any> | Promise<boolean> {
     const db = trx || knex
     if (await this.checkIfExists(tag, db)) {
       return true
@@ -21,13 +21,13 @@ module.exports = {
     }
   },
 
-  async addStoryTag (tag: string, story_id: number, trx?: any) {
+  async addStoryTag (tag: string, story_id: number, trx?: any): Promise<any> {
     const db = trx || knex
     await this.addTag(tag, db)
     return db('omh.story_tags').insert({story_id, tag})
   },
 
-  async updateStoryTags (tags: Array<string>, story_id: number, trx?: any) {
+  async updateStoryTags (tags: Array<string>, story_id: number, trx?: any): Promise<Array<$Call<<T>(p: Promise<T> | T) => T, mixed>>> {
     const db = trx || knex
     log.info(`updating tags for story: ${story_id}`)
     const results = await db('omh.story_tags').select('tag').where({story_id})
@@ -56,7 +56,7 @@ module.exports = {
     }))
   },
 
-  async updateMapTags (tags: Array<string>, map_id: number, trx?: any) {
+  async updateMapTags (tags: Array<string>, map_id: number, trx?: any): Promise<Array<$Call<<T>(p: Promise<T> | T) => T, mixed>>> {
     const db = trx || knex
     log.info(`updating tags for map: ${map_id}`)
     const results = await db('omh.map_tags').select('tag').where({map_id})
@@ -85,7 +85,7 @@ module.exports = {
     }))
   },
 
-  async addMapTag (tag: string, map_id: number, trx?: any) {
+  async addMapTag (tag: string, map_id: number, trx?: any): Promise<any> {
     const db = trx || knex
     await this.addTag(tag, db)
     return db('omh.map_tags').insert({map_id, tag})

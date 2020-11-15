@@ -12,7 +12,7 @@ const moment = require('moment')
 
 module.exports = {
 
-  async getSiteMapIndexFeatureURLs () {
+  async getSiteMapIndexFeatureURLs (): Promise<Array<any | string>> {
     const baseUrl = urlUtil.getBaseUrl()
     const layers = await knex('omh.layers').select('layer_id')
       .whereNot({
@@ -34,7 +34,7 @@ module.exports = {
     return urls
   },
 
-  async addLayersToSiteMap (sm: any) {
+  async addLayersToSiteMap (sm: any): Promise<any> {
     const baseUrl = urlUtil.getBaseUrl()
     const layers = await Layer.getAllLayers(false)
 
@@ -50,7 +50,7 @@ module.exports = {
     return sm
   },
 
-  async addStoriesToSiteMap (sm: any) {
+  async addStoriesToSiteMap (sm: any): Promise<any> {
     const stories = await Story.getAllStories().orderBy('omh.stories.updated_at', 'desc')
 
     stories.forEach((story) => {
@@ -68,7 +68,7 @@ module.exports = {
     return sm
   },
 
-  async addMapsToSiteMap (sm: any) {
+  async addMapsToSiteMap (sm: any): Promise<any> {
     const baseUrl = urlUtil.getBaseUrl()
     const maps = await Map.getAllMaps().orderBy('omh.maps.updated_at', 'desc')
     maps.forEach((map) => {
@@ -84,7 +84,7 @@ module.exports = {
     return sm
   },
 
-  async addGroupsToSiteMap (sm: any) {
+  async addGroupsToSiteMap (sm: any): Promise<any> {
     const groups = await Group.getAllGroups()
     groups.forEach((group) => {
       sm.write({
@@ -95,7 +95,7 @@ module.exports = {
     return sm
   },
 
-  async addLayerFeaturesToSiteMap (layer_id: number, sm: any) {
+  async addLayerFeaturesToSiteMap (layer_id: number, sm: any): Promise<any> {
     const baseUrl = urlUtil.getBaseUrl()
     const layer = await Layer.getLayerByID(layer_id)
     if (layer && !layer.is_external && !layer.remote && !layer.private) {

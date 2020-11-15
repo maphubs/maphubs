@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import MapHubsComponent from '../components/MapHubsComponent'
 import Reflux from '../components/Rehydrate'
@@ -35,7 +35,7 @@ type Props = {
 type State = {} & LocaleStoreState & AddPhotoPointStoreState
 
 export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -94,16 +94,16 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  showImageCrop = () => {
+  showImageCrop: any | (() => void) = () => {
     this.refs.imagecrop.show()
   }
 
-  resetPhoto = () => {
+  resetPhoto: any | (() => void) = () => {
     Actions.resetPhoto()
     this.showImageCrop()
   }
 
-  onCrop = (data: any, info: Object) => {
+  onCrop: any | ((data: any, info: any) => void) = (data: any, info: Object) => {
     const {t} = this
     Actions.setImage(data, info, function (err) {
       if (err) {
@@ -118,7 +118,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
     })
   }
 
-  onSubmit = (model: Object) => {
+  onSubmit: any | ((model: any) => void) = (model: Object) => {
     const {t} = this
     const _this = this
     const closeMessage = message.loading(t('Saving'), 0)
@@ -167,7 +167,7 @@ export default class AddPhotoPoint extends MapHubsComponent<Props, State> {
     })
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     let dataReview = ''
     let dataForm = ''

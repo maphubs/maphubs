@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import request from 'superagent'
 import { Tabs, notification, Input, Row, Drawer, List } from 'antd'
 import MapToolButton from '../MapToolButton'
@@ -26,7 +26,7 @@ type State = {
 }
 
 export default class MapSearchPanel extends React.Component<Props, State> {
-  static defaultProps = {
+  static defaultProps: {|show: boolean|} = {
     show: false
   }
 
@@ -39,11 +39,11 @@ export default class MapSearchPanel extends React.Component<Props, State> {
 
   drawerContainer: any
 
-  onSetOpen = (open: boolean) => {
+  onSetOpen: ((open: boolean) => void) = (open: boolean) => {
     this.setState({ open })
   }
 
-  onSearch = async (e: any) => {
+  onSearch: ((e: any) => Promise<void>) = async (e: any) => {
     const query = e.target.value
     if (!query) {
       this.onReset()
@@ -57,21 +57,21 @@ export default class MapSearchPanel extends React.Component<Props, State> {
     }
   }
 
-  onSubmit = () => {
+  onSubmit: (() => void) = () => {
     // enter is pressed in search box
     // do nothing, since we update automatically
   }
 
-  onReset = () => {
+  onReset: (() => void) = () => {
     this.setState({results: undefined, locationSearchResults: undefined, query: undefined})
     this.props.onSearchReset()
   }
 
-  onClickResult = (result: Object) => {
+  onClickResult: ((result: any) => void) = (result: Object) => {
     this.props.onSearchResultClick(result)
   }
 
-  selectTab = (tab: string) => {
+  selectTab: ((tab: string) => void) = (tab: string) => {
     if (tab === 'location' && this.state.tab !== 'location') {
       this.setState({tab})
       if (this.state.query && !this.state.locationSearchResults) {
@@ -120,7 +120,7 @@ export default class MapSearchPanel extends React.Component<Props, State> {
       })
   }
 
-  render () {
+  render (): Element<"div"> {
     const _this = this
     const {t} = this.props
     const { tab, results, locationSearchResults } = this.state

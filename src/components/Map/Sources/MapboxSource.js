@@ -3,7 +3,7 @@ import request from 'superagent'
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
 
 const MapboxSource = {
-  load (key: string, source: GLSource, mapComponent: any) {
+  load (key: string, source: GLSource, mapComponent: any): any {
     const mapboxid = source.mapboxid || ''
     const url = `https://api.mapbox.com/styles/v1/${mapboxid}?access_token=${mapComponent.props.mapboxAccessToken}`
     return request.get(url)

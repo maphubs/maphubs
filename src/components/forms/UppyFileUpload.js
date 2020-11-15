@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Uppy from '@uppy/core'
 import Tus from '@uppy/tus'
 import { Dashboard } from '@uppy/react'
@@ -23,7 +23,7 @@ type Props = {
 }
 
 export default class UppyFileUpload extends MapHubsComponent<Props, void> {
-  static defaultProps = {
+  static defaultProps: any | {|height: number|} = {
     height: 300
   }
 
@@ -64,7 +64,7 @@ export default class UppyFileUpload extends MapHubsComponent<Props, void> {
     this.uppy.run()
   }
 
-  render () {
+  render (): Node | string {
     const {note, height} = this.props
     if (this.uppy) {
       return (

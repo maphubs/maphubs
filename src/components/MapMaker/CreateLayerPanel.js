@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import { notification } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
@@ -21,7 +21,7 @@ export default class CreateLayerPanel extends MapHubsComponent<Props, State> {
     this.stores.push(LayerStore)
   }
 
-  createEmptyLayer = () => {
+  createEmptyLayer: any | (() => void) = () => {
     const _this = this
     LayerActions.createLayer(this.state._csrf, err => {
       if (err) {
@@ -39,7 +39,7 @@ export default class CreateLayerPanel extends MapHubsComponent<Props, State> {
     })
   }
 
-  render () {
+  render (): Element<"div"> {
     return (
       <div />
     )

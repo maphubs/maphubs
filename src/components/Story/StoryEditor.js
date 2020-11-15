@@ -302,6 +302,6 @@ class StoryEditor extends React.Component<Props, State> {
   }
 }
 
-export default subscribe(StoryEditor, {
+export default (subscribe(StoryEditor, {
   story: StoryContainer
-})
+}): any)

@@ -6,7 +6,7 @@ const Story = require('../models/story')
 const pageOptions = require('./page-options-helper')
 const local = require('../local')
 
-module.exports = async function (app: any, config: Object, req: any, res: any) {
+module.exports = async function (app: any, config: Object, req: any, res: any): Promise<mixed> {
   const results = {}
   // use page config to determine data requests
   if (config.components && Array.isArray(config.components) && config.components.length > 0) {

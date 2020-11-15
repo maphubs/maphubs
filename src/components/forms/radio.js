@@ -50,4 +50,4 @@ class RadioForm extends React.Component<Props, void> {
     )
   }
 }
-export default withFormsy(RadioForm)
+export default (withFormsy(RadioForm): any)

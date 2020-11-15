@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Divider, notification, message, Typography, Button } from 'antd'
 import { CloseSquareFilled } from '@ant-design/icons'
 import request from 'superagent'
@@ -45,12 +45,12 @@ const cardTypes = {
 }
 
 export default class CardSearch extends React.Component<Props, State> {
-  state = {
+  state: State = {
     searchResults: [],
     searchActive: false
   }
 
-  handleSearch = async (input: string) => {
+  handleSearch: ((input: string) => Promise<void>) = async (input: string) => {
     const { t, cardType } = this.props
     const config = cardTypes[cardType]
     console.log('searching for: ' + input)
@@ -74,11 +74,11 @@ export default class CardSearch extends React.Component<Props, State> {
     }
   }
 
-  resetSearch = () => {
+  resetSearch: (() => void) = () => {
     this.setState({searchActive: false, searchResults: []})
   }
 
-  render () {
+  render (): Node {
     const { t, cardType } = this.props
     const { searchActive, searchResults } = this.state
     const config = cardTypes[cardType]

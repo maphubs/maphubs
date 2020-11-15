@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Table, Select, Input, Button, Avatar, Row } from 'antd'
 import Highlighter from 'react-highlight-words'
 import { SearchOutlined } from '@ant-design/icons'
@@ -23,11 +23,11 @@ type State = {
 }
 
 export default class MapList extends React.Component<Props, State> {
-  static defaultProps = {
+  static defaultProps: {|groups: Array<any>|} = {
     groups: []
   }
 
-  state = {
+  state: State = {
     sortedInfo: undefined,
     filteredInfo: undefined,
     searchText: undefined
@@ -35,7 +35,7 @@ export default class MapList extends React.Component<Props, State> {
 
   searchInput: any
 
-    handleChange = (pagination: any, filters: any, sorter: any) => {
+    handleChange: ((pagination: any, filters: any, sorter: any) => void) = (pagination: any, filters: any, sorter: any) => {
     // console.log('Various parameters', pagination, filters, sorter)
       this.setState({
         filteredInfo: filters,
@@ -43,7 +43,7 @@ export default class MapList extends React.Component<Props, State> {
       })
     }
 
-  handleSearch = (selectedKeys: any, confirm: any, dataIndex: any) => {
+  handleSearch: ((selectedKeys: any, confirm: any, dataIndex: any) => void) = (selectedKeys: any, confirm: any, dataIndex: any) => {
     confirm()
     this.setState({
       searchText: selectedKeys[0],
@@ -51,12 +51,12 @@ export default class MapList extends React.Component<Props, State> {
     })
   }
 
-  handleReset = (clearFilters: any) => {
+  handleReset: ((clearFilters: any) => void) = (clearFilters: any) => {
     clearFilters()
     this.setState({ searchText: '' })
   }
 
-  render () {
+  render (): Node {
     const { maps, groups, t } = this.props
     let { filteredInfo, sortedInfo } = this.state
     sortedInfo = sortedInfo || {}

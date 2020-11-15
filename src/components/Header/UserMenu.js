@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import MapHubsComponent from '../MapHubsComponent'
 import UserStore from '../../stores/UserStore'
 import { Menu, Dropdown, Divider, Button } from 'antd'
@@ -34,7 +34,7 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
     this.stores.push(UserStore)
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     // only update if something changes
 
     if (!_isequal(this.props, nextProps)) {
@@ -46,11 +46,11 @@ export default class UserMenu extends MapHubsComponent<Props, State> {
     return false
   }
 
-  loginClick = () => {
+  loginClick: any | (() => void) = () => {
     window.location = '/login?returnTo=' + urlencode(window.location.href)
   }
 
-  render () {
+  render (): Node | string {
     const {t} = this
     const { sidenav } = this.props
     // only render on the client side, avoids caching a username in SSR

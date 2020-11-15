@@ -6,7 +6,7 @@ const Account = require('./account')
 
 module.exports = {
 
-  getAllGroups (trx: any) {
+  getAllGroups (trx: any): any {
     let db = knex
     if (trx) { db = trx }
     return db.select('omh.groups.*',
@@ -16,7 +16,7 @@ module.exports = {
       .leftJoin('omh.group_images', 'omh.groups.group_id', 'omh.group_images.group_id')
   },
 
-  getPopularGroups (number: number = 15) {
+  getPopularGroups (number: number = 15): any {
     return knex.select('omh.groups.*',
       knex.raw('(select sum(views) from omh.layers where owned_by_group_id=omh.groups.group_id) as layer_views'),
       knex.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage')
@@ -29,7 +29,7 @@ module.exports = {
       .limit(number)
   },
 
-  getRecentGroups (number: number = 15) {
+  getRecentGroups (number: number = 15): any {
     return knex.select('omh.groups.*',
       knex.raw('(select max(last_updated) from omh.layers where owned_by_group_id=omh.groups.group_id) as layers_updated'),
       knex.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage')
@@ -41,7 +41,7 @@ module.exports = {
       .limit(number)
   },
 
-  getFeaturedGroups (number: number = 15) {
+  getFeaturedGroups (number: number = 15): any {
     return knex.select('omh.groups.*',
       knex.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage')
     ).table('omh.groups')
@@ -51,7 +51,7 @@ module.exports = {
       .limit(number)
   },
 
-  getSearchSuggestions (input: string) {
+  getSearchSuggestions (input: string): any {
     input = input.toLowerCase()
     return knex.select('name', 'group_id').table('omh.groups')
       .where(knex.raw(`
@@ -73,7 +73,7 @@ module.exports = {
         `, {input}))
   },
 
-  async getGroupByID (groupId: string) {
+  async getGroupByID (groupId: string): Promise<any> {
     const result = await knex.select().table('omh.groups')
       .whereRaw('lower(group_id) = ?', groupId.toLowerCase())
     if (result && result.length === 1) {
@@ -83,7 +83,7 @@ module.exports = {
     return null
   },
 
-  getSearchResults (input: string) {
+  getSearchResults (input: string): any {
     input = input.toLowerCase()
     return knex.select('omh.groups.*',
       knex.raw('CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage')
@@ -109,7 +109,7 @@ module.exports = {
         `, {input}))
   },
 
-  async getGroupsForUser (userId: number, trx: any = null) {
+  async getGroupsForUser (userId: number, trx: any = null): Promise<any> {
     const db = trx || knex
 
     const groups = await db.select('omh.groups.*',
@@ -148,31 +148,31 @@ module.exports = {
       .where('omh.group_memberships.group_id', groupId)
   },
 
-  getGroupMembersByRole (groupId: string, role: string) {
+  getGroupMembersByRole (groupId: string, role: string): any {
     return knex.select('public.users.id', 'public.users.display_name', 'public.users.email', 'omh.group_memberships.role').from('omh.group_memberships')
       .leftJoin('public.users', 'omh.group_memberships.user_id', 'public.users.id')
       .where({'omh.group_memberships.group_id': groupId, 'omh.group_memberships.role': role})
   },
 
-  addGroupMember (groupId: string, userId: number, role: string) {
+  addGroupMember (groupId: string, userId: number, role: string): any {
     return knex('omh.group_memberships').insert({
       group_id: groupId, user_id: userId, role
     })
   },
 
-  updateGroupMemberRole (groupId: string, userId: number, role: string) {
+  updateGroupMemberRole (groupId: string, userId: number, role: string): any {
     return knex('omh.group_memberships')
       .where({group_id: groupId, user_id: userId})
       .update({role})
   },
 
-  removeGroupMember (groupId: string, userId: number) {
+  removeGroupMember (groupId: string, userId: number): any {
     return knex('omh.group_memberships')
       .where({group_id: groupId, user_id: userId})
       .del()
   },
 
-  async isGroupAdmin (groupId: string, userId: number) {
+  async isGroupAdmin (groupId: string, userId: number): Promise<boolean> {
     if (!groupId || userId <= 0) {
       return false
     } else {
@@ -185,7 +185,7 @@ module.exports = {
     }
   },
 
-  async allowedToModify (groupId: string, userId: number) {
+  async allowedToModify (groupId: string, userId: number): Promise<boolean> {
     if (!groupId || userId <= 0) {
       return false
     } else {
@@ -197,13 +197,13 @@ module.exports = {
     }
   },
 
-  async checkGroupIdAvailable (groupId: string) {
+  async checkGroupIdAvailable (groupId: string): Promise<boolean> {
     const result = await this.getGroupByID(groupId)
     if (result === null) return true
     return false
   },
 
-  async createGroup (groupId: string, name: string, description: string, location: string, published: boolean, userId: number) {
+  async createGroup (groupId: string, name: string, description: string, location: string, published: boolean, userId: number): Promise<any> {
     return knex.transaction(async (trx) => {
       await trx('omh.groups').insert({
         group_id: groupId, name, description, location, published, tier_id: 'public'
@@ -215,7 +215,7 @@ module.exports = {
     })
   },
 
-  updateGroup (groupId: string, name: string, description: string, location: string, published: boolean) {
+  updateGroup (groupId: string, name: string, description: string, location: string, published: boolean): any {
     return knex('omh.groups')
       .where('group_id', groupId)
       .update({
@@ -223,7 +223,7 @@ module.exports = {
       })
   },
 
-  async deleteGroup (groupId: string) {
+  async deleteGroup (groupId: string): Promise<any> {
     return knex.transaction(async (trx) => {
       await trx('omh.group_images').where({group_id: groupId}).del()
       await trx('omh.group_memberships').where({group_id: groupId}).del()

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Result, Button, Typography } from 'antd'
 import MapIcon from '@material-ui/icons/Map'
 import Header from '../components/header'
@@ -29,7 +29,7 @@ type Props = {
 }
 
 export default class UserMaps extends MapHubsComponent<Props, void> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -39,7 +39,7 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: any | {|maps: Array<any>, myMaps: boolean, user: {...}|} = {
     maps: [],
     user: {},
     myMaps: false
@@ -53,7 +53,7 @@ export default class UserMaps extends MapHubsComponent<Props, void> {
     }
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const { myMaps, maps } = this.props
 

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import slugify from 'slugify'
 import Comments from '../components/Comments'
@@ -46,7 +46,7 @@ type Props = {
   } & LocaleStoreState & FeaturePhotoStoreState
 
 export default class FeatureInfo extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -106,7 +106,7 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     }
   }
 
-  selectTab = (tab: string) => {
+  selectTab: any | ((tab: string) => void) = (tab: string) => {
     let frActive
     if (tab === 'forestreport' || this.state.tab === 'forestreport') {
       frActive = true
@@ -114,11 +114,11 @@ export default class FeatureInfo extends MapHubsComponent<Props, State> {
     this.setState({tab, frActive})
   }
 
-  changeGeoJSONFeature = (feature: Object) => {
+  changeGeoJSONFeature: any | ((feature: any) => void) = (feature: Object) => {
     this.setState({feature})
   }
 
-  render () {
+  render (): Node {
     const {selectTab, t} = this
     const {canEdit, layer, feature, headerConfig, notes} = this.props
     const {frActive} = this.state

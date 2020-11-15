@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Modal, Row, Col, Button, Switch, notification } from 'antd'
 import type {LocaleStoreState} from '../../stores/LocaleStore'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
@@ -36,15 +36,15 @@ export default class PublicShareModal extends React.Component<Props, State> {
     this.clipboard = require('clipboard-polyfill').default
   }
 
-  show = () => {
+  show: (() => void) = () => {
     this.setState({visible: true})
   }
 
-  close = () => {
+  close: (() => void) = () => {
     this.setState({visible: false})
   }
 
-  setPublic = async (isPublic: boolean) => {
+  setPublic: ((isPublic: boolean) => Promise<void>) = async (isPublic: boolean) => {
     const {map_id, _csrf, t} = this.props
     try {
       const res = await superagent.post('/api/map/public')
@@ -73,7 +73,7 @@ export default class PublicShareModal extends React.Component<Props, State> {
     }
   }
 
-  onChange = (checked: boolean) => {
+  onChange: ((checked: boolean) => void) = (checked: boolean) => {
     const { t } = this.props
     const _this = this
     if (checked) {
@@ -101,12 +101,12 @@ export default class PublicShareModal extends React.Component<Props, State> {
     }
   }
 
-  writeToClipboard = () => {
+  writeToClipboard: (() => void) = () => {
     const share_id = this.state.share_id
     if (share_id) this.clipboard.writeText(`${urlUtil.getBaseUrl()}/map/share/${share_id}`)
   }
 
-  render () {
+  render (): Node {
     const { t } = this.props
     const { share_id, visible } = this.state
     let shareUrl = ''

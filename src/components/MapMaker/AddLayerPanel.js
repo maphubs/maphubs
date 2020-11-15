@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import SearchBox from '../SearchBox'
 import { Row, Col, Divider, Select, message, notification } from 'antd'
 import CardCarousel from '../CardCarousel/CardCarousel'
@@ -31,20 +31,20 @@ type State = {
 export default class AddLayerPanel extends React.Component<Props, State> {
   props: Props
 
-  state = {
+  state: State = {
     searchResults: [],
     searchActive: false,
     selectedGroupId: undefined
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     if (nextState.searchActive !== this.state.searchActive) return true
     if (nextState.selectedGroupId !== this.state.selectedGroupId) return true
     if (nextState.searchResults.length > 0 || this.state.searchResults.length > 0) return true
     return false
   }
 
-  handleSearch = (input: string) => {
+  handleSearch: ((input: string) => void) = (input: string) => {
     const {t} = this.props
     const _this = this
     debug.log('searching for: ' + input)
@@ -74,7 +74,7 @@ export default class AddLayerPanel extends React.Component<Props, State> {
       })
   }
 
-  handleGroupSearch = (group_id: string) => {
+  handleGroupSearch: ((group_id: string) => void) = (group_id: string) => {
     const {t} = this.props
     if (!group_id) {
       this.resetSearch()
@@ -108,11 +108,11 @@ export default class AddLayerPanel extends React.Component<Props, State> {
       })
   }
 
-  resetSearch = () => {
+  resetSearch: (() => void) = () => {
     this.setState({searchActive: false, searchResults: [], selectedGroupId: undefined})
   }
 
-  render () {
+  render (): Node {
     const { t, myLayers, popularLayers, onAdd, groups } = this.props
     const { searchActive, searchResults, selectedGroupId } = this.state
 

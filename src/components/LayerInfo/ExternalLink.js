@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import {Tooltip} from 'antd'
 import slugify from 'slugify'
 import type {Layer} from '../../types/layer'
@@ -15,7 +15,7 @@ const copyToClipboard = (val: string) => {
   clipboard.writeText(val)
 }
 
-export default function LayerInfoExternalLink ({layer, t}: Props) {
+export default function LayerInfoExternalLink ({layer, t}: Props): Element<"div"> | Element<"p"> {
   const elc = layer.external_layer_config
   const {is_external, remote} = layer
   if (!is_external && !remote) {

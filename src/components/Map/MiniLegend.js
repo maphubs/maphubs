@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import { Subscribe } from 'unstated'
 import BaseMapContainer from './containers/BaseMapContainer'
 import LegendItem from './LegendItem'
@@ -28,7 +28,14 @@ type State = {|
 export default class MiniLegend extends React.Component<Props, State> {
   props: Props
 
-  static defaultProps = {
+  static defaultProps: {|
+  collapsible: boolean,
+  hideInactive: boolean,
+  layers: Array<any>,
+  maxHeight: string,
+  showLayersButton: boolean,
+  style: {...},
+|} = {
     layers: [],
     hideInactive: true,
     collapsible: true,
@@ -41,19 +48,19 @@ export default class MiniLegend extends React.Component<Props, State> {
     collapsed: false
   }
 
-  toggleCollapsed = (e: Event) => {
+  toggleCollapsed: ((e: Event) => void) = (e: Event) => {
     this.setState({
       collapsed: !this.state.collapsed
     })
   }
 
-  openLayersPanel = () => {
+  openLayersPanel: (() => void) = () => {
     if (this.props.openLayersPanel) {
       this.props.openLayersPanel()
     }
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t, title, layers, showLayersButton, hideInactive} = this.props
     const {collapsed} = this.state
 

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import { Row, Col, Button, Tabs, Tooltip } from 'antd'
 import ColorLens from '@material-ui/icons/ColorLens'
 import Label from '@material-ui/icons/Label'
@@ -46,7 +46,7 @@ type State = {
 }
 
 export default class LayerDesigner extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: any | {|alpha: number, showAdvanced: boolean|} = {
     alpha: 0.5,
     showAdvanced: true
   }
@@ -66,7 +66,7 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
     })
   }
 
-  getColorFromStyle = (style: GLStyle): string => {
+  getColorFromStyle: any | ((style: GLStyle) => string) = (style: GLStyle): string => {
     let color = 'rgba(255,0,0,0.65)'
     const prevColor = MapStyles.settings.get(style, 'color')
     if (prevColor) {
@@ -75,12 +75,12 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
     return color
   }
 
-  setColorInStyle = (style: GLStyle, color: string):GLStyle => {
+  setColorInStyle: any | ((style: GLStyle, color: string) => GLStyle) = (style: GLStyle, color: string):GLStyle => {
     style = MapStyles.settings.set(style, 'color', color)
     return style
   }
 
-  onColorChange = (color: string) => {
+  onColorChange: any | ((color: string) => void) = (color: string) => {
     const oldStyle = this.setColorInStyle(this.props.style, color)
     const { style, isOutlineOnly } = MapStyles.color.updateStyleColor(oldStyle, color)
     let legend
@@ -94,55 +94,55 @@ export default class LayerDesigner extends MapHubsComponent<Props, State> {
     this.props.onColorChange(style, legend)
   }
 
-  onColorPickerChange = (colorValue: ColorValue) => {
+  onColorPickerChange: any | ((colorValue: ColorValue) => void) = (colorValue: ColorValue) => {
     const color = `rgba(${colorValue.rgb.r},${colorValue.rgb.g},${colorValue.rgb.b},${colorValue.rgb.a})`
     this.onColorChange(color)
   }
 
-  onStyleChange = (style: Object) => {
+  onStyleChange: any | ((style: any) => void) = (style: Object) => {
     this.props.onStyleChange(style)
   }
 
-  onCodeStyleChange = (style: string) => {
+  onCodeStyleChange: any | ((style: string) => void) = (style: string) => {
     style = JSON.parse(style)
     this.props.onStyleChange(style)
     this.hideStyleEditor()
   }
 
-  onLabelsChange = (style: GLStyle, labels: Object) => {
+  onLabelsChange: any | ((style: GLStyle, labels: any) => void) = (style: GLStyle, labels: Object) => {
     this.props.onLabelsChange(style, labels)
   }
 
-  onMarkersChange = (style: GLStyle, markers: Object) => {
+  onMarkersChange: any | ((style: GLStyle, markers: any) => void) = (style: GLStyle, markers: Object) => {
     this.props.onMarkersChange(style, markers)
   }
 
-  onLegendChange = (legend: string) => {
+  onLegendChange: any | ((legend: string) => void) = (legend: string) => {
     this.props.onLegendChange(legend)
     this.hideLegendEditor()
   }
 
-  showStyleEditor = () => {
+  showStyleEditor: any | (() => void) = () => {
     this.setState({showStyleEditor: true})
   }
 
-  showLegendEditor = () => {
+  showLegendEditor: any | (() => void) = () => {
     this.setState({showLegendEditor: true})
   }
 
-  hideStyleEditor = () => {
+  hideStyleEditor: any | (() => void) = () => {
     this.setState({showStyleEditor: false})
   }
 
-  hideLegendEditor = () => {
+  hideLegendEditor: any | (() => void) = () => {
     this.setState({showLegendEditor: false})
   }
 
-  onAdvancedSettingsChange = (style: GLStyle, legend: string) => {
+  onAdvancedSettingsChange: any | ((style: GLStyle, legend: string) => void) = (style: GLStyle, legend: string) => {
     this.props.onColorChange(style, legend)
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t} = this
     const { layer, style, labels, legend, showAdvanced } = this.props
     const { color, showStyleEditor, showLegendEditor } = this.state

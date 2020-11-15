@@ -438,7 +438,7 @@ class DataGrid extends React.Component<Props, State> {
     )
   }
 }
-export default subscribe(DataGrid, {
+export default (subscribe(DataGrid, {
   dataEditorState: DataEditorContainer,
   mapState: MapContainer
-})
+}): any)

@@ -2,7 +2,7 @@
 import type {GLLayer, GLSource} from '../../../types/mapbox-gl-style'
 
 const AGSRaster = {
-  async load (key: string, source: GLSource, mapComponent: any) {
+  async load (key: string, source: GLSource, mapComponent: any): Promise<any> {
   // add directly to map until this is fixed https://github.com/mapbox/mapbox-gl-js/issues/3003
     return mapComponent.map.addSource(key, source)
   },
@@ -26,10 +26,10 @@ const AGSRaster = {
       }
     }
   },
-  removeLayer (layer: GLLayer, mapComponent: any) {
+  removeLayer (layer: GLLayer, mapComponent: any): any {
     return mapComponent.map.removeLayer(layer.id)
   },
-  remove (key: string, mapComponent: any) {
+  remove (key: string, mapComponent: any): any {
     return mapComponent.map.removeSource(key)
   }
 }

@@ -53,20 +53,20 @@ export default class BaseMapContainer extends Container<BaseMapState> {
 
   position: any
 
-  initBaseMap = async () => {
+  initBaseMap: (() => Promise<any>) = async () => {
     if (!this.state.baseMapStyle) {
       const baseMapStyle = await this.getBaseMapStyle(this.state.baseMap)
       return this.setState({baseMapStyle})
     }
   }
 
-  setBaseMap = async (baseMap: string) => {
+  setBaseMap: ((baseMap: string) => Promise<void>) = async (baseMap: string) => {
     const baseMapStyle = await this.getBaseMapStyle(baseMap)
     await this.setState({baseMap, baseMapStyle})
     return baseMapStyle
   }
 
-  debouncedUpdateMapPosition = _debounce((position, bbox) => {
+  debouncedUpdateMapPosition: any = _debounce((position, bbox) => {
     const _this = this
     if (this.position) {
       const from = {
@@ -146,7 +146,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
   })
 
   // Inspired by: https://github.com/gmaclennan/leaflet-bing-layer
-  updateMapPosition = (position: any, bbox: any) => {
+  updateMapPosition: ((position: any, bbox: any) => void) = (position: any, bbox: any) => {
     // ignore unless using a service that needs this... like Bing
     if (this.state.updateWithMapPosition) {
       this.debouncedUpdateMapPosition(position, bbox, this.state.bingKey)
@@ -183,7 +183,7 @@ export default class BaseMapContainer extends Container<BaseMapState> {
   }
   */
 
-  getBaseMapStyle = async (baseMap: string) => {
+  getBaseMapStyle: ((baseMap: string) => Promise<void>) = async (baseMap: string) => {
     const { mapboxAccessToken, tileHostingKey, baseMapOptions } = this.state
     const config = _find(baseMapOptions, {value: baseMap})
     if (config) {

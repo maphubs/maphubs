@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Tooltip, List, Avatar } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 import DeleteIcon from '@material-ui/icons/Delete'
@@ -14,19 +14,19 @@ type Props = {
 }
 
 export default class EditList extends React.Component<Props, void> {
-  static defaultProps = {
+  static defaultProps: {|items: Array<any>|} = {
     items: []
   }
 
-  onDelete = (key: any) => {
+  onDelete: ((key: any) => void) = (key: any) => {
     this.props.onDelete(key)
   }
 
-  onAction = (key: any) => {
+  onAction: ((key: any) => void) = (key: any) => {
     this.props.onAction(key)
   }
 
-  render () {
+  render (): Node {
     const {t, title, items} = this.props
     const _this = this
 

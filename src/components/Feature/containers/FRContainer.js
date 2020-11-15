@@ -38,7 +38,7 @@ export default class FRContainer extends Container<State> {
     this.changeBuffer(state.buffer)
   }
 
-  changeBuffer = (buffer: number) => {
+  changeBuffer: ((buffer: number) => void) = (buffer: number) => {
     const {geoJSON} = this.state
     let isBuffered
     let bufferFeature
@@ -53,7 +53,7 @@ export default class FRContainer extends Container<State> {
     }
   }
 
-  activateFR = (config: Object, mapComponent: Object) => {
+  activateFR: ((config: any, mapComponent: any) => void) = (config: Object, mapComponent: Object) => {
     const {featureLayer, FRRemainingThreshold, bufferFeature} = this.state
     let combinedGLADFeatures = []
     config.glad.data.values.forEach((value) => {
@@ -93,11 +93,11 @@ export default class FRContainer extends Container<State> {
     mapComponent.zoomToData(bufferFeature)
   }
 
-  deactiveFR = () => {
+  deactiveFR: (() => void) = () => {
     this.setState({mapLayers: [this.state.featureLayer]})
   }
 
-  onAlertClick = (alert: Object, mapComponent: Object) => {
+  onAlertClick: ((alert: any, mapComponent: any) => void) = (alert: Object, mapComponent: Object) => {
     // console.log(alert);
     const mapboxGL = mapComponent.map
     const geoJSONData = mapboxGL.getSource('fr-glad-geojson')

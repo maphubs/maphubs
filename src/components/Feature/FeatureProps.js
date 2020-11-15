@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import MapHubsComponent from '../MapHubsComponent'
 
 import type {MapHubsField} from '../../types/maphubs-field'
@@ -12,7 +12,7 @@ type Props = {
 export default class FeatureProps extends MapHubsComponent<Props, void> {
   props: Props
 
-  render () {
+  render (): void | Element<"ul"> {
     const _this = this
     if (this.props.presets && this.props.data) {
       return (

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import UppyFileUpload from '../forms/UppyFileUpload'
 import { Row, notification, message, Button } from 'antd'
 import Map from '../Map'
@@ -56,7 +56,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     }
   }
 
-  onSubmit = () => {
+  onSubmit: any | (() => void) = () => {
     const {t} = this
     const _this = this
     const data = {
@@ -78,7 +78,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     })
   }
 
-  onUpload = (file: Object) => {
+  onUpload: any | ((file: any) => void) = (file: Object) => {
     const {t} = this
     const _this = this
     const {layer_id} = this.state
@@ -115,7 +115,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
       })
   }
 
-  onUploadError = (err: string) => {
+  onUploadError: any | ((err: string) => void) = (err: string) => {
     const {t} = this
     notification.error({
       message: t('Server Error'),
@@ -124,7 +124,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     })
   }
 
-  finishUpload = (shapefileName: string) => {
+  finishUpload: any | ((shapefileName: string) => void) = (shapefileName: string) => {
     const _this = this
     const {t} = this
     LayerActions.finishUpload(shapefileName, this.state._csrf, (err, result) => {
@@ -148,7 +148,7 @@ export default class UploadLocalSource extends MapHubsComponent<Props, State> {
     })
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const layer_id = this.state.layer_id ? this.state.layer_id : 0
     const { canSubmit, multipleShapefiles, style, bbox } = this.state

@@ -4,7 +4,7 @@ const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('featu
 
 module.exports = {
 
-  async getFeatureNotes (mhid: string, layerId: number, trx: any) {
+  async getFeatureNotes (mhid: string, layerId: number, trx: any): Promise<any> {
     const db = trx || knex
 
     const result = await db('omh.feature_notes').select('notes').where({mhid, layer_id: layerId})
@@ -15,7 +15,7 @@ module.exports = {
     return null
   },
 
-  async saveFeatureNote (mhid: string, layerId: number, userId: number, notes: string, trx: any) {
+  async saveFeatureNote (mhid: string, layerId: number, userId: number, notes: string, trx: any): Promise<any> {
     const db = trx || knex
     const result = await db('omh.feature_notes').select('mhid').where({mhid, layer_id: layerId})
 

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import { Row, Typography } from 'antd'
@@ -25,7 +25,7 @@ type Props = {
 }
 
 export default class AllGroups extends MapHubsComponent<Props, void> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -43,7 +43,7 @@ export default class AllGroups extends MapHubsComponent<Props, void> {
     }
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const { groups } = this.props
 

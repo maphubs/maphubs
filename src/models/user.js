@@ -10,7 +10,7 @@ module.exports = {
    * @param id
    * @returns {Promise.<T>}
    */
-  async getUser (id: number, secure: boolean = false) {
+  async getUser (id: number, secure: boolean = false): Promise<any> {
     debug.log('getting for id: ' + id)
     let user = {}
     const result = await knex('users').where('id', id)
@@ -29,7 +29,7 @@ module.exports = {
     }
   },
 
-  async getUserByName (display_name: string, secure: boolean = false) {
+  async getUserByName (display_name: string, secure: boolean = false): Promise<any> {
     debug.log('getting user with name: ' + display_name)
 
     display_name = display_name.toLowerCase()
@@ -54,7 +54,7 @@ module.exports = {
     }
   },
 
-  async getUserByEmail (email: string, secure: boolean = false) {
+  async getUserByEmail (email: string, secure: boolean = false): Promise<any> {
     debug.log('getting user with email: ' + email)
 
     email = email.toLowerCase()
@@ -85,7 +85,7 @@ module.exports = {
     }
   },
 
-  async createUser (email: string, name: string, display_name: string, creation_ip: string) {
+  async createUser (email: string, name: string, display_name: string, creation_ip: string): Promise<number> {
     email = email.toLowerCase()
     display_name = display_name.toLowerCase()
 
@@ -101,7 +101,7 @@ module.exports = {
     return Number.parseInt(user_id, 10)
   },
 
-  getSearchSuggestions (input: string) {
+  getSearchSuggestions (input: string): any {
     input = input.toLowerCase()
     return knex.select('display_name', 'id').table('users')
       .where(knex.raw('lower(display_name)'), 'like', '%' + input + '%')

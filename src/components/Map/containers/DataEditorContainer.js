@@ -24,7 +24,12 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     this.state = this.getDefaultState()
   }
 
-  getDefaultState () {
+  getDefaultState (): {|
+  editing: boolean,
+  edits: Array<any>,
+  originals: Array<any>,
+  redo: Array<any>,
+|} {
     return {
       editing: false,
       originals: [], // store the orginal GeoJSON to support undo
@@ -37,11 +42,11 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     this.setState(this.getDefaultState())
   }
 
-  startEditing (layer: Layer) {
+  startEditing (layer: Layer): any {
     return this.setState({editing: true, editingLayer: layer})
   }
 
-  stopEditing () {
+  stopEditing (): any {
     if (this.state.edits.length > 0) {
       debug.log('stopping with unsaved edits, edits have been deleted')
     }
@@ -134,7 +139,7 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     }
   }
 
-  getLastEditForID (id: string, edits: any) {
+  getLastEditForID (id: string, edits: any): any | null {
     const matchingEdits = []
     _forEachRight(edits, edit => {
       if (edit.geojson.id === id) {
@@ -208,7 +213,7 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     }
   }
 
-  getUniqueFeatureIds () {
+  getUniqueFeatureIds (): Array<any> {
     const uniqueIds = []
     this.state.edits.forEach(edit => {
       const id = edit.geojson.id
@@ -219,7 +224,7 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     return uniqueIds
   }
 
-  getAllEditsForFeatureId (id: string) {
+  getAllEditsForFeatureId (id: string): Array<any> {
     const featureEdits = []
     this.state.edits.forEach(edit => {
       if (edit.geojson.id === id) {
@@ -229,7 +234,7 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     return featureEdits
   }
 
-  async updateSelectedFeatureTags (data: GeoJSONObject) {
+  async updateSelectedFeatureTags (data: GeoJSONObject): Promise<any> {
     const edits = JSON.parse(JSON.stringify(this.state.edits))
     if (this.state.selectedEditFeature) {
       console.log('updatings tags for selected feature')
@@ -261,7 +266,7 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     }
   }
 
-  async selectFeature (mhid: string) {
+  async selectFeature (mhid: string): Promise<any> {
     // check if this feature is in the created or modified lists
     const selected = this.getLastEditForID(mhid, this.state.edits)
 

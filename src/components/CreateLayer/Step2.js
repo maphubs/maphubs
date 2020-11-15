@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import LayerSettings from './LayerSettings'
 import LayerActions from '../../actions/LayerActions'
 import { notification, message, Row } from 'antd'
@@ -17,7 +17,7 @@ type Props = {
 type State = {} & LocaleStoreState & LayerStoreState
 
 export default class Step2 extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: any | {|groups: Array<any>|} = {
     groups: []
   }
 
@@ -26,7 +26,7 @@ export default class Step2 extends MapHubsComponent<Props, State> {
     this.stores.push(LayerStore)
   }
 
-  onSubmit = () => {
+  onSubmit: any | (() => any | void) = () => {
     if (!this.state.is_external && !this.state.is_empty) {
       return this.saveDataLoad()
     } else if (this.state.is_empty) {
@@ -36,7 +36,7 @@ export default class Step2 extends MapHubsComponent<Props, State> {
     }
   }
 
-  initEmptyLayer = () => {
+  initEmptyLayer: any | (() => void) = () => {
     const {t} = this
     const _this = this
 
@@ -68,7 +68,7 @@ export default class Step2 extends MapHubsComponent<Props, State> {
     })
   }
 
-  saveDataLoad = () => {
+  saveDataLoad: any | (() => void) = () => {
     const {t} = this
     const _this = this
 
@@ -102,14 +102,14 @@ export default class Step2 extends MapHubsComponent<Props, State> {
     })
   }
 
-  saveExternal = () => {
+  saveExternal: any | (() => void) = () => {
     LayerActions.tileServiceInitialized()
     if (this.props.onSubmit) {
       this.props.onSubmit()
     }
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     return (
       <Row>

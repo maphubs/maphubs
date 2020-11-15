@@ -82,7 +82,7 @@ const icons = {
 }
 
 export default {
-  getIcon (name: string) {
+  getIcon (name: string): any {
     return icons[name]
   }
 }

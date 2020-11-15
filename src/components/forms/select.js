@@ -140,4 +140,4 @@ class SelectFormItem extends React.Component<Props, State> {
     )
   }
 }
-export default withFormsy(SelectFormItem)
+export default (withFormsy(SelectFormItem): any)

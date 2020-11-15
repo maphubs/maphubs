@@ -183,7 +183,7 @@ class LayerListItem extends React.Component<Props, void> {
   }
 }
 
-export default flow(
+export default (flow(
   DropTarget('layer', DragItemConfig.dropTargetConfig, DragItemConfig.connect),
   DragSource('layer', DragItemConfig.dragSourceConfig, DragItemConfig.collect)
-)(LayerListItem)
+)(LayerListItem): any)

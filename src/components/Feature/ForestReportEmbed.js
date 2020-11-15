@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node, Element} from "React";import React from 'react'
 import XComponentReact from '../XComponentReact'
 import 'rc-slider/dist/rc-slider.min.css'
 import Slider from 'rc-slider'
@@ -30,7 +30,7 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
     this.setState({loaded: true})
   }
 
-  render () {
+  render (): Node | Element<"p"> | string {
     if (!MAPHUBS_CONFIG.FR_API_KEY) {
       return (
         <p>API Key Required!</p>
@@ -40,17 +40,17 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
     const {onModuleToggle} = this.props
 
     const marks = {
-      1: '1km',
-      5: '5km',
-      10: '10km',
-      15: '15km',
-      20: '20km',
-      25: '25km',
-      30: '30km',
-      35: '35km',
-      40: '40km',
-      45: '45km',
-      50: '50km'
+      [1]: '1km',
+      [5]: '5km',
+      [10]: '10km',
+      [15]: '15km',
+      [20]: '20km',
+      [25]: '25km',
+      [30]: '30km',
+      [35]: '35km',
+      [40]: '40km',
+      [45]: '45km',
+      [50]: '50km'
     }
 
     if (this.state.loaded) {

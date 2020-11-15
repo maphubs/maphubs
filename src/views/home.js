@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node, Element} from "React";import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import { Row, Col, Divider, Button, Typography, Card } from 'antd'
@@ -59,7 +59,7 @@ type Props = {
   } & LocaleStoreState
 
 export default class HomePro extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -69,7 +69,22 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: 
+  | any
+  | {|
+    featuredGroups: Array<any>,
+    featuredLayers: Array<any>,
+    featuredMaps: Array<any>,
+    featuredStories: Array<any>,
+    popularGroups: Array<any>,
+    popularLayers: Array<any>,
+    popularMaps: Array<any>,
+    popularStories: Array<any>,
+    recentGroups: Array<any>,
+    recentLayers: Array<any>,
+    recentMaps: Array<any>,
+    recentStories: Array<any>,
+  |} = {
     featuredLayers: [],
     featuredGroups: [],
     featuredMaps: [],
@@ -130,11 +145,11 @@ export default class HomePro extends MapHubsComponent<Props, State> {
   }
   */
 
-  handleSearch = (input: string) => {
+  handleSearch: any | ((input: string) => void) = (input: string) => {
     window.location = '/search?q=' + input
   }
 
-  renderHomePageMap = (config: Object, key: string) => {
+  renderHomePageMap: any | ((config: any, key: string) => Node | string) = (config: Object, key: string) => {
     let homepageMap = ''
     const style = config.style || {}
     if (this.props.map) {
@@ -163,7 +178,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
   }
 
   /* eslint-disable react/display-name */
-  renderXComponent = (config: Object, key: string) => {
+  renderXComponent: any | ((config: any, key: string) => Node | string) = (config: Object, key: string) => {
     if (this.state.loaded) {
       const dimensions = {
         width: '100%',
@@ -187,7 +202,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     }
   }
 
-  renderSlides = (config: Object, key: string) => {
+  renderSlides: any | ((config: any, key: string) => Node) = (config: Object, key: string) => {
     const style = config.style || {}
     return (
       <Row key={key} style={{...style}}>
@@ -196,7 +211,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     )
   }
 
-  renderOnboardingLinks = (config: Object, key: string) => {
+  renderOnboardingLinks: any | ((config: any, key: string) => Node) = (config: Object, key: string) => {
     const bgColor = config.bgColor ? config.bgColor : 'inherit'
     const style = config.style || {}
     const links = (
@@ -207,7 +222,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     return links
   }
 
-  renderProLinks = (config: Object, key: string) => {
+  renderProLinks: any | ((config: any, key: string) => Node) = (config: Object, key: string) => {
     const bgColor = config.bgColor ? config.bgColor : 'inherit'
     const style = config.style || {}
     const links = (
@@ -218,7 +233,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     return links
   }
 
-  renderCarousel = (config: Object, key: string) => {
+  renderCarousel: any | ((config: any, key: string) => Node) = (config: Object, key: string) => {
     const {t} = this
     const {props} = this
     let collectionCards = []
@@ -305,7 +320,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     return carousel
   }
 
-  renderStories = (config: Object, key: string) => {
+  renderStories: any | ((config: any, key: string) => void | Node) = (config: Object, key: string) => {
     const {t} = this
     let stories = []
     const {popularStories, featuredStories, recentStories} = this.props
@@ -357,7 +372,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     }
   }
 
-  renderText = (config: Object, key: string) => {
+  renderText: any | ((config: any, key: string) => Node) = (config: Object, key: string) => {
     const style = config.style || {}
     let text = config.text[this.state.locale]
     if (!text) text = config.text.en
@@ -372,7 +387,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     return textPanel
   }
 
-  renderHtml = (config: Object, key: string) => {
+  renderHtml: any | ((config: any, key: string) => Node) = (config: Object, key: string) => {
     const style = config.style || {}
     let html = config.html[this.state.locale]
     if (!html) html = config.html.en
@@ -385,7 +400,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     return textPanel
   }
 
-  renderButton = (config: Object, key: string) => {
+  renderButton: any | ((config: any, key: string) => Node) = (config: Object, key: string) => {
     const style = config.style || {}
     let label = config.label[this.state.locale]
     if (!label) label = config.label.en
@@ -408,7 +423,7 @@ export default class HomePro extends MapHubsComponent<Props, State> {
     return button
   }
 
-  render () {
+  render (): Element<"p"> | Node {
     const _this = this
     const { t } = this
     const { pageConfig } = this.props

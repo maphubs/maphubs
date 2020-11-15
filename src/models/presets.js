@@ -6,7 +6,7 @@ const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 
 module.exports = {
 
-  savePresets (layer_id: number, presets: any, style: Object, user_id: number, create: boolean, trx: any) {
+  savePresets (layer_id: number, presets: any, style: Object, user_id: number, create: boolean, trx: any): any {
     let db = knex
     if (trx) { db = trx }
     if (create) {
@@ -66,7 +66,7 @@ module.exports = {
   },
 
   // Not needed?
-  updatePresetsInMapStyles (layer_id: number, presets: any) {
+  updatePresetsInMapStyles (layer_id: number, presets: any): any {
     return knex.raw(`
         select omh.map_layers.map_id, omh.map_layers .layer_id, 
 omh.map_layers.style as map_layer_style,

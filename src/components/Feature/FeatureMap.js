@@ -1,5 +1,5 @@
 //  @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Subscribe } from 'unstated'
 import MapHubsComponent from '../MapHubsComponent'
 import InteractiveMap from '../Map/InteractiveMap'
@@ -18,7 +18,7 @@ type State = {} & LocaleStoreState
 export default class FeatureMap extends MapHubsComponent<Props, State> {
   map: any
 
-  frToggle = (id: string) => {
+  frToggle: any | ((id: string) => void) = (id: string) => {
     if (id === 'remaining') {
       this.map.toggleVisibility(99999901)
     } else if (id === 'loss') {
@@ -32,7 +32,7 @@ export default class FeatureMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  render () {
+  render (): Node {
     const {mapConfig, gpxLink} = this.props
     return (
       <Subscribe to={[FRContainer]}>

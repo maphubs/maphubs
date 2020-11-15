@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { DownOutlined } from '@ant-design/icons'
 import { Menu, Dropdown } from 'antd'
 
@@ -8,12 +8,12 @@ type Props = {
 }
 
 export default class ExploreDropdown extends React.PureComponent<Props, void> {
-  static defaultProps = {
+  static defaultProps: {|id: string, sidenav: boolean|} = {
     id: 'explore-dropdown',
     sidenav: false
   }
 
-  render () {
+  render (): Node {
     const {t} = this.props
     const menu = (
       <Menu>

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Formsy, {addValidationRule} from 'formsy-react'
 import { message, notification, Row, Col, Button } from 'antd'
 import TextInput from '../forms/textInput'
@@ -48,19 +48,19 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
     })
   }
 
-  enableButton = () => {
+  enableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: true
     })
   }
 
-  disableButton = () => {
+  disableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: false
     })
   }
 
-  submit = (model: Object) => {
+  submit: any | ((model: any) => void) = (model: Object) => {
     const {t} = this
     const _this = this
     let dataSettings
@@ -105,11 +105,11 @@ export default class MapboxSource extends MapHubsComponent<Props, State> {
     })
   }
 
-  optionChange = (value: string) => {
+  optionChange: any | ((value: string) => void) = (value: string) => {
     this.setState({selectedOption: value})
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const mapboxOptions = [
       {value: 'style', label: t('Link to a complete Mapbox Studio Style')},

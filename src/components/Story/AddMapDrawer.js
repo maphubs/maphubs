@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Drawer, Row, Divider, message, notification } from 'antd'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import request from 'superagent'
@@ -25,17 +25,17 @@ type State = {
 }
 
 export default class AddMapDrawer extends React.Component<Props, State> {
-  static defaultProps = {
+  static defaultProps: {|myMaps: Array<any>, popularMaps: Array<any>|} = {
     myMaps: [],
     popularMaps: []
   }
 
-  state = {
+  state: State = {
     searchActive: false,
     searchResults: []
   }
 
-  handleSearch = (input: string) => {
+  handleSearch: ((input: string) => void) = (input: string) => {
     const { t } = this.props
     const _this = this
     debug.log('searching for: ' + input)
@@ -65,11 +65,11 @@ export default class AddMapDrawer extends React.Component<Props, State> {
       })
   }
 
-  resetSearch = () => {
+  resetSearch: (() => void) = () => {
     this.setState({searchActive: false, searchResults: []})
   }
 
-  render () {
+  render (): Node {
     const { resetSearch, handleSearch } = this
     const { visible, onClose, onAdd, myMaps, popularMaps, t } = this.props
     const { searchActive, searchResults } = this.state

@@ -53,7 +53,19 @@ type State = {
 }
 
 export default class MultiTextInput extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: 
+  | any
+  | {|
+    dataDelay: number,
+    disabled: boolean,
+    length: number,
+    showCharCount: boolean,
+    style: {...},
+    successText: string,
+    type: string,
+    validationErrors: {...},
+    validations: string,
+  |} = {
     length: 100,
     successText: '',
     disabled: false,
@@ -92,7 +104,7 @@ export default class MultiTextInput extends MapHubsComponent<Props, State> {
     }
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     // only update if something changes
     if (!_isequal(this.props.value, nextProps.value)) {
       return true
@@ -103,13 +115,13 @@ export default class MultiTextInput extends MapHubsComponent<Props, State> {
     return false
   }
 
-  changeValue = (model: Object) => {
+  changeValue: any | ((model: any) => void) = (model: Object) => {
     this.setState({
       value: model
     })
   }
 
-  render () {
+  render (): React.Node {
     const {t} = this
     const commonProps = {
       length: this.props.length,

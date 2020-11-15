@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 import LayerListItemStatic from './LayerListItemStatic'
 import _isEqual from 'lodash.isequal'
 import type {Layer} from '../../types/layer'
@@ -34,7 +34,7 @@ export default class LayerListStatic extends React.Component<Props, State> {
     }
   }
 
-  render () {
+  render (): Element<"div"> {
     const {t, toggleVisibility} = this.props
     const {layers} = this.state
     return (

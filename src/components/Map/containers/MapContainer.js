@@ -9,11 +9,11 @@ type State = {
 export default class MapContainer extends Container<State> {
   state = {}
 
-  setMap (map: Object) {
+  setMap (map: Object): any {
     return this.setState({map})
   }
 
-  setInsetMap (insetMap: Object) {
+  setInsetMap (insetMap: Object): any {
     return this.setState({insetMap})
   }
 

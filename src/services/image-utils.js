@@ -38,7 +38,7 @@ module.exports = {
     }
   },
 
-  decodeBase64Image (dataString: string) {
+  decodeBase64Image (dataString: string): Error | {|data: Buffer, type: any|} {
     const matches: any = dataString.match(/^data:([+/A-Za-z-]+);base64,(.+)$/)
     const response = {}
 
@@ -52,7 +52,7 @@ module.exports = {
     return response
   },
 
-  async resizeBase64 (dataString: string, targetWidth: number, targetHeight: number, crop: boolean = false) {
+  async resizeBase64 (dataString: string, targetWidth: number, targetHeight: number, crop: boolean = false): Promise<any> {
     const _this = this
     const origFile = uuidv4() + '.png'
     const resizedFile = uuidv4() + '.png'

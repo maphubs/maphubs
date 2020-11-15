@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import { Typography } from 'antd'
 // import Gravatar from '../components/user/Gravatar';
@@ -21,7 +21,7 @@ type Props = {
 }
 
 export default class Auth0Profile extends MapHubsComponent<Props, void> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -39,7 +39,7 @@ export default class Auth0Profile extends MapHubsComponent<Props, void> {
     }
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     return (
       <ErrorBoundary>

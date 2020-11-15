@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Col } from 'antd'
 import Head from 'next/head'
 import Header from '../components/header'
@@ -30,7 +30,7 @@ type Props = {
 }
 
 export default class Story extends MapHubsComponent<Props, void> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -40,7 +40,7 @@ export default class Story extends MapHubsComponent<Props, void> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: any | {|canEdit: boolean, story: {...}|} = {
     story: {},
     canEdit: false
   }
@@ -66,7 +66,7 @@ export default class Story extends MapHubsComponent<Props, void> {
     })
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const { story, canEdit } = this.props
 

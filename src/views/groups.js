@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Header from '../components/header'
 import Footer from '../components/footer'
 import { Row, Button, Typography } from 'antd'
@@ -27,7 +27,7 @@ type Props = {
 }
 
 export default class Groups extends MapHubsComponent<Props, void> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -37,7 +37,7 @@ export default class Groups extends MapHubsComponent<Props, void> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: any | {|groups: Array<any>|} = {
     groups: []
   }
 
@@ -49,7 +49,7 @@ export default class Groups extends MapHubsComponent<Props, void> {
     }
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const featuredCards = this.props.featuredGroups.map(cardUtil.getGroupCard)
     const popularCards = this.props.popularGroups.map(cardUtil.getGroupCard)

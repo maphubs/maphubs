@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row } from 'antd'
 import Formsy from 'formsy-react'
 import Toggle from '../forms/toggle'
@@ -27,7 +27,7 @@ type State = {
 }
 
 export default class LabelSettings extends MapHubsComponent<Props, State> {
-  static defaultProps = {
+  static defaultProps: any | {|labels: {|enabled: boolean, field: string|}|} = {
     labels: {
       enabled: false,
       field: ''
@@ -54,7 +54,7 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
     this.setState({style: nextProps.style})
   }
 
-  shouldComponentUpdate (nextProps: Props, nextState: State) {
+  shouldComponentUpdate (nextProps: Props, nextState: State): boolean {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
@@ -65,7 +65,7 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
     return false
   }
 
-   onFormChange = (values: Object) => {
+   onFormChange: any | ((values: any) => void) = (values: Object) => {
      let style
      if (values.enabled && values.field) {
        // add labels to style
@@ -82,7 +82,7 @@ export default class LabelSettings extends MapHubsComponent<Props, State> {
      }
    }
 
-   render () {
+   render (): Node {
      const {t} = this
      const {layer} = this.props
      const {enabled, field} = this.state

@@ -49,7 +49,7 @@ export default {
     this.setState({selected: false, selectedFeature: undefined})
   },
 
-  getInteractiveLayers (glStyle: GLStyle) {
+  getInteractiveLayers (glStyle: GLStyle): Array<any | string> {
     const interactiveLayers = []
     if (glStyle?.layers) {
       glStyle.layers.forEach((layer) => {

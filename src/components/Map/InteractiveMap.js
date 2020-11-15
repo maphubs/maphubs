@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Element} from "React";import React from 'react'
 
 // eslint-disable-next-line unicorn/import-index
 import Map from './index'
@@ -75,7 +75,29 @@ type State = {
 }
 
 export default class InteractiveMap extends React.Component<Props, State> {
-  static defaultProps = {
+  static defaultProps: {|
+  basemap: string,
+  border: boolean,
+  disableScrollZoom: boolean,
+  height: string,
+  hideInactive: boolean,
+  insetMap: boolean,
+  interactive: boolean,
+  preserveDrawingBuffer: boolean,
+  primaryColor: string,
+  showFeatureInfoEditButtons: boolean,
+  showFullScreen: boolean,
+  showLayerInfo: boolean,
+  showLayerVisibility: boolean,
+  showLegendLayersButton: boolean,
+  showLogo: boolean,
+  showMapTools: boolean,
+  showPlayButton: boolean,
+  showScale: boolean,
+  showSearch: boolean,
+  showShareButtons: boolean,
+  showTitle: boolean,
+|} = {
     height: '300px',
     basemap: 'default',
     border: false,
@@ -147,7 +169,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
     }
   }
 
-  toggleVisibility = (layer_id: number) => {
+  toggleVisibility: ((layer_id: number) => void) = (layer_id: number) => {
     const mapLayers = this.state.layers
     const index = findIndex(mapLayers, {layer_id})
     let layer
@@ -181,25 +203,25 @@ export default class InteractiveMap extends React.Component<Props, State> {
     }
   }
 
-  updateMap = (layers: Array<Layer>) => {
+  updateMap: ((layers: Array<Layer>) => void) = (layers: Array<Layer>) => {
     // treat as immutable and clone
     layers = JSON.parse(JSON.stringify(layers))
     const style = this.buildMapStyle(layers)
     this.setState({layers, style})
   }
 
-  updateLayers = (layers: Array<Layer>, update: boolean = true) => {
+  updateLayers: ((layers: Array<Layer>, update?: boolean) => void) = (layers: Array<Layer>, update: boolean = true) => {
     this.setState({layers})
     if (update) {
       this.updateMap(layers)
     }
   }
 
-  buildMapStyle = (layers: Array<Layer>) => {
+  buildMapStyle: ((layers: Array<Layer>) => any) = (layers: Array<Layer>) => {
     return MapStyles.style.buildMapStyle(layers)
   }
 
-  onToggleIsochroneLayer = (enabled: boolean) => {
+  onToggleIsochroneLayer: ((enabled: boolean) => void) = (enabled: boolean) => {
     let mapLayers = []
     if (this.state.layers) {
       mapLayers = this.state.layers
@@ -228,15 +250,15 @@ export default class InteractiveMap extends React.Component<Props, State> {
     this.updateLayers(mapLayers, false)
   }
 
-  onSetOpenMobileMapLegend = (mobileMapLegendOpen: boolean) => {
+  onSetOpenMobileMapLegend: ((mobileMapLegendOpen: boolean) => void) = (mobileMapLegendOpen: boolean) => {
     this.setState({ mobileMapLegendOpen })
   }
 
-  onSetOpenMapLayersList = (mapLayersListOpen: boolean) => {
+  onSetOpenMapLayersList: ((mapLayersListOpen: boolean) => void) = (mapLayersListOpen: boolean) => {
     this.setState({ mapLayersListOpen })
   }
 
-  render () {
+  render (): Element<"div"> {
     const {fitBounds, showShareButtons, t, primaryColor, logoSmall, logoSmallHeight, logoSmallWidth, hash, showLayerVisibility, showLayerInfo, showPlayButton, showFeatureInfoEditButtons, showMapTools, showSearch, showFullScreen} = this.props
     const {position, width} = this.state
     let border = 'none'

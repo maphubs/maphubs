@@ -1,4 +1,3 @@
-/* @flow weak */
 // Note: do not enable flow so we can use this in knex migrations for now without involving babel
 const knex = require('../connection')
 const Promise = require('bluebird')

@@ -12,7 +12,23 @@ export default {
   /**
    * Get the mapbox-gl style for the isochrone data
    */
-  getIsochroneStyle (data: GeoJSONObject) {
+  getIsochroneStyle (data: GeoJSONObject): {|
+  id: string,
+  layers: Array<
+    {|
+      filter: Array<number | string>,
+      id: string,
+      paint: {|
+        "line-color": string,
+        "line-opacity": number,
+        "line-width": number,
+      |},
+      source: string,
+      type: string,
+    |},
+  >,
+  source: {|data: any, type: string|},
+|} {
     const sourceId = `omh-isochrone-${shortid()}`
     return {
       id: sourceId,

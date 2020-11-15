@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Formsy from 'formsy-react'
 import Radio from './forms/radio'
 import { Modal, Button } from 'antd'
@@ -21,54 +21,59 @@ type State = {
 export default class RadioModal extends React.Component<Props, State> {
   props: Props
 
-  static defaultProps = {
+  static defaultProps: {|
+  onCancel: () => void,
+  onSubmit: () => void,
+  options: Array<any>,
+  title: string,
+|} = {
     onCancel () {},
     onSubmit () {},
     options: [],
     title: ''
   }
 
-  state = {
+  state: State = {
     show: false,
     canSubmit: false,
     selectedOption: ''
   }
 
-  show = () => {
+  show: (() => void) = () => {
     this.setState({show: true})
   }
 
-  hide = () => {
+  hide: (() => void) = () => {
     this.setState({show: false})
   }
 
-  onCancel = () => {
+  onCancel: (() => void) = () => {
     if (this.props.onCancel) this.props.onCancel()
     this.hide()
   }
 
-  onSubmit = () => {
+  onSubmit: (() => void) = () => {
     this.props.onSubmit(this.state.selectedOption)
     this.hide()
   }
 
-  enableButton = () => {
+  enableButton: (() => void) = () => {
     this.setState({
       canSubmit: true
     })
   }
 
-  disableButton = () => {
+  disableButton: (() => void) = () => {
     this.setState({
       canSubmit: false
     })
   }
 
-  optionChange = (value: string) => {
+  optionChange: ((value: string) => void) = (value: string) => {
     this.setState({selectedOption: value})
   }
 
-  render () {
+  render (): Node {
     const { t } = this.props
     return (
       <Modal

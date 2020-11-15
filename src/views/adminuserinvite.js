@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Formsy from 'formsy-react'
 import TextInput from '../components/forms/textInput'
 import Header from '../components/header'
@@ -51,7 +51,7 @@ type State = {
 } & LocaleStoreState
 
 export default class AdminUserInvite extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -79,19 +79,19 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
     this.clipboard = require('clipboard-polyfill').default
   }
 
-  enableButton = () => {
+  enableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: true
     })
   }
 
-  disableButton = () => {
+  disableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: false
     })
   }
 
-  onSubmit = (user: User) => {
+  onSubmit: any | ((user: User) => void) = (user: User) => {
     const {t} = this
     const _this = this
     confirm({
@@ -105,14 +105,14 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
     })
   }
 
-  copyInviteLink = (user: User) => {
+  copyInviteLink: any | ((user: User) => void) = (user: User) => {
     const baseUrl = urlUtil.getBaseUrl()
     const url = `${baseUrl}/signup/invite/${user.key}`
     this.clipboard.writeText(url)
     message.info(this.t('Copied'))
   }
 
-  submitInvite = (user: User) => {
+  submitInvite: any | ((user: User) => void) = (user: User) => {
     const {t} = this
     const _this = this
     const email = user.email || user.invite_email
@@ -143,7 +143,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
       })
   }
 
-  resendInvite = (user: User) => {
+  resendInvite: any | ((user: User) => void) = (user: User) => {
     const {t} = this
     const key = user.key
     const closeMessage = message.loading(t('Sending'), 0)
@@ -169,7 +169,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
       })
   }
 
-  handleResendInvite = (user: User) => {
+  handleResendInvite: any | ((user: User) => void) = (user: User) => {
     const {t} = this
     const {resendInvite} = this
     confirm({
@@ -183,7 +183,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
     })
   }
 
-  handleDeauthorize = (user: User) => {
+  handleDeauthorize: any | ((user: User) => void) = (user: User) => {
     const {t} = this
     const {submitDeauthorize} = this
     confirm({
@@ -197,7 +197,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
     })
   }
 
-  submitDeauthorize = (user: User) => {
+  submitDeauthorize: any | ((user: User) => void) = (user: User) => {
     const {t} = this
     const _this = this
     const closeMessage = message.loading(t('Sending'), 0)
@@ -234,7 +234,7 @@ export default class AdminUserInvite extends MapHubsComponent<Props, State> {
       })
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const _this = this
 

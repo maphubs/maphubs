@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import Formsy from 'formsy-react'
 import Header from '../components/header'
 import SelectGroup from '../components/Groups/SelectGroup'
@@ -28,7 +28,7 @@ type State = {
 }
 
 export default class ImportLayer extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -38,7 +38,7 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: any | {|groups: Array<any>|} = {
     groups: []
   }
 
@@ -67,11 +67,11 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  onGroupChange = (groupId: string) => {
+  onGroupChange: any | ((groupId: string) => void) = (groupId: string) => {
     this.setState({group_id: groupId})
   }
 
-  onUpload = (result: Object) => {
+  onUpload: any | ((result: any) => void) = (result: Object) => {
     const {t} = this
     this.closeProcessingMessage()
     if (result.success) {
@@ -86,11 +86,11 @@ export default class ImportLayer extends MapHubsComponent<Props, State> {
     }
   }
 
-  onProcessingStart = () => {
+  onProcessingStart: any | (() => void) = () => {
     this.closeProcessingMessage = message.loading(this.t('Loading Data'), 0)
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const { groups } = this.props
     const { group_id, layer_id, map_id } = this.state

@@ -4,7 +4,7 @@ import type {GLStyle} from '../../../types/mapbox-gl-style'
 import type {Layer} from '../../../types/layer'
 
 export default {
-  enableMarkers (style: GLStyle, markerOptions: Object, layer: Layer) {
+  enableMarkers (style: GLStyle, markerOptions: Object, layer: Layer): GLStyle {
     if (style.layers && Array.isArray(style.layers) && style.layers.length > 0) {
       // treat style as immutable and return a copy
       style = JSON.parse(JSON.stringify(style))
@@ -102,7 +102,7 @@ export default {
     return style
   },
 
-  disableMarkers (style: GLStyle) {
+  disableMarkers (style: GLStyle): GLStyle {
     if (style.layers && Array.isArray(style.layers) && style.layers.length > 0) {
       // treat style as immutable and return a copy
       style = JSON.parse(JSON.stringify(style))

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import { Row, Col, Typography } from 'antd'
 import { UploadOutlined, CloudDownloadOutlined, UsergroupAddOutlined, ReadOutlined } from '@ant-design/icons'
 import getConfig from 'next/config'
@@ -12,7 +12,7 @@ type Props = {
 }
 
 export default class MapHubsProLinks extends React.PureComponent<Props, void> {
-  render () {
+  render (): Node {
     const {t} = this.props
     return (
       <Row style={{width: '100%'}}>

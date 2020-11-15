@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import InteractiveMap from '../components/Map/InteractiveMap'
 import Header from '../components/header'
 import { message } from 'antd'
@@ -49,7 +49,7 @@ type UserMapState = {
 type State = LocaleStoreState & UserStoreState & UserMapState
 
 export default class UserMap extends MapHubsComponent<Props, State> {
-  static async getInitialProps ({ req, query }: {req: any, query: Object}) {
+  static async getInitialProps ({ req, query }: {req: any, query: Object}): Promise<any> {
     const isServer = !!req
 
     if (isServer) {
@@ -59,7 +59,7 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  static defaultProps = {
+  static defaultProps: any | {|canEdit: boolean|} = {
     canEdit: false
   }
 
@@ -94,12 +94,12 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  onEdit = () => {
+  onEdit: any | (() => void) = () => {
     window.location = '/map/edit/' + this.props.map.map_id
     // CreateMapActions.showMapDesigner();
   }
 
-  onFullScreen = () => {
+  onFullScreen: any | (() => void) = () => {
     let fullScreenLink = `/api/map/${this.props.map.map_id}/static/render?showToolbar=1`
     if (window.location.hash) {
       fullScreenLink = fullScreenLink += window.location.hash
@@ -107,11 +107,11 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     window.location = fullScreenLink
   }
 
-  onMapChanged = () => {
+  onMapChanged: any | (() => void) = () => {
     location.reload()
   }
 
-  download = () => {
+  download: any | (() => void) = () => {
     if (!this.props.map.has_screenshot) {
       // warn the user if we need to wait for the screenshot to be created
       const closeMessage = message.loading(this.t('Downloading'), 0)
@@ -119,19 +119,19 @@ export default class UserMap extends MapHubsComponent<Props, State> {
     }
   }
 
-  showEmbedCode = () => {
+  showEmbedCode: any | (() => void) = () => {
     this.setState({showEmbedCode: true})
   }
 
-  showSharePublic = () => {
+  showSharePublic: any | (() => void) = () => {
     this.refs.publicShareModal.show()
   }
 
-  showCopyMap = () => {
+  showCopyMap: any | (() => void) = () => {
     this.refs.copyMapModal.show()
   }
 
-  render () {
+  render (): Node {
     const {t} = this
     const {map, publicShare, canEdit} = this.props
     const {share_id, user, showEmbedCode} = this.state

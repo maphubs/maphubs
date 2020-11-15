@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import type {Node} from "React";import React from 'react'
 import DataCollectionForm from '../DataCollection/DataCollectionForm'
 import _isequal from 'lodash.isequal'
 import { Subscribe } from 'unstated'
@@ -14,7 +14,7 @@ type Props = {
 }
 
 export default class EditLayerPanel extends React.Component<Props, void> {
-  onChange = (data: Object, DataEditor: Object) => {
+  onChange: ((data: any, DataEditor: any) => void) = (data: Object, DataEditor: Object) => {
     // don't fire change if this update came from state (e.g. undo/redo)
     // the geojson may have tags not in the presets so we need to ignore them when checking for changes
     let foundChange
@@ -32,7 +32,7 @@ export default class EditLayerPanel extends React.Component<Props, void> {
     }
   }
 
-  render () {
+  render (): Node {
     // var canSave = this.state.edits.length > 0;
     const {t} = this.props
     return (
