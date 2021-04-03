@@ -22,8 +22,10 @@ services:
       - '../iD:/app/iD'
       - './deploy:/app/deploy'
   db:
+    platform: linux/arm64
     build:
       context: ./db-server
+      dockerfile: Dockerfile.arm
     env_file:
       - ./env/dev/db.env
       - ./env/dev/secret/db-pass.env
@@ -69,7 +71,7 @@ services:
       HOST: maphubs.test
       INTERNAL_PORT: 3000
     extra_hosts:
-      - "maphubs.test:192.168.65.2"
+      - 'maphubs.test:192.168.65.2'
     ports:
       - '3000:3000'
     volumes:
@@ -84,9 +86,6 @@ services:
     ports:
       - '3020:3020'
 volumes:
-  esdata1:
-    external:
-      name: search-db-data
   db-data:
     external:
       name: maphubs-db-data

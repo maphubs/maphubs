@@ -179,7 +179,7 @@
     "react-fileupload-progress": "https://github.com/openmaphub/react-fileupload-progress#667cb7f13f0b468ca8d213c7db3aa1254633fa34",
     "react-highlight-words": "^0.16.0",
     "react-image-lightbox": "^5.1.1",
-    "react-intl": "^4.5.0",
+    "react-intl": "^5.15.6",
     "react-qr-svg": "^2.2.2",
     "react-scroll-to-component": "^1.0.2",
     "react-share": "^4.0.1",
