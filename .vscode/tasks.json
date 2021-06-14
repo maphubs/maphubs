@@ -1,10 +1,19 @@
 {
-    "version": "0.1.0",
+    "version": "2.0.0",
     "command": "npm",
-    "isShellCommand": true,
-    "args": ["run-script"],
-    "showOutput": "always",
+    "args": [
+      "run-script"
+    ],
     "tasks": [
-        { "taskName": "load-dev-env" }
+      {
+        "label": "load-dev-env",
+        "type": "shell",
+        "command": "npm",
+        "args": [
+          "run-script",
+          "load-dev-env"
+        ],
+        "problemMatcher": []
+      }
     ]
 }
