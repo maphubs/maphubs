@@ -4,7 +4,7 @@ const next = require('next')
 const express = require('express')
 
 const dev = process.env.NODE_ENV !== 'production'
-const nextApp = next({dev})
+const nextApp = next({ dev })
 const handle = nextApp.getRequestHandler()
 
 const passport = require('passport')
@@ -14,7 +14,6 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const i18n = require('./src/i18n')
-const Raven = require('raven')
 const version = require('./version.json').version
 const shrinkRay = require('shrink-ray-current')
 const pageOptions = require('./src/services/page-options-helper')
@@ -32,7 +31,8 @@ Promise.config({
 })
 
 const CMSPages = require('./src/services/cms-pages')
-nextApp.prepare()
+nextApp
+  .prepare()
   .then(async () => {
     const server = express()
     server.next = nextApp // needed for routes to render with NextJS
@@ -42,16 +42,6 @@ nextApp.prepare()
     server.disable('x-powered-by')
 
     log.info(`Environment: "${server.get('env')}"`)
-
-    const ravenConfig = (process.env.NODE_ENV === 'production' && !local.disableTracking) && local.SENTRY_DSN
-    Raven.config(ravenConfig, {
-      release: version,
-      environment: local.ENV_TAG,
-      tags: {host: local.host},
-      parseUser: ['id', 'display_name', 'email']
-    }).install()
-
-    server.use(Raven.requestHandler())
 
     server.get('/favicon.ico', (req, res) => {
       res.status(204).send()
@@ -67,21 +57,28 @@ nextApp.prepare()
     // by default set language based on browser 'accept-language' headers
     server.use(i18n.init)
 
-    server.use(logger('dev', {
-      skip (req) {
-        // don't log every healthcheck ping
-        if (req.path === '/healthcheck' || req.path === '/_next/on-demand-entries-ping') {
-          return true
+    server.use(
+      logger('dev', {
+        skip(req) {
+          // don't log every healthcheck ping
+          if (
+            req.path === '/healthcheck' ||
+            req.path === '/_next/on-demand-entries-ping'
+          ) {
+            return true
+          }
+          return false
         }
-        return false
-      }
-    }))
+      })
+    )
     server.use(cookieParser())
-    server.use(bodyParser.json({limit: '250mb'}))
-    server.use(bodyParser.urlencoded({
-      limit: '250mb',
-      extended: false
-    }))
+    server.use(bodyParser.json({ limit: '250mb' }))
+    server.use(
+      bodyParser.urlencoded({
+        limit: '250mb',
+        extended: false
+      })
+    )
 
     // static files
     if (process.env.NODE_ENV !== 'production' || local.useLocalAssets) {
@@ -96,24 +93,26 @@ nextApp.prepare()
       tablename: 'maphubssessions'
     })
 
-    sessionStore.ready = sessionStore.ready.catch(err => {
+    sessionStore.ready = sessionStore.ready.catch((err) => {
       log.error(err.message)
     })
 
-    server.use(session({
-      key: 'maphubs',
-      secret: local.SESSION_SECRET,
-      store: sessionStore,
-      resave: false,
-      proxy: true,
-      saveUninitialized: false,
-      maxAge: 86400000,
-      cookie: {
-        path: '/',
-        domain: local.host,
-        secure: 'auto'
-      }
-    }))
+    server.use(
+      session({
+        key: 'maphubs',
+        secret: local.SESSION_SECRET,
+        store: sessionStore,
+        resave: false,
+        proxy: true,
+        saveUninitialized: false,
+        maxAge: 86400000,
+        cookie: {
+          path: '/',
+          domain: local.host,
+          secure: 'auto'
+        }
+      })
+    )
 
     server.use((err, req, res, next) => {
       if (err) {
@@ -148,10 +147,15 @@ nextApp.prepare()
     // option to require require login for everything after this point
     if (local.requireLogin) {
       server.use((req, res, next) => {
-        if (req.path.startsWith('/_next') || req.path.startsWith('/__get-internal-source')) {
+        if (
+          req.path.startsWith('/_next') ||
+          req.path.startsWith('/__get-internal-source')
+        ) {
           next()
         } else {
-          if (req.user) { return next() }
+          if (req.user) {
+            return next()
+          }
           req.session.returnTo = req.originalUrl
           res.redirect('/login')
         }
@@ -166,26 +170,8 @@ nextApp.prepare()
       await CMSPages(server)
     } catch (err) {
       log.error(err)
-      Raven.captureException(err)
+      // TODO: capture Sentry error
     }
-
-    server.use((err, req, res, next) => {
-      if (req.session && req.session.user) {
-        const username = req.session.user.username || req.session.user.display_name
-        const email = req.session.user._json.email || req.session.user.email
-
-        Raven.mergeContext({
-          user: {
-            id: req.session.user.id,
-            username,
-            email
-          }
-        })
-      }
-      next(err)
-    })
-
-    server.use(Raven.errorHandler())
 
     if (process.env.NODE_ENV !== 'production') {
       server.get('/errortest', (req, res) => {
@@ -202,36 +188,46 @@ nextApp.prepare()
         // curl https://localhost:4000/error/403 -vkH "Accept: application/json"
         const statusCode = err.status || 500
         let statusText = ''
-        const errorDetail = (process.env.NODE_ENV === 'production') ? req.__('Looks like we have a problem. A message was automatically sent to our team.') : err.stack
+        const errorDetail =
+          process.env.NODE_ENV === 'production'
+            ? req.__(
+                'Looks like we have a problem. A message was automatically sent to our team.'
+              )
+            : err.stack
 
         switch (statusCode) {
-        case 400:
-          statusText = 'Bad Request'
-          break
-        case 401:
-          statusText = 'Unauthorized'
-          break
-        case 403:
-          statusText = 'Forbidden'
-          break
-        case 500:
-          statusText = 'Internal Server Error'
-          break
+          case 400:
+            statusText = 'Bad Request'
+            break
+          case 401:
+            statusText = 'Unauthorized'
+            break
+          case 403:
+            statusText = 'Forbidden'
+            break
+          case 500:
+            statusText = 'Internal Server Error'
+            break
         }
 
         log.error(err.stack)
 
         if (req.accepts('html')) {
           const title = statusCode + ': ' + statusText
-          return nextApp.render(req, res, '/error', await pageOptions(req, {
-            title,
-            props: {
+          return nextApp.render(
+            req,
+            res,
+            '/error',
+            await pageOptions(req, {
               title,
-              error: errorDetail,
-              url: req.url,
-              eventId: res.sentry
-            }
-          }))
+              props: {
+                title,
+                error: errorDetail,
+                url: req.url,
+                eventId: res.sentry
+              }
+            })
+          )
         }
 
         if (req.accepts('json')) {
@@ -256,6 +252,7 @@ nextApp.prepare()
       log.info('**** STARTING SERVER ****')
       log.info('Server Running on port: ' + local.internal_port)
     })
-  }).catch((err) => {
+  })
+  .catch((err) => {
     console.error(err)
   })
