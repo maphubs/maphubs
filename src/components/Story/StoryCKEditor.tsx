@@ -30,7 +30,7 @@ type Props = {
   language?: string
   story_id: number
 }
-export default class StoryCKEditor extends React.Component<Props, void> {
+export default class StoryCKEditor extends React.Component<Props> {
   editorInstance: any
   domContainer: any
 
@@ -58,7 +58,8 @@ export default class StoryCKEditor extends React.Component<Props, void> {
       getMap,
       cropImage,
       onImageUpload,
-      story_id
+      story_id,
+      onChange
     } = this.props
     const host = MAPHUBS_CONFIG.host
       ? MAPHUBS_CONFIG.host.replace('.', '')
@@ -90,29 +91,29 @@ export default class StoryCKEditor extends React.Component<Props, void> {
           <div>
             <style jsx global>
               {`
-              .ck.ck-editor__main>.ck-editor__editable {
-                height: ${height - 80}px;
-                overflow-y: scroll;
-              }
-              .ck-content p {
-                font-size: 20px;
-              }
-              .ck-content ul {
-                list-style: initial;
-                font-size: 20px;
-                padding-left: 40px;
-              }
-              .ck-content ul li {
-                list-style-type: inherit;
-              }
-              .ck-content ol {
-                font-size: 20px;
-              }
-              .ck-content a {
-                color: ${MAPHUBS_CONFIG.primaryColor};
-                text-decoration: underline;
-              }
-            `}
+                .ck.ck-editor__main > .ck-editor__editable {
+                  height: ${height - 80}px;
+                  overflow-y: scroll;
+                }
+                .ck-content p {
+                  font-size: 20px;
+                }
+                .ck-content ul {
+                  list-style: initial;
+                  font-size: 20px;
+                  padding-left: 40px;
+                }
+                .ck-content ul li {
+                  list-style-type: inherit;
+                }
+                .ck-content ol {
+                  font-size: 20px;
+                }
+                .ck-content a {
+                  color: ${MAPHUBS_CONFIG.primaryColor};
+                  text-decoration: underline;
+                }
+              `}
             </style>
             <Tabs
               size='small'
@@ -148,8 +149,7 @@ export default class StoryCKEditor extends React.Component<Props, void> {
                         }}
                         onChange={(event, editor) => {
                           const data = editor.getData()
-                          if (this.props.onChange)
-                            this.props.onChange(locale.value, data)
+                          if (onChange) onChange(locale.value, data)
                         }}
                         onBlur={(editor) => {
                           // console.log('Blur.', editor)

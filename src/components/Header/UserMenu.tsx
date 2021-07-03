@@ -22,9 +22,10 @@ export default class UserMenu extends React.Component<Props, State> {
   }
   state: State
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(UserStore)
+    this.stores = [UserStore]
   }
 
   shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
@@ -40,20 +41,20 @@ export default class UserMenu extends React.Component<Props, State> {
     return false
   }
 
-  loginClick: any | (() => void) = () => {
+  loginClick = (): void => {
     window.location = '/login?returnTo=' + urlencode(window.location.href)
   }
 
-  render(): JSX.Element | string {
-    const { t } = this
-    const { sidenav } = this.props
+  render(): JSX.Element {
+    const { t, props, state, loginClick } = this
+    const { sidenav } = props
 
     // only render on the client side, avoids caching a username in SSR
     if (typeof window === 'undefined') {
-      return ''
+      return <></>
     }
 
-    const { user } = this.state
+    const { user } = state
     let userMenu
 
     if (user) {
@@ -117,51 +118,47 @@ export default class UserMenu extends React.Component<Props, State> {
         </div>
       )
     } else {
-      if (!MAPHUBS_CONFIG.mapHubsPro) {
-        userMenu = (
-          <div className='login-with-signup'>
-            <a
-              className='login-with-signup-link'
-              style={{
-                float: !this.props.sidenav ? 'left' : 'inherit'
-              }}
-              href='#'
-              onClick={this.loginClick}
-            >
-              {t('Login')}
-            </a>
-            <Button
-              type='primary'
-              style={{
-                marginLeft: '5px',
-                marginRight: '5px',
-                color: '#FFF'
-              }}
-              href='/signup'
-            >
-              <span
-                style={{
-                  color: '#FFF'
-                }}
-              >
-                {t('Sign Up')}
-              </span>
-            </Button>
-          </div>
-        )
-      } else {
-        userMenu = (
+      userMenu = !MAPHUBS_CONFIG.mapHubsPro ? (
+        <div className='login-with-signup'>
           <a
+            className='login-with-signup-link'
             style={{
-              float: !this.props.sidenav ? 'left' : 'inherit'
+              float: !sidenav ? 'left' : 'inherit'
             }}
             href='#'
-            onClick={this.loginClick}
+            onClick={loginClick}
           >
             {t('Login')}
           </a>
-        )
-      }
+          <Button
+            type='primary'
+            style={{
+              marginLeft: '5px',
+              marginRight: '5px',
+              color: '#FFF'
+            }}
+            href='/signup'
+          >
+            <span
+              style={{
+                color: '#FFF'
+              }}
+            >
+              {t('Sign Up')}
+            </span>
+          </Button>
+        </div>
+      ) : (
+        <a
+          style={{
+            float: !sidenav ? 'left' : 'inherit'
+          }}
+          href='#'
+          onClick={loginClick}
+        >
+          {t('Login')}
+        </a>
+      )
     }
 
     return (

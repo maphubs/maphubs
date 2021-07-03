@@ -26,22 +26,23 @@ export default class PlanetLabsSource extends React.Component<Props, State> {
     selectedSceneOption: 'ortho'
   }
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
   }
 
-  enableButton: any | (() => void) = () => {
+  enableButton = (): void => {
     this.setState({
       canSubmit: true
     })
   }
-  disableButton: any | (() => void) = () => {
+  disableButton = (): void => {
     this.setState({
       canSubmit: false
     })
   }
-  getAPIUrl: any | ((selected: string) => string) = (selected: string) => {
+  getAPIUrl = (selected: string): string => {
     const selectedArr = selected.split(':')
     const selectedType = selectedArr[0].trim()
     const selectedScene = selectedArr[1].trim()
@@ -50,22 +51,22 @@ export default class PlanetLabsSource extends React.Component<Props, State> {
     const url = `https://tiles.planet.com/data/v1/${selectedType}/${selectedScene}/{z}/{x}/{y}.png?api_key=${MAPHUBS_CONFIG.PLANET_LABS_API_KEY}`
     return url
   }
-  submit: any | ((model: any) => void) = (model: Record<string, any>) => {
-    const { t } = this
-
-    const _this = this
+  submit = (model: Record<string, any>): void => {
+    const { t, props, state, getAPIUrl } = this
+    const { _csrf } = state
+    const { onSubmit } = props
 
     const layers = []
     const selectedIDs = model.selectedIDs
     const selectedIDArr = selectedIDs.split(',')
-    selectedIDArr.forEach((selected) => {
-      const url = _this.getAPIUrl(selected)
+    for (const selected of selectedIDArr) {
+      const url = getAPIUrl(selected)
 
       layers.push({
         planet_labs_scene: selected,
         tiles: [url]
       })
-    })
+    }
     LayerActions.saveDataSettings(
       {
         is_external: true,
@@ -75,7 +76,7 @@ export default class PlanetLabsSource extends React.Component<Props, State> {
           layers
         }
       },
-      _this.state._csrf,
+      _csrf,
       (err) => {
         if (err) {
           notification.error({
@@ -90,25 +91,26 @@ export default class PlanetLabsSource extends React.Component<Props, State> {
             // tell the map that the data is initialized
             LayerActions.tileServiceInitialized()
 
-            _this.props.onSubmit()
+            onSubmit()
           })
         }
       }
     )
   }
-  optionChange: any | ((value: string) => void) = (value: string) => {
+  optionChange = (value: string): void => {
     this.setState({
       selectedOption: value
     })
   }
-  sceneOptionChange: any | ((value: string) => void) = (value: string) => {
+  sceneOptionChange = (value: string): void => {
     this.setState({
       selectedSceneOption: value
     })
   }
 
   render(): JSX.Element {
-    const { t } = this
+    const { t, state, enableButton, submit, disableButton } = this
+    const { canSubmit } = state
     return (
       <Row
         style={{
@@ -116,9 +118,9 @@ export default class PlanetLabsSource extends React.Component<Props, State> {
         }}
       >
         <Formsy
-          onValidSubmit={this.submit}
-          onValid={this.enableButton}
-          onInvalid={this.disableButton}
+          onValidSubmit={submit}
+          onValid={enableButton}
+          onInvalid={disableButton}
         >
           <div>
             <p>
@@ -144,11 +146,7 @@ export default class PlanetLabsSource extends React.Component<Props, State> {
               float: 'right'
             }}
           >
-            <Button
-              type='primary'
-              htmlType='submit'
-              disabled={!this.state.canSubmit}
-            >
+            <Button type='primary' htmlType='submit' disabled={!canSubmit}>
               {t('Save and Continue')}
             </Button>
           </div>

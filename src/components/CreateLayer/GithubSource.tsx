@@ -5,7 +5,7 @@ import TextInput from '../forms/textInput'
 import LayerStore from '../../stores/layer-store'
 
 type Props = {
-  onSubmit: (...args: Array<any>) => any
+  onSubmit: (...args: Array<any>) => void
   active: boolean
 }
 type DefaultProps = {
@@ -24,33 +24,35 @@ export default class GithubSource extends React.Component<Props, State> {
     canSubmit: false
   }
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
   }
 
-  enableButton: any | (() => void) = () => {
+  enableButton = (): void => {
     this.setState({
       canSubmit: true
     })
   }
-  disableButton: any | (() => void) = () => {
+  disableButton = (): void => {
     this.setState({
       canSubmit: false
     })
   }
-  submit: any | ((model: any) => void) = (model: Record<string, any>) => {
+  submit = (model: Record<string, any>): void => {
     // #TODO:180 save step 2 to DB
     this.props.onSubmit(model)
   }
-  sourceChange: any | ((value: string) => void) = (value: string) => {
+  sourceChange = (value: string): void => {
     this.setState({
       selectedSource: value
     })
   }
 
   render(): JSX.Element {
-    const { t } = this
+    const { t, state, submit, enableButton, disableButton } = this
+    const { canSubmit } = state
     return (
       <Row
         style={{
@@ -58,9 +60,9 @@ export default class GithubSource extends React.Component<Props, State> {
         }}
       >
         <Formsy
-          onValidSubmit={this.submit}
-          onValid={this.enableButton}
-          onInvalid={this.disableButton}
+          onValidSubmit={submit}
+          onValid={enableButton}
+          onInvalid={disableButton}
         >
           <div>
             <p>Github GeoJSON Source</p>
@@ -90,11 +92,7 @@ export default class GithubSource extends React.Component<Props, State> {
               float: 'right'
             }}
           >
-            <Button
-              type='primary'
-              htmlType='submit'
-              disabled={!this.state.canSubmit}
-            >
+            <Button type='primary' htmlType='submit' disabled={!canSubmit}>
               Save and Continue
             </Button>
           </div>

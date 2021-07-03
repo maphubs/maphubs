@@ -21,7 +21,7 @@ COPY .babelrc next.config.js server.js server.es6.js docker-entrypoint.sh versio
 FROM osgeo/gdal:alpine-small-3.0.4
 ENV NODE_ENV=production
 WORKDIR /app
-RUN apk add --no-cache --upgrade nodejs libpq
+RUN apk add --no-cache --upgrade nodejs
 COPY --from=builder /app .
 
 RUN chmod +x /app/docker-entrypoint.sh && \

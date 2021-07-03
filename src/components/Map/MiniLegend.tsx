@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import { Subscribe } from 'unstated'
 import BaseMapContainer from './containers/BaseMapContainer'
@@ -8,16 +7,17 @@ import { Row, Col } from 'antd'
 import Settings from '@material-ui/icons/Settings'
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
   title?: LocalizedString
   layers: Array<Record<string, any>>
   hideInactive: boolean
   collapsible: boolean
   showLayersButton: boolean
-  openLayersPanel?: (...args: Array<any>) => any
+  openLayersPanel?: (...args: Array<any>) => void
   maxHeight: string
   style: Record<string, any>
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   collapsed: boolean
@@ -53,8 +53,17 @@ export default class MiniLegend extends React.Component<Props, State> {
     }
   }
 
-  render(): Element<'div'> {
-    const { t, title, layers, showLayersButton, hideInactive } = this.props
+  render(): JSX.Element {
+    const {
+      t,
+      title,
+      layers,
+      showLayersButton,
+      hideInactive,
+      collapsible,
+      maxHeight,
+      style
+    } = this.props
     const { collapsed } = this.state
     let layersButton = ''
 
@@ -106,9 +115,9 @@ export default class MiniLegend extends React.Component<Props, State> {
       titleText = t('Legend')
     }
 
-    let titleDisplay = ''
+    let titleDisplay = <></>
 
-    if (this.props.collapsible) {
+    if (collapsible) {
       const iconStyle = {
         marginRight: 0,
         height: '100%',
@@ -149,7 +158,7 @@ export default class MiniLegend extends React.Component<Props, State> {
                 float: 'right',
                 display: 'table-cell',
                 height: '32px',
-                zIndex: '100',
+                zIndex: 100,
                 lineHeight: '32px'
               }}
             >
@@ -187,12 +196,12 @@ export default class MiniLegend extends React.Component<Props, State> {
 
     let allowScroll = true
 
-    if (collapsed || this.props.layers.length === 1) {
+    if (collapsed || layers.length === 1) {
       allowScroll = false
     }
 
-    let contentHeight = `calc(${this.props.maxHeight} - 32px)`
-    let legendHeight = this.props.maxHeight
+    let contentHeight = `calc(${maxHeight} - 32px)`
+    let legendHeight = maxHeight
 
     if (collapsed) {
       contentHeight = '0px'
@@ -202,67 +211,67 @@ export default class MiniLegend extends React.Component<Props, State> {
     // var style = this.props.style;
     // style.height = '9999px'; //needed for the flex box to work correctly
     return (
-      <div style={this.props.style}>
+      <div style={style}>
         <style jsx global>
           {`
-          .omh-legend {
-            padding-left: 2px;
-            padding-right: 2px;
-            padding-top: 2px;
-            padding-bottom: 4px;
-            min-height: 20px;
-          }
+            .omh-legend {
+              padding-left: 2px;
+              padding-right: 2px;
+              padding-top: 2px;
+              padding-bottom: 4px;
+              min-height: 20px;
+            }
 
-          .omh-legend h3 {
+            .omh-legend h3 {
               font-size: 10px;
               color: #323333;
               margin: 0px;
-          }
+            }
 
-          .base-map-legend * {
+            .base-map-legend * {
               color: #323333 !important;
-          }
+            }
 
-          .omh-legend .block {
-            height: 15px;
-            width: 20px;
-            float: left;
-            margin-right: 5px;
-            border: 1px solid #888;
-          }
+            .omh-legend .block {
+              height: 15px;
+              width: 20px;
+              float: left;
+              margin-right: 5px;
+              border: 1px solid #888;
+            }
 
-          .omh-legend .point {
-            height: 15px;
-            width: 15px;
-            float: left;
-            margin-right: 5px;
-            border-radius: 50%;
-            border: 1px solid #888;
-          }
+            .omh-legend .point {
+              height: 15px;
+              width: 15px;
+              float: left;
+              margin-right: 5px;
+              border-radius: 50%;
+              border: 1px solid #888;
+            }
 
-          .omh-legend  .double-stroke {
-            box-shadow: 0 0 0 2px rgba(0,0,0,.1);
-          }
+            .omh-legend .double-stroke {
+              box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+            }
 
-          .word-wrap {
-            overflow-wrap: break-word;
-            -ms-word-break: break-all;
-            -ms-hyphens: auto;
-            -moz-hyphens: auto;
-            -webkit-hyphens: auto;
-            hyphens: auto;
-          }
+            .word-wrap {
+              overflow-wrap: break-word;
+              -ms-word-break: break-all;
+              -ms-hyphens: auto;
+              -moz-hyphens: auto;
+              -webkit-hyphens: auto;
+              hyphens: auto;
+            }
 
-          .collapsible-header {
-            display: flex;
-            cursor: pointer;
-            -webkit-tap-highlight-color: transparent;
-            line-height: 1.5;
-            padding: 1rem;
-            background-color: #fff;
-            border-bottom: 1px solid #ddd;
-          }
-        `}
+            .collapsible-header {
+              display: flex;
+              cursor: pointer;
+              -webkit-tap-highlight-color: transparent;
+              line-height: 1.5;
+              padding: 1rem;
+              background-color: #fff;
+              border-bottom: 1px solid #ddd;
+            }
+          `}
         </style>
         <ul
           ref='legend'

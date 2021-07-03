@@ -18,7 +18,7 @@ type Props = {
   headerConfig: Record<string, any>
   user: Record<string, any>
 }
-export default class AllMaps extends React.Component<Props, void> {
+export default class AllMaps extends React.Component<Props> {
   static async getInitialProps({
     req,
     query
@@ -50,11 +50,11 @@ export default class AllMaps extends React.Component<Props, void> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const { maps, groups } = this.props
+    const { t, props } = this
+    const { maps, groups, headerConfig, footerConfig } = props
     return (
       <ErrorBoundary>
-        <Header activePage='maps' {...this.props.headerConfig} />
+        <Header activePage='maps' {...headerConfig} />
         <main
           style={{
             margin: '10px'
@@ -94,7 +94,7 @@ export default class AllMaps extends React.Component<Props, void> {
             <MapList maps={maps} groups={groups} t={t} />
           </Row>
         </main>
-        <Footer t={t} {...this.props.footerConfig} />
+        <Footer t={t} {...footerConfig} />
       </ErrorBoundary>
     )
   }

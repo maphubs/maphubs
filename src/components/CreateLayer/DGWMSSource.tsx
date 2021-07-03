@@ -21,9 +21,10 @@ export default class WMSSource extends React.Component<Props, State> {
     canSubmit: false
   }
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
     addValidationRule('isHttps', (values, value: string) => {
       return value ? value.startsWith('https://') : false
     })

@@ -31,7 +31,7 @@ type Props = {
   t: (...args: Array<any>) => any
 }
 
-class LayerListItem extends React.Component<Props, void> {
+class LayerListItem extends React.Component<Props> {
   shouldComponentUpdate(nextProps, nextState) {
     // only update if something changes
     if (!_isEqual(this.props, nextProps)) {
@@ -67,15 +67,14 @@ class LayerListItem extends React.Component<Props, void> {
       showVisibility,
       showRemove,
       showDesign,
-      showInfo
+      showInfo,
+      item,
+      showEdit
     } = this.props
-    const layer: Layer = this.props.item
+    const layer: Layer = item
     const layer_id = layer.layer_id ? layer.layer_id : 0
     const canEdit =
-      this.props.showEdit &&
-      layer.canEdit &&
-      !layer.remote &&
-      !layer.is_external
+      showEdit && layer.canEdit && !layer.remote && !layer.is_external
     const active = MapStyles.settings.get(layer.style, 'active')
     return connectDragSource(
       connectDropTarget(

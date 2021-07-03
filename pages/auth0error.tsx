@@ -14,7 +14,7 @@ type Props = {
   headerConfig: Record<string, any>
   user: Record<string, any>
 }
-export default class Error extends React.Component<Props, void> {
+export default class Error extends React.Component<Props> {
   static async getInitialProps({
     req,
     query
@@ -32,6 +32,7 @@ export default class Error extends React.Component<Props, void> {
   }
 
   constructor(props: Props) {
+    super(props)
     Reflux.rehydrate(LocaleStore, {
       locale: props.locale,
       _csrf: props._csrf

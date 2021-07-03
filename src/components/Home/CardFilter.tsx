@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 
 type Props = {
@@ -24,38 +23,50 @@ export default class CardFilter extends React.Component<Props, State> {
     }
   }
 
-  onFeatured: any | (() => void) = () => {
+  onFeatured = (): void => {
     this.setState({
       value: 'featured'
     })
     this.props.onChange('featured')
   }
-  onPopular: any | (() => void) = () => {
+  onPopular = (): void => {
     this.setState({
       value: 'popular'
     })
     this.props.onChange('popular')
   }
-  onRecent: any | (() => void) = () => {
+  onRecent = (): void => {
     this.setState({
       value: 'recent'
     })
     this.props.onChange('recent')
   }
 
-  render(): Element<'div'> {
-    const { t } = this
+  render(): JSX.Element {
+    const { t, state, onFeatured, onPopular, onRecent } = this
+    const { value } = state
     const activeClass = 'omh-accent-text'
     let featuredClass = ''
     let popularClass = ''
     let recentClass = ''
 
-    if (this.state.value === 'featured') {
-      featuredClass = activeClass
-    } else if (this.state.value === 'popular') {
-      popularClass = activeClass
-    } else if (this.state.value === 'recent') {
-      recentClass = activeClass
+    switch (value) {
+      case 'featured': {
+        featuredClass = activeClass
+
+        break
+      }
+      case 'popular': {
+        popularClass = activeClass
+
+        break
+      }
+      case 'recent': {
+        recentClass = activeClass
+
+        break
+      }
+      // No default
     }
 
     return (
@@ -67,7 +78,7 @@ export default class CardFilter extends React.Component<Props, State> {
       >
         <span
           className={featuredClass}
-          onClick={this.onFeatured}
+          onClick={onFeatured}
           style={{
             cursor: 'pointer'
           }}
@@ -77,7 +88,7 @@ export default class CardFilter extends React.Component<Props, State> {
         |&nbsp;
         <span
           className={popularClass}
-          onClick={this.onPopular}
+          onClick={onPopular}
           style={{
             cursor: 'pointer'
           }}
@@ -87,7 +98,7 @@ export default class CardFilter extends React.Component<Props, State> {
         |&nbsp;
         <span
           className={recentClass}
-          onClick={this.onRecent}
+          onClick={onRecent}
           style={{
             cursor: 'pointer'
           }}

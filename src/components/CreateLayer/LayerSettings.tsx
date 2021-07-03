@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import Formsy from 'formsy-react'
 import { notification, Row, Col, Button } from 'antd'
@@ -15,13 +14,13 @@ import type { LayerStoreState } from '../../stores/layer-store'
 import type { Group } from '../../stores/GroupStore'
 import Locales from '../../services/locales'
 type Props = {
-  onSubmit: (...args: Array<any>) => any
-  onValid?: (...args: Array<any>) => any
-  onInValid?: (...args: Array<any>) => any
+  onSubmit: (...args: Array<any>) => void
+  onValid?: (...args: Array<any>) => void
+  onInValid?: (...args: Array<any>) => void
   submitText: string
   showGroup: boolean
   showPrev?: boolean
-  onPrev?: (...args: Array<any>) => any
+  onPrev?: (...args: Array<any>) => void
   prevText?: string
   warnIfUnsaved: boolean
   groups: Array<Group>
@@ -51,36 +50,39 @@ export default class LayerSettings extends React.Component<Props, State> {
     layer: {}
   }
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
   }
 
   unloadHandler: any
 
-  componentDidMount() {
-    const _this = this
+  componentDidMount(): void {
+    const { props, state, unloadHandler } = this
+    const { warnIfUnsaved } = props
+    const { pendingChanges } = state
 
     this.unloadHandler = (e) => {
-      if (_this.props.warnIfUnsaved && _this.state.pendingChanges) {
+      if (warnIfUnsaved && pendingChanges) {
         e.preventDefault()
         e.returnValue = ''
       }
     }
 
-    window.addEventListener('beforeunload', this.unloadHandler)
+    window.addEventListener('beforeunload', unloadHandler)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  onFormChange: any | (() => void) = () => {
+  onFormChange = (): void => {
     this.setState({
       pendingChanges: true
     })
   }
-  onValid: any | (() => void) = () => {
+  onValid = (): void => {
     this.setState({
       canSubmit: true
     })
@@ -89,7 +91,7 @@ export default class LayerSettings extends React.Component<Props, State> {
       this.props.onValid()
     }
   }
-  onInvalid: any | (() => void) = () => {
+  onInvalid = (): void => {
     this.setState({
       canSubmit: false
     })
@@ -98,33 +100,34 @@ export default class LayerSettings extends React.Component<Props, State> {
       this.props.onInValid()
     }
   }
-  onSubmit: any | ((model: any) => void) = (model: Record<string, any>) => {
-    const { t } = this
+  onSubmit = (model: Record<string, any>): void => {
+    const { t, props, state, setState } = this
 
-    const _this = this
+    const { owned_by_group_id, _csrf } = state
+    const { groups, onSubmit } = props
 
     model.name = Locales.formModelToLocalizedString(model, 'name')
     model.description = Locales.formModelToLocalizedString(model, 'description')
     model.source = Locales.formModelToLocalizedString(model, 'source')
     let initLayer = false
 
-    if (!this.state.owned_by_group_id) {
+    if (!owned_by_group_id) {
       initLayer = true
     }
 
-    if (!model.group && this.state.owned_by_group_id) {
+    if (!model.group && owned_by_group_id) {
       // editing settings on an existing layer
-      model.group = this.state.owned_by_group_id
-    } else if (!model.group && this.props.groups.length === 1) {
+      model.group = owned_by_group_id
+    } else if (!model.group && groups.length === 1) {
       // creating a new layer when user is only the member of a single group (not showing the group dropdown)
-      model.group = this.props.groups[0].group_id
+      model.group = groups[0].group_id
     }
 
     if (!model.private) {
       model.private = false
     }
 
-    LayerActions.saveSettings(model, _this.state._csrf, initLayer, (err) => {
+    LayerActions.saveSettings(model, initLayer, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),
@@ -132,26 +135,33 @@ export default class LayerSettings extends React.Component<Props, State> {
           duration: 0
         })
       } else {
-        _this.setState({
+        setState({
           pendingChanges: false
         })
 
-        _this.props.onSubmit()
+        onSubmit()
       }
     })
   }
-  onPrev: any | (() => void) = () => {
+  onPrev = (): void => {
     if (this.props.onPrev) this.props.onPrev()
   }
 
-  render(): Element<'div'> {
-    const { t } = this
-    const { showGroup } = this.props
+  render(): JSX.Element {
+    const {
+      t,
+      props,
+      state,
+      onPrev,
+      onSubmit,
+      onFormChange,
+      onValid,
+      onInvalid
+    } = this
+    const { status, license, name, description, source, canSubmit } = state
+    const { showGroup, groups, submitText, showPrev, prevText } = props
 
-    if (
-      this.props.showGroup &&
-      (!this.props.groups || this.props.groups.length === 0)
-    ) {
+    if (showGroup && (!groups || groups.length === 0)) {
       return (
         <div className='container'>
           <Row
@@ -166,26 +176,6 @@ export default class LayerSettings extends React.Component<Props, State> {
       )
     }
 
-    let canChangeGroup = true
-
-    if (this.state.status === 'published') {
-      canChangeGroup = false
-    }
-
-    const licenseOptions = Licenses.getLicenses(t)
-    let prevButton = ''
-
-    if (this.props.showPrev) {
-      prevButton = (
-        <div className='left'>
-          <Button type='primary' onClick={this.onPrev}>
-            {this.props.prevText}
-          </Button>
-        </div>
-      )
-    }
-
-    const license = this.state.license ? this.state.license : 'none'
     return (
       <div
         style={{
@@ -195,10 +185,10 @@ export default class LayerSettings extends React.Component<Props, State> {
         }}
       >
         <Formsy
-          onValidSubmit={this.onSubmit}
-          onChange={this.onFormChange}
-          onValid={this.onValid}
-          onInvalid={this.onInValid}
+          onValidSubmit={onSubmit}
+          onChange={onFormChange}
+          onValid={onValid}
+          onInvalid={onInvalid}
         >
           <Row
             style={{
@@ -228,7 +218,7 @@ export default class LayerSettings extends React.Component<Props, State> {
                     id: 'Nama',
                     pt: 'Nome'
                   }}
-                  value={this.state.name}
+                  value={name}
                   validations='maxLength:100'
                   validationErrors={{
                     maxLength: t('Must be 100 characters or less.')
@@ -255,7 +245,7 @@ export default class LayerSettings extends React.Component<Props, State> {
                     id: 'Deskripsi',
                     pt: 'Descrição'
                   }}
-                  value={this.state.description}
+                  value={description}
                   validations='maxLength:1000'
                   validationErrors={{
                     maxLength: t('Description must be 1000 characters or less.')
@@ -274,10 +264,10 @@ export default class LayerSettings extends React.Component<Props, State> {
                   }}
                 >
                   <SelectGroup
-                    groups={this.props.groups}
+                    groups={groups}
                     type='layer'
-                    canChangeGroup={canChangeGroup}
-                    editing={!canChangeGroup}
+                    canChangeGroup={status !== 'published'}
+                    editing={status === 'published'}
                   />
                 </Row>
               )}
@@ -305,7 +295,7 @@ export default class LayerSettings extends React.Component<Props, State> {
                     pt: 'Fonte',
                     id: 'Sumber'
                   }}
-                  value={this.state.source}
+                  value={source}
                   validations='maxLength:300'
                   validationErrors={{
                     maxLength: t('Must be 300 characters or less.')
@@ -327,8 +317,8 @@ export default class LayerSettings extends React.Component<Props, State> {
                   id='layer-license-select'
                   label={t('License')}
                   startEmpty={false}
-                  value={license}
-                  options={licenseOptions}
+                  value={license || 'none'}
+                  options={Licenses.getLicenses(t)}
                   note={t('Select a license for more information')}
                   tooltipPosition='top'
                   tooltip={t('Layer License')}
@@ -338,18 +328,20 @@ export default class LayerSettings extends React.Component<Props, State> {
             </Col>
           </Row>
           <div className='container'>
-            {prevButton}
+            {showPrev && (
+              <div className='left'>
+                <Button type='primary' onClick={onPrev}>
+                  {prevText}
+                </Button>
+              </div>
+            )}
             <div
               style={{
                 float: 'right'
               }}
             >
-              <Button
-                type='primary'
-                htmlType='submit'
-                disabled={!this.state.canSubmit}
-              >
-                {this.props.submitText}
+              <Button type='primary' htmlType='submit' disabled={!canSubmit}>
+                {submitText}
               </Button>
             </div>
           </div>

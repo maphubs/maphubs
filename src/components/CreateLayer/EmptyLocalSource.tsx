@@ -13,10 +13,10 @@ export default class EmptyLocalSource extends React.Component<
   LocaleStoreState
 > {
   props: Props
-
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
   }
 
   render(): JSX.Element {

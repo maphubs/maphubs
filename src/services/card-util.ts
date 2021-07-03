@@ -18,8 +18,8 @@ export default {
 
   getLayerCard(
     layer: Layer,
-    id: number,
-    arr: Array<Record<string, any>>,
+    id?: number,
+    arr?: Array<Record<string, any>>,
     onClick?: (...args: Array<any>) => any
   ): CardConfig {
     const layer_id: number = layer.layer_id ? layer.layer_id : -1

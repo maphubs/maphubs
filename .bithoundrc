@@ -21,8 +21,7 @@
   },
   "dependencies": {
     "unused-ignores": [
-      "pg",
-      "pg-native"
+      "pg"
     ]
   }
 }

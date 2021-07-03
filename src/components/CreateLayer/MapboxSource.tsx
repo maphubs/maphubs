@@ -23,40 +23,37 @@ export default class MapboxSource extends React.Component<Props, State> {
     selectedOption: 'style'
   }
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
-    addValidationRule('isValidMapboxStyleURL', (values, value) => {
-      if (value) {
-        return value.startsWith('mapbox://styles/')
-      } else {
-        return false
-      }
+    this.stores = [LayerStore]
+    addValidationRule('isValidMapboxStyleURL', (values, value?: string) => {
+      return value ? value.startsWith('mapbox://styles/') : false
     })
-    addValidationRule('isValidMapboxMapID', (values, value) => {
+    addValidationRule('isValidMapboxMapID', (values, value?: string) => {
       if (value) {
         const valArr = value.split('.')
-        return valArr && Array.isArray(valArr) && valArr.length === 2
+        return valArr.length === 2
       } else {
         return false
       }
     })
   }
 
-  enableButton: any | (() => void) = () => {
+  enableButton = (): void => {
     this.setState({
       canSubmit: true
     })
   }
-  disableButton: any | (() => void) = () => {
+  disableButton = (): void => {
     this.setState({
       canSubmit: false
     })
   }
-  submit: any | ((model: any) => void) = (model: Record<string, any>) => {
-    const { t } = this
-
-    const _this = this
+  submit = (model: Record<string, any>): void => {
+    const { t, props, state } = this
+    const { _csrf } = state
+    const { onSubmit } = props
 
     let dataSettings
 
@@ -86,7 +83,7 @@ export default class MapboxSource extends React.Component<Props, State> {
       }
     }
 
-    LayerActions.saveDataSettings(dataSettings, _this.state._csrf, (err) => {
+    LayerActions.saveDataSettings(dataSettings, _csrf, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),
@@ -100,19 +97,20 @@ export default class MapboxSource extends React.Component<Props, State> {
           // tell the map that the data is initialized
           LayerActions.tileServiceInitialized()
 
-          _this.props.onSubmit()
+          onSubmit()
         })
       }
     })
   }
-  optionChange: any | ((value: string) => void) = (value: string) => {
+  optionChange = (value: string): void => {
     this.setState({
       selectedOption: value
     })
   }
 
   render(): JSX.Element {
-    const { t } = this
+    const { t, state, optionChange, submit, enableButton, disableButton } = this
+    const { selectedOption, canSubmit } = state
     const mapboxOptions = [
       {
         value: 'style',
@@ -123,87 +121,6 @@ export default class MapboxSource extends React.Component<Props, State> {
         label: t('Link to Mapbox Data/Raster Tiles')
       }
     ]
-    let styleOption = false
-    let tilesOption = false
-
-    switch (this.state.selectedOption) {
-      case 'style':
-        styleOption = true
-        break
-
-      case 'tiles':
-        tilesOption = true
-        break
-
-      default:
-        break
-    }
-
-    let styleForm = ''
-
-    if (styleOption) {
-      styleForm = (
-        <div>
-          <p>{t('Mapbox Style Source')}</p>
-          <Row
-            style={{
-              marginBottom: '20px'
-            }}
-          >
-            <TextInput
-              name='mapboxStyleID'
-              label={t('Mapbox Style URL')}
-              validations={{
-                isValidMapboxStyleURL: true
-              }}
-              validationErrors={{
-                isValidMapboxStyleURL: t(
-                  'Invalid Mapbox Style URL, must be in the format mapbox://styles/...'
-                )
-              }}
-              length={100}
-              tooltipPosition='top'
-              tooltip={t('Mapbox Style URL in the format mapbox://styles/...')}
-              required
-              t={t}
-            />
-          </Row>
-        </div>
-      )
-    }
-
-    let tilesForm = ''
-
-    if (tilesOption) {
-      tilesForm = (
-        <div>
-          <p>{t('Mapbox Tileset/Raster Source')}</p>
-          <Row
-            style={{
-              marginBottom: '20px'
-            }}
-          >
-            <TextInput
-              name='mapboxMapID'
-              label={t('Mapbox Tileset Map ID')}
-              validations={{
-                isValidMapboxMapID: true
-              }}
-              validationErrors={{
-                isValidMapboxMapID: t(
-                  'Invalid Mapbox Map ID, should be in the format accountname.mapid'
-                )
-              }}
-              length={100}
-              tooltipPosition='top'
-              tooltip={t('Mapbox Map ID')}
-              required
-              t={t}
-            />
-          </Row>
-        </div>
-      )
-    }
 
     return (
       <Row
@@ -223,9 +140,9 @@ export default class MapboxSource extends React.Component<Props, State> {
                 <Radio
                   name='type'
                   label=''
-                  defaultValue={this.state.selectedOption}
+                  defaultValue={selectedOption}
                   options={mapboxOptions}
-                  onChange={this.optionChange}
+                  onChange={optionChange}
                 />
               </Col>
             </Row>
@@ -233,22 +150,74 @@ export default class MapboxSource extends React.Component<Props, State> {
         </Col>
         <Col span={12}>
           <Formsy
-            onValidSubmit={this.submit}
-            onValid={this.enableButton}
-            onInvalid={this.disableButton}
+            onValidSubmit={submit}
+            onValid={enableButton}
+            onInvalid={disableButton}
           >
-            {styleForm}
-            {tilesForm}
+            {selectedOption === 'style' && (
+              <div>
+                <p>{t('Mapbox Style Source')}</p>
+                <Row
+                  style={{
+                    marginBottom: '20px'
+                  }}
+                >
+                  <TextInput
+                    name='mapboxStyleID'
+                    label={t('Mapbox Style URL')}
+                    validations={{
+                      isValidMapboxStyleURL: true
+                    }}
+                    validationErrors={{
+                      isValidMapboxStyleURL: t(
+                        'Invalid Mapbox Style URL, must be in the format mapbox://styles/...'
+                      )
+                    }}
+                    length={100}
+                    tooltipPosition='top'
+                    tooltip={t(
+                      'Mapbox Style URL in the format mapbox://styles/...'
+                    )}
+                    required
+                    t={t}
+                  />
+                </Row>
+              </div>
+            )}
+            {selectedOption === 'tiles' && (
+              <div>
+                <p>{t('Mapbox Tileset/Raster Source')}</p>
+                <Row
+                  style={{
+                    marginBottom: '20px'
+                  }}
+                >
+                  <TextInput
+                    name='mapboxMapID'
+                    label={t('Mapbox Tileset Map ID')}
+                    validations={{
+                      isValidMapboxMapID: true
+                    }}
+                    validationErrors={{
+                      isValidMapboxMapID: t(
+                        'Invalid Mapbox Map ID, should be in the format accountname.mapid'
+                      )
+                    }}
+                    length={100}
+                    tooltipPosition='top'
+                    tooltip={t('Mapbox Map ID')}
+                    required
+                    t={t}
+                  />
+                </Row>
+              </div>
+            )}
             <div
               style={{
                 float: 'right'
               }}
             >
-              <Button
-                type='primary'
-                htmlType='submit'
-                disabled={!this.state.canSubmit}
-              >
+              <Button type='primary' htmlType='submit' disabled={!canSubmit}>
                 {t('Save and Continue')}
               </Button>
             </div>

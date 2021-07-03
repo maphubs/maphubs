@@ -1,12 +1,12 @@
-import type { Element } from 'React'
 import React from 'react'
 import { Tooltip } from 'antd'
 import slugify from 'slugify'
 import type { Layer } from '../../types/layer'
 import LaunchIcon from '@material-ui/icons/Launch'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
   layer: Layer
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 
 const copyToClipboard = (val: string) => {
@@ -18,15 +18,21 @@ const copyToClipboard = (val: string) => {
 export default function LayerInfoExternalLink({
   layer,
   t
-}: Props): Element<'div'> | Element<'p'> {
-  const elc = layer.external_layer_config
-  const { is_external, remote } = layer
+}: Props): JSX.Element {
+  const {
+    is_external,
+    external_layer_type,
+    external_layer_config,
+    remote,
+    remote_layer_id
+  } = layer
+  const elc = external_layer_config
 
   if (!is_external && !remote) {
     return <div />
   } else if (remote) {
     const remoteURL = `https://${layer.remote_host || ''}/layer/info/${
-      layer.remote_layer_id || ''
+      remote_layer_id || ''
     }/${slugify(t(layer.name))}`
     return (
       <p
@@ -43,16 +49,16 @@ export default function LayerInfoExternalLink({
     )
   }
 
-  let externalUrl: string = ''
+  let externalUrl = ''
   let type
 
   if (elc) {
     externalUrl = elc.url ? elc.url : ''
 
-    if (layer.external_layer_type === 'openstreetmap') {
+    if (external_layer_type === 'openstreetmap') {
       type = 'OpenStreetMap'
       externalUrl = 'http://openstreetmap.org'
-    } else if (layer.external_layer_type === 'planet') {
+    } else if (external_layer_type === 'planet') {
       type = 'Planet'
       externalUrl = 'https://planet.com'
     } else if (elc.type === 'raster') {
@@ -64,7 +70,7 @@ export default function LayerInfoExternalLink({
         externalUrl = elc.url
       }
     } else if (
-      (!layer.external_layer_type || layer.external_layer_type === '') &&
+      (!external_layer_type || external_layer_type === '') &&
       elc.type
     ) {
       type = elc.type
@@ -72,7 +78,7 @@ export default function LayerInfoExternalLink({
       type = 'GeoJSON'
       externalUrl = elc.data
     } else {
-      type = layer.external_layer_type
+      type = external_layer_type
     }
   }
 

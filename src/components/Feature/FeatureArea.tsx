@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import { Row } from 'antd'
 import turf_area from '@turf/area'
@@ -125,61 +124,58 @@ const findComparision = (areaHa: number) => {
 
   return result
 }
+const FeatureArea = ({ geojson }: Props): JSX.Element => {
+  let featureAreaM2, featureAreaKM2, featureAreaHA
 
-export default class FeatureArea extends React.Component<Props, void> {
-  render(): null | Element<'div'> {
-    let featureAreaM2, featureAreaKM2, featureAreaHA
-
-    try {
-      featureAreaM2 = turf_area(this.props.geojson)
-    } catch (err) {
-      debug.error(err.message)
-    }
-
-    if (featureAreaM2 && featureAreaM2 > 0) {
-      featureAreaKM2 = featureAreaM2 * 0.000001
-      featureAreaHA = featureAreaM2 / 10000
-      let value, units
-
-      if (featureAreaKM2 < 1) {
-        value = featureAreaM2
-        units = 'm²'
-      } else {
-        value = featureAreaKM2
-        units = 'km²'
-      }
-
-      const comparison = findComparision(featureAreaHA)
-      return (
-        <div>
-          <Row>
-            <span>
-              <IntlProvider locale={this.state.locale}>
-                <FormattedNumber value={value} />
-              </IntlProvider>
-              &nbsp;{units}
-            </span>
-            <br />
-            <span>
-              <IntlProvider locale={this.state.locale}>
-                <FormattedNumber value={featureAreaHA} />
-              </IntlProvider>
-              &nbsp;ha
-            </span>
-          </Row>
-          <Row>
-            <span>
-              (or &nbsp;
-              <IntlProvider locale={this.state.locale}>
-                <FormattedNumber value={comparison.val} />
-              </IntlProvider>
-              &nbsp;{this.t(comparison.name)})
-            </span>
-          </Row>
-        </div>
-      )
-    }
-
-    return null
+  try {
+    featureAreaM2 = turf_area(geojson)
+  } catch (err) {
+    debug.error(err.message)
   }
+
+  if (featureAreaM2 && featureAreaM2 > 0) {
+    featureAreaKM2 = featureAreaM2 * 0.000001
+    featureAreaHA = featureAreaM2 / 10000
+    let value, units
+
+    if (featureAreaKM2 < 1) {
+      value = featureAreaM2
+      units = 'm²'
+    } else {
+      value = featureAreaKM2
+      units = 'km²'
+    }
+
+    const comparison = findComparision(featureAreaHA)
+    return (
+      <div>
+        <Row>
+          <span>
+            <IntlProvider locale={this.state.locale}>
+              <FormattedNumber value={value} />
+            </IntlProvider>
+            &nbsp;{units}
+          </span>
+          <br />
+          <span>
+            <IntlProvider locale={this.state.locale}>
+              <FormattedNumber value={featureAreaHA} />
+            </IntlProvider>
+            &nbsp;ha
+          </span>
+        </Row>
+        <Row>
+          <span>
+            (or &nbsp;
+            <IntlProvider locale={this.state.locale}>
+              <FormattedNumber value={comparison.val} />
+            </IntlProvider>
+            &nbsp;{this.t(comparison.name)})
+          </span>
+        </Row>
+      </div>
+    )
+  }
+  return null
 }
+export default FeatureArea

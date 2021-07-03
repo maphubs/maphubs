@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import { notification } from 'antd'
 import LayerActions from '../../actions/LayerActions'
@@ -12,34 +11,35 @@ type State = {
   pendingChanges: boolean
 } & LocaleStoreState
 export default class CreateLayerPanel extends React.Component<Props, State> {
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
   }
 
-  createEmptyLayer: any | (() => void) = () => {
-    const _this = this
+  createEmptyLayer = (): void => {
+    const { t, props, state, setState } = this
+    const { _csrf } = state
+    const { onSubmit } = props
 
-    LayerActions.createLayer(this.state._csrf, (err) => {
+    LayerActions.createLayer(_csrf, (err) => {
       if (err) {
         notification.error({
-          message: _this.t('Error'),
+          message: t('Error'),
           description: err.message || err.toString() || err,
           duration: 0
         })
       } else {
-        _this.setState({
+        setState({
           pendingChanges: false
         })
 
-        if (_this.props.onSubmit) {
-          _this.props.onSubmit()
-        }
+        if (onSubmit) onSubmit()
       }
     })
   }
 
-  render(): Element<'div'> {
+  render(): JSX.Element {
     return <div />
   }
 }

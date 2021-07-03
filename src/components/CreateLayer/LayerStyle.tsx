@@ -26,10 +26,10 @@ const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { confirm } = Modal
 const { Title } = Typography
 type Props = {
-  onSubmit: (...args: Array<any>) => any
+  onSubmit: (...args: Array<any>) => void
   showPrev?: boolean
   prevText?: string
-  onPrev?: (...args: Array<any>) => any
+  onPrev?: (...args: Array<any>) => void
   mapConfig: Record<string, any>
   waitForTileInit: boolean
 }
@@ -46,32 +46,32 @@ export default class LayerStyle extends React.Component<Props, State> {
     waitForTileInit: false // wait for tile service before showing map
   }
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
     this.state = {
       rasterOpacity: 100
     }
   }
 
-  onSubmit: any | ((MapState: any) => void) = (
-    MapState: Record<string, any>
-  ) => {
-    const _this = this
+  onSubmit = (MapState: Record<string, any>): void => {
+    const { t, props, state } = this
+    const { layer_id, name, style, labels, legend_html, _csrf } = state
+    const { onSubmit } = props
 
-    const { t } = this
     const closeSavingMessage = message.loading(t('Saving'), 0)
     const preview_position = MapState.state.map.getPosition()
     preview_position.bbox = MapState.state.map.getBounds()
     LayerActions.saveStyle(
       {
-        layer_id: this.state.layer_id,
-        style: this.state.style,
-        labels: this.state.labels,
-        legend_html: this.state.legend_html,
+        layer_id,
+        style,
+        labels,
+        legend_html,
         preview_position
       },
-      this.state._csrf,
+      _csrf,
       (err) => {
         closeSavingMessage()
 
@@ -82,39 +82,36 @@ export default class LayerStyle extends React.Component<Props, State> {
             duration: 0
           })
         } else {
-          _this.props.onSubmit(_this.state.layer_id, _this.state.name)
+          onSubmit(layer_id, name)
         }
       }
     )
   }
-  onPrev: any | (() => void) = () => {
+  onPrev = (): void => {
     if (this.props.onPrev) this.props.onPrev()
   }
-  setRasterOpacity: any | ((opacity: number) => void) = (opacity: number) => {
-    const elc = this.state.external_layer_config
-      ? this.state.external_layer_config
-      : {}
-    const layer_id = this.state.layer_id ? this.state.layer_id : 0
-    let style
+  setRasterOpacity = (opacity: number): void => {
+    const { state } = this
+    const { is_external, external_layer_config, layer_id, shortid } = state
+    const elc = external_layer_config || {}
 
-    if (this.state.is_external && elc.type === 'multiraster' && elc.layers) {
-      style = MapStyles.raster.multiRasterStyleWithOpacity(
-        layer_id,
-        this.state.shortid,
-        elc.layers,
-        opacity,
-        'raster'
-      )
-    } else {
-      style = MapStyles.raster.rasterStyleWithOpacity(
-        layer_id,
-        this.state.shortid,
-        elc,
-        opacity
-      )
-    }
+    const style =
+      is_external && elc.type === 'multiraster' && elc.layers
+        ? MapStyles.raster.multiRasterStyleWithOpacity(
+            layer_id || 0,
+            shortid,
+            elc.layers,
+            opacity,
+            'raster'
+          )
+        : MapStyles.raster.rasterStyleWithOpacity(
+            layer_id || 0,
+            shortid,
+            elc,
+            opacity
+          )
 
-    const legend_html = MapStyles.legend.rasterLegend(this.state)
+    const legend_html = MapStyles.legend.rasterLegend()
     LayerActions.setStyle({
       style,
       legend_html
@@ -123,40 +120,32 @@ export default class LayerStyle extends React.Component<Props, State> {
       rasterOpacity: opacity
     })
   }
-  onColorChange: any | ((style: GLStyle, legend_html: string) => void) = (
-    style: GLStyle,
-    legend_html: string
-  ) => {
+  onColorChange = (style: GLStyle, legend_html: string): void => {
     LayerActions.setStyle({
       style,
       legend_html
     })
   }
-  setStyle: any | ((style: GLStyle) => void) = (style: GLStyle) => {
+  setStyle = (style: GLStyle): void => {
     LayerActions.setStyle({
       style
     })
   }
-  setLabels: any | ((style: GLStyle, labels: any) => void) = (
-    style: GLStyle,
-    labels: Record<string, any>
-  ) => {
+  setLabels = (style: GLStyle, labels: Record<string, any>): void => {
     LayerActions.setStyle({
       style,
       labels
     })
   }
-  setLegend: any | ((legend_html: string) => void) = (legend_html: string) => {
+  setLegend = (legend_html: string): void => {
     LayerActions.setStyle({
       legend_html
     })
   }
-  reloadMap: any | ((MapState: any) => void) = (
-    MapState: Record<string, any>
-  ) => {
+  reloadMap = (MapState: Record<string, any>): void => {
     MapState.state.map.reloadStyle()
   }
-  resetStyle: any | (() => void) = () => {
+  resetStyle = (): void => {
     const { t } = this
     confirm({
       title: t('Confirm Reset'),
@@ -174,12 +163,34 @@ export default class LayerStyle extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { reloadMap, t } = this
-    const showMap = this.props.waitForTileInit
-      ? this.state.tileServiceInitialized
-      : true
-    const { layer_id, style, preview_position } = this.state
-    const { showPrev } = this.props
+    const {
+      reloadMap,
+      t,
+      props,
+      state,
+      onColorChange,
+      setStyle,
+      setLabels,
+      setLegend,
+      setRasterOpacity,
+      resetStyle,
+      onPrev
+    } = this
+    const { waitForTileInit, showPrev, mapConfig, prevText } = props
+    const {
+      layer_id,
+      style,
+      preview_position,
+      tileServiceInitialized,
+      external_layer_config,
+      legend_html,
+      is_external,
+      locale,
+      rasterOpacity,
+      labels
+    } = state
+    const showMap = waitForTileInit ? tileServiceInitialized : true
+
     let mapExtent
 
     if (preview_position && preview_position.bbox) {
@@ -187,29 +198,22 @@ export default class LayerStyle extends React.Component<Props, State> {
       mapExtent = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]]
     }
 
-    const externalLayerConfig: Record<string, any> = this.state
-      .external_layer_config
-      ? this.state.external_layer_config
-      : {}
-    const legendCode: string = this.state.legend_html
-      ? this.state.legend_html
-      : ''
-    const cssStyle: Record<string, any> = this.state.style
-      ? this.state.style
-      : {}
+    const externalLayerConfig: Record<string, any> = external_layer_config || {}
+
+    const legendCode: string = legend_html || ''
+
+    const cssStyle: Record<string, any> = style || {}
+
     let colorChooserMode = 'default'
 
     if (
-      this.state.is_external &&
+      is_external &&
       (externalLayerConfig.type === 'raster' ||
         externalLayerConfig.type === 'multiraster' ||
         externalLayerConfig.type === 'ags-mapserver-tiles')
     ) {
       colorChooserMode = 'external'
-    } else if (
-      this.state.is_external &&
-      externalLayerConfig.type === 'mapbox-style'
-    ) {
+    } else if (is_external && externalLayerConfig.type === 'mapbox-style') {
       colorChooserMode = 'mapbox'
     }
 
@@ -244,14 +248,14 @@ export default class LayerStyle extends React.Component<Props, State> {
                   }}
                   glStyle={style}
                   showLogo
-                  mapConfig={this.props.mapConfig}
+                  mapConfig={mapConfig}
                   fitBounds={mapExtent}
                   primaryColor={MAPHUBS_CONFIG.primaryColor}
                   logoSmall={MAPHUBS_CONFIG.logoSmall}
                   logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
                   logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
                   t={t}
-                  locale={this.state.locale}
+                  locale={locale}
                   mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
                   DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
                   earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
@@ -269,7 +273,7 @@ export default class LayerStyle extends React.Component<Props, State> {
                     collapsible
                     hideInactive={false}
                     showLayersButton={false}
-                    layers={[this.state]}
+                    layers={[state]}
                   />
                 </Map>
               </Row>
@@ -287,15 +291,15 @@ export default class LayerStyle extends React.Component<Props, State> {
                     }}
                   >
                     <LayerDesigner
-                      onColorChange={this.onColorChange}
+                      onColorChange={onColorChange}
                       style={cssStyle}
-                      onStyleChange={this.setStyle}
-                      labels={this.state.labels}
-                      onLabelsChange={this.setLabels}
-                      onMarkersChange={this.setStyle}
-                      layer={this.state}
+                      onStyleChange={setStyle}
+                      labels={labels}
+                      onLabelsChange={setLabels}
+                      onMarkersChange={setStyle}
+                      layer={state}
                       legend={legendCode}
-                      onLegendChange={this.setLegend}
+                      onLegendChange={setLegend}
                     />
                   </Row>
                 )}
@@ -307,14 +311,14 @@ export default class LayerStyle extends React.Component<Props, State> {
                     }}
                   >
                     <OpacityChooser
-                      value={this.state.rasterOpacity}
-                      onChange={this.setRasterOpacity}
+                      value={rasterOpacity}
+                      onChange={setRasterOpacity}
                       style={cssStyle}
-                      onStyleChange={this.setStyle}
-                      onColorChange={this.onColorChange}
-                      layer={this.state}
+                      onStyleChange={setStyle}
+                      onColorChange={onColorChange}
+                      layer={state}
                       legendCode={legendCode}
-                      onLegendChange={this.setLegend}
+                      onLegendChange={setLegend}
                       showAdvanced
                       t={t}
                     />
@@ -379,7 +383,7 @@ export default class LayerStyle extends React.Component<Props, State> {
                   <Col span={6}>
                     <Button
                       type='primary'
-                      onClick={this.resetStyle}
+                      onClick={resetStyle}
                       style={{
                         marginRight: '10px'
                       }}
@@ -404,8 +408,8 @@ export default class LayerStyle extends React.Component<Props, State> {
         </Row>
         {showPrev && (
           <div className='left'>
-            <Button type='primary' onClick={this.onPrev}>
-              {this.props.prevText}
+            <Button type='primary' onClick={onPrev}>
+              {prevText}
             </Button>
           </div>
         )}

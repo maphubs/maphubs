@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import request from 'superagent'
 import { Tabs, notification, Input, Row, Drawer, List } from 'antd'
@@ -102,9 +101,8 @@ export default class MapSearchPanel extends React.Component<Props, State> {
     }
   }
 
-  runLocationSearch(query: string) {
-    const _this = this
-
+  runLocationSearch(query: string): void {
+    const { setState } = this
     // run autocomplete search
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${this.props.mapboxAccessToken}&autocomplete=true`
     request
@@ -126,7 +124,7 @@ export default class MapSearchPanel extends React.Component<Props, State> {
               }
             }
           })
-          return _this.setState({
+          return setState({
             locationSearchResults: featuresCleaned,
             query
           })
@@ -142,11 +140,18 @@ export default class MapSearchPanel extends React.Component<Props, State> {
       })
   }
 
-  render(): Element<'div'> {
-    const _this = this
-
-    const { t } = this.props
-    const { tab, results, locationSearchResults } = this.state
+  render(): JSX.Element {
+    const {
+      props,
+      state,
+      drawerContainer,
+      onSearch,
+      onSubmit,
+      selectTab,
+      onClickResult
+    } = this
+    const { t, show } = props
+    const { tab, results, locationSearchResults, open } = state
     let searchLabel = ''
 
     if (tab === 'data') {
@@ -164,7 +169,7 @@ export default class MapSearchPanel extends React.Component<Props, State> {
           tooltipText={t('Search')}
           top='10px'
           right='50px'
-          show={this.props.show}
+          show={show}
           icon='search'
         />
         <div
@@ -173,9 +178,9 @@ export default class MapSearchPanel extends React.Component<Props, State> {
           }}
         />
         <Drawer
-          getContainer={() => this.drawerContainer}
+          getContainer={() => drawerContainer}
           title={t('Search')}
-          visible={this.state.open}
+          visible={open}
           onClose={() => {
             this.onSetOpen(false)
           }}
@@ -188,32 +193,28 @@ export default class MapSearchPanel extends React.Component<Props, State> {
           <Row>
             <Search
               placeholder={searchLabel}
-              onChange={this.onSearch}
-              onSearch={this.onSubmit}
+              onChange={onSearch}
+              onSearch={onSubmit}
               style={{}}
               allowClear
             />
           </Row>
           <Row>
-            <Tabs
-              animated={false}
-              defaultActiveKey='data'
-              onChange={this.selectTab}
-            >
+            <Tabs animated={false} defaultActiveKey='data' onChange={selectTab}>
               <TabPane tab={t('Data')} key='data'>
                 {results && results.list.length > 0 && (
                   <List
                     size='small'
                     bordered
                     dataSource={results.list}
-                    renderItem={(item) => {
+                    renderItem={(item: { id: string; name: string }) => {
                       return (
                         <List.Item>
                           <a
                             key={item.id}
                             href='#!'
                             onClick={() => {
-                              _this.onClickResult(item)
+                              onClickResult(item)
                             }}
                           >
                             {item.name}
@@ -238,7 +239,7 @@ export default class MapSearchPanel extends React.Component<Props, State> {
                             href='#!'
                             className='collection-item'
                             onClick={() => {
-                              _this.onClickResult(item.feature)
+                              onClickResult(item.feature)
                             }}
                           >
                             {item.value}

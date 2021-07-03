@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import { Avatar } from 'antd'
 import { IntlProvider, FormattedDate } from 'react-intl'
@@ -13,20 +12,11 @@ type State = {
   groupLogoFailed?: boolean
 } & LocaleStoreState
 export default class StoryHeader extends React.Component<Props, State> {
-  props: Props
-  static defaultProps:
-    | any
-    | {
-        baseUrl: string
-      } = {
-    baseUrl: ''
-  }
-
-  render(): Element<'div'> {
-    const { t } = this
-    const { story } = this.props
-    const { locale, groupLogoFailed } = this.state
-    const baseUrl = urlUtil.getBaseUrl()
+  render(): JSX.Element {
+    const { t, props, state } = this
+    const { story } = props
+    const { locale, groupLogoFailed } = state
+    const baseUrl = urlUtil.getBaseUrl() || ''
     let authorText = ''
 
     if (story.author) {

@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import { Row, Col, Button, message, notification } from 'antd'
 import ImageCrop from '../ImageCrop'
@@ -10,10 +9,10 @@ import type { GroupStoreState } from '../../stores/GroupStore'
 import classNames from 'classnames'
 import GroupIcon from '@material-ui/icons/Group'
 type Props = {
-  onSubmit: (...args: Array<any>) => any
+  onSubmit: (...args: Array<any>) => void
   active: boolean
   showPrev: boolean
-  onPrev: (...args: Array<any>) => any
+  onPrev: (...args: Array<any>) => void
 }
 type State = {
   canSubmit: boolean
@@ -33,22 +32,23 @@ export default class CreateGroupStep2 extends React.Component<Props, State> {
     // replaced by store
     members: [] // replaced by store
   }
-
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(GroupStore)
+    this.stores = [GroupStore]
   }
 
-  submit: any | (() => void) = () => {
+  submit = (): void => {
     this.props.onSubmit(this.state.group.group_id)
   }
-  showImageCrop: any | (() => void) = () => {
+  showImageCrop = (): void => {
     this.refs.imagecrop.show()
   }
-  onCrop: any | ((data: any) => void) = (data: Record<string, any>) => {
-    const { t } = this
+  onCrop = (data: Record<string, any>): void => {
+    const { t, state } = this
+    const { _csrf } = state
     // send data to server
-    GroupActions.setGroupImage(data, this.state._csrf, (err) => {
+    GroupActions.setGroupImage(data, _csrf, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),
@@ -61,22 +61,20 @@ export default class CreateGroupStep2 extends React.Component<Props, State> {
     })
   }
 
-  render(): Element<'div'> {
-    const { t } = this
-    const { showPrev } = this.props
-    const { group } = this.state
+  render(): JSX.Element {
+    const { t, props, state, showImageCrop, submit, onCrop } = this
+    const { showPrev, onPrev, active } = props
+    const { group } = state
     // hide if not active
     let className = classNames('row')
 
-    if (!this.props.active) {
+    if (!active) {
       className = classNames('row', 'hidden')
     }
 
-    let groupImage = ''
-
     // if group has an image use link,
-    if (group && group.group_id && group.hasImage) {
-      groupImage = (
+    const groupImage =
+      group && group.group_id && group.hasImage ? (
         <img
           className='responsive-img'
           width={200}
@@ -85,10 +83,7 @@ export default class CreateGroupStep2 extends React.Component<Props, State> {
             '/group/' + group.group_id + '/image.png?' + new Date().getTime()
           }
         />
-      )
-    } else {
-      // else show default image
-      groupImage = (
+      ) : (
         <div
           className='circle valign-wrapper'
           style={{
@@ -104,7 +99,6 @@ export default class CreateGroupStep2 extends React.Component<Props, State> {
           />
         </div>
       )
-    }
 
     return (
       <div className={className}>
@@ -117,7 +111,7 @@ export default class CreateGroupStep2 extends React.Component<Props, State> {
           >
             <Col span={12}>{groupImage}</Col>
             <Col span={12}>
-              <Button type='primary' onClick={this.showImageCrop}>
+              <Button type='primary' onClick={showImageCrop}>
                 {t('Add Image')}
               </Button>
               <p>{t('Upload an Image or Logo for Your Group (Optional)')}</p>
@@ -132,13 +126,13 @@ export default class CreateGroupStep2 extends React.Component<Props, State> {
           >
             {showPrev && (
               <Col span={4}>
-                <Button type='primary' onClick={this.props.onPrev}>
+                <Button type='primary' onClick={onPrev}>
                   {t('Previous Step')}
                 </Button>
               </Col>
             )}
             <Col span={4} offset={16}>
-              <Button type='primary' onClick={this.submit}>
+              <Button type='primary' onClick={submit}>
                 {t('Save')}
               </Button>
             </Col>
@@ -150,7 +144,7 @@ export default class CreateGroupStep2 extends React.Component<Props, State> {
           lockAspect
           resize_width={600}
           resize_height={600}
-          onCrop={this.onCrop}
+          onCrop={onCrop}
         />
       </div>
     )

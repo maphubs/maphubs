@@ -1,51 +1,47 @@
-import type { Element } from 'React'
 import React from 'react'
 import { Switch, Button } from 'antd'
+import { LocalizedString } from '../../../types/LocalizedString'
 type Props = {
   enableMeasurementTools: boolean
-  closePanel: (...args: Array<any>) => any
-  toggleMeasurementTools: (...args: Array<any>) => any
-  measureFeatureClick: (...args: Array<any>) => any
-  t: (...args: Array<any>) => any
+  closePanel: () => void
+  toggleMeasurementTools: (enabled: boolean) => void
+  measureFeatureClick: () => void
+  t: (v: string | LocalizedString) => string
 }
-export default class MeasurementToolPanel extends React.Component<Props, void> {
-  props: Props
-  toggleMeasurementTools: (enableMeasurementTools: boolean) => void = (
-    enableMeasurementTools: boolean
-  ) => {
-    if (enableMeasurementTools) this.props.closePanel()
-    this.props.toggleMeasurementTools(enableMeasurementTools)
-  }
 
-  shouldComponentUpdate(): boolean {
-    return false
-  }
-
-  render(): Element<'div'> {
-    const { t, enableMeasurementTools } = this.props
-    return (
+const MeasurementToolPanel = ({
+  t,
+  enableMeasurementTools,
+  closePanel,
+  toggleMeasurementTools,
+  measureFeatureClick
+}: Props): JSX.Element => {
+  return (
+    <div
+      style={{
+        textAlign: 'center'
+      }}
+    >
+      <b>{t('Show Measurement Tools')}</b>
+      <div>
+        <Switch
+          checked={enableMeasurementTools}
+          onChange={(enableMeasurementTools: boolean) => {
+            if (enableMeasurementTools) closePanel()
+            toggleMeasurementTools(enableMeasurementTools)
+          }}
+        />
+      </div>
       <div
         style={{
-          textAlign: 'center'
+          marginTop: '20px'
         }}
       >
-        <b>{t('Show Measurement Tools')}</b>
-        <div>
-          <Switch
-            checked={enableMeasurementTools}
-            onChange={this.toggleMeasurementTools}
-          />
-        </div>
-        <div
-          style={{
-            marginTop: '20px'
-          }}
-        >
-          <Button type='primary' onClick={this.props.measureFeatureClick}>
-            {t('Select a Feature')}
-          </Button>
-        </div>
+        <Button type='primary' onClick={measureFeatureClick}>
+          {t('Select a Feature')}
+        </Button>
       </div>
-    )
-  }
+    </div>
+  )
 }
+export default MeasurementToolPanel

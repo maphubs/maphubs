@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import { Button } from 'antd'
 import Formsy from 'formsy-react'
@@ -31,12 +30,13 @@ export default class DataCollectionForm extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
+    const { state } = this
     let submitText = ''
 
     if (props.submitText) {
       submitText = props.submitText
-    } else if (this.state && this.state.locale) {
-      submitText = Locales.getLocaleString(this.state.locale, 'Submit')
+    } else if (state && state.locale) {
+      submitText = Locales.getLocaleString(state.locale, 'Submit')
     } else {
       submitText = 'Submit'
     }
@@ -47,55 +47,37 @@ export default class DataCollectionForm extends React.Component<Props, State> {
     }
   }
 
-  onSubmit: any | ((model: any) => void) = (model: Record<string, any>) => {
+  onSubmit = (model: Record<string, any>): void => {
     if (this.props.onSubmit) this.props.onSubmit(model)
   }
-  onValid: any | (() => void) = () => {
+  onValid = (): void => {
     this.setState({
       canSubmit: true
     })
     if (this.props.onValid) this.props.onValid()
   }
-  onInValid: any | (() => void) = () => {
+  onInValid = (): void => {
     this.setState({
       canSubmit: false
     })
     if (this.props.onInValid) this.props.onInValid()
   }
-  onChange: any | ((model: any) => void) = (model: Record<string, any>) => {
+  onChange = (model: Record<string, any>): void => {
     if (this.props.onChange) this.props.onChange(model)
   }
 
-  render(): Element<'div'> {
-    const { t } = this
-    const { style, showSubmit, presets, values } = this.props
-    let submit = ''
-
-    if (showSubmit) {
-      submit = (
-        <div
-          style={{
-            float: 'right'
-          }}
-        >
-          <Button
-            type='primary'
-            htmlType='submit'
-            disabled={!this.state.canSubmit}
-          >
-            {this.state.submitText}
-          </Button>
-        </div>
-      )
-    }
+  render(): JSX.Element {
+    const { t, props, state, onSubmit, onChange, onValid, onInValid } = this
+    const { style, showSubmit, presets, values } = props
+    const { canSubmit, submitText } = state
 
     return (
       <div style={style}>
         <Formsy
-          onValidSubmit={this.onSubmit}
-          onChange={this.onChange}
-          onValid={this.onValid}
-          onInvalid={this.onInValid}
+          onValidSubmit={onSubmit}
+          onChange={onChange}
+          onValid={onValid}
+          onInvalid={onInValid}
         >
           {presets.map((preset) => {
             let value
@@ -115,7 +97,17 @@ export default class DataCollectionForm extends React.Component<Props, State> {
               )
             }
           })}
-          {submit}
+          {showSubmit && (
+            <div
+              style={{
+                float: 'right'
+              }}
+            >
+              <Button type='primary' htmlType='submit' disabled={!canSubmit}>
+                {submitText}
+              </Button>
+            </div>
+          )}
         </Formsy>
       </div>
     )

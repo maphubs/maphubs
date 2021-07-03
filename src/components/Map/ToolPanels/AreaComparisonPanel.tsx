@@ -1,18 +1,14 @@
-import type { Element } from 'React'
 import React from 'react'
+import { LocalizedString } from '../../../types/LocalizedString'
 type Props = {
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
-export default class AreaComparisonPanel extends React.Component<Props, void> {
-  props: Props
-
-  render(): Element<'div'> {
-    const { t } = this.props
-    return (
-      <div>
-        <b>{t('Select An Area')}</b>
-        coming soon!
-      </div>
-    )
-  }
+const AreaComparisonPanel = ({ t }: Props): JSX.Element => {
+  return (
+    <div>
+      <b>{t('Select An Area')}</b>
+      coming soon!
+    </div>
+  )
 }
+export default AreaComparisonPanel

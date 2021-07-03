@@ -44,10 +44,10 @@ export default class CreateGroupStep1 extends React.Component<Props, State> {
     group: {},
     members: []
   }
-
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(GroupStore)
+    this.stores = [GroupStore]
 
     const _this = this
 
@@ -127,7 +127,7 @@ export default class CreateGroupStep1 extends React.Component<Props, State> {
         model.description,
         model.location,
         model.published,
-        _this.state._csrf,
+        _csrf,
         (err) => {
           if (err) {
             notification.error({

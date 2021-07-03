@@ -16,7 +16,7 @@ type Props = {
   headerConfig: Record<string, any>
   user: Record<string, any>
 }
-export default class Auth0Profile extends React.Component<Props, void> {
+export default class Auth0Profile extends React.Component<Props> {
   static async getInitialProps({
     req,
     query

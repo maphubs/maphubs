@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import LayerListItem from './LayerListItem'
 import _isEqual from 'lodash.isequal'
@@ -6,6 +5,7 @@ import { List, Empty } from 'antd'
 import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import update from 'react-addons-update'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
   layers: Array<Record<string, any>>
   showVisibility: boolean
@@ -13,13 +13,13 @@ type Props = {
   showDesign: boolean
   showRemove: boolean
   showEdit: boolean
-  toggleVisibility?: (...args: Array<any>) => any
-  removeFromMap?: (...args: Array<any>) => any
-  showLayerDesigner?: (...args: Array<any>) => any
-  updateLayers: (...args: Array<any>) => any
-  editLayer?: (...args: Array<any>) => any
-  openAddLayer?: (...args: Array<any>) => any
-  t: (...args: Array<any>) => any
+  toggleVisibility?: (...args: Array<any>) => void
+  removeFromMap?: (...args: Array<any>) => void
+  showLayerDesigner?: (...args: Array<any>) => void
+  updateLayers: (...args: Array<any>) => void
+  editLayer?: (...args: Array<any>) => void
+  openAddLayer?: (...args: Array<any>) => void
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   layers: Array<Record<string, any>>
@@ -52,7 +52,7 @@ export default class LayerList extends React.Component<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props): void {
     if (!_isEqual(nextProps.layers, this.state.layers)) {
       const layers = JSON.parse(JSON.stringify(nextProps.layers))
       this.setState({
@@ -76,10 +76,9 @@ export default class LayerList extends React.Component<Props, State> {
     this.props.updateLayers(updatedLayers)
   }
 
-  render(): Element<'div'> {
-    const _this = this
-
-    const { layers } = this.state
+  render(): JSX.Element {
+    const { props, state, moveLayer } = this
+    const { layers } = state
     const {
       toggleVisibility,
       showVisibility,
@@ -90,8 +89,9 @@ export default class LayerList extends React.Component<Props, State> {
       removeFromMap,
       showLayerDesigner,
       editLayer,
-      t
-    } = this.props
+      t,
+      openAddLayer
+    } = props
     const empty = !layers || layers.length === 0
     return (
       <div
@@ -106,11 +106,11 @@ export default class LayerList extends React.Component<Props, State> {
       >
         <style jsx global>
           {`
-          .ant-list-item-content {
-            width: 100%;
-            overflow: hidden;
-          }
-        `}
+            .ant-list-item-content {
+              width: 100%;
+              overflow: hidden;
+            }
+          `}
         </style>
         {!empty && typeof window !== 'undefined' && (
           <DndProvider backend={HTML5Backend}>
@@ -133,7 +133,7 @@ export default class LayerList extends React.Component<Props, State> {
                     showDesign={showDesign}
                     showEdit={showEdit}
                     showInfo={showInfo}
-                    moveItem={_this.moveLayer}
+                    moveItem={moveLayer}
                     removeFromMap={removeFromMap}
                     showLayerDesigner={showLayerDesigner}
                     editLayer={editLayer}
@@ -156,7 +156,7 @@ export default class LayerList extends React.Component<Props, State> {
               image={Empty.PRESENTED_IMAGE_SIMPLE}
               description={
                 <span>
-                  <a onClick={this.props.openAddLayer}>{t('Add a Layer')}</a>
+                  <a onClick={openAddLayer}>{t('Add a Layer')}</a>
                 </span>
               }
             />

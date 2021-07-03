@@ -13,55 +13,40 @@ type Props = {
   position?: Record<string, any>
   children?: any
 }
-export default class FloatingButton extends React.Component<Props, void> {
-  static defaultProps: {
-    actionButtonStyles: {}
-    icon: React.ReactNode
-    onClick: () => void
-    position: {
-      bottom: number
-      right: number
-    }
-    style: {
-      backgroundColor: any
-      zIndex: number
-    }
-  } = {
-    style: {
-      backgroundColor: MAPHUBS_CONFIG.primaryColor,
-      zIndex: 999
-    },
-    actionButtonStyles: {},
-    onClick: () => {},
-    icon: <Add />,
-    position: {
-      bottom: 24,
-      right: 24
-    }
-  }
-
-  render(): React.ReactNode {
-    const {
-      style,
-      actionButtonStyles,
-      icon,
-      position,
-      onClick,
-      tooltip,
-      children
-    } = this.props
-    return (
-      <Fab
-        mainButtonStyles={style}
-        actionButtonStyles={actionButtonStyles}
-        position={position}
-        icon={icon}
-        text={tooltip}
-        onClick={onClick}
-        event='click'
-      >
-        {children}
-      </Fab>
-    )
+const FloatingButton = ({
+  style,
+  actionButtonStyles,
+  icon,
+  position,
+  onClick,
+  tooltip,
+  children
+}: Props): JSX.Element => {
+  return (
+    <Fab
+      mainButtonStyles={style}
+      actionButtonStyles={actionButtonStyles}
+      position={position}
+      icon={icon}
+      text={tooltip}
+      onClick={onClick}
+      event='click'
+    >
+      {children}
+    </Fab>
+  )
+}
+FloatingButton.defaultProps = {
+  style: {
+    backgroundColor: MAPHUBS_CONFIG.primaryColor,
+    zIndex: 999
+  },
+  actionButtonStyles: {},
+  onClick: () => {},
+  icon: <Add />,
+  position: {
+    bottom: 24,
+    right: 24
   }
 }
+export default FloatingButton

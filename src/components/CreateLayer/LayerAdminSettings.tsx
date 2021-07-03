@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import Formsy from 'formsy-react'
 import { Row, Col, notification, Button } from 'antd'
@@ -48,36 +47,38 @@ export default class LayerAdminSettings extends React.Component<Props, State> {
     layer: {}
   }
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
   }
 
   unloadHandler: any
 
-  componentDidMount() {
-    const _this = this
-
+  componentDidMount(): void {
+    const { props, state, unloadHandler } = this
+    const { warnIfUnsaved } = props
+    const { pendingChanges } = state
     this.unloadHandler = (e) => {
-      if (_this.props.warnIfUnsaved && _this.state.pendingChanges) {
+      if (warnIfUnsaved && pendingChanges) {
         e.preventDefault()
         e.returnValue = ''
       }
     }
 
-    window.addEventListener('beforeunload', this.unloadHandler)
+    window.addEventListener('beforeunload', unloadHandler)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  onFormChange: any | (() => void) = () => {
+  onFormChange = (): void => {
     this.setState({
       pendingChanges: true
     })
   }
-  onValid: any | (() => void) = () => {
+  onValid = (): void => {
     this.setState({
       canSubmit: true
     })
@@ -86,7 +87,7 @@ export default class LayerAdminSettings extends React.Component<Props, State> {
       this.props.onValid()
     }
   }
-  onInvalid: any | (() => void) = () => {
+  onInvalid = (): void => {
     this.setState({
       canSubmit: false
     })
@@ -95,17 +96,17 @@ export default class LayerAdminSettings extends React.Component<Props, State> {
       this.props.onInValid()
     }
   }
-  onSubmit: any | ((model: any) => void) = (model: Record<string, any>) => {
-    const { t } = this
+  onSubmit = (model: Record<string, any>): void => {
+    const { t, props, state, setState } = this
+    const { onSubmit } = props
+    const { owned_by_group_id, _csrf } = state
 
-    const _this = this
-
-    if (!model.group && this.state.owned_by_group_id) {
+    if (!model.group && owned_by_group_id) {
       // editing settings on an existing layer
-      model.group = this.state.owned_by_group_id
+      model.group = owned_by_group_id
     }
 
-    LayerActions.saveAdminSettings(model, _this.state._csrf, (err) => {
+    LayerActions.saveAdminSettings(model, _csrf, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),
@@ -113,22 +114,20 @@ export default class LayerAdminSettings extends React.Component<Props, State> {
           duration: 0
         })
       } else {
-        _this.setState({
+        setState({
           pendingChanges: false
         })
 
-        _this.props.onSubmit()
+        onSubmit()
       }
     })
   }
-  saveExternalLayerConfig: any | ((config: any) => void) = (
-    config: Record<string, any>
-  ) => {
-    const { t } = this
+  saveExternalLayerConfig = (config: Record<string, any>): void => {
+    const { t, state, props, setState } = this
+    const { onSubmit } = props
+    const { _csrf } = state
 
-    const _this = this
-
-    LayerActions.saveExternalLayerConfig(config, _this.state._csrf, (err) => {
+    LayerActions.saveExternalLayerConfig(config, _csrf, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),
@@ -136,25 +135,36 @@ export default class LayerAdminSettings extends React.Component<Props, State> {
           duration: 0
         })
       } else {
-        _this.setState({
+        setState({
           pendingChanges: false
         })
 
-        _this.props.onSubmit()
+        onSubmit()
       }
     })
   }
 
-  render(): Element<'div'> {
-    const { t } = this
+  render(): JSX.Element {
+    const {
+      t,
+      props,
+      state,
+      saveExternalLayerConfig,
+      onSubmit,
+      onFormChange,
+      onValid,
+      onInvalid
+    } = this
     const {
       is_external,
       external_layer_config,
       allow_public_submit,
       disable_export,
-      owned_by_group_id
-    } = this.state
-    let elcEditor = ''
+      owned_by_group_id,
+      canSubmit
+    } = state
+    const { groups, submitText } = props
+    let elcEditor = <></>
 
     if (is_external && external_layer_config) {
       elcEditor = (
@@ -168,7 +178,7 @@ export default class LayerAdminSettings extends React.Component<Props, State> {
             mode='json'
             code={JSON.stringify(external_layer_config, undefined, 2)}
             title={t('External Layer Config')}
-            onSave={this.saveExternalLayerConfig}
+            onSave={saveExternalLayerConfig}
             visible
             modal={false}
             t={t}
@@ -186,10 +196,10 @@ export default class LayerAdminSettings extends React.Component<Props, State> {
         }}
       >
         <Formsy
-          onValidSubmit={this.onSubmit}
-          onChange={this.onFormChange}
-          onValid={this.onValid}
-          onInvalid={this.onInValid}
+          onValidSubmit={onSubmit}
+          onChange={onFormChange}
+          onValid={onValid}
+          onInvalid={onInvalid}
         >
           <Row
             style={{
@@ -230,7 +240,7 @@ export default class LayerAdminSettings extends React.Component<Props, State> {
                 }}
               >
                 <SelectGroup
-                  groups={this.props.groups}
+                  groups={groups}
                   type='layer'
                   group_id={owned_by_group_id}
                   canChangeGroup
@@ -245,12 +255,8 @@ export default class LayerAdminSettings extends React.Component<Props, State> {
                 float: 'right'
               }}
             >
-              <Button
-                type='primary'
-                htmlType='submit'
-                disabled={!this.state.canSubmit}
-              >
-                {this.props.submitText}
+              <Button type='primary' htmlType='submit' disabled={!canSubmit}>
+                {submitText}
               </Button>
             </div>
           </div>

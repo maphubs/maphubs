@@ -1,19 +1,19 @@
-import type { Element } from 'React'
 import React, { useState } from 'react'
 import { Switch, Row, Col, Tooltip } from 'antd'
 import Info from '@material-ui/icons/Info'
 import MapStyles from '../Map/Styles'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
   item: Record<string, any>
-  toggleVisibility: (...args: Array<any>) => any
-  t: (...args: Array<any>) => any
+  toggleVisibility: (...args: Array<any>) => void
+  t: (v: string | LocalizedString) => string
 }
 
 const LayerListItemStatic = ({
   t,
   toggleVisibility,
   item
-}: Props): Element<'div'> => {
+}: Props): JSX.Element => {
   const { name, source, layer_id, style } = item
   const active = MapStyles.settings.get(style, 'active')
   const [toggled, setToggled] = useState(active)

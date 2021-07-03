@@ -1,4 +1,3 @@
-import type { Node, Element } from 'React'
 import React from 'react'
 import XComponentReact from '../XComponentReact'
 import 'rc-slider/dist/rc-slider.min.css'
@@ -22,19 +21,21 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       loaded: true
     })
   }
 
-  render(): JSX.Element | Element<'p'> | string {
+  render(): JSX.Element {
+    const { state, props } = this
+    const { loaded } = state
     if (!MAPHUBS_CONFIG.FR_API_KEY) {
       return <p>API Key Required!</p>
     }
 
-    const { onModuleToggle } = this.props
+    const { onModuleToggle } = props
     const marks = {
       [1]: '1km',
       [5]: '5km',
@@ -49,89 +50,83 @@ export default class ForestReportEmbed extends React.Component<Props, State> {
       [50]: '50km'
     }
 
-    if (this.state.loaded) {
-      return (
-        <Subscribe to={[FRContainer, MapContainer]}>
-          {(FRState, MapState) => {
-            const { geoJSON, bufferFeature, isBuffered, FRRemainingThreshold } =
-              FRState.state
-            const dimensions = {
-              width: '100%',
-              height: isBuffered ? 'calc(100% - 75px)' : '100%'
-            }
+    return loaded ? (
+      <Subscribe to={[FRContainer, MapContainer]}>
+        {(FRState, MapState) => {
+          const { geoJSON, bufferFeature, isBuffered, FRRemainingThreshold } =
+            FRState.state
+          const dimensions = {
+            width: '100%',
+            height: isBuffered ? 'calc(100% - 75px)' : '100%'
+          }
 
-            if (
-              !geoJSON ||
-              !geoJSON.features ||
-              geoJSON.features.length === 0
-            ) {
-              return <p>Invalid Feature</p>
-            }
+          if (!geoJSON || !geoJSON.features || geoJSON.features.length === 0) {
+            return <p>Invalid Feature</p>
+          }
 
-            let feature = geoJSON
-            let geom
+          let feature = geoJSON
+          let geom
 
-            if (isBuffered && bufferFeature) {
-              feature = bufferFeature
-              geom = feature.geometry
-            } else {
-              geom = feature.features[0].geometry
-            }
+          if (isBuffered && bufferFeature) {
+            feature = bufferFeature
+            geom = feature.geometry
+          } else {
+            geom = feature.features[0].geometry
+          }
 
-            return (
-              <div
-                style={{
-                  width: '100%',
-                  height: '100%'
-                }}
-              >
-                {isBuffered && (
-                  <div
-                    style={{
-                      height: '75px',
-                      padding: '25px'
-                    }}
-                  >
-                    <Slider
-                      min={1}
-                      max={50}
-                      marks={marks}
-                      step={undefined}
-                      onChange={FRState.changeBuffer}
-                      defaultValue={25}
-                    />
-                  </div>
-                )}
-                <div style={dimensions}>
-                  <XComponentReact
-                    tag='forest-report-feature-profile'
-                    url={`${MAPHUBS_CONFIG.FR_API}/xembed?apiKey=${MAPHUBS_CONFIG.FR_API_KEY}`}
-                    containerProps={{
-                      style: {
-                        width: '100%',
-                        height: '100%'
-                      }
-                    }}
-                    dimensions={{
-                      width: '100%',
-                      height: '100%'
-                    }}
-                    remainingThreshold={FRRemainingThreshold || 80}
-                    geom={geom}
-                    onLoad={(config: Record<string, any>) => {
-                      FRState.activateFR(config, MapState.state.map)
-                    }}
-                    onModuleToggle={onModuleToggle}
-                    onAlertClick={FRState.onAlertClick}
+          return (
+            <div
+              style={{
+                width: '100%',
+                height: '100%'
+              }}
+            >
+              {isBuffered && (
+                <div
+                  style={{
+                    height: '75px',
+                    padding: '25px'
+                  }}
+                >
+                  <Slider
+                    min={1}
+                    max={50}
+                    marks={marks}
+                    step={undefined}
+                    onChange={FRState.changeBuffer}
+                    defaultValue={25}
                   />
                 </div>
+              )}
+              <div style={dimensions}>
+                <XComponentReact
+                  tag='forest-report-feature-profile'
+                  url={`${MAPHUBS_CONFIG.FR_API}/xembed?apiKey=${MAPHUBS_CONFIG.FR_API_KEY}`}
+                  containerProps={{
+                    style: {
+                      width: '100%',
+                      height: '100%'
+                    }
+                  }}
+                  dimensions={{
+                    width: '100%',
+                    height: '100%'
+                  }}
+                  remainingThreshold={FRRemainingThreshold || 80}
+                  geom={geom}
+                  onLoad={(config: Record<string, any>) => {
+                    FRState.activateFR(config, MapState.state.map)
+                  }}
+                  onModuleToggle={onModuleToggle}
+                  onAlertClick={FRState.onAlertClick}
+                />
               </div>
-            )
-          }}
-        </Subscribe>
-      )
-    } else {
-      return ''
-    }
+            </div>
+          )
+        }}
+      </Subscribe>
+    ) : (
+      <></>
+    )
   }
 }

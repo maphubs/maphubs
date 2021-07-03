@@ -7,8 +7,9 @@ import UserActions from '../../actions/UserActions'
 import SelectGroup from '../Groups/SelectGroup'
 
 import type { UserStoreState } from '../../stores/UserStore'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
-  onSave: (...args: Array<any>) => any
+  onSave: (...args: Array<any>) => void
   editing?: boolean
   editingLayer?: boolean
   owned_by_group_id: string
@@ -21,26 +22,29 @@ type State = {
   group?: string
 } & UserStoreState
 export default class SaveMapModal extends React.Component<Props, State> {
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(UserStore)
+    this.stores = [UserStore]
     this.state = {
       group: props.owned_by_group_id,
       title: props.title
     }
   }
 
-  recheckLogin: any | (() => void) = () => {
-    const { t } = this
-    UserActions.getUser(this.props._csrf, (err) => {
+  recheckLogin = (): void => {
+    const { t, props } = this
+    UserActions.getUser(props._csrf, (err) => {
       if (err) {
         message.error(t('Not Logged In - Please Login Again'))
       }
     })
   }
-  save: any | (() => void) = () => {
-    const { t } = this
-    let { user, title, group } = this.state
+  save = (): void => {
+    const { t, props, state } = this
+    const { onSave } = props
+    const { user, title } = state
+    let { group } = state
 
     if (!title || t(title) === '') {
       message.error(t('Please Add a Title'))
@@ -53,7 +57,7 @@ export default class SaveMapModal extends React.Component<Props, State> {
     }
 
     const closeSavingMessage = message.loading(t('Saving'), 0)
-    this.props.onSave(
+    onSave(
       {
         title,
         group
@@ -63,31 +67,41 @@ export default class SaveMapModal extends React.Component<Props, State> {
       }
     )
   }
-  showModal: any | (() => void) = () => {
+  showModal = (): void => {
     this.setState({
       visible: true
     })
   }
-  cancel: any | (() => void) = () => {
+  cancel = (): void => {
     this.setState({
       visible: false
     })
   }
-  titleChange: any | ((title: any) => void) = (title: Record<string, any>) => {
+  titleChange = (title: Record<string, any>): void => {
     this.setState({
       title
     })
   }
-  groupChange: any | ((group: string) => void) = (group: string) => {
+  groupChange = (group: string): void => {
     this.setState({
       group
     })
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const { owned_by_group_id, editing, editingLayer } = this.props
-    const { title, visible, user } = this.state
+    const {
+      t,
+      props,
+      state,
+      showModal,
+      save,
+      cancel,
+      titleChange,
+      groupChange,
+      recheckLogin
+    } = this
+    const { owned_by_group_id, editing, editingLayer } = props
+    const { title, visible, user } = state
     let groups = []
 
     if (user && user.groups) {
@@ -97,36 +111,32 @@ export default class SaveMapModal extends React.Component<Props, State> {
     return (
       <>
         {!visible && (
-          <Button
-            type='primary'
-            disabled={editingLayer}
-            onClick={this.showModal}
-          >
+          <Button type='primary' disabled={editingLayer} onClick={showModal}>
             {t('Save Map')}
           </Button>
         )}
         <Modal
           title={t('Save Map')}
           visible={visible}
-          onOk={this.save}
+          onOk={save}
           bodyStyle={{
             padding: '10px'
           }}
           centered
           footer={[
-            <Button key='back' onClick={this.cancel}>
+            <Button key='back' onClick={cancel}>
               {t('Cancel')}
             </Button>,
             <Button
               key='submit'
               type='primary'
               disabled={!title}
-              onClick={this.save}
+              onClick={save}
             >
               {t('Save Map')}
             </Button>
           ]}
-          onCancel={this.cancel}
+          onCancel={cancel}
         >
           {user && (
             <>
@@ -134,7 +144,7 @@ export default class SaveMapModal extends React.Component<Props, State> {
                 <LocalizedInput
                   value={title}
                   placeholder={t('Title')}
-                  onChange={this.titleChange}
+                  onChange={titleChange}
                   t={t}
                 />
               </Row>
@@ -146,7 +156,7 @@ export default class SaveMapModal extends React.Component<Props, State> {
                     type='map'
                     canChangeGroup={!editing}
                     editing={editing}
-                    onGroupChange={this.groupChange}
+                    onGroupChange={groupChange}
                   />
                 </Formsy>
               </Row>
@@ -180,7 +190,7 @@ export default class SaveMapModal extends React.Component<Props, State> {
                   textAlign: 'center'
                 }}
               >
-                <Button type='primary' onClick={this.recheckLogin}>
+                <Button type='primary' onClick={recheckLogin}>
                   {t('Retry')}
                 </Button>
               </Row>

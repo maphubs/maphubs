@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import Error from 'next/error'
 import { Layout } from 'antd'
@@ -8,14 +7,8 @@ const { Header } = Layout
 type Props = {
   statusCode: number
 }
-export default class ErrorPage extends React.Component<Props, void> {
-  static getInitialProps({
-    res,
-    err
-  }: {
-    res: any
-    err: any
-  }): {
+export default class ErrorPage extends React.Component<Props> {
+  static getInitialProps({ res, err }: { res: any; err: any }): {
     statusCode: any | null
   } {
     const statusCode = res ? res.statusCode : err ? err.statusCode : null
@@ -24,7 +17,7 @@ export default class ErrorPage extends React.Component<Props, void> {
     }
   }
 
-  render(): Element<'div'> {
+  render(): JSX.Element {
     return (
       <div>
         <Header

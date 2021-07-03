@@ -14,7 +14,7 @@ type Props = {
   setValue: (...args: Array<any>) => any
 }
 
-class RadioForm extends React.Component<Props, void> {
+class RadioForm extends React.Component<Props> {
   static defaultProps = {
     options: {},
     dataDelay: 100
@@ -33,13 +33,8 @@ class RadioForm extends React.Component<Props, void> {
   }
 
   render() {
-    const {
-      tooltipPosition,
-      tooltip,
-      options,
-      label,
-      defaultValue
-    } = this.props
+    const { tooltipPosition, tooltip, options, label, defaultValue } =
+      this.props
     return (
       <Tooltip title={tooltip} placement={tooltipPosition}>
         <>

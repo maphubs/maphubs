@@ -22,10 +22,10 @@ export default class GeoJSONUrlSource extends React.Component<Props, State> {
   state: State = {
     canSubmit: false
   }
-
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
     addValidationRule('isHttps', (values, value) => {
       if (value) {
         return value.startsWith('https://')

@@ -21,9 +21,10 @@ export default class EarthEngineSource extends React.Component<Props, State> {
     canSubmit: false
   }
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
   }
 
   enableButton = (): void => {

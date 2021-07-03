@@ -1,5 +1,3 @@
-// @ts-expect-error
-
 import React from 'react'
 import { Row, Col, Button } from 'antd'
 import Formsy from 'formsy-react'
@@ -30,7 +28,6 @@ export default class AddItem extends React.Component<Props, State> {
     }
   }
 
-  searchBox: any
   handleAddWithOptionChecked: (option: any) => void = (option: any) => {
     this.setState({
       option
@@ -41,7 +38,6 @@ export default class AddItem extends React.Component<Props, State> {
       value: undefined,
       option: false
     })
-    this.searchBox.reset()
   }
   handleSearch: (input: string) => void = (input: string) => {
     if (!input) {
@@ -85,9 +81,6 @@ export default class AddItem extends React.Component<Props, State> {
           }}
         >
           <SearchBox
-            ref={(el) => {
-              this.searchBox = el
-            }}
             label={placeholder}
             suggestionUrl={suggestionUrl}
             onSearch={this.handleSearch}

@@ -16,15 +16,16 @@ type State = UserStoreState
 export default class FloatingAddButton extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    this.stores.push(UserStore)
+    this.stores = [UserStore]
   }
+  stores: any
 
   shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
     if (!this.state.user && nextState.user) return true
     return false
   }
 
-  render(): React.ReactNode | string {
+  render(): JSX.Element {
     // only render on the client side
     if (typeof window === 'undefined') {
       return ''
@@ -32,10 +33,6 @@ export default class FloatingAddButton extends React.Component<Props, State> {
 
     const { user } = this.state
 
-    if (user) {
-      return <FloatingButton {...this.props} />
-    } else {
-      return ''
-    }
+    return user ? <FloatingButton {...this.props} /> : <></>
   }
 }

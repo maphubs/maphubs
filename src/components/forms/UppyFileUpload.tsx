@@ -18,7 +18,7 @@ type Props = {
   meta?: Record<string, any>
   headers?: Record<string, any>
 }
-export default class UppyFileUpload extends React.Component<Props, void> {
+export default class UppyFileUpload extends React.Component<Props> {
   static defaultProps:
     | any
     | {
@@ -65,58 +65,56 @@ export default class UppyFileUpload extends React.Component<Props, void> {
   render(): JSX.Element | string {
     const { note, height } = this.props
 
-    if (this.uppy) {
-      return (
-        <>
-          <style jsx global>
-            {`
-              .uppy-DashboardAddFiles-info {
-                display: block !important;
+    return this.uppy ? (
+      <>
+        <style jsx global>
+          {`
+            .uppy-DashboardAddFiles-info {
+              display: block !important;
+            }
+          `}
+        </style>
+        <Dashboard
+          uppy={this.uppy} // plugins={['GoogleDrive', 'Dropbox']}
+          inline
+          height={height}
+          showProgressDetails
+          showLinkToFileUploadResult={false}
+          proudlyDisplayPoweredByUppy={false}
+          note={note}
+          locale={{
+            strings: {
+              selectToUpload: 'Select files to upload',
+              closeModal: 'Close Modal',
+              upload: 'Upload',
+              importFrom: 'Import files from',
+              dashboardWindowTitle:
+                'Uppy Dashboard Window (Press escape to close)',
+              dashboardTitle: 'Uppy Dashboard',
+              copyLinkToClipboardSuccess: 'Link copied to clipboard.',
+              copyLinkToClipboardFallback: 'Copy the URL below',
+              fileSource: 'File source',
+              done: 'Done',
+              localDisk: 'Local Disk',
+              myDevice: 'My Device',
+              dropPasteImport:
+                'Drop files here, paste, %{browse} or import from',
+              dropPaste: 'Drop files here, paste or %{browse}',
+              browse: 'browse',
+              fileProgress: 'File progress: upload speed and ETA',
+              numberOfSelectedFiles: 'Number of selected files',
+              uploadAllNewFiles: 'Upload all new files',
+              emptyFolderAdded: 'No files were added from empty folder',
+              folderAdded: {
+                0: 'Added %{smart_count} file from %{folder}',
+                1: 'Added %{smart_count} files from %{folder}'
               }
-            `}
-          </style>
-          <Dashboard
-            uppy={this.uppy} // plugins={['GoogleDrive', 'Dropbox']}
-            inline
-            height={height}
-            showProgressDetails
-            showLinkToFileUploadResult={false}
-            proudlyDisplayPoweredByUppy={false}
-            note={note}
-            locale={{
-              strings: {
-                selectToUpload: 'Select files to upload',
-                closeModal: 'Close Modal',
-                upload: 'Upload',
-                importFrom: 'Import files from',
-                dashboardWindowTitle:
-                  'Uppy Dashboard Window (Press escape to close)',
-                dashboardTitle: 'Uppy Dashboard',
-                copyLinkToClipboardSuccess: 'Link copied to clipboard.',
-                copyLinkToClipboardFallback: 'Copy the URL below',
-                fileSource: 'File source',
-                done: 'Done',
-                localDisk: 'Local Disk',
-                myDevice: 'My Device',
-                dropPasteImport:
-                  'Drop files here, paste, %{browse} or import from',
-                dropPaste: 'Drop files here, paste or %{browse}',
-                browse: 'browse',
-                fileProgress: 'File progress: upload speed and ETA',
-                numberOfSelectedFiles: 'Number of selected files',
-                uploadAllNewFiles: 'Upload all new files',
-                emptyFolderAdded: 'No files were added from empty folder',
-                folderAdded: {
-                  0: 'Added %{smart_count} file from %{folder}',
-                  1: 'Added %{smart_count} files from %{folder}'
-                }
-              }
-            }}
-          />
-        </>
-      )
-    } else {
-      return ''
-    }
+            }
+          }}
+        />
+      </>
+    ) : (
+      ''
+    )
   }
 }

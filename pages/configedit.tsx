@@ -11,7 +11,7 @@ import ErrorBoundary from '../src/components/ErrorBoundary'
 import UserStore from '../src/stores/UserStore'
 import dynamic from 'next/dynamic'
 const CodeEditor = dynamic(
-  () => import('../src/components/LayerDesigner/CodeEditor'),
+  () => import('../components/LayerDesigner/CodeEditor'),
   {
     ssr: false
   }
@@ -72,18 +72,18 @@ export default class ConfigEdit extends React.Component<Props, State> {
   savePageConfig: any | ((pageConfig: string) => void) = (
     pageConfig: string
   ) => {
-    const { t, props, state, setState } = this
-    const { page_id } = props
-    const { _csrf } = state
+    const { t } = this
+
+    const _this = this
 
     request
       .post('/api/page/save')
       .type('json')
       .accept('json')
       .send({
-        page_id,
+        page_id: this.props.page_id,
         pageConfig,
-        _csrf
+        _csrf: this.state._csrf
       })
       .end((err, res) => {
         checkClientError(
@@ -91,7 +91,7 @@ export default class ConfigEdit extends React.Component<Props, State> {
           err,
           () => {},
           (cb) => {
-            setState({
+            _this.setState({
               pageConfig: JSON.parse(pageConfig)
             })
 
@@ -112,12 +112,10 @@ export default class ConfigEdit extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { t, props, state, savePageConfig } = this
-    const { page_id, headerConfig, footerConfig } = props
-    const { pageConfig } = state
+    const { t } = this
     return (
       <ErrorBoundary>
-        <Header {...headerConfig} />
+        <Header {...this.props.headerConfig} />
         <main
           className='container'
           style={{
@@ -127,15 +125,15 @@ export default class ConfigEdit extends React.Component<Props, State> {
           <CodeEditor
             id='layer-style-editor'
             mode='json'
-            code={JSON.stringify(pageConfig, undefined, 2)}
-            title={t('Editing Page Config: ') + page_id}
-            onSave={savePageConfig}
+            code={JSON.stringify(this.state.pageConfig, undefined, 2)}
+            title={t('Editing Page Config: ') + this.props.page_id}
+            onSave={this.savePageConfig}
             modal={false}
             visible
             t={t}
           />
         </main>
-        <Footer t={t} {...footerConfig} />
+        <Footer t={t} {...this.props.footerConfig} />
       </ErrorBoundary>
     )
   }

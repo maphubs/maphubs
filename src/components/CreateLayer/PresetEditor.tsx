@@ -23,31 +23,34 @@ export default class PresetEditor extends React.Component<Props, State> {
     warnIfUnsaved: true
   }
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
   }
 
   unloadHandler: any
 
-  componentDidMount() {
-    const _this = this
+  componentDidMount(): void {
+    const { props, state, unloadHandler } = this
+    const { pendingPresetChanges } = state
+    const { warnIfUnsaved } = props
 
     this.unloadHandler = (e) => {
-      if (_this.props.warnIfUnsaved && _this.state.pendingPresetChanges) {
+      if (warnIfUnsaved && pendingPresetChanges) {
         e.preventDefault()
         e.returnValue = ''
       }
     }
 
-    window.addEventListener('beforeunload', this.unloadHandler)
+    window.addEventListener('beforeunload', unloadHandler)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  shouldComponentUpdate(nextProps: Props, nextState: State): any | boolean {
+  shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
     if (nextState.presets && !this.state.presets) {
       return true
     }
@@ -55,26 +58,19 @@ export default class PresetEditor extends React.Component<Props, State> {
     return !_isequal(nextState.presets, this.state.presets)
   }
 
-  addPreset: any | (() => void) = () => {
+  addPreset = (): void => {
     Actions.addPreset()
   }
-  onValid: any | (() => void) = () => {
+  onValid = (): void => {
     if (this.props.onValid) this.props.onValid()
   }
-  onInvalid: any | (() => void) = () => {
+  onInvalid = (): void => {
     if (this.props.onInvalid) this.props.onInvalid()
   }
 
   render(): JSX.Element {
-    const { t } = this
-
-    const _this = this
-
-    let presets = []
-
-    if (this.state.presets) {
-      presets = this.state.presets.toArray()
-    }
+    const { t, state, addPreset, onValid, onInvalid } = this
+    const { presets } = state
 
     return (
       <>
@@ -83,11 +79,7 @@ export default class PresetEditor extends React.Component<Props, State> {
             marginBottom: '20px'
           }}
         >
-          <Button
-            type='primary'
-            icon={<PlusOutlined />}
-            onClick={this.addPreset}
-          >
+          <Button type='primary' icon={<PlusOutlined />} onClick={addPreset}>
             {t('Add Field')}
           </Button>
         </Row>
@@ -106,9 +98,9 @@ export default class PresetEditor extends React.Component<Props, State> {
             renderItem={(preset) => (
               <List.Item>
                 <PresetForm
-                  {...preset}
-                  onValid={_this.onValid}
-                  onInvalid={_this.onInvalid}
+                  {...presets.toArray()}
+                  onValid={onValid}
+                  onInvalid={onInvalid}
                 />
               </List.Item>
             )}

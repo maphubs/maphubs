@@ -12,7 +12,7 @@ import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 let scrollToComponent
 type Props = {
-  onSubmit: (...args: Array<any>) => any
+  onSubmit: (...args: Array<any>) => void
   layerDataType: string
   mapConfig: Record<string, any>
 }
@@ -22,39 +22,42 @@ type State = {
   largeData: boolean
 } & LocaleStoreState &
   LayerStoreState
-export default class UploadLayerReplacement<Props, State> {
+export default class UploadLayerReplacement extends React.Component<
+  Props,
+  State
+> {
   props: Props
   state: State = {
     canSubmit: false,
     largeData: false
   }
-
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     scrollToComponent = require('react-scroll-to-component')
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(): void {
     if (this.state.geoJSON) {
       scrollToComponent(this.refs.mapSection)
     }
   }
 
-  enableButton: any | (() => void) = () => {
+  enableButton = (): void => {
     this.setState({
       canSubmit: true
     })
   }
-  disableButton: any | (() => void) = () => {
+  disableButton = (): void => {
     this.setState({
       canSubmit: false
     })
   }
-  onSubmit: any | (() => void) = () => {
+  onSubmit = (): void => {
     const { t } = this
 
     const _this = this
@@ -99,53 +102,10 @@ export default class UploadLayerReplacement<Props, State> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const layer_id = this.state.layer_id ? this.state.layer_id : 0
-    const url = `/api/layer/${layer_id}/replace`
-    let largeDataMessage = ''
-
-    if (this.state.largeData) {
-      largeDataMessage = (
-        <p>
-          {t(
-            'Data Upload Successful: Large dataset detected, you will be able to view the data after it is saved.'
-          )}
-        </p>
-      )
-    }
-
-    let map = ''
-
-    if (this.state.geoJSON) {
-      map = (
-        <div ref='mapSection'>
-          <p>
-            {t(
-              'Please review the data on the map to confirm the upload was successful.'
-            )}
-          </p>
-          <Map
-            style={{
-              width: '100%',
-              height: '400px'
-            }}
-            id='upload-preview-map'
-            t={this.t}
-            showFeatureInfoEditButtons={false}
-            mapConfig={this.props.mapConfig}
-            primaryColor={MAPHUBS_CONFIG.primaryColor}
-            logoSmall={MAPHUBS_CONFIG.logoSmall}
-            logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-            logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-            data={this.state.geoJSON}
-            locale={this.state.locale}
-            mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-            DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-            earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
-          />
-        </div>
-      )
-    }
+    const { t, props, state, onSubmit, onUpload } = this
+    const { mapConfig } = props
+    const { largeData, layer_id, geoJSON, canSubmit, locale } = state
+    const url = `/api/layer/${layer_id || 0}/replace`
 
     return (
       <Row>
@@ -164,15 +124,48 @@ export default class UploadLayerReplacement<Props, State> {
               marginBottom: '20px'
             }}
           >
-            <FileUpload onUpload={this.onUpload} action={url} t={t} />
+            <FileUpload onUpload={onUpload} action={url} t={t} />
           </Row>
           <Row
             style={{
               marginBottom: '20px'
             }}
           >
-            {largeDataMessage}
-            {map}
+            {largeData && (
+              <p>
+                {t(
+                  'Data Upload Successful: Large dataset detected, you will be able to view the data after it is saved.'
+                )}
+              </p>
+            )}
+            {geoJSON && (
+              <div ref='mapSection'>
+                <p>
+                  {t(
+                    'Please review the data on the map to confirm the upload was successful.'
+                  )}
+                </p>
+                <Map
+                  style={{
+                    width: '100%',
+                    height: '400px'
+                  }}
+                  id='upload-preview-map'
+                  t={t}
+                  showFeatureInfoEditButtons={false}
+                  mapConfig={mapConfig}
+                  primaryColor={MAPHUBS_CONFIG.primaryColor}
+                  logoSmall={MAPHUBS_CONFIG.logoSmall}
+                  logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+                  logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+                  data={geoJSON}
+                  locale={locale}
+                  mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+                  DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+                  earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+                />
+              </div>
+            )}
           </Row>
         </Row>
         <Row
@@ -180,11 +173,7 @@ export default class UploadLayerReplacement<Props, State> {
             marginBottom: '20px'
           }}
         >
-          <Button
-            type='primary'
-            disabled={!this.state.canSubmit}
-            onClick={this.onSubmit}
-          >
+          <Button type='primary' disabled={!canSubmit} onClick={onSubmit}>
             {t('Replace Layer Data')}
           </Button>
         </Row>

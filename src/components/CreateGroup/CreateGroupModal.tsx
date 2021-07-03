@@ -25,12 +25,13 @@ type State = {
 } & LocaleStoreState &
   GroupStoreState
 export default class CreateGroupModal extends React.Component<Props, State> {
+  stores: any
   constructor(props: Props) {
     super(props)
 
     const _this = this
 
-    this.stores.push(GroupStore)
+    this.stores = [GroupStore]
     addValidationRule('isAvailable', function (values, value) {
       if (_this.state.group.created) return true
 
@@ -143,7 +144,7 @@ export default class CreateGroupModal extends React.Component<Props, State> {
       }
     )
   }
-  handleCancel: any | (() => void) = () => {
+  handleCancel = (): void => {
     this.setState({
       visible: false
     })

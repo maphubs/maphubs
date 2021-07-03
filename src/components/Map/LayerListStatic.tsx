@@ -1,12 +1,12 @@
-import type { Element } from 'React'
 import React from 'react'
 import LayerListItemStatic from './LayerListItemStatic'
 import _isEqual from 'lodash.isequal'
 import type { Layer } from '../../types/layer'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
-  layers: Array<Record<string, any>>
-  toggleVisibility: (...args: Array<any>) => any
-  t: (...args: Array<any>) => any
+  layers: Layer[]
+  toggleVisibility: (...args: Array<any>) => void
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   layers: Array<Layer>
@@ -25,7 +25,7 @@ export default class LayerListStatic extends React.Component<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props): void {
     if (!_isEqual(nextProps.layers, this.state.layers)) {
       const layers = JSON.parse(JSON.stringify(nextProps.layers))
       this.setState({
@@ -34,7 +34,7 @@ export default class LayerListStatic extends React.Component<Props, State> {
     }
   }
 
-  render(): Element<'div'> {
+  render(): JSX.Element {
     const { t, toggleVisibility } = this.props
     const { layers } = this.state
     return (

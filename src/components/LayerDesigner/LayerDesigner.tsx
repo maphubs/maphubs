@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import { Row, Col, Button, Tabs, Tooltip } from 'antd'
 import ColorLens from '@material-ui/icons/ColorLens'
@@ -27,11 +26,11 @@ type ColorValue = {
   }
 }
 type Props = {
-  onColorChange: (...args: Array<any>) => any
-  onStyleChange: (...args: Array<any>) => any
-  onLabelsChange: (...args: Array<any>) => any
-  onMarkersChange: (...args: Array<any>) => any
-  onLegendChange: (...args: Array<any>) => any
+  onColorChange: (...args: Array<any>) => void
+  onStyleChange: (...args: Array<any>) => void
+  onLabelsChange: (...args: Array<any>) => void
+  onMarkersChange: (...args: Array<any>) => void
+  onLegendChange: (...args: Array<any>) => void
   alpha: number
   style: Record<string, any>
   labels: Record<string, any>
@@ -64,16 +63,14 @@ export default class LayerDesigner extends React.Component<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props): void {
     const color = this.getColorFromStyle(nextProps.style)
     this.setState({
       color
     })
   }
 
-  getColorFromStyle: any | ((style: GLStyle) => string) = (
-    style: GLStyle
-  ): string => {
+  getColorFromStyle = (style: GLStyle): string => {
     let color = 'rgba(255,0,0,0.65)'
     const prevColor = MapStyles.settings.get(style, 'color')
 
@@ -83,95 +80,90 @@ export default class LayerDesigner extends React.Component<Props, State> {
 
     return color
   }
-  setColorInStyle: any | ((style: GLStyle, color: string) => GLStyle) = (
-    style: GLStyle,
-    color: string
-  ): GLStyle => {
+  setColorInStyle = (style: GLStyle, color: string): GLStyle => {
     style = MapStyles.settings.set(style, 'color', color)
     return style
   }
   onColorChange: any | ((color: string) => void) = (color: string) => {
-    const oldStyle = this.setColorInStyle(this.props.style, color)
+    const { props } = this
+    const { layer, onColorChange } = props
+    const oldStyle = this.setColorInStyle(props.style, color)
     const { style, isOutlineOnly } = MapStyles.color.updateStyleColor(
       oldStyle,
       color
     )
-    let legend
 
-    if (isOutlineOnly) {
-      legend = MapStyles.legend.outlineLegendWithColor(this.props.layer, color)
-    } else {
-      legend = MapStyles.legend.legendWithColor(this.props.layer, color)
-    }
+    const legend = isOutlineOnly
+      ? MapStyles.legend.outlineLegendWithColor(layer, color)
+      : MapStyles.legend.legendWithColor(layer, color)
 
     this.setState({
       color
     })
-    this.props.onColorChange(style, legend)
+    onColorChange(style, legend)
   }
-  onColorPickerChange: any | ((colorValue: ColorValue) => void) = (
-    colorValue: ColorValue
-  ) => {
+  onColorPickerChange = (colorValue: ColorValue): void => {
     const color = `rgba(${colorValue.rgb.r},${colorValue.rgb.g},${colorValue.rgb.b},${colorValue.rgb.a})`
     this.onColorChange(color)
   }
-  onStyleChange: any | ((style: any) => void) = (
-    style: Record<string, any>
-  ) => {
+  onStyleChange = (style: Record<string, any>): void => {
     this.props.onStyleChange(style)
   }
-  onCodeStyleChange: any | ((style: string) => void) = (style: string) => {
+  onCodeStyleChange = (style: string): void => {
     style = JSON.parse(style)
     this.props.onStyleChange(style)
     this.hideStyleEditor()
   }
-  onLabelsChange: any | ((style: GLStyle, labels: any) => void) = (
-    style: GLStyle,
-    labels: Record<string, any>
-  ) => {
+  onLabelsChange = (style: GLStyle, labels: Record<string, any>): void => {
     this.props.onLabelsChange(style, labels)
   }
-  onMarkersChange: any | ((style: GLStyle, markers: any) => void) = (
-    style: GLStyle,
-    markers: Record<string, any>
-  ) => {
+  onMarkersChange = (style: GLStyle, markers: Record<string, any>): void => {
     this.props.onMarkersChange(style, markers)
   }
-  onLegendChange: any | ((legend: string) => void) = (legend: string) => {
+  onLegendChange = (legend: string): void => {
     this.props.onLegendChange(legend)
     this.hideLegendEditor()
   }
-  showStyleEditor: any | (() => void) = () => {
+  showStyleEditor = (): void => {
     this.setState({
       showStyleEditor: true
     })
   }
-  showLegendEditor: any | (() => void) = () => {
+  showLegendEditor = (): void => {
     this.setState({
       showLegendEditor: true
     })
   }
-  hideStyleEditor: any | (() => void) = () => {
+  hideStyleEditor = (): void => {
     this.setState({
       showStyleEditor: false
     })
   }
-  hideLegendEditor: any | (() => void) = () => {
+  hideLegendEditor = (): void => {
     this.setState({
       showLegendEditor: false
     })
   }
-  onAdvancedSettingsChange: any | ((style: GLStyle, legend: string) => void) = (
-    style: GLStyle,
-    legend: string
-  ) => {
+  onAdvancedSettingsChange = (style: GLStyle, legend: string): void => {
     this.props.onColorChange(style, legend)
   }
 
-  render(): Element<'div'> {
-    const { t } = this
-    const { layer, style, labels, legend, showAdvanced } = this.props
-    const { color, showStyleEditor, showLegendEditor } = this.state
+  render(): JSX.Element {
+    const {
+      t,
+      props,
+      state,
+      onColorPickerChange,
+      onLabelsChange,
+      onMarkersChange,
+      onAdvancedSettingsChange,
+      onCodeStyleChange,
+      hideStyleEditor,
+      onLegendChange,
+      hideLegendEditor
+    } = this
+    const { layer, style, labels, legend, showAdvanced } = props
+    const { color, showStyleEditor, showLegendEditor } = state
     return (
       <div
         style={{
@@ -238,7 +230,7 @@ export default class LayerDesigner extends React.Component<Props, State> {
                   <SwatchesPicker
                     width='100%'
                     height='100%'
-                    onChange={this.onColorPickerChange}
+                    onChange={onColorPickerChange}
                     colors={[
                       [
                         'rgba(183,28,28,0.65)',
@@ -381,7 +373,7 @@ export default class LayerDesigner extends React.Component<Props, State> {
                 <SketchPicker
                   width='calc(100% - 20px)'
                   color={color}
-                  onChangeComplete={this.onColorPickerChange}
+                  onChangeComplete={onColorPickerChange}
                 />
               </TabPane>
             </Tabs>
@@ -398,7 +390,7 @@ export default class LayerDesigner extends React.Component<Props, State> {
             }
           >
             <LabelSettings
-              onChange={this.onLabelsChange}
+              onChange={onLabelsChange}
               style={style}
               labels={labels}
               layer={layer}
@@ -416,7 +408,7 @@ export default class LayerDesigner extends React.Component<Props, State> {
               }
             >
               <MarkerSettings
-                onChange={this.onMarkersChange}
+                onChange={onMarkersChange}
                 style={style}
                 color={color}
                 layer={layer}
@@ -438,7 +430,7 @@ export default class LayerDesigner extends React.Component<Props, State> {
               <AdvancedLayerSettings
                 layer={layer}
                 style={style}
-                onChange={this.onAdvancedSettingsChange}
+                onChange={onAdvancedSettingsChange}
               />
               <Row
                 justify='center'
@@ -466,10 +458,10 @@ export default class LayerDesigner extends React.Component<Props, State> {
           visible={showStyleEditor}
           id='layer-style-editor'
           mode='json'
-          code={JSON.stringify(this.props.style, undefined, 2)}
+          code={JSON.stringify(style, undefined, 2)}
           title={t('Editing Layer Style')}
-          onSave={this.onCodeStyleChange}
-          onCancel={this.hideStyleEditor}
+          onSave={onCodeStyleChange}
+          onCancel={hideStyleEditor}
           t={t}
         />
         <CodeEditor
@@ -478,8 +470,8 @@ export default class LayerDesigner extends React.Component<Props, State> {
           mode='html'
           code={legend}
           title={t('Edit Layer Legend')}
-          onSave={this.onLegendChange}
-          onCancel={this.hideLegendEditor}
+          onSave={onLegendChange}
+          onCancel={hideLegendEditor}
           t={t}
         />
       </div>

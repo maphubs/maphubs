@@ -4,34 +4,23 @@ import PersonIcon from '@material-ui/icons/Person'
 type Props = {
   src?: string
   size: number
-  t: (...args: Array<any>) => any
+  t: (v: string) => string
 }
-export default class UserIcon extends React.PureComponent<Props, void> {
-  static defaultProps: {
-    size: number
-  } = {
-    size: 32
-  }
-
-  render(): JSX.Element {
-    const { size, src, t } = this.props
-
-    if (src) {
-      return <Avatar size={size} src={src} alt={t('User Profile Photo')} />
-    } else {
-      return (
-        <Avatar
-          size={size}
-          icon={
-            <PersonIcon
-              style={{
-                fontSize: `${size}px`
-              }}
-            />
-          }
-          alt={t('User Profile Photo')}
+const UserIcon = ({ size, src, t }: Props): JSX.Element => {
+  return src ? (
+    <Avatar size={size || 32} src={src} alt={t('User Profile Photo')} />
+  ) : (
+    <Avatar
+      size={size}
+      icon={
+        <PersonIcon
+          style={{
+            fontSize: `${size || 32}px`
+          }}
         />
-      )
-    }
-  }
+      }
+      alt={t('User Profile Photo')}
+    />
+  )
 }
+export default UserIcon

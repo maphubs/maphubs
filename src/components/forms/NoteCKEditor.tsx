@@ -4,10 +4,10 @@ import CKEditor from '@ckeditor/ckeditor5-react'
 import MapHubsEditor from '@maphubs/maphubs-story-editor'
 type Props = {
   initialData?: string
-  onChange?: (...args: Array<any>) => any
+  onChange?: (...args: Array<any>) => void
   language?: string
 }
-export default class NoteCKEditor extends React.Component<Props, void> {
+export default class NoteCKEditor extends React.Component<Props> {
   editorInstance: any
   domContainer: any
   static defaultProps: {
@@ -23,7 +23,7 @@ export default class NoteCKEditor extends React.Component<Props, void> {
   }
 
   render(): React.ReactNode {
-    const { initialData, language } = this.props
+    const { initialData, language, onChange } = this.props
     const editorConfiguration = {
       language,
       toolbar: {
@@ -58,11 +58,11 @@ export default class NoteCKEditor extends React.Component<Props, void> {
           >
             <style jsx global>
               {`
-              .ck.ck-editor__main>.ck-editor__editable {
-                height: ${height - 40}px;
-                overflow-y: scroll;
-              }
-            `}
+                .ck.ck-editor__main > .ck-editor__editable {
+                  height: ${height - 40}px;
+                  overflow-y: scroll;
+                }
+              `}
             </style>
             <CKEditor
               editor={MapHubsEditor}
@@ -75,7 +75,7 @@ export default class NoteCKEditor extends React.Component<Props, void> {
               onChange={(event, editor) => {
                 const data = editor.getData()
                 // console.log(data)
-                if (this.props.onChange) this.props.onChange(data)
+                if (onChange) onChange(data)
               }}
               onBlur={(editor) => {
                 // console.log('Blur.', editor)

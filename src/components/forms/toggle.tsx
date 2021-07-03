@@ -21,7 +21,7 @@ type Props = {
   value: boolean
 }
 
-class Toggle extends React.Component<Props, void> {
+class Toggle extends React.Component<Props> {
   props: Props
   static defaultProps = {
     style: {},

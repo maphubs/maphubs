@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import UserStore from '../stores/UserStore'
 
@@ -16,13 +15,13 @@ export default class Comments extends React.Component<Props, UserStoreState> {
       } = {
     id: 'coral-comments'
   }
-
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(UserStore)
+    this.stores = [UserStore]
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     // eslint-disable-next-line no-undef
     if (Coral) {
       // eslint-disable-next-line no-undef
@@ -41,7 +40,7 @@ export default class Comments extends React.Component<Props, UserStoreState> {
     }
   }
 
-  render(): Element<'div'> {
+  render(): JSX.Element {
     return (
       <div
         style={{

@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 // eslint-disable-next-line unicorn/import-index
 import Map from './index'
@@ -14,6 +13,8 @@ import ShareButtons from '../ShareButtons'
 import MapStyles from './Styles'
 import $ from 'jquery'
 import type { Layer } from '../../types/layer'
+import { LocalizedString } from '../../types/LocalizedString'
+import { GLStyle } from '../../types/mapbox-gl-style'
 type Props = {
   map_id: number
   title: LocalizedString
@@ -57,7 +58,7 @@ type Props = {
   showLayerInfo: boolean
   showPlayButton: boolean
   showSearch: boolean
-  onLoad?: (...args: Array<any>) => any
+  onLoad?: (...args: Array<any>) => void
 }
 type State = {
   width?: number
@@ -130,7 +131,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     const _this = this
 
     if (typeof window === 'undefined') return // only run this on the client
@@ -164,7 +165,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
     })
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.layers && !_isEqual(nextProps.layers, this.props.layers)) {
       this.updateLayers(nextProps.layers, true)
     }
@@ -190,19 +191,16 @@ export default class InteractiveMap extends React.Component<Props, State> {
       }
 
       if (layer.style?.layers) {
-        layer.style.layers.forEach((styleLayer) => {
+        for (const styleLayer of layer.style.layers) {
           if (!styleLayer.layout) {
             styleLayer.layout = {}
           }
 
           const markerSettings = MapStyles.settings.get(styleLayer, 'markers')
 
-          if (active && !markerSettings?.enabled) {
-            styleLayer.layout.visibility = 'visible'
-          } else {
-            styleLayer.layout.visibility = 'none'
-          }
-        })
+          styleLayer.layout.visibility =
+            active && !markerSettings?.enabled ? 'visible' : 'none'
+        }
       }
 
       this.updateMap(mapLayers)
@@ -219,7 +217,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
   }
   updateLayers: (layers: Array<Layer>, update?: boolean) => void = (
     layers: Array<Layer>,
-    update: boolean = true
+    update = true
   ) => {
     this.setState({
       layers
@@ -229,7 +227,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
       this.updateMap(layers)
     }
   }
-  buildMapStyle: (layers: Array<Layer>) => any = (layers: Array<Layer>) => {
+  buildMapStyle = (layers: Array<Layer>): GLStyle => {
     return MapStyles.style.buildMapStyle(layers)
   }
   onToggleIsochroneLayer: (enabled: boolean) => void = (enabled: boolean) => {
@@ -243,22 +241,22 @@ export default class InteractiveMap extends React.Component<Props, State> {
 
     if (enabled) {
       // add layers to legend
-      mapLayers = mapLayers.concat(layers)
+      mapLayers = [...mapLayers, ...layers]
     } else {
       const updatedLayers = []
       // remove layers from legend
-      mapLayers.forEach((mapLayer) => {
+      for (const mapLayer of mapLayers) {
         let foundInLayers
-        layers.forEach((layer) => {
+        for (const layer of layers) {
           if (mapLayer.layer_id === layer.layer_id) {
             foundInLayers = true
           }
-        })
+        }
 
         if (!foundInLayers) {
           updatedLayers.push(mapLayer)
         }
-      })
+      }
       mapLayers = updatedLayers
     }
 
@@ -279,7 +277,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
     })
   }
 
-  render(): Element<'div'> {
+  render(): JSX.Element {
     const {
       fitBounds,
       showShareButtons,
@@ -295,9 +293,36 @@ export default class InteractiveMap extends React.Component<Props, State> {
       showFeatureInfoEditButtons,
       showMapTools,
       showSearch,
-      showFullScreen
+      showFullScreen,
+      showTitle,
+      categories,
+      insetMap,
+      hideInactive,
+      showLegendLayersButton,
+      interactive,
+      map_id,
+      fitBoundsOptions,
+      showLogo,
+      insetConfig,
+      mapConfig,
+      showScale,
+      disableScrollZoom,
+      gpxLink,
+      preserveDrawingBuffer,
+      locale,
+      mapboxAccessToken,
+      DGWMSConnectID,
+      earthEngineClientID,
+      onLoad
     } = this.props
-    const { position, width } = this.state
+    const {
+      position,
+      width,
+      layers,
+      style,
+      mobileMapLegendOpen,
+      mapLayersListOpen
+    } = this.state
     let border = 'none'
 
     if (this.props.border) {
@@ -308,32 +333,31 @@ export default class InteractiveMap extends React.Component<Props, State> {
 
     if (fitBounds) {
       bounds = fitBounds
-    } else if (position) {
-      if (typeof window === 'undefined' || !window.location.hash) {
-        // only update position if there isn't absolute hash in the URL
-        if (position.bbox) {
-          const bbox = position.bbox
-          bounds = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]]
-        }
-      }
+    } else if (
+      position &&
+      (typeof window === 'undefined' || !window.location.hash) && // only update position if there isn't absolute hash in the URL
+      position.bbox
+    ) {
+      const bbox = position.bbox
+      bounds = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]]
     }
 
     const children = this.props.children || ''
-    const title = this.props.showTitle ? this.props.title : undefined
+    const title = showTitle ? this.props.title : undefined
     let height = '100%'
     let topOffset = 0
 
-    if (this.props.categories) {
+    if (categories) {
       topOffset = 35
       height = 'calc(100% - 35px)'
     }
 
-    let legend = ''
+    let legend = <></>
 
     if (!width || width >= 600) {
       let insetOffset = 185
 
-      if (!this.props.insetMap) {
+      if (!insetMap) {
         insetOffset = 30
       }
 
@@ -350,11 +374,11 @@ export default class InteractiveMap extends React.Component<Props, State> {
             zIndex: 2
           }}
           maxHeight={`calc(${this.props.height} - ${legendMaxHeight}px)`}
-          hideInactive={this.props.hideInactive}
-          showLayersButton={this.props.showLegendLayersButton}
-          layers={this.state.layers}
+          hideInactive={hideInactive}
+          showLayersButton={showLegendLayersButton}
+          layers={layers}
           title={title}
-          collapsible={this.props.interactive}
+          collapsible={interactive}
           openLayersPanel={() => {
             this.onSetOpenMapLayersList(true)
           }}
@@ -383,38 +407,38 @@ export default class InteractiveMap extends React.Component<Props, State> {
           />
         )}
         <Map
-          id={'map-' + this.props.map_id}
+          id={'map-' + map_id}
           fitBounds={bounds}
-          fitBoundsOptions={this.props.fitBoundsOptions}
+          fitBoundsOptions={fitBoundsOptions}
           height={this.props.height}
-          interactive={this.props.interactive}
+          interactive={interactive}
           style={{
             width: '100%',
             height
           }}
-          glStyle={this.state.style}
+          glStyle={style}
           onToggleIsochroneLayer={this.onToggleIsochroneLayer}
-          showLogo={this.props.showLogo}
-          mapConfig={this.props.mapConfig}
-          insetConfig={this.props.insetConfig}
-          insetMap={this.props.insetMap}
-          showScale={this.props.showScale}
-          disableScrollZoom={this.props.disableScrollZoom}
-          gpxLink={this.props.gpxLink}
-          preserveDrawingBuffer={this.props.preserveDrawingBuffer}
+          showLogo={showLogo}
+          mapConfig={mapConfig}
+          insetConfig={insetConfig}
+          insetMap={insetMap}
+          showScale={showScale}
+          disableScrollZoom={disableScrollZoom}
+          gpxLink={gpxLink}
+          preserveDrawingBuffer={preserveDrawingBuffer}
           logoSmall={logoSmall}
           logoSmallHeight={logoSmallHeight}
           logoSmallWidth={logoSmallWidth}
           hash={hash}
           t={t}
-          locale={this.props.locale}
-          mapboxAccessToken={this.props.mapboxAccessToken}
-          DGWMSConnectID={this.props.DGWMSConnectID}
-          earthEngineClientID={this.props.earthEngineClientID}
-          categories={this.props.categories}
-          mapLayers={this.state.layers}
+          locale={locale}
+          mapboxAccessToken={mapboxAccessToken}
+          DGWMSConnectID={DGWMSConnectID}
+          earthEngineClientID={earthEngineClientID}
+          categories={categories}
+          mapLayers={layers}
           toggleVisibility={this.toggleVisibility}
-          onLoad={this.props.onLoad}
+          onLoad={onLoad}
           showPlayButton={showPlayButton}
           showMapTools={showMapTools}
           showFeatureInfoEditButtons={showFeatureInfoEditButtons}
@@ -429,7 +453,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
           />
           <Drawer
             getContainer={() => this.mobileMapLegend}
-            visible={this.state.mobileMapLegendOpen}
+            visible={mobileMapLegendOpen}
             onClose={() => {
               this.onSetOpenMobileMapLegend(false)
             }}
@@ -449,9 +473,9 @@ export default class InteractiveMap extends React.Component<Props, State> {
                 }}
                 title={title}
                 collapsible={false}
-                hideInactive={this.props.hideInactive}
+                hideInactive={hideInactive}
                 showLayersButton={false}
-                layers={this.state.layers}
+                layers={layers}
               />
             )}
           </Drawer>
@@ -463,7 +487,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
           <Drawer
             getContainer={() => this.mapLayersList}
             title={t('Map Layers')}
-            visible={this.state.mapLayersListOpen}
+            visible={mapLayersListOpen}
             onClose={() => {
               this.onSetOpenMapLayersList(false)
             }}
@@ -479,7 +503,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
               }}
             >
               <LayerList
-                layers={this.state.layers}
+                layers={layers}
                 showDesign={false}
                 showRemove={false}
                 showVisibility={showLayerVisibility}

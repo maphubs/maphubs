@@ -24,32 +24,27 @@ export default class WMSSource extends React.Component<Props, State> {
     canSubmit: false
   }
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
-    addValidationRule('isHttps', (values, value) => {
-      if (value) {
-        return value.startsWith('https://')
-      } else {
-        return false
-      }
+    this.stores = [LayerStore]
+    addValidationRule('isHttps', (values, value: string) => {
+      return value ? value.startsWith('https://') : false
     })
   }
 
-  enableButton: any | (() => void) = () => {
+  enableButton = (): void => {
     this.setState({
       canSubmit: true
     })
   }
-  disableButton: any | (() => void) = () => {
+  disableButton = (): void => {
     this.setState({
       canSubmit: false
     })
   }
-  submit: any | ((model: any) => void) = (model: Record<string, any>) => {
-    const { t } = this
-
-    const _this = this
+  submit = (model: Record<string, any>): void => {
+    const { t, props, state } = this
 
     let boundsArr
 
@@ -72,13 +67,13 @@ export default class WMSSource extends React.Component<Props, State> {
 
       if (!model.layers && urlParts.length === 2) {
         const queryParts = urlParts[1].split('&')
-        queryParts.forEach((part) => {
+        for (const part of queryParts) {
           const keyVal = part.split('=')
 
           if (keyVal[0] === 'layers') {
             layers = keyVal[1]
           }
-        })
+        }
       }
 
       url = `${baseUrl}?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=256&height=256&layers=${layers}`
@@ -99,7 +94,7 @@ export default class WMSSource extends React.Component<Props, State> {
             tiles: [url]
           }
         },
-        _this.state._csrf,
+        state._csrf,
         (err) => {
           if (err) {
             notification.error({
@@ -114,7 +109,7 @@ export default class WMSSource extends React.Component<Props, State> {
               // tell the map that the data is initialized
               LayerActions.tileServiceInitialized()
 
-              _this.props.onSubmit()
+              props.onSubmit()
             })
           }
         }
@@ -127,14 +122,15 @@ export default class WMSSource extends React.Component<Props, State> {
       })
     }
   }
-  sourceChange: any | ((value: string) => void) = (value: string) => {
+  sourceChange = (value: string): void => {
     this.setState({
       selectedSource: value
     })
   }
 
   render(): JSX.Element {
-    const { t } = this
+    const { t, state, submit, enableButton, disableButton } = this
+    const { canSubmit } = state
     return (
       <Row
         style={{
@@ -142,9 +138,9 @@ export default class WMSSource extends React.Component<Props, State> {
         }}
       >
         <Formsy
-          onValidSubmit={this.submit}
-          onValid={this.enableButton}
-          onInvalid={this.disableButton}
+          onValidSubmit={submit}
+          onValid={enableButton}
+          onInvalid={disableButton}
           style={{
             width: '100%'
           }}
@@ -247,11 +243,7 @@ export default class WMSSource extends React.Component<Props, State> {
               float: 'right'
             }}
           >
-            <Button
-              type='primary'
-              htmlType='submit'
-              disabled={!this.state.canSubmit}
-            >
+            <Button type='primary' htmlType='submit' disabled={!canSubmit}>
               {t('Save and Continue')}
             </Button>
           </div>

@@ -1,4 +1,3 @@
-import type { Node, Element } from 'React'
 import React from 'react'
 import { Modal, Button } from 'antd'
 import _isequal from 'lodash.isequal'
@@ -22,13 +21,13 @@ ace.config.setModuleUrl(
 )
 type Props = {
   id: string
-  onSave: (...args: Array<any>) => any
-  onCancel: (...args: Array<any>) => any
+  onSave: (...args: Array<any>) => void
+  onCancel?: (...args: Array<any>) => void
   title: string
   code: string
   mode: string
-  theme: string
-  modal: boolean
+  theme?: string
+  modal?: boolean
   visible: boolean
   t: (...args: Array<any>) => any
 }
@@ -61,7 +60,7 @@ export default class CodeEditor extends React.Component<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props): void {
     this.setState({
       code: nextProps.code
     })
@@ -80,21 +79,21 @@ export default class CodeEditor extends React.Component<Props, State> {
     return false
   }
 
-  onChange: (code: any) => void = (code: any) => {
+  onChange = (code: any): void => {
     this.setState({
       code
     })
   }
-  onSave: () => void = () => {
+  onSave = (): void => {
     if (this.state.canSave) {
       this.props.onSave(this.state.code)
     }
   }
 
-  render(): JSX.Element | Element<'div'> {
+  render(): JSX.Element {
     const { title, modal, t, mode, theme, id, onCancel, visible } = this.props
     const { canSave, code } = this.state
-    let editor = ''
+    let editor = <></>
 
     if (visible) {
       editor = (
@@ -117,11 +116,11 @@ export default class CodeEditor extends React.Component<Props, State> {
             let canSave = true
 
             if (annotations?.length > 0) {
-              annotations.forEach((anno) => {
+              for (const anno of annotations) {
                 if (anno.type === 'error') {
                   canSave = false
                 }
-              })
+              }
             }
 
             this.setState({
@@ -132,81 +131,84 @@ export default class CodeEditor extends React.Component<Props, State> {
       )
     }
 
-    if (modal) {
-      return (
-        <>
-          <style jsx global>
-            {' '}
-            {`
-              .ant-modal-content {
-                height: 100%;
-              }
-            `}
-          </style>
-          <Modal
-            title={title}
-            visible={visible}
-            centered
-            height='90vh'
-            width='60vw'
-            bodyStyle={{
-              height: 'calc(100% - 110px)',
-              padding: '0px'
-            }}
-            onCancel={onCancel}
-            footer={[
-              <Button key='back' onClick={onCancel}>
-                {t('Cancel')}
-              </Button>,
-              <Button
-                key='submit'
-                type='primary'
-                disabled={!canSave}
-                onClick={this.onSave}
-              >
-                {t('Save')}
-              </Button>
-            ]}
-          >
-            <div
-              style={{
-                height: '100%'
+    return modal ? (
+      <>
+        <style jsx global>
+          {' '}
+          {`
+            .ant-modal-content {
+              height: 100%;
+            }
+          `}
+        </style>
+        <Modal
+          title={title}
+          visible={visible}
+          centered
+          height='90vh'
+          width='60vw'
+          bodyStyle={{
+            height: 'calc(100% - 110px)',
+            padding: '0px'
+          }}
+          onCancel={() => {
+            if (onCancel) onCancel()
+          }}
+          footer={[
+            <Button
+              key='back'
+              onClick={() => {
+                if (onCancel) onCancel()
               }}
             >
-              {editor}
-            </div>
-          </Modal>
-        </>
-      )
-    } else {
-      return (
-        <div
-          style={{
-            height: 'calc(100% - 100px)',
-            width: '100%'
-          }}
-        >
-          <p>{title}</p>
-          {editor}
-          <div
-            style={{
-              float: 'right'
-            }}
-          >
+              {t('Cancel')}
+            </Button>,
             <Button
+              key='submit'
               type='primary'
-              style={{
-                float: 'none',
-                marginTop: '15px'
-              }}
               disabled={!canSave}
               onClick={this.onSave}
             >
               {t('Save')}
             </Button>
+          ]}
+        >
+          <div
+            style={{
+              height: '100%'
+            }}
+          >
+            {editor}
           </div>
+        </Modal>
+      </>
+    ) : (
+      <div
+        style={{
+          height: 'calc(100% - 100px)',
+          width: '100%'
+        }}
+      >
+        <p>{title}</p>
+        {editor}
+        <div
+          style={{
+            float: 'right'
+          }}
+        >
+          <Button
+            type='primary'
+            style={{
+              float: 'none',
+              marginTop: '15px'
+            }}
+            disabled={!canSave}
+            onClick={this.onSave}
+          >
+            {t('Save')}
+          </Button>
         </div>
-      )
-    }
+      </div>
+    )
   }
 }

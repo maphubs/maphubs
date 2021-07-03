@@ -20,7 +20,7 @@ type Props = {
   headerConfig: Record<string, any>
   user: Record<string, any>
 }
-export default class AllGroups extends React.Component<Props, void> {
+export default class AllGroups extends React.Component<Props> {
   static async getInitialProps({
     req,
     query
@@ -52,11 +52,11 @@ export default class AllGroups extends React.Component<Props, void> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const { groups } = this.props
+    const { t, props } = this
+    const { groups, headerConfig, footerConfig } = props
     return (
       <ErrorBoundary>
-        <Header activePage='groups' {...this.props.headerConfig} />
+        <Header activePage='groups' {...headerConfig} />
         <main
           style={{
             margin: '10px'
@@ -86,7 +86,7 @@ export default class AllGroups extends React.Component<Props, void> {
             tooltip={t('Create New Group')}
           />
         </main>
-        <Footer t={t} {...this.props.footerConfig} />
+        <Footer t={t} {...footerConfig} />
       </ErrorBoundary>
     )
   }

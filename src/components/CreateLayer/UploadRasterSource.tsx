@@ -28,30 +28,29 @@ export default class UploadRasterSource extends React.Component<Props, State> {
     layer: {}
   }
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     scrollToComponent = require('react-scroll-to-component')
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(): void {
     if (this.state.canSubmit) {
       scrollToComponent(this.refs.mapSection)
     }
   }
 
-  onSubmit: any | (() => void) = () => {
-    const { t } = this
+  onSubmit = (): void => {
+    const { t, props } = this
     message.success(t('Layer Saved'))
-    this.props.onSubmit()
+    props.onSubmit()
   }
-  onUpload: any | ((file: any) => void) = (file: Record<string, any>) => {
-    const { t } = this
-
-    const _this = this
+  onUpload = (file: Record<string, any>): void => {
+    const { t, state, onUploadError } = this
 
     const closeMessage = message.loading(t('Processing'), 0)
     superagent
@@ -69,7 +68,7 @@ export default class UploadRasterSource extends React.Component<Props, State> {
         closeMessage()
 
         if (err) {
-          _this.onUploadError(err)
+          onUploadError(err)
         } else {
           const result = res.body
           LayerActions.saveDataSettings(
@@ -85,7 +84,7 @@ export default class UploadRasterSource extends React.Component<Props, State> {
                 scheme: result.scheme
               }
             },
-            _this.state._csrf,
+            state._csrf,
             (err) => {
               if (err) {
                 notification.error({
@@ -108,7 +107,7 @@ export default class UploadRasterSource extends React.Component<Props, State> {
         }
       })
   }
-  onUploadError: any | ((err: string) => void) = (err: string) => {
+  onUploadError = (err: string): void => {
     const { t } = this
     notification.error({
       message: t('Error'),
@@ -118,10 +117,9 @@ export default class UploadRasterSource extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const layer_id = this.state.layer_id ? this.state.layer_id : 0
-    const { canSubmit, style, bbox } = this.state
-    const { mapConfig } = this.props
+    const { t, props, state, onUpload, onUploadError, onSubmit } = this
+    const { canSubmit, style, bbox, locale, layer_id } = state
+    const { mapConfig } = props
     return (
       <Row>
         <style jsx>
@@ -153,10 +151,10 @@ export default class UploadRasterSource extends React.Component<Props, State> {
               }
               allowedFileTypes={['.tif', '.tiff', '.mbtiles']}
               meta={{
-                layer_id
+                layer_id: layer_id || 0
               }}
-              onComplete={this.onUpload}
-              onError={this.onUploadError}
+              onComplete={onUpload}
+              onError={onUploadError}
             />
           </div>
         </Row>
@@ -191,8 +189,8 @@ export default class UploadRasterSource extends React.Component<Props, State> {
                 logoSmall={MAPHUBS_CONFIG.logoSmall}
                 logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
                 logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-                t={this.t}
-                locale={this.state.locale}
+                t={t}
+                locale={locale}
                 mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
                 DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
                 earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
@@ -201,7 +199,7 @@ export default class UploadRasterSource extends React.Component<Props, State> {
           )}
         </Row>
         <Row justify='end'>
-          <Button type='primary' disabled={!canSubmit} onClick={this.onSubmit}>
+          <Button type='primary' disabled={!canSubmit} onClick={onSubmit}>
             {t('Save and Continue')}
           </Button>
         </Row>

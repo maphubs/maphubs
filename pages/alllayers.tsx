@@ -19,7 +19,7 @@ type Props = {
   _csrf: string
   user: Record<string, any>
 }
-export default class Layers extends React.Component<Props, void> {
+export default class Layers extends React.Component<Props> {
   static async getInitialProps({
     req,
     query

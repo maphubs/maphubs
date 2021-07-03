@@ -39,6 +39,7 @@ import { subscribe } from '../Map/containers/unstated-props'
 import BaseMapSelection from '../Map/ToolPanels/BaseMapSelection'
 import slugify from 'slugify'
 import getConfig from 'next/config'
+import { LocalizedString } from '../../types/LocalizedString'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { confirm } = Modal
 const TabPane = Tabs.TabPane
@@ -93,10 +94,11 @@ class MapMaker extends React.Component<Props, State> {
     activeTab: 'overlays'
   }
 
+  stores
+  any
   constructor(props: Props) {
     super(props)
-    this.stores.push(MapMakerStore)
-    this.stores.push(UserStore)
+    this.stores = [MapMakerStore, UserStore]
     Reflux.rehydrate(MapMakerStore, {
       position: props.position,
       title: props.title,
@@ -106,7 +108,7 @@ class MapMaker extends React.Component<Props, State> {
     })
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     const { mapLayers, basemap, settings } = this.props
 
     if (mapLayers) {
@@ -122,13 +124,13 @@ class MapMaker extends React.Component<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props): void {
     if (!_isEqual(nextProps.position, this.props.position)) {
       Actions.setMapPosition(nextProps.position)
     }
   }
 
-  initEditLayer = () => {
+  initEditLayer = (): void => {
     if (!this.state.editLayerLoaded && this.props.editLayer) {
       this.addLayer(this.props.editLayer)
       this.editLayer(this.props.editLayer)
@@ -137,10 +139,10 @@ class MapMaker extends React.Component<Props, State> {
       })
     }
   }
-  onClose = () => {
+  onClose = (): void => {
     Actions.closeMapDesigner()
   }
-  onCancel = () => {
+  onCancel = (): void => {
     const { t, onClose } = this
     confirm({
       title: t('Confirm Cancel'),
@@ -156,7 +158,7 @@ class MapMaker extends React.Component<Props, State> {
       }
     })
   }
-  onCreate = () => {
+  onCreate = (): void => {
     this.setState({
       saved: true
     })
@@ -166,8 +168,8 @@ class MapMaker extends React.Component<Props, State> {
   }
   privacyCheck = (isPrivate: boolean, groupId: string) => {
     // check if layers meet privacy rules, before sending a request to the server that will fail...
-    const { t } = this
-    const { mapLayers } = this.state
+    const { t, state } = this
+    const { mapLayers } = state
 
     if (isPrivate) {
       if (!groupId) {
@@ -178,11 +180,11 @@ class MapMaker extends React.Component<Props, State> {
       let privateLayerInOtherGroup = false
 
       if (mapLayers) {
-        mapLayers.forEach((layer) => {
+        for (const layer of mapLayers) {
           if (layer.private && layer.owned_by_group_id !== groupId) {
             privateLayerInOtherGroup = true
           }
-        })
+        }
       }
 
       if (privateLayerInOtherGroup) {
@@ -195,11 +197,11 @@ class MapMaker extends React.Component<Props, State> {
       let privateLayerInPublicMap = false
 
       if (mapLayers) {
-        mapLayers.forEach((layer) => {
+        for (const layer of mapLayers) {
           if (layer.private) {
             privateLayerInPublicMap = true
           }
-        })
+        }
       }
 
       if (privateLayerInPublicMap) {
@@ -210,11 +212,11 @@ class MapMaker extends React.Component<Props, State> {
     }
   }
   onSave = (model: Record<string, any>, cb: (...args: Array<any>) => any) => {
-    const { t } = this
+    const { t, props, state, onCreate } = this
+    const { map_id, _csrf } = state
+    const { containers } = props
 
-    const _this = this
-
-    const { mapState, baseMapState } = this.props.containers
+    const { mapState, baseMapState } = containers
     const position = mapState.state.map.getPosition()
     position.bbox = mapState.state.map.getBounds()
     if (model.private === undefined) model.private = false
@@ -229,14 +231,14 @@ class MapMaker extends React.Component<Props, State> {
     } else {
       const basemap = baseMapState.state.baseMap
 
-      if (!this.state.map_id || this.state.map_id === -1) {
+      if (!map_id || map_id === -1) {
         Actions.createMap(
           model.title,
           position,
           basemap,
           model.group,
           model.private,
-          _this.state._csrf,
+          _csrf,
           (err) => {
             cb()
 
@@ -251,49 +253,43 @@ class MapMaker extends React.Component<Props, State> {
               // hide designer
               message.success(t('Map Saved'))
 
-              _this.onCreate()
+              onCreate()
             }
           }
         )
       } else {
-        Actions.saveMap(
-          model.title,
-          position,
-          basemap,
-          this.state._csrf,
-          (err) => {
-            cb()
+        Actions.saveMap(model.title, position, basemap, _csrf, (err) => {
+          cb()
 
-            if (err) {
-              notification.error({
-                message: t('Error'),
-                description: err.message || err.toString() || err,
-                duration: 0
-              })
-            } else {
-              // hide designer
-              message.success(t('Map Saved'))
+          if (err) {
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
+          } else {
+            // hide designer
+            message.success(t('Map Saved'))
 
-              _this.onCreate()
-            }
+            onCreate()
           }
-        )
+        })
       }
     }
   }
-  onDelete = () => {
-    const { t } = this
-
-    const _this = this
+  onDelete = (): void => {
+    const { t, props, state } = this
+    const { _csrf } = state
+    const { title, map_id } = props
 
     confirm({
       title: t('Confirm Deletion'),
-      content: t('Please confirm deletion of ') + t(this.props.title),
+      content: t('Please confirm deletion of ') + t(title),
       okText: t('Delete'),
       okType: 'danger',
 
       onOk() {
-        Actions.deleteMap(_this.props.map_id, _this.state._csrf, (err) => {
+        Actions.deleteMap(map_id, _csrf, (err) => {
           if (err) {
             notification.error({
               message: t('Error'),
@@ -333,27 +329,25 @@ class MapMaker extends React.Component<Props, State> {
       })
     })
   }
-  closeLayerDesigner = () => {
+  closeLayerDesigner = (): void => {
     this.setState({
       showMapLayerDesigner: false,
       layerDesignerLayer: undefined
     })
   }
-  removeFromMap = (layer: Layer) => {
+  removeFromMap = (layer: Layer): void => {
     Actions.removeFromMap(layer)
   }
-  addLayer = (layer: Layer) => {
-    const { t } = this
-    const { mapState } = this.props.containers
+  addLayer = (layer: Layer): void => {
+    const { t, props, state } = this
+    const { mapLayers } = state
+    const { containers } = props
+    const { mapState } = containers
     // clone the layer object so we don't mutate the data in the search results
     layer = JSON.parse(JSON.stringify(layer))
 
     if (mapState.state.map) {
-      if (
-        this.state.mapLayers &&
-        this.state.mapLayers.length === 0 &&
-        layer.extent_bbox
-      ) {
+      if (mapLayers && mapLayers.length === 0 && layer.extent_bbox) {
         mapState.state.map.fitBounds(layer.extent_bbox, 16, 25, false)
       }
 
@@ -363,7 +357,7 @@ class MapMaker extends React.Component<Props, State> {
     }
 
     if (
-      _find(this.state.mapLayers, {
+      _find(mapLayers, {
         layer_id: layer.layer_id
       })
     ) {
@@ -418,18 +412,18 @@ class MapMaker extends React.Component<Props, State> {
     } else {
       const updatedLayers = []
       // remove layers from legend
-      mapLayers.forEach((mapLayer) => {
+      for (const mapLayer of mapLayers) {
         let foundInLayers
-        layers.forEach((layer) => {
+        for (const layer of layers) {
           if (mapLayer.layer_id === layer.layer_id) {
             foundInLayers = true
           }
-        })
+        }
 
         if (!foundInLayers) {
           updatedLayers.push(mapLayer)
         }
-      })
+      }
       mapLayers = updatedLayers
     }
 
@@ -437,9 +431,33 @@ class MapMaker extends React.Component<Props, State> {
   }
 
   render() {
-    const { editLayer, toggleVisibility, removeFromMap, showLayerDesigner, t } =
-      this
-    const { showVisibility } = this.props
+    const {
+      editLayer,
+      toggleVisibility,
+      removeFromMap,
+      showLayerDesigner,
+      t,
+      props,
+      state,
+      closeLayerDesigner,
+      onLayerStyleChange,
+      changeBaseMap,
+      onDelete,
+      onSave,
+      onToggleIsochroneLayer,
+      initEditLayer,
+      stopEditingLayer,
+      addLayer
+    } = this
+    const {
+      showVisibility,
+      containers,
+      edit,
+      mapConfig,
+      groups,
+      myLayers,
+      popularLayers
+    } = props
     const {
       map_id,
       title,
@@ -450,9 +468,12 @@ class MapMaker extends React.Component<Props, State> {
       mapStyle,
       editingLayer,
       showAddLayer,
-      activeTab
-    } = this.state
-    const { mapState } = this.props.containers
+      activeTab,
+      settings,
+      _csrf,
+      locale
+    } = state
+    const { mapState } = containers
     if (!Array.isArray(mapLayers)) return ''
     let mapExtent
 
@@ -487,7 +508,7 @@ class MapMaker extends React.Component<Props, State> {
                 height: 'calc(100vh - 55px)',
                 padding: '0px'
               }}
-              onClose={this.closeLayerDesigner}
+              onClose={closeLayerDesigner}
               visible
               mask={false}
             >
@@ -500,8 +521,8 @@ class MapMaker extends React.Component<Props, State> {
                 <MapLayerDesigner
                   ref='LayerDesigner'
                   layer={layerDesignerLayer}
-                  onStyleChange={this.onLayerStyleChange}
-                  onClose={this.closeLayerDesigner}
+                  onStyleChange={onLayerStyleChange}
+                  onClose={closeLayerDesigner}
                 />
               </Row>
               <Row
@@ -511,7 +532,7 @@ class MapMaker extends React.Component<Props, State> {
                   textAlign: 'center'
                 }}
               >
-                <Button type='primary' onClick={this.closeLayerDesigner}>
+                <Button type='primary' onClick={closeLayerDesigner}>
                   {t('Close')}
                 </Button>
               </Row>
@@ -560,7 +581,7 @@ class MapMaker extends React.Component<Props, State> {
                 height: '100%'
               }}
             >
-              <BaseMapSelection onChange={this.changeBaseMap} t={t} />
+              <BaseMapSelection onChange={changeBaseMap} t={t} />
             </TabPane>
             <TabPane
               tab={t('Layers')}
@@ -680,7 +701,7 @@ class MapMaker extends React.Component<Props, State> {
                   <Tooltip title={t('Delete Map')} placement='top'>
                     <Button
                       danger
-                      onClick={this.onDelete}
+                      onClick={onDelete}
                       icon={<DeleteOutlined />}
                       style={{
                         marginRight: '10px'
@@ -697,10 +718,10 @@ class MapMaker extends React.Component<Props, State> {
               }}
             >
               <SaveMapModal
-                {...this.state}
-                editing={this.props.edit}
-                onSave={this.onSave}
-                _csrf={this.state._csrf}
+                {...state}
+                editing={edit}
+                onSave={onSave}
+                _csrf={_csrf}
               />
             </Col>
           </Row>
@@ -731,33 +752,29 @@ class MapMaker extends React.Component<Props, State> {
                 }}
                 glStyle={mapStyle}
                 insetMap
-                insetConfig={
-                  this.state.settings
-                    ? this.state.settings.insetConfig
-                    : undefined
-                }
+                insetConfig={settings ? settings.insetConfig : undefined}
                 onChangeBaseMap={Actions.setMapBasemap}
-                onToggleIsochroneLayer={this.onToggleIsochroneLayer}
+                onToggleIsochroneLayer={onToggleIsochroneLayer}
                 fitBounds={mapExtent}
-                mapConfig={this.props.mapConfig}
-                onLoad={this.initEditLayer}
+                mapConfig={mapConfig}
+                onLoad={initEditLayer}
                 hash
                 primaryColor={MAPHUBS_CONFIG.primaryColor}
                 logoSmall={MAPHUBS_CONFIG.logoSmall}
                 logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
                 logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-                t={this.t}
-                locale={this.state.locale}
+                t={t}
+                locale={locale}
                 mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
                 DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
                 earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
               >
                 {editingLayer && (
                   <EditorToolButtons
-                    stopEditingLayer={this.stopEditingLayer}
+                    stopEditingLayer={stopEditingLayer}
                     onFeatureUpdate={mapState.state.map.onFeatureUpdate}
                     t={t}
-                    _csrf={this.state._csrf}
+                    _csrf={_csrf}
                   />
                 )}
               </Map>
@@ -797,10 +814,10 @@ class MapMaker extends React.Component<Props, State> {
           visible={showAddLayer}
         >
           <AddLayerPanel
-            myLayers={this.props.myLayers}
-            popularLayers={this.props.popularLayers}
-            groups={this.props.groups}
-            onAdd={this.addLayer}
+            myLayers={myLayers}
+            popularLayers={popularLayers}
+            groups={groups}
+            onAdd={addLayer}
             t={t}
           />
         </Drawer>

@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import { Button, Row, Select } from 'antd'
 import dynamic from 'next/dynamic'
@@ -6,6 +5,7 @@ import _isequal from 'lodash.isequal'
 
 import localeUtil from '../../locales/util'
 import getConfig from 'next/config'
+import { LocalizedString } from '../../types/LocalizedString'
 const SimpleCodeEditor = dynamic(() => import('./SimpleCodeEditor'), {
   ssr: false
 })
@@ -29,13 +29,13 @@ type Props = {
   id: string
   onSave: (...args: Array<any>) => any
   title: string
-  localizedCode: Record<string, any>
+  localizedCode: LocalizedString
   mode: string
   theme: string
   modal: boolean
 }
 type State = {
-  localizedCode: string
+  localizedCode: LocalizedString
   canSave: boolean
   locale: string
 }
@@ -64,7 +64,7 @@ export default class LocalizedCodeEditor extends React.Component<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props): void {
     this.setState({
       localizedCode: nextProps.localizedCode
     })
@@ -83,29 +83,27 @@ export default class LocalizedCodeEditor extends React.Component<Props, State> {
     return false
   }
 
-  onChange: any | ((localizedCode: any) => void) = (localizedCode: any) => {
+  onChange = (localizedCode: any): void => {
     this.setState({
       localizedCode
     })
   }
-  onCancel: any | (() => void) = () => {
-    this.hide()
-  }
-  onSave: any | (() => void) = () => {
+
+  onSave = (): void => {
     if (this.state.canSave) {
       this.props.onSave(this.state.localizedCode)
     }
   }
-  onLocaleChange: any | ((locale: string) => void) = (locale: string) => {
+  onLocaleChange = (locale: string): void => {
     this.setState({
       locale
     })
   }
 
-  render(): Element<'div'> {
-    const { t } = this
-    const { title, mode } = this.props
-    const { canSave, localizedCode, locale } = this.state
+  render(): JSX.Element {
+    const { t, props, state, onLocaleChange, onSave } = this
+    const { title, mode, theme } = props
+    const { canSave, localizedCode, locale } = state
     return (
       <div
         style={{
@@ -126,7 +124,7 @@ export default class LocalizedCodeEditor extends React.Component<Props, State> {
             style={{
               width: 120
             }}
-            onChange={this.onLocaleChange}
+            onChange={onLocaleChange}
           >
             {langs.map((locale) => (
               <Option key={locale.value} value={locale.value}>
@@ -142,7 +140,7 @@ export default class LocalizedCodeEditor extends React.Component<Props, State> {
         >
           <SimpleCodeEditor
             mode={mode}
-            theme={this.props.theme}
+            theme={theme}
             name='component-html-editor'
             value={localizedCode[locale]}
             onChange={(val) => {
@@ -163,7 +161,7 @@ export default class LocalizedCodeEditor extends React.Component<Props, State> {
               marginTop: '15px'
             }}
             disabled={!canSave}
-            onClick={this.onSave}
+            onClick={onSave}
           >
             {t('Save')}
           </Button>

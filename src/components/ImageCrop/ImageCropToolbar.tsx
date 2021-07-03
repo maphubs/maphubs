@@ -18,123 +18,117 @@ type Props = {
   aspectSquare: (...args: Array<any>) => any
   resetCropPosition: (...args: Array<any>) => any
 }
-export default class ImageCropToolbar extends React.Component<Props, void> {
-  shouldComponentUpdate(): boolean {
-    return false
-  }
-
-  render(): JSX.Element {
-    const {
-      lockAspect,
-      zoomIn,
-      zoomOut,
-      cropOriginal,
-      aspect16by9,
-      aspect3by2,
-      aspectSquare,
-      resetCropPosition,
-      t
-    } = this.props
-    return (
-      <Row
-        align='middle'
-        style={{
-          height: '50px'
-        }}
-      >
-        <Tooltip title={t('Zoom In')} placement='bottom'>
+const ImageCropToolbar = ({
+  lockAspect,
+  zoomIn,
+  zoomOut,
+  cropOriginal,
+  aspect16by9,
+  aspect3by2,
+  aspectSquare,
+  resetCropPosition,
+  t
+}: Props): JSX.Element => {
+  return (
+    <Row
+      align='middle'
+      style={{
+        height: '50px'
+      }}
+    >
+      <Tooltip title={t('Zoom In')} placement='bottom'>
+        <Button
+          type='primary'
+          shape='circle'
+          style={{
+            marginRight: '10px'
+          }}
+          onClick={zoomIn}
+        >
+          <ZoomIn />
+        </Button>
+      </Tooltip>
+      <Tooltip title={t('Zoom Out')} placement='bottom'>
+        <Button
+          type='primary'
+          shape='circle'
+          style={{
+            marginRight: '10px'
+          }}
+          onClick={zoomOut}
+        >
+          <ZoomOut />
+        </Button>
+      </Tooltip>
+      {!lockAspect && (
+        <Tooltip title={t('Image Default')} placement='bottom'>
           <Button
             type='primary'
             shape='circle'
             style={{
               marginRight: '10px'
             }}
-            onClick={zoomIn}
+            onClick={cropOriginal}
           >
-            <ZoomIn />
+            <CropOriginal />
           </Button>
         </Tooltip>
-        <Tooltip title={t('Zoom Out')} placement='bottom'>
+      )}
+      {!lockAspect && (
+        <Tooltip title={t('16 by 9')} placement='bottom'>
           <Button
             type='primary'
             shape='circle'
             style={{
               marginRight: '10px'
             }}
-            onClick={zoomOut}
+            onClick={aspect16by9}
           >
-            <ZoomOut />
+            <Crop169 />
           </Button>
         </Tooltip>
-        {!lockAspect && (
-          <Tooltip title={t('Image Default')} placement='bottom'>
-            <Button
-              type='primary'
-              shape='circle'
-              style={{
-                marginRight: '10px'
-              }}
-              onClick={cropOriginal}
-            >
-              <CropOriginal />
-            </Button>
-          </Tooltip>
-        )}
-        {!lockAspect && (
-          <Tooltip title={t('16 by 9')} placement='bottom'>
-            <Button
-              type='primary'
-              shape='circle'
-              style={{
-                marginRight: '10px'
-              }}
-              onClick={aspect16by9}
-            >
-              <Crop169 />
-            </Button>
-          </Tooltip>
-        )}
-        {!lockAspect && (
-          <Tooltip title={t('3 by 2')} placement='bottom'>
-            <Button
-              type='primary'
-              shape='circle'
-              style={{
-                marginRight: '10px'
-              }}
-              onClick={aspect3by2}
-            >
-              <Crop32 />
-            </Button>
-          </Tooltip>
-        )}
-        {!lockAspect && (
-          <Tooltip title={t('Square')} placement='bottom'>
-            <Button
-              type='primary'
-              shape='circle'
-              style={{
-                marginRight: '10px'
-              }}
-              onClick={aspectSquare}
-            >
-              <CropSquare />
-            </Button>
-          </Tooltip>
-        )}
-        <Tooltip title={t('Reset')} placement='bottom'>
+      )}
+      {!lockAspect && (
+        <Tooltip title={t('3 by 2')} placement='bottom'>
           <Button
             type='primary'
             shape='circle'
             style={{
               marginRight: '10px'
             }}
-            onClick={resetCropPosition}
+            onClick={aspect3by2}
           >
-            <Restore />
+            <Crop32 />
           </Button>
         </Tooltip>
-      </Row>
-    )
-  }
+      )}
+      {!lockAspect && (
+        <Tooltip title={t('Square')} placement='bottom'>
+          <Button
+            type='primary'
+            shape='circle'
+            style={{
+              marginRight: '10px'
+            }}
+            onClick={aspectSquare}
+          >
+            <CropSquare />
+          </Button>
+        </Tooltip>
+      )}
+      <Tooltip title={t('Reset')} placement='bottom'>
+        <Button
+          type='primary'
+          shape='circle'
+          style={{
+            marginRight: '10px'
+          }}
+          onClick={resetCropPosition}
+        >
+          <Restore />
+        </Button>
+      </Tooltip>
+    </Row>
+  )
 }
+export default ImageCropToolbar

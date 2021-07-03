@@ -5,7 +5,7 @@ import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const debug = DebugService('react-error-boundary')
 type Props = {
-  children: JSX.Element[]
+  children: JSX.Element | JSX.Element[]
 }
 type State = {
   error?: any

@@ -24,33 +24,29 @@ export default class RasterTileSource extends React.Component<Props, State> {
     canSubmit: false
   }
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
-    addValidationRule('isHttps', (values, value) => {
-      if (value) {
-        return value.startsWith('https://')
-      } else {
-        return false
-      }
+    this.stores = [LayerStore]
+    addValidationRule('isHttps', (values, value: string) => {
+      return value ? value.startsWith('https://') : false
     })
   }
 
-  enableButton: any | (() => void) = () => {
+  enableButton = (): void => {
     this.setState({
       canSubmit: true
     })
   }
-  disableButton: any | (() => void) = () => {
+  disableButton = (): void => {
     this.setState({
       canSubmit: false
     })
   }
-  submit: any | ((model: any) => void) = (model: Record<string, any>) => {
-    const { t } = this
-
-    const _this = this
-
+  submit = (model: Record<string, any>): void => {
+    const { t, props, state } = this
+    const { _csrf } = state
+    const { onSubmit } = props
     let boundsArr
 
     if (model.bounds) {
@@ -72,7 +68,7 @@ export default class RasterTileSource extends React.Component<Props, State> {
           tiles: [model.rasterTileUrl]
         }
       },
-      _this.state._csrf,
+      _csrf,
       (err) => {
         if (err) {
           notification.error({
@@ -87,7 +83,7 @@ export default class RasterTileSource extends React.Component<Props, State> {
             // tell the map that the data is initialized
             LayerActions.tileServiceInitialized()
 
-            _this.props.onSubmit()
+            onSubmit()
           })
         }
       }
@@ -100,7 +96,8 @@ export default class RasterTileSource extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { t } = this
+    const { t, state, submit, enableButton, disableButton } = this
+    const { canSubmit } = state
     return (
       <Row
         style={{
@@ -108,9 +105,9 @@ export default class RasterTileSource extends React.Component<Props, State> {
         }}
       >
         <Formsy
-          onValidSubmit={this.submit}
-          onValid={this.enableButton}
-          onInvalid={this.disableButton}
+          onValidSubmit={submit}
+          onValid={enableButton}
+          onInvalid={disableButton}
           style={{
             width: '100%'
           }}
@@ -195,11 +192,7 @@ export default class RasterTileSource extends React.Component<Props, State> {
               float: 'right'
             }}
           >
-            <Button
-              type='primary'
-              htmlType='submit'
-              disabled={!this.state.canSubmit}
-            >
+            <Button type='primary' htmlType='submit' disabled={!canSubmit}>
               {t('Save and Continue')}
             </Button>
           </div>

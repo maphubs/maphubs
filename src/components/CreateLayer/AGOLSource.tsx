@@ -23,9 +23,10 @@ export default class AGOLSource extends React.Component<Props, State> {
     selectedOption: 'mapserverquery'
   }
 
+  stores: any
   constructor(props: Props) {
     super(props)
-    this.stores.push(LayerStore)
+    this.stores = [LayerStore]
     addValidationRule('isHttps', (values, value: string) => {
       return value ? value.startsWith('https://') : false
     })
@@ -42,9 +43,9 @@ export default class AGOLSource extends React.Component<Props, State> {
     })
   }
   submit = (model: Record<string, any>): void => {
-    const { t } = this
-
-    const _this = this
+    const { t, props, state } = this
+    const { onSubmit } = props
+    const { _csrf } = state
 
     let dataSettings
 
@@ -68,7 +69,7 @@ export default class AGOLSource extends React.Component<Props, State> {
       }
     }
 
-    LayerActions.saveDataSettings(dataSettings, _this.state._csrf, (err) => {
+    LayerActions.saveDataSettings(dataSettings, _csrf, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),
@@ -82,7 +83,7 @@ export default class AGOLSource extends React.Component<Props, State> {
           // tell the map that the data is initialized
           LayerActions.tileServiceInitialized()
 
-          _this.props.onSubmit()
+          onSubmit()
         })
       }
     })

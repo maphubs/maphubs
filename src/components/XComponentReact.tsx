@@ -1,5 +1,6 @@
 import React from 'react'
-export default class XComponentReact extends React.Component<any, void> {
+export default class XComponentReact extends React.Component<any, any> {
+  xcontainer: any
   render() {
     /* eslint-disable react/jsx-no-bind */
     return (

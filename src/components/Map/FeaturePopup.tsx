@@ -1,4 +1,3 @@
-import type { Node, Element } from 'React'
 import React from 'react'
 import request from 'superagent'
 import slugify from 'slugify'
@@ -6,7 +5,6 @@ import { Card, Spin } from 'antd'
 import GetNameField from './Styles/get-name-field'
 import Attributes from './Attributes'
 import _isequal from 'lodash.isequal'
-import type { Feature } from 'geojson-flow'
 import ActionPanel from './FeaturePopup/ActionPanel'
 import type { Layer } from '../../types/layer'
 import 'react-image-lightbox/style.css'
@@ -19,7 +17,7 @@ const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
 
 let Lightbox
 type Props = {
-  features: Array<Feature>
+  features: Array<any>
   showButtons: boolean
   t: (...args: Array<any>) => any
 }
@@ -45,7 +43,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     Lightbox = require('react-image-lightbox').default
 
     if (this.props.features) {
@@ -62,7 +60,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props): void {
     if (!_isequal(this.props.features, nextProps.features)) {
       const selectedFeature = nextProps.features[0]
       const properties = selectedFeature.properties
@@ -81,17 +79,14 @@ export default class FeaturePopup extends React.Component<Props, State> {
     layerId: number,
     host: string
   ) => {
+    const { setState } = this
+
     debug.info(`Getting layer info for: ${layerId} from ${host}`)
 
-    const _this = this
-
-    let baseUrl
-
-    if (host && host !== 'dev.docker' && host !== window.location.hostname) {
-      baseUrl = 'https://' + host
-    } else {
-      baseUrl = urlUtil.getBaseUrl()
-    }
+    const baseUrl =
+      host && host !== 'dev.docker' && host !== window.location.hostname
+        ? 'https://' + host
+        : urlUtil.getBaseUrl()
 
     if (window.location.href.startsWith(`${baseUrl}/map/share/`)) {
       console.log(`layer lookup not supported on ${window.location.href}`)
@@ -113,12 +108,12 @@ export default class FeaturePopup extends React.Component<Props, State> {
         if (!err && res.body?.layer) {
           const layer = res.body.layer
 
-          _this.setState({
+          setState({
             layer,
             layerLoaded: true
           })
         } else {
-          _this.setState({
+          setState({
             layerLoaded: true
           })
 
@@ -126,20 +121,16 @@ export default class FeaturePopup extends React.Component<Props, State> {
         }
       })
   }
-  renderContentWithoutImage: () => void = () => {}
-  renderContentWithImage: (
-    name?: string,
-    description?: string,
-    photoUrl: string,
-    featureName: string,
-    properties: any
-  ) => Element<'div'> = (
-    name?: string,
-    description?: string,
+  renderContentWithoutImage = (): JSX.Element => {
+    return <></>
+  }
+  renderContentWithImage = (
+    name: string,
+    description: string,
     photoUrl: string,
     featureName: string,
     properties: Record<string, any>
-  ) => {
+  ): JSX.Element => {
     const { layerLoaded, lightboxOpen } = this.state
     const { t } = this.props
     let nameDisplay
@@ -166,30 +157,26 @@ export default class FeaturePopup extends React.Component<Props, State> {
     let descDisplay
 
     if (layerLoaded) {
-      if (description) {
-        descDisplay = (
-          <div
-            style={{
-              padding: '3px',
-              height: 'calc(100% - 100px)',
-              overflowY: 'auto'
-            }}
-          >
-            <p>{description}</p>
-          </div>
-        )
-      } else {
-        descDisplay = (
-          <div
-            style={{
-              padding: 0,
-              height: 'calc(100% - 100px)'
-            }}
-          >
-            <Attributes attributes={properties} t={t} />
-          </div>
-        )
-      }
+      descDisplay = description ? (
+        <div
+          style={{
+            padding: '3px',
+            height: 'calc(100% - 100px)',
+            overflowY: 'auto'
+          }}
+        >
+          <p>{description}</p>
+        </div>
+      ) : (
+        <div
+          style={{
+            padding: 0,
+            height: 'calc(100% - 100px)'
+          }}
+        >
+          <Attributes attributes={properties} t={t} />
+        </div>
+      )
     } else {
       descDisplay = (
         <div
@@ -244,10 +231,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
       </div>
     )
   }
-  renderFeature: (feature: any, i: number) => Node | Element<'p'> = (
-    feature: Record<string, any>,
-    i: number
-  ) => {
+  renderFeature = (feature: Record<string, any>, i: number): JSX.Element => {
     const { layer, showAttributes } = this.state
     const { t, showButtons } = this.props
     let nameField
@@ -289,19 +273,18 @@ export default class FeaturePopup extends React.Component<Props, State> {
       }
     }
 
-    let content
-
-    if (!showAttributes && photoUrl) {
-      content = this.renderContentWithImage(
-        nameFieldValue,
-        descriptionFieldValue,
-        photoUrl,
-        featureName,
-        feature.properties
+    const content =
+      !showAttributes && photoUrl ? (
+        this.renderContentWithImage(
+          nameFieldValue,
+          descriptionFieldValue,
+          photoUrl,
+          featureName,
+          feature.properties
+        )
+      ) : (
+        <Attributes attributes={feature.properties} t={t} />
       )
-    } else {
-      content = <Attributes attributes={feature.properties} t={t} />
-    }
 
     return (
       <Card
@@ -350,7 +333,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
     })
   }
 
-  render(): Element<'div'> {
+  render(): JSX.Element {
     const { features } = this.props
     return (
       <div>{features.map((feature, i) => this.renderFeature(feature, i))}</div>

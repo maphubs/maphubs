@@ -1,4 +1,3 @@
-import type { Element } from 'React'
 import React from 'react'
 import MapMakerStore from '../../stores/MapMakerStore'
 import MapMakerActions from '../../actions/MapMakerActions'
@@ -10,39 +9,37 @@ import dynamic from 'next/dynamic'
 const CodeEditor = dynamic(() => import('../LayerDesigner/CodeEditor'), {
   ssr: false
 })
-type Props = {}
 type State = {
   showSettingsEditor?: boolean
 } & MapMakerStoreState
-export default class MapSettingsPanel extends React.Component<Props, State> {
-  props: Props
-
-  constructor(props: Props) {
-    super(props)
-    this.stores.push(MapMakerStore)
+export default class MapSettingsPanel extends React.Component<void, State> {
+  stores: any
+  constructor() {
+    super()
+    this.stores = [MapMakerStore]
   }
 
-  onSave: any | ((settings: string) => void) = (settings: string) => {
+  onSave = (settings: string): void => {
     settings = JSON.parse(settings)
     MapMakerActions.setSettings(settings)
     this.setState({
       showSettingsEditor: false
     })
   }
-  showSettingsEditor: any | (() => void) = () => {
+  showSettingsEditor = (): void => {
     this.setState({
       showSettingsEditor: true
     })
   }
-  hideSettingsEditor: any | (() => void) = () => {
+  hideSettingsEditor = (): void => {
     this.setState({
       showSettingsEditor: false
     })
   }
 
-  render(): Element<'div'> {
-    const { t } = this
-    const { showSettingsEditor, settings } = this.state
+  render(): JSX.Element {
+    const { t, state, onSave, hideSettingsEditor } = this
+    const { showSettingsEditor, settings } = state
     return (
       <div>
         <Tooltip title={t('Advanced Map Settings')} placement='top'>
@@ -58,8 +55,8 @@ export default class MapSettingsPanel extends React.Component<Props, State> {
           visible={showSettingsEditor}
           code={JSON.stringify(settings, undefined, 2)}
           title={t('Advanced Map Settings')}
-          onSave={this.onSave}
-          onCancel={this.hideSettingsEditor}
+          onSave={onSave}
+          onCancel={hideSettingsEditor}
           modal
           t={t}
         />

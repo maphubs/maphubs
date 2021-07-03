@@ -8,24 +8,21 @@ type Props = {
   value: any
   t: (...args: Array<any>) => any
 }
-export default class FormField extends React.Component<Props, void> {
-  props: Props
+const FormField = ({ preset, value, t }: Props): JSX.Element => {
+  let field = (
+    <TextInput
+      name={preset.tag}
+      label={t(preset.label)}
+      required={preset.isRequired}
+      showCharCount={false}
+      value={value}
+      t={t}
+    />
+  )
 
-  render(): JSX.Element {
-    const { preset, value, t } = this.props
-    let field = (
-      <TextInput
-        name={preset.tag}
-        label={t(preset.label)}
-        required={preset.isRequired}
-        showCharCount={false}
-        value={value}
-        t={t}
-      />
-    )
-
-    // TODO: add localized string support
-    if (preset.type === 'number') {
+  // TODO: add localized string support
+  switch (preset.type) {
+    case 'number': {
       field = (
         <TextInput
           name={preset.tag}
@@ -39,17 +36,21 @@ export default class FormField extends React.Component<Props, void> {
           t={t}
         />
       )
-    } else if (preset.type === 'radio' || preset.type === 'combo') {
+
+      break
+    }
+    case 'radio':
+    case 'combo': {
       const options = []
 
       if (preset.options) {
-        preset.options.split(',').forEach((option) => {
+        for (let option of preset.options.split(',')) {
           option = option.trim()
           options.push({
             value: option,
             label: option
           })
-        })
+        }
       }
 
       field = (
@@ -63,7 +64,10 @@ export default class FormField extends React.Component<Props, void> {
           value={value}
         />
       )
-    } else if (preset.type === 'check') {
+
+      break
+    }
+    case 'check': {
       field = (
         <Toggle
           name={preset.tag}
@@ -72,8 +76,12 @@ export default class FormField extends React.Component<Props, void> {
           checked={value}
         />
       )
-    }
 
-    return <Row>{field}</Row>
+      break
+    }
+    // No default
   }
+
+  return <Row>{field}</Row>
 }
+export default FormField

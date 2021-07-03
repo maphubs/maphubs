@@ -10,32 +10,16 @@ type Props = {
   onSearch: (...args: Array<any>) => any
   onReset: (...args: Array<any>) => any
 }
-export default class SearchBox extends React.Component<Props, void> {
-  static defaultProps: {
-    id: string
-    label: string
-    onError: () => void
-    onReset: () => void
-    onSearch: () => void
-    style: {}
-  } = {
-    label: 'Search',
-    style: {},
-    id: 'search',
-
-    onSearch() {},
-
-    onError() {},
-
-    onReset() {}
-  }
-  searchBar: any
-  onChange: (input: string, resolve: any) => Promise<void> = async (
+const SearchBox = ({
+  suggestionUrl,
+  label,
+  onSearch,
+  onReset
+}: Props): JSX.Element => {
+  const onChange = async (
     input: string,
     resolve: (...args: Array<any>) => any
   ) => {
-    const { suggestionUrl } = this.props
-
     if (suggestionUrl) {
       try {
         const res = await request
@@ -56,25 +40,34 @@ export default class SearchBox extends React.Component<Props, void> {
       }
     }
   }
-  onSubmit: (input: string) => void = (input: string) => {
-    if (!input) return
-    this.props.onSearch(input)
-  }
-  reset: () => void = () => {
-    this.searchBar.reset()
-  }
 
-  render(): React.ReactNode {
-    return (
-      <SearchBar
-        ref={(el) => {
-          this.searchBar = el
-        }}
-        placeholder={this.props.label}
-        onChange={this.onChange}
-        onSubmit={this.onSubmit}
-        onReset={this.props.onReset}
-      />
-    )
+  return (
+    <SearchBar
+      placeholder={label}
+      onChange={onChange}
+      onSubmit={(input: string) => {
+        if (!input) return
+        onSearch(input)
+      }}
+      onReset={onReset}
+    />
+  )
+}
+SearchBox.defaultProps = {
+  label: 'Search',
+  style: {},
+  id: 'search',
+
+  onSearch() {
+    return
+  },
+
+  onError() {
+    return
+  },
+
+  onReset() {
+    return
   }
 }
+export default SearchBox

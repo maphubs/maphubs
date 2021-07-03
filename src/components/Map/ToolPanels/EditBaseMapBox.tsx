@@ -1,73 +1,65 @@
-import type { Element } from 'React'
 import React from 'react'
 import { Button, List } from 'antd'
-type Props = {
+import { LocalizedString } from '../../../types/LocalizedString'
+
+const EditBaseMapBox = ({
+  t,
+  gpxLink
+}: {
+  t: (v: string | LocalizedString) => string
   gpxLink?: string
-  t: (...args: Array<any>) => any
-}
-export default class EditBaseMapBox extends React.PureComponent<Props, void> {
-  getLinks: () => {
-    loggingroads: string
-    osm: string
-  } = () => {
+}): JSX.Element => {
+  const getLinks = () => {
     const origHash = window.location.hash.replace('#', '')
     const hashParts = origHash.split('/')
-    const zoom = Math.round(hashParts[0])
+    const zoom = Math.round(Number.parseInt(hashParts[0]))
     const lon = hashParts[1]
     const lat = hashParts[2]
     let osmEditLink =
-      'https://www.openstreetmap.org/edit#map=' + zoom + '/' + lon + '/' + lat
-    let loggingRoadsEditLink =
-      'https://edit.osm.earth/#map=' + zoom + '/' + lon + '/' + lat
+      'https://www.openstreetmap.org/edit#map=${zoom}/${lon}/${lat}' +
+      zoom +
+      '/' +
+      lon +
+      '/' +
+      lat
 
-    if (this.props.gpxLink) {
-      osmEditLink += '&gpx=' + this.props.gpxLink
-      loggingRoadsEditLink += '&gpx=' + this.props.gpxLink
+    if (gpxLink) {
+      osmEditLink += `&gpx=${gpxLink}`
     }
 
     return {
-      osm: osmEditLink,
-      loggingroads: loggingRoadsEditLink
+      osm: osmEditLink
     }
   }
-  openOSM: () => void = () => {
-    const links = this.getLinks()
-    window.location = links.osm
-  }
-  openLoggingRoads: () => void = () => {
-    const links = this.getLinks()
-    window.location = links.loggingroads
-  }
 
-  render(): Element<'div'> {
-    const { t } = this.props
-    return (
-      <div
+  return (
+    <div
+      style={{
+        width: '100%',
+        textAlign: 'center'
+      }}
+    >
+      <p
         style={{
-          width: '100%',
-          textAlign: 'center'
+          padding: '5px'
         }}
       >
-        <p
-          style={{
-            padding: '5px'
-          }}
-        >
-          Edit OpenStreetMap at this location
-        </p>
-        <List size='large'>
-          <List.Item>
-            <Button type='primary' onClick={this.openOSM}>
-              {t('OpenStreetMap')}
-            </Button>
-          </List.Item>
-          <List.Item>
-            <Button type='primary' onClick={this.openLoggingRoads}>
-              {t('OSM Earth')}
-            </Button>
-          </List.Item>
-        </List>
-      </div>
-    )
-  }
+        Edit OpenStreetMap at this location
+      </p>
+      <List size='large'>
+        <List.Item>
+          <Button
+            type='primary'
+            onClick={() => {
+              const links = getLinks()
+              window.location = links.osm
+            }}
+          >
+            {t('OpenStreetMap')}
+          </Button>
+        </List.Item>
+      </List>
+    </div>
+  )
 }
+export default EditBaseMapBox

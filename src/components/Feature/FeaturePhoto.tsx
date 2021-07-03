@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import ImageCrop from '../ImageCrop'
 import { message, notification, Modal, Tooltip } from 'antd'
 import FeaturePhotoActions from '../../actions/FeaturePhotoActions'
@@ -9,16 +9,11 @@ const { confirm } = Modal
 type Props = {
   photo?: Record<string, any>
   canEdit?: boolean
+  t: (v: string) => string
 }
-export default class FeatureExport extends React.Component<Props, void> {
-  showImageCrop: any | (() => void) = () => {
-    this.refs.imagecrop.show()
-  }
-  onCrop: any | ((data: any, info: any) => void) = (
-    data: Record<string, any>,
-    info: Record<string, any>
-  ) => {
-    const { t } = this
+const FeaturePhoto = ({ photo, canEdit, t }: Props): JSX.Element => {
+  const imagecrop = useRef()
+  const onCrop = (data: Record<string, any>, info: Record<string, any>) => {
     const { _csrf } = this.state
     // send data to server
     FeaturePhotoActions.addPhoto(data, info, _csrf, (err) => {
@@ -35,8 +30,7 @@ export default class FeatureExport extends React.Component<Props, void> {
       }
     })
   }
-  deletePhoto: any | (() => void) = () => {
-    const { t } = this
+  const deletePhoto = () => {
     const { _csrf } = this.state
     confirm({
       title: t('Confirm Removal'),
@@ -60,117 +54,110 @@ export default class FeatureExport extends React.Component<Props, void> {
     })
   }
 
-  render(): JSX.Element {
-    const { t } = this
-    const { photo, canEdit } = this.props
-    let imageCrop = ''
-
-    if (canEdit) {
-      imageCrop = (
+  if (photo?.photo_url) {
+    return (
+      <div>
+        <img
+          style={{
+            width: '100%'
+          }}
+          src={photo.photo_url}
+          alt='feature photo attachment'
+        />
+        {canEdit && (
+          <div
+            style={{
+              height: '30px',
+              position: 'relative'
+            }}
+          >
+            <Tooltip title={t('Replace Photo')} placement='bottom'>
+              <AddAPhotoIcon
+                onClick={() => {
+                  imagecrop.current.show()
+                }}
+                style={{
+                  fontSize: '24px',
+                  position: 'absolute',
+                  top: '5px',
+                  cursor: 'pointer',
+                  right: '30px'
+                }}
+              />
+            </Tooltip>
+            <Tooltip title={t('Download Photo')} placement='bottom'>
+              <a href={photo.photo_url} download>
+                <GetAppIcon
+                  style={{
+                    fontSize: '24px',
+                    position: 'absolute',
+                    top: '5px',
+                    cursor: 'pointer',
+                    right: '56px'
+                  }}
+                />
+              </a>
+            </Tooltip>
+            <Tooltip title={t('Remove Photo')} placement='bottom'>
+              <DeleteIcon
+                onClick={deletePhoto}
+                style={{
+                  fontSize: '24px',
+                  position: 'absolute',
+                  top: '5px',
+                  cursor: 'pointer',
+                  right: '5px'
+                }}
+              />
+            </Tooltip>
+          </div>
+        )}
+        {canEdit && (
+          <ImageCrop
+            ref={imagecrop}
+            aspectRatio={1}
+            lockAspect
+            resize_max_width={1000}
+            resize_max_height={1000}
+            onCrop={onCrop}
+          />
+        )}
+      </div>
+    )
+  } else {
+    return canEdit ? (
+      <div>
+        <div
+          style={{
+            height: '30px',
+            position: 'relative'
+          }}
+        >
+          <Tooltip title={t('Add Photo')} position='left' inertia followCursor>
+            <AddAPhotoIcon
+              onClick={this.showImageCrop}
+              style={{
+                fontSize: '24px',
+                position: 'absolute',
+                top: '5px',
+                cursor: 'pointer',
+                right: '5px'
+              }}
+            />
+          </Tooltip>
+        </div>
         <ImageCrop
-          ref='imagecrop'
+          ref={imagecrop}
           aspectRatio={1}
           lockAspect
           resize_max_width={1000}
           resize_max_height={1000}
-          onCrop={this.onCrop}
+          onCrop={onCrop}
         />
-      )
-    }
-
-    if (photo?.photo_url) {
-      return (
-        <div>
-          <img
-            style={{
-              width: '100%'
-            }}
-            src={photo.photo_url}
-            alt='feature photo attachment'
-          />
-          {canEdit && (
-            <div
-              style={{
-                height: '30px',
-                position: 'relative'
-              }}
-            >
-              <Tooltip title={t('Replace Photo')} placement='bottom'>
-                <AddAPhotoIcon
-                  onClick={this.showImageCrop}
-                  style={{
-                    fontSize: '24px',
-                    position: 'absolute',
-                    top: '5px',
-                    cursor: 'pointer',
-                    right: '30px'
-                  }}
-                />
-              </Tooltip>
-              <Tooltip title={t('Download Photo')} placement='bottom'>
-                <a href={photo.photo_url} download>
-                  <GetAppIcon
-                    style={{
-                      fontSize: '24px',
-                      position: 'absolute',
-                      top: '5px',
-                      cursor: 'pointer',
-                      right: '56px'
-                    }}
-                  />
-                </a>
-              </Tooltip>
-              <Tooltip title={t('Remove Photo')} placement='bottom'>
-                <DeleteIcon
-                  onClick={this.deletePhoto}
-                  style={{
-                    fontSize: '24px',
-                    position: 'absolute',
-                    top: '5px',
-                    cursor: 'pointer',
-                    right: '5px'
-                  }}
-                />
-              </Tooltip>
-            </div>
-          )}
-          {imageCrop}
-        </div>
-      )
-    } else {
-      if (canEdit) {
-        return (
-          <div>
-            <div
-              style={{
-                height: '30px',
-                position: 'relative'
-              }}
-            >
-              <Tooltip
-                title={t('Add Photo')}
-                position='left'
-                inertia
-                followCursor
-              >
-                <AddAPhotoIcon
-                  onClick={this.showImageCrop}
-                  style={{
-                    fontSize: '24px',
-                    position: 'absolute',
-                    top: '5px',
-                    cursor: 'pointer',
-                    right: '5px'
-                  }}
-                />
-              </Tooltip>
-            </div>
-            {imageCrop}
-          </div>
-        )
-      } else {
-        return <div />
-      }
-    }
+      </div>
+    ) : (
+      <div />
+    )
   }
 }
+export default FeaturePhoto
