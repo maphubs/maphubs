@@ -1,18 +1,17 @@
 import _bbox from '@turf/bbox'
-import type { GeoJSONObject } from 'geojson-flow'
+import { FeatureCollection } from 'geojson'
 import MapStyles from '../Styles'
 export default {
-  initGeoJSON(data: GeoJSONObject) {
-    const _this = this
-
-    if (this.map) {
+  initGeoJSON(data: FeatureCollection): void {
+    const { map } = this
+    if (map) {
       if (
         data &&
         data.features &&
         Array.isArray(data.features) &&
         data.features.length > 0
       ) {
-        this.map.addSource('omh-geojson', {
+        map.addSource('omh-geojson', {
           type: 'geojson',
           data
         })
@@ -24,7 +23,7 @@ export default {
         )
         // glStyle.sources["omh-geojson"] = {"type": "geojson", data};
         glStyle.layers.map((layer) => {
-          _this.map.addLayer(layer)
+          map.addLayer(layer)
         })
         const interactiveLayers = this.getInteractiveLayers(glStyle)
         this.setState({
@@ -43,7 +42,7 @@ export default {
   /**
    * Called when clearing search
    */
-  resetGeoJSON() {
+  resetGeoJSON(): void {
     const geoJSONData = this.map.getSource('omh-geojson')
     geoJSONData.setData({
       type: 'FeatureCollection',
@@ -55,14 +54,11 @@ export default {
     })
   },
 
-  zoomToData(data: GeoJSONObject) {
-    let bbox: Array<number>
-
-    if (data.bbox && Array.isArray(data.bbox) && data.bbox.length > 0) {
-      bbox = data.bbox as Array<number>
-    } else {
-      bbox = _bbox(data)
-    }
+  zoomToData(data: FeatureCollection): void {
+    const bbox =
+      data.bbox && Array.isArray(data.bbox) && data.bbox.length > 0
+        ? (data.bbox as Array<number>)
+        : _bbox(data)
 
     if (bbox) {
       let s = bbox[0]

@@ -42,7 +42,7 @@ export default class UserMenu extends React.Component<Props, State> {
   }
 
   loginClick = (): void => {
-    window.location = '/login?returnTo=' + urlencode(window.location.href)
+    window.location.assign('/login?returnTo=' + urlencode(window.location.href))
   }
 
   render(): JSX.Element {

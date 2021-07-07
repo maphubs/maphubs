@@ -36,7 +36,7 @@ export default class Step1 extends React.Component<Props, State> {
       warnIfUnsaved: false
     })
     message.info(t('Layer Cancelled'), 1, () => {
-      window.location = '/layers'
+      window.location.assign('/layers')
     })
   }
   onCancel: any | (() => void) = () => {

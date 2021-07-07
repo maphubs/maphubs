@@ -14,6 +14,7 @@ import UserStore from '../src/stores/UserStore'
 import type { Layer } from '../src/types/layer'
 import type { Group } from '../src/stores/GroupStore'
 import getConfig from 'next/config'
+import { LocalizedString } from '../src/types/LocalizedString'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
   popularLayers: Array<Layer>
@@ -27,6 +28,8 @@ type Props = {
   user: Record<string, any>
 }
 export default class Map extends React.Component<Props> {
+  BaseMapState: any
+  MapState: any
   static async getInitialProps({
     req,
     query
@@ -86,18 +89,24 @@ export default class Map extends React.Component<Props> {
     this.MapState = new MapContainer()
   }
 
-  mapCreated: any | ((mapId: number, title: LocalizedString) => void) = (
-    mapId: number,
-    title: LocalizedString
-  ) => {
-    window.location = '/map/view/' + mapId + '/' + slugify(this.t(title))
+  mapCreated = (mapId: number, title: LocalizedString): void => {
+    window.location.assign('/map/view/' + mapId + '/' + slugify(this.t(title)))
   }
 
   render(): JSX.Element {
+    const { props, BaseMapState, MapState, mapCreated } = this
+    const {
+      headerConfig,
+      mapConfig,
+      popularLayers,
+      myLayers,
+      editLayer,
+      groups
+    } = props
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState, this.MapState]}>
-          <Header activePage='map' {...this.props.headerConfig} />
+        <Provider inject={[BaseMapState, MapState]}>
+          <Header activePage='map' {...headerConfig} />
           <main
             style={{
               height: 'calc(100% - 52px)',
@@ -106,12 +115,12 @@ export default class Map extends React.Component<Props> {
             }}
           >
             <MapMaker
-              mapConfig={this.props.mapConfig}
-              onCreate={this.mapCreated}
-              popularLayers={this.props.popularLayers}
-              myLayers={this.props.myLayers}
-              editLayer={this.props.editLayer}
-              groups={this.props.groups}
+              mapConfig={mapConfig}
+              onCreate={mapCreated}
+              popularLayers={popularLayers}
+              myLayers={myLayers}
+              editLayer={editLayer}
+              groups={groups}
             />
           </main>
         </Provider>

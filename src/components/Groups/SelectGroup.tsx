@@ -33,7 +33,7 @@ export default class SelectGroup extends React.Component<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.group_id !== this.props.group_id) {
       this.setState({
         group_id: nextProps.group_id
@@ -41,7 +41,7 @@ export default class SelectGroup extends React.Component<Props, State> {
     }
   }
 
-  shouldComponentUpdate(nextProps: Props, nextState: State) {
+  shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
     // only update if something changes
     if (!_isequal(this.props, nextProps)) {
       return true
@@ -56,14 +56,14 @@ export default class SelectGroup extends React.Component<Props, State> {
 
   getSelectedGroup = (group_id: string): Record<string, any> => {
     let selected = {}
-    this.props.groups.forEach((group) => {
+    for (const group of this.props.groups) {
       if (group.group_id === group_id) {
         selected = group
       }
-    })
+    }
     return selected
   }
-  onGroupChange = (group_id: string) => {
+  onGroupChange = (group_id: string): void => {
     this.setState({
       group_id
     })
@@ -73,10 +73,10 @@ export default class SelectGroup extends React.Component<Props, State> {
     }
   }
 
-  render() {
-    const { t } = this
-    const { groups, canChangeGroup } = this.props
-    const { group_id, createdGroup } = this.state
+  render(): JSX.Element {
+    const { t, onGroupChange, props, state } = this
+    const { groups, canChangeGroup } = props
+    const { group_id, createdGroup } = state
     let startEmpty = true
     let selectedGroup
 
@@ -100,8 +100,8 @@ export default class SelectGroup extends React.Component<Props, State> {
               id='group-select'
               label={t('Group')}
               startEmpty={startEmpty}
-              value={this.state.group_id}
-              onChange={this.onGroupChange}
+              value={group_id}
+              onChange={onGroupChange}
               emptyText={t('Choose a Group')}
               options={groupOptions}
               required

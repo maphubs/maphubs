@@ -13,6 +13,7 @@ import UserStore from '../src/stores/UserStore'
 import type { Layer } from '../src/types/layer'
 import type { Group } from '../src/stores/GroupStore'
 import getConfig from 'next/config'
+import { LocalizedString } from '../src/types/LocalizedString'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
   map: Record<string, any>
@@ -27,6 +28,11 @@ type Props = {
   user: Record<string, any>
 }
 export default class MapEdit extends React.Component<Props> {
+  BaseMapState: BaseMapContainer
+  MapState: MapContainer
+  t(title: LocalizedString): string {
+    throw new Error('Method not implemented.')
+  }
   static async getInitialProps({
     req,
     query
@@ -87,18 +93,25 @@ export default class MapEdit extends React.Component<Props> {
     this.MapState = new MapContainer()
   }
 
-  mapCreated: any | ((mapId: string, title: LocalizedString) => void) = (
-    mapId: string,
-    title: LocalizedString
-  ) => {
-    window.location = '/map/view/' + mapId + '/' + slugify(this.t(title))
+  mapCreated = (mapId: string, title: LocalizedString): void => {
+    window.location.assign('/map/view/' + mapId + '/' + slugify(this.t(title)))
   }
 
   render(): JSX.Element {
+    const { props, BaseMapState, MapState, mapCreated } = this
+    const {
+      headerConfig,
+      mapConfig,
+      layers,
+      map,
+      popularLayers,
+      myLayers,
+      groups
+    } = props
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState, this.MapState]}>
-          <Header {...this.props.headerConfig} />
+        <Provider inject={[BaseMapState, MapState]}>
+          <Header {...headerConfig} />
           <main
             style={{
               height: 'calc(100% - 52px)',
@@ -107,17 +120,17 @@ export default class MapEdit extends React.Component<Props> {
             }}
           >
             <MapMaker
-              onCreate={this.mapCreated}
-              mapConfig={this.props.mapConfig}
-              mapLayers={this.props.layers}
-              map_id={this.props.map.map_id}
-              title={this.props.map.title}
-              owned_by_group_id={this.props.map.owned_by_group_id}
-              position={this.props.map.position}
-              settings={this.props.map.settings}
-              popularLayers={this.props.popularLayers}
-              myLayers={this.props.myLayers}
-              groups={this.props.groups}
+              onCreate={mapCreated}
+              mapConfig={mapConfig}
+              mapLayers={layers}
+              map_id={map.map_id}
+              title={map.title}
+              owned_by_group_id={map.owned_by_group_id}
+              position={map.position}
+              settings={map.settings}
+              popularLayers={popularLayers}
+              myLayers={myLayers}
+              groups={groups}
               edit
             />
           </main>

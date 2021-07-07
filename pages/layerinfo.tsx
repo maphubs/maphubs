@@ -13,7 +13,7 @@ import {
   Result
 } from 'antd'
 import Comments from '../src/components/Comments'
-import TerraformerGL from '../services/terraformerGL'
+import TerraformerGL from '../src/services/terraformerGL'
 import GroupTag from '../src/components/Groups/GroupTag'
 import Licenses from '../src/components/CreateLayer/licenses'
 import LayerNotes from '../src/components/CreateLayer/LayerNotes'
@@ -50,22 +50,20 @@ import {
 import request from 'superagent'
 
 import Reflux from '../src/components/Rehydrate'
-import fireResizeEvent from '../services/fire-resize-event'
+import fireResizeEvent from '../src/services/fire-resize-event'
 import LocaleStore from '../src/stores/LocaleStore'
 import type { LocaleStoreState } from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import moment from 'moment-timezone'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import getConfig from 'next/config'
+import { Layer } from '../src/types/layer'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const TabPane = Tabs.TabPane
 const { Title } = Typography
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'layerinfo'
-)
-
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-
-const moment = require('moment-timezone')
+const debug = DebugService('layerinfo')
 
 if (!Intl.PluralRules) {
   require('@formatjs/intl-pluralrules/polyfill')
@@ -104,7 +102,7 @@ if (!Intl.RelativeTimeFormat) {
 }
 
 type Props = {
-  layer: Record<string, any>
+  layer: Layer
   notes: string
   stats: Record<string, any>
   canEdit: boolean
@@ -129,6 +127,11 @@ type State = {
   count?: number
 } & LocaleStoreState
 export default class LayerInfo extends React.Component<Props, State> {
+  BaseMapState: BaseMapContainer
+  MapState: MapContainer
+  DataEditorState: DataEditorContainer
+  clipboard: any
+  menuButton: HTMLDivElement
   static async getInitialProps({
     req,
     query
@@ -191,12 +194,10 @@ export default class LayerInfo extends React.Component<Props, State> {
     this.DataEditorState = new DataEditorContainer()
   }
 
-  async componentDidMount() {
-    const _this = this
-
-    const { t } = this
+  async componentDidMount(): Promise<void> {
+    const { t, props } = this
     this.clipboard = require('clipboard-polyfill').default
-    const { layer } = this.props
+    const { layer } = props
     const elc = layer.external_layer_config
 
     try {
@@ -204,17 +205,30 @@ export default class LayerInfo extends React.Component<Props, State> {
         let geoJSON
 
         // retreive geoJSON data for layers
-        if (elc.type === 'ags-mapserver-query') {
-          geoJSON = await TerraformerGL.getArcGISGeoJSON(elc.url)
-        } else if (elc.type === 'ags-featureserver-query') {
-          geoJSON = await TerraformerGL.getArcGISFeatureServiceGeoJSON(elc.url)
-        } else if (elc.type === 'geojson') {
-          const res = await request.get(elc.data).type('json').accept('json')
-          geoJSON = res.body
-        } else {
-          this.setState({
-            dataMsg: t('Data table not support for this layer.')
-          })
+        switch (elc.type) {
+          case 'ags-mapserver-query': {
+            geoJSON = await TerraformerGL.getArcGISGeoJSON(elc.url)
+
+            break
+          }
+          case 'ags-featureserver-query': {
+            geoJSON = await TerraformerGL.getArcGISFeatureServiceGeoJSON(
+              elc.url
+            )
+
+            break
+          }
+          case 'geojson': {
+            const res = await request.get(elc.data).type('json').accept('json')
+            geoJSON = res.body
+
+            break
+          }
+          default: {
+            this.setState({
+              dataMsg: t('Data table not support for this layer.')
+            })
+          }
         }
 
         if (geoJSON)
@@ -224,7 +238,7 @@ export default class LayerInfo extends React.Component<Props, State> {
       } else {
         this.getGeoJSON()
 
-        _this.setState({
+        this.setState({
           dataMsg: t('Data Loading')
         })
       }
@@ -238,13 +252,13 @@ export default class LayerInfo extends React.Component<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(prevProps: Props, prevState: State): void {
     if (!this.state.userResize) {
       fireResizeEvent()
     }
   }
 
-  getGeoJSON: any | (() => Promise<void>) = async () => {
+  getGeoJSON = async (): Promise<void> => {
     const { layer } = this.props
     let baseUrl, dataUrl
 
@@ -274,7 +288,7 @@ export default class LayerInfo extends React.Component<Props, State> {
           area = areaM2 / 10000
         }
       } else if (layer.data_type === 'line') {
-        geoJSON.features.forEach((feature) => {
+        for (const feature of geoJSON.features) {
           if (
             feature.geometry.type === 'LineString' ||
             feature.geometry.type === 'MultiLineString'
@@ -283,7 +297,7 @@ export default class LayerInfo extends React.Component<Props, State> {
               units: 'kilometers'
             })
           }
-        })
+        }
       }
 
       this.setState({
@@ -296,96 +310,109 @@ export default class LayerInfo extends React.Component<Props, State> {
       debug.error(err)
     }
   }
-  openEditor: any | (() => void) = () => {
+  openEditor = (): void => {
     const baseUrl = urlUtil.getBaseUrl()
-    window.location = `${baseUrl}/map/new?editlayer=${this.props.layer.layer_id}${window.location.hash}`
+    window.location.assign(
+      `${baseUrl}/map/new?editlayer=${this.props.layer.layer_id}${window.location.hash}`
+    )
   }
-  copyToClipboard: any | ((val: string) => void) = (val: string) => {
+  copyToClipboard = (val: string): void => {
     this.clipboard.writeText(val)
   }
 
   render(): JSX.Element {
-    const { openEditor, t } = this
-    const { layer, canEdit } = this.props
-    const { geoJSON, dataMsg } = this.state
+    const {
+      openEditor,
+      t,
+      props,
+      state,
+      BaseMapState,
+      MapState,
+      DataEditorState
+    } = this
+    const {
+      layer,
+      canEdit,
+      updatedByUser,
+      stats,
+      notes,
+      mapConfig,
+      headerConfig
+    } = props
+    const { geoJSON, dataMsg, locale, count, area, _csrf } = state
     const glStyle = layer.style
-    let editButton = ''
     const showMapEditButton = canEdit && !layer.is_external && !layer.remote
     const showAddPhotoPointButton =
       showMapEditButton && layer.data_type === 'point'
 
-    if (canEdit) {
-      editButton = (
+    const editButton = canEdit ? (
+      <Fab
+        icon={<MoreVertIcon />}
+        mainButtonStyles={{
+          backgroundColor: MAPHUBS_CONFIG.primaryColor
+        }}
+        position={{
+          bottom: 65,
+          right: 0
+        }}
+      >
+        <Action
+          text={t('Manage Layer')}
+          onClick={() => {
+            window.location.assign(
+              `/layer/admin/${layer.layer_id}/${slugify(t(layer.name))}`
+            )
+          }}
+        >
+          <SettingsIcon />
+        </Action>
+        {showMapEditButton && (
+          <Action
+            text={t('Edit Map Data')}
+            style={{
+              backgroundColor: 'green'
+            }}
+            onClick={openEditor}
+          >
+            <EditIcon />
+          </Action>
+        )}
+        {showAddPhotoPointButton && (
+          <Action
+            text={t('Add Photo')}
+            style={{
+              backgroundColor: '#2196F3'
+            }}
+            onClick={() => {
+              window.location.assign(`/layer/adddata/${layer.layer_id}`)
+            }}
+          >
+            <PhotoIcon />
+          </Action>
+        )}
+      </Fab>
+    ) : (
+      <div
+        ref={(el) => {
+          this.menuButton = el
+        }}
+        className='hide-on-med-and-up'
+      >
         <Fab
-          icon={<MoreVertIcon />}
+          icon={<MapIcon />}
+          text={t('View Map')}
           mainButtonStyles={{
             backgroundColor: MAPHUBS_CONFIG.primaryColor
           }}
-          position={{
-            bottom: 65,
-            right: 0
+          event='click'
+          onClick={() => {
+            window.location.assign(
+              `/layer/map/${layer.layer_id}/${slugify(t(layer.name))}`
+            )
           }}
-        >
-          <Action
-            text={t('Manage Layer')}
-            onClick={() => {
-              window.location = `/layer/admin/${layer.layer_id}/${slugify(
-                t(layer.name)
-              )}`
-            }}
-          >
-            <SettingsIcon />
-          </Action>
-          {showMapEditButton && (
-            <Action
-              text={t('Edit Map Data')}
-              style={{
-                backgroundColor: 'green'
-              }}
-              onClick={openEditor}
-            >
-              <EditIcon />
-            </Action>
-          )}
-          {showAddPhotoPointButton && (
-            <Action
-              text={t('Add Photo')}
-              style={{
-                backgroundColor: '#2196F3'
-              }}
-              onClick={() => {
-                window.location = `/layer/adddata/${layer.layer_id}`
-              }}
-            >
-              <PhotoIcon />
-            </Action>
-          )}
-        </Fab>
-      )
-    } else {
-      editButton = (
-        <div
-          ref={(el) => {
-            this.menuButton = el
-          }}
-          className='hide-on-med-and-up'
-        >
-          <Fab
-            icon={<MapIcon />}
-            text={t('View Map')}
-            mainButtonStyles={{
-              backgroundColor: MAPHUBS_CONFIG.primaryColor
-            }}
-            event='click'
-            onClick={() => {
-              window.location = `/layer/map/${layer.layer_id}/${slugify(
-                t(layer.name)
-              )}`
-            }}
-          />
-        </div>
-      )
-    }
+        />
+      </div>
+    )
 
     const guessedTz = moment.tz.guess()
     const creationTime = moment.tz(layer.creation_time, guessedTz)
@@ -418,10 +445,8 @@ export default class LayerInfo extends React.Component<Props, State> {
     )
     return (
       <ErrorBoundary>
-        <Provider
-          inject={[this.BaseMapState, this.MapState, this.DataEditorState]}
-        >
-          <Header {...this.props.headerConfig} />
+        <Provider inject={[BaseMapState, MapState, DataEditorState]}>
+          <Header {...headerConfig} />
           <main
             style={{
               height: 'calc(100% - 51px)',
@@ -607,15 +632,15 @@ export default class LayerInfo extends React.Component<Props, State> {
                           }}
                         >
                           <b>{t('Created:')} </b>
-                          <IntlProvider locale={this.state.locale}>
+                          <IntlProvider locale={locale}>
                             <FormattedDate value={creationTime} />
                           </IntlProvider>
                           &nbsp;
-                          <IntlProvider locale={this.state.locale}>
+                          <IntlProvider locale={locale}>
                             <FormattedTime value={creationTime} />
                           </IntlProvider>
                           &nbsp; (
-                          <IntlProvider locale={this.state.locale}>
+                          <IntlProvider locale={locale}>
                             <FormattedRelativeTime
                               value={daysSinceCreated}
                               numeric='auto'
@@ -623,9 +648,7 @@ export default class LayerInfo extends React.Component<Props, State> {
                             />
                           </IntlProvider>
                           )&nbsp;
-                          {t('by') +
-                            ' ' +
-                            this.props.updatedByUser.display_name}
+                          {t('by') + ' ' + updatedByUser.display_name}
                         </p>
                         {updatedTime > creationTime && (
                           <p
@@ -634,15 +657,15 @@ export default class LayerInfo extends React.Component<Props, State> {
                             }}
                           >
                             <b>{t('Last Update:')} </b>
-                            <IntlProvider locale={this.state.locale}>
+                            <IntlProvider locale={locale}>
                               <FormattedDate value={updatedTime} />
                             </IntlProvider>
                             &nbsp;
-                            <IntlProvider locale={this.state.locale}>
+                            <IntlProvider locale={locale}>
                               <FormattedTime value={updatedTime} />
                             </IntlProvider>
                             &nbsp; (
-                            <IntlProvider locale={this.state.locale}>
+                            <IntlProvider locale={locale}>
                               <FormattedRelativeTime
                                 value={daysSinceUpdated}
                                 numeric='auto'
@@ -650,9 +673,7 @@ export default class LayerInfo extends React.Component<Props, State> {
                               />
                             </IntlProvider>
                             )&nbsp;
-                            {t('by') +
-                              ' ' +
-                              this.props.updatedByUser.display_name}
+                            {t('by') + ' ' + updatedByUser.display_name}
                           </p>
                         )}
                       </Col>
@@ -675,32 +696,32 @@ export default class LayerInfo extends React.Component<Props, State> {
                         >
                           <p>
                             <b>{t('Feature Count:')} </b>
-                            {numeral(this.state.count).format('0,0')}
+                            {numeral(count).format('0,0')}
                           </p>
-                          {this.state.area && (
+                          {area && (
                             <p>
                               <b>{t('Area')} </b>
-                              {numeral(this.state.area).format('0,0.00')} ha
+                              {numeral(area).format('0,0.00')} ha
                             </p>
                           )}
-                          {this.state.length > 0 && (
+                          {state.length > 0 && (
                             <p>
                               <b>{t('Length')} </b>
-                              {numeral(this.state.length).format('0,0.00')} km
+                              {numeral(state.length).format('0,0.00')} km
                             </p>
                           )}
                         </Card>
                       </Col>
                     </Row>
-                    <Stats views={layer.views} stats={this.props.stats} t={t} />
+                    <Stats views={layer.views} stats={stats} t={t} />
                   </TabPane>
                   <TabPane tab={t('Notes')} key='notes'>
                     <LayerNotes
                       canEdit={canEdit}
-                      notes={this.props.notes}
+                      notes={notes}
                       layer_id={layer.layer_id}
                       t={t}
-                      _csrf={this.state._csrf}
+                      _csrf={_csrf}
                     />
                   </TabPane>
                   {MAPHUBS_CONFIG.enableComments && (
@@ -723,7 +744,7 @@ export default class LayerInfo extends React.Component<Props, State> {
                           presets={presets}
                           canEdit={canEdit}
                           t={t}
-                          _csrf={this.state._csrf}
+                          _csrf={_csrf}
                         />
                       )}
                       {!geoJSON && <Result title={dataMsg} />}
@@ -749,7 +770,7 @@ export default class LayerInfo extends React.Component<Props, State> {
                   style={glStyle}
                   layers={[layer]}
                   map_id={layer.layer_id}
-                  mapConfig={this.props.mapConfig}
+                  mapConfig={mapConfig}
                   title={layer.name}
                   showTitle={false}
                   hideInactive={false}
@@ -762,7 +783,7 @@ export default class LayerInfo extends React.Component<Props, State> {
                   DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
                   earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
                   t={t}
-                  locale={this.props.locale}
+                  locale={locale}
                 />
               </Col>
             </Row>

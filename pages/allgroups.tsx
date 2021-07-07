@@ -7,13 +7,13 @@ import CardSearch from '../src/components/CardCarousel/CardSearch'
 import Reflux from '../src/components/Rehydrate'
 import LocaleStore from '../src/stores/LocaleStore'
 import GroupList from '../src/components/Lists/GroupList'
-import type { Group } from '../src/stores/GroupStore'
+import type { Group } from '../src/types/group'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import UserStore from '../src/stores/UserStore'
 import FloatingAddButton from '../src/components/FloatingAddButton'
 const { Title } = Typography
 type Props = {
-  groups: Array<Group>
+  groups: Group[]
   locale: string
   _csrf: string
   footerConfig: Record<string, any>
@@ -81,7 +81,7 @@ export default class AllGroups extends React.Component<Props> {
           </Row>
           <FloatingAddButton
             onClick={() => {
-              window.location = '/creategroup'
+              window.location.assign('/creategroup')
             }}
             tooltip={t('Create New Group')}
           />

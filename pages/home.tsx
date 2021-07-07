@@ -23,6 +23,7 @@ import ErrorBoundary from '../src/components/ErrorBoundary'
 import XComponentReact from '../src/components/XComponentReact'
 import UserStore from '../src/stores/UserStore'
 import getConfig from 'next/config'
+import { Story } from '../src/types/story'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
 // import Perf from 'react-addons-perf';
@@ -53,7 +54,7 @@ type State = {
   loaded: boolean
 } & LocaleStoreState
 export default class HomePro extends React.Component<Props, State> {
-  BaseMapState: Container<any>
+  BaseMapState: any
   static async getInitialProps({
     req,
     query
@@ -73,18 +74,18 @@ export default class HomePro extends React.Component<Props, State> {
   static defaultProps:
     | any
     | {
-        featuredGroups: Array<any>
-        featuredLayers: Array<any>
+        featuredGroups: Group[]
+        featuredLayers: Layer[]
         featuredMaps: Array<any>
-        featuredStories: Array<any>
-        popularGroups: Array<any>
-        popularLayers: Array<any>
+        featuredStories: Story[]
+        popularGroups: Group[]
+        popularLayers: Layer[]
         popularMaps: Array<any>
-        popularStories: Array<any>
-        recentGroups: Array<any>
-        recentLayers: Array<any>
+        popularStories: Story[]
+        recentGroups: Group[]
+        recentLayers: Layer[]
         recentMaps: Array<any>
-        recentStories: Array<any>
+        recentStories: Story[]
       } = {
     featuredLayers: [],
     featuredGroups: [],
@@ -153,7 +154,7 @@ export default class HomePro extends React.Component<Props, State> {
   }
   */
   handleSearch = (input: string): void => {
-    window.location = '/search?q=' + input
+    window.location.assign('/search?q=' + input)
   }
   renderHomePageMap = (
     config: Record<string, any>,
@@ -211,7 +212,7 @@ export default class HomePro extends React.Component<Props, State> {
             }}
             dimensions={dimensions}
             onComplete={() => {
-              window.location = config.onCompleteUrl || '/'
+              window.location.assign(config.onCompleteUrl || '/')
             }}
           />
         </Row>
@@ -427,7 +428,6 @@ export default class HomePro extends React.Component<Props, State> {
           <Row>
             <CardCarousel
               cards={collectionCards}
-              infinite={false}
               t={t}
               emptyMessage={config.emptyMessage}
             />

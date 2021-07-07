@@ -98,7 +98,8 @@ class TextInput extends React.Component<Props, State> {
       successText,
       t,
       tooltip,
-      tooltipPosition
+      tooltipPosition,
+      label
     } = this.props
     const { charCount } = this.state
     return (
@@ -110,7 +111,7 @@ class TextInput extends React.Component<Props, State> {
         >
           <Tooltip title={tooltip} placement={tooltipPosition}>
             <label htmlFor={id || name}>
-              {this.props.label} {isRequired && '*'}
+              {label} {isRequired && '*'}
             </label>
             <Input
               type='text'

@@ -1,8 +1,19 @@
-export FeatureMap from './FeatureMap'
-export FeatureArea from './FeatureArea'
-export FeatureExport from './FeatureExport'
-export FeatureLocation from './FeatureLocation'
-export FeatureNotes from './FeatureNotes'
-export FeaturePhoto from './FeaturePhoto'
-export FeatureProps from './FeatureProps'
-export ForestReportEmbed from './ForestReportEmbed'
+import FeatureMap from './FeatureMap'
+import FeatureArea from './FeatureArea'
+import FeatureExport from './FeatureExport'
+import FeatureLocation from './FeatureLocation'
+import FeatureNotes from './FeatureNotes'
+import FeaturePhoto from './FeaturePhoto'
+import FeatureProps from './FeatureProps'
+import ForestReportEmbed from './ForestReportEmbed'
+
+export {
+  FeatureMap,
+  FeatureArea,
+  FeatureExport,
+  FeatureLocation,
+  FeatureNotes,
+  FeaturePhoto,
+  FeatureProps,
+  ForestReportEmbed
+}

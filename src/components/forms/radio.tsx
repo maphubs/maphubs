@@ -6,12 +6,12 @@ type Props = {
   tooltipPosition: string
   defaultValue?: string
   label: string
-  onChange: (...args: Array<any>) => any
+  onChange: (...args: Array<any>) => void
   options: Array<{
     value: string
     label: string
   }>
-  setValue: (...args: Array<any>) => any
+  setValue: (...args: Array<any>) => void
 }
 
 class RadioForm extends React.Component<Props> {

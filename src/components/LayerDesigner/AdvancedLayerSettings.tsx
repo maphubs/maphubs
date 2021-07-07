@@ -5,12 +5,12 @@ import Toggle from '../forms/toggle'
 import MapStyles from '../Map/Styles'
 
 import _isequal from 'lodash.isequal'
-import type { GLStyle } from '../../types/mapbox-gl-style'
 import type { Layer } from '../../types/layer'
+import mapboxgl from 'mapbox-gl'
 type Props = {
-  onChange: (...args: Array<any>) => any
+  onChange: (...args: Array<any>) => void
   layer: Layer
-  style: GLStyle
+  style: mapboxgl.Style
 }
 type State = {
   interactive: boolean
@@ -97,9 +97,7 @@ export default class AdvancedLayerSettings extends React.Component<
     return false
   }
 
-  onFormChange: any | ((values: any) => void) = (
-    values: Record<string, any>
-  ) => {
+  onFormChange = (values: Record<string, any>): void => {
     let legend = this.props.layer.legend_html
     let style = this.props.style
 
@@ -142,17 +140,12 @@ export default class AdvancedLayerSettings extends React.Component<
         fill: values.fill
       })
 
-      if (values.fill) {
-        legend = MapStyles.legend.legendWithColor(
-          this.props.layer,
-          result.legendColor
-        )
-      } else {
-        legend = MapStyles.legend.outlineLegendWithColor(
-          this.props.layer,
-          result.legendColor
-        )
-      }
+      legend = values.fill
+        ? MapStyles.legend.legendWithColor(this.props.layer, result.legendColor)
+        : MapStyles.legend.outlineLegendWithColor(
+            this.props.layer,
+            result.legendColor
+          )
     } else {
       // nochange
       return
@@ -162,10 +155,12 @@ export default class AdvancedLayerSettings extends React.Component<
   }
 
   render(): JSX.Element {
-    const { t } = this
+    const { t, props, state, onFormChange } = this
+    const { layer } = props
+    const { fill, interactive, showBehindBaseMapLabels } = state
     let toggleFill
 
-    if (this.props.layer.data_type === 'polygon') {
+    if (layer.data_type === 'polygon') {
       toggleFill = (
         <Row
           style={{
@@ -180,7 +175,7 @@ export default class AdvancedLayerSettings extends React.Component<
               name='fill'
               labelOff={t('Outline Only')}
               labelOn={t('Fill')}
-              checked={this.state.fill}
+              checked={fill}
               tooltipPosition='right'
               tooltip={t(
                 'Hide polygon fill and only show the outline in the selected color'
@@ -198,7 +193,7 @@ export default class AdvancedLayerSettings extends React.Component<
           marginBottom: '20px'
         }}
       >
-        <Formsy ref='form' onChange={this.onFormChange}>
+        <Formsy ref='form' onChange={onFormChange}>
           {toggleFill}
           <Row
             style={{
@@ -213,7 +208,7 @@ export default class AdvancedLayerSettings extends React.Component<
                 name='interactive'
                 labelOff={t('Off')}
                 labelOn={t('On')}
-                checked={this.state.interactive}
+                checked={interactive}
                 tooltipPosition='right'
                 tooltip={t(
                   'Allow users to interact with this layer by clicking the map'
@@ -234,7 +229,7 @@ export default class AdvancedLayerSettings extends React.Component<
                 name='showBehindBaseMapLabels'
                 labelOff={t('Off')}
                 labelOn={t('On')}
-                checked={this.state.showBehindBaseMapLabels}
+                checked={showBehindBaseMapLabels}
                 tooltipPosition='right'
                 tooltip={t(
                   'Allow base map labels to display on top of this layer'

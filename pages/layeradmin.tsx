@@ -18,7 +18,7 @@ import LayerStyle from '../src/components/CreateLayer/LayerStyle'
 import request from 'superagent'
 import _uniq from 'lodash.uniq'
 import _mapvalues from 'lodash.mapvalues'
-import LayerActions from '../actions/LayerActions'
+import LayerActions from '../src/actions/LayerActions'
 import LayerStore from '../src/stores/layer-store'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
@@ -35,14 +35,14 @@ import type { LayerStoreState } from '../src/stores/layer-store'
 import type { Group } from '../src/stores/GroupStore'
 import type { UserStoreState } from '../src/stores/UserStore'
 import getConfig from 'next/config'
+import { checkClientError } from '../src/services/client-error-response'
+
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 const { confirm } = Modal
-
-const checkClientError =
-  require('../services/client-error-response').checkClientError
-
 const { Title } = Typography
 const TabPane = Tabs.TabPane
+
 type Props = {
   layer: Layer
   groups: Array<Group>
@@ -59,6 +59,8 @@ type State = {
   LayerStoreState &
   UserStoreState
 export default class LayerAdmin extends React.Component<Props, State> {
+  BaseMapState: BaseMapContainer
+  MapState: MapContainer
   static async getInitialProps({
     req,
     query
@@ -118,8 +120,8 @@ export default class LayerAdmin extends React.Component<Props, State> {
   }
 
   saveStyle: any | (() => void) = () => {
-    const { t } = this
-    LayerActions.saveStyle(this.state, this.state._csrf, (err) => {
+    const { t, state } = this
+    LayerActions.saveStyle(state, state._csrf, (err) => {
       if (err) {
         notification.error({
           message: t('Error'),
@@ -131,20 +133,18 @@ export default class LayerAdmin extends React.Component<Props, State> {
       }
     })
   }
-  onSave: any | (() => void) = () => {
+  onSave = (): void => {
     const { t } = this
     message.success(t('Layer Saved'))
   }
-  savePresets: any | (() => void) = () => {
-    const { t } = this
+  savePresets = (): void => {
+    const { t, state, saveStyle } = this
 
-    const _this = this
+    const { presets, _csrf } = state
 
     // check for duplicate presets
-    if (this.state.presets) {
-      const presets = this.state.presets.toArray()
-
-      const tags = _mapvalues(presets, 'tag')
+    if (presets) {
+      const tags = _mapvalues(presets.toArray(), 'tag')
 
       const uniqTags = _uniq(tags)
 
@@ -158,7 +158,7 @@ export default class LayerAdmin extends React.Component<Props, State> {
         })
       } else {
         // save presets
-        LayerActions.submitPresets(false, this.state._csrf, (err) => {
+        LayerActions.submitPresets(false, _csrf, (err) => {
           if (err) {
             notification.error({
               message: t('Error'),
@@ -166,33 +166,33 @@ export default class LayerAdmin extends React.Component<Props, State> {
               duration: 0
             })
           } else {
-            _this.saveStyle()
+            saveStyle()
           }
         })
       }
     }
   }
-  presetsValid: any | (() => void) = () => {
+  presetsValid = (): void => {
     this.setState({
       canSavePresets: true
     })
   }
-  presetsInvalid: any | (() => void) = () => {
+  presetsInvalid = (): void => {
     this.setState({
       canSavePresets: false
     })
   }
-  deleteLayer: any | (() => void) = () => {
-    const { t } = this
-
-    const _this = this
+  deleteLayer = (): void => {
+    const { t, props, state } = this
+    const { layer } = props
+    const { _csrf } = state
 
     confirm({
       title: t('Confirm Deletion'),
       content:
         t('Please confirm removal of') +
         ' ' +
-        t(this.props.layer.name) +
+        t(layer.name) +
         '. ' +
         t(
           'All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, and stories.'
@@ -202,7 +202,7 @@ export default class LayerAdmin extends React.Component<Props, State> {
 
       onOk() {
         const closeMessage = message.loading(t('Deleting'), 0)
-        LayerActions.deleteLayer(_this.state._csrf, (err) => {
+        LayerActions.deleteLayer(_csrf, (err) => {
           closeMessage()
 
           if (err) {
@@ -213,21 +213,22 @@ export default class LayerAdmin extends React.Component<Props, State> {
             })
           } else {
             message.success(t('Layer Deleted'), 1, () => {
-              window.location = '/'
+              window.location.assign('/')
             })
           }
         })
       }
     })
   }
-  refreshRemoteLayer: any | (() => void) = () => {
-    const { t } = this
+  refreshRemoteLayer = (): void => {
+    const { t, props } = this
+    const { layer } = props
     request
       .post('/api/layer/refresh/remote')
       .type('json')
       .accept('json')
       .send({
-        layer_id: this.props.layer.layer_id
+        layer_id: layer.layer_id
       })
       .end((err, res) => {
         checkClientError(
@@ -252,250 +253,260 @@ export default class LayerAdmin extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const layerId = this.props.layer.layer_id ? this.props.layer.layer_id : 0
-    const layerName = slugify(this.t(this.props.layer.name))
+    const {
+      t,
+      props,
+      state,
+      refreshRemoteLayer,
+      deleteLayer,
+      onSave,
+      presetsValid,
+      presetsInvalid,
+      savePresets,
+      BaseMapState,
+      MapState
+    } = this
+    const { layer, headerConfig, groups, mapConfig } = props
+    const { user, canSavePresets } = state
+    const layerId = layer.layer_id || 0
+    const layerName = slugify(t(layer.name))
     const layerInfoUrl = `/layer/info/${layerId}/${layerName}`
 
-    if (this.props.layer.remote) {
-      return (
-        <ErrorBoundary>
-          <Header {...this.props.headerConfig} />
-          <main>
-            <div className='container'>
-              <Row>
-                <PageHeader
-                  onBack={() => {
-                    window.location = layerInfoUrl
-                  }}
-                  style={{
-                    padding: '5px'
-                  }}
-                  title={t('Back to Layer')}
-                />
-              </Row>
-              <Row
-                style={{
-                  textAlign: 'center'
+    return layer.remote ? (
+      <ErrorBoundary>
+        <Header {...headerConfig} />
+        <main>
+          <div className='container'>
+            <Row>
+              <PageHeader
+                onBack={() => {
+                  window.location.assign(layerInfoUrl)
                 }}
-              >
-                <Title level={3}>{t('Unable to modify remote layers.')}</Title>
-                <div className='center-align center'>
-                  <Button
-                    type='primary'
-                    style={{
-                      marginTop: '20px'
-                    }}
-                    onClick={this.refreshRemoteLayer}
-                  >
-                    {t('Refresh Remote Layer')}
-                  </Button>
-                </div>
-                <p>
-                  {t(
-                    'You can remove this layer using the button in the bottom right.'
-                  )}
-                </p>
-              </Row>
-              <Row>
-                <Button type='danger' onClick={this.deleteLayer}>
-                  {t('Delete Layer')}
+                style={{
+                  padding: '5px'
+                }}
+                title={t('Back to Layer')}
+              />
+            </Row>
+            <Row
+              style={{
+                textAlign: 'center'
+              }}
+            >
+              <Title level={3}>{t('Unable to modify remote layers.')}</Title>
+              <div className='center-align center'>
+                <Button
+                  type='primary'
+                  style={{
+                    marginTop: '20px'
+                  }}
+                  onClick={refreshRemoteLayer}
+                >
+                  {t('Refresh Remote Layer')}
                 </Button>
-              </Row>
-            </div>
-          </main>
-        </ErrorBoundary>
-      )
-    } else {
-      return (
-        <ErrorBoundary>
-          <Provider inject={[this.BaseMapState, this.MapState]}>
-            <Header {...this.props.headerConfig} />
-            <main
+              </div>
+              <p>
+                {t(
+                  'You can remove this layer using the button in the bottom right.'
+                )}
+              </p>
+            </Row>
+            <Row>
+              <Button danger onClick={deleteLayer}>
+                {t('Delete Layer')}
+              </Button>
+            </Row>
+          </div>
+        </main>
+      </ErrorBoundary>
+    ) : (
+      <ErrorBoundary>
+        <Provider inject={[BaseMapState, MapState]}>
+          <Header {...headerConfig} />
+          <main
+            style={{
+              height: 'calc(100% - 50px)'
+            }}
+          >
+            <Row>
+              <PageHeader
+                onBack={() => {
+                  window.location.assign(layerInfoUrl)
+                }}
+                style={{
+                  padding: '5px'
+                }}
+                title={t('Back to Layer')}
+              />
+            </Row>
+            <Row
               style={{
                 height: 'calc(100% - 50px)'
               }}
             >
-              <Row>
-                <PageHeader
-                  onBack={() => {
-                    window.location = layerInfoUrl
-                  }}
-                  style={{
-                    padding: '5px'
-                  }}
-                  title={t('Back to Layer')}
-                />
-              </Row>
-              <Row
+              <style jsx global>
+                {`
+                  .ant-tabs-content {
+                    height: calc(100% - 44px);
+                  }
+                  .ant-tabs-tabpane {
+                    height: 100%;
+                  }
+
+                  .ant-tabs-nav-wrap {
+                    padding-left: 10px;
+                  }
+
+                  .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
+                    display: none;
+                  }
+                `}
+              </style>
+              <Tabs
+                defaultActiveKey='settings'
                 style={{
-                  height: 'calc(100% - 50px)'
+                  height: '100%',
+                  width: '100%'
                 }}
+                tabBarStyle={{
+                  marginBottom: 0
+                }}
+                animated={false}
               >
-                <style jsx global>
-                  {`
-                    .ant-tabs-content {
-                      height: calc(100% - 44px);
-                    }
-                    .ant-tabs-tabpane {
-                      height: 100%;
-                    }
-
-                    .ant-tabs-nav-wrap {
-                      padding-left: 10px;
-                    }
-
-                    .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
-                      display: none;
-                    }
-                  `}
-                </style>
-                <Tabs
-                  defaultActiveKey='settings'
+                <TabPane
+                  tab={t('Info')}
+                  key='settings'
                   style={{
-                    height: '100%',
-                    width: '100%'
+                    position: 'relative'
                   }}
-                  tabBarStyle={{
-                    marginBottom: 0
-                  }}
-                  animated={false}
                 >
-                  <TabPane
-                    tab={t('Info')}
-                    key='settings'
+                  <LayerSettings
+                    groups={groups}
+                    showGroup={false}
+                    warnIfUnsaved
+                    onSubmit={onSave}
+                    submitText={t('Save')}
+                  />
+                  <Row
                     style={{
-                      position: 'relative'
+                      marginBottom: '20px'
                     }}
                   >
-                    <LayerSettings
-                      groups={this.props.groups}
-                      showGroup={false}
-                      warnIfUnsaved
-                      onSubmit={this.onSave}
-                      submitText={t('Save')}
-                    />
+                    <Divider />
+                  </Row>
+                  <Row
+                    style={{
+                      marginBottom: '20px',
+                      padding: '0px 20px'
+                    }}
+                  >
+                    <Title
+                      level={3}
+                      style={{
+                        fontSize: '18px'
+                      }}
+                    >
+                      {t('Modify Data')}
+                    </Title>
                     <Row
                       style={{
                         marginBottom: '20px'
                       }}
                     >
-                      <Divider />
+                      <Button
+                        type='primary'
+                        href={`/layer/replace/${layerId}/${layerName}`}
+                      >
+                        {t('Replace Layer Data')}
+                      </Button>
                     </Row>
                     <Row
                       style={{
-                        marginBottom: '20px',
-                        padding: '0px 20px'
+                        marginBottom: '20px'
                       }}
                     >
-                      <Title
-                        level={3}
-                        style={{
-                          fontSize: '18px'
-                        }}
-                      >
-                        {t('Modify Data')}
-                      </Title>
-                      <Row
-                        style={{
-                          marginBottom: '20px'
-                        }}
-                      >
-                        <Button
-                          type='primary'
-                          href={`/layer/replace/${layerId}/${layerName}`}
-                        >
-                          {t('Replace Layer Data')}
-                        </Button>
-                      </Row>
-                      <Row
-                        style={{
-                          marginBottom: '20px'
-                        }}
-                      >
-                        <Button type='danger' onClick={this.deleteLayer}>
-                          {t('Delete Layer')}
-                        </Button>
-                      </Row>
+                      <Button danger onClick={deleteLayer}>
+                        {t('Delete Layer')}
+                      </Button>
                     </Row>
-                  </TabPane>
+                  </Row>
+                </TabPane>
+                <TabPane
+                  tab={t('Fields')}
+                  key='fields'
+                  style={{
+                    position: 'relative'
+                  }}
+                >
+                  <div
+                    className='container'
+                    style={{
+                      height: '100%'
+                    }}
+                  >
+                    <Title level={3}>{t('Data Fields')}</Title>
+                    <Row justify='end'>
+                      <Button
+                        type='primary'
+                        onClick={savePresets}
+                        disabled={!canSavePresets}
+                      >
+                        {t('Save')}
+                      </Button>
+                    </Row>
+                    <Row
+                      style={{
+                        height: 'calc(100% - 100px)',
+                        overflowY: 'auto'
+                      }}
+                    >
+                      <PresetEditor
+                        onValid={presetsValid}
+                        onInvalid={presetsInvalid}
+                      />
+                    </Row>
+                  </div>
+                </TabPane>
+                <TabPane
+                  tab={t('Style/Display')}
+                  key='style'
+                  style={{
+                    position: 'relative'
+                  }}
+                >
+                  <Row
+                    style={{
+                      height: 'calc(100% - 50px)'
+                    }}
+                  >
+                    <LayerStyle
+                      showPrev={false}
+                      onSubmit={onSave}
+                      mapConfig={mapConfig}
+                    />
+                  </Row>
+                </TabPane>
+                {user?.admin && (
                   <TabPane
-                    tab={t('Fields')}
-                    key='fields'
+                    tab={t('Admin Only')}
+                    key='admin'
                     style={{
                       position: 'relative'
                     }}
                   >
-                    <div
-                      className='container'
-                      style={{
-                        height: '100%'
-                      }}
-                    >
-                      <Title level={3}>{t('Data Fields')}</Title>
-                      <Row justify='end'>
-                        <Button
-                          type='primary'
-                          onClick={this.savePresets}
-                          disabled={!this.state.canSavePresets}
-                        >
-                          {t('Save')}
-                        </Button>
-                      </Row>
-                      <Row
-                        style={{
-                          height: 'calc(100% - 100px)',
-                          overflowY: 'auto'
-                        }}
-                      >
-                        <PresetEditor
-                          onValid={this.presetsValid}
-                          onInvalid={this.presetsInvalid}
-                        />
-                      </Row>
-                    </div>
+                    <LayerAdminSettings
+                      groups={groups}
+                      warnIfUnsaved
+                      onSubmit={onSave}
+                      submitText={t('Save')}
+                    />
                   </TabPane>
-                  <TabPane
-                    tab={t('Style/Display')}
-                    key='style'
-                    style={{
-                      position: 'relative'
-                    }}
-                  >
-                    <Row
-                      style={{
-                        height: 'calc(100% - 50px)'
-                      }}
-                    >
-                      <LayerStyle
-                        showPrev={false}
-                        onSubmit={this.onSave}
-                        mapConfig={this.props.mapConfig}
-                      />
-                    </Row>
-                  </TabPane>
-                  {this.state.user && this.state.user.admin && (
-                    <TabPane
-                      tab={t('Admin Only')}
-                      key='admin'
-                      style={{
-                        position: 'relative'
-                      }}
-                    >
-                      <LayerAdminSettings
-                        groups={this.props.groups}
-                        warnIfUnsaved
-                        onSubmit={this.onSave}
-                        submitText={t('Save')}
-                      />
-                    </TabPane>
-                  )}
-                </Tabs>
-              </Row>
-            </main>
-          </Provider>
-        </ErrorBoundary>
-      )
-    }
+                )}
+              </Tabs>
+            </Row>
+          </main>
+        </Provider>
+      </ErrorBoundary>
+    )
   }
 }

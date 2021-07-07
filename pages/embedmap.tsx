@@ -1,8 +1,3 @@
-import type {
-  GLLayerPaint,
-  GLLayerLayout,
-  GLFilter
-} from '../src/types/mapbox-gl-style'
 import React from 'react'
 import InteractiveMap from '../src/components/Map/InteractiveMap'
 import request from 'superagent'
@@ -14,7 +9,6 @@ import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
 import MapContainer from '../src/components/Map/containers/MapContainer'
 import type { Layer } from '../src/types/layer'
-import type { GLStyle } from '../src/types/mapbox-gl-style'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import UserStore from '../src/stores/UserStore'
 import { Tooltip } from 'antd'
@@ -22,16 +16,17 @@ import StyleHelper from '../src/components/Map/Styles/style'
 import getConfig from 'next/config'
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite'
 import { LocalizedString } from '../src/types/LocalizedString'
+import mapboxgl from 'mapbox-gl'
+
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+
+import { checkClientError } from '../src/services/client-error-response'
+
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
-
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-
-const checkClientError =
-  require('../services/client-error-response').checkClientError
 
 type Props = {
   map: Record<string, any>
-  layers: Array<Layer>
+  layers: Layer[]
   isStatic: boolean
   interactive: boolean
   locale: string
@@ -49,7 +44,7 @@ type Props = {
 type State = {
   interactive: boolean
   bounds: Record<string, any> | null | undefined
-  glStyle: Record<string, any>
+  glStyle: mapboxgl.Style
   layers: Array<Layer>
 }
 export default class EmbedMap extends React.Component<Props, State> {
@@ -142,12 +137,12 @@ export default class EmbedMap extends React.Component<Props, State> {
     }
   }
 
-  startInteractive: any | (() => void) = () => {
+  startInteractive = (): void => {
     this.setState({
       interactive: true
     })
   }
-  loadGeoJSON: any | ((url: string) => void) = (url: string) => {
+  loadGeoJSON = (url: string): void => {
     const { setState, MapState, state, props } = this
     const { layers } = state
     request
@@ -184,13 +179,13 @@ export default class EmbedMap extends React.Component<Props, State> {
   getStyleLayers:
     | any
     | ((props: Props) => Array<{
-        filter?: GLFilter
+        filter?: mapboxgl.Layer['filter']
         id: string
-        layout?: GLLayerLayout
+        layout?: mapboxgl.Layout
         maxzoom?: number
         metadata?: any
         minzoom?: number
-        paint?: GLLayerPaint
+        paint?: mapboxgl.AnyPaint
         ref?: string
         source?: string
         type:
@@ -271,7 +266,7 @@ export default class EmbedMap extends React.Component<Props, State> {
       'maphubs:presets': []
     }
     */
-    const style: GLStyle = {
+    const style: mapboxgl.Style = {
       version: 8,
       sources: {
         'geojson-overlay': {

@@ -1,14 +1,10 @@
 import Reflux from 'reflux'
 import Actions from '../actions/UserActions'
+import request from 'superagent'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { checkClientError } from '../services/client-error-response'
 
-const request = require('superagent')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'stores/user-store'
-)
-
-const checkClientError = require('../services/client-error-response')
-  .checkClientError
+const debug = DebugService('stores/user-store')
 
 export type User = {
   id: number
@@ -23,6 +19,11 @@ export type UserStoreState = {
   user?: User
 }
 export default class UserStore extends Reflux.Store {
+  state: UserStoreState
+  setState: any
+  listenables: any
+  trigger: any
+
   constructor() {
     super()
     this.state = this.getDefaultState()
@@ -35,23 +36,23 @@ export default class UserStore extends Reflux.Store {
     }
   }
 
-  reset() {
+  reset(): void {
     this.setState(this.getDefaultState())
   }
 
-  storeDidUpdate() {
+  storeDidUpdate(): void {
     debug.log('store updated')
   }
 
   // listeners
-  login(user: string) {
+  login(user: string): void {
     this.setState({
       user
     })
   }
 
-  getUser(_csrf: string, cb: (...args: Array<any>) => any) {
-    const _this = this
+  getUser(_csrf: string, cb: (...args: Array<any>) => any): void {
+    const { login } = this
 
     request
       .post('/api/user/details/json')
@@ -66,18 +67,18 @@ export default class UserStore extends Reflux.Store {
             cb(err)
           } else {
             if (res.body.user) {
-              _this.login(res.body.user)
+              login(res.body.user)
 
               cb()
             } else {
-              cb(JSON.stringify(res.body))
+              cb(new Error(JSON.stringify(res.body)))
             }
           }
         })
       })
   }
 
-  logout() {
+  logout(): void {
     this.setState(this.getDefaultState())
     this.trigger(this.state) // Note the server side is handed by redirecting the user to the logout page
   }

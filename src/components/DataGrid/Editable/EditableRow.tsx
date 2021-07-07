@@ -30,12 +30,12 @@ const EditableCell = ({
   record: Record<string, any>
   handleSave: (...args: Array<any>) => any
   dataType: string
-}) => {
+}): JSX.Element => {
   const [editing, setEditing] = useState(false)
   const inputRef = useRef()
   const form = useContext(EditableContext)
   useEffect(() => {
-    if (editing) {
+    if (editing && inputRef.current) {
       inputRef.current.focus()
     }
   }, [editing])

@@ -8,12 +8,9 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import $ from 'jquery'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import mapboxgl from 'mapbox-gl'
+import { FeatureCollection } from 'geojson'
 const debug = DebugService('map')
-let mapboxgl = {}
-
-if (typeof window !== 'undefined') {
-  mapboxgl = require('mapbox-gl')
-}
 
 type Props = {
   id: string
@@ -100,25 +97,24 @@ class InsetMap extends React.Component<Props, State> {
   }
 
   createInsetMap = (
-    center: any,
-    bounds: Record<string, any>,
-    baseMapStyle: Record<string, any>
+    center: mapboxgl.LngLat,
+    bounds: mapboxgl.LngLatBounds,
+    baseMapStyle: mapboxgl.Style
   ) => {
-    const _this = this
-
-    const { fixedPosition } = this.props
+    const { props, getGeoJSONFromBounds, showInsetAsPoint } = this
+    const { fixedPosition, maxZoom, id, mapboxAccessToken } = props
 
     if (fixedPosition && fixedPosition.center) {
       // ignore position info and use fixed
       center = fixedPosition.center
     }
 
-    mapboxgl.accessToken = this.props.mapboxAccessToken
+    mapboxgl.accessToken = mapboxAccessToken
     const insetMap = new mapboxgl.Map({
-      container: this.props.id + '_inset',
+      container: id + '_inset',
       style: baseMapStyle,
       zoom: 0,
-      maxZoom: this.props.maxZoom,
+      maxZoom: maxZoom,
       interactive: false,
       center,
       attributionControl: false
@@ -129,7 +125,7 @@ class InsetMap extends React.Component<Props, State> {
 
       if (!insetGeoJSONData) {
         // create layers
-        const geoJSON = _this.getGeoJSONFromBounds(bounds)
+        const geoJSON = getGeoJSONFromBounds(bounds)
 
         geoJSON.features[0].properties = {
           v: 1
@@ -168,7 +164,7 @@ class InsetMap extends React.Component<Props, State> {
           }
         })
 
-        if (_this.showInsetAsPoint()) {
+        if (showInsetAsPoint()) {
           insetMap.setFilter('center', ['==', 'v', 1])
           insetMap.setFilter('bounds', ['==', 'v', 2])
         } else {
@@ -177,7 +173,7 @@ class InsetMap extends React.Component<Props, State> {
         }
       }
     })
-    _this.insetMap = insetMap
+    this.insetMap = insetMap
     return insetMap
   }
   reloadInset = (baseMapStyle: string) => {
@@ -185,7 +181,7 @@ class InsetMap extends React.Component<Props, State> {
       this.insetMap.setStyle(baseMapStyle)
     }
   }
-  sync = (map: Record<string, any>) => {
+  sync = (map: mapboxgl.Map) => {
     if (this.insetMap && this.props.fixedPosition) {
       this.updateInsetFixedPosition(map)
     } else {
@@ -207,7 +203,7 @@ class InsetMap extends React.Component<Props, State> {
   getInsetMap = () => {
     return this.insetMap
   }
-  getGeoJSONFromBounds = (bounds: Record<string, any>) => {
+  getGeoJSONFromBounds = (bounds: mapboxgl.LngLatBounds): FeatureCollection => {
     const v1 = bounds.getNorthWest().toArray()
     const v2 = bounds.getNorthEast().toArray()
     const v3 = bounds.getSouthEast().toArray()
@@ -229,14 +225,14 @@ class InsetMap extends React.Component<Props, State> {
       ]
     }
   }
-  showInsetAsPoint = (zoom: any) => {
+  showInsetAsPoint = (zoom?: number) => {
     if (zoom && zoom > 9) {
       return true
     }
 
     return false
   }
-  updateInsetGeomFromBounds = (map: Record<string, any>) => {
+  updateInsetGeomFromBounds = (map: mapboxgl.Map) => {
     const bounds = map.getBounds()
     const zoom = map.getZoom()
     const center = map.getCenter()
@@ -305,7 +301,7 @@ class InsetMap extends React.Component<Props, State> {
       }
     }
   }
-  updateInsetFixedPosition = (map: Record<string, any>) => {
+  updateInsetFixedPosition = (map: mapboxgl.Map) => {
     const bounds = map.getBounds()
 
     if (this.insetMap) {
@@ -355,93 +351,99 @@ class InsetMap extends React.Component<Props, State> {
 
   render() {
     const { collapsed } = this.state
-    const { collapsible, id } = this.props
+    const {
+      collapsible,
+      id,
+      bottom,
+      minHeight,
+      maxHeight,
+      minWidth,
+      maxWidth,
+      height,
+      width
+    } = this.props
 
-    if (collapsed) {
-      return (
+    return collapsed ? (
+      <div
+        className='maphubs-inset'
+        style={{
+          position: 'absolute',
+          bottom: bottom,
+          left: '5px'
+        }}
+      >
         <div
-          className='maphubs-inset'
+          id={id + '_inset'}
+          ref={(c) => {
+            this.insetMapComponent = c
+          }}
           style={{
-            position: 'absolute',
-            bottom: this.props.bottom,
-            left: '5px'
+            display: 'none'
           }}
         >
-          <div
-            id={id + '_inset'}
-            ref={(c) => {
-              this.insetMapComponent = c
-            }}
-            style={{
-              display: 'none'
-            }}
-          >
-            <MapToolButton
-              onClick={this.toggleCollapsed}
-              color='#323333'
-              top='auto'
-              right='auto'
-              bottom='5px'
-              left='5px'
-              icon='near_me'
-            />
-          </div>
+          <MapToolButton
+            onClick={this.toggleCollapsed}
+            color='#323333'
+            top='auto'
+            right='auto'
+            bottom='5px'
+            left='5px'
+            icon='near_me'
+          />
         </div>
-      )
-    } else {
-      return (
+      </div>
+    ) : (
+      <div
+        className='maphubs-inset'
+        style={{
+          position: 'absolute',
+          bottom: bottom,
+          left: '5px',
+          minHeight: minHeight,
+          maxHeight: maxHeight,
+          minWidth: minWidth,
+          maxWidth: maxWidth,
+          height: height,
+          width: width
+        }}
+      >
         <div
-          className='maphubs-inset'
+          id={id + '_inset'}
+          ref={(c) => {
+            this.insetMapComponent = c
+          }}
+          className='map'
           style={{
             position: 'absolute',
-            bottom: this.props.bottom,
-            left: '5px',
-            minHeight: this.props.minHeight,
-            maxHeight: this.props.maxHeight,
-            minWidth: this.props.minWidth,
-            maxWidth: this.props.maxWidth,
-            height: this.props.height,
-            width: this.props.width
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            display: 'none',
+            zIndex: 1
           }}
-        >
-          <div
-            id={this.props.id + '_inset'}
-            ref={(c) => {
-              this.insetMapComponent = c
-            }}
-            className='map'
+        />
+        {collapsible && this.insetMap && (
+          <ArrowDownward
+            onClick={this.toggleCollapsed}
             style={{
               position: 'absolute',
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              display: 'none',
-              zIndex: 1
+              top: '0px',
+              right: '0px',
+              color: '#717171',
+              cursor: 'pointer',
+              textAlign: 'center',
+              zIndex: 1,
+              transform: 'rotate(45deg)',
+              fontSize: '20px'
             }}
           />
-          {collapsible && this.insetMap && (
-            <ArrowDownward
-              onClick={this.toggleCollapsed}
-              style={{
-                position: 'absolute',
-                top: '0px',
-                right: '0px',
-                color: '#717171',
-                cursor: 'pointer',
-                textAlign: 'center',
-                zIndex: 1,
-                transform: 'rotate(45deg)',
-                fontSize: '20px'
-              }}
-            />
-          )}
-        </div>
-      )
-    }
+        )}
+      </div>
+    )
   }
 }
 
 export default subscribe(InsetMap, {
   mapState: MapContainer
-}) as any
+}) as InsetMap

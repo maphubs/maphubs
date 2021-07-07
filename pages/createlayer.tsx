@@ -150,7 +150,9 @@ export default class CreateLayer extends React.Component<Props, State> {
     layerId: number,
     name: LocalizedString
   ) => {
-    window.location = '/layer/info/' + layerId + '/' + slugify(this.t(name))
+    window.location.assign(
+      '/layer/info/' + layerId + '/' + slugify(this.t(name))
+    )
   }
   nextStep: any | (() => void) = () => {
     this.setState({

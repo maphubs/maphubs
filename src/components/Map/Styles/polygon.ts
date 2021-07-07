@@ -1,4 +1,5 @@
-import type { GLStyle, GLLayer } from '../../../types/mapbox-gl-style'
+import mapboxgl from 'mapbox-gl'
+
 export default {
   getPolygonLayers(
     layer_id: number,
@@ -8,7 +9,7 @@ export default {
     hoverOutlineColor: string,
     interactive: boolean,
     showBehindBaseMapLabels: boolean
-  ): Array<GLLayer> {
+  ): Array<mapboxgl.FillLayer | mapboxgl.LineLayer> {
     return [
       {
         id: `omh-data-polygon-${layer_id}-${shortid}`,
@@ -116,7 +117,7 @@ export default {
   },
 
   toggleFill(
-    style: GLStyle,
+    style: mapboxgl.Style,
     fill: boolean
   ): {
     legendColor: void
@@ -140,7 +141,9 @@ export default {
         [10, 0.8]
       ]
     }
-    style.layers.forEach((layer) => {
+    for (const layer of style.layers as Array<
+      mapboxgl.FillLayer | mapboxgl.LineLayer
+    >) {
       const { id, type, metadata, paint } = layer
 
       // clear old outline-only settings
@@ -162,28 +165,27 @@ export default {
           outlineWidth = 3
         }
       }
-    })
+    }
     // loop again just in case fill layer is out of order somehow
-    style.layers.forEach((layer) => {
+    for (const layer of style.layers as Array<
+      mapboxgl.FillLayer | mapboxgl.LineLayer
+    >) {
       const { id, type, paint } = layer
+      let { layout } = layer
 
       if (type === 'line') {
         if (id.startsWith('omh-data-outline')) {
           paint['line-color'] = outlineColor
           paint['line-width'] = outlineWidth
         } else if (id.startsWith('omh-data-doublestroke')) {
-          if (!layer.layout) {
-            layer.layout = {}
+          if (!layout) {
+            layout = {}
           }
 
-          if (fill) {
-            layer.layout.visibility = 'visible'
-          } else {
-            layer.layout.visibility = 'none'
-          }
+          layout.visibility = fill ? 'visible' : 'none'
         }
       }
-    })
+    }
     return {
       style,
       legendColor

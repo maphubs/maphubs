@@ -297,7 +297,7 @@ class MapMaker extends React.Component<Props, State> {
               duration: 0
             })
           } else {
-            window.location = '/maps'
+            window.location.assign('/maps')
           }
         })
       }

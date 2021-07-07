@@ -1,14 +1,11 @@
 import Reflux from 'reflux'
 import Actions from '../actions/GroupActions'
+import request from 'superagent'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { checkClientError } from '../services/client-error-response'
+import { LocalizedString } from '../types/LocalizedString'
 
-const request = require('superagent')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'stores/group-store'
-)
-
-const checkClientError = require('../services/client-error-response')
-  .checkClientError
+const debug = DebugService('stores/group-store')
 
 export type Group = {
   group_id?: string
@@ -27,7 +24,9 @@ export type GroupStoreState = {
 }
 export default class GroupStore extends Reflux.Store {
   state: GroupStoreState
-
+  setState: any
+  trigger: any
+  listenables: any
   constructor() {
     super()
     this.state = {
@@ -40,7 +39,7 @@ export default class GroupStore extends Reflux.Store {
     this.listenables = Actions
   }
 
-  reset() {
+  reset(): void {
     this.setState({
       group: {},
       members: [],
@@ -48,19 +47,19 @@ export default class GroupStore extends Reflux.Store {
     })
   }
 
-  storeDidUpdate() {
+  storeDidUpdate(): void {
     debug.log('store updated')
   }
 
   // listeners
-  loadGroup(group: Record<string, any>) {
+  loadGroup(group: Record<string, any>): void {
     debug.log('load group')
     this.setState({
       group
     })
   }
 
-  loadMembers(members: Array<Record<string, any>>) {
+  loadMembers(members: Array<Record<string, any>>): void {
     debug.log('load members')
     this.setState({
       members
@@ -75,7 +74,7 @@ export default class GroupStore extends Reflux.Store {
     published: boolean,
     _csrf: string,
     cb: (...args: Array<any>) => any
-  ) {
+  ): void {
     debug.log('create group')
 
     const _this = this
@@ -123,7 +122,7 @@ export default class GroupStore extends Reflux.Store {
     published: boolean,
     _csrf: string,
     cb: (...args: Array<any>) => any
-  ) {
+  ): void {
     debug.log('update group')
 
     const _this = this
@@ -162,7 +161,7 @@ export default class GroupStore extends Reflux.Store {
       })
   }
 
-  deleteGroup(_csrf: string, cb: (...args: Array<any>) => any) {
+  deleteGroup(_csrf: string, cb: (...args: Array<any>) => any): void {
     debug.log('delete group')
     request
       .post('/api/group/delete')
@@ -184,7 +183,7 @@ export default class GroupStore extends Reflux.Store {
     data: Record<string, any>,
     _csrf: string,
     cb: (...args: Array<any>) => any
-  ) {
+  ): void {
     debug.log('set group image')
 
     const _this = this
@@ -219,7 +218,7 @@ export default class GroupStore extends Reflux.Store {
     asAdmin: boolean,
     _csrf: string,
     cb: (...args: Array<any>) => any
-  ) {
+  ): void {
     debug.log('add member')
 
     const _this = this
@@ -245,7 +244,7 @@ export default class GroupStore extends Reflux.Store {
     user_id: number,
     _csrf: string,
     cb: (...args: Array<any>) => any
-  ) {
+  ): void {
     debug.log('remove member')
 
     const _this = this
@@ -270,7 +269,7 @@ export default class GroupStore extends Reflux.Store {
     user_id: number,
     _csrf: string,
     cb: (...args: Array<any>) => any
-  ) {
+  ): void {
     debug.log('set member admin')
 
     const _this = this
@@ -296,7 +295,7 @@ export default class GroupStore extends Reflux.Store {
     user_id: number,
     _csrf: string,
     cb: (...args: Array<any>) => any
-  ) {
+  ): void {
     debug.log('remove member admin')
 
     const _this = this
@@ -318,12 +317,12 @@ export default class GroupStore extends Reflux.Store {
       })
   }
 
-  reloadMembers(_csrf: string, cb: (...args: Array<any>) => any) {
+  reloadMembers(_csrf: string, cb: (...args: Array<any>) => any): void {
     debug.log('reload members')
 
-    const _this = this
+    const { state, loadMembers } = this
 
-    const group_id = this.state.group.group_id ? this.state.group.group_id : ''
+    const group_id = state.group.group_id || ''
     request
       .post('/api/group/' + group_id + '/members')
       .type('json')
@@ -333,7 +332,7 @@ export default class GroupStore extends Reflux.Store {
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
-          _this.loadMembers(res.body.members)
+          loadMembers(res.body.members)
 
           cb()
         })

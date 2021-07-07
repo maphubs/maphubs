@@ -15,9 +15,10 @@ import UserStore from '../src/stores/UserStore'
 import FloatingButton from '../src/components/FloatingButton'
 import Edit from '@material-ui/icons/Edit'
 import getConfig from 'next/config'
+import { Story } from '../src/types/story'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
-  story: Record<string, any>
+  story: Story
   username: string
   canEdit: boolean
   locale: string
@@ -26,7 +27,7 @@ type Props = {
   footerConfig: Record<string, any>
   user: Record<string, any>
 }
-export default class Story extends React.Component<Props> {
+export default class StoryPage extends React.Component<Props> {
   static async getInitialProps({
     req,
     query
@@ -67,21 +68,21 @@ export default class Story extends React.Component<Props> {
     }
   }
 
-  componentDidMount() {
-    document.querySelectorAll('oembed[url]').forEach((element) => {
+  componentDidMount(): void {
+    for (const element of document.querySelectorAll('oembed[url]')) {
       // Create the <a href="..." class="embedly-card"></a> element that Embedly uses
       // to discover the media.
       const anchor = document.createElement('a')
       anchor.setAttribute('href', element.getAttribute('url'))
       anchor.className = 'embedly-card'
       element.append(anchor)
-    })
+    }
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const { story, canEdit } = this.props
-    let shareAndDiscuss = ''
+    const { t, props } = this
+    const { story, canEdit, headerConfig, footerConfig } = props
+    let shareAndDiscuss = <></>
 
     if (MAPHUBS_CONFIG.enableComments) {
       shareAndDiscuss = (
@@ -122,7 +123,7 @@ export default class Story extends React.Component<Props> {
           />
         </Head>
         <ErrorBoundary>
-          <Header {...this.props.headerConfig} />
+          <Header {...headerConfig} />
           <main>
             <div className='container'>
               <Row
@@ -161,9 +162,9 @@ export default class Story extends React.Component<Props> {
             {canEdit && (
               <FloatingButton
                 onClick={() => {
-                  window.location = `/editstory/${
-                    this.props.story.story_id
-                  }/${slugify(t(this.props.story.title))}`
+                  window.location.assign(
+                    `/editstory/${story.story_id}/${slugify(t(story.title))}`
+                  )
                 }}
                 tooltip={t('Edit')}
                 icon={<Edit />}
@@ -237,7 +238,7 @@ export default class Story extends React.Component<Props> {
               `}
             </style>
           </main>
-          <Footer t={t} {...this.props.footerConfig} />
+          <Footer t={t} {...footerConfig} />
         </ErrorBoundary>
       </>
     )

@@ -1,9 +1,13 @@
-import type { GLLayer, GLSource } from '../../../types/mapbox-gl-style'
 import ee from '@google/earthengine'
+import mapboxgl from 'mapbox-gl'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const EarthEngineSource = {
-  async load(key: string, source: GLSource, mapComponent: any): Promise<any> {
+  async load(
+    key: string,
+    source: mapboxgl.Source,
+    mapComponent: any
+  ): Promise<any> {
     const baseUrl = 'https://earthengine.googleapis.com/map'
     const image_id = source.metadata['maphubs:image_id']
     const min = source.metadata['maphubs:min']
@@ -39,13 +43,10 @@ const EarthEngineSource = {
         }
       }
 
-      let clientID
-
-      if (MAPHUBS_CONFIG && MAPHUBS_CONFIG.EARTHENGINE_CLIENTID) {
-        clientID = MAPHUBS_CONFIG.EARTHENGINE_CLIENTID
-      } else {
-        clientID = mapComponent.props.earthEngineClientID
-      }
+      const clientID =
+        MAPHUBS_CONFIG && MAPHUBS_CONFIG.EARTHENGINE_CLIENTID
+          ? MAPHUBS_CONFIG.EARTHENGINE_CLIENTID
+          : mapComponent.props.earthEngineClientID
 
       ee.data.authenticate(clientID, getEEMap, undefined, undefined, () => {
         ee.data.authenticateViaPopup(() => {
@@ -56,11 +57,11 @@ const EarthEngineSource = {
   },
 
   addLayer(
-    layer: GLLayer,
-    source: GLSource,
+    layer: mapboxgl.Layer,
+    source: mapboxgl.Source,
     position: number,
     mapComponent: any
-  ) {
+  ): void {
     if (layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']) {
       mapComponent.addLayerBefore(layer, 'water')
     } else {
@@ -72,7 +73,7 @@ const EarthEngineSource = {
     }
   },
 
-  removeLayer(layer: GLLayer, mapComponent: any): any {
+  removeLayer(layer: mapboxgl.Layer, mapComponent: any): any {
     return mapComponent.removeLayer(layer.id)
   },
 

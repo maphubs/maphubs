@@ -4,8 +4,9 @@ import { IntlProvider, FormattedDate } from 'react-intl'
 
 import type { LocaleStoreState } from '../../stores/LocaleStore'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import { Story } from '../../types/story'
 type Props = {
-  story: Record<string, any>
+  story: Story
   baseUrl: string
 }
 type State = {

@@ -10,11 +10,12 @@ import {
   WhatsappIcon
 } from 'react-share'
 import { Row, Col } from 'antd'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
   style: Record<string, any>
   title: LocalizedString
-  url: string
-  photoUrl: string
+  url?: string
+  photoUrl?: string
   iconSize: number
   t: (...args: Array<any>) => any
 }
@@ -36,7 +37,7 @@ export default class MapHubsShareButtons extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     if (!this.props.url) {
       this.setState({
         url: window.location.href
@@ -44,7 +45,7 @@ export default class MapHubsShareButtons extends React.Component<Props, State> {
     }
   }
 
-  render() {
+  render(): JSX.Element {
     const { title, style, iconSize, photoUrl, t } = this.props
     const { url } = this.state
     const localizedTitle = t(title)
@@ -71,7 +72,7 @@ export default class MapHubsShareButtons extends React.Component<Props, State> {
               width: iconSize + 3
             }}
           >
-            <TwitterShareButton url={this.state.url} title={localizedTitle}>
+            <TwitterShareButton url={url} title={localizedTitle}>
               <TwitterIcon size={iconSize} round />
             </TwitterShareButton>
           </Col>
@@ -81,7 +82,7 @@ export default class MapHubsShareButtons extends React.Component<Props, State> {
               width: iconSize + 3
             }}
           >
-            <LinkedinShareButton url={this.state.url} title={localizedTitle}>
+            <LinkedinShareButton url={url} title={localizedTitle}>
               <LinkedinIcon size={iconSize} round />
             </LinkedinShareButton>
           </Col>
@@ -91,7 +92,7 @@ export default class MapHubsShareButtons extends React.Component<Props, State> {
               width: iconSize + 3
             }}
           >
-            <WhatsappShareButton url={this.state.url} title={localizedTitle}>
+            <WhatsappShareButton url={url} title={localizedTitle}>
               <WhatsappIcon size={iconSize} round />
             </WhatsappShareButton>
           </Col>

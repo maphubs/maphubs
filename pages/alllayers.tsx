@@ -73,7 +73,7 @@ export default class Layers extends React.Component<Props> {
             >
               <Button
                 onClick={() => {
-                  window.location = '/createlayer'
+                  window.location.assign('/createlayer')
                 }}
               >
                 {t('Create New Layer')}

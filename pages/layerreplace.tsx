@@ -6,7 +6,7 @@ import Reflux from '../src/components/Rehydrate'
 import LocaleStore from '../src/stores/LocaleStore'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
-import LayerActions from '../actions/LayerActions'
+import LayerActions from '../src/actions/LayerActions'
 import LayerStore from '../src/stores/layer-store'
 import slugify from 'slugify'
 import UploadLayerReplacement from '../src/components/CreateLayer/UploadLayerReplacement'
@@ -30,6 +30,7 @@ type State = {
 } & LocaleStoreState &
   AddPhotoPointStoreState
 export default class LayerReplace extends React.Component<Props, State> {
+  BaseMapState: BaseMapContainer
   static async getInitialProps({
     req,
     query
@@ -88,7 +89,7 @@ export default class LayerReplace extends React.Component<Props, State> {
 
   unloadHandler: any
 
-  componentDidMount() {
+  componentDidMount(): void {
     const _this = this
 
     this.unloadHandler = (e) => {
@@ -101,28 +102,29 @@ export default class LayerReplace extends React.Component<Props, State> {
     window.addEventListener('beforeunload', this.unloadHandler)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  onDownload: any | (() => void) = () => {
+  onDownload = (): void => {
     this.setState({
       downloaded: true
     })
   }
-  onDataSubmit: any | (() => void) = () => {
+  onDataSubmit = (): void => {
     this.setState({
       submitted: true
     })
-    window.location =
+    window.location.assign(
       '/layer/info/' +
-      this.props.layer.layer_id +
-      '/' +
-      slugify(this.t(this.props.layer.name))
+        this.props.layer.layer_id +
+        '/' +
+        slugify(this.t(this.props.layer.name))
+    )
   }
 
   render(): JSX.Element {
-    const { t, props, state, onDownload, onDataSubmit } = this
+    const { t, props, state, onDownload, onDataSubmit, BaseMapState } = this
     const { layer, headerConfig, mapConfig } = props
     const { downloaded } = state
     const maphubsFileURL = `/api/layer/${
@@ -130,7 +132,7 @@ export default class LayerReplace extends React.Component<Props, State> {
     }/export/maphubs/${slugify(t(layer.name))}.maphubs`
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState]}>
+        <Provider inject={[BaseMapState]}>
           <Header {...headerConfig} />
           <main
             style={{
@@ -168,7 +170,6 @@ export default class LayerReplace extends React.Component<Props, State> {
               >
                 {downloaded && (
                   <UploadLayerReplacement
-                    showPrev={false}
                     onSubmit={onDataSubmit}
                     mapConfig={mapConfig}
                   />

@@ -2,7 +2,7 @@ import React from 'react'
 
 type Props = {
   defaultValue: string
-  onChange: (...args: Array<any>) => any
+  onChange: (...args: Array<any>) => void
 }
 type State = {
   value: string

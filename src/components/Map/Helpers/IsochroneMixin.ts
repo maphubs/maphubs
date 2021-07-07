@@ -1,16 +1,14 @@
 import shortid from 'shortid'
 import request from 'superagent'
 import { notification, message } from 'antd'
-import type { GeoJSONObject } from 'geojson-flow'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { FeatureCollection } from 'geojson'
 const debug = DebugService('isochrone-mixin')
 export default {
   /**
    * Get the mapbox-gl style for the isochrone data
    */
-  getIsochroneStyle(
-    data: GeoJSONObject
-  ): {
+  getIsochroneStyle(data: FeatureCollection): {
     id: string
     layers: Array<{
       filter: Array<number | string>
@@ -24,7 +22,7 @@ export default {
       type: string
     }>
     source: {
-      data: any
+      data: FeatureCollection
       type: string
     }
   } {
@@ -73,31 +71,30 @@ export default {
     }
   },
 
-  getIsochronePoint() {
+  getIsochronePoint(): void {
     const map = this.map
 
-    const _this = this
+    const { onIsochroneClick, runIsochroneQuery } = this
 
     const disableClick = function () {
-      map.off('click', _this.onIsochroneClick)
+      map.off('click', onIsochroneClick)
     }
 
     this.onIsochroneClick = function (e) {
       e.originalEvent.stopPropagation()
 
-      _this.runIsochroneQuery(e.lngLat)
+      runIsochroneQuery(e.lngLat)
 
       disableClick()
     }
 
-    map.on('click', this.onIsochroneClick)
+    map.on('click', onIsochroneClick)
   },
 
   runIsochroneQuery(point: { lng: number; lat: number }) {
-    const _this = this
+    const { props, map, setState } = this
 
-    const map = this.map
-    const { t } = this.props
+    const { t, onToggleIsochroneLayer } = props
     message.loading(t('Running travel time query...'), 5)
     request
       .post('/api/isochrone')
@@ -115,15 +112,15 @@ export default {
         this.isochroneLayerStyle = layerStyle
         // add it to the map
         map.addSource(layerStyle.id, layerStyle.source)
-        layerStyle.layers.forEach((layer) => {
+        for (const layer of layerStyle.layers) {
           map.addLayer(layer)
-        })
+        }
 
-        _this.setState({
+        setState({
           isochroneResult: geojson
         })
 
-        _this.props.onToggleIsochroneLayer(true)
+        onToggleIsochroneLayer(true)
       })
       .catch((err) => {
         debug.error(err)
@@ -134,21 +131,21 @@ export default {
       })
   },
 
-  clearIsochroneLayers() {
+  clearIsochroneLayers(): void {
     const map = this.map
     map.off('click', this.onIsochroneClick)
-    this.isochroneLayerStyle.layers.forEach((layer) => {
+    for (const layer of this.isochroneLayerStyle.layers) {
       map.removeLayer(layer.id)
-    })
+    }
     map.removeSource(this.isochroneLayerStyle.id)
     this.setState({
       isochroneResult: undefined
     })
     this.props.onToggleIsochroneLayer(false)
-  },
+  }
 
   /**
-   * Initiate saving the active overlay as an actual MapHubs layer
+   * //TODO: Initiate saving the active overlay as an actual MapHubs layer
    */
-  saveIsochroneLayer() {}
+  // saveIsochroneLayer() {}
 }

@@ -1,11 +1,17 @@
-import type { GLLayer, GLSource } from '../../../types/mapbox-gl-style'
-import type { GeoJSONObject } from 'geojson-flow'
+import { FeatureCollection } from 'geojson'
+import mapboxgl from 'mapbox-gl'
 import TerraformerGL from '../../../services/terraformerGL'
+import MapComponent from '../Map'
+
 const AGSFeatureServerQuery = {
-  load(key: string, source: GLSource, mapComponent: any): any | void {
+  load(
+    key: string,
+    source: mapboxgl.Source,
+    mapComponent: MapComponent
+  ): any | void {
     if (source.url) {
       return TerraformerGL.getArcGISFeatureServiceGeoJSON(source.url).then(
-        (geoJSON: GeoJSONObject) => {
+        (geoJSON: FeatureCollection) => {
           if (
             geoJSON.bbox &&
             Array.isArray(geoJSON.bbox) &&
@@ -28,11 +34,11 @@ const AGSFeatureServerQuery = {
   },
 
   addLayer(
-    layer: GLLayer,
-    source: GLSource,
+    layer: mapboxgl.Layer,
+    source: mapboxgl.Source,
     position: number,
-    mapComponent: any
-  ) {
+    mapComponent: MapComponent
+  ): void {
     if (mapComponent.state.editing) {
       mapComponent.addLayerBefore(layer, mapComponent.getFirstDrawLayerID())
     } else {
@@ -40,11 +46,11 @@ const AGSFeatureServerQuery = {
     }
   },
 
-  removeLayer(layer: GLLayer, mapComponent: any) {
+  removeLayer(layer: mapboxgl.Layer, mapComponent: MapComponent): void {
     mapComponent.removeLayer(layer.id)
   },
 
-  remove(key: string, mapComponent: any) {
+  remove(key: string, mapComponent: MapComponent): void {
     mapComponent.removeSource(key)
   }
 }

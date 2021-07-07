@@ -5,7 +5,7 @@ import Header from '../src/components/header'
 import Footer from '../src/components/footer'
 import CardCarousel from '../src/components/CardCarousel/CardCarousel'
 // var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('usermaps');
-import cardUtil from '../services/card-util'
+import cardUtil from '../src/services/card-util'
 
 import Reflux from '../src/components/Rehydrate'
 import LocaleStore from '../src/stores/LocaleStore'
@@ -24,7 +24,6 @@ type Props = {
   _csrf: string
   footerConfig: Record<string, any>
   headerConfig: Record<string, any>
-  user: Record<string, any>
 }
 type DefaultProps = {
   groups: Array<Record<string, any>>
@@ -69,11 +68,11 @@ export default class UserGroups extends React.Component<Props> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const { canEdit, user, groups } = this.props
+    const { t, props } = this
+    const { canEdit, user, groups, headerConfig, footerConfig } = props
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
+        <Header {...headerConfig} />
         <main
           style={{
             marginLeft: '10px',
@@ -93,9 +92,8 @@ export default class UserGroups extends React.Component<Props> {
               }}
             >
               <CardCarousel
-                infinite={false}
-                cards={groups.map(cardUtil.getGroupCard)}
-                t={this.t}
+                cards={groups.map((group) => cardUtil.getGroupCard(group))}
+                t={t}
               />
             </Row>
           )}
@@ -130,13 +128,13 @@ export default class UserGroups extends React.Component<Props> {
           {canEdit && (
             <FloatingButton
               onClick={() => {
-                window.location = '/creategroup'
+                window.location.assign('/creategroup')
               }}
               tooltip={t('Create New Group')}
             />
           )}
         </main>
-        <Footer t={t} {...this.props.footerConfig} />
+        <Footer t={t} {...footerConfig} />
       </ErrorBoundary>
     )
   }

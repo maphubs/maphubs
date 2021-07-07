@@ -10,7 +10,7 @@ import LocaleStore from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import UserStore from '../src/stores/UserStore'
 import FloatingAddButton from '../src/components/FloatingAddButton'
-import cardUtil from '../services/card-util'
+import cardUtil from '../src/services/card-util'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
@@ -60,13 +60,20 @@ export default class Maps extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const featuredCards = this.props.featuredMaps.map(cardUtil.getMapCard)
-    const recentCards = this.props.recentMaps.map(cardUtil.getMapCard)
-    const popularCards = this.props.popularMaps.map(cardUtil.getMapCard)
+    const { t, props } = this
+    const {
+      featuredMaps,
+      recentMaps,
+      popularMaps,
+      headerConfig,
+      footerConfig
+    } = props
+    const featuredCards = featuredMaps.map((map) => cardUtil.getMapCard(map))
+    const recentCards = recentMaps.map((map) => cardUtil.getMapCard(map))
+    const popularCards = popularMaps.map((map) => cardUtil.getMapCard(map))
     return (
       <ErrorBoundary>
-        <Header activePage='maps' {...this.props.headerConfig} />
+        <Header activePage='maps' {...headerConfig} />
         <main
           style={{
             margin: '10px'
@@ -90,21 +97,24 @@ export default class Maps extends React.Component<Props, State> {
                 title={t('Featured')}
                 cards={featuredCards}
                 viewAllLink='/maps/all'
+                t={t}
               />
             )}
           <CardCollection
             title={t('Popular')}
             cards={popularCards}
             viewAllLink='/maps/all'
+            t={t}
           />
           <CardCollection
             title={t('Recent')}
             cards={recentCards}
             viewAllLink='/maps/all'
+            t={t}
           />
           <FloatingAddButton
             onClick={() => {
-              window.location = '/map/new'
+              window.location.assign('/map/new')
             }}
             tooltip={t('Create New Map')}
           />
@@ -119,7 +129,7 @@ export default class Maps extends React.Component<Props, State> {
             </Button>
           </Row>
         </main>
-        <Footer t={t} {...this.props.footerConfig} />
+        <Footer t={t} {...footerConfig} />
       </ErrorBoundary>
     )
   }

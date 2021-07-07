@@ -23,6 +23,7 @@ type State = {
   group_id?: string
 }
 export default class ImportLayer extends React.Component<Props, State> {
+  closeProcessingMessage: any
   static async getInitialProps({
     req,
     query
@@ -63,32 +64,30 @@ export default class ImportLayer extends React.Component<Props, State> {
 
   unloadHandler: any
 
-  componentDidMount() {
-    const _this = this
+  componentDidMount(): void {
+    const { state, unloadHandler } = this
+    const { group_id, layer_id, map_id } = state
 
     this.unloadHandler = (e) => {
-      if (
-        _this.state.group_id &&
-        !(_this.state.layer_id || _this.state.map_id)
-      ) {
+      if (group_id && !(layer_id || map_id)) {
         e.preventDefault()
         e.returnValue = ''
       }
     }
 
-    window.addEventListener('beforeunload', this.unloadHandler)
+    window.addEventListener('beforeunload', unloadHandler)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  onGroupChange: any | ((groupId: string) => void) = (groupId: string) => {
+  onGroupChange = (groupId: string): void => {
     this.setState({
       group_id: groupId
     })
   }
-  onUpload: any | ((result: any) => void) = (result: Record<string, any>) => {
+  onUpload = (result: Record<string, any>): void => {
     const { t } = this
     this.closeProcessingMessage()
 
@@ -106,19 +105,19 @@ export default class ImportLayer extends React.Component<Props, State> {
       })
     }
   }
-  onProcessingStart: any | (() => void) = () => {
+  onProcessingStart = (): void => {
     this.closeProcessingMessage = message.loading(this.t('Loading Data'), 0)
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const { groups } = this.props
-    const { group_id, layer_id, map_id } = this.state
+    const { t, props, state, onUpload, onProcessingStart, onGroupChange } = this
+    const { groups, headerConfig } = props
+    const { group_id, layer_id, map_id } = state
 
     if (!groups || groups.length === 0) {
       return (
         <ErrorBoundary>
-          <Header {...this.props.headerConfig} />
+          <Header {...headerConfig} />
           <main>
             <div className='container'>
               <Row
@@ -147,7 +146,7 @@ export default class ImportLayer extends React.Component<Props, State> {
 
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
+        <Header {...headerConfig} />
         <main>
           <div
             className='container'
@@ -178,8 +177,7 @@ export default class ImportLayer extends React.Component<Props, State> {
                     <Formsy>
                       <SelectGroup
                         groups={groups}
-                        onGroupChange={this.onGroupChange}
-                        type='layer'
+                        onGroupChange={onGroupChange}
                       />
                     </Formsy>
                   </Col>
@@ -198,8 +196,8 @@ export default class ImportLayer extends React.Component<Props, State> {
                   </Col>
                   <Col span={16}>
                     <FileUpload
-                      onUpload={this.onUpload}
-                      beforeUpload={this.onProcessingStart}
+                      onUpload={onUpload}
+                      beforeUpload={onProcessingStart}
                       action={`/api/import/${group_id || ''}/upload`}
                       t={t}
                     />

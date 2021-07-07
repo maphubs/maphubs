@@ -225,8 +225,9 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
                 complete: true
               })
 
-              window.location =
+              window.location.assign(
                 '/layer/info/' + layer_id + '/' + slugify(_this.t(name))
+              )
               cb()
             }
           )

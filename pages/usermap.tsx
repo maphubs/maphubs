@@ -43,7 +43,7 @@ type UserMapState = {
 }
 type State = LocaleStoreState & UserStoreState & UserMapState
 export default class UserMap extends React.Component<Props, State> {
-  BaseMapState: Container<any>
+  BaseMapState: any
   static async getInitialProps({
     req,
     query
@@ -71,7 +71,9 @@ export default class UserMap extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.stores = [UserStore, MapMakerStore]
-    this.state = {}
+    this.state = {
+      share_id: props.map.share_id
+    }
     Reflux.rehydrate(LocaleStore, {
       locale: props.locale,
       _csrf: props._csrf
@@ -100,28 +102,24 @@ export default class UserMap extends React.Component<Props, State> {
         user: props.user
       })
     }
-
-    if (props.map.share_id) {
-      this.state.share_id = props.map.share_id
-    }
   }
 
-  onEdit: any | (() => void) = () => {
-    window.location = '/map/edit/' + this.props.map.map_id // CreateMapActions.showMapDesigner();
+  onEdit = (): void => {
+    window.location.assign('/map/edit/' + this.props.map.map_id) // CreateMapActions.showMapDesigner();
   }
-  onFullScreen: any | (() => void) = () => {
+  onFullScreen = (): void => {
     let fullScreenLink = `/api/map/${this.props.map.map_id}/static/render?showToolbar=1`
 
     if (window.location.hash) {
       fullScreenLink = fullScreenLink += window.location.hash
     }
 
-    window.location = fullScreenLink
+    window.location.assign(fullScreenLink)
   }
-  onMapChanged: any | (() => void) = () => {
+  onMapChanged = (): void => {
     location.reload()
   }
-  download: any | (() => void) = () => {
+  download = (): void => {
     if (!this.props.map.has_screenshot) {
       // warn the user if we need to wait for the screenshot to be created
       const closeMessage = message.loading(this.t('Downloading'), 0)
@@ -130,15 +128,15 @@ export default class UserMap extends React.Component<Props, State> {
       }, 15000)
     }
   }
-  showEmbedCode: any | (() => void) = () => {
+  showEmbedCode = (): void => {
     this.setState({
       showEmbedCode: true
     })
   }
-  showSharePublic: any | (() => void) = () => {
+  showSharePublic = (): void => {
     this.refs.publicShareModal.show()
   }
-  showCopyMap: any | (() => void) = () => {
+  showCopyMap = (): void => {
     this.refs.copyMapModal.show()
   }
 
@@ -155,7 +153,7 @@ export default class UserMap extends React.Component<Props, State> {
       showCopyMap
     } = this
     const { map, publicShare, canEdit, headerConfig, layers, mapConfig } = props
-    const { share_id, user, showEmbedCode } = state
+    const { share_id, user, showEmbedCode, _csrf } = state
     const copyMapTitle = JSON.parse(JSON.stringify(map.title))
     // TODO: change copied map title in other languages
     copyMapTitle.en = `${copyMapTitle.en} - Copy`
@@ -275,7 +273,7 @@ export default class UserMap extends React.Component<Props, State> {
                 ref='publicShareModal'
                 map_id={map.map_id}
                 share_id={share_id}
-                _csrf={this.state._csrf}
+                _csrf={_csrf}
                 t={t}
               />
             )}
@@ -284,7 +282,7 @@ export default class UserMap extends React.Component<Props, State> {
                 ref='copyMapModal'
                 title={copyMapTitle}
                 map_id={map.map_id}
-                _csrf={this.state._csrf}
+                _csrf={_csrf}
                 t={t}
               />
             )}

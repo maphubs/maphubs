@@ -5,7 +5,7 @@ import { LocalizedString } from '../../types/LocalizedString'
 import { Group } from '../../types/group'
 
 type Props = {
-  groups: Array<Group>
+  groups: Group[]
   showTitle: boolean
   t: (v: string | LocalizedString) => string
 }

@@ -4,7 +4,7 @@ import MapIcon from '@material-ui/icons/Map'
 import Header from '../src/components/header'
 import Footer from '../src/components/footer'
 import CardCarousel from '../src/components/CardCarousel/CardCarousel'
-import cardUtil from '../services/card-util'
+import cardUtil from '../src/services/card-util'
 
 import Reflux from '../src/components/Rehydrate'
 import LocaleStore from '../src/stores/LocaleStore'
@@ -22,7 +22,6 @@ type Props = {
   _csrf: string
   footerConfig: Record<string, any>
   headerConfig: Record<string, any>
-  user: Record<string, any>
 }
 export default class UserMaps extends React.Component<Props> {
   static async getInitialProps({
@@ -68,11 +67,11 @@ export default class UserMaps extends React.Component<Props> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const { myMaps, maps } = this.props
+    const { t, props } = this
+    const { myMaps, maps, footerConfig, headerConfig } = props
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
+        <Header {...headerConfig} />
         <main
           style={{
             height: 'calc(100% - 70px)',
@@ -115,22 +114,21 @@ export default class UserMaps extends React.Component<Props> {
             >
               <Title level={2}>{t('My Maps')}</Title>
               <CardCarousel
-                infinite={false}
-                cards={maps.map(cardUtil.getMapCard)}
-                t={this.t}
+                cards={maps.map((map) => cardUtil.getMapCard(map))}
+                t={t}
               />
             </Row>
           )}
           {myMaps && (
             <FloatingButton
               onClick={() => {
-                window.location = '/map/new'
+                window.location.assign('/map/new')
               }}
               tooltip={t('Create New Map')}
             />
           )}
         </main>
-        <Footer t={t} {...this.props.footerConfig} />
+        <Footer t={t} {...footerConfig} />
       </ErrorBoundary>
     )
   }

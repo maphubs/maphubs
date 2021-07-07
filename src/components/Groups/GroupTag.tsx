@@ -18,18 +18,18 @@ export default class GroupTag extends React.Component<Props, State> {
     this.state = {}
   }
 
-  shouldComponentUpdate(nextProps: Props, nextState: State) {
+  shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
     if (nextState.failed !== this.state.failed) return true
     return false
   }
 
-  render() {
+  render(): JSX.Element {
     const { group, size } = this.props
     const { failed } = this.state
     const baseUrl = urlUtil.getBaseUrl()
 
     if (!group) {
-      return ''
+      return <></>
     }
 
     return (

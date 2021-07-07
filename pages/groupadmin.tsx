@@ -129,9 +129,10 @@ export default class GroupAdmin extends React.Component<Props, State> {
     })
   }
   submit: any | ((model: any) => void) = (model: Record<string, any>) => {
-    const { t } = this
-    const { _csrf } = this.state
-    const group_id = this.props.group.group_id
+    const { t, props, state } = this
+    const { _csrf } = state
+    const { group } = props
+    const group_id = group.group_id
     model.name = Locales.formModelToLocalizedString(model, 'name')
     model.description = Locales.formModelToLocalizedString(model, 'description')
     GroupActions.updateGroup(
@@ -150,7 +151,7 @@ export default class GroupAdmin extends React.Component<Props, State> {
           })
         } else {
           message.info(t('Group Saved'), 3, () => {
-            window.location = `/group/${group_id || ''}`
+            window.location.assign(`/group/${group_id || ''}`)
           })
         }
       }
@@ -204,7 +205,7 @@ export default class GroupAdmin extends React.Component<Props, State> {
             })
           } else {
             message.info(t('Group Deleted'), 3, () => {
-              window.location = '/groups'
+              window.location.assign('/groups')
             })
           }
         })
@@ -353,7 +354,7 @@ export default class GroupAdmin extends React.Component<Props, State> {
             >
               <PageHeader
                 onBack={() => {
-                  window.location = groupUrl
+                  window.location.assign(groupUrl)
                 }}
                 style={{
                   padding: '5px'
@@ -422,7 +423,7 @@ export default class GroupAdmin extends React.Component<Props, State> {
                     length={100}
                     tooltipPosition='top'
                     tooltip={t('Short Descriptive Name for the Group')}
-                    value={this.state.group.name}
+                    value={group.name}
                     required
                     t={t}
                   />

@@ -3,7 +3,7 @@ import { Avatar } from 'antd'
 import PersonIcon from '@material-ui/icons/Person'
 type Props = {
   src?: string
-  size: number
+  size?: number
   t: (v: string) => string
 }
 const UserIcon = ({ size, src, t }: Props): JSX.Element => {

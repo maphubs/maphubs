@@ -8,6 +8,7 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
 import MapIcon from '@material-ui/icons/Map'
 import LayersIcon from '@material-ui/icons/Layers'
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks'
+import { LocalizedString } from '../../types/LocalizedString'
 export type CardConfig = {
   id: string
   title?: LocalizedString
@@ -43,7 +44,7 @@ export default class MapHubsCard extends React.Component<Props, State> {
     if (onClick) {
       onClick(data)
     } else if (link && typeof window !== 'undefined') {
-      window.location = link
+      window.location.assign(link)
     }
   }
 
@@ -72,7 +73,7 @@ export default class MapHubsCard extends React.Component<Props, State> {
       draft
     } = this.props
     const { imageFailed } = this.state
-    let icon = ''
+    let icon = <></>
     let toolTipText = ''
     const iconStyle = {
       position: 'absolute',
@@ -81,18 +82,32 @@ export default class MapHubsCard extends React.Component<Props, State> {
     }
 
     if (type) {
-      if (type === 'layer') {
-        icon = <LayersIcon style={iconStyle} />
-        toolTipText = t('Layer')
-      } else if (type === 'group') {
-        icon = <SupervisorAccountIcon style={iconStyle} />
-        toolTipText = t('Group')
-      } else if (type === 'story') {
-        icon = <LibraryBooksIcon style={iconStyle} />
-        toolTipText = t('Story')
-      } else if (type === 'map') {
-        icon = <MapIcon style={iconStyle} />
-        toolTipText = t('Map')
+      switch (type) {
+        case 'layer': {
+          icon = <LayersIcon style={iconStyle} />
+          toolTipText = t('Layer')
+
+          break
+        }
+        case 'group': {
+          icon = <SupervisorAccountIcon style={iconStyle} />
+          toolTipText = t('Group')
+
+          break
+        }
+        case 'story': {
+          icon = <LibraryBooksIcon style={iconStyle} />
+          toolTipText = t('Story')
+
+          break
+        }
+        case 'map': {
+          icon = <MapIcon style={iconStyle} />
+          toolTipText = t('Map')
+
+          break
+        }
+        // No default
       }
     }
 

@@ -2,9 +2,9 @@ import _includes from 'lodash.includes'
 import _find from 'lodash.find'
 import _buffer from '@turf/buffer'
 import _bbox from '@turf/bbox'
-import type { GLSource, GLLayer } from '../../../types/mapbox-gl-style'
 import { v1 as uuidv1 } from 'uuid'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import mapboxgl from 'mapbox-gl'
 const debug = DebugService('MapSearchMixin')
 export default {
   getActiveLayerIds(): {
@@ -15,7 +15,7 @@ export default {
     const sourceIds = []
 
     if (this.overlayMapStyle) {
-      this.overlayMapStyle.layers.forEach((layer) => {
+      for (const layer of this.overlayMapStyle.layers) {
         if (
           layer.metadata &&
           (layer.metadata['maphubs:interactive'] ||
@@ -31,7 +31,7 @@ export default {
 
           layerIds.push(layer.id)
         }
-      })
+      }
     }
 
     debug.log(
@@ -48,11 +48,11 @@ export default {
     let firstLayer
 
     if (glStyle && glStyle.layers && glStyle.layers.length > 0) {
-      glStyle.layers.forEach((layer) => {
+      for (const layer of glStyle.layers) {
         if (!firstLayer && layer.id.startsWith('omh-label')) {
           firstLayer = layer.id
         }
-      })
+      }
     } else if (
       this.state.baseMap === 'default' ||
       this.state.baseMap === 'dark' ||
@@ -72,7 +72,7 @@ export default {
     })
     this.searchFeatures = {}
     const searchFeatures = this.searchFeatures
-    debug.log(`initializing index for ${features && features.length} features`)
+    debug.log(`initializing index for ${features?.length} features`)
     debug.log(features)
     return new Promise((resolve) => {
       this.idx = this.lunr(function () {
@@ -80,7 +80,7 @@ export default {
         this.field('properties')
 
         if (features) {
-          features.forEach((feature) => {
+          for (const feature of features) {
             const id = feature.properties.mhid
             const properties = Object.values(feature.properties).join(' ')
             this.add({
@@ -88,7 +88,7 @@ export default {
               properties
             })
             searchFeatures[id] = feature
-          })
+          }
         }
 
         debug.log('***search index initialized***')
@@ -112,48 +112,34 @@ export default {
       const matchNameArr = []
 
       if (presets && presets.length > 0) {
-        presets.forEach((preset) => {
+        for (const preset of presets) {
           if (preset && preset.label) {
             const label = t(preset.label).toString()
 
-            if (label.match(/.*[,Nn]ame.*/g)) {
+            if (/.*[,Nn]ame.*/g.test(label)) {
               matchNameArr.push(preset.tag)
             }
           }
-        })
-
-        if (matchNameArr.length > 0) {
-          // found something that matches Name
-          nameField = matchNameArr[0]
-        } else {
-          // otherwise just take the first preset
-          nameField = presets[0].tag
         }
+
+        nameField = matchNameArr.length > 0 ? matchNameArr[0] : presets[0].tag
       } else {
         // use props of first feature
         const propNames = Object.keys(result.properties)
-        propNames.forEach((propName) => {
-          if (propName.match(/.*[,Nn]ame.*/g)) {
+        for (const propName of propNames) {
+          if (/.*[,Nn]ame.*/g.test(propName)) {
             matchNameArr.push(propName)
           }
-        })
-
-        if (matchNameArr.length > 0) {
-          // found something that matches Name
-          nameField = matchNameArr[0]
-        } else {
-          // otherwise just take the first prop
-          nameField = propNames[0]
         }
+
+        nameField = matchNameArr.length > 0 ? matchNameArr[0] : propNames[0]
       }
     }
 
     return nameField
   },
 
-  async onSearch(
-    queryText: string
-  ): Promise<{
+  async onSearch(queryText: string): Promise<{
     list: Array<
       | any
       | {
@@ -162,7 +148,15 @@ export default {
         }
     >
   }> {
-    const _this = this
+    const {
+      idx,
+      map,
+      overlayMapStyle,
+      searchFeatures,
+      searchSourceIds,
+      getSearchDisplayLayers,
+      getFirstLabelLayer
+    } = this
 
     // clear prev display layers
     this.onSearchReset()
@@ -170,12 +164,12 @@ export default {
       list: []
     }
     let searchDisplayLayers = []
-    if (!this.idx) await this.initIndex()
-    const searchResults = this.idx.search(queryText)
-    const queryResults = searchResults.map((r) => this.searchFeatures[r.ref])
+    if (!idx) await this.initIndex()
+    const searchResults = idx.search(queryText)
+    const queryResults = searchResults.map((r) => searchFeatures[r.ref])
     debug.log(queryResults)
     const mhids = []
-    queryResults.forEach((result) => {
+    for (const result of queryResults) {
       const nameField = this.getNameFieldForResult(result)
       const name = result.properties[nameField]
       const data = {
@@ -194,64 +188,65 @@ export default {
         data.id = uuidv1()
         results.list.push(data)
       }
-    })
+    }
 
     // set display layers for each source
-    if (this.searchSourceIds) {
-      this.searchSourceIds.map((sourceId) => {
+    if (searchSourceIds) {
+      searchSourceIds.map((sourceId) => {
         if (queryResults && queryResults.length > 0) {
-          const source = _this.overlayMapStyle.sources[sourceId]
-          searchDisplayLayers = searchDisplayLayers.concat(
-            _this.getSearchDisplayLayers(sourceId, source, mhids)
-          )
+          const source = overlayMapStyle.sources[sourceId]
+          searchDisplayLayers = [
+            ...searchDisplayLayers,
+            ...getSearchDisplayLayers(sourceId, source, mhids)
+          ]
         }
       })
     }
 
     // calculate bounds of results
-    if (results.list.length > 0) {
-      // getting a weird effect from larger polygon layers if they are zoomed inside of their boundaries
-      if (_this.map.getZoom() < 10) {
-        const bbox = _bbox({
-          type: 'FeatureCollection',
-          features: queryResults
-        })
+    if (
+      results.list.length > 0 && // getting a weird effect from larger polygon layers if they are zoomed inside of their boundaries
+      map.getZoom() < 10
+    ) {
+      const bbox = _bbox({
+        type: 'FeatureCollection',
+        features: queryResults
+      })
 
-        _this.map.fitBounds(bbox, {
-          padding: 25,
-          curve: 3,
-          speed: 0.6,
-          maxZoom: 16
-        })
+      map.fitBounds(bbox, {
+        padding: 25,
+        curve: 3,
+        speed: 0.6,
+        maxZoom: 16
+      })
 
-        results.bbox = bbox
-      }
+      results.bbox = bbox
     }
 
     this.searchDisplayLayers = searchDisplayLayers
 
-    const firstLabelLayer = _this.getFirstLabelLayer()
+    const firstLabelLayer = getFirstLabelLayer()
 
-    searchDisplayLayers.forEach((layer) => {
-      _this.map.addLayer(layer, firstLabelLayer)
-    })
+    for (const layer of searchDisplayLayers) {
+      map.addLayer(layer, firstLabelLayer)
+    }
     debug.log(results)
     return results
   },
 
-  onSearchResultClick(result: Record<string, any>) {
-    const _this = this
+  onSearchResultClick(result: Record<string, any>): void {
+    const { map, searchSourceIds, searchFeatures } = this
 
-    if ((!result.geometry || !result._geometry) && this.searchSourceIds) {
-      const feature = this.searchFeatures[result.id]
+    if ((!result.geometry || !result._geometry) && searchSourceIds) {
+      const feature = searchFeatures[result.id]
 
       if (feature) {
         result = feature
       } else {
         // try to retrieve geometry from mapboxgl
-        this.searchSourceIds.map((sourceId) => {
+        searchSourceIds.map((sourceId) => {
           // query sources in case map has moved from original search area
-          const results = _this.map.querySourceFeatures(sourceId, {
+          const results = map.querySourceFeatures(sourceId, {
             filter: ['in', 'mhid', result.id]
           })
 
@@ -264,7 +259,7 @@ export default {
 
     if (result.bbox || result.boundingbox) {
       const bbox = result.bbox ? result.bbox : result.boundingbox
-      this.map.fitBounds(bbox, {
+      map.fitBounds(bbox, {
         padding: 25,
         curve: 3,
         speed: 0.6,
@@ -283,36 +278,36 @@ export default {
 
       const bbox = _bbox(geometry)
 
-      this.map.fitBounds(bbox, {
+      map.fitBounds(bbox, {
         padding: 25,
         curve: 3,
         speed: 0.6,
         maxZoom: 22
       })
     } else if (result.lat && result.lon) {
-      this.map.flyTo({
+      map.flyTo({
         center: [result.lon, result.lat]
       })
     }
   },
 
-  onSearchReset() {
-    const _this = this
+  onSearchReset(): void {
+    const { map, searchDisplayLayers } = this
 
-    if (this.searchDisplayLayers && this.searchDisplayLayers.length > 0) {
-      this.searchDisplayLayers.forEach((layer) => {
-        _this.map.removeLayer(layer.id)
-      })
+    if (searchDisplayLayers && searchDisplayLayers.length > 0) {
+      for (const layer of searchDisplayLayers) {
+        map.removeLayer(layer.id)
+      }
     }
   },
 
   getSearchDisplayLayers(
     sourceID: string,
-    source: GLSource,
+    source: mapboxgl.Source,
     mhids: Array<string>
-  ): Array<GLLayer> {
+  ): mapboxgl.Layer[] {
     const searchLayerColor = 'yellow'
-    const mhidFilter = ['in', 'mhid'].concat(mhids)
+    const mhidFilter = ['in', 'mhid', ...mhids]
     return [
       {
         id: `omh-search-result-point-${sourceID}`,

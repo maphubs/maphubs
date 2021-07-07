@@ -98,13 +98,14 @@ class TextArea extends React.Component<Props, State> {
       successText,
       t,
       tooltip,
-      tooltipPosition
+      tooltipPosition,
+      label
     } = this.props
     const { charCount } = this.state
     return (
-      <Tooltip title={tooltip} position={tooltipPosition}>
+      <Tooltip title={tooltip} placement={tooltipPosition}>
         <label htmlFor={id || name}>
-          {this.props.label} {isRequired && '*'}
+          {label} {isRequired && '*'}
         </label>
         <Input.TextArea
           autoSize={{

@@ -1,11 +1,13 @@
-import type { GLStyle } from './mapbox-gl-style'
+import mapboxgl from 'mapbox-gl'
+import { LocalizedString } from './LocalizedString'
+
 export type Layer = {
   layer_id?: number
   shortid?: string
   name?: LocalizedString
   description?: LocalizedString
   source?: LocalizedString
-  style?: GLStyle | null | undefined
+  style?: mapboxgl.Style | null | undefined
   labels?: Record<string, any>
   settings?: {
     active: boolean
@@ -29,6 +31,7 @@ export type Layer = {
       | 'ags-featureserver-query'
       | 'ags-mapserver-query'
       | 'earthengine'
+      | 'ags-mapserver-tiles'
     url?: string
     layers?: Array<Record<string, any>>
     tiles?: Array<string>

@@ -82,11 +82,11 @@ export default class ImageCrop extends React.Component<Props, State> {
   }
   cropperInstance: any
 
-  componentDidMount() {
+  componentDidMount(): void {
     Cropper = require('react-cropper').default
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props): void {
     const updateProps = {}
 
     if (nextProps.aspectRatio) {
@@ -104,18 +104,18 @@ export default class ImageCrop extends React.Component<Props, State> {
     }
 
     if (nextProps.imageData && !this.state.src) {
-      this.state.src = nextProps.imageData
+      updateProps.src = nextProps.imageData
     }
 
     this.setState(updateProps)
   }
 
-  show: any | (() => void) = () => {
+  show = (): void => {
     this.setState({
       visible: true
     })
   }
-  checkFileSize: any | ((file: any) => any) = (file: Record<string, any>) => {
+  checkFileSize = (file: Record<string, any>): void => {
     const { t } = this
 
     const _this = this
@@ -133,9 +133,7 @@ export default class ImageCrop extends React.Component<Props, State> {
       return resolve()
     })
   }
-  resizeImage: any | ((sourceCanvas: any) => any) = (
-    sourceCanvas: any
-  ): Promise<Record<string, any>> => {
+  resizeImage = (sourceCanvas: any): Promise<Record<string, any>> => {
     let pica
 
     if (typeof window === 'undefined') {
@@ -249,7 +247,7 @@ export default class ImageCrop extends React.Component<Props, State> {
       }
     })
   }
-  _onFileUpload = async (getFile: Promise) => {
+  _onFileUpload = async (getFile: Promise): Promise<void> => {
     const { t } = this
 
     const _this = this
@@ -427,13 +425,13 @@ export default class ImageCrop extends React.Component<Props, State> {
       visible: false
     })
   }
-  zoomIn: any | (() => void) = () => {
+  zoomIn = (): void => {
     this.cropperInstance.zoom(0.1)
   }
-  zoomOut: any | (() => void) = () => {
+  zoomOut = (): void => {
     this.cropperInstance.zoom(-0.1)
   }
-  cropOriginal: any | (() => void) = () => {
+  cropOriginal = (): void => {
     this.resetCropPosition()
     const { img } = this.state
 
@@ -441,20 +439,20 @@ export default class ImageCrop extends React.Component<Props, State> {
       this.cropperInstance.setAspectRatio(img.width / img.height)
     }
   }
-  aspect16by9: any | (() => void) = () => {
+  aspect16by9 = (): void => {
     this.cropperInstance.setAspectRatio(16 / 9)
   }
-  aspect3by2: any | (() => void) = () => {
+  aspect3by2 = (): void => {
     this.cropperInstance.setAspectRatio(3 / 2)
   }
-  aspectSquare: any | (() => void) = () => {
+  aspectSquare = (): void => {
     this.cropperInstance.setAspectRatio(1)
   }
-  resetCropPosition: any | (() => void) = () => {
+  resetCropPosition = (): void => {
     console.log('resetting crop position')
     if (this.cropperInstance?.reset) this.cropperInstance.reset()
   }
-  resetImageCrop: any | (() => void) = () => {
+  resetImageCrop = (): void => {
     if (this.cropperInstance?.reset) this.cropperInstance.reset()
     if (this.cropperInstance?.clear) this.cropperInstance.clear()
     this.setState({
@@ -474,11 +472,24 @@ export default class ImageCrop extends React.Component<Props, State> {
     })
   }
 
-  render(): Element<'div'> {
-    const { t, _crop } = this
+  render(): JSX.Element {
+    const {
+      t,
+      _crop,
+      onSave,
+      handleCloseSelected,
+      _onFileUpload,
+      zoomIn,
+      zoomOut,
+      cropOriginal,
+      aspect3by2,
+      aspectSquare,
+      resetCropPosition,
+      aspect16by9
+    } = this
     const { lockAspect, autoCropArea, aspectRatio, allowedExtensions } =
       this.props
-    const { src, img } = this.state
+    const { src, img, visible } = this.state
     return (
       <div>
         <style jsx global>
@@ -491,9 +502,9 @@ export default class ImageCrop extends React.Component<Props, State> {
         </style>
         <Modal
           title={t('Select Image')}
-          visible={this.state.visible}
+          visible={visible}
           destroyOnClose
-          onOk={this.onSave}
+          onOk={onSave}
           centered
           bodyStyle={{
             height: 'calc(100% - 110px)',
@@ -502,19 +513,19 @@ export default class ImageCrop extends React.Component<Props, State> {
           width='80vw'
           height='90vh'
           footer={[
-            <Button key='back' onClick={this.handleCloseSelected}>
+            <Button key='back' onClick={handleCloseSelected}>
               Cancel
             </Button>,
             <Button
               key='submit'
               type='primary'
               disabled={!src}
-              onClick={this.onSave}
+              onClick={onSave}
             >
               Save
             </Button>
           ]}
-          onCancel={this.handleCloseSelected}
+          onCancel={handleCloseSelected}
         >
           {!src && (
             <Row
@@ -526,7 +537,7 @@ export default class ImageCrop extends React.Component<Props, State> {
             >
               <Dragger
                 name='file'
-                action={this._onFileUpload}
+                action={_onFileUpload}
                 style={{
                   width: '400px'
                 }}
@@ -559,13 +570,13 @@ export default class ImageCrop extends React.Component<Props, State> {
               >
                 <ImageCropToolbar
                   lockAspect={lockAspect}
-                  zoomIn={this.zoomIn}
-                  zoomOut={this.zoomOut}
-                  cropOriginal={this.cropOriginal}
-                  aspect16by9={this.aspect16by9}
-                  aspect3by2={this.aspect3by2}
-                  aspectSquare={this.aspectSquare}
-                  resetCropPosition={this.resetCropPosition}
+                  zoomIn={zoomIn}
+                  zoomOut={zoomOut}
+                  cropOriginal={cropOriginal}
+                  aspect16by9={aspect16by9}
+                  aspect3by2={aspect3by2}
+                  aspectSquare={aspectSquare}
+                  resetCropPosition={resetCropPosition}
                   t={t}
                 />
               </Row>

@@ -11,7 +11,7 @@ import type { Layer } from '../src/types/layer'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import UserStore from '../src/stores/UserStore'
 import FloatingAddButton from '../src/components/FloatingAddButton'
-import cardUtil from '../services/card-util'
+import cardUtil from '../src/services/card-util'
 const { Title } = Typography
 type Props = {
   featuredLayers: Array<Layer>
@@ -55,13 +55,26 @@ export default class Layers extends React.Component<Props> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const featuredCards = this.props.featuredLayers.map(cardUtil.getLayerCard)
-    const recentCards = this.props.recentLayers.map(cardUtil.getLayerCard)
-    const popularCards = this.props.popularLayers.map(cardUtil.getLayerCard)
+    const { t, props } = this
+    const {
+      featuredLayers,
+      recentLayers,
+      popularLayers,
+      headerConfig,
+      footerConfig
+    } = props
+    const featuredCards = featuredLayers.map((layer) =>
+      cardUtil.getLayerCard(layer)
+    )
+    const recentCards = recentLayers.map((layer) =>
+      cardUtil.getLayerCard(layer)
+    )
+    const popularCards = popularLayers.map((layer) =>
+      cardUtil.getLayerCard(layer)
+    )
     return (
       <ErrorBoundary>
-        <Header activePage='layers' {...this.props.headerConfig} />
+        <Header activePage='layers' {...headerConfig} />
         <main
           style={{
             margin: '10px'
@@ -81,22 +94,25 @@ export default class Layers extends React.Component<Props> {
               title={t('Featured')}
               cards={featuredCards}
               viewAllLink='/layers/all'
+              t={t}
             />
           )}
           <CardCollection
             title={t('Popular')}
             cards={popularCards}
             viewAllLink='/layers/all'
+            t={t}
           />
           <CardCollection
             title={t('Recent')}
             cards={recentCards}
             viewAllLink='/layers/all'
+            t={t}
           />
 
           <FloatingAddButton
             onClick={() => {
-              window.location = '/createlayer'
+              window.location.assign('/createlayer')
             }}
             tooltip={t('Create New Layer')}
           />
@@ -112,7 +128,7 @@ export default class Layers extends React.Component<Props> {
             </Button>
           </Row>
         </main>
-        <Footer t={t} {...this.props.footerConfig} />
+        <Footer t={t} {...footerConfig} />
       </ErrorBoundary>
     )
   }

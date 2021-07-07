@@ -5,6 +5,7 @@ import _isequal from 'lodash.isequal'
 import { Tabs, Tooltip } from 'antd'
 import localeUtil from '../../locales/util'
 import getConfig from 'next/config'
+import { LocalizedString } from '../../types/LocalizedString'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const supportedLangs = localeUtil.getSupported()
 let languagesFromConfig
@@ -89,7 +90,7 @@ export default class MultiTextArea extends React.Component<Props, State> {
     }
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props): void {
     if (!_isequal(this.props.value, nextProps.value)) {
       if (nextProps.value) {
         this.setState({
@@ -116,24 +117,40 @@ export default class MultiTextArea extends React.Component<Props, State> {
     return false
   }
 
-  changeValue: any | ((model: any) => void) = (model: Record<string, any>) => {
+  changeValue = (model: Record<string, any>): void => {
     this.setState({
       value: model
     })
   }
 
-  render(): React.ReactNode {
-    const { t } = this
+  render(): JSX.Element {
+    const { t, props, state } = this
+    const {
+      length,
+      required,
+      showCharCount,
+      tooltipPosition,
+      tooltip,
+      dataDelay,
+      validations,
+      validationErrors,
+      successText,
+      icon,
+      label
+    } = props
+
+    const { value } = state
+
     const commonProps = {
-      length: this.props.length,
-      showCharCount: this.props.showCharCount,
-      tooltipPosition: this.props.tooltipPosition,
-      tooltip: this.props.tooltip,
-      dataDelay: this.props.dataDelay,
-      validations: this.props.validations,
-      validationErrors: this.props.validationErrors,
-      successText: this.props.successText,
-      icon: this.props.icon
+      length,
+      showCharCount,
+      tooltipPosition,
+      tooltip,
+      dataDelay,
+      validations,
+      validationErrors,
+      successText,
+      icon
     }
     return (
       <Tabs
@@ -163,10 +180,10 @@ export default class MultiTextArea extends React.Component<Props, State> {
                 }}
               >
                 <TextArea
-                  name={`${this.props.name}-${locale.value}`}
-                  value={this.state.value[locale.value]}
-                  label={this.props.label[locale.value]}
-                  required={this.props.required && locale.value === 'en'}
+                  name={`${props.name}-${locale.value}`}
+                  value={value[locale.value]}
+                  label={label[locale.value]}
+                  required={required && locale.value === 'en'}
                   {...commonProps}
                   t={t}
                 />

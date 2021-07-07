@@ -1,21 +1,22 @@
-import type { GLLayer } from '../../../types/mapbox-gl-style'
+import mapboxgl from 'mapbox-gl'
+
 export default {
   defaultRasterStyle(
     layer_id: number,
     shortid: string,
     elc: Record<string, any>,
-    type: string = 'raster'
-  ): any {
+    type = 'raster'
+  ): mapboxgl.Style {
     return this.rasterStyleWithOpacity(layer_id, shortid, elc, 100, type, elc)
   },
 
   defaultMultiRasterStyle(
     layer_id: number,
     shortid: string,
-    layers: Array<GLLayer>,
-    type: string = 'raster',
+    layers: Array<mapboxgl.Layer>,
+    type = 'raster',
     elc?: Record<string, any>
-  ): any {
+  ): mapboxgl.Style {
     return this.multiRasterStyleWithOpacity(
       layer_id,
       shortid,
@@ -121,9 +122,9 @@ export default {
       ]
     }
     const metadata = {}
-    Object.keys(elc).forEach((key) => {
+    for (const key of Object.keys(elc)) {
       metadata[`maphubs:${key}`] = elc[key]
-    })
+    }
     style.sources['omh-' + shortid] = {
       type,
       minzoom: elc.minzoom || 0,
@@ -140,7 +141,7 @@ export default {
     shortid: string,
     layers: Array<Record<string, any>>,
     opacity: number,
-    type: string = 'raster'
+    type = 'raster'
   ): {
     layers: Array<
       | any

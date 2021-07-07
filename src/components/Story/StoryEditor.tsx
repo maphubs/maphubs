@@ -138,7 +138,7 @@ class StoryEditor extends React.Component<Props, State> {
     try {
       await containers.story.delete()
       message.info(t('Story Deleted'), 1, () => {
-        window.location = '/'
+        window.location.assign('/')
       })
     } catch (err) {
       notification.error({
@@ -283,9 +283,9 @@ class StoryEditor extends React.Component<Props, State> {
                   ghost
                   disabled={modified}
                   onClick={() => {
-                    window.location = `/story/${slugify(
-                      title[locale]
-                    )}/${story_id}`
+                    window.location.assign(
+                      `/story/${slugify(title[locale])}/${story_id}`
+                    )
                   }}
                 >
                   {t('View Story')}
@@ -308,19 +308,19 @@ class StoryEditor extends React.Component<Props, State> {
               />
               <style jsx global>
                 {`
-                .ant-calendar-input {
-                  background-color: #fff !important;
-                  border: 0 !important;
-                  border-bottom: none !important;
-                  height: 22px  !important;
-                  padding: 4px 11px !important;
-                  margin: 0 !important;
-                }
-                .ant-calendar-picker-input {
-                  height: 32px  !important;
-                  font-size: 14px !important;
-                }
-              `}
+                  .ant-calendar-input {
+                    background-color: #fff !important;
+                    border: 0 !important;
+                    border-bottom: none !important;
+                    height: 22px !important;
+                    padding: 4px 11px !important;
+                    margin: 0 !important;
+                  }
+                  .ant-calendar-picker-input {
+                    height: 32px !important;
+                    font-size: 14px !important;
+                  }
+                `}
               </style>
             </Row>
           </ErrorBoundary>

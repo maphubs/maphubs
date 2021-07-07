@@ -102,7 +102,7 @@ export default class AllStories extends React.Component<Props, State> {
           </div>
           <FloatingAddButton
             onClick={() => {
-              window.location = '/createstory'
+              window.location.assign('/createstory')
             }}
             tooltip={t('Create New Story')}
           />

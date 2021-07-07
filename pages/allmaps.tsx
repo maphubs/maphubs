@@ -78,7 +78,7 @@ export default class AllMaps extends React.Component<Props> {
             >
               <Button
                 onClick={() => {
-                  window.location = '/map/new'
+                  window.location.assign('/map/new')
                 }}
               >
                 {t('Create New Map')}

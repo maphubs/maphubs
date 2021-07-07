@@ -4,7 +4,7 @@ import Footer from '../src/components/footer'
 import { Row, Button, Typography } from 'antd'
 import CardCollection from '../src/components/CardCarousel/CardCollection'
 import CardSearch from '../src/components/CardCarousel/CardSearch'
-import cardUtil from '../services/card-util'
+import cardUtil from '../src/services/card-util'
 
 import Reflux from '../src/components/Rehydrate'
 import LocaleStore from '../src/stores/LocaleStore'
@@ -62,13 +62,26 @@ export default class Groups extends React.Component<Props> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const featuredCards = this.props.featuredGroups.map(cardUtil.getGroupCard)
-    const popularCards = this.props.popularGroups.map(cardUtil.getGroupCard)
-    const recentCards = this.props.recentGroups.map(cardUtil.getGroupCard)
+    const { t, props } = this
+    const {
+      featuredGroups,
+      popularGroups,
+      recentGroups,
+      headerConfig,
+      footerConfig
+    } = props
+    const featuredCards = featuredGroups.map((group) =>
+      cardUtil.getGroupCard(group)
+    )
+    const popularCards = popularGroups.map((group) =>
+      cardUtil.getGroupCard(group)
+    )
+    const recentCards = recentGroups.map((group) =>
+      cardUtil.getGroupCard(group)
+    )
     return (
       <ErrorBoundary>
-        <Header activePage='groups' {...this.props.headerConfig} />
+        <Header activePage='groups' {...headerConfig} />
         <main
           style={{
             margin: '10px'
@@ -91,22 +104,25 @@ export default class Groups extends React.Component<Props> {
                 title={t('Featured')}
                 cards={featuredCards}
                 viewAllLink='/groups/all'
+                t={t}
               />
             )}
             <CardCollection
               title={t('Popular')}
               cards={popularCards}
               viewAllLink='/groups/all'
+              t={t}
             />
             <CardCollection
               title={t('Recent')}
               cards={recentCards}
               viewAllLink='/groups/all'
+              t={t}
             />
 
             <FloatingAddButton
               onClick={() => {
-                window.location = '/creategroup'
+                window.location.assign('/creategroup')
               }}
               tooltip={t('Create New Group')}
             />
@@ -123,7 +139,7 @@ export default class Groups extends React.Component<Props> {
             </Button>
           </Row>
         </main>
-        <Footer t={t} {...this.props.footerConfig} />
+        <Footer t={t} {...footerConfig} />
       </ErrorBoundary>
     )
   }

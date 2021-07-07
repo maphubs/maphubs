@@ -7,14 +7,15 @@ import CardCarousel from '../CardCarousel/CardCarousel'
 import SearchBox from '../SearchBox'
 import { checkClientError } from '../../services/client-error-response'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { LocalizedString } from '../../types/LocalizedString'
 const debug = DebugService('AddMapToStory')
 type Props = {
   visible?: boolean
-  onClose: (...args: Array<any>) => any
-  onAdd: (...args: Array<any>) => any
+  onClose: (...args: Array<any>) => void
+  onAdd: (...args: Array<any>) => void
   myMaps: Array<Record<string, any>>
   popularMaps: Array<Record<string, any>>
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   searchActive: boolean
@@ -33,9 +34,8 @@ export default class AddMapDrawer extends React.Component<Props, State> {
     searchResults: []
   }
   handleSearch: (input: string) => void = (input: string) => {
-    const { t } = this.props
-
-    const _this = this
+    const { props, setState } = this
+    const { t } = props
 
     debug.log('searching for: ' + input)
     request
@@ -55,7 +55,7 @@ export default class AddMapDrawer extends React.Component<Props, State> {
               })
             } else {
               if (res.body.maps && res.body.maps.length > 0) {
-                _this.setState({
+                setState({
                   searchActive: true,
                   searchResults: res.body.maps
                 })
@@ -80,17 +80,15 @@ export default class AddMapDrawer extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { resetSearch, handleSearch } = this
-    const { visible, onClose, onAdd, myMaps, popularMaps, t } = this.props
-    const { searchActive, searchResults } = this.state
-    const myCards = myMaps.map((map, i) =>
-      cardUtil.getMapCard(map, i, [], onAdd)
-    )
+    const { resetSearch, handleSearch, state, props } = this
+    const { visible, onClose, onAdd, myMaps, popularMaps, t } = props
+    const { searchActive, searchResults } = state
+    const myCards = myMaps.map((map, i) => cardUtil.getMapCard(map, onAdd))
     const popularCards = popularMaps.map((map, i) =>
-      cardUtil.getMapCard(map, i, [], onAdd)
+      cardUtil.getMapCard(map, onAdd)
     )
     const searchCards = searchResults.map((map, i) =>
-      cardUtil.getMapCard(map, i, [], onAdd)
+      cardUtil.getMapCard(map, onAdd)
     )
     return (
       <Drawer
@@ -150,7 +148,7 @@ export default class AddMapDrawer extends React.Component<Props, State> {
               </h5>
               <Divider />
               {searchResults.length > 0 && (
-                <CardCarousel infinite={false} cards={searchCards} t={t} />
+                <CardCarousel cards={searchCards} t={t} />
               )}
               {searchResults.length === 0 && (
                 <p>
@@ -175,7 +173,7 @@ export default class AddMapDrawer extends React.Component<Props, State> {
                 {t('My Maps')}
               </h5>
               <div className='divider' />
-              <CardCarousel cards={myCards} infinite={false} t={t} />
+              <CardCarousel cards={myCards} t={t} />
             </Row>
           )}
           <Row>
@@ -188,7 +186,7 @@ export default class AddMapDrawer extends React.Component<Props, State> {
               {t('Popular Maps')}
             </h5>
             <Divider />
-            <CardCarousel cards={popularCards} infinite={false} t={t} />
+            <CardCarousel cards={popularCards} t={t} />
           </Row>
         </Row>
       </Drawer>

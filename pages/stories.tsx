@@ -10,10 +10,11 @@ import LocaleStore from '../src/stores/LocaleStore'
 import type { UserStoreState } from '../src/stores/UserStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import FloatingAddButton from '../src/components/FloatingAddButton'
+import { Story } from '../src/types/story'
 const { Title } = Typography
 type Props = {
-  popularStories: Array<Record<string, any>>
-  recentStories: Array<Record<string, any>>
+  popularStories: Story[]
+  recentStories: Story[]
   locale: string
   _csrf: string
   footerConfig: Record<string, any>
@@ -55,13 +56,13 @@ export default class Stories extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const { recentStories, popularStories } = this.props
+    const { t, props } = this
+    const { recentStories, popularStories, headerConfig, footerConfig } = props
     const hasRecent = recentStories && recentStories.length > 0
     const hasPopular = popularStories && popularStories.length > 0
     return (
       <ErrorBoundary>
-        <Header activePage='stories' {...this.props.headerConfig} />
+        <Header activePage='stories' {...headerConfig} />
         <main>
           <Row
             style={{
@@ -83,7 +84,7 @@ export default class Stories extends React.Component<Props, State> {
             {hasRecent && (
               <Col
                 sm={24}
-                med={12}
+                md={12}
                 style={{
                   margin: '20px'
                 }}
@@ -117,7 +118,7 @@ export default class Stories extends React.Component<Props, State> {
             {hasPopular && (
               <Col
                 sm={24}
-                med={12}
+                md={12}
                 style={{
                   margin: '20px'
                 }}
@@ -161,12 +162,12 @@ export default class Stories extends React.Component<Props, State> {
           </Row>
           <FloatingAddButton
             onClick={() => {
-              window.location = '/createstory'
+              window.location.assign('/createstory')
             }}
             tooltip={t('Create New Story')}
           />
         </main>
-        <Footer t={t} {...this.props.footerConfig} />
+        <Footer t={t} {...footerConfig} />
       </ErrorBoundary>
     )
   }

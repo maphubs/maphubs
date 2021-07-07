@@ -9,7 +9,7 @@ import 'ace-builds/src-min-noconflict/ext-language_tools'
 import 'ace-builds/src-min-noconflict/ext-spellcheck'
 import 'ace-builds/src-min-noconflict/ext-searchbox'
 
-const ace = require('ace-builds/src-noconflict/ace')
+import ace from 'ace-builds/src-noconflict/ace'
 
 ace.config.set(
   'basePath',
@@ -77,11 +77,11 @@ export default class CodeEditor extends React.Component<Props, State> {
             let canSave = true
 
             if (annotations?.length > 0) {
-              annotations.forEach((anno) => {
+              for (const anno of annotations) {
                 if (anno.type === 'error') {
                   canSave = false
                 }
-              })
+              }
             }
 
             this.setState({

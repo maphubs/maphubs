@@ -12,7 +12,7 @@ import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
   onSave: (...args: Array<any>) => void
   editing?: boolean
-  owned_by_group_id: string
+  owned_by_group_id?: string
   title: LocalizedString
   _csrf: string
 }
@@ -136,7 +136,6 @@ export default class SaveMapPanel extends React.Component<Props, State> {
           <SelectGroup
             groups={groups}
             group_id={owned_by_group_id}
-            type='map'
             canChangeGroup={!editing}
             editing={editing}
           />

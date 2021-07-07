@@ -15,13 +15,12 @@ import ErrorBoundary from '../src/components/ErrorBoundary'
 import type { LocaleStoreState } from '../src/stores/LocaleStore'
 import type { AddPhotoPointStoreState } from '../src/stores/AddPhotoPointStore'
 import { Modal, message, notification, Row, Col, Button } from 'antd'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { confirm } = Modal
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'addphotopoint'
-)
+const debug = DebugService('addphotopoint')
 
 type Props = {
   layer: Record<string, any>
@@ -33,6 +32,7 @@ type Props = {
 }
 type State = LocaleStoreState & AddPhotoPointStoreState
 export default class AddPhotoPoint extends React.Component<Props, State> {
+  BaseMapState: BaseMapContainer
   static async getInitialProps({
     req,
     query
@@ -94,16 +94,16 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
   unloadHandler: any
 
   componentDidMount(): void {
-    const _this = this
+    const { state, unloadHandler } = this
 
     this.unloadHandler = (e) => {
-      if (!_this.state.submitted) {
+      if (!state.submitted) {
         e.preventDefault()
         e.returnValue = ''
       }
     }
 
-    window.addEventListener('beforeunload', this.unloadHandler)
+    window.addEventListener('beforeunload', unloadHandler)
   }
 
   componentWillUnmount(): void {
@@ -139,8 +139,7 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
   }
   onSubmit: any | ((model: any) => void) = (model: Record<string, any>) => {
     const { t, state } = this
-    const { _csrf, layer, geoJSON } = state
-    const _this = this
+    const { _csrf, layer, geoJSON, mhid } = state
 
     const closeMessage = message.loading(t('Saving'), 0)
     Actions.submit(model, _csrf, (err) => {
@@ -182,11 +181,11 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
               }
             }
 
-            if (_this.state.mhid) {
-              const featureId = _this.state.mhid.split(':')[1]
+            if (mhid) {
+              const featureId = mhid.split(':')[1]
 
               const featurePageUrl = `/feature/${layerId}/${featureId}/${featureName}`
-              window.location = featurePageUrl
+              window.location.assign(featurePageUrl)
             } else {
               debug.log('mhid not found')
             }
@@ -197,10 +196,18 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { t, props, state, resetPhoto, onSubmit, showImageCrop, onCrop } =
-      this
+    const {
+      t,
+      props,
+      state,
+      resetPhoto,
+      onSubmit,
+      showImageCrop,
+      onCrop,
+      BaseMapState
+    } = this
     const { layer, mapConfig, headerConfig } = props
-    const { geoJSON } = state
+    const { geoJSON, image } = state
     let dataReview = <></>
     let dataForm = <></>
     let addPhotoButton = <></>
@@ -220,7 +227,7 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
                   width: '100%',
                   height: 'auto'
                 }}
-                src={this.state.image}
+                src={image}
                 alt='uploaded photo'
               />
             </Col>
@@ -284,7 +291,7 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
 
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState]}>
+        <Provider inject={[BaseMapState]}>
           <Header {...headerConfig} />
           <main
             style={{

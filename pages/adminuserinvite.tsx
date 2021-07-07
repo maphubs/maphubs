@@ -29,12 +29,11 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
 import LinkIcon from '@material-ui/icons/Link'
 import DeleteIcon from '@material-ui/icons/Delete'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import { checkClientError } from '../src/services/client-error-response'
+
 const { confirm } = Modal
-
-const checkClientError =
-  require('../services/client-error-response').checkClientError
-
 const { Title } = Typography
+
 type User = {
   email: string
   key: string
@@ -109,9 +108,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
     })
   }
   onSubmit: any | ((user: User) => void) = (user: User) => {
-    const { t } = this
-
-    const _this = this
+    const { t, submitInvite } = this
 
     confirm({
       title: t('Confirm Invite'),
@@ -120,7 +117,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
       okType: 'primary',
 
       onOk() {
-        _this.submitInvite(user)
+        submitInvite(user)
       }
     })
   }
@@ -131,9 +128,8 @@ export default class AdminUserInvite extends React.Component<Props, State> {
     message.info(this.t('Copied'))
   }
   submitInvite: any | ((user: User) => void) = (user: User) => {
-    const { t } = this
-
-    const _this = this
+    const { t, state, setState } = this
+    const { members, _csrf } = state
 
     const email = user.email || user.invite_email
     const closeMessage = message.loading(t('Sending'), 0)
@@ -143,7 +139,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
       .accept('json')
       .send({
         email,
-        _csrf: this.state._csrf
+        _csrf
       })
       .end((err, res) => {
         checkClientError(
@@ -161,15 +157,16 @@ export default class AdminUserInvite extends React.Component<Props, State> {
               })
             } else {
               message.info(t('Invite Sent'), 3, () => {
-                _this.state.members.push({
+                const membersUpdate = [...members]
+                membersUpdate.push({
                   email: user.email,
                   invite_email: user.email,
                   key,
                   used: false
                 })
 
-                _this.setState({
-                  members: _this.state.members
+                setState({
+                  members: membersUpdate
                 })
               })
             }
@@ -181,7 +178,8 @@ export default class AdminUserInvite extends React.Component<Props, State> {
       })
   }
   resendInvite: any | ((user: User) => void) = (user: User) => {
-    const { t } = this
+    const { t, state } = this
+    const { _csrf } = state
     const key = user.key
     const closeMessage = message.loading(t('Sending'), 0)
     request
@@ -190,7 +188,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
       .accept('json')
       .send({
         key,
-        _csrf: this.state._csrf
+        _csrf
       })
       .end((err, res) => {
         checkClientError(
@@ -248,9 +246,8 @@ export default class AdminUserInvite extends React.Component<Props, State> {
     })
   }
   submitDeauthorize: any | ((user: User) => void) = (user: User) => {
-    const { t } = this
-
-    const _this = this
+    const { t, state, setState } = this
+    const { _csrf, members } = state
 
     const closeMessage = message.loading(t('Sending'), 0)
     request
@@ -260,7 +257,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
       .send({
         email: user.email,
         key: user.key,
-        _csrf: this.state._csrf
+        _csrf
       })
       .end((err, res) => {
         checkClientError(
@@ -277,16 +274,16 @@ export default class AdminUserInvite extends React.Component<Props, State> {
               })
             } else {
               message.info(t('User Removed'), 3)
-              const members = []
+              const membersUpdate = []
 
-              _this.state.members.forEach((member) => {
+              for (const member of members) {
                 if (member.key !== user.key) {
                   members.push(member)
                 }
-              })
+              }
 
-              _this.setState({
-                members
+              setState({
+                members: membersUpdate
               })
             }
           },
@@ -298,9 +295,19 @@ export default class AdminUserInvite extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-
-    const _this = this
+    const {
+      t,
+      props,
+      state,
+      handleResendInvite,
+      copyInviteLink,
+      handleDeauthorize,
+      onSubmit,
+      enableButton,
+      disableButton
+    } = this
+    const { canSubmit, members } = state
+    const { headerConfig, footerConfig } = props
 
     const columns = [
       {
@@ -384,11 +391,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
           let status = 'Disabled'
 
           if (record.key) {
-            if (record.used) {
-              status = 'Active'
-            } else {
-              status = 'Invite Sent'
-            }
+            status = record.used ? 'Active' : 'Invite Sent'
           }
 
           if (record.admin) {
@@ -402,7 +405,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
                   <Tooltip title={t('Resend Invite')} placement='bottom'>
                     <a
                       onClick={() => {
-                        _this.handleResendInvite(record)
+                        handleResendInvite(record)
                       }}
                     >
                       <EmailIcon
@@ -415,7 +418,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
                   <Tooltip title={t('Copy Invite Link')} placement='bottom'>
                     <a
                       onClick={() => {
-                        _this.copyInviteLink(record)
+                        copyInviteLink(record)
                       }}
                     >
                       <LinkIcon
@@ -428,7 +431,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
                   <Tooltip title={t('Remove User')} placement='bottom'>
                     <a
                       onClick={() => {
-                        _this.handleDeauthorize(record)
+                        handleDeauthorize(record)
                       }}
                     >
                       <DeleteIcon
@@ -447,7 +450,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
     ]
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
+        <Header {...headerConfig} />
         <main className='container'>
           <Title>{t('Manage Users')}</Title>
           <Row
@@ -458,9 +461,9 @@ export default class AdminUserInvite extends React.Component<Props, State> {
             align='middle'
           >
             <Formsy
-              onValidSubmit={this.onSubmit}
-              onValid={this.enableButton}
-              onInvalid={this.disableButton}
+              onValidSubmit={onSubmit}
+              onValid={enableButton}
+              onInvalid={disableButton}
               style={{
                 width: '100%',
                 maxWidth: '800px'
@@ -502,7 +505,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
                     }}
                     type='primary'
                     htmlType='submit'
-                    disabled={!this.state.canSubmit}
+                    disabled={!canSubmit}
                   >
                     {t('Send Invite')}
                   </Button>
@@ -511,7 +514,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
             </Formsy>
           </Row>
           <Row>
-            <Table columns={columns} dataSource={this.state.members} />
+            <Table columns={columns} dataSource={members} />
           </Row>
           <Row>
             <p>
@@ -521,7 +524,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
             </p>
           </Row>
         </main>
-        <Footer t={t} {...this.props.footerConfig} />
+        <Footer t={t} {...footerConfig} />
       </ErrorBoundary>
     )
   }

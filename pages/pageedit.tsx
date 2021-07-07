@@ -12,15 +12,14 @@ import type { LocaleStoreState } from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import UserStore from '../src/stores/UserStore'
 import dynamic from 'next/dynamic'
+
+import { checkClientError } from '../src/services/client-error-response'
 const CodeEditor = dynamic(
-  () => import('../components/LayerDesigner/CodeEditor'),
+  () => import('../src/components/LayerDesigner/CodeEditor'),
   {
     ssr: false
   }
 )
-
-const checkClientError =
-  require('../services/client-error-response').checkClientError
 
 type Props = {
   locale: string
@@ -77,21 +76,19 @@ export default class PageEdit extends React.Component<Props, State> {
     }
   }
 
-  savePageConfig: any | ((pageConfig: string) => void) = (
-    pageConfig: string
-  ) => {
-    const { t } = this
-
-    const _this = this
+  savePageConfig = (pageConfig: string): void => {
+    const { t, props, state, setState } = this
+    const { page_id } = props
+    const { _csrf } = state
 
     request
       .post('/api/page/save')
       .type('json')
       .accept('json')
       .send({
-        page_id: this.props.page_id,
+        page_id: page_id,
         pageConfig,
-        _csrf: this.state._csrf
+        _csrf
       })
       .end((err, res) => {
         checkClientError(
@@ -99,7 +96,7 @@ export default class PageEdit extends React.Component<Props, State> {
           err,
           () => {},
           (cb) => {
-            _this.setState({
+            setState({
               pageConfig: JSON.parse(pageConfig)
             })
 
@@ -119,14 +116,10 @@ export default class PageEdit extends React.Component<Props, State> {
       })
   }
 
-  updateComponent(component: Record<string, any>) {
+  updateComponent(component: Record<string, any>): void {
     const { pageConfig } = this.state
     pageConfig.components = pageConfig.components.map((c) => {
-      if (c.id === component.id) {
-        return component
-      } else {
-        return c
-      }
+      return c.id === component.id ? component : c
     })
     this.setState({
       pageConfig,
@@ -135,12 +128,13 @@ export default class PageEdit extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const { pageConfig, editingComponent } = this.state
+    const { t, props, state, savePageConfig } = this
+    const { headerConfig, page_id, footerConfig } = props
+    const { pageConfig, editingComponent } = state
     const components = pageConfig.components
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
+        <Header {...headerConfig} />
         <main
           style={{
             height: 'calc(100% - 100px)',
@@ -208,9 +202,9 @@ export default class PageEdit extends React.Component<Props, State> {
                   ref='pageEditor'
                   id='layer-style-editor'
                   mode='json'
-                  code={JSON.stringify(this.state.pageConfig, undefined, 2)}
-                  title={t('Editing Page Config: ') + this.props.page_id}
-                  onSave={this.savePageConfig}
+                  code={JSON.stringify(pageConfig, undefined, 2)}
+                  title={t('Editing Page Config: ') + page_id}
+                  onSave={savePageConfig}
                   modal={false}
                   visible
                   t={t}
@@ -262,7 +256,7 @@ export default class PageEdit extends React.Component<Props, State> {
             </Col>
           </Row>
         </main>
-        <Footer t={t} {...this.props.footerConfig} />
+        <Footer t={t} {...footerConfig} />
       </ErrorBoundary>
     )
   }

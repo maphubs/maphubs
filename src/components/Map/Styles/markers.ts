@@ -1,12 +1,12 @@
+import mapboxgl from 'mapbox-gl'
 import Shortid from 'shortid'
-import type { GLStyle } from '../../../types/mapbox-gl-style'
 import type { Layer } from '../../../types/layer'
 export default {
   enableMarkers(
-    style: GLStyle,
+    style: mapboxgl.Style,
     markerOptions: Record<string, any>,
     layer: Layer
-  ): GLStyle {
+  ): mapboxgl.Style {
     if (
       style.layers &&
       Array.isArray(style.layers) &&
@@ -18,7 +18,7 @@ export default {
       let metadata = {}
       let pointLayer
       let existingMarkerLayer
-      style.layers.forEach((layer) => {
+      for (const layer of style.layers) {
         if (layer.id.startsWith('omh-markers-')) {
           existingMarkerLayer = layer
           existingMarkerLayer.layout['icon-image'] = imageName
@@ -73,15 +73,11 @@ export default {
           if (!layer.layout) layer.layout = {}
           layer.layout.visibility = 'none'
         }
-      })
-      const layer_id = metadata['maphubs:layer_id']
-      let shortid
-
-      if (metadata['maphubs:globalid']) {
-        shortid = metadata['maphubs:globalid']
-      } else {
-        shortid = layer_id
       }
+      const layer_id = metadata['maphubs:layer_id']
+      const shortid = metadata['maphubs:globalid']
+        ? metadata['maphubs:globalid']
+        : layer_id
 
       let offset = [0, 0]
 
@@ -109,7 +105,7 @@ export default {
             'icon-offset': offset
           }
         }
-        const newLayers = [newLayer].concat(style.layers)
+        const newLayers = [newLayer, ...style.layers]
         style.layers = newLayers
       }
     }
@@ -117,7 +113,7 @@ export default {
     return style
   },
 
-  disableMarkers(style: GLStyle): GLStyle {
+  disableMarkers(style: mapboxgl.Style): mapboxgl.Style {
     if (
       style.layers &&
       Array.isArray(style.layers) &&
@@ -125,7 +121,7 @@ export default {
     ) {
       // treat style as immutable and return a copy
       style = JSON.parse(JSON.stringify(style))
-      style.layers.forEach((layer) => {
+      for (const layer of style.layers) {
         if (layer.id.startsWith('omh-markers-')) {
           if (!layer.layout) layer.layout = {}
           layer.layout.visibility = 'none'
@@ -171,7 +167,7 @@ export default {
           if (!layer.layout) layer.layout = {}
           layer.layout.visibility = 'visible'
         }
-      })
+      }
     }
 
     return style

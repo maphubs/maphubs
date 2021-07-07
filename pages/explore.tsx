@@ -79,8 +79,8 @@ export default class Home extends React.Component<Props, State> {
     }
   }
 
-  handleSearch: any | ((input: string) => void) = (input: string) => {
-    window.location = '/search?q=' + input
+  handleSearch = (input: string): void => {
+    window.location.assign('/search?q=' + input)
   }
 
   render(): JSX.Element {

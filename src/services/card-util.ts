@@ -44,8 +44,6 @@ export default {
 
   getMapCard(
     map: Record<string, any>,
-    id: number,
-    arr: Array<Record<string, any>>,
     onClick?: (...args: Array<any>) => any
   ): CardConfig {
     const image_url = `/api/screenshot/map/thumbnail/${map.map_id}.jpg`
@@ -68,8 +66,6 @@ export default {
 
   getGroupCard(
     group: Record<string, any>,
-    id: number,
-    arr: Array<Record<string, any>>,
     onClick?: (...args: Array<any>) => any
   ): CardConfig {
     let image_url

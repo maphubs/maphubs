@@ -52,7 +52,7 @@ const EditBaseMapBox = ({
             type='primary'
             onClick={() => {
               const links = getLinks()
-              window.location = links.osm
+              window.location.assign(links.osm)
             }}
           >
             {t('OpenStreetMap')}

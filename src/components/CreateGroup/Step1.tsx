@@ -176,13 +176,13 @@ export default class CreateGroupStep1 extends React.Component<Props, State> {
           })
         } else {
           message.success(t('Group Cancelled'), 3, () => {
-            window.location = '/groups'
+            window.location.assign('/groups')
           })
         }
       })
     } else {
       message.success(t('Group Cancelled'), 3, () => {
-        window.location = '/groups'
+        window.location.assign('/groups')
       })
     }
   }

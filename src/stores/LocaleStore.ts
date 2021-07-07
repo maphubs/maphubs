@@ -1,14 +1,10 @@
 import Reflux from 'reflux'
 import Actions from '../actions/LocaleActions'
+import request from 'superagent'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { checkClientError } from '../services/client-error-response'
 
-const request = require('superagent')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'stores/local-store'
-)
-
-const checkClientError = require('../services/client-error-response')
-  .checkClientError
+const debug = DebugService('stores/local-store')
 
 // var _assignIn = require('lodash.assignin');
 export type LocaleStoreState = {
@@ -16,6 +12,10 @@ export type LocaleStoreState = {
   _csrf?: string
 }
 export default class LocaleStore extends Reflux.Store {
+  state: LocaleStoreState
+  setState: any
+  trigger: any
+  listenables: any
   constructor() {
     super()
     this.state = {
@@ -25,20 +25,20 @@ export default class LocaleStore extends Reflux.Store {
     this.listenables = Actions
   }
 
-  reset() {
+  reset(): void {
     this.setState({
       locale: 'en',
       _csrf: null
     })
   }
 
-  storeDidUpdate() {
+  storeDidUpdate(): void {
     debug.log('store updated')
   }
 
   // listeners
-  changeLocale(locale: string) {
-    const _this = this
+  changeLocale(locale: string): void {
+    const { state, setState, trigger } = this
 
     // tell the server so the preference can be saved in the user session
     // this allows the react isomorphic rendering to render the correct langauge on the server
@@ -59,11 +59,11 @@ export default class LocaleStore extends Reflux.Store {
             } else {
               debug.log('changed locale to: ' + locale)
 
-              _this.setState({
+              setState({
                 locale
               })
 
-              _this.trigger(_this.state)
+              trigger(state)
             }
           },
           (cb) => {

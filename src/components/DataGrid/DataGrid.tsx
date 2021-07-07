@@ -236,20 +236,16 @@ class DataGrid extends React.Component<Props, State> {
             </div>
           ),
           filterIcon: (filtered) => {
-            if (
-              !this.state.activeSearchTag ||
-              this.state.activeSearchTag === preset.tag
-            ) {
-              return (
-                <SearchOutlined
-                  style={{
-                    color: filtered ? '#1890ff' : undefined
-                  }}
-                />
-              )
-            } else {
-              return ''
-            }
+            return !this.state.activeSearchTag ||
+              this.state.activeSearchTag === preset.tag ? (
+              <SearchOutlined
+                style={{
+                  color: filtered ? '#1890ff' : undefined
+                }}
+              />
+            ) : (
+              ''
+            )
           },
           onFilter: (value, record) => {
             if (record[preset.tag] && typeof record[preset.tag] === 'string') {
@@ -264,34 +260,32 @@ class DataGrid extends React.Component<Props, State> {
             }
           },
           render: (text) => {
-            if (typeof text === 'string') {
-              return (
-                <Highlighter
-                  highlightStyle={{
-                    backgroundColor: '#ffc069',
-                    padding: 0
-                  }}
-                  searchWords={[this.state.searchText]}
-                  autoEscape
-                  textToHighlight={text}
-                />
-              )
-            } else {
-              return <span>{text}</span>
-            }
+            return typeof text === 'string' ? (
+              <Highlighter
+                highlightStyle={{
+                  backgroundColor: '#ffc069',
+                  padding: 0
+                }}
+                searchWords={[this.state.searchText]}
+                autoEscape
+                textToHighlight={text}
+              />
+            ) : (
+              <span>{text}</span>
+            )
           }
         })
       })
     } else {
       console.warn('table missing presets, using defaults')
-      Object.keys(firstRow).forEach((key) => {
+      for (const key of Object.keys(firstRow)) {
         columns.push({
           dataIndex: key,
           title: key,
           width: 150,
           editable: false // not safe to edit if presets are not configured
         })
-      })
+      }
     }
 
     if (!setDynamicSizedColumn) {
@@ -431,7 +425,7 @@ class DataGrid extends React.Component<Props, State> {
     }
 
     const url = `/feature/${layer.layer_id}/${idVal}/${slugify(featureName)}`
-    window.location = url
+    window.location.assign(url)
   }
   onClearSelection = () => {
     this.setState({
@@ -462,12 +456,12 @@ class DataGrid extends React.Component<Props, State> {
         })
 
         if (geoJSON) {
-          geoJSON.features.forEach((feature) => {
+          for (const feature of geoJSON.features) {
             if (idVal === feature.properties[rowKey]) {
               const bbox = turf_bbox(feature)
               mapState.state.map.fitBounds(bbox, 16, 25)
             }
-          })
+          }
         } else {
           console.log('GeoJSON not found, unable to update the map')
         }

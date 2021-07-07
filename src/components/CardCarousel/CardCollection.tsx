@@ -3,12 +3,13 @@ import { Row, Col, Typography } from 'antd'
 import CardCarousel from './CardCarousel'
 
 import type { CardConfig } from './Card'
+import { LocalizedString } from '../../types/LocalizedString'
 const { Title } = Typography
 type Props = {
   cards: Array<CardConfig>
   title?: string
   viewAllLink?: string
-  t: any
+  t: (v: string | LocalizedString) => string
 }
 
 const CardCollection = ({
@@ -50,7 +51,7 @@ const CardCollection = ({
         </Col>
       </Row>
       <Row>
-        <CardCarousel cards={cards} infinite={false} t={t} />
+        <CardCarousel cards={cards} t={t} />
       </Row>
     </Row>
   )

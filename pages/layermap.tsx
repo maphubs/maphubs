@@ -19,6 +19,7 @@ type Props = {
   user: Record<string, any>
 }
 export default class LayerMap extends React.Component<Props> {
+  BaseMapState: BaseMapContainer
   static async getInitialProps({
     req,
     query
@@ -67,10 +68,12 @@ export default class LayerMap extends React.Component<Props> {
   }
 
   render(): JSX.Element {
+    const { t, props, BaseMapState } = this
+    const { layer, headerConfig, mapConfig, locale } = props
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState]}>
-          <Header {...this.props.headerConfig} />
+        <Provider inject={[BaseMapState]}>
+          <Header {...headerConfig} />
           <main
             className='no-margin'
             style={{
@@ -81,13 +84,13 @@ export default class LayerMap extends React.Component<Props> {
           >
             <InteractiveMap
               height='100%'
-              fitBounds={this.props.layer.preview_position.bbox}
-              style={this.props.layer.style}
-              layers={[this.props.layer]}
-              map_id={this.props.layer.layer_id}
-              mapConfig={this.props.mapConfig}
+              fitBounds={layer.preview_position.bbox}
+              style={layer.style}
+              layers={[layer]}
+              map_id={layer.layer_id}
+              mapConfig={mapConfig}
               disableScrollZoom={false}
-              title={this.props.layer.name}
+              title={layer.name}
               hideInactive={false}
               showTitle={false}
               primaryColor={MAPHUBS_CONFIG.primaryColor}
@@ -97,8 +100,8 @@ export default class LayerMap extends React.Component<Props> {
               mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
               DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
               earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
-              t={this.t}
-              locale={this.props.locale}
+              t={t}
+              locale={locale}
             />
           </main>
         </Provider>

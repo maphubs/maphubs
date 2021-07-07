@@ -7,16 +7,17 @@ import CropSquare from '@material-ui/icons/CropSquare'
 import Restore from '@material-ui/icons/Restore'
 import ZoomIn from '@material-ui/icons/ZoomIn'
 import ZoomOut from '@material-ui/icons/ZoomOut'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
   lockAspect?: boolean
-  zoomIn: (...args: Array<any>) => any
-  zoomOut: (...args: Array<any>) => any
-  cropOriginal: (...args: Array<any>) => any
-  aspect16by9: (...args: Array<any>) => any
-  aspect3by2: (...args: Array<any>) => any
-  aspectSquare: (...args: Array<any>) => any
-  resetCropPosition: (...args: Array<any>) => any
+  zoomIn: () => void
+  zoomOut: () => void
+  cropOriginal: () => void
+  aspect16by9: () => void
+  aspect3by2: () => void
+  aspectSquare: () => void
+  resetCropPosition: () => void
 }
 const ImageCropToolbar = ({
   lockAspect,

@@ -1,4 +1,5 @@
-import type { GLLayer } from '../../../types/mapbox-gl-style'
+import mapboxgl from 'mapbox-gl'
+
 export default {
   getLineLayers(
     layer_id: number,
@@ -7,7 +8,7 @@ export default {
     hoverColor: string,
     interactive: boolean,
     showBehindBaseMapLabels: boolean
-  ): Array<GLLayer> {
+  ): mapboxgl.Layer[] {
     return [
       {
         id: `omh-data-line-${layer_id}-${shortid}`,

@@ -10,16 +10,17 @@ import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import UserStore from '../src/stores/UserStore'
-import fireResizeEvent from '../services/fire-resize-event'
+import fireResizeEvent from '../src/services/fire-resize-event'
 import getConfig from 'next/config'
+import { LocalizedString } from '../src/types/LocalizedString'
+import $ from 'jquery'
+import { Layer } from '../src/types/layer'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
-
-const $ = require('jquery')
 
 const confirm = Modal.confirm
 type Props = {
   name: LocalizedString
-  layers: Array<Record<string, any>>
+  layers: Layer[]
   style: Record<string, any>
   position: Record<string, any>
   basemap: string
@@ -44,6 +45,7 @@ type State = {
 } // A reponsive full window map used to render screenshots
 
 export default class StaticMap extends React.Component<Props, State> {
+  BaseMapState: BaseMapContainer
   static async getInitialProps({
     req,
     query
@@ -117,8 +119,8 @@ export default class StaticMap extends React.Component<Props, State> {
     }
   }
 
-  componentDidMount() {
-    const _this = this
+  componentDidMount(): void {
+    const { setState, showSettings } = this
 
     function getSize() {
       return {
@@ -127,41 +129,33 @@ export default class StaticMap extends React.Component<Props, State> {
       }
     }
 
-    this.setState(getSize())
+    setState(getSize())
     $(window).resize(function () {
       const debounced = _debounce(() => {
-        _this.setState(getSize())
+        setState(getSize())
       }, 2500)
 
       debounced()
     })
     window.addEventListener('keydown', (e) => {
       if (e.key === 'S') {
-        this.showSettings()
+        showSettings()
       }
     })
   }
 
-  setShowInset: any | ((userShowInset: boolean) => void) = (
-    userShowInset: boolean
-  ) => {
+  setShowInset = (userShowInset: boolean): void => {
     this.setState({
       userShowInset
     })
   }
-  setShowScale: any | ((userShowScale: boolean) => void) = (
-    userShowScale: boolean
-  ) => {
+  setShowScale = (userShowScale: boolean): void => {
     this.setState({
       userShowScale
     })
   }
-  setShowLegend: any | ((userShowLegend: boolean) => void) = (
-    userShowLegend: boolean
-  ) => {
-    const _this = this
-
-    const { t } = this
+  setShowLegend = (userShowLegend: boolean): void => {
+    const { t, setState } = this
 
     if (!userShowLegend) {
       confirm({
@@ -172,7 +166,7 @@ export default class StaticMap extends React.Component<Props, State> {
         okText: t('I agree'),
 
         onOk() {
-          _this.setState({
+          setState({
             userShowLegend
           })
         },
@@ -180,12 +174,12 @@ export default class StaticMap extends React.Component<Props, State> {
         onCancel() {}
       })
     } else {
-      _this.setState({
+      setState({
         userShowLegend
       })
     }
   }
-  hideSettings: any | (() => void) = () => {
+  hideSettings = (): void => {
     const { t } = this
     this.setState({
       showSettings: false
@@ -195,7 +189,7 @@ export default class StaticMap extends React.Component<Props, State> {
       .info(t('press the "s" key to reopen settings'), 3)
       .then(() => fireResizeEvent())
   }
-  showSettings: any | (() => void) = () => {
+  showSettings = (): void => {
     if (!this.state.showSettings) {
       this.setState({
         showSettings: true
@@ -206,13 +200,37 @@ export default class StaticMap extends React.Component<Props, State> {
 
   render(): JSX.Element {
     let legend, bottomLegend
-    const { t, setShowLegend, setShowScale, setShowInset, hideSettings } = this
-    const { name, layers, position, settings } = this.props
-    const { userShowInset, userShowLegend, userShowScale, showSettings } =
-      this.state
+    const {
+      t,
+      setShowLegend,
+      setShowScale,
+      setShowInset,
+      hideSettings,
+      BaseMapState,
+      state,
+      props
+    } = this
+    const {
+      name,
+      layers,
+      position,
+      settings,
+      showLogo,
+      insetMap,
+      showScale,
+      style,
+      mapConfig
+    } = props
+    const {
+      userShowInset,
+      userShowLegend,
+      userShowScale,
+      showSettings,
+      width
+    } = state
 
     if (userShowLegend) {
-      if (this.state.width < 600) {
+      if (width < 600) {
         bottomLegend = (
           <MiniLegend
             t={t}
@@ -249,12 +267,13 @@ export default class StaticMap extends React.Component<Props, State> {
 
     let bounds
 
-    if (typeof window === 'undefined' || !window.location.hash) {
-      // only update position if there isn't absolute hash in the URL
-      if (position && position.bbox) {
-        const bbox = position.bbox
-        bounds = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]]
-      }
+    if (
+      (typeof window === 'undefined' || !window.location.hash) && // only update position if there isn't absolute hash in the URL
+      position &&
+      position.bbox
+    ) {
+      const bbox = position.bbox
+      bounds = [bbox[0][0], bbox[0][1], bbox[1][0], bbox[1][1]]
     }
 
     let insetConfig = {}
@@ -266,7 +285,7 @@ export default class StaticMap extends React.Component<Props, State> {
     insetConfig.collapsible = false
     return (
       <ErrorBoundary>
-        <Provider inject={[this.BaseMapState]}>
+        <Provider inject={[BaseMapState]}>
           <style jsx global>
             {`
               .map-position {
@@ -279,7 +298,7 @@ export default class StaticMap extends React.Component<Props, State> {
                 display: ${userShowInset ? 'inherit' : 'none'};
               }
               .mapboxgl-ctrl-logo {
-                display: ${!this.props.showLogo ? 'none !important' : 'block'};
+                display: ${!showLogo ? 'none !important' : 'block'};
               }
             `}
           </style>
@@ -353,16 +372,16 @@ export default class StaticMap extends React.Component<Props, State> {
                 interactive={false}
                 showPlayButton={false}
                 fitBounds={bounds}
-                insetMap={this.props.insetMap}
+                insetMap={insetMap}
                 insetConfig={insetConfig}
-                showLogo={this.props.showLogo}
-                showScale={this.props.showScale}
+                showLogo={showLogo}
+                showScale={showScale}
                 style={{
                   width: '100vw',
                   height: showSettings ? 'calc(100vh - 25px)' : '100vh'
                 }}
-                glStyle={this.props.style}
-                mapConfig={this.props.mapConfig}
+                glStyle={style}
+                mapConfig={mapConfig}
                 preserveDrawingBuffer
                 navPosition='top-right'
                 primaryColor={MAPHUBS_CONFIG.primaryColor}
@@ -372,7 +391,7 @@ export default class StaticMap extends React.Component<Props, State> {
                 mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
                 DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
                 earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
-                t={this.t}
+                t={t}
               >
                 {legend}
               </Map>

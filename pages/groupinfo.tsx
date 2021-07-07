@@ -322,7 +322,7 @@ export default class GroupInfo extends React.Component<Props, State> {
           </Row>
           <Divider />
           <Row>
-            <CardCarousel cards={allCards} infinite={false} t={this.t} />
+            <CardCarousel cards={allCards} t={this.t} />
           </Row>
         </div>
       </ErrorBoundary>

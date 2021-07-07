@@ -1,16 +1,22 @@
-import type { GLLayer, GLSource } from '../../../types/mapbox-gl-style'
+import mapboxgl from 'mapbox-gl'
+import MapComponent from '../Map'
+
 const AGSRaster = {
-  async load(key: string, source: GLSource, mapComponent: any): Promise<any> {
+  async load(
+    key: string,
+    source: mapboxgl.Source,
+    mapComponent: typeof MapComponent
+  ): Promise<any> {
     // add directly to map until this is fixed https://github.com/mapbox/mapbox-gl-js/issues/3003
     return mapComponent.map.addSource(key, source)
   },
 
   addLayer(
-    layer: GLLayer,
-    source: GLSource,
+    layer: mapboxgl.Layer,
+    source: mapboxgl.Source,
     position: number,
-    mapComponent: any
-  ) {
+    mapComponent: typeof MapComponent
+  ): void {
     if (layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']) {
       mapComponent.map.addLayer(layer, 'water')
     } else {
@@ -33,11 +39,14 @@ const AGSRaster = {
     }
   },
 
-  removeLayer(layer: GLLayer, mapComponent: any): any {
+  removeLayer(
+    layer: mapboxgl.Layer,
+    mapComponent: typeof MapComponent
+  ): mapboxgl.Map {
     return mapComponent.map.removeLayer(layer.id)
   },
 
-  remove(key: string, mapComponent: any): any {
+  remove(key: string, mapComponent: typeof MapComponent): mapboxgl.Map {
     return mapComponent.map.removeSource(key)
   }
 }

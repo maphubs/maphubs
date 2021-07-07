@@ -14,7 +14,8 @@ import MapStyles from './Styles'
 import $ from 'jquery'
 import type { Layer } from '../../types/layer'
 import { LocalizedString } from '../../types/LocalizedString'
-import { GLStyle } from '../../types/mapbox-gl-style'
+import mapboxgl from 'mapbox-gl'
+
 type Props = {
   map_id: number
   title: LocalizedString
@@ -227,7 +228,7 @@ export default class InteractiveMap extends React.Component<Props, State> {
       this.updateMap(layers)
     }
   }
-  buildMapStyle = (layers: Array<Layer>): GLStyle => {
+  buildMapStyle = (layers: Array<Layer>): mapboxgl.Style => {
     return MapStyles.style.buildMapStyle(layers)
   }
   onToggleIsochroneLayer: (enabled: boolean) => void = (enabled: boolean) => {

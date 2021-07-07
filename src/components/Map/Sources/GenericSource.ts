@@ -1,15 +1,16 @@
-import type { GLLayer, GLSource } from '../../../types/mapbox-gl-style'
+import mapboxgl from 'mapbox-gl'
+
 const GenericSource = {
-  load(key: string, source: GLSource, mapComponent: any): any {
+  load(key: string, source: mapboxgl.Source, mapComponent: any): any {
     return mapComponent.addSource(key, source)
   },
 
   addLayer(
-    layer: GLLayer,
-    source: GLSource,
+    layer: mapboxgl.Layer,
+    source: mapboxgl.Source,
     position: number,
     mapComponent: any
-  ) {
+  ): void {
     if (mapComponent.state.editing) {
       mapComponent.addLayerBefore(layer, mapComponent.getFirstDrawLayerID())
     } else {
@@ -17,7 +18,7 @@ const GenericSource = {
     }
   },
 
-  removeLayer(layer: GLLayer, mapComponent: any) {
+  removeLayer(layer: mapboxgl.Layer, mapComponent: any): void {
     mapComponent.removeLayer(layer)
   },
 

@@ -1,16 +1,16 @@
 import Shortid from 'shortid'
-import type { GLStyle } from '../../../types/mapbox-gl-style'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import mapboxgl from 'mapbox-gl'
 const debug = DebugService('map-styles-color')
 export default {
   // attempt to update a style color without recreating other parts of the style
   // needed for custom style support
   updateStyleColor(
-    glStyle: GLStyle,
+    glStyle: mapboxgl.Style,
     newColor: string
   ): {
     isOutlineOnly: boolean
-    style: GLStyle
+    style: mapboxgl.Style
   } {
     let isOutlineOnly = false
 
@@ -23,7 +23,7 @@ export default {
       glStyle = JSON.parse(JSON.stringify(glStyle))
       let markerImageName
       let markerLayer
-      glStyle.layers.forEach((glLayer) => {
+      for (const glLayer of glStyle.layers) {
         const { id, type, metadata, paint } = glLayer
 
         // patch old outline-only layers
@@ -99,7 +99,7 @@ export default {
             debug.log('unable to update osm building layer type: ' + type)
           }
         }
-      })
+      }
 
       if (markerLayer) {
         markerLayer.layout['icon-image'] = markerImageName

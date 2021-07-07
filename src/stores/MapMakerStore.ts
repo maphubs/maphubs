@@ -2,22 +2,15 @@ import MapStyles from '../components/Map/Styles'
 import Reflux from 'reflux'
 import Actions from '../actions/MapMakerActions'
 import type { Layer } from '../types/layer'
+import request from 'superagent'
+import _findIndex from 'lodash.findindex'
+import _reject from 'lodash.reject'
+import _find from 'lodash.find'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { checkClientError } from '../services/client-error-response'
+import { LocalizedString } from '../types/LocalizedString'
 
-const request = require('superagent')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'stores/MapMakerStore'
-)
-
-const _findIndex = require('lodash.findindex')
-
-const _reject = require('lodash.reject')
-
-const _find = require('lodash.find')
-
-// var urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util');
-const checkClientError = require('../services/client-error-response')
-  .checkClientError
+const debug = DebugService('stores/MapMakerStore')
 
 export type MapMakerStoreState = {
   map_id?: number
@@ -33,6 +26,8 @@ export type MapMakerStoreState = {
 }
 export default class MapMakerStore extends Reflux.Store {
   state: MapMakerStoreState
+  listenables: any
+  setState: any
 
   constructor() {
     super()
@@ -53,7 +48,7 @@ export default class MapMakerStore extends Reflux.Store {
     }
   }
 
-  reset() {
+  reset(): void {
     this.setState(this.getDefaultState())
 
     if (this.state.mapLayers) {
@@ -61,12 +56,12 @@ export default class MapMakerStore extends Reflux.Store {
     }
   }
 
-  storeDidUpdate() {
+  storeDidUpdate(): void {
     debug.log('store updated')
   }
 
   // listeners
-  setMapLayers(mapLayers: Array<Layer>, update: boolean = true) {
+  setMapLayers(mapLayers: Array<Layer>, update = true): void {
     if (update) {
       this.updateMap(mapLayers)
     } else {
@@ -78,36 +73,36 @@ export default class MapMakerStore extends Reflux.Store {
     }
   }
 
-  setMapId(map_id: number) {
+  setMapId(map_id: number): void {
     this.setState({
       map_id
     })
   }
 
-  setMapTitle(title: LocalizedString) {
-    Object.keys(title).forEach((key) => {
+  setMapTitle(title: LocalizedString): void {
+    for (const key of Object.keys(title)) {
       if (title[key]) {
         title[key] = title[key].trim()
       }
-    })
+    }
     this.setState({
       title
     })
   }
 
-  setPrivate(isPrivate: boolean) {
+  setPrivate(isPrivate: boolean): void {
     this.setState({
       isPrivate
     })
   }
 
-  setOwnedByGroupId(group_id: string) {
+  setOwnedByGroupId(group_id: string): void {
     this.setState({
       owned_by_group_id: group_id
     })
   }
 
-  setMapPosition(position: Record<string, any>) {
+  setMapPosition(position: Record<string, any>): void {
     // treat as immutable and clone
     position = JSON.parse(JSON.stringify(position))
     this.setState({
@@ -115,13 +110,13 @@ export default class MapMakerStore extends Reflux.Store {
     })
   }
 
-  setMapBasemap(basemap: string) {
+  setMapBasemap(basemap: string): void {
     this.setState({
       basemap
     })
   }
 
-  setSettings(settings: Record<string, any>) {
+  setSettings(settings: Record<string, any>): void {
     // treat as immutable and clone
     settings = JSON.parse(JSON.stringify(settings))
     this.setState({
@@ -129,7 +124,7 @@ export default class MapMakerStore extends Reflux.Store {
     })
   }
 
-  addToMap(layer: Layer) {
+  addToMap(layer: Layer): boolean {
     // check if the map already has this layer
     if (
       _find(this.state.mapLayers, {
@@ -151,7 +146,7 @@ export default class MapMakerStore extends Reflux.Store {
     }
   }
 
-  removeFromMap(layer: Layer) {
+  removeFromMap(layer: Layer): void {
     const layers = _reject(this.state.mapLayers, {
       layer_id: layer.layer_id
     })
@@ -159,7 +154,7 @@ export default class MapMakerStore extends Reflux.Store {
     this.updateMap(layers)
   }
 
-  toggleVisibility(layer_id: number, cb: (...args: Array<any>) => any) {
+  toggleVisibility(layer_id: number, cb: (...args: Array<any>) => any): void {
     const mapLayers = this.state.mapLayers
 
     const index = _findIndex(mapLayers, {
@@ -179,17 +174,13 @@ export default class MapMakerStore extends Reflux.Store {
       }
 
       if (layer.style?.layers) {
-        layer.style.layers.forEach((styleLayer) => {
+        for (const styleLayer of layer.style.layers) {
           if (!styleLayer.layout) {
             styleLayer.layout = {}
           }
 
-          if (active) {
-            styleLayer.layout.visibility = 'visible'
-          } else {
-            styleLayer.layout.visibility = 'none'
-          }
-        })
+          styleLayer.layout.visibility = active ? 'visible' : 'none'
+        }
       }
 
       this.updateMap(mapLayers)
@@ -204,7 +195,7 @@ export default class MapMakerStore extends Reflux.Store {
     labels: Record<string, any>,
     legend: string,
     cb: (...args: Array<any>) => any
-  ) {
+  ): void {
     // treat as immutable and clone
     style = JSON.parse(JSON.stringify(style))
     labels = JSON.parse(JSON.stringify(labels))
@@ -229,7 +220,7 @@ export default class MapMakerStore extends Reflux.Store {
     basemap: string,
     _csrf: string,
     cb: (...args: Array<any>) => any
-  ) {
+  ): void {
     // treat as immutable and clone
     title = JSON.parse(JSON.stringify(title))
     position = JSON.parse(JSON.stringify(position))
@@ -237,9 +228,9 @@ export default class MapMakerStore extends Reflux.Store {
     const _this = this
 
     // resave an existing map
-    Object.keys(title).forEach((key) => {
+    for (const key of Object.keys(title)) {
       title[key] = title[key].trim()
-    })
+    }
     request
       .post('/api/map/save')
       .type('json')
@@ -275,16 +266,16 @@ export default class MapMakerStore extends Reflux.Store {
     isPrivate: boolean,
     _csrf: string,
     cb: (...args: Array<any>) => any
-  ) {
+  ): void {
     // treat as immutable and clone
     title = JSON.parse(JSON.stringify(title))
     position = JSON.parse(JSON.stringify(position))
 
     const _this = this
 
-    Object.keys(title).forEach((key) => {
+    for (const key of Object.keys(title)) {
       title[key] = title[key].trim()
-    })
+    }
     request
       .post('/api/map/create')
       .type('json')
@@ -319,16 +310,13 @@ export default class MapMakerStore extends Reflux.Store {
   }
 
   // helpers
-  updateMap(mapLayers: Array<Layer>, rebuild: boolean = true) {
+  updateMap(mapLayers: Array<Layer>, rebuild = true): void {
     // treat as immutable and clone
     mapLayers = JSON.parse(JSON.stringify(mapLayers))
-    let mapStyle
 
-    if (rebuild) {
-      mapStyle = this.buildMapStyle(mapLayers)
-    } else {
-      mapStyle = this.state.mapStyle
-    }
+    const mapStyle = rebuild
+      ? this.buildMapStyle(mapLayers)
+      : this.state.mapStyle
 
     this.setState({
       mapLayers,
@@ -336,23 +324,27 @@ export default class MapMakerStore extends Reflux.Store {
     })
   }
 
-  buildMapStyle(layers: Array<Layer>) {
+  buildMapStyle(layers: Array<Layer>): void {
     return MapStyles.style.buildMapStyle(layers)
   }
 
-  startEditing() {
+  startEditing(): void {
     this.setState({
       editingLayer: true
     })
   }
 
-  stopEditing() {
+  stopEditing(): void {
     this.setState({
       editingLayer: false
     })
   }
 
-  deleteMap(map_id: number, _csrf: string, cb: (...args: Array<any>) => any) {
+  deleteMap(
+    map_id: number,
+    _csrf: string,
+    cb: (...args: Array<any>) => any
+  ): void {
     request
       .post('/api/map/delete')
       .type('json')

@@ -1,8 +1,9 @@
 import React from 'react'
 import { Button, Carousel } from 'antd'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
   config: Record<string, any>
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 export default class Slides extends React.Component<Props> {
   render(): JSX.Element | string {

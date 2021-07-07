@@ -4,10 +4,10 @@ import Marker from '../Marker'
 import superagent from 'superagent'
 import Promise from 'bluebird'
 import Shortid from 'shortid'
-import type { GLLayer, GLSource } from '../../../types/mapbox-gl-style'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import GJV from 'geojson-validation'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import mapboxgl from 'mapbox-gl'
 const debug = DebugService('MapHubsSource')
 GJV.define('Position', (position: Array<number>) => {
   // the postion must be valid point on the earth, x between -180 and 180
@@ -31,7 +31,11 @@ if (typeof window !== 'undefined') {
 }
 */
 const MapHubsSource = {
-  async load(key: string, source: GLSource, mapComponent: any): Promise<any> {
+  async load(
+    key: string,
+    source: mapboxgl.Source,
+    mapComponent: any
+  ): Promise<any> {
     const map = mapComponent.map
 
     if (source.type === 'geojson' && source.data) {
@@ -41,9 +45,9 @@ const MapHubsSource = {
             const geoJSON = res.body
 
             if (geoJSON.features) {
-              geoJSON.features.forEach((feature, i) => {
+              for (const [i, feature] of geoJSON.features.entries()) {
                 feature.properties.mhid = i
-              })
+              }
             }
 
             if (source.metadata) {
@@ -109,8 +113,8 @@ const MapHubsSource = {
   },
 
   async addLayer(
-    layer: GLLayer,
-    source: GLSource,
+    layer: mapboxgl.Layer,
+    source: mapboxgl.Source,
     position: number,
     mapComponent: any
   ) {
@@ -263,11 +267,11 @@ const MapHubsSource = {
     }
   },
 
-  removeLayer(layer: GLLayer, mapComponent: any) {
+  removeLayer(layer: mapboxgl.Layer, mapComponent: any): void {
     mapComponent.removeLayer(layer.id)
   },
 
-  remove(key: string, mapComponent: any) {
+  remove(key: string, mapComponent: any): void {
     mapComponent.removeSource(key)
   }
 }

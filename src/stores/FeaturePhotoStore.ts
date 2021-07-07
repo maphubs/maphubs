@@ -1,14 +1,9 @@
 import Reflux from 'reflux'
 import Actions from '../actions/FeaturePhotoActions'
-
-const request = require('superagent')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'stores/feature-photo'
-)
-
-const checkClientError = require('../services/client-error-response')
-  .checkClientError
+import request from 'superagent'
+import { checkClientError } from '../services/client-error-response'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+const debug = DebugService('stores/feature-photo')
 
 export type FeaturePhotoStoreState = {
   feature: Record<string, any> | null | undefined
@@ -16,6 +11,8 @@ export type FeaturePhotoStoreState = {
 }
 export default class FeaturePhotoStore extends Reflux.Store {
   state: FeaturePhotoStoreState
+  listenables
+  any
 
   constructor() {
     super()
@@ -26,7 +23,7 @@ export default class FeaturePhotoStore extends Reflux.Store {
     this.listenables = Actions
   }
 
-  reset() {
+  reset(): void {
     this.setState({
       feature: null,
       photo: null
@@ -37,7 +34,7 @@ export default class FeaturePhotoStore extends Reflux.Store {
     debug.log('store updated')
   }
 
-  addPhoto(data, info, _csrf, cb) {
+  addPhoto(data, info, _csrf, cb): void {
     debug.log('add feature photo')
 
     const _this = this
@@ -72,7 +69,7 @@ export default class FeaturePhotoStore extends Reflux.Store {
       })
   }
 
-  removePhoto(_csrf, cb) {
+  removePhoto(_csrf, cb): void {
     debug.log('remove photo')
 
     const _this = this

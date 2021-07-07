@@ -10,7 +10,6 @@ import AdvancedLayerSettings from './AdvancedLayerSettings'
 
 import MapStyles from '../Map/Styles'
 import { SketchPicker, SwatchesPicker } from 'react-color'
-import type { GLStyle } from '../../types/mapbox-gl-style'
 import dynamic from 'next/dynamic'
 const CodeEditor = dynamic(() => import('./CodeEditor'), {
   ssr: false
@@ -70,7 +69,7 @@ export default class LayerDesigner extends React.Component<Props, State> {
     })
   }
 
-  getColorFromStyle = (style: GLStyle): string => {
+  getColorFromStyle = (style: mapboxgl.Style): string => {
     let color = 'rgba(255,0,0,0.65)'
     const prevColor = MapStyles.settings.get(style, 'color')
 
@@ -80,11 +79,11 @@ export default class LayerDesigner extends React.Component<Props, State> {
 
     return color
   }
-  setColorInStyle = (style: GLStyle, color: string): GLStyle => {
+  setColorInStyle = (style: mapboxgl.Style, color: string): mapboxgl.Style => {
     style = MapStyles.settings.set(style, 'color', color)
     return style
   }
-  onColorChange: any | ((color: string) => void) = (color: string) => {
+  onColorChange = (color: string): void => {
     const { props } = this
     const { layer, onColorChange } = props
     const oldStyle = this.setColorInStyle(props.style, color)
@@ -114,10 +113,16 @@ export default class LayerDesigner extends React.Component<Props, State> {
     this.props.onStyleChange(style)
     this.hideStyleEditor()
   }
-  onLabelsChange = (style: GLStyle, labels: Record<string, any>): void => {
+  onLabelsChange = (
+    style: mapboxgl.Style,
+    labels: Record<string, any>
+  ): void => {
     this.props.onLabelsChange(style, labels)
   }
-  onMarkersChange = (style: GLStyle, markers: Record<string, any>): void => {
+  onMarkersChange = (
+    style: mapboxgl.Style,
+    markers: Record<string, any>
+  ): void => {
     this.props.onMarkersChange(style, markers)
   }
   onLegendChange = (legend: string): void => {
@@ -144,7 +149,7 @@ export default class LayerDesigner extends React.Component<Props, State> {
       showLegendEditor: false
     })
   }
-  onAdvancedSettingsChange = (style: GLStyle, legend: string): void => {
+  onAdvancedSettingsChange = (style: mapboxgl.Style, legend: string): void => {
     this.props.onColorChange(style, legend)
   }
 

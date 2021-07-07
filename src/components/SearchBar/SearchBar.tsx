@@ -10,9 +10,9 @@ type Suggestion = {
 type Props = {
   autosuggestDelay: number
   placeholder: string
-  onReset: (...args: Array<any>) => any
-  onSubmit: (...args: Array<any>) => any
-  onChange: (...args: Array<any>) => any
+  onReset: (...args: Array<any>) => void
+  onSubmit: (...args: Array<any>) => void
+  onChange: (...args: Array<any>) => void
 }
 type State = {
   value: string
@@ -31,11 +31,11 @@ export default class SearchBar extends React.Component<Props, State> {
   suggestions: any
   _timerId: any
 
-  componentDidMount() {
+  componentDidMount(): void {
     document.body.addEventListener('click', this.hideSuggestions)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     document.body.removeEventListener('click', this.hideSuggestions)
   }
 

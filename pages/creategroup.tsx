@@ -54,7 +54,7 @@ export default class CreateGroup extends React.Component<Props, State> {
   }
 
   onComplete: any | ((groupId: string) => void) = (groupId: string) => {
-    window.location = '/group/' + groupId
+    window.location.assign('/group/' + groupId)
   }
   nextStep: any | (() => void) = () => {
     this.setState({

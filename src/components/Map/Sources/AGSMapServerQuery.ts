@@ -1,12 +1,11 @@
-import type { GLLayer, GLSource } from '../../../types/mapbox-gl-style'
 import TerraformerGL from '../../../services/terraformerGL'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'AGSFeatureServerQuery'
-)
+import DebugFactory from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import mapboxgl from 'mapbox-gl'
+const debug = DebugFactory('AGSFeatureServerQuery')
 
 const AGSMapServerQuery = {
-  load(key: string, source: GLSource, mapComponent: any): any {
+  load(key: string, source: mapboxgl.Source, mapComponent: any): any {
     if (source.url) {
       return TerraformerGL.getArcGISGeoJSON(source.url).then(
         (geoJSON) => {
@@ -33,11 +32,11 @@ const AGSMapServerQuery = {
   },
 
   addLayer(
-    layer: GLLayer,
-    source: GLSource,
+    layer: mapboxgl.Layer,
+    source: mapboxgl.Source,
     position: number,
     mapComponent: any
-  ) {
+  ): void {
     if (mapComponent.state.editing) {
       mapComponent.addLayerBefore(layer, mapComponent.getFirstDrawLayerID())
     } else {
@@ -45,11 +44,11 @@ const AGSMapServerQuery = {
     }
   },
 
-  removeLayer(layer: GLLayer, mapComponent: any) {
+  removeLayer(layer: mapboxgl.Layer, mapComponent: any): void {
     mapComponent.removeLayer(layer.id)
   },
 
-  remove(key: string, mapComponent: any) {
+  remove(key: string, mapComponent: any): void {
     mapComponent.removeSource(key)
   }
 }

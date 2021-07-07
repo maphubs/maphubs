@@ -1,3 +1,6 @@
+/**
+ * Note: SSR not supported, needs to be loaded dynamically in NextJS
+ */
 import React from 'react'
 import ReactDOM from 'react-dom'
 import classNames from 'classnames'
@@ -23,17 +26,18 @@ import Promise from 'bluebird'
 import turfCentroid from '@turf/centroid'
 import PlayArrow from '@material-ui/icons/PlayArrow'
 import MapLayerMenu from './MapLayerMenu'
-import type { GLStyle, GLSource, GLLayer } from '../../types/mapbox-gl-style'
-import type { GeoJSONObject } from 'geojson-flow'
-import type { Layer } from '../../types/layer'
+import { Layer } from '../../types/layer'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import $ from 'jquery'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { Feature, FeatureCollection } from 'geojson'
+import mapboxgl from 'mapbox-gl'
+import ScalePositionControl from 'mapbox-gl-dual-scale-control'
+import MapboxLanguage from '@mapbox/mapbox-gl-language'
+import lunr from 'lunr'
+import { LocalizedString } from '../../types/LocalizedString'
 const debug = DebugService('map')
-let mapboxgl = {}
-let ScalePositionControl
-let MapboxLanguage
 type Props = {
   className: string
   id: string
@@ -43,21 +47,21 @@ type Props = {
   zoom?: number
   height: string
   style: Record<string, any>
-  glStyle?: GLStyle
+  glStyle?: mapboxgl.Style
   features?: Array<Record<string, any>>
   tileJSONType?: string
   tileJSONUrl?: string
-  data?: GeoJSONObject
+  data?: FeatureCollection
   interactive: boolean
   showPlayButton: boolean
   showLogo: boolean
   showScale: boolean
   showFeatureInfoEditButtons: boolean
-  fitBounds?: NestedArray<number>
+  fitBounds?: Array<Array<number>>
   fitBoundsOptions: Record<string, any>
   disableScrollZoom?: boolean
   enableRotation?: boolean
-  navPosition: string
+  navPosition: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
   onChangeBaseMap?: (...args: Array<any>) => any
   insetMap: boolean
   hoverInteraction: boolean
@@ -69,16 +73,16 @@ type Props = {
   preserveDrawingBuffer?: boolean
   mapConfig: Record<string, any>
   insetConfig: Record<string, any>
-  onToggleForestLoss?: (...args: Array<any>) => any
-  onToggleIsochroneLayer?: (...args: Array<any>) => any
-  children?: any
+  onToggleForestLoss?: (...args: Array<any>) => void
+  onToggleIsochroneLayer?: (...args: Array<any>) => void
+  children?: JSX.Element | JSX.Element[]
   containers: {
     baseMapState: Record<string, any>
     dataEditorState: Record<string, any>
     mapState: Record<string, any>
   }
-  onLoad: (...args: Array<any>) => any
-  t: (...args: Array<any>) => any
+  onLoad: (...args: Array<any>) => void
+  t: (v: string | LocalizedString) => string
   locale: string
   logoSmall?: string
   logoSmallWidth?: number
@@ -87,15 +91,15 @@ type Props = {
   DGWMSConnectID?: string
   earthEngineClientID?: string
   categories?: Array<Record<string, any>>
-  mapLayers?: Array<Record<string, any>>
-  toggleVisibility?: (...args: Array<any>) => any
+  mapLayers?: Layer[]
+  toggleVisibility?: (...args: Array<any>) => void
   showMapTools: boolean
   showSearch: boolean
   showFullScreen: boolean
 }
 type State = {
   id: string
-  selectedFeature?: Record<string, any>
+  selectedFeature?: Feature
   selected: boolean
   interactive: boolean
   interactiveLayers: Array<Record<string, any>>
@@ -133,14 +137,14 @@ class Map extends React.Component<Props, State> {
     mapConfig: {},
     insetConfig: {}
   }
-  map: Record<string, any>
-  overlayMapStyle: Record<string, any>
-  mapboxPopup: any
-  glStyle: Record<string, any>
-  lunr: any
+  map: mapboxgl.Map
+  overlayMapStyle: mapboxgl.Style
+  mapboxPopup: mapboxgl.Popup
+  glStyle: mapboxgl.Style
   idx: any
   searchSourceIds: any
   languageControl: any
+  lunr: any
 
   constructor(props: Props) {
     super(props)
@@ -165,10 +169,6 @@ class Map extends React.Component<Props, State> {
       })
     }
 
-    mapboxgl = require('mapbox-gl')
-    ScalePositionControl = require('mapbox-gl-dual-scale-control')
-    MapboxLanguage = require('@mapbox/mapbox-gl-language')
-    this.lunr = require('lunr')
     this.createMap()
   }
 
@@ -186,39 +186,37 @@ class Map extends React.Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
+    const { props, state, map } = this
+    const { id, interactive } = state
+    const { navPosition, showFullScreen, locale, containers } = props
     // switch to interactive
-    if (this.state.interactive && !prevState.interactive) {
-      this.map.addControl(
+    if (interactive && !prevState.interactive) {
+      map.addControl(
         new mapboxgl.NavigationControl({
           showCompass: false
         }),
-        this.props.navPosition
+        navPosition
       )
-      if (this.props.showFullScreen)
-        this.map.addControl(
+      if (showFullScreen)
+        map.addControl(
           new mapboxgl.FullscreenControl({
-            container: document.querySelector(
-              `#${this.state.id}-fullscreen-wrapper`
-            )
+            container: document.querySelector(`#${id}-fullscreen-wrapper`)
           }),
-          this.props.navPosition
+          navPosition
         )
-      if (this.map.dragPan) this.map.dragPan.enable()
-      if (this.map.scrollZoom) this.map.scrollZoom.enable()
-      if (this.map.doubleClickZoom) this.map.doubleClickZoom.enable()
-      if (this.map.touchZoomRotate) this.map.touchZoomRotate.enable()
+      if (map.dragPan) map.dragPan.enable()
+      if (map.scrollZoom) map.scrollZoom.enable()
+      if (map.doubleClickZoom) map.doubleClickZoom.enable()
+      if (map.touchZoomRotate) map.touchZoomRotate.enable()
     }
 
     // change locale
-    if (this.props.locale && this.props.locale !== prevProps.locale) {
-      this.changeLocale(this.props.locale, this.map)
-      const { mapState } = this.props.containers
+    if (locale && locale !== prevProps.locale) {
+      this.changeLocale(locale, map)
+      const { mapState } = containers
 
       if (mapState.state.insetMap) {
-        this.changeLocale(
-          this.props.locale,
-          mapState.state.insetMap.getInsetMap()
-        )
+        this.changeLocale(locale, mapState.state.insetMap.getInsetMap())
       }
     }
   }
@@ -228,25 +226,26 @@ class Map extends React.Component<Props, State> {
   }
   addMapData = (
     map: any,
-    glStyle?: GLStyle,
-    geoJSON?: GeoJSONObject,
+    glStyle?: mapboxgl.Style,
+    geoJSON?: FeatureCollection,
     cb: (...args: Array<any>) => any
   ) => {
     this.debugLog('addMapData')
 
-    const _this = this
+    const { props, debugLog, overlayMapStyle, setOverlayStyle, initGeoJSON } =
+      this
+    const { allowLayerOrderOptimization } = props
 
-    const style = this.overlayMapStyle || glStyle
+    const style = overlayMapStyle || glStyle
 
     if (style && style.sources) {
       return Promise.resolve(
-        _this.setOverlayStyle(style, _this.props.allowLayerOrderOptimization)
+        setOverlayStyle(style, allowLayerOrderOptimization)
       )
         .catch((err) => {
           console.error('error adding map data')
           console.error(err)
-
-          _this.debugLog(err)
+          debugLog(err)
         })
         .asCallback((err) => {
           if (err) {
@@ -256,13 +255,13 @@ class Map extends React.Component<Props, State> {
           }
 
           if (geoJSON) {
-            _this.initGeoJSON(geoJSON)
+            initGeoJSON(geoJSON)
           }
 
           cb()
         })
     } else if (geoJSON) {
-      _this.initGeoJSON(geoJSON)
+      initGeoJSON(geoJSON)
 
       cb()
     } else {
@@ -270,11 +269,19 @@ class Map extends React.Component<Props, State> {
     }
   }
   createMap = async () => {
-    const _this = this
-
     this.debugLog('Creating MapboxGL Map')
     mapboxgl.accessToken = this.props.mapboxAccessToken
-    const { debugLog } = this
+    const {
+      debugLog,
+      props,
+      state,
+      glStyle,
+      addMapData,
+      setState,
+      mousemoveHandler,
+      moveendHandler,
+      clickHandler
+    } = this
     const {
       preserveDrawingBuffer,
       enableRotation,
@@ -282,17 +289,21 @@ class Map extends React.Component<Props, State> {
       fitBounds,
       fitBoundsOptions,
       data,
-      glStyle,
       attributionControl,
       zoom,
       minZoom,
       maxZoom,
       t,
       locale,
-      showFullScreen
-    } = this.props
-    const { interactive, mapLoaded } = this.state
-    const { baseMapState, mapState } = this.props.containers
+      showFullScreen,
+      disableScrollZoom,
+      showScale,
+      containers,
+      onLoad,
+      navPosition
+    } = props
+    const { id, interactive, mapLoaded } = state
+    const { baseMapState, mapState } = containers
     await baseMapState.initBaseMap()
     const baseMapStyle = baseMapState.state.baseMapStyle
     this.setBaseMapStyle(baseMapStyle, false)
@@ -307,8 +318,8 @@ class Map extends React.Component<Props, State> {
     }
 
     const map = new mapboxgl.Map({
-      container: _this.state.id,
-      style: _this.glStyle,
+      container: id,
+      style: glStyle,
       zoom: zoom || 0,
       minZoom: minZoom || 0,
       maxZoom: maxZoom || 22,
@@ -320,8 +331,9 @@ class Map extends React.Component<Props, State> {
       center: [0, 0],
       hash,
       attributionControl: false,
-      transformRequest: (url, resourceType) => {
+      transformRequest: (url: string, resourceType) => {
         if (map.authUrlStartsWith && url.startsWith(map.authUrlStartsWith)) {
+          // TODO: //add CSRF support for vector tiles
           return {
             url: url,
             headers: {
@@ -375,15 +387,15 @@ class Map extends React.Component<Props, State> {
       }
 
       // add the omh data
-      _this.addMapData(map, glStyle, data, () => {
+      addMapData(map, glStyle, data, () => {
         // do stuff that needs to happen after data loads
         debugLog('finished adding map data')
 
-        _this.setState({
+        setState({
           mapLoaded: true
         })
 
-        if (_this.props.onLoad) _this.props.onLoad()
+        if (onLoad) onLoad()
       })
     })
 
@@ -397,23 +409,21 @@ class Map extends React.Component<Props, State> {
       debugLog('failed to init inset')
     }
 
-    map.on('mousemove', _this.mousemoveHandler)
-    map.on('moveend', _this.moveendHandler)
-    map.on('click', _this.clickHandler)
+    map.on('mousemove', mousemoveHandler)
+    map.on('moveend', moveendHandler)
+    map.on('click', clickHandler)
 
     if (interactive) {
       map.addControl(
         new mapboxgl.NavigationControl({
           showCompass: false
         }),
-        _this.props.navPosition
+        navPosition
       )
       if (showFullScreen)
         map.addControl(
           new mapboxgl.FullscreenControl({
-            container: document.querySelector(
-              `#${this.state.id}-fullscreen-wrapper`
-            )
+            container: document.querySelector(`#${id}-fullscreen-wrapper`)
           })
         )
     }
@@ -422,7 +432,7 @@ class Map extends React.Component<Props, State> {
       map.addControl(new mapboxgl.AttributionControl(), 'bottom-left')
     }
 
-    if (this.props.showScale) {
+    if (showScale) {
       map.addControl(
         new ScalePositionControl({
           maxWidth: 175
@@ -432,75 +442,78 @@ class Map extends React.Component<Props, State> {
     }
 
     try {
-      var languageControl = new MapboxLanguage()
+      const languageControl = new MapboxLanguage()
       map.addControl(locale)
+      this.languageControl = languageControl
     } catch (err) {
       console.error('failed to add langauge control')
       console.error(err)
     }
 
-    if (this.props.disableScrollZoom) {
+    if (disableScrollZoom) {
       map.scrollZoom.disable()
     }
 
     this.map = map
-    this.languageControl = languageControl
+    this.lunr = lunr
   }
 
   async componentWillReceiveProps(nextProps: Props) {
     // debug.log('(' + this.state.id + ') ' +'componentWillReceiveProps');
-    const _this = this
-
-    if (nextProps.data && this.map) {
-      const geoJSONData = this.map.getSource('omh-geojson')
+    const { map, props, state, debugLog } = this
+    const { id, mapLoaded } = state
+    const {
+      data,
+      glStyle,
+      allowLayerOrderOptimization,
+      fitBounds,
+      fitBoundsOptions
+    } = props
+    if (nextProps.data && map) {
+      const geoJSONData = map.getSource('omh-geojson') as mapboxgl.GeoJSONSource
 
       if (geoJSONData) {
-        debug.log('(' + this.state.id + ') ' + 'update geoJSON data')
+        debugLog(`(${id}) update geoJSON data`)
         // update existing data
         geoJSONData.setData(nextProps.data)
         this.zoomToData(nextProps.data)
-      } else if (geoJSONData === undefined && this.props.data) {
+      } else if (geoJSONData === undefined && data) {
         // do nothing, still updating from the last prop change...
       } else {
-        debug.log('(' + this.state.id + ') ' + 'init geoJSON data')
+        debugLog(`(${id}) init geoJSON data`)
 
-        if (this.state.mapLoaded && nextProps.data) {
+        if (mapLoaded) {
           this.initGeoJSON(nextProps.data)
         } else {
-          debug.log(
-            `(${this.state.id}) Skipping GeoJSON init, map not ready yet`
-          )
+          debugLog(`(${id}) Skipping GeoJSON init, map not ready yet`)
         }
       }
     }
 
     if (
-      this.state.mapLoaded && // only reload if the first load is complete
+      mapLoaded && // only reload if the first load is complete
       nextProps.glStyle &&
-      !_isequal(this.props.glStyle, nextProps.glStyle)
+      !_isequal(glStyle, nextProps.glStyle)
     ) {
       const nextGLStyle = nextProps.glStyle
 
-      _this.debugLog('glstyle changing from props')
+      debugLog('glstyle changing from props')
 
       await Promise.resolve(
-        this.setOverlayStyle(
-          nextGLStyle,
-          _this.props.allowLayerOrderOptimization
-        )
+        this.setOverlayStyle(nextGLStyle, allowLayerOrderOptimization)
       )
         .catch((err) => {
           console.error('error glstyle changing')
           console.error(err)
 
-          _this.debugLog(err)
+          debugLog(err)
         })
         .asCallback((err) => {
           if (err) {
             console.error('error glstyle changing')
             console.error(err)
 
-            _this.debugLog(err)
+            debugLog(err)
           }
 
           const interactiveLayers = this.getInteractiveLayers(nextGLStyle)
@@ -512,34 +525,34 @@ class Map extends React.Component<Props, State> {
 
     if (
       nextProps.fitBounds &&
-      !_isequal(this.props.fitBounds, nextProps.fitBounds) &&
-      this.map
+      !_isequal(fitBounds, nextProps.fitBounds) &&
+      map
     ) {
-      _this.debugLog('FIT BOUNDS CHANGING')
+      debugLog('FIT BOUNDS CHANGING')
 
       let bounds = nextProps.fitBounds
 
-      if (nextProps.fitBounds && nextProps.fitBounds.length > 2) {
+      if (nextProps.fitBounds.length > 2) {
         bounds = [
           [nextProps.fitBounds[0], nextProps.fitBounds[1]],
           [nextProps.fitBounds[2], nextProps.fitBounds[3]]
         ]
       }
 
-      debug.log('(' + this.state.id + ') ' + 'bounds: ' + bounds.toString())
+      debugLog(`bounds: ${bounds.toString()}`)
 
       if (bounds._ne && bounds._sw) {
-        this.map.fitBounds(bounds, this.props.fitBoundsOptions)
+        map.fitBounds(bounds, fitBoundsOptions)
       } else if (Array.isArray(bounds) && bounds.length > 2) {
-        this.map.fitBounds(
+        map.fitBounds(
           [
             [bounds[0], bounds[1]],
             [bounds[2], bounds[3]]
           ],
-          this.props.fitBoundsOptions
+          fitBoundsOptions
         )
       } else {
-        this.map.fitBounds(bounds, this.props.fitBoundsOptions)
+        map.fitBounds(bounds, fitBoundsOptions)
       }
 
       this.setState({
@@ -566,9 +579,9 @@ class Map extends React.Component<Props, State> {
   }
   changeBaseMap = async (mapName: string) => {
     this.debugLog('changing basemap to: ' + mapName)
-    const { setBaseMapStyle, map } = this
-    const { onChangeBaseMap } = this.props
-    const { baseMapState, mapState } = this.props.containers
+    const { setBaseMapStyle, map, props } = this
+    const { onChangeBaseMap, containers } = props
+    const { baseMapState, mapState } = containers
     const baseMapStyle = await baseMapState.setBaseMap(mapName)
     setBaseMapStyle(baseMapStyle, true)
     this.setState({
@@ -586,6 +599,23 @@ class Map extends React.Component<Props, State> {
   }
 
   render() {
+    const {
+      props,
+      state,
+      map,
+      clearSelection,
+      toggleMeasurementTools,
+      measureFeatureClick,
+      changeBaseMap,
+      getIsochronePoint,
+      clearIsochroneLayers,
+      stopMeasurementTool,
+      startInteractive,
+      onSearch,
+      onSearchResultClick,
+      onSearchReset
+    } = this
+    let { mapboxPopup } = this
     const className = classNames('mode', 'map', 'active')
     const {
       t,
@@ -597,17 +627,28 @@ class Map extends React.Component<Props, State> {
       mapLayers,
       toggleVisibility,
       showMapTools,
-      showSearch
-    } = this.props
+      showSearch,
+      showFeatureInfoEditButtons,
+      style,
+      categories,
+      gpxLink,
+      showPlayButton,
+      children,
+      height,
+      mapboxAccessToken,
+      insetConfig
+    } = props
 
-    if (this.state.selectedFeature) {
+    const { id, interactive, selected, selectedFeature, mapLoaded } = state
+
+    if (selectedFeature) {
       // close any existing popups
-      if (this.mapboxPopup && this.mapboxPopup.isOpen()) {
-        this.mapboxPopup.remove()
-        this.mapboxPopup = undefined
+      if (mapboxPopup?.isOpen()) {
+        mapboxPopup.remove()
+        mapboxPopup = undefined
       }
 
-      let popupFeature = this.state.selectedFeature
+      let popupFeature = selectedFeature
 
       if (popupFeature.geometry.type !== 'Point') {
         popupFeature = turfCentroid(popupFeature)
@@ -617,192 +658,191 @@ class Map extends React.Component<Props, State> {
       el.className = 'maphubs-feature-popup'
       ReactDOM.render(
         <FeaturePopup
-          features={[this.state.selectedFeature]}
-          selected={this.state.selected}
-          showButtons={this.props.showFeatureInfoEditButtons}
+          features={[selectedFeature]}
+          selected={selected}
+          showButtons={showFeatureInfoEditButtons}
           t={t}
         />,
         el
       )
-      this.mapboxPopup = new mapboxgl.Popup()
+      mapboxPopup = new mapboxgl.Popup()
         .setLngLat(popupFeature.geometry.coordinates)
         .setDOMContent(el)
-        .addTo(this.map)
-      this.mapboxPopup.on('close', this.clearSelection)
-    } else if (this.mapboxPopup) {
-      this.mapboxPopup.remove()
+        .addTo(map)
+      mapboxPopup.on('close', clearSelection)
+    } else if (mapboxPopup) {
+      mapboxPopup.remove()
     }
 
     return (
       <div
         id={`${this.state.id}-fullscreen-wrapper`}
         className={this.props.className}
-        style={this.props.style}
+        style={style}
       >
         <style jsx global>
           {`
+            .mapboxgl-canvas {
+              left: 0 !important;
+            }
 
-          .mapboxgl-canvas{
-            left: 0 !important;
-          }
-          
-          .mapboxgl-ctrl-maphubs {
-            -moz-box-shadow: 0 0 0 2px rgba(0,0,0,.1);
-            -webkit-box-shadow: 0 0 0 2px rgba(0,0,0,.1);
-            box-shadow: 0 0 0 2px rgba(0,0,0,.1);
-          }
+            .mapboxgl-ctrl-maphubs {
+              -moz-box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+              -webkit-box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+              box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+            }
 
-          .mapboxgl-popup {
-            z-index: 200 !important;
-            height: 200px;
-            width: 150px;
-          }
+            .mapboxgl-popup {
+              z-index: 200 !important;
+              height: 200px;
+              width: 150px;
+            }
 
-          .mapboxgl-popup-content{
-            padding: 0 !important;
-          }
+            .mapboxgl-popup-content {
+              padding: 0 !important;
+            }
 
-          .mapboxgl-popup-close-button{
-            top: -7px !important;
-            right: -7px !important;
-            z-index: 201 !important;
-            background-color: rgba(255, 255, 255, 0.75) !important;
-            color: black !important;
-            border-radius: 25px !important;
-            border: 1px solid black !important;
-            width: 14px !important;
-            height: 14px !important;
-            line-height: 5px !important;
-            padding-bottom: 1px !important;
-            padding-top: 0px !important;
-            padding-left: 0.5px !important;
-            padding-right: 0px !important;
-          }
+            .mapboxgl-popup-close-button {
+              top: -7px !important;
+              right: -7px !important;
+              z-index: 201 !important;
+              background-color: rgba(255, 255, 255, 0.75) !important;
+              color: black !important;
+              border-radius: 25px !important;
+              border: 1px solid black !important;
+              width: 14px !important;
+              height: 14px !important;
+              line-height: 5px !important;
+              padding-bottom: 1px !important;
+              padding-top: 0px !important;
+              padding-left: 0.5px !important;
+              padding-right: 0px !important;
+            }
 
-          .maphubs-feature-popup{
-            padding: 0;
-          }
+            .maphubs-feature-popup {
+              padding: 0;
+            }
 
-          .mapbox-gl-draw_point, .mapbox-gl-draw_line, .mapbox-gl-draw_polygon{
-            border-bottom: none !important;
-            border-right: 1px #ddd solid !important;
-          }
+            .mapbox-gl-draw_point,
+            .mapbox-gl-draw_line,
+            .mapbox-gl-draw_polygon {
+              border-bottom: none !important;
+              border-right: 1px #ddd solid !important;
+            }
 
-          .mapboxgl-ctrl-logo {
-            position: absolute !important;
-            bottom: -5px !important;
-            left: 80px !important;
-          }
+            .mapboxgl-ctrl-logo {
+              position: absolute !important;
+              bottom: -5px !important;
+              left: 80px !important;
+            }
 
-          .maphubs-inset .mapboxgl-ctrl-logo {
-            display: none;
-          }
-          .mapboxgl-ctrl-top-right {
-            top: 40px;
-          }
+            .maphubs-inset .mapboxgl-ctrl-logo {
+              display: none;
+            }
+            .mapboxgl-ctrl-top-right {
+              top: 40px;
+            }
 
-        
-          .maphubs-ctrl-scale {
-            border: none !important;
-            padding: 0  !important;
-            background-color: inherit  !important;
-            position: relative;
-            height: 22px;
-            position: absolute;
-            bottom: 5px;
-            right: 5px;
-            height: 34px;
-            margin: 0px !important;
-          }
+            .maphubs-ctrl-scale {
+              border: none !important;
+              padding: 0 !important;
+              background-color: inherit !important;
+              position: relative;
+              height: 22px;
+              position: absolute;
+              bottom: 5px;
+              right: 5px;
+              height: 34px;
+              margin: 0px !important;
+            }
 
-          .map-position {
-            height: 12px;
-            max-width: 125px;
-            width: 100vw;
-            position: absolute;
-            top: 0;
-            right: 0;
-            background-color: rgba(255, 255, 255, 0.55);
-            font-size: 10px;
-            line-height: 10px;
-            text-align: center;
-            box-shadow: none !important;
+            .map-position {
+              height: 12px;
+              max-width: 125px;
+              width: 100vw;
+              position: absolute;
+              top: 0;
+              right: 0;
+              background-color: rgba(255, 255, 255, 0.55);
+              font-size: 10px;
+              line-height: 10px;
+              text-align: center;
+              box-shadow: none !important;
               color: #333;
-          }
-
-          .metric-scale {
-            height: 12px;
-            font-size: 10px;
-            line-height: 10px;
-            text-align: center;
-            box-shadow: none !important;
-            background-color: rgba(255, 255, 255, 0.55);
-            border-width: medium 2px 2px;
-            border-style: none solid solid;
-            border-color: #333;
-            padding: 0 5px;
-            color: #333;
-            position: absolute;
-            top: 12px;
-            right: 0;
-          }
-
-          .imperial-scale {
-            height: 12px;
-            font-size: 10px;
-            line-height: 10px;
-            text-align: center;
-            box-shadow: none !important;
-            background-color: rgba(255, 255, 255, 0.55);
-            border-width: medium 2px 2px;
-            border-style: solid solid none;
-            border-color: #333;
-            padding: 0 5px;
-            color: #333;
-            position: absolute;
-            bottom: 0;
-            right: 0;
-          }
-
-          @media(max-width: 350px) {
-            .map-position {
-              display: none;
             }
+
             .metric-scale {
-              max-width: 100px;
+              height: 12px;
+              font-size: 10px;
+              line-height: 10px;
+              text-align: center;
+              box-shadow: none !important;
+              background-color: rgba(255, 255, 255, 0.55);
+              border-width: medium 2px 2px;
+              border-style: none solid solid;
+              border-color: #333;
+              padding: 0 5px;
+              color: #333;
+              position: absolute;
+              top: 12px;
+              right: 0;
             }
-            .imperial-scale {
-              max-width: 100px;
-            }
-          }
 
-          @media(max-width: 280px) {
-            .maphubs-inset {
-              display: none;
-            }
-            .map-position {
-              display: none;
-            }
-            .metric-scale {
-              max-width: 75px;
-            }
             .imperial-scale {
-              max-width: 75px;
+              height: 12px;
+              font-size: 10px;
+              line-height: 10px;
+              text-align: center;
+              box-shadow: none !important;
+              background-color: rgba(255, 255, 255, 0.55);
+              border-width: medium 2px 2px;
+              border-style: solid solid none;
+              border-color: #333;
+              padding: 0 5px;
+              color: #333;
+              position: absolute;
+              bottom: 0;
+              right: 0;
             }
-          }
 
-        `}
+            @media (max-width: 350px) {
+              .map-position {
+                display: none;
+              }
+              .metric-scale {
+                max-width: 100px;
+              }
+              .imperial-scale {
+                max-width: 100px;
+              }
+            }
+
+            @media (max-width: 280px) {
+              .maphubs-inset {
+                display: none;
+              }
+              .map-position {
+                display: none;
+              }
+              .metric-scale {
+                max-width: 75px;
+              }
+              .imperial-scale {
+                max-width: 75px;
+              }
+            }
+          `}
         </style>
-        {this.props.categories && (
+        {categories && (
           <MapLayerMenu
-            categories={this.props.categories}
+            categories={categories}
             toggleVisibility={toggleVisibility}
             layers={mapLayers}
             t={t}
           />
         )}
         <div
-          id={this.state.id}
+          id={id}
           className={className}
           style={{
             width: '100%',
@@ -811,22 +851,22 @@ class Map extends React.Component<Props, State> {
         >
           {insetMap && (
             <InsetMap
-              id={this.state.id}
+              id={id}
               bottom={showLogo ? '30px' : '25px'}
-              mapboxAccessToken={this.props.mapboxAccessToken}
-              {...this.props.insetConfig}
+              mapboxAccessToken={mapboxAccessToken}
+              {...insetConfig}
             />
           )}
           {showMapTools && (
             <MapToolPanel
               show={this.state.interactive && this.state.mapLoaded}
-              gpxLink={this.props.gpxLink}
-              toggleMeasurementTools={this.toggleMeasurementTools}
+              gpxLink={gpxLink}
+              toggleMeasurementTools={toggleMeasurementTools}
               enableMeasurementTools={this.state.enableMeasurementTools}
-              measureFeatureClick={this.measureFeatureClick}
-              onChangeBaseMap={this.changeBaseMap}
-              getIsochronePoint={this.getIsochronePoint}
-              clearIsochroneLayers={this.clearIsochroneLayers}
+              measureFeatureClick={measureFeatureClick}
+              onChangeBaseMap={changeBaseMap}
+              getIsochronePoint={getIsochronePoint}
+              clearIsochroneLayers={clearIsochroneLayers}
               isochroneResult={this.state.isochroneResult}
               zoomToCoordinates={(lat, lon) => {
                 this.flyTo([lon, lat], this.map.getZoom())
@@ -847,7 +887,7 @@ class Map extends React.Component<Props, State> {
                   paddingLeft: '5px',
                   paddingRight: '5px',
                   borderRadius: '4px',
-                  zIndex: '100',
+                  zIndex: 100,
                   lineHeight: '30px'
                 }}
               >
@@ -859,34 +899,34 @@ class Map extends React.Component<Props, State> {
                 icon='close'
                 show
                 color='#000'
-                onClick={this.stopMeasurementTool}
+                onClick={stopMeasurementTool}
                 tooltipText={t('Exit Measurement')}
                 tooltipPosition='left'
               />
             </div>
           )}
-          {!this.state.interactive && this.props.showPlayButton && (
+          {!interactive && showPlayButton && (
             <a
-              onClick={this.startInteractive}
+              onClick={startInteractive}
               style={{
                 position: 'absolute',
                 left: '50%',
                 bottom: '50%',
                 backgroundColor: 'rgba(25,25,25,0.1)',
-                zIndex: '999'
+                zIndex: 999
               }}
             >
               <PlayArrow />
             </a>
           )}
-          {this.state.mapLoaded && this.props.children}
-          {this.state.mapLoaded && this.props.showLogo && (
+          {mapLoaded && children}
+          {mapLoaded && showLogo && (
             <img
               style={{
                 position: 'absolute',
                 left: '5px',
                 bottom: '2px',
-                zIndex: '1'
+                zIndex: 1
               }}
               width={logoSmallWidth}
               height={logoSmallHeight}
@@ -896,13 +936,13 @@ class Map extends React.Component<Props, State> {
           )}
           {showSearch && (
             <MapSearchPanel
-              show={this.state.interactive && this.state.mapLoaded}
-              height={this.props.height}
-              onSearch={this.onSearch}
-              onSearchResultClick={this.onSearchResultClick}
-              onSearchReset={this.onSearchReset}
+              show={interactive && mapLoaded}
+              height={height}
+              onSearch={onSearch}
+              onSearchResultClick={onSearchResultClick}
+              onSearchReset={onSearchReset}
               t={t}
-              mapboxAccessToken={this.props.mapboxAccessToken}
+              mapboxAccessToken={mapboxAccessToken}
             />
           )}
         </div>
@@ -911,13 +951,13 @@ class Map extends React.Component<Props, State> {
   }
 
   // GeoJSONMixin
-  initGeoJSON = (data: GeoJSONObject) => {
+  initGeoJSON = (data: FeatureCollection) => {
     return MapGeoJSONMixin.initGeoJSON.bind(this)(data)
   }
   resetGeoJSON = () => {
     return MapGeoJSONMixin.resetGeoJSON.bind(this)()
   }
-  zoomToData = (data: GeoJSONObject) => {
+  zoomToData = (data: FeatureCollection) => {
     return MapGeoJSONMixin.zoomToData.bind(this)(data)
   }
   // MapInteractionMixin
@@ -930,14 +970,14 @@ class Map extends React.Component<Props, State> {
   clearSelection = () => {
     return MapInteractionMixin.clearSelection.bind(this)()
   }
-  getInteractiveLayers = (glStyle: GLStyle) => {
+  getInteractiveLayers = (glStyle: mapboxgl.Style) => {
     return MapInteractionMixin.getInteractiveLayers.bind(this)(glStyle)
   }
   clickHandler = (e: any) => {
     return MapInteractionMixin.clickHandler.bind(this)(e)
   }
   moveendHandler = () => {
-    debug.log('mouse up fired')
+    this.debugLog('mouse up fired')
     const { baseMapState } = this.props.containers
     baseMapState.updateMapPosition(this.getPosition(), this.getBounds())
   }
@@ -951,7 +991,7 @@ class Map extends React.Component<Props, State> {
   getEditorStyles = () => {
     return DataEditorMixin.getEditorStyles.bind(this)()
   }
-  editFeature = (feature: Record<string, any>) => {
+  editFeature = (feature: Feature) => {
     return DataEditorMixin.editFeature.bind(this)(feature)
   }
   startEditingTool = (layer: Layer) => {
@@ -1003,7 +1043,7 @@ class Map extends React.Component<Props, State> {
   }
   getSearchDisplayLayers = (
     sourceID: string,
-    source: GLSource,
+    source: mapboxgl.Source,
     mhids: Array<string>
   ) => {
     return MapSearchMixin.getSearchDisplayLayers.bind(this)(
@@ -1040,12 +1080,7 @@ class Map extends React.Component<Props, State> {
   getBoundsObject = (bbox: Array<number>) => {
     return MapboxGLHelperMixin.getBoundsObject.bind(this)(bbox)
   }
-  fitBounds = (
-    bbox: any,
-    maxZoom: number,
-    padding: number = 0,
-    animate: boolean = true
-  ) => {
+  fitBounds = (bbox: any, maxZoom: number, padding = 0, animate = true) => {
     return MapboxGLHelperMixin.fitBounds.bind(this)(
       bbox,
       maxZoom,
@@ -1053,23 +1088,23 @@ class Map extends React.Component<Props, State> {
       animate
     )
   }
-  changeLocale = (locale: string, map: any) => {
+  changeLocale = (locale: string, map: mapboxgl.Map) => {
     return MapboxGLHelperMixin.changeLocale.bind(this)(locale, map)
   }
   // StyleMixin
-  setBaseMapStyle = (style: GLStyle, update?: boolean) => {
+  setBaseMapStyle = (style: mapboxgl.Style, update?: boolean) => {
     return StyleMixin.setBaseMapStyle.bind(this)(style, update)
   }
-  setOverlayStyle = (overlayStyle: GLStyle, optimizeLayers: boolean) => {
+  setOverlayStyle = (overlayStyle: mapboxgl.Style, optimizeLayers: boolean) => {
     return StyleMixin.setOverlayStyle.bind(this)(overlayStyle, optimizeLayers)
   }
   reloadStyle = () => {
     return StyleMixin.reloadStyle.bind(this)()
   }
-  addLayer = (layer: GLLayer, position?: number) => {
+  addLayer = (layer: mapboxgl.Layer, position?: number) => {
     return StyleMixin.addLayer.bind(this)(layer, position)
   }
-  addLayerBefore = (layer: GLLayer, beforeLayer: string) => {
+  addLayerBefore = (layer: mapboxgl.Layer, beforeLayer: string) => {
     return StyleMixin.addLayerBefore.bind(this)(layer, beforeLayer)
   }
   addLayers = (
@@ -1077,30 +1112,33 @@ class Map extends React.Component<Props, State> {
       id: number
       position: number
     }>,
-    fromStyle: GLStyle
+    fromStyle: mapboxgl.Style
   ) => {
     return StyleMixin.addLayers.bind(this)(layerIds, fromStyle)
   }
   removeLayer = (id: string) => {
     return StyleMixin.removeLayer.bind(this)(id)
   }
-  removeLayers = (layersIDs: Array<string>, fromStyle: GLStyle) => {
+  removeLayers = (layersIDs: Array<string>, fromStyle: mapboxgl.Style) => {
     return StyleMixin.removeLayers.bind(this)(layersIDs, fromStyle)
   }
-  addSource = (key: string, source: GLSource) => {
+  addSource = (key: string, source: mapboxgl.Source) => {
     return StyleMixin.addSource.bind(this)(key, source)
   }
   removeSource = (key: string) => {
     return StyleMixin.removeSource.bind(this)(key)
   }
-  removeSources = (sourceKeys: Array<string>, fromStyle: GLStyle) => {
+  removeSources = (sourceKeys: Array<string>, fromStyle: mapboxgl.Style) => {
     return StyleMixin.removeSources.bind(this)(sourceKeys, fromStyle)
   }
-  loadSources = async (sourceKeys: Array<string>, fromStyle: GLStyle) => {
+  loadSources = async (
+    sourceKeys: Array<string>,
+    fromStyle: mapboxgl.Style
+  ) => {
     return StyleMixin.loadSources.bind(this)(sourceKeys, fromStyle)
   }
   // IsochroneMixin
-  getIsochroneStyle = (data: GeoJSONObject) => {
+  getIsochroneStyle = (data: FeatureCollection) => {
     return IsochroneMixin.getIsochroneStyle.bind(this)(data)
   }
   getIsochronePoint = () => {
@@ -1121,4 +1159,4 @@ export default subscribe(Map, {
   baseMapState: BaseMapContainer,
   dataEditorState: DataEditorContainer,
   mapState: MapContainer
-}) as any
+}) as Map

@@ -1,4 +1,3 @@
-import type { GLStyle } from '../../../types/mapbox-gl-style'
 import MapStyles from '../Styles'
 import _find from 'lodash.find'
 export default {
@@ -21,23 +20,21 @@ export default {
   guessNameFieldFromProps(properties: Record<string, any>): void {
     let nameField
 
-    const _this = this
-
-    Object.keys(properties).forEach((key) => {
+    for (const key of Object.keys(properties)) {
       const lowercaseKey = key.toLowerCase()
 
       if (!nameField) {
-        _this.possibleNameFields.forEach((name) => {
+        for (const name of this.possibleNameFields) {
           if (lowercaseKey.includes(name)) {
             nameField = key
           }
-        })
+        }
       }
-    })
+    }
     return nameField
   },
 
-  getPresetsFromStyle(style?: GLStyle): any | void {
+  getPresetsFromStyle(style?: mapboxgl.Style): any | void {
     if (style) {
       const firstSource = Object.keys(style.sources)[0]
 
@@ -54,7 +51,7 @@ export default {
   getNameField(
     properties: Record<string, any>,
     presets?: Array<Record<string, any>>
-  ): never {
+  ): string {
     let nameField
 
     if (presets) {

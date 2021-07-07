@@ -8,18 +8,20 @@ import _isequal from 'lodash.isequal'
 import ActionPanel from './FeaturePopup/ActionPanel'
 import type { Layer } from '../../types/layer'
 import 'react-image-lightbox/style.css'
+import { Feature } from 'geojson'
+import { LocalizedString } from '../../types/LocalizedString'
 
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'map/featurepopup'
-)
+import DebugFactory from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+
+const debug = DebugFactory('map/featurepopup')
 
 let Lightbox
 type Props = {
-  features: Array<any>
+  features: Feature[]
   showButtons: boolean
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   showAttributes: boolean
@@ -140,7 +142,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
         <span
           style={{
             fontSize: '14px',
-            fontWeight: '800',
+            fontWeight: 800,
             color: 'white',
             lineHeight: '14px',
             margin: 0,

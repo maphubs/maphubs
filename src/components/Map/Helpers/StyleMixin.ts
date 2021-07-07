@@ -1,6 +1,5 @@
 import _findIndex from 'lodash.findindex'
 import _remove from 'lodash.remove'
-import type { GLStyle, GLLayer, GLSource } from '../../../types/mapbox-gl-style'
 import _cloneDeep from 'lodash.clonedeep'
 import _difference from 'lodash.difference'
 import _map from 'lodash.map'
@@ -9,6 +8,7 @@ import _isequal from 'lodash.isequal'
 import _intersection from 'lodash.intersection'
 import Promise from 'bluebird'
 import LayerSources from '../Sources'
+import mapboxgl from 'mapbox-gl'
 type SourceDriverType = {
   driver: Record<string, any>
   custom: boolean
@@ -21,21 +21,21 @@ type SourceDriverType = {
  * Attempt to optimize layers, put labels on top of other layer types
  * @param {*} glStyle
  */
-function optimizeLayerOrder(glStyle: Record<string, any>) {
+function optimizeLayerOrder(glStyle: mapboxgl.Style) {
   const regularLayers = []
   const labelLayers = []
-  glStyle.layers.forEach((layer) => {
+  for (const layer of glStyle.layers) {
     if (layer.type === 'symbol') {
       labelLayers.push(layer)
     } else {
       regularLayers.push(layer)
     }
-  })
-  return regularLayers.concat(labelLayers)
+  }
+  return [...regularLayers, ...labelLayers]
 }
 
 export default {
-  setBaseMapStyle(style: GLStyle, update: boolean = true) {
+  setBaseMapStyle(style: mapboxgl.Style, update = true): void {
     style = _cloneDeep(style)
 
     if (this.overlayMapStyle) {
@@ -45,17 +45,21 @@ export default {
 
       if (this.baseMapStyle) {
         // need to clear previous base map
-        Object.keys(this.baseMapStyle.sources).forEach(this.removeSource)
+        for (const element of Object.keys(this.baseMapStyle.sources)) {
+          this.removeSource(element)
+        }
 
-        _map(this.baseMapStyle.layers, 'id').forEach(this.removeLayer)
+        for (const element of _map(this.baseMapStyle.layers, 'id')) {
+          this.removeLayer(element)
+        }
       }
 
-      sourcesToAdd.forEach((key) => {
+      for (const key of sourcesToAdd) {
         const source = style.sources[key]
         this.addSource(key, source)
-      })
+      }
       // FIXME: this will reset layers showing below base map labels
-      const updatedLayers = layersToAdd.concat(this.glStyle.layers)
+      const updatedLayers = [...layersToAdd, ...this.glStyle.layers]
       this.glStyle.layers = updatedLayers
     } else {
       // we can just overwrite the base map and let mapbox-gl do the diff
@@ -82,8 +86,6 @@ export default {
    * This is inefficient, use updateLayer when possible
    */
   async reloadStyle() {
-    const _this = this
-
     // start with a fresh copy of the base map
     this.glStyle = _cloneDeep(this.baseMapStyle)
     const layerIds = []
@@ -113,13 +115,13 @@ export default {
 
         const customSourceRender = async () => {
           if (customSources) {
-            customSources.forEach((customSource) => {
+            for (const customSource of customSources) {
               customSource.driver.load(
                 customSource.key,
                 customSource.source,
-                _this
+                this
               )
-            })
+            }
           }
 
           if (customSourceLayers) {
@@ -128,7 +130,7 @@ export default {
                 customSourceLayer.layer,
                 customSourceLayer.source,
                 customSourceLayer.position,
-                _this
+                this
               )
             })
           }
@@ -171,14 +173,14 @@ export default {
       const layersToAdd = _difference(newLayerIds, prevLayerIds)
 
       const layersToAddWithPosition = []
-      overlayStyle.layers.forEach((layer, i) => {
+      for (const [i, layer] of overlayStyle.layers.entries()) {
         if (layersToAdd.includes(layer.id)) {
           layersToAddWithPosition.push({
             id: layer.id,
             position: positionOffset + i
           })
         }
-      })
+      }
       // find sources to add and remove
       const prevSources = Object.keys(this.overlayMapStyle.sources)
       const newSources = Object.keys(overlayStyle.sources)
@@ -191,20 +193,20 @@ export default {
       const sourcesInBoth = _intersection(prevSources, newSources)
 
       const sourcesToUpdate = []
-      sourcesInBoth.forEach((key) => {
+      for (const key of sourcesInBoth) {
         const prevSource = this.overlayMapStyle.sources[key]
         const newSource = overlayStyle.sources[key]
 
         if (!_isequal(prevSource, newSource)) {
           sourcesToUpdate.push(key)
         }
-      })
+      }
 
       // find layers to update
       const layersInBoth = _intersection(prevLayerIds, newLayerIds)
 
       const layersToUpdate = []
-      layersInBoth.forEach((id) => {
+      for (const id of layersInBoth) {
         const prevLayer = _find(this.overlayMapStyle.layers, {
           id
         })
@@ -230,16 +232,16 @@ export default {
         if (prevLayerPosition !== newLayerPosition) {
           layersToUpdate.push(id)
         }
-      })
+      }
       const layersToUpdateWithPosition = []
-      overlayStyle.layers.forEach((layer, i) => {
+      for (const [i, layer] of overlayStyle.layers.entries()) {
         if (layersToUpdate.includes(layer.id)) {
           layersToUpdateWithPosition.push({
             id: layer.id,
             position: positionOffset + i
           })
         }
-      })
+      }
 
       _this.debugLog(`removing ${layersToRemove.length} layers`)
 
@@ -269,10 +271,11 @@ export default {
         sourcesToUpdate,
         overlayStyle
       )
-      customSources = customSources.concat(customSourcesToUpdate)
-      customSourceLayers = customSourceLayers.concat(
-        await this.addLayers(layersToUpdateWithPosition, overlayStyle)
-      )
+      customSources = [...customSources, ...customSourcesToUpdate]
+      customSourceLayers = [
+        ...customSourceLayers,
+        ...(await this.addLayers(layersToUpdateWithPosition, overlayStyle))
+      ]
 
       _this.debugLog(`custom sources: ${customSources.length}`)
 
@@ -288,12 +291,11 @@ export default {
         } // else has regular layers
       } else if (
         customSourceLayers.length > 0 &&
-        layersToUpdateWithPosition.length === customSourceLayers.length
+        layersToUpdateWithPosition.length === customSourceLayers.length &&
+        customSourcesToUpdate.length === customSources.length
       ) {
-        if (customSourcesToUpdate.length === customSources.length) {
-          allUpdatesAreCustomSources = true
-        } // else has regular sources
-      }
+        allUpdatesAreCustomSources = true
+      } // else has regular sources
     } else {
       // initial load of overlays (nothing to replace)
       _this.debugLog('initial layer load')
@@ -320,13 +322,13 @@ export default {
           _this.debugLog('customSourceRender')
 
           if (customSources) {
-            customSources.forEach((customSource) => {
+            for (const customSource of customSources) {
               customSource.driver.load(
                 customSource.key,
                 customSource.source,
                 _this
               )
-            })
+            }
           }
 
           if (customSourceLayers) {
@@ -361,13 +363,11 @@ export default {
 
   async loadSources(
     sourceKeys: Array<string>,
-    fromStyle: GLStyle
+    fromStyle: mapboxgl.Style
   ): Promise<Array<any>> {
-    const _this = this
-
     const customSources = []
     await Promise.map(sourceKeys, async (key) => {
-      _this.debugLog(`loading source: ${key}`)
+      this.debugLog(`loading source: ${key}`)
 
       const source = fromStyle.sources[key]
 
@@ -380,25 +380,23 @@ export default {
       const sourceDriver = LayerSources.getSource(key, source)
 
       if (sourceDriver.custom) {
-        _this.debugLog(`found custom source: ${key}`)
+        this.debugLog(`found custom source: ${key}`)
 
         customSources.push(sourceDriver)
       } else {
-        return sourceDriver.driver.load(key, source, _this)
+        return sourceDriver.driver.load(key, source, this)
       }
     })
     return customSources
   },
 
-  removeSources(sourceKeys: Array<string>, fromStyle: GLStyle) {
-    const _this = this
-
-    sourceKeys.map((key) => {
-      _this.debugLog(`removing source: ${key}`)
-
+  removeSources(sourceKeys: Array<string>, fromStyle: mapboxgl.Style): void {
+    const { debugLog } = this
+    for (const key of sourceKeys) {
+      debugLog(`removing source: ${key}`)
       const source = fromStyle.sources[key]
-      return LayerSources.getSource(key, source).driver.remove(key, _this)
-    })
+      LayerSources.getSource(key, source).driver.remove(key, this)
+    }
   },
 
   async addLayers(
@@ -406,13 +404,11 @@ export default {
       id: number
       position: number
     }>,
-    fromStyle: GLStyle
+    fromStyle: mapboxgl.Style
   ): Promise<Array<any | SourceDriverType>> {
-    const _this = this
-
     const customSourceLayers = []
     await Promise.map(layers, (layerToAdd) => {
-      _this.debugLog(`adding layer: ${layerToAdd.id}`)
+      this.debugLog(`adding layer: ${layerToAdd.id}`)
 
       try {
         const layer = _find(fromStyle.layers, {
@@ -426,7 +422,7 @@ export default {
         )
 
         if (sourceDriver.custom) {
-          _this.debugLog(`custom source layer: ${layerToAdd.id}`)
+          this.debugLog(`custom source layer: ${layerToAdd.id}`)
 
           Object.assign(sourceDriver, {
             layer,
@@ -439,23 +435,20 @@ export default {
             layer,
             source,
             layerToAdd.position,
-            _this
+            this
           )
         }
       } catch (err) {
-        _this.debugLog('Failed to add layers')
-
-        _this.debugLog(err)
+        this.debugLog('Failed to add layers')
+        this.debugLog(err)
       }
     })
     return customSourceLayers
   },
 
-  removeLayers(layersIDs: Array<string>, fromStyle: GLStyle) {
-    const _this = this
-
-    layersIDs.forEach((id) => {
-      _this.debugLog(`removing layer: ${id}`)
+  removeLayers(layersIDs: Array<string>, fromStyle: mapboxgl.Style): void {
+    for (const id of layersIDs) {
+      this.debugLog(`removing layer: ${id}`)
 
       const layer = _find(fromStyle.layers, {
         id
@@ -465,17 +458,16 @@ export default {
         const source = fromStyle.sources[layer.source]
         LayerSources.getSource(layer.source, source).driver.removeLayer(
           layer,
-          _this
+          this
         )
       } catch (err) {
-        _this.debugLog('Failed to remove layer: ' + layer.id)
-
-        _this.debugLog(err)
+        this.debugLog('Failed to remove layer: ' + layer.id)
+        this.debugLog(err)
       }
-    })
+    }
   },
 
-  addLayer(layer: GLLayer, position?: number) {
+  addLayer(layer: mapboxgl.Layer, position?: number): void {
     const index = _findIndex(this.glStyle.layers, {
       id: layer.id
     })
@@ -491,7 +483,7 @@ export default {
     }
   },
 
-  addLayerBefore(layer: GLLayer, beforeLayer: string) {
+  addLayerBefore(layer: mapboxgl.Layer, beforeLayer: string): void {
     const index = _findIndex(this.glStyle.layers, {
       id: beforeLayer
     })
@@ -503,17 +495,17 @@ export default {
     }
   },
 
-  removeLayer(id: string) {
+  removeLayer(id: string): void {
     _remove(this.glStyle.layers, {
       id
     })
   },
 
-  addSource(key: string, source: GLSource) {
+  addSource(key: string, source: GLSource): void {
     this.glStyle.sources[key] = source
   },
 
-  removeSource(key: string) {
+  removeSource(key: string): void {
     delete this.glStyle.sources[key]
   }
 }

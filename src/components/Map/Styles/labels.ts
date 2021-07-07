@@ -1,7 +1,6 @@
-import type { GLStyle } from '../../../types/mapbox-gl-style'
 import _remove from 'lodash.remove'
 export default {
-  removeStyleLabels(style: GLStyle): GLStyle {
+  removeStyleLabels(style: mapboxgl.Style): mapboxgl.Style {
     if (
       style.layers &&
       Array.isArray(style.layers) &&
@@ -19,12 +18,12 @@ export default {
   },
 
   addStyleLabels(
-    style: GLStyle,
+    style: mapboxgl.Style,
     field: string,
     layer_id: number,
     shortid: string,
     data_type: string
-  ): any {
+  ): mapboxgl.Style {
     // treat style as immutable and return a copy
     style = JSON.parse(JSON.stringify(style))
     style = this.removeStyleLabels(style)
@@ -39,34 +38,45 @@ export default {
       let placement = 'point'
       let translate = [0, 0]
 
-      if (data_type === 'point') {
-        translate = [0, -14]
-        // if marker
-        style.layers.forEach((layer) => {
-          if (
-            layer.id.startsWith('omh-data-point') &&
-            layer.metadata &&
-            layer.metadata['maphubs:markers'] &&
-            layer.metadata['maphubs:markers'].enabled
-          ) {
-            const markerOptions = layer.metadata['maphubs:markers']
-            let offset = 9
-
+      switch (data_type) {
+        case 'point': {
+          translate = [0, -14]
+          // if marker
+          for (const layer of style.layers) {
             if (
-              markerOptions.shape !== 'MAP_PIN' &&
-              markerOptions.shape !== 'SQUARE_PIN'
+              layer.id.startsWith('omh-data-point') &&
+              layer.metadata &&
+              layer.metadata['maphubs:markers'] &&
+              layer.metadata['maphubs:markers'].enabled
             ) {
-              offset = offset + markerOptions.height / 2
-            }
+              const markerOptions = layer.metadata['maphubs:markers']
+              let offset = 9
 
-            translate = [0, offset]
+              if (
+                markerOptions.shape !== 'MAP_PIN' &&
+                markerOptions.shape !== 'SQUARE_PIN'
+              ) {
+                offset = offset + markerOptions.height / 2
+              }
+
+              translate = [0, offset]
+            }
           }
-        })
-      } else if (data_type === 'line') {
-        placement = 'line'
-        filter = ['in', '$type', 'LineString']
-      } else if (data_type === 'polygon') {
-        sourceLayer = 'data-centroids'
+
+          break
+        }
+        case 'line': {
+          placement = 'line'
+          filter = ['in', '$type', 'LineString']
+
+          break
+        }
+        case 'polygon': {
+          sourceLayer = 'data-centroids'
+
+          break
+        }
+        // No default
       }
 
       style.layers.push({

@@ -20,8 +20,8 @@ import { Subscribe } from 'unstated'
 import MapContainer from '../Map/containers/MapContainer'
 import type { LayerStoreState } from '../../stores/layer-store'
 import type { LocaleStoreState } from '../../stores/LocaleStore'
-import type { GLStyle } from '../../types/mapbox-gl-style'
 import getConfig from 'next/config'
+import mapboxgl from 'mapbox-gl'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { confirm } = Modal
 const { Title } = Typography
@@ -120,18 +120,18 @@ export default class LayerStyle extends React.Component<Props, State> {
       rasterOpacity: opacity
     })
   }
-  onColorChange = (style: GLStyle, legend_html: string): void => {
+  onColorChange = (style: mapboxgl.Style, legend_html: string): void => {
     LayerActions.setStyle({
       style,
       legend_html
     })
   }
-  setStyle = (style: GLStyle): void => {
+  setStyle = (style: mapboxgl.Style): void => {
     LayerActions.setStyle({
       style
     })
   }
-  setLabels = (style: GLStyle, labels: Record<string, any>): void => {
+  setLabels = (style: mapboxgl.Style, labels: Record<string, any>): void => {
     LayerActions.setStyle({
       style,
       labels

@@ -9,38 +9,44 @@ import MultiTextInput from '../forms/MultiTextInput'
 import MultiTextArea from '../forms/MultiTextArea'
 import GroupStore from '../../stores/GroupStore'
 import GroupActions from '../../actions/GroupActions'
-
 import type { LocaleStoreState } from '../../stores/LocaleStore'
 import type { GroupStoreState } from '../../stores/GroupStore'
 import Locales from '../../services/locales'
 import $ from 'jquery'
+
 type Props = {
   t: (...args: Array<any>) => any
   onCreate?: (...args: Array<any>) => any
 }
+
 type State = {
   visible?: boolean
   canSubmit: boolean
   formModel?: Record<string, any>
 } & LocaleStoreState &
   GroupStoreState
+
 export default class CreateGroupModal extends React.Component<Props, State> {
   stores: any
+  groupIdValue: string
+  groupIdAvailable: boolean
   constructor(props: Props) {
     super(props)
 
-    const _this = this
+    const { state, checkGroupIdAvailable, groupIdValue } = this
 
     this.stores = [GroupStore]
-    addValidationRule('isAvailable', function (values, value) {
-      if (_this.state.group.created) return true
-
-      if (!_this.groupIdValue || value !== _this.groupIdValue) {
-        _this.groupIdValue = value
-        _this.groupIdAvailable = _this.checkGroupIdAvailable(value)
+    addValidationRule('isAvailable', (values: string[], value: string) => {
+      if (state.group.created) return true
+      // prevent extra server calls
+      let available: boolean
+      if (groupIdValue || value !== groupIdValue) {
+        this.groupIdValue = value
+        available = checkGroupIdAvailable(value)
+        this.groupIdAvailable = available
       }
 
-      return _this.groupIdAvailable
+      return available
     })
   }
 
@@ -96,14 +102,12 @@ export default class CreateGroupModal extends React.Component<Props, State> {
 
     return result
   }
-  onFormChange: any | ((formModel: any) => void) = (
-    formModel: Record<string, any>
-  ) => {
+  onFormChange = (formModel: Record<string, any>): void => {
     this.setState({
       formModel
     })
   }
-  saveGroup: any | (() => void) = () => {
+  saveGroup = (): void => {
     const { t, props, state } = this
     const { onCreate } = props
 

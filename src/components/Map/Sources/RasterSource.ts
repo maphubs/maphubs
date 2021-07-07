@@ -1,20 +1,23 @@
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import type { GLLayer, GLSource } from '../../../types/mapbox-gl-style'
+import mapboxgl from 'mapbox-gl'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const RasterSource = {
-  async load(key: string, source: GLSource, mapComponent: any): Promise<any> {
+  async load(
+    key: string,
+    source: mapboxgl.Source,
+    mapComponent: any
+  ): Promise<any> {
     if (source.url) {
       source.url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
     }
 
     let connectID
 
-    if (MAPHUBS_CONFIG && MAPHUBS_CONFIG.DG_WMS_CONNECT_ID) {
-      connectID = MAPHUBS_CONFIG.DG_WMS_CONNECT_ID
-    } else {
-      connectID = mapComponent.props.DGWMSConnectID
-    }
+    connectID =
+      MAPHUBS_CONFIG && MAPHUBS_CONFIG.DG_WMS_CONNECT_ID
+        ? MAPHUBS_CONFIG.DG_WMS_CONNECT_ID
+        : mapComponent.props.DGWMSConnectID
 
     if (source.tiles && source.tiles.length > 0) {
       source.tiles = source.tiles.map((tile) => {
@@ -37,11 +40,11 @@ const RasterSource = {
   },
 
   addLayer(
-    layer: GLLayer,
-    source: GLSource,
+    layer: mapboxgl.Layer,
+    source: mapboxgl.Source,
     position: number,
     mapComponent: any
-  ) {
+  ): void {
     if (layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']) {
       mapComponent.addLayerBefore(layer, 'water')
     } else {
@@ -53,7 +56,7 @@ const RasterSource = {
     }
   },
 
-  removeLayer(layer: GLLayer, mapComponent: any): any {
+  removeLayer(layer: mapboxgl.Layer, mapComponent: any): any {
     return mapComponent.removeLayer(layer.id)
   },
 

@@ -12,13 +12,15 @@ import LocaleStore from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import type { CardConfig } from '../src/components/CardCarousel/Card'
 import UserStore from '../src/stores/UserStore'
-import cardUtil from '../services/card-util'
+import cardUtil from '../src/services/card-util'
 import getConfig from 'next/config'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { Layer } from '../src/types/layer'
+import { Group } from '../src/types/group'
+import { Story } from '../src/types/story'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'home'
-)
+const debug = DebugService('home')
 
 type Props = {
   locale: string
@@ -84,7 +86,7 @@ export default class Search extends React.Component<Props, State> {
     return decodeURIComponent(results[2].replace(/\+/g, ' '))
   }
 
-  componentDidMount() {
+  componentDidMount(): void {
     const q = this.getParameterByName('q')
 
     if (q) {
@@ -92,15 +94,13 @@ export default class Search extends React.Component<Props, State> {
     }
   }
 
-  onResetSearch: any | (() => void) = () => {
+  onResetSearch = (): void => {
     this.setState({
       searchResult: null,
       searchCards: []
     })
   }
-  handleSearch: any | ((input: string) => Promise<void>) = async (
-    input: string
-  ) => {
+  handleSearch = async (input: string): Promise<void> => {
     const { t } = this
     const closeSearchingMessage = message.loading(t('Searching'), 0)
 
@@ -179,25 +179,26 @@ export default class Search extends React.Component<Props, State> {
   }
 
   getMixedCardSet(
-    layers: Array<Record<string, any>>,
-    groups: Array<Record<string, any>>,
+    layers: Layer[],
+    groups: Group[],
     maps: Array<Record<string, any>>,
-    stories: Array<Record<string, any>>
+    stories: Story[]
   ): any {
-    return _shuffle(
-      layers
-        .map(cardUtil.getLayerCard)
-        .concat(groups.map(cardUtil.getGroupCard))
-        .concat(maps.map(cardUtil.getMapCard))
-        .concat(stories.map((s) => cardUtil.getStoryCard(s, this.t)))
-    )
+    return _shuffle([
+      ...layers.map((layer) => cardUtil.getLayerCard(layer)),
+      ...groups.map((group) => cardUtil.getGroupCard(group)),
+      ...maps.map((map) => cardUtil.getMapCard(map)),
+      ...stories.map((s) => cardUtil.getStoryCard(s, this.t))
+    ])
   }
 
   render(): JSX.Element {
-    const { t } = this
+    const { t, props, state, handleSearch } = this
+    const { headerConfig, footerConfig } = props
+    const { searchCards } = state
     return (
       <ErrorBoundary>
-        <Header {...this.props.headerConfig} />
+        <Header {...headerConfig} />
         <main
           style={{
             margin: 0
@@ -214,7 +215,7 @@ export default class Search extends React.Component<Props, State> {
             >
               <SearchBox
                 label={t('Search') + ' ' + MAPHUBS_CONFIG.productName}
-                onSearch={this.handleSearch}
+                onSearch={handleSearch}
                 onReset={() => {
                   this.onResetSearch()
                 }}
@@ -227,12 +228,12 @@ export default class Search extends React.Component<Props, State> {
               minHeight: '200px'
             }}
           >
-            {this.state.searchCards && this.state.searchCards.length > 0 && (
-              <CardCollection cards={this.state.searchCards} />
+            {searchCards && searchCards.length > 0 && (
+              <CardCollection cards={searchCards} t={t} />
             )}
           </Row>
         </main>
-        <Footer t={t} {...this.props.footerConfig} />
+        <Footer t={t} {...footerConfig} />
       </ErrorBoundary>
     )
   }

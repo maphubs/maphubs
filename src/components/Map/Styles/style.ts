@@ -3,17 +3,17 @@ import Line from './line'
 import Point from './point'
 import Polygon from './polygon'
 import type { Layer } from '../../../types/layer'
-import type { GLStyle, GLSource } from '../../../types/mapbox-gl-style'
 import _forEachRight from 'lodash.foreachright'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import mapboxgl from 'mapbox-gl'
 const debug = DebugService('MapStyles/style')
 export default {
   defaultStyle(
     layer_id: number,
     shortid: string,
-    source: GLSource,
+    source: mapboxgl.Source,
     dataType: string
-  ): GLStyle {
+  ): mapboxgl.Style {
     const settings = Settings.defaultLayerSettings()
     return this.styleWithColor(
       layer_id,
@@ -29,66 +29,74 @@ export default {
   styleWithColor(
     layer_id: number,
     shortid: string,
-    source: GLSource,
+    source: mapboxgl.Source,
     color: string,
     dataType: string,
     interactive: boolean,
     showBehindBaseMapLabels: boolean
-  ): GLStyle {
+  ): mapboxgl.Style {
     // TODO: make default selected colors better match user color
     const hoverColor = 'yellow'
     const hoverOutlineColor = 'black'
     let layers = []
 
-    if (dataType === 'point') {
-      layers = Point.getPointLayers(
-        layer_id,
-        shortid,
-        color,
-        hoverColor,
-        interactive,
-        showBehindBaseMapLabels
-      )
-    } else if (dataType === 'point') {
-      layers = Line.getLineLayers(
-        layer_id,
-        shortid,
-        color,
-        hoverColor,
-        interactive,
-        showBehindBaseMapLabels
-      )
-    } else if (dataType === 'polygon') {
-      layers = Polygon.getPolygonLayers(
-        layer_id,
-        shortid,
-        color,
-        hoverColor,
-        hoverOutlineColor,
-        interactive,
-        showBehindBaseMapLabels
-      )
-    } else {
-      layers = Point.getPointLayers(
-        layer_id,
-        shortid,
-        color,
-        hoverColor,
-        interactive,
-        showBehindBaseMapLabels
-      )
-        .concat(
-          Line.getLineLayers(
+    switch (dataType) {
+      case 'point': {
+        layers = Point.getPointLayers(
+          layer_id,
+          shortid,
+          color,
+          hoverColor,
+          interactive,
+          showBehindBaseMapLabels
+        )
+
+        break
+      }
+      case 'line': {
+        layers = Line.getLineLayers(
+          layer_id,
+          shortid,
+          color,
+          hoverColor,
+          interactive,
+          showBehindBaseMapLabels
+        )
+
+        break
+      }
+      case 'polygon': {
+        layers = Polygon.getPolygonLayers(
+          layer_id,
+          shortid,
+          color,
+          hoverColor,
+          hoverOutlineColor,
+          interactive,
+          showBehindBaseMapLabels
+        )
+
+        break
+      }
+      default: {
+        layers = [
+          ...Point.getPointLayers(
             layer_id,
             shortid,
             color,
             hoverColor,
             interactive,
             showBehindBaseMapLabels
-          )
-        )
-        .concat(
-          Polygon.getPolygonLayers(
+          ),
+          ...Line.getLineLayers(
+            layer_id,
+            shortid,
+            color,
+            hoverColor,
+            interactive,
+            showBehindBaseMapLabels
+          ),
+          ...Polygon.getPolygonLayers(
             layer_id,
             shortid,
             color,
@@ -97,7 +105,8 @@ export default {
             interactive,
             showBehindBaseMapLabels
           )
-        )
+        ]
+      }
     }
 
     const styles = {
@@ -107,44 +116,56 @@ export default {
     }
 
     if (source) {
-      if (source.type === 'vector') {
-        const url = '{MAPHUBS_DOMAIN}/api/lyr/' + shortid + '/tile.json'
-        styles.sources['omh-' + shortid] = {
-          type: 'vector',
-          url
+      switch (source.type) {
+        case 'vector': {
+          const url = '{MAPHUBS_DOMAIN}/api/lyr/' + shortid + '/tile.json'
+          styles.sources['omh-' + shortid] = {
+            type: 'vector',
+            url
+          }
+
+          break
         }
-      } else if (
-        source.type === 'ags-mapserver-query' ||
-        source.type === 'ags-featureserver-query'
-      ) {
-        styles.sources['omh-' + shortid] = {
-          type: source.type,
-          url: source.url
+        case 'ags-mapserver-query':
+        case 'ags-featureserver-query': {
+          styles.sources['omh-' + shortid] = {
+            type: source.type,
+            url: source.url
+          }
+
+          break
         }
-      } else if (source.type === 'ags-mapserver-tiles') {
-        // support existing deprecated raster tiles, new layers will use plain raster
-        styles.sources['omh-' + shortid] = {
-          type: 'raster',
-          url: source.url + '/tile/{z}/{y}/{x}'
+        case 'ags-mapserver-tiles': {
+          // support existing deprecated raster tiles, new layers will use plain raster
+          styles.sources[`omh-${shortid}`] = {
+            type: 'raster',
+            url: `${source.url}/tile/{z}/{y}/{x}`
+          }
+
+          break
         }
-      } else if (source.type === 'geojson') {
-        styles.sources['omh-' + shortid] = {
-          type: 'geojson',
-          data: source.data
+        case 'geojson': {
+          styles.sources['omh-' + shortid] = {
+            type: 'geojson',
+            data: source.data
+          }
+          styles.layers.map((layer) => {
+            delete layer['source-layer']
+          })
+
+          break
         }
-        styles.layers.map((layer) => {
-          delete layer['source-layer']
-        })
+        // No default
       }
     }
 
     return styles
   },
 
-  getMapboxStyle(mapboxid: string): GLStyle {
+  getMapboxStyle(mapboxid: string): mapboxgl.Style {
     // Note: we are treating a mapbox style as a special type of "source"
     // it will be converted to sources and layers when the map loads by downloading the style json from the Mapbox API
-    const style: GLStyle = {
+    const style: mapboxgl.Style = {
       version: 8,
       sources: {},
       layers: [
@@ -161,8 +182,8 @@ export default {
     return style
   },
 
-  buildMapStyle(layers: Array<Layer>): GLStyle {
-    const mapStyle: GLStyle = {
+  buildMapStyle(layers: Array<Layer>): mapboxgl.Style {
+    const mapStyle: mapboxgl.Style = {
       version: 8,
       sources: {},
       layers: []
@@ -176,7 +197,7 @@ export default {
         // add source
         mapStyle.sources = Object.assign(mapStyle.sources, style.sources)
         // add layers
-        mapStyle.layers = mapStyle.layers.concat(style.layers)
+        mapStyle.layers = [...mapStyle.layers, ...style.layers]
       } else {
         if (layer.layer_id) {
           debug.log(

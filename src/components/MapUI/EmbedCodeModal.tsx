@@ -25,11 +25,11 @@ export default class EmbedCodeModal extends React.Component<Props, State> {
 
   clipboard: any
 
-  componentDidMount() {
+  componentDidMount(): void {
     this.clipboard = require('clipboard-polyfill').default
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.show !== this.state.show) {
       this.setState({
         show: nextProps.show
@@ -49,13 +49,10 @@ export default class EmbedCodeModal extends React.Component<Props, State> {
     const { interactive, show } = this.state
     const baseUrl = urlUtil.getBaseUrl()
     const mode = interactive ? 'interactive' : 'static'
-    let url
 
-    if (share_id) {
-      url = `${baseUrl}/map/public-embed/${share_id}/${mode}`
-    } else {
-      url = `${baseUrl}/map/embed/${map_id}/${mode}`
-    }
+    const url = share_id
+      ? `${baseUrl}/map/public-embed/${share_id}/${mode}`
+      : `${baseUrl}/map/embed/${map_id}/${mode}`
 
     const code = `
   <iframe src="${url}"

@@ -1,27 +1,24 @@
 import Reflux from 'reflux'
 import Actions from '../actions/AddPhotoPointActions'
-import type { GeoJSONObject } from 'geojson-flow'
 import type { Layer } from '../types/layer'
 import _bbox from '@turf/bbox'
 
-const request = require('superagent')
+import request from 'superagent'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'stores/add-photo'
-)
+import { checkClientError } from '../services/client-error-response'
+import DebugFactory from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 
-const checkClientError = require('../services/client-error-response')
-  .checkClientError
+import dms2dec from 'dms2dec'
+import moment from 'moment'
+import { FeatureCollection } from '@turf/helpers'
 
-const dms2dec = require('dms2dec')
-
-const moment = require('moment')
+const debug = DebugFactory('stores/add-photo')
 
 export type AddPhotoPointStoreState = {
   layer: Layer
   image?: Record<string, any>
   imageInfo?: Record<string, any>
-  geoJSON?: GeoJSONObject
+  geoJSON?: FeatureCollection
   submitted?: boolean
   mhid?: string
 }
@@ -41,15 +38,15 @@ export default class AddPhotoPointStore extends Reflux.Store {
     }
   }
 
-  reset() {
+  reset(): void {
     this.setState(this.getDefaultState())
   }
 
-  storeDidUpdate() {
+  storeDidUpdate(): void {
     debug.log('store updated')
   }
 
-  setImage(data: any, info: any, cb: any) {
+  setImage(data: any, info: any, cb: any): void {
     debug.log('set image')
 
     if (info && info.exif && info.exif.GPSLatitude) {
@@ -131,25 +128,21 @@ export default class AddPhotoPointStore extends Reflux.Store {
   submit(fields: any, _csrf: any, cb: any) {
     debug.log('submit photo point')
 
-    const _this = this
+    const { state, setState, trigger } = this
+    const { geoJSON, layer, image, imageInfo } = state
 
     // save fields into geoJSON
-    if (
-      this.state.geoJSON &&
-      this.state.geoJSON.features &&
-      Array.isArray(this.state.geoJSON.features) &&
-      this.state.geoJSON.features.length > 0
-    ) {
-      const firstFeature: any = this.state.geoJSON.features[0]
+    if (Array.isArray(geoJSON?.features) && geoJSON.features.length > 0) {
+      const firstFeature = geoJSON.features[0]
 
       if (firstFeature) {
-        Object.keys(fields).forEach((key) => {
+        for (const key of Object.keys(fields)) {
           const val = fields[key]
 
           if (firstFeature.properties) {
             firstFeature.properties[key] = val
           }
-        })
+        }
       }
     }
 
@@ -158,22 +151,22 @@ export default class AddPhotoPointStore extends Reflux.Store {
       .type('json')
       .accept('json')
       .send({
-        layer_id: this.state.layer.layer_id,
-        geoJSON: this.state.geoJSON,
-        image: this.state.image,
-        imageInfo: this.state.imageInfo,
+        layer_id: layer.layer_id,
+        geoJSON: geoJSON,
+        image,
+        imageInfo,
         _csrf
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
-          _this.setState({
+          setState({
             mhid: res.body.mhid,
             image_id: res.body.image_id,
             image_url: res.body.image_url,
             submitted: true
           })
 
-          _this.trigger(_this.state)
+          trigger(state)
 
           cb()
         })

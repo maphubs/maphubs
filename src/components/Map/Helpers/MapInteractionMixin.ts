@@ -1,21 +1,22 @@
 import _debounce from 'lodash.debounce'
 import MapStyles from '../Styles'
-import type { GLStyle } from '../../../types/mapbox-gl-style'
 import $ from 'jquery'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { Feature } from 'geojson'
+import mapboxgl from 'mapbox-gl'
 const debug = DebugService('MapInteractionMixin')
 /**
  * Helper functions for interacting with the map and selecting features
  */
 
 export default {
-  setSelectionFilter(features: Array<Record<string, any>>) {
+  setSelectionFilter(features: Feature[]): void {
     if (this.glStyle?.layers) {
-      this.glStyle.layers.forEach((layer) => {
+      for (const layer of this.glStyle.layers) {
         const filter = ['in', 'mhid']
-        features.forEach((feature) => {
+        for (const feature of features) {
           filter.push(feature.properties.mhid)
-        })
+        }
 
         if (
           this.map.getLayer(layer.id) &&
@@ -41,23 +42,22 @@ export default {
             ])
           }
         }
-      })
+      }
     }
   },
 
-  clearSelectionFilter() {
-    if (this.map && this.glStyle) {
-      this.glStyle.layers.forEach((layer) => {
-        if (layer.id.startsWith('omh-hover')) {
-          if (this.map.getLayer(layer.id)) {
-            this.map.setFilter(layer.id, ['==', 'mhid', ''])
-          }
+  clearSelectionFilter(): void {
+    const { map, glStyle } = this
+    if (map && glStyle) {
+      for (const layer of glStyle.layers) {
+        if (layer.id.startsWith('omh-hover') && map.getLayer(layer.id)) {
+          map.setFilter(layer.id, ['==', 'mhid', ''])
         }
-      })
+      }
     }
   },
 
-  clearSelection() {
+  clearSelection(): void {
     this.clearSelectionFilter()
     this.setState({
       selected: false,
@@ -65,11 +65,13 @@ export default {
     })
   },
 
-  getInteractiveLayers(glStyle: GLStyle): Array<any | string> {
+  getInteractiveLayers(
+    glStyle: mapboxgl.Style
+  ): mapboxgl.Layer & { metadata: any } {
     const interactiveLayers = []
 
     if (glStyle?.layers) {
-      glStyle.layers.forEach((layer) => {
+      for (const layer of glStyle.layers) {
         if (
           layer.metadata &&
           layer.metadata['maphubs:interactive'] &&
@@ -77,13 +79,13 @@ export default {
         ) {
           interactiveLayers.push(layer.id)
         }
-      })
+      }
     }
 
     return interactiveLayers
   },
 
-  clickHandler(e: any) {
+  clickHandler(e: mapboxgl.MapMouseEvent): void {
     const map = this.map
     const containers: Record<string, any> = this.props.containers
     const { dataEditorState } = containers
@@ -202,19 +204,27 @@ export default {
   },
 
   // fires whenever mouse is moving across the map... use for cursor interaction... hover etc.
-  mousemoveHandler(e: any) {
-    const map = this.map
-
-    const _this = this
+  mousemoveHandler(e: mapboxgl.MapMouseEvent): void {
+    const { props, state, setState, map, refs, clearSelection } = this
+    const {
+      enableMeasurementTools,
+      mapLoaded,
+      id,
+      restoreBounds,
+      interactiveLayers,
+      selected,
+      selectedFeatures
+    } = state
+    const { interactionBufferSize, hoverInteraction } = props
 
     if (!map) return
 
-    if (!this.state.enableMeasurementTools) {
+    if (!enableMeasurementTools) {
       const debounced = _debounce(() => {
-        if (_this.state.mapLoaded && _this.state.restoreBounds) {
-          debug.log('(' + _this.state.id + ') ' + 'clearing restoreBounds')
+        if (mapLoaded && restoreBounds) {
+          debug.log('(' + id + ') ' + 'clearing restoreBounds')
 
-          _this.setState({
+          setState({
             restoreBounds: undefined
           }) // stop restoring map possition after user has moved the map
         }
@@ -223,44 +233,40 @@ export default {
           const features = map.queryRenderedFeatures(
             [
               [
-                e.point.x - _this.props.interactionBufferSize / 2,
-                e.point.y - _this.props.interactionBufferSize / 2
+                e.point.x - interactionBufferSize / 2,
+                e.point.y - interactionBufferSize / 2
               ],
               [
-                e.point.x + _this.props.interactionBufferSize / 2,
-                e.point.y + _this.props.interactionBufferSize / 2
+                e.point.x + interactionBufferSize / 2,
+                e.point.y + interactionBufferSize / 2
               ]
             ],
             {
-              layers: _this.state.interactiveLayers
+              layers: interactiveLayers
             }
           )
 
           if (features && features.length > 0) {
-            if (_this.state.selected) {
-              $(_this.refs.map)
+            if (selected) {
+              $(refs.map)
                 .find('.mapboxgl-canvas-container')
                 .css('cursor', 'crosshair')
-            } else if (_this.props.hoverInteraction) {
-              $(_this.refs.map)
+            } else if (hoverInteraction) {
+              $(refs.map)
                 .find('.mapboxgl-canvas-container')
                 .css('cursor', 'crosshair') // _this.setSelectionFilter(features);
               // _this.setState({selectedFeatures:features});
             } else {
-              $(_this.refs.map)
+              $(refs.map)
                 .find('.mapboxgl-canvas-container')
                 .css('cursor', 'pointer')
             }
-          } else if (!_this.state.selected && _this.state.selectedFeatures) {
-            _this.clearSelection()
+          } else if (!selected && selectedFeatures) {
+            clearSelection()
 
-            $(_this.refs.map)
-              .find('.mapboxgl-canvas-container')
-              .css('cursor', '')
+            $(refs.map).find('.mapboxgl-canvas-container').css('cursor', '')
           } else {
-            $(_this.refs.map)
-              .find('.mapboxgl-canvas-container')
-              .css('cursor', '')
+            $(refs.map).find('.mapboxgl-canvas-container').css('cursor', '')
           }
         } catch (err) {
           console.log(err)

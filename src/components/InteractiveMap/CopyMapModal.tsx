@@ -2,8 +2,9 @@ import React from 'react'
 import { Modal, message, notification } from 'antd'
 import superagent from 'superagent'
 import SaveMapPanel from '../MapMaker/SaveMapPanel'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
-  title: string
+  title: LocalizedString
   map_id: string
   _csrf?: string
   t: (...args: Array<any>) => any
@@ -13,7 +14,7 @@ type State = {
 }
 export default class CopyMapModal extends React.Component<Props, State> {
   constructor(props: Props) {
-    super()
+    super(props)
     this.state = {
       visible: false
     }
@@ -50,7 +51,7 @@ export default class CopyMapModal extends React.Component<Props, State> {
 
       if (mapId) {
         message.info(t('Map Copied'), 3, () => {
-          window.location = `/map/edit/${mapId}`
+          window.location.assign(`/map/edit/${mapId}`)
         })
       } else {
         notification.error({
@@ -69,7 +70,7 @@ export default class CopyMapModal extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { title, t } = this.props
+    const { title, t, _csrf } = this.props
     const { visible } = this.state
     return (
       <Modal
@@ -80,11 +81,7 @@ export default class CopyMapModal extends React.Component<Props, State> {
         onCancel={this.close}
         footer={[]}
       >
-        <SaveMapPanel
-          title={title}
-          onSave={this.onCopyMap}
-          _csrf={this.props._csrf}
-        />
+        <SaveMapPanel title={title} onSave={this.onCopyMap} _csrf={_csrf} />
       </Modal>
     )
   }

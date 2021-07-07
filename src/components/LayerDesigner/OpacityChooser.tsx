@@ -3,8 +3,8 @@ import { Row, Col, Button, Slider, InputNumber, Tabs, Tooltip } from 'antd'
 import AdvancedLayerSettings from './AdvancedLayerSettings'
 import OpacityIcon from '@material-ui/icons/Opacity'
 import CodeIcon from '@material-ui/icons/Code'
-import type { GLStyle } from '../../types/mapbox-gl-style'
 import dynamic from 'next/dynamic'
+import mapboxgl from 'mapbox-gl'
 const CodeEditor = dynamic(() => import('./CodeEditor'), {
   ssr: false
 })
@@ -15,7 +15,7 @@ type Props = {
   onStyleChange: (...args: Array<any>) => any
   onLegendChange: (...args: Array<any>) => any
   onColorChange: (...args: Array<any>) => any
-  style: Record<string, any>
+  style: mapboxgl.Style
   legendCode: string
   layer: Record<string, any>
   showAdvanced: boolean
@@ -25,6 +25,8 @@ type State = {
   opacity: number
   showStyleEditor?: boolean
   showLegendEditor?: boolean
+  style: mapboxgl.Style
+  legendCode: string
 }
 export default class OpacityChooser extends React.Component<Props, State> {
   static defaultProps: {
@@ -58,8 +60,8 @@ export default class OpacityChooser extends React.Component<Props, State> {
   onLegendChange: (legendCode: string) => void = (legendCode: string) => {
     this.props.onLegendChange(legendCode)
   }
-  onAdvancedSettingsChange: (style: GLStyle, legend: string) => void = (
-    style: GLStyle,
+  onAdvancedSettingsChange: (style: mapboxgl.Style, legend: string) => void = (
+    style: mapboxgl.Style,
     legend: string
   ) => {
     this.props.onColorChange(style, legend)
@@ -86,7 +88,7 @@ export default class OpacityChooser extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { showAdvanced, style, legendCode, t } = this.props
+    const { showAdvanced, style, legendCode, t, layer } = this.props
     const { showStyleEditor, showLegendEditor, opacity } = this.state
     return (
       <>
@@ -173,7 +175,7 @@ export default class OpacityChooser extends React.Component<Props, State> {
             >
               <Row justify='center' align='middle'>
                 <AdvancedLayerSettings
-                  layer={this.props.layer}
+                  layer={layer}
                   style={style}
                   onChange={this.onAdvancedSettingsChange}
                 />

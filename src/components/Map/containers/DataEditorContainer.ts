@@ -1,24 +1,28 @@
 import type { Layer } from '../../../types/layer'
-import type { GeoJSONObject } from 'geojson-flow'
 import { Container } from 'unstated'
 import request from 'superagent'
 import Debug from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import _assignIn from 'lodash.assignin'
 import _forEachRight from 'lodash.foreachright'
+import { Feature, FeatureCollection } from 'geojson'
 
-const checkClientError = require('../../../services/client-error-response')
-  .checkClientError
+import { checkClientError } from '../../../services/client-error-response'
+
+interface Edit {
+  status: 'create' | 'original' | 'modify'
+  geojson: Feature & { id: string }
+}
 
 const debug = Debug('DataEditorContainer')
 export type DataEditorState = {
   editing?: boolean
   editingLayer?: Layer
-  originals: Array<Record<string, any>>
+  originals: Edit[]
   // store the orginal GeoJSON to support undo
-  edits: Array<Record<string, any>>
-  redo: Array<Record<string, any>>
+  edits: Edit[]
+  redo: Edit[]
   // if we undo edits, add them here so we can redo them
-  selectedEditFeature?: Record<string, any> // selected feature
+  selectedEditFeature?: Edit // selected feature
 }
 export default class DataEditorContainer extends Container<DataEditorState> {
   constructor() {
@@ -28,9 +32,9 @@ export default class DataEditorContainer extends Container<DataEditorState> {
 
   getDefaultState(): {
     editing: boolean
-    edits: Array<any>
-    originals: Array<any>
-    redo: Array<any>
+    edits: Edit[]
+    originals: Edit[]
+    redo: Edit[]
   } {
     return {
       editing: false,
@@ -41,18 +45,18 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     }
   }
 
-  reset() {
-    this.setState(this.getDefaultState())
+  reset(): Promise<void> {
+    return this.setState(this.getDefaultState())
   }
 
-  startEditing(layer: Layer): any {
+  startEditing(layer: Layer): Promise<void> {
     return this.setState({
       editing: true,
       editingLayer: layer
     })
   }
 
-  stopEditing(): any {
+  stopEditing(): Promise<void> {
     if (this.state.edits.length > 0) {
       debug.log('stopping with unsaved edits, edits have been deleted')
     }
@@ -69,44 +73,47 @@ export default class DataEditorContainer extends Container<DataEditorState> {
   /**
    * receive updates from the drawing tool
    */
-  updateFeatures(features: Array<Record<string, any>>) {
-    const _this = this
+  updateFeatures(features: Array<Record<string, any>>): void {
+    const { state, setState } = this
+    const { edits, selectedEditFeature } = state
 
-    const edits = JSON.parse(JSON.stringify(this.state.edits))
-    features.forEach((feature) => {
+    const editsClone = JSON.parse(JSON.stringify(edits))
+    let selectedEditFeatureUpdate = selectedEditFeature
+    for (const feature of features) {
       debug.log('Updating feature: ' + feature.id)
       const edit = {
-        status: 'modify',
+        status: 'modify' as Edit['status'],
         geojson: JSON.parse(JSON.stringify(feature))
       }
 
       if (
-        this.state.selectedEditFeature &&
-        feature.id === this.state.selectedEditFeature.geojson.id
+        selectedEditFeature &&
+        feature.id === selectedEditFeature.geojson.id
       ) {
         // if popping an edit to the selected feature, updated it
-        this.state.selectedEditFeature = edit
+        selectedEditFeatureUpdate = edit
       }
 
       // edit history gets a different clone from the selection state
       const editCopy = JSON.parse(JSON.stringify(edit))
-      edits.push(editCopy)
-    })
+      editsClone.push(editCopy)
+    }
 
-    _this.setState({
-      edits,
+    setState({
+      edits: editsClone,
+      selectedEditFeature: selectedEditFeatureUpdate,
       redo: [] // redo resets if user makes an edit
     })
   }
 
-  resetEdits() {
+  resetEdits(): void {
     this.setState({
       edits: [],
       redo: []
     })
   }
 
-  undoEdit(onFeatureUpdate: (...args: Array<any>) => any) {
+  undoEdit(onFeatureUpdate: (...args: Array<any>) => any): void {
     const edits = JSON.parse(JSON.stringify(this.state.edits))
     const redo = JSON.parse(JSON.stringify(this.state.redo))
     let selectedEditFeature = JSON.parse(
@@ -144,7 +151,7 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     }
   }
 
-  redoEdit(onFeatureUpdate: (...args: Array<any>) => any) {
+  redoEdit(onFeatureUpdate: (status: string, edit) => void): void {
     const edits = JSON.parse(JSON.stringify(this.state.edits))
     const redo = JSON.parse(JSON.stringify(this.state.redo))
     let selectedEditFeature = JSON.parse(
@@ -175,7 +182,7 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     }
   }
 
-  getLastEditForID(id: string, edits: any): any | null {
+  getLastEditForID(id: string, edits: Edit[]): Edit | null {
     const matchingEdits = []
 
     _forEachRight(edits, (edit) => {
@@ -188,11 +195,11 @@ export default class DataEditorContainer extends Container<DataEditorState> {
       return JSON.parse(JSON.stringify(matchingEdits[0]))
     } else {
       let original
-      this.state.originals.forEach((orig) => {
+      for (const orig of this.state.originals) {
         if (orig.geojson.id === id) {
           original = orig
         }
-      })
+      }
 
       if (original) {
         return JSON.parse(JSON.stringify(original))
@@ -205,32 +212,27 @@ export default class DataEditorContainer extends Container<DataEditorState> {
   /**
    * Save all edits to the server and reset current edits
    */
-  saveEdits(_csrf: string, cb: (...args: Array<any>) => any) {
+  saveEdits(_csrf: string, cb: (...args: Array<any>) => any): void {
     console.log('saving edits')
-    console.log(this.state.edits)
-
-    const _this = this
+    //console.log(this.state.edits)
+    const { state, setState } = this
+    const { editingLayer } = state
 
     const featureIds = this.getUniqueFeatureIds()
     const editsToSave = []
-    featureIds.forEach((id) => {
-      const featureEdits = _this.getAllEditsForFeatureId(id)
+    for (const id of featureIds) {
+      const featureEdits = this.getAllEditsForFeatureId(id)
 
       const lastFeatureEdit = featureEdits[featureEdits.length - 1]
 
-      if (featureEdits.length > 1) {
-        if (featureEdits[0].status === 'create') {
-          // first edit is a create, so mark edit as create
-          lastFeatureEdit.status = 'create'
-        }
+      if (featureEdits.length > 1 && featureEdits[0].status === 'create') {
+        // first edit is a create, so mark edit as create
+        lastFeatureEdit.status = 'create'
       }
 
       editsToSave.push(lastFeatureEdit)
-    })
-    const layer_id: number =
-      this.state.editingLayer && this.state.editingLayer.layer_id
-        ? this.state.editingLayer.layer_id
-        : 0
+    }
+    const layer_id: number = editingLayer?.layer_id || 0
 
     if (editsToSave.length > 0) {
       // send edits to server
@@ -249,7 +251,7 @@ export default class DataEditorContainer extends Container<DataEditorState> {
               cb(err)
             } else {
               // after saving clear all edit history
-              _this.setState({
+              setState({
                 originals: [],
                 edits: [],
                 redo: [],
@@ -265,29 +267,31 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     }
   }
 
-  getUniqueFeatureIds(): Array<any> {
+  getUniqueFeatureIds(): string[] {
     const uniqueIds = []
-    this.state.edits.forEach((edit) => {
+    for (const edit of this.state.edits) {
       const id = edit.geojson.id
 
       if (id && !uniqueIds.includes(id)) {
         uniqueIds.push(id)
       }
-    })
+    }
     return uniqueIds
   }
 
-  getAllEditsForFeatureId(id: string): Array<any> {
+  getAllEditsForFeatureId(id: string): Edit[] {
     const featureEdits = []
-    this.state.edits.forEach((edit) => {
+    for (const edit of this.state.edits) {
       if (edit.geojson.id === id) {
         featureEdits.push(edit)
       }
-    })
+    }
     return featureEdits
   }
 
-  async updateSelectedFeatureTags(data: GeoJSONObject): Promise<any> {
+  async updateSelectedFeatureTags(
+    data: FeatureCollection & { id: string }
+  ): Promise<Edit> {
     const edits = JSON.parse(JSON.stringify(this.state.edits))
 
     if (this.state.selectedEditFeature) {
@@ -322,7 +326,7 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     }
   }
 
-  async selectFeature(mhid: string): Promise<any> {
+  async selectFeature(mhid: string): Promise<Feature> {
     // check if this feature is in the created or modified lists
     const selected = this.getLastEditForID(mhid, this.state.edits)
 
@@ -346,7 +350,7 @@ export default class DataEditorContainer extends Container<DataEditorState> {
         const featureCollection = res.body
         const feature = featureCollection.features[0]
         const selected = {
-          status: 'original',
+          status: 'original' as Edit['status'],
           geojson: feature
         }
         selected.geojson.id = mhid
@@ -367,11 +371,11 @@ export default class DataEditorContainer extends Container<DataEditorState> {
    * Called when mapbox-gl-draw is used to create new feature
    *
    */
-  createFeature(feature: GeoJSONObject) {
+  createFeature(feature: Feature): void {
     const edits = JSON.parse(JSON.stringify(this.state.edits))
     const created = {
-      status: 'create',
-      geojson: JSON.parse(JSON.stringify(feature))
+      status: 'create' as Edit['status'],
+      geojson: JSON.parse(JSON.stringify(feature)) as Feature & { id: string }
     }
     edits.push(created)
     this.setState({
@@ -380,7 +384,7 @@ export default class DataEditorContainer extends Container<DataEditorState> {
     })
   }
 
-  deleteFeature(feature: GeoJSONObject) {
+  deleteFeature(feature: Feature): void {
     const edits = JSON.parse(JSON.stringify(this.state.edits))
     const edit = {
       status: 'delete',

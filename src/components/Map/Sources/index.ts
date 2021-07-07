@@ -5,20 +5,21 @@ import MapHubsSource from './MapHubsSource'
 import RasterSource from './RasterSource'
 import GenericSource from './GenericSource'
 import EarthEngineSource from './EarthEngineSource'
-import type { GLSource } from '../../../types/mapbox-gl-style'
+import mapboxgl from 'mapbox-gl'
+
 export default {
   getSource(
     key: string,
-    source: GLSource
+    source: mapboxgl.Source
   ): {
     custom: boolean
     driver: any
     key: string
-    source: GLSource
+    source: mapboxgl.Source
   } {
     const response = function (
       driver: (...args: Array<any>) => any,
-      custom: boolean = false
+      custom = false
     ) {
       return {
         key,

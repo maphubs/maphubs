@@ -5,20 +5,20 @@ import { message, notification, Row, Button } from 'antd'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
 
-import type { LocaleStoreState } from '../../stores/LocaleStore'
-import type { LayerStoreState } from '../../stores/layer-store'
-import type { GeoJSONObject } from 'geojson-flow'
+import { LocaleStoreState } from '../../stores/LocaleStore'
+import { LayerStoreState } from '../../stores/layer-store'
+import type { FeatureCollection } from 'geojson'
+
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 let scrollToComponent
 type Props = {
   onSubmit: (...args: Array<any>) => void
-  layerDataType: string
   mapConfig: Record<string, any>
 }
 type State = {
   canSubmit: boolean
-  geoJSON?: GeoJSONObject
+  geoJSON?: FeatureCollection
   largeData: boolean
 } & LocaleStoreState &
   LayerStoreState
@@ -26,12 +26,12 @@ export default class UploadLayerReplacement extends React.Component<
   Props,
   State
 > {
-  props: Props
   state: State = {
     canSubmit: false,
     largeData: false
   }
   stores: any
+  closeMessage: any
   constructor(props: Props) {
     super(props)
     this.stores = [LayerStore]
@@ -58,11 +58,10 @@ export default class UploadLayerReplacement extends React.Component<
     })
   }
   onSubmit = (): void => {
-    const { t } = this
+    const { t, props, state } = this
+    const { _csrf } = state
 
-    const _this = this
-
-    LayerActions.submitPresets(false, _this.state._csrf, (err) => {
+    LayerActions.submitPresets(false, _csrf, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),
@@ -70,7 +69,7 @@ export default class UploadLayerReplacement extends React.Component<
           duration: 0
         })
       } else {
-        LayerActions.replaceData(_this.state._csrf, (err) => {
+        LayerActions.replaceData(_csrf, (err) => {
           if (err) {
             notification.error({
               message: t('Server Error'),
@@ -78,13 +77,13 @@ export default class UploadLayerReplacement extends React.Component<
               duration: 0
             })
           } else {
-            message.success(t('Layer Saved'), 1, _this.props.onSubmit)
+            message.success(t('Layer Saved'), 1, props.onSubmit)
           }
         })
       }
     })
   }
-  onUpload: any | ((result: any) => void) = (result: Record<string, any>) => {
+  onUpload = (result: Record<string, any>): void => {
     if (result.success) {
       this.setState({
         geoJSON: result.geoJSON,
@@ -97,7 +96,7 @@ export default class UploadLayerReplacement extends React.Component<
 
     this.closeMessage()
   }
-  onProcessingStart: any | (() => void) = () => {
+  onProcessingStart = (): void => {
     this.closeMessage = message.loading(this.t('Processing'), 0)
   }
 

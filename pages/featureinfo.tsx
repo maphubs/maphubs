@@ -27,10 +27,10 @@ import ErrorBoundary from '../src/components/ErrorBoundary'
 import UserStore from '../src/stores/UserStore'
 import { getLayer } from '../src/components/Feature/Map/layer-feature'
 import getConfig from 'next/config'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const TabPane = Tabs.TabPane
-
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
 
 type Props = {
   feature: Record<string, any>
@@ -50,6 +50,9 @@ type State = {
 } & LocaleStoreState &
   FeaturePhotoStoreState
 export default class FeatureInfo extends React.Component<Props, State> {
+  BaseMapState: BaseMapContainer
+  MapState: MapContainer
+  FRState: FRContainer
   static async getInitialProps({
     req,
     query
@@ -146,9 +149,9 @@ export default class FeatureInfo extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { selectTab, t, props, state } = this
-    const { canEdit, layer, feature, headerConfig, notes } = props
-    const { frActive } = state
+    const { selectTab, t, props, state, map } = this
+    const { canEdit, layer, feature, headerConfig, notes, _csrf } = props
+    const { frActive, photo, locale, user } = state
     let geojsonFeature
     let geoJSONProps
 
@@ -276,7 +279,7 @@ export default class FeatureInfo extends React.Component<Props, State> {
                               }}
                             >
                               <FeaturePhoto
-                                photo={this.state.photo}
+                                photo={photo}
                                 canEdit={canEdit}
                                 t={t}
                               />
@@ -297,7 +300,7 @@ export default class FeatureInfo extends React.Component<Props, State> {
                                 <FeatureLocation
                                   geojson={geojsonFeature}
                                   t={t}
-                                  locale={this.state.locale}
+                                  locale={locale}
                                 />
                                 {isPolygon && (
                                   <FeatureArea geojson={geojsonFeature} t={t} />
@@ -327,7 +330,7 @@ export default class FeatureInfo extends React.Component<Props, State> {
                             </Col>
                           </Row>
                         </TabPane>
-                        {MAPHUBS_CONFIG.FR_ENABLE && this.state.user && (
+                        {MAPHUBS_CONFIG.FR_ENABLE && user && (
                           <TabPane
                             tab={t('Forest Report')}
                             key='forestreport'
@@ -339,7 +342,7 @@ export default class FeatureInfo extends React.Component<Props, State> {
                           >
                             {frActive && (
                               <ForestReportEmbed
-                                onModuleToggle={this.map.frToggle}
+                                onModuleToggle={map.frToggle}
                               />
                             )}
                           </TabPane>
@@ -365,7 +368,7 @@ export default class FeatureInfo extends React.Component<Props, State> {
                             layer_id={layer.layer_id}
                             mhid={geoJSONProps.mhid}
                             t={t}
-                            _csrf={this.props._csrf}
+                            _csrf={_csrf}
                           />
                         </TabPane>
                         <TabPane
