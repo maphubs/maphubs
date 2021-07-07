@@ -48,7 +48,7 @@ const LayerListItemStatic = ({
           {t(source)}
         </p>
       </Row>
-      <Row type='flex' justify='end'>
+      <Row justify='end'>
         <Col span={4}>
           <Tooltip title={t('Layer Info')} placement='right'>
             <a

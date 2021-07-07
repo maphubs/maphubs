@@ -10,12 +10,10 @@ import type { Layer } from '../../types/layer'
 import 'react-image-lightbox/style.css'
 import { Feature } from 'geojson'
 import { LocalizedString } from '../../types/LocalizedString'
-
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 
-import DebugFactory from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-
-const debug = DebugFactory('map/featurepopup')
+const debug = DebugService('map/featurepopup')
 
 let Lightbox
 type Props = {

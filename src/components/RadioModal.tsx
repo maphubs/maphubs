@@ -3,8 +3,8 @@ import Formsy from 'formsy-react'
 import Radio from './forms/radio'
 import { Modal, Button } from 'antd'
 type Props = {
-  onCancel?: (...args: Array<any>) => any
-  onSubmit?: (...args: Array<any>) => any
+  onCancel?: (...args: Array<any>) => void
+  onSubmit?: (...args: Array<any>) => void
   options: Array<Record<string, any>>
   title: string
   t: any
@@ -32,30 +32,30 @@ export default class RadioModal extends React.Component<Props, State> {
     canSubmit: false,
     selectedOption: ''
   }
-  show: () => void = () => {
+  show = (): void => {
     this.setState({
       show: true
     })
   }
-  hide: () => void = () => {
+  hide = (): void => {
     this.setState({
       show: false
     })
   }
-  onCancel: () => void = () => {
+  onCancel = (): void => {
     if (this.props.onCancel) this.props.onCancel()
     this.hide()
   }
-  onSubmit: () => void = () => {
+  onSubmit = (): void => {
     this.props.onSubmit(this.state.selectedOption)
     this.hide()
   }
-  enableButton: () => void = () => {
+  enableButton = (): void => {
     this.setState({
       canSubmit: true
     })
   }
-  disableButton: () => void = () => {
+  disableButton = (): void => {
     this.setState({
       canSubmit: false
     })

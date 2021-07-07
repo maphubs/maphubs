@@ -188,9 +188,10 @@ class StoryEditor extends React.Component<Props, State> {
   }
 
   render() {
-    const { save, onAddMap, onMapCancel, onSelectImage, onCrop } = this
-    const { t, containers, myMaps, popularMaps, locale } = this.props
-    const { showAddMap, showImageCrop, imageData } = this.state
+    const { save, onAddMap, onMapCancel, onSelectImage, onCrop, props, state } =
+      this
+    const { t, containers, myMaps, popularMaps, locale, groups } = props
+    const { showAddMap, showImageCrop, imageData } = state
     const { story } = containers
     const {
       story_id,
@@ -202,7 +203,8 @@ class StoryEditor extends React.Component<Props, State> {
       published_at,
       owned_by_group_id,
       modified,
-      canChangeGroup
+      canChangeGroup,
+      tags
     } = story.state
     return (
       <Row
@@ -373,7 +375,7 @@ class StoryEditor extends React.Component<Props, State> {
                 }}
               >
                 <SelectGroup
-                  groups={this.props.groups}
+                  groups={groups}
                   type='layer'
                   group_id={owned_by_group_id}
                   onGroupChange={story.groupChange}
@@ -386,13 +388,10 @@ class StoryEditor extends React.Component<Props, State> {
                 marginBottom: '20px'
               }}
             >
-              <Tags
-                initialTags={story.state.tags}
-                onChange={story.tagsChange}
-              />
+              <Tags initialTags={tags} onChange={story.tagsChange} />
             </Row>
           </ErrorBoundary>
-          <Row type='flex' justify='start'>
+          <Row justify='start'>
             <Col span={12}>
               <Button type='primary' disabled={!modified} onClick={save}>
                 {t('Save')}
@@ -407,7 +406,7 @@ class StoryEditor extends React.Component<Props, State> {
                   cancelText='No'
                   onConfirm={this.delete}
                 >
-                  <Button type='danger' icon={<DeleteOutlined />}>
+                  <Button danger icon={<DeleteOutlined />}>
                     {t('Delete')}
                   </Button>
                 </Popconfirm>

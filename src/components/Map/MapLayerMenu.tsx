@@ -51,7 +51,6 @@ const MapLayerMenu = ({
               }}
             >
               <LayerListDropDown
-                id={`category-dropdown-${i}`}
                 name={category.name}
                 layers={categoriesLayers}
                 toggleVisibility={toggleVisibility}

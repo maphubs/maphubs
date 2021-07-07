@@ -12,7 +12,7 @@ import { DragSource, DropTarget } from 'react-dnd'
 import DraggleIndicator from './UI/DraggableIndicator'
 import DragItemConfig from './UI/DragItemConfig'
 
-require('dnd-core/lib/actions/dragDrop')
+import 'dnd-core/lib/actions/dragDrop'
 
 type Props = {
   item: Layer
@@ -115,7 +115,6 @@ class LayerListItem extends React.Component<Props> {
             style={{
               textAlign: 'center'
             }}
-            type='flex'
             justify='end'
           >
             {showInfo && (

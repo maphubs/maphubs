@@ -28,9 +28,9 @@ export default class ErrorBoundary extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { t } = this
+    const { t, props, state } = this
 
-    return this.state.error ? (
+    return state.error ? (
       <div
         style={{
           display: 'flex',
@@ -71,7 +71,7 @@ export default class ErrorBoundary extends React.Component<Props, State> {
         </div>
       </div>
     ) : (
-      <div>{this.props.children}</div>
+      <div>{props.children}</div>
     )
   }
 }

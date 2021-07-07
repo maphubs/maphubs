@@ -28,7 +28,7 @@ export default class FloatingAddButton extends React.Component<Props, State> {
   render(): JSX.Element {
     // only render on the client side
     if (typeof window === 'undefined') {
-      return ''
+      return <></>
     }
 
     const { user } = this.state

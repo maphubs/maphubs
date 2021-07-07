@@ -10,6 +10,7 @@ import LocaleChooser from './LocaleChooser'
 import UserMenu from './Header/UserMenu'
 import type { LocaleStoreState } from '../stores/LocaleStore'
 import getConfig from 'next/config'
+import { LocalizedString } from '../types/LocalizedString'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Header } = Layout
 type Link = {
