@@ -1,12 +1,10 @@
-const proxy = require('express-http-proxy')
+import proxy from 'express-http-proxy'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import local from '../../local'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'proxy'
-)
+const debug = DebugService('proxy')
 
-const local = require('../../local')
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   // if tiles requests make it to the web app, proxy them from here
   // needed for generating screenshots on local MapHubs Pro deployments
   app.use(

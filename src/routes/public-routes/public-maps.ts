@@ -1,18 +1,14 @@
-const nextError = require('../../services/error-response').nextError
+import Map from '../../models/map'
+import Stats from '../../models/stats'
+import MapUtils from '../../services/map-utils'
+import ScreenshotUtils from '../../services/screenshot-utils'
+import {
+  nextError,
+  apiError,
+  apiDataError
+} from '../../services/error-response'
 
-const Map = require('../../models/map')
-
-const Stats = require('../../models/stats')
-
-const MapUtils = require('../../services/map-utils')
-
-const ScreenshotUtils = require('../../services/screenshot-utils')
-
-const apiError = require('../../services/error-response').apiError
-
-const apiDataError = require('../../services/error-response').apiDataError
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   const recordMapView = function (
     session: Record<string, any>,
     map_id: number,
@@ -87,16 +83,14 @@ module.exports = function (app: any) {
     try {
       const map = await Map.getMapByShareId(req.params.share_id)
 
-      if (map) {
-        return ScreenshotUtils.returnImage(
-          await ScreenshotUtils.getMapImage(map.map_id),
-          'image/png',
-          req,
-          res
-        )
-      } else {
-        return res.status(404).send()
-      }
+      return map
+        ? ScreenshotUtils.returnImage(
+            await ScreenshotUtils.getMapImage(map.map_id),
+            'image/png',
+            req,
+            res
+          )
+        : res.status(404).send()
     } catch (err) {
       apiError(res, 500)(err)
     }

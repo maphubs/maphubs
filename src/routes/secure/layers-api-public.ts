@@ -1,23 +1,14 @@
 import Locales from '../../services/locales'
-
-const Layer = require('../../models/layer')
-
-const Group = require('../../models/group')
-
-// var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
-// var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/layers');
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-
-const apiError = require('../../services/error-response').apiError
-
-const privateLayerCheck = require('../../services/private-layer-check')
-  .middleware
+import Layer from '../../models/layer'
+import Group from '../../models/group'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import { apiError } from '../../services/error-response'
 
 /*
  * Layer API Endpoints that do not require authentication on public sites
- * These are protected if login is required globallay
+ * These are protected if login is required globally
  */
-module.exports = function (app: any) {
+export default function (app: any) {
   app.get('/api/layers/search/suggestions', async (req, res) => {
     try {
       if (!req.query.q) {
@@ -89,7 +80,7 @@ module.exports = function (app: any) {
       apiError(res, 500)(err)
     }
   })
-  app.get('/api/layer/info/:layer_id', privateLayerCheck, async (req, res) => {
+  app.get('/api/layer/info/:layer_id', async (req, res) => {
     try {
       const layerId = Number.parseInt(req.params.layer_id || '', 10)
       return res.status(200).send({
@@ -100,26 +91,28 @@ module.exports = function (app: any) {
       apiError(res, 500)(err)
     }
   })
-  app.get('/api/layer/metadata/:layer_id', privateLayerCheck, (req, res) => {
+  app.get('/api/layer/metadata/:layer_id', async (req, res) => {
     const layerId = Number.parseInt(req.params.layer_id || '', 10)
-    Layer.getLayerByID(layerId)
-      .then((layer) => {
-        // inject this site's URL into the style source, to support remote layers
-        Object.keys(layer.style.sources).forEach((key) => {
-          const source = layer.style.sources[key]
+    try {
+      const layer = await Layer.getLayerByID(layerId)
 
-          if (source.url) {
-            source.url = source.url.replace(
-              '{MAPHUBS_DOMAIN}',
-              urlUtil.getBaseUrl()
-            )
-          }
-        })
-        return res.status(200).send({
-          success: true,
-          layer
-        })
+      // inject this site's URL into the style source, to support remote layers
+      for (const key of Object.keys(layer.style.sources)) {
+        const source = layer.style.sources[key]
+
+        if (source.url) {
+          source.url = source.url.replace(
+            '{MAPHUBS_DOMAIN}',
+            urlUtil.getBaseUrl()
+          )
+        }
+      }
+      return res.status(200).send({
+        success: true,
+        layer
       })
-      .catch(apiError(res, 500))
+    } catch (err) {
+      apiError(res, 500)(err)
+    }
   })
 }

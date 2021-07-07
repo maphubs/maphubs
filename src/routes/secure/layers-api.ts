@@ -1,36 +1,26 @@
-const knex = require('../../connection')
+import knex from '../../connection'
+import Layer from '../../models/layer'
+import LayerData from '../../models/layer-data'
+import Group from '../../models/group'
+import DataLoadUtils from '../../services/data-load-utils'
+import layerViews from '../../services/layer-views'
+import PhotoAttachment from '../../models/photo-attachment'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import {
+  apiError,
+  apiDataError,
+  notAllowedError
+} from '../../services/error-response'
+import csurf from 'csurf'
+import isAuthenticated from '../../services/auth-check'
 
-const Layer = require('../../models/layer')
+const debug = DebugService('routes/layers')
 
-const LayerData = require('../../models/layer-data')
-
-const Group = require('../../models/group')
-
-// var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
-const DataLoadUtils = require('../../services/data-load-utils')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'routes/layers'
-)
-
-const layerViews = require('../../services/layer-views')
-
-const PhotoAttachment = require('../../models/photo-attachment')
-
-// var Tag = require('../../models/tag');
-const apiError = require('../../services/error-response').apiError
-
-const apiDataError = require('../../services/error-response').apiDataError
-
-const notAllowedError = require('../../services/error-response').notAllowedError
-
-const csrfProtection = require('csurf')({
+const csrfProtection = csurf({
   cookie: false
 })
 
-const isAuthenticated = require('../../services/auth-check')
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.post(
     '/api/layer/create/empty/:id',
     csrfProtection,
@@ -194,18 +184,16 @@ module.exports = function (app: any) {
             if (await Group.allowedToModify(data.group_id, req.user_id)) {
               const result = await Layer[action](...actionData)
 
-              if (result) {
-                return res.send({
-                  success: true,
-                  action,
-                  layer_id: result[0]
-                })
-              } else {
-                return res.send({
-                  success: false,
-                  error: 'Failed to Create Layer'
-                })
-              }
+              return result
+                ? res.send({
+                    success: true,
+                    action,
+                    layer_id: result[0]
+                  })
+                : res.send({
+                    success: false,
+                    error: 'Failed to Create Layer'
+                  })
             } else {
               return notAllowedError(res, 'layer')
             }
@@ -213,17 +201,15 @@ module.exports = function (app: any) {
             if (await Layer.allowedToModify(data.layer_id, req.user_id)) {
               const result = await Layer[action](...actionData)
 
-              if (result) {
-                return res.send({
-                  success: true,
-                  action
-                })
-              } else {
-                return res.send({
-                  success: false,
-                  error: 'Failed to Update Layer'
-                })
-              }
+              return result
+                ? res.send({
+                    success: true,
+                    action
+                  })
+                : res.send({
+                    success: false,
+                    error: 'Failed to Update Layer'
+                  })
             } else {
               return notAllowedError(res, 'layer')
             }

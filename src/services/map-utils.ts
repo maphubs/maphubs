@@ -1,20 +1,14 @@
 import Locales from '../services/locales'
+import Map from '../models/map'
+import { nextError } from './error-response'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import local from '../local'
+import pageOptions from './page-options-helper'
 
-const Map = require('../models/map')
+const debug = DebugService('map-utils')
 
-const nextError = require('./error-response').nextError
-
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'map-utils'
-)
-
-const local = require('../local')
-
-const pageOptions = require('./page-options-helper')
-
-module.exports = {
+export default {
   async completeEmbedMapRequest(
     app: any,
     req: any,
@@ -71,13 +65,10 @@ module.exports = {
 
         title += ' - ' + local.productName
         const baseUrl = urlUtil.getBaseUrl()
-        let imageUrl
-
-        if (shared && map.share_id) {
-          imageUrl = `${baseUrl}/api/map/share/screenshot/${map.share_id}.png`
-        } else {
-          imageUrl = `${baseUrl}/api/screenshot/map/${map.map_id}.png`
-        }
+        const imageUrl =
+          shared && map.share_id
+            ? `${baseUrl}/api/map/share/screenshot/${map.share_id}.png`
+            : `${baseUrl}/api/screenshot/map/${map.map_id}.png`
 
         return app.next.render(
           req,
@@ -146,13 +137,11 @@ module.exports = {
 
         title += ' - ' + local.productName
         const baseUrl = urlUtil.getBaseUrl()
-        let imageUrl
 
-        if (shared && map.share_id) {
-          imageUrl = `${baseUrl}/api/map/share/screenshot/${map.share_id}.png`
-        } else {
-          imageUrl = `${baseUrl}/api/screenshot/map/${map.map_id}.png`
-        }
+        const imageUrl =
+          shared && map.share_id
+            ? `${baseUrl}/api/map/share/screenshot/${map.share_id}.png`
+            : `${baseUrl}/api/screenshot/map/${map.map_id}.png`
 
         let showShareButtons = true
 

@@ -1,18 +1,13 @@
-const Image = require('../../models/image')
+import Image from '../../models/image'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { apiError, nextError } from '../../services/error-response'
+import imageUtils from '../../services/image-utils'
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import Crypto from 'crypto'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'routes/images'
-)
+const debug = DebugService('routes/images')
 
-const apiError = require('../../services/error-response').apiError
-
-const nextError = require('../../services/error-response').nextError
-
-const imageUtils = require('../../services/image-utils')
-
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.get('/image/:id.*', (req, res, next) => {
     const image_id = Number.parseInt(req.params.id || '', 10)
     // var ext = req.params.ext;
@@ -28,7 +23,7 @@ module.exports = function (app: any) {
           res.writeHead(200, {
             'Content-Type': dataType,
             'Content-Length': img.length,
-            ETag: require('crypto').createHash('md5').update(img).digest('hex')
+            ETag: Crypto.createHash('md5').update(img).digest('hex')
           })
           return res.end(img)
         } else {
@@ -42,11 +37,9 @@ module.exports = function (app: any) {
       const group_id = req.params.id
       const result = await Image.getGroupImage(group_id)
 
-      if (result?.image) {
-        return imageUtils.processImage(result.image, req, res)
-      } else {
-        return res.status(404).send()
-      }
+      return result?.image
+        ? imageUtils.processImage(result.image, req, res)
+        : res.status(404).send()
     } catch (err) {
       apiError(res, 404)(err)
     }
@@ -55,11 +48,9 @@ module.exports = function (app: any) {
     const group_id = req.params.id
     Image.getGroupThumbnail(group_id)
       .then((result) => {
-        if (result && result.thumbnail) {
-          return imageUtils.processImage(result.thumbnail, req, res)
-        } else {
-          return res.status(404).send()
-        }
+        return result && result.thumbnail
+          ? imageUtils.processImage(result.thumbnail, req, res)
+          : res.status(404).send()
       })
       .catch((err) => {
         log.error(err)
@@ -70,11 +61,9 @@ module.exports = function (app: any) {
     const image_id = req.params.imageid
     Image.getStoryImage(story_id, image_id)
       .then((result) => {
-        if (result && result.image) {
-          return imageUtils.processImage(result.image, req, res)
-        } else {
-          return res.status(404).send()
-        }
+        return result && result.image
+          ? imageUtils.processImage(result.image, req, res)
+          : res.status(404).send()
       })
       .catch(apiError(res, 404))
   })
@@ -83,11 +72,9 @@ module.exports = function (app: any) {
     const image_id = req.params.imageid
     Image.getStoryThumbnail(story_id, image_id)
       .then((result) => {
-        if (result && result.thumbnail) {
-          return imageUtils.processImage(result.thumbnail, req, res)
-        } else {
-          return res.status(404).send()
-        }
+        return result && result.thumbnail
+          ? imageUtils.processImage(result.thumbnail, req, res)
+          : res.status(404).send()
       })
       .catch(apiError(res, 404))
   })

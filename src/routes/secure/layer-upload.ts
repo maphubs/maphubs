@@ -1,54 +1,39 @@
-const knex = require('../../connection')
+import knex from '../../connection'
+import multer from 'multer'
+import ogr2ogr from 'ogr2ogr'
+import fs from 'fs'
+import Layer from '../../models/layer'
+import Promise from 'bluebird'
+import tus from 'tus-node-server'
+import { EVENTS } from 'tus-node-server'
+import express from 'express'
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import DataLoadUtils from '../../services/data-load-utils'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import local from '../../local'
+import {
+  apiError,
+  apiDataError,
+  notAllowedError
+} from '../../services/error-response'
+import Importers from '@bit/kriscarle.maphubs-utils.maphubs-utils.importers'
+import isAuthenticated from '../../services/auth-check'
+import layerViews from '../../services/layer-views'
+import csurf from 'csurf'
 
-const multer = require('multer')
-
-const ogr2ogr = require('ogr2ogr')
-
-const fs = require('fs')
-
-const Layer = require('../../models/layer')
-
-const Promise = require('bluebird')
-
-const tus = require('tus-node-server')
-
-const EVENTS = require('tus-node-server').EVENTS
-
-const express = require('express')
-
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-
-const DataLoadUtils = require('../../services/data-load-utils')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'routes/layers-upload'
-)
-
-const local = require('../../local')
-
-const apiError = require('../../services/error-response').apiError
-
-const apiDataError = require('../../services/error-response').apiDataError
-
-const notAllowedError = require('../../services/error-response').notAllowedError
-
-const Importers = require('@bit/kriscarle.maphubs-utils.maphubs-utils.importers')
-
-const csrfProtection = require('csurf')({
+const csrfProtection = csurf({
   cookie: false
 })
 
-const isAuthenticated = require('../../services/auth-check')
-
-const layerViews = require('../../services/layer-views')
+const debug = DebugService('routes/layers-upload')
 
 const metadataStringToObject = (stringValue) => {
   const keyValuePairList = stringValue.split(',')
   const metadata = {}
-  keyValuePairList.forEach((keyValuePair) => {
+  for (const keyValuePair of keyValuePairList) {
     const [key, base64Value] = keyValuePair.split(' ')
     metadata[key] = Buffer.from(base64Value, 'base64').toString('ascii')
-  })
+  }
   return metadata
 }
 
@@ -65,14 +50,13 @@ const getExt = (fileName: string) => {
   if (fileName.endsWith('.geojson') || fileName.endsWith('.json'))
     return 'geojson'
 
-  if (fileName.endsWith('.shp')) {
-    throw new Error('Shapefile must uploaded in a Zip file')
-  } else {
-    throw new Error(`Unsupported file type: ${fileName}`)
-  }
+  const error = fileName.endsWith('.shp')
+    ? new Error('Shapefile must uploaded in a Zip file')
+    : new Error(`Unsupported file type: ${fileName}`)
+  throw error
 }
 
-module.exports = function (app: any) {
+export default function (app: any): void {
   const server = new tus.Server()
   server.datastore = new tus.FileStore({
     path: '/' + UPLOAD_PATH
@@ -284,7 +268,7 @@ module.exports = function (app: any) {
               .format('GeoJSON')
               .skipfailures()
               .options(['-t_srs', 'EPSG:4326'])
-              .timeout(60000)
+              .timeout(60_000)
             const geoJSON = await Promise.promisify(ogr.exec, {
               context: ogr
             })()

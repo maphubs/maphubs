@@ -1,38 +1,29 @@
-// Note: do not enable flow so we can use this in knex migrations for now without involving babel
-const knex = require('../connection')
+import knex from '../connection'
 
-const Promise = require('bluebird')
+import Promise from 'bluebird'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'layer-views'
-)
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-module.exports = {
-  replaceViews(layer_id, presets, trx) {
+const debug = DebugService('layer-views')
+
+export default {
+  async replaceViews(layer_id, presets, trx): Promise<boolean> {
     debug.log('replace views for layer: ' + layer_id)
 
-    const _this = this
-
-    return _this
-      .dropLayerViews(layer_id, trx)
-      .then(() => {
-        return _this.createLayerViews(layer_id, presets, trx)
-      })
-      .catch((err) => {
-        log.error(err.message)
-        throw err
-      })
+    try {
+      await this.dropLayerViews(layer_id, trx)
+      return this.createLayerViews(layer_id, presets, trx)
+    } catch (err) {
+      log.error(err.message)
+      throw err
+    }
   },
 
-  dropLayerViews(layer_id, trx = null) {
+  async dropLayerViews(layer_id: number, trx?: any) {
     debug.log('drop views for layer: ' + layer_id)
-    let db = knex
-
-    if (trx) {
-      db = trx
-    }
+    const db = trx || knex
 
     const commands = [
       `DROP VIEW IF EXISTS layers.centroids_${layer_id}`,
@@ -48,12 +39,8 @@ module.exports = {
     })
   },
 
-  createLayerViews(layer_id, presets, trx = null) {
-    let db = knex
-
-    if (trx) {
-      db = trx
-    }
+  createLayerViews(layer_id, presets, trx?: any) {
+    const db = trx || knex
 
     return db('omh.layers')
       .select('data_type')
@@ -67,13 +54,12 @@ module.exports = {
 
         if (presets) {
           debug.log(presets)
-          presets.forEach((preset) => {
-            if (preset.type === 'number') {
-              tagColumns += `CASE WHEN isnumeric(tags->>'${preset.tag}') THEN (tags->>'${preset.tag}')::double precision ELSE NULL END as "${preset.tag}",`
-            } else {
-              tagColumns += `(tags->>'${preset.tag}')::text as "${preset.tag}",`
-            }
-          })
+          for (const preset of presets) {
+            tagColumns +=
+              preset.type === 'number'
+                ? `CASE WHEN isnumeric(tags->>'${preset.tag}') THEN (tags->>'${preset.tag}')::double precision ELSE NULL END as "${preset.tag}",`
+                : `(tags->>'${preset.tag}')::text as "${preset.tag}",`
+          }
         } else {
           log.error(`Missing presets when creating view for layer ${layer_id}`)
         }

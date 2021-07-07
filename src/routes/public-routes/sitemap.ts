@@ -1,14 +1,10 @@
-const local = require('../../local')
+import local from '../../local'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import siteMapUtil from '../../services/sitemap-util'
+import { nextError } from '../../services/error-response'
+import { SitemapStream, buildSitemapIndex } from 'sitemap'
 
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-
-const siteMapUtil = require('../../services/sitemap-util')
-
-const nextError = require('../../services/error-response').nextError
-
-const { SitemapStream, buildSitemapIndex } = require('sitemap')
-
-module.exports = function (app: any) {
+export default function (app: any) {
   app.get('/robots.txt', (req, res) => {
     res.type('text/plain')
 
@@ -37,7 +33,7 @@ Disallow: /xml/map/*
       const baseUrl = urlUtil.getBaseUrl()
       const layerUrls = await siteMapUtil.getSiteMapIndexFeatureURLs()
       const smi = buildSitemapIndex({
-        urls: [`${baseUrl}/sitemap.xml`].concat(layerUrls)
+        urls: [`${baseUrl}/sitemap.xml`, ...layerUrls]
       })
       res.header('Content-Type', 'application/xml')
       return res.send(smi)

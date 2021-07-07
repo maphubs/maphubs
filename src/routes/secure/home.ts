@@ -1,26 +1,28 @@
-const Layer = require('../../models/layer')
+import Layer from '../../models/layer'
 
-const Group = require('../../models/group')
+import Group from '../../models/group'
 
-const Map = require('../../models/map')
+import Map from '../../models/map'
 
-const Page = require('../../models/page')
+import Page from '../../models/page'
 
-const Story = require('../../models/story')
+import Story from '../../models/story'
 
-const nextError = require('../../services/error-response').nextError
+import { nextError } from '../../services/error-response'
 
-const csrfProtection = require('csurf')({
+import csurf from 'csurf'
+
+import renderCMSPage from '../../services/render-cms-page'
+
+import pageOptions from '../../services/page-options-helper'
+
+import local from '../../local'
+
+const csrfProtection = csurf({
   cookie: false
 })
 
-const renderCMSPage = require('../../services/render-cms-page')
-
-const pageOptions = require('../../services/page-options-helper')
-
-const local = require('../../local')
-
-module.exports = function (app: any) {
+export default function (app: any) {
   app.get('/', csrfProtection, async (req, res, next) => {
     try {
       const { home } = await Page.getPageConfigs(['home'])
@@ -58,29 +60,5 @@ module.exports = function (app: any) {
     } catch (err) {
       nextError(next)(err)
     }
-  })
-  app.get('/terms', csrfProtection, async (req, res) => {
-    return app.next.render(
-      req,
-      res,
-      '/terms',
-      await pageOptions(req, {
-        title: req.__('Terms') + ' - ' + local.productName,
-        props: {
-          beep: 'boop'
-        }
-      })
-    )
-  })
-  app.get('/privacy', csrfProtection, async (req, res) => {
-    return app.next.render(
-      req,
-      res,
-      '/privacy',
-      await pageOptions(req, {
-        title: req.__('Privacy') + ' - ' + local.productName,
-        props: {}
-      })
-    )
   })
 }

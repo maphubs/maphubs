@@ -2,17 +2,17 @@ import slugify from 'slugify'
 import type { Layer } from '../types/layer'
 import type { CardConfig } from '../components/CardCarousel/Card'
 
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 
 type CardConfigArray = Array<CardConfig>
 export default {
   combineCards(cardDataArray: Array<CardConfigArray>): Array<CardConfig> {
     let output = []
-    cardDataArray.forEach((cardArr: Array<CardConfig>) => {
+    for (const cardArr of cardDataArray) {
       if (cardArr) {
-        output = output.concat(cardArr)
+        output = [...output, ...cardArr]
       }
-    })
+    }
     return output
   },
 

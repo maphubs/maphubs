@@ -1,20 +1,22 @@
 import { v4 as uuidv4 } from 'uuid'
 
-const Promise = require('bluebird')
+import Promise from 'bluebird'
 
 const fs: typeof fs = Promise.promisifyAll(require('fs'))
 
-const local = require('../local')
+import local from '../local'
 
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'image-utils'
-)
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 
-const easyimg = require('easyimage')
+import easyimg from 'easyimage'
 
-module.exports = {
+import Crypto from 'crypto'
+
+const debug = DebugService('image-utils')
+
+export default {
   processImage(image: string, req: any, res: any) {
     if (!image) {
       res.writeHead(200, {
@@ -31,7 +33,7 @@ module.exports = {
     const data = dataArr[1]
     const img = Buffer.from(data, 'base64')
 
-    const hash = require('crypto').createHash('md5').update(img).digest('hex')
+    const hash = Crypto.createHash('md5').update(img).digest('hex')
 
     const match = req.get('If-None-Match')
 
@@ -48,9 +50,7 @@ module.exports = {
     }
   },
 
-  decodeBase64Image(
-    dataString: string
-  ):
+  decodeBase64Image(dataString: string):
     | Error
     | {
         data: Buffer
@@ -72,7 +72,7 @@ module.exports = {
     dataString: string,
     targetWidth: number,
     targetHeight: number,
-    crop: boolean = false
+    crop = false
   ): Promise<any> {
     const _this = this
 

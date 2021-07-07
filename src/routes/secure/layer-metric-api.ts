@@ -1,18 +1,14 @@
-const knex = require('../../connection')
+import knex from '../../connection'
+import Layer from '../../models/layer'
 
-const Layer = require('../../models/layer')
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { apiError } from '../../services/error-response'
 
-const apiError = require('../../services/error-response').apiError
+import turfArea from '@turf/area'
 
-const apiDataError = require('../../services/error-response').apiDataError
+const debug = DebugService('layer-metrics')
 
-const turfArea = require('@turf/area')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'layer-metrics'
-)
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.post('/metricapi/', async (req, res) => {
     try {
       const data = req.body
@@ -65,7 +61,7 @@ module.exports = function (app: any) {
             type: 'FeatureCollection',
             features
           })
-          const area = areaM2 / 10000
+          const area = areaM2 / 10_000
           res.status(200).send({
             count: features.count,
             area,

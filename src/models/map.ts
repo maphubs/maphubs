@@ -1,25 +1,18 @@
 import MapStyles from '../components/Map/Styles'
+import knex from '../connection'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import Group from './group'
+import shortid from 'shortid'
+import { LocalizedString } from '../types/LocalizedString'
 
-const knex = require('../connection')
+const debug = DebugService('models/map')
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'models/map'
-)
-
-const Group = require('./group')
-
-const shortid = require('shortid')
-
-module.exports = {
+export default {
   /**
    * Can include private?: Yes
    */
-  async getMap(map_id: number, trx: any): Promise<any> {
-    let db = knex
-
-    if (trx) {
-      db = trx
-    }
+  async getMap(map_id: number, trx?: any): Promise<any> {
+    const db = trx || knex
 
     const result = await db('omh.maps')
       .select(
@@ -45,13 +38,9 @@ module.exports = {
   getGroupMaps(
     owned_by_group_id: number,
     includePrivate: boolean,
-    trx: any
+    trx?: any
   ): any {
-    let db = knex
-
-    if (trx) {
-      db = trx
-    }
+    const db = trx || knex
 
     const query = db('omh.maps')
       .select(
@@ -78,7 +67,7 @@ module.exports = {
   async getMapLayers(
     map_id: number,
     includePrivateLayers: boolean,
-    trx: any
+    trx?: any
   ): Promise<any> {
     const db = trx || knex
     const query = db
@@ -142,7 +131,7 @@ module.exports = {
     return layers
   },
 
-  async isPrivate(map_id: number): Promise<any> | Promise<boolean> {
+  async isPrivate(map_id: number): Promise<boolean> {
     const result = await knex.select('private').from('omh.maps').where({
       map_id
     })
@@ -159,7 +148,7 @@ module.exports = {
     return Group.allowedToModify(map.owned_by_group_id, user_id)
   },
 
-  getMapsBaseQuery(trx: any): any {
+  getMapsBaseQuery(trx?: any): any {
     const db = trx || knex
     return db
       .select(
@@ -177,7 +166,7 @@ module.exports = {
   /**
    * Can include private?: No
    */
-  getAllMaps(trx: any): any {
+  getAllMaps(trx?: any): any {
     const query = this.getMapsBaseQuery(trx)
     return query
       .where('omh.maps.private', false)
@@ -415,10 +404,10 @@ module.exports = {
 
       if (layers?.length > 0) {
         // confirm no private layers
-        layers.forEach((layer) => {
+        for (const layer of layers) {
           if (layer.private)
             throw new Error('Private layer not allowed in public map')
-        })
+        }
       }
 
       return knex('omh.maps')
@@ -540,13 +529,11 @@ module.exports = {
   ): Promise<any> {
     const db = trx || knex
 
-    if (layers && Array.isArray(layers) && layers.length > 0) {
-      if (isPrivate) {
-        // confirm all private layers owned by same group
-        layers.forEach((layer) => {
-          if (layer.owned_by_group_id !== group_id)
-            throw new Error('Private layers must be owned by the same group')
-        })
+    if (layers && Array.isArray(layers) && layers.length > 0 && isPrivate) {
+      // confirm all private layers owned by same group
+      for (const layer of layers) {
+        if (layer.owned_by_group_id !== group_id)
+          throw new Error('Private layers must be owned by the same group')
       }
     }
 
@@ -572,7 +559,7 @@ module.exports = {
     return map_id // pass on the new map_id
   },
 
-  async getMapByShareId(share_id: string, trx: any): Promise<any> {
+  async getMapByShareId(share_id: string, trx?: any): Promise<any> {
     const db = trx || knex
     const result = await db('omh.maps')
       .select(
@@ -592,7 +579,7 @@ module.exports = {
     return null
   },
 
-  async addPublicShareID(map_id: number, trx: any): Promise<any> {
+  async addPublicShareID(map_id: number, trx?: any): Promise<any> {
     const db = trx || knex
     const share_id = shortid.generate()
     await db('omh.maps')
@@ -605,7 +592,7 @@ module.exports = {
     return share_id
   },
 
-  async removePublicShareID(map_id: number, trx: any): Promise<any> {
+  async removePublicShareID(map_id: number, trx?: any): Promise<any> {
     const db = trx || knex
     return db('omh.maps')
       .update({

@@ -1,8 +1,8 @@
-const knex = require('../connection')
+import knex from '../connection'
 
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-module.exports = {
+export default {
   async getPageConfig(page_id: string): Promise<Array<Record<string, any>>> {
     const result = await knex.select('config').from('omh.page').where({
       page_id
@@ -21,9 +21,9 @@ module.exports = {
       .from('omh.page')
       .whereIn('page_id', page_ids)
     const configs = {}
-    results.forEach((result) => {
+    for (const result of results) {
       configs[result.page_id] = result.config
-    })
+    }
     return configs
   },
 

@@ -1,11 +1,14 @@
-const knex = require('../connection')
+import knex from '../connection'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { Feature, FeatureCollection } from 'geojson'
+const debug = DebugService('feature')
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'feature'
-)
-
-module.exports = {
-  async getFeatureNotes(mhid: string, layerId: number, trx: any): Promise<any> {
+export default {
+  async getFeatureNotes(
+    mhid: string,
+    layerId: number,
+    trx?: any
+  ): Promise<any> {
     const db = trx || knex
     const result = await db('omh.feature_notes').select('notes').where({
       mhid,
@@ -32,28 +35,26 @@ module.exports = {
       layer_id: layerId
     })
 
-    if (result && result.length === 1) {
-      return db('omh.feature_notes')
-        .update({
+    return result && result.length === 1
+      ? db('omh.feature_notes')
+          .update({
+            notes,
+            updated_by: userId,
+            updated_at: db.raw('now()')
+          })
+          .where({
+            mhid,
+            layer_id: layerId
+          })
+      : db('omh.feature_notes').insert({
+          layer_id: layerId,
+          mhid,
           notes,
+          created_by: userId,
+          created_at: db.raw('now()'),
           updated_by: userId,
           updated_at: db.raw('now()')
         })
-        .where({
-          mhid,
-          layer_id: layerId
-        })
-    } else {
-      return db('omh.feature_notes').insert({
-        layer_id: layerId,
-        mhid,
-        notes,
-        created_by: userId,
-        created_at: db.raw('now()'),
-        updated_by: userId,
-        updated_at: db.raw('now()')
-      })
-    }
   },
 
   /**
@@ -63,7 +64,11 @@ module.exports = {
    * @param {number} layer_id
    * @returns
    */
-  async getGeoJSON(mhid: string, layerId: number, trx: any) {
+  async getGeoJSON(
+    mhid: string,
+    layerId: number,
+    trx?: any
+  ): Promise<FeatureCollection> {
     const db = trx || knex
     const layerTable = 'layers.data_' + layerId
     const data = await db
@@ -80,7 +85,7 @@ module.exports = {
       const bbox = await db.raw(`select 
         '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox 
         from (select ST_Extent(wkb_geometry) as bbox from ${layerTable} where mhid='${mhid}') a`)
-      const feature = {
+      const feature: Feature = {
         type: 'Feature',
         geometry: JSON.parse(data[0].geom),
         properties: data[0].tags

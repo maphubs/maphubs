@@ -1,13 +1,9 @@
-const knex = require('../connection')
+import knex from '../connection'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+const debug = DebugService('model/stats')
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'model/stats'
-)
-
-module.exports = {
-  async getLayerStats(
-    layer_id: number
-  ): Promise<{
+export default {
+  async getLayerStats(layer_id: number): Promise<{
     maps: void
     stories: void
     viewsByDay: any

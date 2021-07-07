@@ -1,16 +1,17 @@
-const Page = require('../models/page')
+import Page from '../models/page'
 
-const nextError = require('./error-response').nextError
+import { nextError } from './error-response'
+import csurf from 'csurf'
 
-const csrfProtection = require('csurf')({
+import renderCMSPage from './render-cms-page'
+
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+
+const csrfProtection = csurf({
   cookie: false
 })
 
-const renderCMSPage = require('./render-cms-page')
-
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-
-module.exports = async function (app: any): Promise<any> {
+export default async function (app: any): Promise<any> {
   const pageConfigs = await Page.getPageConfigs(['config'])
 
   if (

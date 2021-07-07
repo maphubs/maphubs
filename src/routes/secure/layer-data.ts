@@ -1,28 +1,19 @@
-const Layer = require('../../models/layer')
+import Layer from '../../models/layer'
+import LayerData from '../../models/layer-data'
+import csurf from 'csurf'
+import knex from '../../connection'
+import Promise from 'bluebird'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { apiError, notAllowedError } from '../../services/error-response'
+import isAuthenticated from '../../services/auth-check'
 
-const LayerData = require('../../models/layer-data')
+const debug = DebugService('routes/layer-data')
 
-const csrfProtection = require('csurf')({
+const csrfProtection = csurf({
   cookie: false
 })
 
-const knex = require('../../connection')
-
-const Promise = require('bluebird')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'routes/layer-data'
-)
-
-const apiError = require('../../services/error-response').apiError
-
-const apiDataError = require('../../services/error-response').apiDataError
-
-const notAllowedError = require('../../services/error-response').notAllowedError
-
-const isAuthenticated = require('../../services/auth-check')
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   /**
    * When enabled, allows a public user to submit a single feature to the layer
    */
@@ -33,18 +24,16 @@ module.exports = function (app: any) {
       if (data && data.layer_id && data.feature) {
         const layer = await Layer.getLayerByID(data.layer_id)
 
-        if (layer.allow_public_submit) {
-          return knex.transaction(async (trx) => {
-            await LayerData.createFeature(data.layer_id, data.feature, trx)
-            await Layer.setUpdated(data.layer_id, req.user_id, trx)
-            debug.log('feature submission complete')
-            return res.status(200).send({
-              success: true
+        return layer.allow_public_submit
+          ? knex.transaction(async (trx) => {
+              await LayerData.createFeature(data.layer_id, data.feature, trx)
+              await Layer.setUpdated(data.layer_id, req.user_id, trx)
+              debug.log('feature submission complete')
+              return res.status(200).send({
+                success: true
+              })
             })
-          })
-        } else {
-          return notAllowedError(res, 'layer')
-        }
+          : notAllowedError(res, 'layer')
       } else {
         apiDataError(res)
       }
@@ -61,39 +50,42 @@ module.exports = function (app: any) {
         const data = req.body
 
         if (data && data.layer_id && data.edits) {
-          if (await Layer.allowedToModify(data.layer_id, req.user_id)) {
-            return knex.transaction(async (trx) => {
-              await Promise.map(data.edits, (edit) => {
-                if (edit.status === 'create') {
-                  return LayerData.createFeature(
-                    data.layer_id,
-                    edit.geojson,
-                    trx
-                  )
-                } else if (edit.status === 'modify') {
-                  return LayerData.updateFeature(
-                    data.layer_id,
-                    edit.geojson.id,
-                    edit.geojson,
-                    trx
-                  )
-                } else if (edit.status === 'delete') {
-                  return LayerData.deleteFeature(
-                    data.layer_id,
-                    edit.geojson.id,
-                    trx
-                  )
-                }
+          return (await Layer.allowedToModify(data.layer_id, req.user_id))
+            ? knex.transaction(async (trx) => {
+                await Promise.map(data.edits, (edit) => {
+                  switch (edit.status) {
+                    case 'create': {
+                      return LayerData.createFeature(
+                        data.layer_id,
+                        edit.geojson,
+                        trx
+                      )
+                    }
+                    case 'modify': {
+                      return LayerData.updateFeature(
+                        data.layer_id,
+                        edit.geojson.id,
+                        edit.geojson,
+                        trx
+                      )
+                    }
+                    case 'delete': {
+                      return LayerData.deleteFeature(
+                        data.layer_id,
+                        edit.geojson.id,
+                        trx
+                      )
+                    }
+                    // No default
+                  }
+                })
+                await Layer.setUpdated(data.layer_id, req.user_id, trx)
+                debug.log('save edits complete')
+                return res.status(200).send({
+                  success: true
+                })
               })
-              await Layer.setUpdated(data.layer_id, req.user_id, trx)
-              debug.log('save edits complete')
-              return res.status(200).send({
-                success: true
-              })
-            })
-          } else {
-            return notAllowedError(res, 'layer')
-          }
+            : notAllowedError(res, 'layer')
         } else {
           apiDataError(res)
         }

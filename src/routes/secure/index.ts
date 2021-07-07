@@ -1,61 +1,63 @@
-module.exports = function (app: any) {
-  require('./admin')(app)
+import admin from './admin'
+import groupViews from './groups-views'
+import layerMetricApi from './layer-metric-api'
+import layersReplace from './layers-replace'
+import pages from './pages'
+import storiesViews from './stories-views'
+import auth from './auth'
+import home from './home'
+import layerUpload from './layer-upload'
+import layersViews from './layers-views'
+import proxy from './proxy'
+import user from './user'
+import customErrors from './custom-errors'
+import images from './images'
+import layersApiPublic from './layers-api-public'
+import mapApiPublic from './map-api-public'
+import screenshots from './screenshots'
+import exportRoutes from './exports'
+import layersApi from './layers-api'
+import mapApi from './map-api'
+import features from './features'
+import isochroneService from './isochrone-service'
+import layersImport from './layers-import'
+import mapViews from './map-views'
+import search from './search'
+import groupsApi from './groups-api'
+import layerData from './layer-data'
+import layersRemote from './layers-remote'
+import oembed from './oembed'
+import storiesApi from './stories-api'
 
-  require('./groups-views')(app)
-
-  require('./layer-metric-api')(app)
-
-  require('./layers-replace')(app)
-
-  require('./pages')(app)
-
-  require('./stories-views')(app)
-
-  require('./auth')(app)
-
-  require('./home')(app)
-
-  require('./layer-upload')(app)
-
-  require('./layers-views')(app)
-
-  require('./proxy')(app)
-
-  require('./user')(app)
-
-  require('./custom-errors')(app)
-
-  require('./images')(app)
-
-  require('./layers-api-public')(app)
-
-  require('./map-api-public')(app)
-
-  require('./screenshots')(app)
-
-  require('./exports')(app)
-
-  require('./layers-api')(app)
-
-  require('./map-api')(app)
-
-  require('./features')(app)
-
-  require('./isochrone-service')(app)
-
-  require('./layers-import')(app)
-
-  require('./map-views')(app)
-
-  require('./search')(app)
-
-  require('./groups-api')(app)
-
-  require('./layer-data')(app)
-
-  require('./layers-remote')(app)
-
-  require('./oembed')(app)
-
-  require('./stories-api')(app)
+export default function (app: any): void {
+  admin(app)
+  groupViews(app)
+  layerMetricApi(app)
+  layersReplace(app)
+  pages(app)
+  storiesViews(app)
+  auth(app)
+  home(app)
+  layerUpload(app)
+  layersViews(app)
+  proxy(app)
+  user(app)
+  customErrors(app)
+  images(app)
+  layersApiPublic(app)
+  mapApiPublic(app)
+  screenshots(app)
+  exportRoutes(app)
+  layersApi(app)
+  mapApi(app)
+  features(app)
+  isochroneService(app)
+  layersImport(app)
+  mapViews(app)
+  search(app)
+  groupsApi(app)
+  layerData(app)
+  layersRemote(app)
+  oembed(app)
+  storiesApi(app)
 }

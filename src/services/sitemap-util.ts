@@ -1,24 +1,15 @@
 import slugify from 'slugify'
+import Layer from '../models/layer'
+import Story from '../models/story'
+import Map from '../models/map'
+import Group from '../models/group'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import Promise from 'bluebird'
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import knex from '../connection'
+import moment from 'moment'
 
-const Layer = require('../models/layer')
-
-const Story = require('../models/story')
-
-const Map = require('../models/map')
-
-const Group = require('../models/group')
-
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-
-const Promise = require('bluebird')
-
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-
-const knex = require('../connection')
-
-const moment = require('moment')
-
-module.exports = {
+export default {
   async getSiteMapIndexFeatureURLs(): Promise<Array<any | string>> {
     const baseUrl = urlUtil.getBaseUrl()
     const layers = await knex('omh.layers').select('layer_id').whereNot({
@@ -54,7 +45,7 @@ module.exports = {
   async addLayersToSiteMap(sm: any): Promise<any> {
     const baseUrl = urlUtil.getBaseUrl()
     const layers = await Layer.getAllLayers(false)
-    layers.forEach((layer) => {
+    for (const layer of layers) {
       let lastmodISO = null
       if (layer.last_updated)
         lastmodISO = moment(layer.last_updated).toISOString()
@@ -68,7 +59,7 @@ module.exports = {
         changefreq: 'weekly',
         lastmodISO
       })
-    })
+    }
     return sm
   },
 
@@ -77,7 +68,7 @@ module.exports = {
       'omh.stories.updated_at',
       'desc'
     )
-    stories.forEach((story) => {
+    for (const story of stories) {
       const title = story.title.en
       const baseUrl = urlUtil.getBaseUrl()
       const story_url = `${baseUrl}/story/${slugify(title)}/${story.story_id}`
@@ -88,14 +79,14 @@ module.exports = {
         changefreq: 'daily',
         lastmodISO
       })
-    })
+    }
     return sm
   },
 
   async addMapsToSiteMap(sm: any): Promise<any> {
     const baseUrl = urlUtil.getBaseUrl()
     const maps = await Map.getAllMaps().orderBy('omh.maps.updated_at', 'desc')
-    maps.forEach((map) => {
+    for (const map of maps) {
       const mapUrl = `${baseUrl}/map/view/${map.map_id}/${slugify(
         map.title.en
       )}`
@@ -106,18 +97,18 @@ module.exports = {
         changefreq: 'daily',
         lastmodISO
       })
-    })
+    }
     return sm
   },
 
   async addGroupsToSiteMap(sm: any): Promise<any> {
     const groups = await Group.getAllGroups()
-    groups.forEach((group) => {
+    for (const group of groups) {
       sm.write({
         url: `${urlUtil.getBaseUrl()}/group/${group.group_id}`,
         changefreq: 'daily'
       })
-    })
+    }
     return sm
   },
 
@@ -133,7 +124,7 @@ module.exports = {
       const features = await knex(`layers.data_${layer_id}`).select('mhid')
 
       if (features && Array.isArray(features)) {
-        features.forEach((feature) => {
+        for (const feature of features) {
           if (feature && feature.mhid) {
             const featureId = feature.mhid.split(':')[1]
             sm.write({
@@ -142,7 +133,7 @@ module.exports = {
               lastmodISO
             })
           }
-        })
+        }
       }
 
       return sm

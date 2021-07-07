@@ -1,13 +1,13 @@
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'layer-data'
-)
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+const debug = DebugService('layer-data')
 
 // const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 
 /**
  * Provides CRUD methods for updating layer data in PostGIS
  */
-module.exports = {
+
+export default {
   /**
    * Create a new feature in a layer
    *
@@ -102,13 +102,8 @@ module.exports = {
     trx: any
   ): Promise<Record<string, any>> {
     debug.log('updating tag: ' + mhid)
-    let valStr
 
-    if (val) {
-      valStr = `"${val}"`
-    } else {
-      valStr = 'null'
-    }
+    const valStr = val ? `"${val}"` : 'null'
 
     const tagStr = `{${tag}}`
     return trx(`layers.data_${layer_id}`)
@@ -141,13 +136,8 @@ module.exports = {
     trx: any
   ): Promise<Record<string, any>> {
     debug.log('updating tag: ' + mhid)
-    let valStr
 
-    if (val) {
-      valStr = `${val}`
-    } else {
-      valStr = 'null'
-    }
+    const valStr = val ? `${val}` : 'null'
 
     const tagStr = `{${tag}}`
     return trx(`layers.data_${layer_id}`)

@@ -1,14 +1,11 @@
-const knex = require('../connection')
+import knex from '../connection'
+import Group from './group'
+import Tags from './tags'
 
-const Group = require('./group')
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+const debug = DebugService('model/story')
 
-const Tags = require('./tags')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'model/story'
-)
-
-module.exports = {
+export default {
   getStoriesBaseQuery(trx: any): any {
     const db = trx || knex
     return db
@@ -45,7 +42,7 @@ module.exports = {
       .groupBy('omh.stories.story_id', 'omh.groups.name')
   },
 
-  getAllStories(trx: any): any {
+  getAllStories(trx?: any): any {
     const query = this.getStoriesBaseQuery(trx)
     return query.where('omh.stories.published', true)
   },
@@ -65,18 +62,16 @@ module.exports = {
     const { number, tags } = options
     let query = this.getStoriesBaseQuery()
 
-    if (tags) {
-      query = query
-        .whereIn('omh.story_tags.tag', tags)
-        .andWhere('omh.stories.published', true)
-    } else {
-      query = query.where('omh.stories.published', true)
-    }
+    query = tags
+      ? query
+          .whereIn('omh.story_tags.tag', tags)
+          .andWhere('omh.stories.published', true)
+      : query.where('omh.stories.published', true)
 
     return query.orderBy('omh.stories.published_at', 'desc').limit(number || 10)
   },
 
-  getPopularStories(number: number = 10): any {
+  getPopularStories(number = 10): any {
     const query = this.getStoriesBaseQuery()
     return query
       .where('omh.stories.published', true)
@@ -84,7 +79,7 @@ module.exports = {
       .limit(number)
   },
 
-  getFeaturedStories(number: number = 10): any {
+  getFeaturedStories(number = 10): any {
     const query = this.getStoriesBaseQuery()
     return query
       .where('omh.stories.published', true)
@@ -185,7 +180,7 @@ module.exports = {
 
   async createStory(user_id: number): Promise<number> {
     if (!user_id) throw new Error('User ID required')
-    let story_id = await knex('omh.stories')
+    const story_id: string = await knex('omh.stories')
       .insert({
         published: false,
         created_at: knex.raw('now()'),
@@ -193,8 +188,7 @@ module.exports = {
         updated_by: user_id
       })
       .returning('story_id')
-    story_id = Number.parseInt(story_id, 10)
-    return story_id
+    return Number.parseInt(story_id, 10)
   },
 
   async allowedToModify(story_id: number, user_id: number): Promise<any> {

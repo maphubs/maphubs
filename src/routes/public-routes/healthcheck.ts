@@ -1,23 +1,19 @@
-const knex = require('../../connection')
+import knex from '../../connection'
 
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.get('/healthcheck', (req, res) => {
     if (knex) {
       knex
         .select(knex.raw('version()'))
         .then((result) => {
-          if (
-            result &&
+          return result &&
             Array.isArray(result) &&
             result.length === 1 &&
             result[0].version
-          ) {
-            return res.status(200).send('OK')
-          } else {
-            return res.status(500).send()
-          }
+            ? res.status(200).send('OK')
+            : res.status(500).send()
         })
         .catch((err) => {
           log.error(err.message)

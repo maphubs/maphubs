@@ -1,10 +1,10 @@
 import { $Call } from 'utility-types'
 
-const knex = require('../connection')
+import knex from '../connection'
 
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-module.exports = {
+export default {
   async checkIfExists(tag: string, trx?: any): Promise<boolean> {
     const db = trx || knex
     const result = await db('omh.tags').select('tag').where({
@@ -18,19 +18,21 @@ module.exports = {
     return false
   },
 
-  async addTag(tag: string, trx?: any): Promise<any> | Promise<boolean> {
+  async addTag(tag: string, trx?: any): Promise<boolean> {
     const db = trx || knex
 
-    if (await this.checkIfExists(tag, db)) {
-      return true
-    } else {
-      return db('omh.tags').insert({
-        tag
-      })
-    }
+    return (await this.checkIfExists(tag, db))
+      ? true
+      : db('omh.tags').insert({
+          tag
+        })
   },
 
-  async addStoryTag(tag: string, story_id: number, trx?: any): Promise<any> {
+  async addStoryTag(
+    tag: string,
+    story_id: number,
+    trx?: any
+  ): Promise<boolean> {
     const db = trx || knex
     await this.addTag(tag, db)
     return db('omh.story_tags').insert({
@@ -52,18 +54,18 @@ module.exports = {
     const existingTags = results.map((result) => result.tag)
     const tagsToAdd = []
     const tagsToRemove = []
-    tags.forEach((tag) => {
+    for (const tag of tags) {
       if (!existingTags.includes(tag)) {
         // need to add it
         tagsToAdd.push(tag)
       }
-    })
-    existingTags.forEach((tag) => {
+    }
+    for (const tag of existingTags) {
       if (!tags.includes(tag)) {
         // need to remove it
         tagsToRemove.push(tag)
       }
-    })
+    }
     log.info(`removing tags ${tagsToRemove.toString()} from story ${story_id}`)
     await db('omh.story_tags').del().whereIn('tag', tagsToRemove).andWhere({
       story_id
@@ -89,18 +91,18 @@ module.exports = {
     const existingTags = results.map((result) => result.tag)
     const tagsToAdd = []
     const tagsToRemove = []
-    tags.forEach((tag) => {
+    for (const tag of tags) {
       if (!existingTags.includes(tag)) {
         // need to add it
         tagsToAdd.push(tag)
       }
-    })
-    existingTags.forEach((tag) => {
+    }
+    for (const tag of existingTags) {
       if (!tags.includes(tag)) {
         // need to remove it
         tagsToRemove.push(tag)
       }
-    })
+    }
     log.info(`removing tags ${tagsToRemove.toString()} from map ${map_id}`)
     await db('omh.map_tags').del().whereIn('tag', tagsToRemove).andWhere({
       map_id

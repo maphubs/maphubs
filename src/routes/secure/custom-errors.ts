@@ -1,6 +1,6 @@
-const pageOptions = require('../../services/page-options-helper')
+import pageOptions from '../../services/page-options-helper'
 
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.get('/unauthorized', async (req, res) => {
     let path = ''
 

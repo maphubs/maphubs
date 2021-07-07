@@ -1,37 +1,25 @@
 import Locales from '../../services/locales'
+import Group from '../../models/group'
+import User from '../../models/user'
+import Layer from '../../models/layer'
+import Map from '../../models/map'
+import Story from '../../models/story'
+import Account from '../../models/account'
+import login from 'connect-ensure-login'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { nextError } from '../../services/error-response'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import pageOptions from '../../services/page-options-helper'
+import local from '../../local'
+import csurf from 'csurf'
 
-const Group = require('../../models/group')
-
-const User = require('../../models/user')
-
-const Layer = require('../../models/layer')
-
-const Map = require('../../models/map')
-
-const Story = require('../../models/story')
-
-const Account = require('../../models/account')
-
-const login = require('connect-ensure-login')
-
-// var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'routes/groups'
-)
-
-const nextError = require('../../services/error-response').nextError
-
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-
-const pageOptions = require('../../services/page-options-helper')
-
-const local = require('../../local')
-
-const csrfProtection = require('csurf')({
+const csrfProtection = csurf({
   cookie: false
 })
 
-module.exports = function (app: any) {
+const debug = DebugService('routes/groups')
+
+export default function (app: any): void {
   app.get('/groups', csrfProtection, async (req, res, next) => {
     try {
       return app.next.render(
@@ -196,25 +184,23 @@ module.exports = function (app: any) {
     function completeRequest(userCanEdit) {
       User.getUserByName(username)
         .then((user) => {
-          if (user) {
-            return Group.getGroupsForUser(user.id).then(async (groups) => {
-              return app.next.render(
-                req,
-                res,
-                '/usergroups',
-                await pageOptions(req, {
-                  title: 'Groups - ' + username,
-                  props: {
-                    user,
-                    groups,
-                    canEdit: userCanEdit
-                  }
-                })
-              )
-            })
-          } else {
-            return res.redirect('/notfound?path=' + req.path)
-          }
+          return user
+            ? Group.getGroupsForUser(user.id).then(async (groups) => {
+                return app.next.render(
+                  req,
+                  res,
+                  '/usergroups',
+                  await pageOptions(req, {
+                    title: 'Groups - ' + username,
+                    props: {
+                      user,
+                      groups,
+                      canEdit: userCanEdit
+                    }
+                  })
+                )
+              })
+            : res.redirect('/notfound?path=' + req.path)
         })
         .catch(nextError(next))
     }
@@ -225,7 +211,7 @@ module.exports = function (app: any) {
       !req.session ||
       !req.session.user
     ) {
-      completeRequest()
+      completeRequest(false)
     } else {
       // get user id
       const user_id = req.session.user.maphubsUser.id

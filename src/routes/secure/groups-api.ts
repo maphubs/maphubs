@@ -1,34 +1,22 @@
 import Locales from '../../services/locales'
+import Group from '../../models/group'
+import User from '../../models/user'
+import Layer from '../../models/layer'
+import Image from '../../models/image'
+import Account from '../../models/account'
+import Email from '@bit/kriscarle.maphubs-utils.maphubs-utils.email-util'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { apiError, apiDataError } from '../../services/error-response'
+import local from '../../local'
+import csurf from 'csurf'
+import isAuthenticated from '../../services/auth-check'
 
-const Group = require('../../models/group')
-
-const User = require('../../models/user')
-
-const Layer = require('../../models/layer')
-
-const Image = require('../../models/image')
-
-const Account = require('../../models/account')
-
-const Email = require('@bit/kriscarle.maphubs-utils.maphubs-utils.email-util')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'routes/groups'
-)
-
-const apiError = require('../../services/error-response').apiError
-
-const apiDataError = require('../../services/error-response').apiDataError
-
-const local = require('../../local')
-
-const csrfProtection = require('csurf')({
+const csrfProtection = csurf({
   cookie: false
 })
+const debug = DebugService('routes/groups')
 
-const isAuthenticated = require('../../services/auth-check')
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   // API Endpoints
   app.post('/api/group/checkidavailable', isAuthenticated, async (req, res) => {
     try {
@@ -52,13 +40,13 @@ module.exports = function (app: any) {
     Group.getSearchSuggestions(q)
       .then((result) => {
         const suggestions = []
-        result.forEach((group) => {
+        for (const group of result) {
           const name = Locales.getLocaleStringObject(req.locale, group.name)
           suggestions.push({
             key: group.group_id,
             value: name
           })
-        })
+        }
         return res.send({
           suggestions
         })
@@ -96,16 +84,14 @@ module.exports = function (app: any) {
             req.user_id
           )
 
-          if (result) {
-            return res.send({
-              success: true
-            })
-          } else {
-            return res.send({
-              success: false,
-              error: 'Failed to Create Group'
-            })
-          }
+          return result
+            ? res.send({
+                success: true
+              })
+            : res.send({
+                success: false,
+                error: 'Failed to Create Group'
+              })
         } else {
           apiDataError(res)
         }
@@ -123,13 +109,11 @@ module.exports = function (app: any) {
         const data = req.body
 
         if (data && data.group_id) {
-          if (await Group.allowedToModify(data.group_id, req.user_id)) {
-            return res.status(200).send({
-              status: await Account.getStatus(data.group_id)
-            })
-          } else {
-            return res.status(401).send()
-          }
+          return (await Group.allowedToModify(data.group_id, req.user_id))
+            ? res.status(200).send({
+                status: await Account.getStatus(data.group_id)
+              })
+            : res.status(401).send()
         } else {
           apiDataError(res)
         }
@@ -156,16 +140,14 @@ module.exports = function (app: any) {
               data.published
             )
 
-            if (result && result === 1) {
-              return res.send({
-                success: true
-              })
-            } else {
-              return res.send({
-                success: false,
-                error: 'Failed to Save Group'
-              })
-            }
+            return result && result === 1
+              ? res.send({
+                  success: true
+                })
+              : res.send({
+                  success: false,
+                  error: 'Failed to Save Group'
+                })
           } else {
             return res.status(401).send()
           }
@@ -198,16 +180,14 @@ module.exports = function (app: any) {
             } else {
               const result = await Group.deleteGroup(data.group_id)
 
-              if (result) {
-                return res.status(200).send({
-                  success: true
-                })
-              } else {
-                return res.status(200).send({
-                  success: false,
-                  error: 'Failed to Delete Group'
-                })
-              }
+              return result
+                ? res.status(200).send({
+                    success: true
+                  })
+                : res.status(200).send({
+                    success: false,
+                    error: 'Failed to Delete Group'
+                  })
             }
           } else {
             return res.status(401).send()
@@ -253,14 +233,12 @@ module.exports = function (app: any) {
       try {
         const group_id = req.params.id
 
-        if (await Group.allowedToModify(group_id, req.user_id)) {
-          return res.status(200).send({
-            success: true,
-            members: await Group.getGroupMembers(group_id)
-          })
-        } else {
-          return res.status(401).send()
-        }
+        return (await Group.allowedToModify(group_id, req.user_id))
+          ? res.status(200).send({
+              success: true,
+              members: await Group.getGroupMembers(group_id)
+            })
+          : res.status(401).send()
       } catch (err) {
         apiError(res, 200)(err)
       }
@@ -292,11 +270,11 @@ module.exports = function (app: any) {
 
               const members = await Group.getGroupMembers(data.group_id)
               let alreadyInGroup = false
-              members.forEach((member) => {
+              for (const member of members) {
                 if (member.id === user.id) {
                   alreadyInGroup = true
                 }
-              })
+              }
 
               if (!alreadyInGroup) {
                 await Group.addGroupMember(data.group_id, user.id, role)

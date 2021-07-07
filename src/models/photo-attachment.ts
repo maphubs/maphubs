@@ -1,16 +1,11 @@
 import MapStyles from '../components/Map/Styles'
+import knex from '../connection'
+import Promise from 'bluebird'
+import Presets from './presets'
+import assetUpload from '../services/asset-upload'
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-const knex = require('../connection')
-
-const Promise = require('bluebird')
-
-const Presets = require('./presets')
-
-const assetUpload = require('../services/asset-upload')
-
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-
-module.exports = {
+export default {
   getPhotosForFeature(layer_id: number, mhid: string, trx: any = null): any {
     const db = trx || knex
     return db('omh.feature_photo_attachments').select('photo_url').where({
@@ -99,17 +94,15 @@ module.exports = {
         if (presets) {
           let maxId = 0
           let alreadyPresent = false
-          presets.forEach((preset) => {
+          for (const preset of presets) {
             if (preset.tag === 'photo_url') {
               alreadyPresent = true
             }
 
-            if (preset.id) {
-              if (preset.id > maxId) {
-                maxId = preset.id
-              }
+            if (preset.id && preset.id > maxId) {
+              maxId = preset.id
             }
-          })
+          }
 
           if (alreadyPresent) {
             return new Promise((resolve) => {
@@ -125,15 +118,13 @@ module.exports = {
               type: 'text',
               id: maxId + 1
             })
-            const updatedStyle: Record<
-              string,
-              any
-            > = MapStyles.settings.setSourceSetting(
-              style,
-              firstSource,
-              'presets',
-              presets
-            )
+            const updatedStyle: Record<string, any> =
+              MapStyles.settings.setSourceSetting(
+                style,
+                firstSource,
+                'presets',
+                presets
+              )
             await Presets.savePresets(
               layer.layer_id,
               presets,

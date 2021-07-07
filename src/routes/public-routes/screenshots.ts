@@ -1,22 +1,22 @@
 import Locales from '../../services/locales'
 
-const Layer = require('../../models/layer')
+import Layer from '../../models/layer'
 
-const Map = require('../../models/map')
+import Map from '../../models/map'
 
-const nextError = require('../../services/error-response').nextError
+import { nextError } from '../../services/error-response'
 
-const manetCheck = require('../../services/manet-check').middleware
+import { manetMiddleware } from '../../services/manet-check'
 
-const pageOptions = require('../../services/page-options-helper')
+import pageOptions from '../../services/page-options-helper'
 
-const local = require('../../local')
+import local from '../../local'
 
-module.exports = function (app: any) {
+export default function (app: any) {
   // create a map view that we will use to screenshot the layer
   app.get(
     '/api/layer/:layer_id/static/render/',
-    manetCheck,
+    manetMiddleware,
     (req, res, next) => {
       const layer_id = Number.parseInt(req.params.layer_id || '', 10)
 
@@ -133,7 +133,7 @@ module.exports = function (app: any) {
 
   app.get(
     '/api/map/:mapid/static/render/',
-    manetCheck,
+    manetMiddleware,
     async (req, res, next) => {
       const map_id = Number.parseInt(req.params.mapid || '', 10)
 
@@ -146,7 +146,7 @@ module.exports = function (app: any) {
   )
   app.get(
     '/api/map/:mapid/static/render/thumbnail',
-    manetCheck,
+    manetMiddleware,
     async (req, res, next) => {
       try {
         const map_id = Number.parseInt(req.params.mapid || '', 10)

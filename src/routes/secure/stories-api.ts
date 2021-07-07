@@ -1,27 +1,21 @@
-const knex = require('../../connection')
+import knex from '../../connection'
+import Story from '../../models/story'
+import Group from '../../models/group'
+import Image from '../../models/image'
+import {
+  apiError,
+  apiDataError,
+  notAllowedError
+} from '../../services/error-response'
+import csurf from 'csurf'
+import isAuthenticated from '../../services/auth-check'
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-// const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/stories');
-const Story = require('../../models/story')
-
-const Group = require('../../models/group')
-
-const Image = require('../../models/image')
-
-const apiError = require('../../services/error-response').apiError
-
-const apiDataError = require('../../services/error-response').apiDataError
-
-const notAllowedError = require('../../services/error-response').notAllowedError
-
-const csrfProtection = require('csurf')({
+const csrfProtection = csurf({
   cookie: false
 })
 
-const isAuthenticated = require('../../services/auth-check')
-
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.post(
     '/api/story/save',
     csrfProtection,
@@ -70,18 +64,16 @@ module.exports = function (app: any) {
             log.info(`updating story ${story_id}`)
             const result = await Story.updateStory(story_id, data)
 
-            if (result && result === 1) {
-              return res.send({
-                success: true,
-                story_id
-              })
-            } else {
-              return res.send({
-                success: false,
-                error: 'Failed to Save Story',
-                story_id
-              })
-            }
+            return result && result === 1
+              ? res.send({
+                  success: true,
+                  story_id
+                })
+              : res.send({
+                  success: false,
+                  error: 'Failed to Save Story',
+                  story_id
+                })
           } else {
             return notAllowedError(res, 'story')
           }
@@ -102,18 +94,16 @@ module.exports = function (app: any) {
         const data = req.body
 
         if (data && data.story_id) {
-          if (await Story.allowedToModify(data.story_id, req.user_id)) {
-            return knex.transaction(async (trx) => {
-              await Image.removeAllStoryImages(data.story_id, trx)
-              await Story.delete(data.story_id, trx)
-              // TODO: delete assets folder from S3
-              return res.send({
-                success: true
+          return (await Story.allowedToModify(data.story_id, req.user_id))
+            ? knex.transaction(async (trx) => {
+                await Image.removeAllStoryImages(data.story_id, trx)
+                await Story.delete(data.story_id, trx)
+                // TODO: delete assets folder from S3
+                return res.send({
+                  success: true
+                })
               })
-            })
-          } else {
-            return notAllowedError(res, 'story')
-          }
+            : notAllowedError(res, 'story')
         } else {
           apiDataError(res)
         }

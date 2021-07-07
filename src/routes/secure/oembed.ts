@@ -1,20 +1,14 @@
 import Locales from '../../services/locales'
+import Map from '../../models/map'
+import User from '../../models/user'
+import libxml from 'libxmljs'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import { apiError } from '../../services/error-response'
 
-const Map = require('../../models/map')
+const debug = DebugService('oembed')
 
-const User = require('../../models/user')
-
-const libxml = require('libxmljs')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'oembed'
-)
-
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-
-const apiError = require('../../services/error-response').apiError
-
-module.exports = function (app) {
+export default function (app): void {
   app.get('/api/oembed/map', (req, res) => {
     const url = req.query.url
     const format = req.query.format

@@ -1,28 +1,21 @@
 import Locales from '../../services/locales'
+import Map from '../../models/map'
+import Group from '../../models/group'
+import ScreenshotUtil from '../../services/screenshot-utils'
+import {
+  apiError,
+  apiDataError,
+  notAllowedError
+} from '../../services/error-response'
+import csurf from 'csurf'
+import isAuthenticated from '../../services/auth-check'
+import knex from '../../connection'
 
-const Map = require('../../models/map')
-
-const Group = require('../../models/group')
-
-const ScreenshotUtil = require('../../services/screenshot-utils')
-
-// var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/map');
-// var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
-const apiError = require('../../services/error-response').apiError
-
-const apiDataError = require('../../services/error-response').apiDataError
-
-const notAllowedError = require('../../services/error-response').notAllowedError
-
-const csrfProtection = require('csurf')({
+const csrfProtection = csurf({
   cookie: false
 })
 
-const isAuthenticated = require('../../services/auth-check')
-
-const knex = require('../../connection')
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.post(
     '/api/map/create',
     csrfProtection,
@@ -276,13 +269,13 @@ module.exports = function (app: any) {
     Map.getSearchSuggestions(q)
       .then((result) => {
         const suggestions = []
-        result.forEach((map) => {
+        for (const map of result) {
           const title = Locales.getLocaleStringObject(req.locale, map.title)
           suggestions.push({
             key: map.map_id,
             value: title
           })
-        })
+        }
         return res.send({
           suggestions
         })

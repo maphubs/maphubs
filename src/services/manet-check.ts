@@ -1,18 +1,13 @@
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import local from '../local'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import Layer from '../models/layer'
+import Map from '../models/map'
+import compare from 'secure-compare'
 
-const local = require('../local')
+const debug = DebugService('manet-check')
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'manet-check'
-)
-
-const Layer = require('../models/layer')
-
-const Map = require('../models/map')
-
-const compare = require('secure-compare')
-
-const check = function (req: any): boolean {
+const manetCheck = function (req: any): boolean {
   // determine if this is the manet screenshot service
   // first check the cookie
   if (req.cookies) debug.log(JSON.stringify(req.cookies))
@@ -37,14 +32,10 @@ const success = function (next) {
 }
 
 const middlewareCheck = function (req, res, next) {
-  if (check(req)) {
-    return success(next)
-  } else {
-    return failure(res)
-  }
+  return check(req) ? success(next) : failure(res)
 }
 
-const middleware = async (req: any, res: any, next: any): Promise<any> => {
+const manetMiddleware = async (req: any, res: any, next: any): Promise<any> => {
   try {
     let user_id = -1
 
@@ -88,15 +79,10 @@ const middleware = async (req: any, res: any, next: any): Promise<any> => {
           }
         } else {
           // else not private = allow if login not required, or login required and authenticated
-          if (
-            !local.requireLogin ||
+          return !local.requireLogin ||
             (req.isAuthenticated && req.isAuthenticated())
-          ) {
-            return success(next)
-          } else {
-            // check for manet
-            return middlewareCheck(req, res, next)
-          }
+            ? success(next)
+            : middlewareCheck(req, res, next)
         }
       } else {
         log.error('Layer not found')
@@ -107,33 +93,25 @@ const middleware = async (req: any, res: any, next: any): Promise<any> => {
 
       if (map) {
         if (map.private) {
-          if (req.isAuthenticated && req.isAuthenticated()) {
-            return map.allowedToModify(map_id, user_id).then((allowed) => {
-              if (allowed) {
-                return success(next)
-              } else {
-                log.error(
-                  'Unauthenticated screenshot request, not authorized to view private map: ' +
-                    map.map_id
-                )
-                return failure(res)
-              }
-            })
-          } else {
-            // else private but no session = check for manet
-            return middlewareCheck(req, res, next)
-          }
+          return req.isAuthenticated && req.isAuthenticated()
+            ? map.allowedToModify(map_id, user_id).then((allowed) => {
+                if (allowed) {
+                  return success(next)
+                } else {
+                  log.error(
+                    'Unauthenticated screenshot request, not authorized to view private map: ' +
+                      map.map_id
+                  )
+                  return failure(res)
+                }
+              })
+            : middlewareCheck(req, res, next)
         } else {
           // else not private = allow if login not required, or login required and authenticated
-          if (
-            !local.requireLogin ||
+          return !local.requireLogin ||
             (req.isAuthenticated && req.isAuthenticated())
-          ) {
-            return success(next)
-          } else {
-            // check for manet
-            return middlewareCheck(req, res, next)
-          }
+            ? success(next)
+            : middlewareCheck(req, res, next)
         }
       } else {
         log.error('Map not found')
@@ -155,7 +133,4 @@ const middleware = async (req: any, res: any, next: any): Promise<any> => {
   }
 }
 
-module.exports = {
-  middleware,
-  check
-}
+export { manetMiddleware, manetCheck }

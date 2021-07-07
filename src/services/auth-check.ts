@@ -1,6 +1,6 @@
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-module.exports = function (req, res, next) {
+export default function (req, res, next: () => void): void {
   if (
     !req.isAuthenticated ||
     !req.isAuthenticated() ||

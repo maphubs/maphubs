@@ -1,18 +1,14 @@
-const User = require('../../models/user')
+import User from '../../models/user'
+import { apiError, apiDataError } from '../../services/error-response'
+import csurf from 'csurf'
+import pageOptions from '../../services/page-options-helper'
+import local from '../../local'
 
-const apiError = require('../../services/error-response').apiError
-
-const apiDataError = require('../../services/error-response').apiDataError
-
-const pageOptions = require('../../services/page-options-helper')
-
-const csrfProtection = require('csurf')({
+const csrfProtection = csurf({
   cookie: false
 })
 
-const local = require('../../local')
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.get('/user/profile', csrfProtection, async (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       return res.redirect('/login')
@@ -45,12 +41,12 @@ module.exports = function (app: any) {
     User.getSearchSuggestions(q)
       .then((result) => {
         const suggestions = []
-        result.forEach((user) => {
+        for (const user of result) {
           suggestions.push({
             key: user.id,
             value: user.display_name
           })
-        })
+        }
         return res.send({
           suggestions
         })

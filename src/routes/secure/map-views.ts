@@ -1,38 +1,23 @@
 import Locales from '../../services/locales'
+import User from '../../models/user'
+import Map from '../../models/map'
+import Layer from '../../models/layer'
+import Group from '../../models/group'
+import Stats from '../../models/stats'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import MapUtils from '../../services/map-utils'
+import { nextError, apiDataError } from '../../services/error-response'
+import csurf from 'csurf'
+import pageOptions from '../../services/page-options-helper'
+import local from '../../local'
 
-const User = require('../../models/user')
-
-const Map = require('../../models/map')
-
-const Layer = require('../../models/layer')
-
-const Group = require('../../models/group')
-
-const Stats = require('../../models/stats')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'routes/map'
-)
-
-// var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
-const MapUtils = require('../../services/map-utils')
-
-const nextError = require('../../services/error-response').nextError
-
-const apiDataError = require('../../services/error-response').apiDataError
-
-const privateMapCheck = require('../../services/private-map-check')
-  .middlewareView
-
-const csrfProtection = require('csurf')({
+const csrfProtection = csurf({
   cookie: false
 })
 
-const pageOptions = require('../../services/page-options-helper')
+const debug = DebugService('routes/map')
 
-const local = require('../../local')
-
-module.exports = function (app: any) {
+export default function (app: any) {
   const recordMapView = function (
     session: Record<string, any>,
     map_id: number,
@@ -222,50 +207,45 @@ module.exports = function (app: any) {
       nextError(next)(err)
     }
   })
-  app.get(
-    '/map/view/:map_id/*',
-    csrfProtection,
-    privateMapCheck,
-    (req, res, next) => {
-      const map_id = req.params.map_id
+  app.get('/map/view/:map_id/*', csrfProtection, (req, res, next) => {
+    const map_id = req.params.map_id
 
-      if (!map_id) {
-        apiDataError(res)
-      }
-
-      let user_id = -1
-
-      if (req.session.user) {
-        user_id = req.session.user.maphubsUser.id
-      }
-
-      recordMapView(req.session, map_id, user_id, next)
-
-      if (
-        !req.isAuthenticated ||
-        !req.isAuthenticated() ||
-        !req.session ||
-        !req.session.user
-      ) {
-        MapUtils.completeMapRequest(app, req, res, next, map_id, false, false)
-      } else {
-        // get user id
-        Map.allowedToModify(map_id, user_id)
-          .then((allowed) => {
-            return MapUtils.completeMapRequest(
-              app,
-              req,
-              res,
-              next,
-              map_id,
-              allowed,
-              false
-            )
-          })
-          .catch(nextError(next))
-      }
+    if (!map_id) {
+      apiDataError(res)
     }
-  )
+
+    let user_id = -1
+
+    if (req.session.user) {
+      user_id = req.session.user.maphubsUser.id
+    }
+
+    recordMapView(req.session, map_id, user_id, next)
+
+    if (
+      !req.isAuthenticated ||
+      !req.isAuthenticated() ||
+      !req.session ||
+      !req.session.user
+    ) {
+      MapUtils.completeMapRequest(app, req, res, next, map_id, false, false)
+    } else {
+      // get user id
+      Map.allowedToModify(map_id, user_id)
+        .then((allowed) => {
+          return MapUtils.completeMapRequest(
+            app,
+            req,
+            res,
+            next,
+            map_id,
+            allowed,
+            false
+          )
+        })
+        .catch(nextError(next))
+    }
+  })
   app.get('/map/view/:map_id', (req, res, next) => {
     const map_id = req.params.map_id
     res.redirect(`/map/view/${map_id}/`)
@@ -311,7 +291,7 @@ module.exports = function (app: any) {
               return Layer.attachPermissionsToLayers(layers, user_id)
             }
           )
-          let title: string = 'Map'
+          let title = 'Map'
 
           if (map && map.title) {
             title = Locales.getLocaleStringObject(req.locale, map.title)
@@ -340,120 +320,109 @@ module.exports = function (app: any) {
       nextError(next)(err)
     }
   })
-  app.get(
-    '/map/embed/:map_id',
-    csrfProtection,
-    privateMapCheck,
-    (req, res, next) => {
-      const map_id = req.params.map_id
+  app.get('/map/embed/:map_id', csrfProtection, (req, res, next) => {
+    const map_id = req.params.map_id
 
-      if (!map_id) {
-        apiDataError(res)
-      }
-
-      let user_id = -1
-
-      if (req.session.user) {
-        user_id = req.session.user.maphubsUser.id
-      }
-
-      recordMapView(req.session, map_id, user_id, next)
-
-      if (
-        !req.isAuthenticated ||
-        !req.isAuthenticated() ||
-        !req.session ||
-        !req.session.user
-      ) {
-        MapUtils.completeEmbedMapRequest(
-          app,
-          req,
-          res,
-          next,
-          map_id,
-          false,
-          false,
-          false,
-          false
-        )
-      } else {
-        Map.allowedToModify(map_id, user_id)
-          .then((allowed) => {
-            return MapUtils.completeEmbedMapRequest(
-              app,
-              req,
-              res,
-              next,
-              map_id,
-              false,
-              allowed,
-              false,
-              false
-            )
-          })
-          .catch(nextError(next))
-      }
+    if (!map_id) {
+      apiDataError(res)
     }
-  )
-  app.get(
-    '/map/embed/:map_id/static',
-    csrfProtection,
-    privateMapCheck,
-    (req, res, next) => {
-      const map_id = req.params.map_id
 
-      if (!map_id) {
-        apiDataError(res)
-      }
+    let user_id = -1
 
-      let user_id = -1
-
-      if (req.session.user) {
-        user_id = req.session.user.maphubsUser.id
-      }
-
-      recordMapView(req.session, map_id, user_id, next)
-
-      if (
-        !req.isAuthenticated ||
-        !req.isAuthenticated() ||
-        !req.session ||
-        !req.session.user
-      ) {
-        MapUtils.completeEmbedMapRequest(
-          app,
-          req,
-          res,
-          next,
-          map_id,
-          true,
-          false,
-          false,
-          false
-        )
-      } else {
-        Map.allowedToModify(map_id, user_id)
-          .then((allowed) => {
-            return MapUtils.completeEmbedMapRequest(
-              app,
-              req,
-              res,
-              next,
-              map_id,
-              true,
-              allowed,
-              false,
-              false
-            )
-          })
-          .catch(nextError(next))
-      }
+    if (req.session.user) {
+      user_id = req.session.user.maphubsUser.id
     }
-  )
+
+    recordMapView(req.session, map_id, user_id, next)
+
+    if (
+      !req.isAuthenticated ||
+      !req.isAuthenticated() ||
+      !req.session ||
+      !req.session.user
+    ) {
+      MapUtils.completeEmbedMapRequest(
+        app,
+        req,
+        res,
+        next,
+        map_id,
+        false,
+        false,
+        false,
+        false
+      )
+    } else {
+      Map.allowedToModify(map_id, user_id)
+        .then((allowed) => {
+          return MapUtils.completeEmbedMapRequest(
+            app,
+            req,
+            res,
+            next,
+            map_id,
+            false,
+            allowed,
+            false,
+            false
+          )
+        })
+        .catch(nextError(next))
+    }
+  })
+  app.get('/map/embed/:map_id/static', csrfProtection, (req, res, next) => {
+    const map_id = req.params.map_id
+
+    if (!map_id) {
+      apiDataError(res)
+    }
+
+    let user_id = -1
+
+    if (req.session.user) {
+      user_id = req.session.user.maphubsUser.id
+    }
+
+    recordMapView(req.session, map_id, user_id, next)
+
+    if (
+      !req.isAuthenticated ||
+      !req.isAuthenticated() ||
+      !req.session ||
+      !req.session.user
+    ) {
+      MapUtils.completeEmbedMapRequest(
+        app,
+        req,
+        res,
+        next,
+        map_id,
+        true,
+        false,
+        false,
+        false
+      )
+    } else {
+      Map.allowedToModify(map_id, user_id)
+        .then((allowed) => {
+          return MapUtils.completeEmbedMapRequest(
+            app,
+            req,
+            res,
+            next,
+            map_id,
+            true,
+            allowed,
+            false,
+            false
+          )
+        })
+        .catch(nextError(next))
+    }
+  })
   app.get(
     '/map/embed/:map_id/interactive',
     csrfProtection,
-    privateMapCheck,
     (req, res, next) => {
       const map_id = req.params.map_id
 

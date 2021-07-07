@@ -1,11 +1,7 @@
-const knex = require('../connection')
+import knex from '../connection'
 
-module.exports = {
-  async setGroupTier(
-    groupId: string,
-    tierId: string,
-    trx: any = undefined
-  ): Promise<any> {
+export default {
+  async setGroupTier(groupId: string, tierId: string, trx: any): Promise<any> {
     const db = trx || knex
     return db('omh.groups')
       .udpdate({
@@ -20,17 +16,14 @@ module.exports = {
    * Get tiers current offer to end-users
    * otherwise tiers are hidden to support grandfathered and custom accounts
    */
-  async getAvailableTiers(trx: any = undefined): Promise<any> {
+  async getAvailableTiers(trx: any): Promise<any> {
     const db = trx || knex
     return db('omh.account_tiers').where({
       available: true
     })
   },
 
-  async getGroupTier(
-    groupId: string,
-    trx: any = undefined
-  ): Promise<Record<string, any>> {
+  async getGroupTier(groupId: string, trx: any): Promise<Record<string, any>> {
     const db = trx || knex
     const results = await db
       .select('omh.account_tiers.*')
@@ -49,10 +42,7 @@ module.exports = {
     return {}
   },
 
-  async countGroupMembers(
-    groupId: string,
-    trx: any = undefined
-  ): Promise<number> {
+  async countGroupMembers(groupId: string, trx: any): Promise<number> {
     const db = trx || knex
     const result = await db
       .count('user_id')
@@ -63,10 +53,7 @@ module.exports = {
     return Number.parseInt(result[0].count)
   },
 
-  async countGroupPrivateLayers(
-    groupId: string,
-    trx: any = undefined
-  ): Promise<number> {
+  async countGroupPrivateLayers(groupId: string, trx: any): Promise<number> {
     const db = trx || knex
     const result = await db.count('layer_id').from('omh.layers').where({
       owned_by_group_id: groupId,
@@ -75,10 +62,7 @@ module.exports = {
     return Number.parseInt(result[0].count)
   },
 
-  async countGroupPrivateHubs(
-    groupId: string,
-    trx: any = undefined
-  ): Promise<number> {
+  async countGroupPrivateHubs(groupId: string, trx: any): Promise<number> {
     const db = trx || knex
     const result = await db.count('hub_id').from('omh.hubs').where({
       owned_by_group_id: groupId,
@@ -87,10 +71,7 @@ module.exports = {
     return Number.parseInt(result[0].count)
   },
 
-  async countGroupPrivateMaps(
-    groupId: string,
-    trx: any = undefined
-  ): Promise<number> {
+  async countGroupPrivateMaps(groupId: string, trx: any): Promise<number> {
     const db = trx || knex
     const result = await db.count('map_id').from('omh.maps').where({
       owned_by_group_id: groupId,
@@ -99,10 +80,7 @@ module.exports = {
     return Number.parseInt(result[0].count)
   },
 
-  async getStatus(
-    groupId: string,
-    trx: any = undefined
-  ): Promise<Record<string, any>> {
+  async getStatus(groupId: string, trx?: any): Promise<Record<string, any>> {
     const tier = await this.getGroupTier(groupId, trx)
     const numGroupMembers = await this.countGroupMembers(groupId, trx)
     const numPrivateLayers = await this.countGroupPrivateLayers(groupId, trx)

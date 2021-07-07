@@ -7,7 +7,7 @@ const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
   tooltip?: string
   icon?: React.ReactNode
-  onClick?: (...args: Array<any>) => any
+  onClick?: (...args: Array<any>) => void
   style?: Record<string, any>
   actionButtonStyles?: Record<string, any>
   position?: Record<string, any>

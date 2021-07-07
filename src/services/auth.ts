@@ -1,22 +1,14 @@
-const passport = require('passport')
-
-const local = require('../local')
-
-const AuthUsers = require('./auth-db/users')
-
-const _find = require('lodash.find')
-
-const User = require('../models/user')
-
-const Admin = require('../models/admin')
-
-const Auth0Helper = require('../services/auth0-helper')
-
-const Promise = require('bluebird')
-
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-
-const shortid = require('shortid')
+import passport from 'passport'
+import local from '../local'
+import AuthUsers from './auth-db/users'
+import _find from 'lodash.find'
+import User from '../models/user'
+import Admin from '../models/admin'
+import Auth0Helper from '../services/auth0-helper'
+import Promise from 'bluebird'
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import shortid from 'shortid'
+import Auth0Strategy from 'passport-auth0'
 
 const saveMapHubsIDToAuth0 = async function (profile, maphubs_user_id) {
   log.info(
@@ -82,8 +74,6 @@ const createMapHubsUser = async function (profile: Record<string, any>) {
   )
   return profile
 }
-
-const Auth0Strategy = require('passport-auth0')
 
 Auth0Strategy.prototype.authorizationParams = function (options) {
   options = options || {}
@@ -211,22 +201,18 @@ const strategy = new Auth0Strategy(
             })
           } else {
             // local user not found
-            if (!local.requireInvite) {
-              // create local user
-              return Promise.resolve(createMapHubsUser(profile)) // wrap to support asCallback()
-            } else {
-              // check if email is in invite list
-              return Admin.checkInviteConfirmed(profile._json.email).then(
-                (confirmed) => {
-                  if (confirmed) {
-                    return createMapHubsUser(profile)
-                  } else {
-                    log.warn(`unauthorized user: ${profile._json.email}`)
-                    return false
+            return !local.requireInvite
+              ? Promise.resolve(createMapHubsUser(profile))
+              : Admin.checkInviteConfirmed(profile._json.email).then(
+                  (confirmed) => {
+                    if (confirmed) {
+                      return createMapHubsUser(profile)
+                    } else {
+                      log.warn(`unauthorized user: ${profile._json.email}`)
+                      return false
+                    }
                   }
-                }
-              )
-            }
+                )
           }
         })
         .asCallback(done)

@@ -1,24 +1,20 @@
-const csrfProtection = require('csurf')({
+import csurf from 'csurf'
+import login from 'connect-ensure-login'
+import Admin from '../../models/admin'
+import Page from '../../models/page'
+import {
+  apiError,
+  nextError,
+  apiDataError
+} from '../../services/error-response'
+import isAuthenticated from '../../services/auth-check'
+import pageOptions from '../../services/page-options-helper'
+
+const csrfProtection = csurf({
   cookie: false
 })
 
-const login = require('connect-ensure-login')
-
-const Admin = require('../../models/admin')
-
-const Page = require('../../models/page')
-
-const nextError = require('../../services/error-response').nextError
-
-const apiError = require('../../services/error-response').apiError
-
-const apiDataError = require('../../services/error-response').apiDataError
-
-const isAuthenticated = require('../../services/auth-check')
-
-const pageOptions = require('../../services/page-options-helper')
-
-module.exports = function (app) {
+export default function (app): void {
   app.get(
     '/admin/page/edit/:id',
     csrfProtection,
@@ -129,16 +125,14 @@ module.exports = function (app) {
               data.pageConfig
             )
 
-            if (result) {
-              return res.send({
-                success: true
-              })
-            } else {
-              return res.send({
-                success: false,
-                error: 'Failed to Save Page'
-              })
-            }
+            return result
+              ? res.send({
+                  success: true
+                })
+              : res.send({
+                  success: false,
+                  error: 'Failed to Save Page'
+                })
           } else {
             return res.status(401).send()
           }

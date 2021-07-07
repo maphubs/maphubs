@@ -1,28 +1,18 @@
-const passport = require('passport')
-
-const User = require('../../models/user')
-
-const Admin = require('../../models/admin')
-
-const Group = require('../../models/group')
-
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-
-const apiError = require('../../services/error-response').apiError
-
-const nextError = require('../../services/error-response').nextError
-
-const Auth0Helper = require('../../services/auth0-helper')
-
-const local = require('../../local')
-
-const csrfProtection = require('csurf')({
+import passport from 'passport'
+import User from '../../models/user'
+import Admin from '../../models/admin'
+import Group from '../../models/group'
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import { apiError, nextError } from '../../services/error-response'
+import Auth0Helper from '../../services/auth0-helper'
+import local from '../../local'
+import csurf from 'csurf'
+import pageOptions from '../../services/page-options-helper'
+const csrfProtection = csurf({
   cookie: false
 })
 
-const pageOptions = require('../../services/page-options-helper')
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.get('/signup/invite/:key', csrfProtection, async (req, res, next) => {
     try {
       const inviteKey = req.params.key

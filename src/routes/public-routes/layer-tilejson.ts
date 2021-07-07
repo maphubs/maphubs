@@ -1,22 +1,15 @@
 import slugify from 'slugify'
 import Locales from '../../services/locales'
-
-const Layer = require('../../models/layer')
-
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-
-const apiError = require('../../services/error-response').apiError
-
-const manetCheck = require('../../services/manet-check')
-
-const privateLayerCheck = require('../../services/private-layer-check').check
-
-const local = require('../../local')
+import Layer from '../../models/layer'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import { apiError } from '../../services/error-response'
+import manetCheck from '../../services/manet-check'
+import local from '../../local'
 
 /*
 Note: this needs to be in public-routes since it is used by the screenshot service and by shared maps
 */
-module.exports = function (app: any) {
+export default function (app: any) {
   const completeLayerTileJSONRequest = function (req, res, layer) {
     if (!layer) {
       return res.status(404).send('TileJSON not supported for this layer')
@@ -162,22 +155,14 @@ module.exports = function (app: any) {
       const layer = await Layer.getLayerByID(layer_id)
 
       if (layer) {
-        if (local.requireLogin) {
-          if (
-            manetCheck.check(req) || // screenshot service
-            (user_id > 0 && (await privateLayerCheck(layer.layer_id, user_id))) // logged in and allowed to see this layer
-          ) {
-            completeLayerTileJSONRequest(req, res, layer)
-          } else {
-            res.status(404).send()
-          }
+        if (
+          !local.requireLogin || // login not required
+          manetCheck.check(req) || // or is screenshot service
+          user_id > 0 // or is logged in
+        ) {
+          completeLayerTileJSONRequest(req, res, layer)
         } else {
-          // only do the private layer check
-          if (await privateLayerCheck(layer.layer_id, user_id)) {
-            completeLayerTileJSONRequest(req, res, layer)
-          } else {
-            res.status(404).send()
-          }
+          res.status(404).send()
         }
       } else {
         res.status(404).send()
@@ -199,23 +184,15 @@ module.exports = function (app: any) {
       const layer = await Layer.getLayerByShortID(shortid)
 
       if (layer) {
-        if (local.requireLogin) {
-          if (
-            isShared || // in public shared map
-            manetCheck.check(req) || // screenshot service
-            (user_id > 0 && (await privateLayerCheck(layer.layer_id, user_id))) // logged in and allowed to see this layer
-          ) {
-            completeLayerTileJSONRequest(req, res, layer)
-          } else {
-            res.status(404).send()
-          }
+        if (
+          !local.requireLogin || // login not required
+          isShared || // in public shared map
+          manetCheck.check(req) || // screenshot service
+          user_id > 0 // logged in
+        ) {
+          completeLayerTileJSONRequest(req, res, layer)
         } else {
-          // only do the private layer check
-          if (await privateLayerCheck(layer.layer_id, user_id)) {
-            completeLayerTileJSONRequest(req, res, layer)
-          } else {
-            res.status(404).send()
-          }
+          res.status(404).send()
         }
       } else {
         res.status(404).send()

@@ -1,24 +1,16 @@
 import { v4 as uuidv4 } from 'uuid'
-
-var jwt = require('jsonwebtoken')
-
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-
-const Page = require('../models/page')
-
-const User = require('../models/user')
-
-const Group = require('../models/group')
-
-const Admin = require('../models/admin')
-
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
+import jwt from 'jsonwebtoken'
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import Page from '../models/page'
+import User from '../models/user'
+import Group from '../models/group'
+import Admin from '../models/admin'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import config from '../local'
 
 const version = require('../../version.json').version
 
-const config = require('../local')
-
-module.exports = async (req, options) => {
+export default async (req, options) => {
   let locale = 'en'
 
   if (req) {

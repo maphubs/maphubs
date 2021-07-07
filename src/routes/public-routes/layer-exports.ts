@@ -1,16 +1,10 @@
-const exportUtils = require('../../services/export-utils')
+import exportUtils from '../../services/export-utils'
+import Layer from '../../models/layer'
+import { apiError } from '../../services/error-response'
+import manetCheck from '../../services/manet-check'
+import local from '../../local'
 
-const Layer = require('../../models/layer')
-
-const apiError = require('../../services/error-response').apiError
-
-const privateLayerCheck = require('../../services/private-layer-check').check
-
-const manetCheck = require('../../services/manet-check')
-
-const local = require('../../local')
-
-module.exports = (app: any) => {
+export default (app: any) => {
   app.get('/api/lyr/:shortid/export/json/*', async (req, res) => {
     try {
       const shortid = req.params.shortid
@@ -23,25 +17,16 @@ module.exports = (app: any) => {
       const isShared = await Layer.isSharedInPublicMap(shortid)
       const layer = await Layer.getLayerByShortID(shortid)
 
-      if (local.requireLogin) {
-        if (
-          isShared || // in public shared map
-          manetCheck.check(req) || // screenshot service
-          (user_id > 0 && (await privateLayerCheck(layer.layer_id, user_id))) // logged in and allowed to see this layer
-        ) {
-          const geoJSON = await Layer.getGeoJSON(layer.layer_id)
-          res.status(200).send(geoJSON)
-        } else {
-          res.status(404).send()
-        }
+      if (
+        !local.requireLogin || // login not required
+        isShared || // in public shared map
+        manetCheck.check(req) || // screenshot service
+        user_id > 0 // logged in
+      ) {
+        const geoJSON = await Layer.getGeoJSON(layer.layer_id)
+        res.status(200).send(geoJSON)
       } else {
-        // only do the private layer check
-        if (await privateLayerCheck(layer.layer_id, user_id)) {
-          const geoJSON = await Layer.getGeoJSON(layer.layer_id)
-          res.status(200).send(geoJSON)
-        } else {
-          res.status(404).send()
-        }
+        res.status(404).send()
       }
     } catch (err) {
       apiError(res, 200)(err)
@@ -60,22 +45,13 @@ module.exports = (app: any) => {
       const layer = await Layer.getLayerByShortID(shortid)
 
       if (local.requireLogin) {
-        if (
-          isShared || // in public shared map
+        return isShared || // in public shared map
           manetCheck.check(req) || // screenshot service
-          (user_id > 0 && (await privateLayerCheck(layer.layer_id, user_id))) // logged in and allowed to see this layer
-        ) {
-          return exportUtils.completeGeoBufExport(req, res, layer.layer_id)
-        } else {
-          return res.status(404).send()
-        }
+          (user_id > 0 && (await privateLayerCheck(layer.layer_id, user_id)))
+          ? exportUtils.completeGeoBufExport(req, res, layer.layer_id)
+          : res.status(404).send()
       } else {
-        // only do the private layer check
-        if (await privateLayerCheck(layer.layer_id, user_id)) {
-          return exportUtils.completeGeoBufExport(req, res, layer.layer_id)
-        } else {
-          return res.status(404).send()
-        }
+        return exportUtils.completeGeoBufExport(req, res, layer.layer_id)
       }
     } catch (err) {
       apiError(res, 200)(err)

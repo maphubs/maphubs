@@ -1,10 +1,10 @@
-const local = require('../../local')
+import local from '../../local'
 
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 
-const urlencode = require('urlencode')
+import urlencode from 'urlencode'
 
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.get('/logout', (req, res) => {
     req.logout()
     delete req.session.user

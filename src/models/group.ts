@@ -1,13 +1,10 @@
-const knex = require('../connection')
+import knex from '../connection'
+import Promise from 'bluebird'
+import _find from 'lodash.find'
+import Account from './account'
 
-const Promise = require('bluebird')
-
-const _find = require('lodash.find')
-
-const Account = require('./account')
-
-module.exports = {
-  getAllGroups(trx: any): any {
+export default {
+  getAllGroups(trx?: any): any {
     let db = knex
 
     if (trx) {
@@ -104,9 +101,12 @@ module.exports = {
 
   getSearchSuggestions(input: string): any {
     input = input.toLowerCase()
-    return knex.select('name', 'group_id').table('omh.groups').where(
-      knex.raw(
-        `
+    return knex
+      .select('name', 'group_id')
+      .table('omh.groups')
+      .where(
+        knex.raw(
+          `
         to_tsvector('english', group_id
         || ' ' || COALESCE((name -> 'en')::text, '') || ' ' || COALESCE(location, '')
         || ' ' || COALESCE((description -> 'en')::text, '')) @@ plainto_tsquery(:input)
@@ -123,11 +123,11 @@ module.exports = {
         || ' ' || COALESCE((name -> 'it')::text, '') || ' ' || COALESCE(location, '')
         || ' ' || COALESCE((description -> 'it')::text, '')) @@ plainto_tsquery(:input)
         `,
-        {
-          input
-        }
+          {
+            input
+          }
+        )
       )
-    )
   },
 
   async getGroupByID(groupId: string): Promise<any> {
@@ -207,13 +207,13 @@ module.exports = {
       )
       .where('omh.group_memberships.user_id', userId)
     return Promise.map(groups, async (group) => {
-      const status = await Account.getStatus(group.group_id)
+      const status = await Account.getStatus(group.group_id, trx)
       group.account = status
       return group
     })
   },
 
-  async getGroupRole(userId: number, groupId: string): Record<string, any> {
+  async getGroupRole(userId: number, groupId: string): Promise<string | null> {
     const results = await knex
       .select('omh.group_memberships.role')
       .from('omh.group_memberships')

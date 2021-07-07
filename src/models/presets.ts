@@ -1,12 +1,12 @@
 import MapStyles from '../components/Map/Styles'
 
-const knex = require('../connection')
+import knex from '../connection'
 
-const Promise = require('bluebird')
+import Promise from 'bluebird'
 
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-module.exports = {
+export default {
   savePresets(
     layer_id: number,
     presets: any,
@@ -36,7 +36,7 @@ module.exports = {
     } else {
       // look for modified tags(properties) since new need to rename them in the data
       const updateCommands = []
-      presets.forEach((preset) => {
+      for (const preset of presets) {
         if (preset.prevTag !== undefined) {
           // preset was modified
           updateCommands.push(
@@ -53,11 +53,22 @@ module.exports = {
               })
           )
         }
-      })
+      }
 
-      if (updateCommands.length > 0) {
-        return Promise.all(updateCommands).then(() => {
-          return db('omh.layers')
+      return updateCommands.length > 0
+        ? Promise.all(updateCommands).then(() => {
+            return db('omh.layers')
+              .where({
+                layer_id
+              })
+              .update({
+                presets: JSON.stringify(presets),
+                style,
+                updated_by_user_id: user_id,
+                last_updated: knex.raw('now()')
+              })
+          })
+        : db('omh.layers')
             .where({
               layer_id
             })
@@ -67,19 +78,6 @@ module.exports = {
               updated_by_user_id: user_id,
               last_updated: knex.raw('now()')
             })
-        })
-      } else {
-        return db('omh.layers')
-          .where({
-            layer_id
-          })
-          .update({
-            presets: JSON.stringify(presets),
-            style,
-            updated_by_user_id: user_id,
-            last_updated: knex.raw('now()')
-          })
-      }
     }
   },
 
@@ -103,10 +101,10 @@ order by position
       .then((result) => {
         const updatedMapStyles = {}
         const updateCommands = []
-        result.rows.forEach((mapLayer) => {
+        for (const mapLayer of result.rows) {
           const mapLayerStyle = mapLayer.map_layer_style
           // update source metadata
-          Object.keys(mapLayerStyle.sources).forEach((sourceID) => {
+          for (const sourceID of Object.keys(mapLayerStyle.sources)) {
             const mapSource = mapLayerStyle.sources[sourceID]
 
             if (!mapSource.metadata) {
@@ -114,7 +112,7 @@ order by position
             }
 
             mapSource.metadata['maphubs:presets'] = presets
-          })
+          }
 
           if (!updatedMapStyles[mapLayer.map_id]) {
             updatedMapStyles[mapLayer.map_id] = []
@@ -134,9 +132,9 @@ order by position
                 layer_id: mapLayer.layer_id
               })
           )
-        })
+        }
         // loop through map_ids, build updated styles, and update
-        Object.keys(updatedMapStyles).forEach((map_id) => {
+        for (const map_id of Object.keys(updatedMapStyles)) {
           const updatedMapStyle = MapStyles.style.buildMapStyle(
             updatedMapStyles[map_id]
           )
@@ -149,7 +147,7 @@ order by position
                 map_id
               })
           )
-        })
+        }
         return Promise.all(updateCommands)
       })
   }

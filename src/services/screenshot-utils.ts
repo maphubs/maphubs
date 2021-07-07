@@ -1,16 +1,12 @@
-const request = require('superagent')
+import request from 'superagent'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import local from '../local'
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import knex from '../connection'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import Crypto from 'crypto'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'screenshot-utils'
-)
-
-const local = require('../local')
-
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-
-const knex = require('../connection')
-
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
+const debug = DebugService('screenshot-utils')
 
 const screenshotOptions = {
   url: '',
@@ -20,7 +16,7 @@ const screenshotOptions = {
   quality: 0.8,
   selector: '#map-load-complete',
   selectorOptions: {
-    timeout: 90000
+    timeout: 90_000
   },
   cookies: [
     {
@@ -31,13 +27,13 @@ const screenshotOptions = {
     }
   ]
 }
-module.exports = {
+export default {
   base64Download(url: string, data: any): any {
     return request
       .post(url)
       .type('json')
       .send(data)
-      .timeout(60000)
+      .timeout(60_000)
       .then((res) => {
         return res.body.toString('base64')
       })
@@ -321,7 +317,7 @@ module.exports = {
   returnImage(image: any, type: string, req: any, res: any) {
     const img = Buffer.from(image, 'base64')
 
-    const hash = require('crypto').createHash('md5').update(img).digest('hex')
+    const hash = Crypto.createHash('md5').update(img).digest('hex')
 
     const match = req.get('If-None-Match')
 

@@ -1,14 +1,11 @@
-const knex = require('../connection')
+import knex from '../connection'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import ImageUtils from '../services/image-utils'
+import Promise from 'bluebird'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'model/image'
-)
+const debug = DebugService('model/image')
 
-const ImageUtils = require('../services/image-utils')
-
-const Promise = require('bluebird')
-
-module.exports = {
+export default {
   async getImageByID(image_id: number): Promise<any> {
     const result = await knex('omh.images').select('image_id', 'image').where({
       image_id
@@ -159,17 +156,16 @@ module.exports = {
   async addStoryImage(story_id: number, image: any, info: any): Promise<any> {
     return knex.transaction(async (trx) => {
       const thumbnail = await ImageUtils.resizeBase64(image, 800, 240, true)
-      let image_id = await trx('omh.images')
+      const image_id: string = await trx('omh.images')
         .insert({
           image,
           thumbnail,
           info
         })
         .returning('image_id')
-      image_id = Number.parseInt(image_id, 10)
       await trx('omh.story_images').insert({
         story_id,
-        image_id
+        image_id: Number.parseInt(image_id, 10)
       })
       return image_id
     })

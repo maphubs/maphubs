@@ -1,26 +1,18 @@
-const Layer = require('../../models/layer')
+import Layer from '../../models/layer'
+import login from 'connect-ensure-login'
+import Group from '../../models/group'
+import {
+  apiError,
+  nextError,
+  apiDataError,
+  notAllowedError
+} from '../../services/error-response'
+import request from 'superagent'
+import isAuthenticated from '../../services/auth-check'
+import pageOptions from '../../services/page-options-helper'
+import local from '../../local'
 
-const login = require('connect-ensure-login')
-
-const Group = require('../../models/group')
-
-const apiError = require('../../services/error-response').apiError
-
-const nextError = require('../../services/error-response').nextError
-
-const apiDataError = require('../../services/error-response').apiDataError
-
-const notAllowedError = require('../../services/error-response').notAllowedError
-
-const request = require('superagent')
-
-const isAuthenticated = require('../../services/auth-check')
-
-const pageOptions = require('../../services/page-options-helper')
-
-const local = require('../../local')
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.get(
     '/createremotelayer',
     login.ensureLoggedIn(),
@@ -54,17 +46,15 @@ module.exports = function (app: any) {
             req.user_id
           )
 
-          if (result) {
-            return res.send({
-              success: true,
-              layer_id: result[0]
-            })
-          } else {
-            return res.send({
-              success: false,
-              error: 'Failed to Create Layer'
-            })
-          }
+          return result
+            ? res.send({
+                success: true,
+                layer_id: result[0]
+              })
+            : res.send({
+                success: false,
+                error: 'Failed to Create Layer'
+              })
         } else {
           return notAllowedError(res, 'layer')
         }
@@ -84,11 +74,7 @@ module.exports = function (app: any) {
           if (layer && layer.remote) {
             let url
 
-            if (layer.remote_host === 'localhost') {
-              url = 'http://'
-            } else {
-              url = 'https://'
-            }
+            url = layer.remote_host === 'localhost' ? 'http://' : 'https://'
 
             url =
               url +
@@ -104,16 +90,14 @@ module.exports = function (app: any) {
               req.user_id
             )
 
-            if (result) {
-              return res.send({
-                success: true
-              })
-            } else {
-              return res.send({
-                success: false,
-                error: 'Failed to Update Layer'
-              })
-            }
+            return result
+              ? res.send({
+                  success: true
+                })
+              : res.send({
+                  success: false,
+                  error: 'Failed to Update Layer'
+                })
           } else {
             return res.send({
               success: false,

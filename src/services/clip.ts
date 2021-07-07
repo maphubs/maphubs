@@ -1,20 +1,21 @@
 import { point, lineString } from '@turf/helpers'
 import inside from '@turf/inside'
+import { Geometry } from 'geojson'
 
 // clip the given LineString features to the given polygon.
 // returns a new list of LineStrings, possibly longer than the original
 // since a single line might get clipped into multiple lines.
-module.exports = function clip(
+export default function clip(
   lines: Array<Record<string, any>>,
   polygon: Record<string, any>
-) {
+): any {
   const result = []
-  lines.forEach((feat) => {
+  for (const feat of lines) {
     const coords = feat.geometry.coordinates
     // array of coordinate pairs of linestring we're building
     let current = []
 
-    function pushLine() {
+    const pushLine = () => {
       if (current.length > 0) {
         result.push(lineString(current, feat.properties))
         current = []
@@ -34,6 +35,6 @@ module.exports = function clip(
     }
 
     pushLine()
-  })
+  }
   return result
 }

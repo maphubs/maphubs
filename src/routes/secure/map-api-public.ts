@@ -1,14 +1,12 @@
-const Map = require('../../models/map')
+import Map from '../../models/map'
+import { apiError, apiDataError } from '../../services/error-response'
+import csurf from 'csurf'
 
-const apiError = require('../../services/error-response').apiError
-
-const csrfProtection = require('csurf')({
+const csrfProtection = csurf({
   cookie: false
 })
 
-const apiDataError = require('../../services/error-response').apiDataError
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.post('/api/map/info/:map_id', csrfProtection, (req, res) => {
     if (req.body && req.body.map_id) {
       const map_id = req.body.map_id
@@ -45,21 +43,19 @@ module.exports = function (app: any) {
         Map.isPrivate(map_id)
           .then((isPrivate) => {
             return Map.allowedToModify(map_id, user_id).then((allowed) => {
-              if (isPrivate && !allowed) {
-                return res.status(200).send({
-                  success: false
-                })
-              } else {
-                return Map.getMap(map_id).then((map) => {
-                  return Map.getMapLayers(map_id, allowed).then((layers) => {
-                    return res.status(200).send({
-                      success: true,
-                      map,
-                      layers
+              return isPrivate && !allowed
+                ? res.status(200).send({
+                    success: false
+                  })
+                : Map.getMap(map_id).then((map) => {
+                    return Map.getMapLayers(map_id, allowed).then((layers) => {
+                      return res.status(200).send({
+                        success: true,
+                        map,
+                        layers
+                      })
                     })
                   })
-                })
-              }
             })
           })
           .catch(apiError(res, 500))

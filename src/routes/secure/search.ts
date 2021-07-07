@@ -1,12 +1,12 @@
-const csrfProtection = require('csurf')({
+import csurf from 'csurf'
+import pageOptions from '../../services/page-options-helper'
+import local from '../../local'
+
+const csrfProtection = csurf({
   cookie: false
 })
 
-const pageOptions = require('../../services/page-options-helper')
-
-const local = require('../../local')
-
-module.exports = (app: any) => {
+export default (app: any): void => {
   app.get('/search', csrfProtection, async (req, res) => {
     return app.next.render(
       req,

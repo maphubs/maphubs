@@ -48,11 +48,10 @@ export default class CreateGroupStep1 extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.stores = [GroupStore]
+    const { state } = this
 
-    const _this = this
-
-    addValidationRule('isAvailable', function (values, value) {
-      if (_this.state.group.created) return true
+    addValidationRule('isAvailable', (values, value) => {
+      if (state.group.created) return true
 
       if (!_this.groupIdValue || value !== _this.groupIdValue) {
         _this.groupIdValue = value

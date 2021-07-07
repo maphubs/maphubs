@@ -1,5 +1,6 @@
 import locales from '../locales'
 import localeUtil from '../locales/util'
+import { LocalizedString } from '../types/LocalizedString'
 const i18n = null
 /*
 if (process.env.APP_ENV !== 'browser') {
@@ -15,7 +16,7 @@ export default {
   id: locales.id,
   pt: locales.pt,
 
-  getLocaleString(locale, text) {
+  getLocaleString(locale: string, text: string): string {
     if (i18n) {
       // use i18n package when running on the server
       i18n.setLocale(locale)
@@ -25,29 +26,32 @@ export default {
     }
   },
 
-  formModelToLocalizedString(model, name) {
+  formModelToLocalizedString(model, name): LocalizedString {
     const result = localeUtil.getEmptyLocalizedString()
-    Object.keys(result).forEach((key) => {
+    for (const key of Object.keys(result)) {
       if (model[`${name}-${key}`]) {
         result[key] = model[`${name}-${key}`]
       }
-    })
+    }
     return result
   },
 
-  getFirstNonEmptyString(localizedString) {
+  getFirstNonEmptyString(localizedString: LocalizedString): string {
     let result = ''
-    Object.keys(localizedString).forEach((key) => {
+    for (const key of Object.keys(localizedString)) {
       const val = localizedString[key]
       if (val) result = val
-    })
+    }
     return result
   },
 
-  getLocaleStringObject(locale, localizedString) {
+  getLocaleStringObject(
+    locale: string,
+    localizedString: LocalizedString
+  ): string | null {
     // recover if given an undefined localizedString
     if (!localizedString) {
-      return localizedString
+      return
     }
 
     // recover if we somehow end up with a plain string
@@ -60,22 +64,14 @@ export default {
         // found the requested locale
         return localizedString[locale]
       } else {
-        if (localizedString.en) {
-          // default to English if avaliable
-          return localizedString.en
-        } else {
-          // didn't find requested locale or english, so trying to return something
-          return this.getFirstNonEmptyString(localizedString)
-        }
+        return localizedString.en
+          ? localizedString.en
+          : this.getFirstNonEmptyString(localizedString)
       }
     } else {
-      if (localizedString.en) {
-        // default to English if avaliable
-        return localizedString.en
-      } else {
-        // didn't find requested locale or english, so trying to return something
-        return this.getFirstNonEmptyString(localizedString)
-      }
+      return localizedString.en
+        ? localizedString.en
+        : this.getFirstNonEmptyString(localizedString)
     }
   }
 }

@@ -1,18 +1,13 @@
 import { v4 as uuidv4 } from 'uuid'
+import knex from '../connection'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import Email from '@bit/kriscarle.maphubs-utils.maphubs-utils.email-util'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import local from '../local'
 
-const knex = require('../connection')
+const debug = DebugService('models/user')
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'models/user'
-)
-
-const Email = require('@bit/kriscarle.maphubs-utils.maphubs-utils.email-util')
-
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-
-const local = require('../local')
-
-module.exports = {
+export default {
   async resendInvite(
     key: string,
     __: (...args: Array<any>) => any
@@ -133,11 +128,9 @@ module.exports = {
       used: true
     })
 
-    if (results && Array.isArray(results) && results.length >= 1) {
-      return true
-    } else {
-      return false
-    }
+    return results && Array.isArray(results) && results.length >= 1
+      ? true
+      : false
   },
 
   async useInvite(key: string): Promise<any> {
@@ -153,14 +146,10 @@ module.exports = {
       key
     })
 
-    if (result && result.length === 1) {
-      return result[0].email
-    } else {
-      return null
-    }
+    return result && result.length === 1 ? result[0].email : null
   },
 
-  getMembers(trx: any): any {
+  getMembers(trx?: any): any {
     const db = trx || knex
     return db('users')
       .fullOuterJoin(
@@ -196,7 +185,7 @@ module.exports = {
     })
   },
 
-  async checkAdmin(userId: number, trx: any): Promise<boolean> {
+  async checkAdmin(userId: number, trx?: any): Promise<boolean> {
     const db = trx || knex
     const result = await db('omh.admins').select('user_id').where({
       user_id: userId
@@ -212,7 +201,7 @@ module.exports = {
   async sendAdminUserSignupNotification(
     user_email: string,
     display_name: string
-  ) {
+  ): Promise<void> {
     const admins = await this.getAdmins()
     admins.push({
       email: local.adminEmail

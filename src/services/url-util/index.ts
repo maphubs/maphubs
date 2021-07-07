@@ -1,6 +1,6 @@
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
-module.exports = {
+export default {
   getBaseUrl(): string {
     const host = MAPHUBS_CONFIG.host
     const port = MAPHUBS_CONFIG.port

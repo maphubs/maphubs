@@ -10,8 +10,10 @@ import {
   featureCollection,
   radiansToLength,
   lengthToRadians,
-  earthRadius
+  earthRadius,
+  FeatureCollection
 } from '@turf/helpers'
+import { Geometry } from 'geojson'
 
 /**
  * Calculates a buffer for input features for a given radius. Units supported are miles, kilometers, and degrees.
@@ -39,8 +41,8 @@ import {
 function buffer(geojson, radius, options) {
   // Optional params
   options = options || {}
-  var units = options.units
-  var steps = options.steps || 64
+  let units = options.units
+  let steps = options.steps || 64
   // validation
   if (!geojson) throw new Error('geojson is required')
   if (typeof options !== 'object') throw new Error('options must be an object')
@@ -51,19 +53,19 @@ function buffer(geojson, radius, options) {
   // default params
   steps = steps || 64
   units = units || 'kilometers'
-  var results = []
+  const results = []
 
   switch (geojson.type) {
     case 'GeometryCollection':
       geomEach(geojson, function (geometry) {
-        var buffered = bufferFeature(geometry, radius, units, steps)
+        const buffered = bufferFeature(geometry, radius, units, steps)
         if (buffered) results.push(buffered)
       })
       return featureCollection(results)
 
     case 'FeatureCollection':
       featureEach(geojson, function (feature) {
-        var multiBuffered = bufferFeature(feature, radius, units, steps)
+        const multiBuffered = bufferFeature(feature, radius, units, steps)
 
         if (multiBuffered) {
           featureEach(multiBuffered, function (buffered) {
@@ -87,60 +89,54 @@ function buffer(geojson, radius, options) {
  * @param {number} [steps=64] number of steps
  * @returns {Feature<Polygon|MultiPolygon>} buffered feature
  */
-function bufferFeature(geojson, radius, units, steps) {
-  var properties = geojson.properties || {}
-  var geometry = geojson.type === 'Feature' ? geojson.geometry : geojson
+function bufferFeature(geojson, radius, units, steps): FeatureCollection {
+  const properties = geojson.properties || {}
+  const geometry = geojson.type === 'Feature' ? geojson.geometry : geojson
 
   // Geometry Types faster than jsts
   if (geometry.type === 'GeometryCollection') {
-    var results = []
+    const results = []
     geomEach(geojson, function (geometry) {
-      var buffered = bufferFeature(geometry, radius, units, steps)
+      const buffered = bufferFeature(geometry, radius, units, steps)
       if (buffered) results.push(buffered)
     })
     return featureCollection(results)
   }
 
   // Project GeoJSON to Transverse Mercator projection (convert to Meters)
-  var projected
-  var bbox = turfBbox(geojson)
-  var needsTransverseMercator = bbox[1] > 50 && bbox[3] > 50
+  const bbox = turfBbox(geojson)
+  const needsTransverseMercator = bbox[1] > 50 && bbox[3] > 50
 
-  if (needsTransverseMercator) {
-    projected = {
-      type: geometry.type,
-      coordinates: projectCoords(
-        geometry.coordinates,
-        defineProjection(geometry)
-      )
-    }
-  } else {
-    projected = toMercator(geometry)
-  }
+  const projected = needsTransverseMercator
+    ? {
+        type: geometry.type,
+        coordinates: projectCoords(
+          geometry.coordinates,
+          defineProjection(geometry)
+        )
+      }
+    : toMercator(geometry)
 
   // JSTS buffer operation
-  var reader = new GeoJSONReader()
-  var geom = reader.read(projected)
-  var distance = radiansToLength(lengthToRadians(radius, units), 'meters')
-  var buffered = BufferOp.bufferOp(geom, distance, steps)
-  var writer = new GeoJSONWriter()
+  const reader = new GeoJSONReader()
+  const geom = reader.read(projected)
+  const distance = radiansToLength(lengthToRadians(radius, units), 'meters')
+  let buffered = BufferOp.bufferOp(geom, distance, steps)
+  const writer = new GeoJSONWriter()
   buffered = writer.write(buffered)
   // Detect if empty geometries
-  if (coordsIsNaN(buffered.coordinates)) return undefined
+  if (coordsIsNaN(buffered.coordinates)) return
   // Unproject coordinates (convert to Degrees)
-  var result
 
-  if (needsTransverseMercator) {
-    result = {
-      type: buffered.type,
-      coordinates: unprojectCoords(
-        buffered.coordinates,
-        defineProjection(geometry)
-      )
-    }
-  } else {
-    result = toWgs84(buffered)
-  }
+  const result = needsTransverseMercator
+    ? {
+        type: buffered.type,
+        coordinates: unprojectCoords(
+          buffered.coordinates,
+          defineProjection(geometry)
+        )
+      }
+    : toWgs84(buffered)
 
   return result.geometry ? result : feature(result, properties)
 }
@@ -195,8 +191,8 @@ function unprojectCoords(coords, proj) {
  * @returns {GeoProjection} D3 Geo Transverse Mercator Projection
  */
 function defineProjection(geojson) {
-  var coords = center(geojson).geometry.coordinates.reverse()
-  var rotate = coords.map(function (coord) {
+  const coords = center(geojson).geometry.coordinates.reverse()
+  const rotate = coords.map(function (coord) {
     return -coord
   })
   return geoTransverseMercator()

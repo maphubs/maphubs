@@ -1,44 +1,31 @@
 import Locales from '../../services/locales'
+import Layer from '../../models/layer'
+import csurf from 'csurf'
+import {
+  apiError,
+  nextError,
+  apiDataError,
+  notAllowedError
+} from '../../services/error-response'
+import login from 'connect-ensure-login'
+import DataLoadUtils from '../../services/data-load-utils'
+import LayerViews from '../../services/layer-views'
+import knex from '../../connection'
+import multer from 'multer'
+import local from '../../local'
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import Importers from '@bit/kriscarle.maphubs-utils.maphubs-utils.importers'
+import isAuthenticated from '../../services/auth-check'
+import pageOptions from '../../services/page-options-helper'
 
-const Layer = require('../../models/layer')
+const debug = DebugService('routes/layers-replace')
 
-const csrfProtection = require('csurf')({
+const csrfProtection = csurf({
   cookie: false
 })
 
-const nextError = require('../../services/error-response').nextError
-
-const login = require('connect-ensure-login')
-
-const apiError = require('../../services/error-response').apiError
-
-const apiDataError = require('../../services/error-response').apiDataError
-
-const notAllowedError = require('../../services/error-response').notAllowedError
-
-const DataLoadUtils = require('../../services/data-load-utils')
-
-const LayerViews = require('../../services/layer-views')
-
-const knex = require('../../connection')
-
-const multer = require('multer')
-
-const local = require('../../local')
-
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'routes/layers-replace'
-)
-
-const Importers = require('@bit/kriscarle.maphubs-utils.maphubs-utils.importers')
-
-const isAuthenticated = require('../../services/auth-check')
-
-const pageOptions = require('../../services/page-options-helper')
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.get(
     '/layer/replace/:id/*',
     csrfProtection,

@@ -1,18 +1,17 @@
-const knex = require('../connection')
+import knex from '../connection'
 
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'models/user'
-)
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+const debug = DebugService('models/user')
 
-module.exports = {
+export default {
   /**
    * Get data about the current user
    * @param id
    * @returns {Promise.<T>}
    */
-  async getUser(id: number, secure: boolean = false): Promise<any> {
+  async getUser(id: number, secure = false): Promise<any> {
     debug.log('getting for id: ' + id)
     let user = {}
     const result = await knex('users').where('id', id)
@@ -34,10 +33,7 @@ module.exports = {
     }
   },
 
-  async getUserByName(
-    display_name: string,
-    secure: boolean = false
-  ): Promise<any> {
+  async getUserByName(display_name: string, secure = false): Promise<any> {
     debug.log('getting user with name: ' + display_name)
     display_name = display_name.toLowerCase()
     const result = await knex('users').where(
@@ -64,7 +60,7 @@ module.exports = {
     }
   },
 
-  async getUserByEmail(email: string, secure: boolean = false): Promise<any> {
+  async getUserByEmail(email: string, secure = false): Promise<any> {
     debug.log('getting user with email: ' + email)
     email = email.toLowerCase()
     const result = await knex('users').where(
@@ -104,7 +100,7 @@ module.exports = {
   ): Promise<number> {
     email = email.toLowerCase()
     display_name = display_name.toLowerCase()
-    const user_id = await knex('users')
+    const user_id: string = await knex('users')
       .returning('id')
       .insert({
         email,

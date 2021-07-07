@@ -1,4 +1,4 @@
-export default () => {
+export default (): void => {
   if (Event.prototype.initEvent) {
     /* deprecated method */
     const evt: any = document.createEvent('UIEvents')

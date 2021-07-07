@@ -1,29 +1,21 @@
 // var debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')('routes/stories');
-const login = require('connect-ensure-login')
+import login from 'connect-ensure-login'
+import Story from '../../models/story'
+import Stats from '../../models/stats'
+import Map from '../../models/map'
+import Group from '../../models/group'
+import { nextError } from '../../services/error-response'
+import csurf from 'csurf'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import pageOptions from '../../services/page-options-helper'
+import local from '../../local'
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-const Story = require('../../models/story')
-
-const Stats = require('../../models/stats')
-
-const Map = require('../../models/map')
-
-const Group = require('../../models/group')
-
-const nextError = require('../../services/error-response').nextError
-
-const csrfProtection = require('csurf')({
+const csrfProtection = csurf({
   cookie: false
 })
 
-const urlUtil = require('@bit/kriscarle.maphubs-utils.maphubs-utils.url-util')
-
-const pageOptions = require('../../services/page-options-helper')
-
-const local = require('../../local')
-
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-
-module.exports = function (app: any) {
+export default function (app: any): void {
   // Views
   app.get('/stories', async (req, res, next) => {
     try {
@@ -167,32 +159,29 @@ module.exports = function (app: any) {
             description = story.summary[locale]
           }
 
-          if (!story.published) {
-            // guest users never see draft stories
-            return res.status(401).send('Unauthorized')
-          } else {
-            return app.next.render(
-              req,
-              res,
-              '/story',
-              await pageOptions(req, {
-                title: story.title[locale],
-                description,
-                props: {
-                  story,
-                  username,
-                  canEdit: false
-                },
-                talkComments: true,
-                twitterCard: {
+          return !story.published
+            ? res.status(401).send('Unauthorized')
+            : app.next.render(
+                req,
+                res,
+                '/story',
+                await pageOptions(req, {
                   title: story.title[locale],
                   description,
-                  image: imageUrl,
-                  imageType: 'image/jpeg'
-                }
-              })
-            )
-          }
+                  props: {
+                    story,
+                    username,
+                    canEdit: false
+                  },
+                  talkComments: true,
+                  twitterCard: {
+                    title: story.title[locale],
+                    description,
+                    image: imageUrl,
+                    imageType: 'image/jpeg'
+                  }
+                })
+              )
         } else {
           return Story.allowedToModify(story_id, user_id).then(
             async (canEdit) => {
@@ -208,31 +197,29 @@ module.exports = function (app: any) {
                 description = story.summary[locale]
               }
 
-              if (!story.published && !canEdit) {
-                return res.status(401).send('Unauthorized')
-              } else {
-                return app.next.render(
-                  req,
-                  res,
-                  '/story',
-                  await pageOptions(req, {
-                    title: story.title[locale],
-                    description,
-                    props: {
-                      story,
-                      username,
-                      canEdit
-                    },
-                    talkComments: true,
-                    twitterCard: {
+              return !story.published && !canEdit
+                ? res.status(401).send('Unauthorized')
+                : app.next.render(
+                    req,
+                    res,
+                    '/story',
+                    await pageOptions(req, {
                       title: story.title[locale],
                       description,
-                      image: imageUrl,
-                      imageType: 'image/jpeg'
-                    }
-                  })
-                )
-              }
+                      props: {
+                        story,
+                        username,
+                        canEdit
+                      },
+                      talkComments: true,
+                      twitterCard: {
+                        title: story.title[locale],
+                        description,
+                        image: imageUrl,
+                        imageType: 'image/jpeg'
+                      }
+                    })
+                  )
             }
           )
         }

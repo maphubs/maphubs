@@ -1,55 +1,36 @@
-const Layer = require('../../models/layer')
+import Layer from '../../models/layer'
+import login from 'connect-ensure-login'
+import Group from '../../models/group'
+import Map from '../../models/map'
+import multer from 'multer'
+import local from '../../local'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import {
+  apiError,
+  nextError,
+  apiDataError,
+  notAllowedError
+} from '../../services/error-response'
+import isAuthenticated from '../../services/auth-check'
+import { geobuf } from '@bit/kriscarle.maphubs-utils.maphubs-utils.importers'
+import _endsWith from 'lodash.endswith'
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import knex from '../../connection'
+import shortid from 'shortid'
+import replaceShortID from '../../components/Map/Styles/replaceShortID'
+import DataLoadUtils from '../../services/data-load-utils'
+import layerViews from '../../services/layer-views'
+import pageOptions from '../../services/page-options-helper'
+import Promise from 'bluebird'
+import csurf from 'csurf'
 
-const login = require('connect-ensure-login')
-
-const Group = require('../../models/group')
-
-const Map = require('../../models/map')
-
-const multer = require('multer')
-
-const local = require('../../local')
-
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'routes/layers-import'
-)
-
-const apiError = require('../../services/error-response').apiError
-
-const nextError = require('../../services/error-response').nextError
-
-const apiDataError = require('../../services/error-response').apiDataError
-
-const notAllowedError = require('../../services/error-response').notAllowedError
-
-const isAuthenticated = require('../../services/auth-check')
-
-const geobuf = require('@bit/kriscarle.maphubs-utils.maphubs-utils.importers')
-  .geobuf
-
-const _endsWith = require('lodash.endswith')
-
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-
-const knex = require('../../connection')
-
-const shortid = require('shortid')
-
-const replaceShortID = require('../../components/Map/Styles/replaceShortID')
-
-const DataLoadUtils = require('../../services/data-load-utils')
-
-const layerViews = require('../../services/layer-views')
-
-const pageOptions = require('../../services/page-options-helper')
-
-const Promise = require('bluebird')
-
-const csrfProtection = require('csurf')({
+const csrfProtection = csurf({
   cookie: false
 })
 
-module.exports = function (app: any) {
+const debug = DebugService('routes/layers-import')
+
+export default function (app: any) {
   app.get(
     '/import',
     login.ensureLoggedIn(),
@@ -104,14 +85,14 @@ module.exports = function (app: any) {
                 // First extract and create the layers
                 // using the old short-ids, pull out the layers and their features
                 const layerMap = {}
-                maphubsFile.layers.forEach((layer) => {
+                for (const layer of maphubsFile.layers) {
                   layerMap[layer.shortid] = layer
                   layerMap[layer.shortid].geojson = {
                     type: 'FeatureCollection',
                     features: []
                   }
-                })
-                importerResult.features.forEach((feature) => {
+                }
+                for (const feature of importerResult.features) {
                   const shortid = feature.layer_short_id
 
                   if (shortid && layerMap[shortid]) {
@@ -119,7 +100,7 @@ module.exports = function (app: any) {
                   } else {
                     console.error(`Failed to find layer with id: ${shortid}`)
                   }
-                })
+                }
                 // now create each layer
                 knex.transaction(async (trx) => {
                   const keys = Object.keys(layerMap)

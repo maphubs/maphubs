@@ -2,27 +2,27 @@ import MapStyles from '../components/Map/Styles'
 import _buffer from '@turf/buffer'
 import _bbox from '@turf/bbox'
 
-const knex = require('../connection')
+import knex from '../connection'
 
-const GJV = require('geojson-validation')
+import GJV from 'geojson-validation'
 
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-const local = require('../local')
+import local from '../local'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'data-load-utils'
-)
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 
-const fs = require('fs')
+import fs from 'fs'
 
-const LayerViews = require('./layer-views')
+import LayerViews from './layer-views'
 
-const Promise = require('bluebird')
+import Promise from 'bluebird'
 
-const ogr2ogr = require('ogr2ogr')
+import ogr2ogr from 'ogr2ogr'
 
-module.exports = {
+const debug = DebugService('data-load-utils')
+
+export default {
   async removeLayerData(layer_id: number, trx: any = null): Promise<any> {
     debug.log('removeLayerData')
     let db = knex

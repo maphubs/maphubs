@@ -1,39 +1,39 @@
 import MapStyles from '../components/Map/Styles'
 import type { Layer } from '../types/layer'
 
-const knex = require('../connection')
+import knex from '../connection'
 
-const dbgeo = require('dbgeo')
+import dbgeo from 'dbgeo'
 
-const Promise = require('bluebird')
+import Promise from 'bluebird'
 
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-const _find = require('lodash.find')
+import _find from 'lodash.find'
 
-const Presets = require('./presets')
+import Presets from './presets'
 
-const DataLoadUtils = require('../services/data-load-utils')
+import DataLoadUtils from '../services/data-load-utils'
 
-const Group = require('./group')
+import Group from './group'
 
-const Map = require('./map')
+import Map from './map'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'model/layers'
-)
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 
-const ScreenshotUtils = require('../services/screenshot-utils')
+import ScreenshotUtils from '../services/screenshot-utils'
 
-const PhotoAttachment = require('./photo-attachment')
+import PhotoAttachment from './photo-attachment'
 
-const shortid = require('shortid')
+import shortid from 'shortid'
 
-module.exports = {
+const debug = DebugService('model/layers')
+
+export default {
   /**
    * Can include private?: No
    */
-  getAllLayers(includeMapInfo: boolean, trx: any): any {
+  getAllLayers(includeMapInfo: boolean, trx?: any): any {
     let db = knex
 
     if (trx) {
@@ -250,11 +250,9 @@ module.exports = {
   async getLayerFeatureCount(layer_id: number): Promise<any> | Promise<number> {
     const result = await knex(`layers.data_${layer_id}`).count('mhid')
 
-    if (result && Array.isArray(result) && result.length === 1) {
-      return result[0].count
-    } else {
-      return 0
-    }
+    return result && Array.isArray(result) && result.length === 1
+      ? result[0].count
+      : 0
   },
 
   /**
@@ -363,69 +361,65 @@ module.exports = {
    */
   getGroupLayers(
     group_id: string,
-    includePrivate: boolean = false,
-    includeMapInfo: boolean = false
+    includePrivate = false,
+    includeMapInfo = false
   ): Promise<Array<Record<string, any>>> {
-    let query
-
-    if (includeMapInfo) {
-      query = knex
-        .select(
-          'layer_id',
-          'shortid',
-          'name',
-          'description',
-          'data_type',
-          'remote',
-          'remote_host',
-          'remote_layer_id',
-          'status',
-          'source',
-          'license',
-          'presets',
-          'allow_public_submit',
-          'is_external',
-          'external_layer_type',
-          'external_layer_config',
-          'disable_export',
-          'owned_by_group_id',
-          knex.raw("timezone('UTC', last_updated) as last_updated"),
-          'views',
-          'style',
-          'legend_html',
-          'labels',
-          'settings',
-          'extent_bbox',
-          'preview_position'
-        )
-        .table('omh.layers')
-    } else {
-      query = knex
-        .select(
-          'layer_id',
-          'shortid',
-          'name',
-          'description',
-          'data_type',
-          'remote',
-          'remote_host',
-          'remote_layer_id',
-          'status',
-          'private',
-          'source',
-          'license',
-          'presets',
-          'allow_public_submit',
-          'is_external',
-          'external_layer_type',
-          'external_layer_config',
-          'owned_by_group_id',
-          knex.raw("timezone('UTC', last_updated) as last_updated"),
-          'views'
-        )
-        .table('omh.layers')
-        .orderBy(knex.raw("name -> 'en'"))
-    }
+    const query = includeMapInfo
+      ? knex
+          .select(
+            'layer_id',
+            'shortid',
+            'name',
+            'description',
+            'data_type',
+            'remote',
+            'remote_host',
+            'remote_layer_id',
+            'status',
+            'source',
+            'license',
+            'presets',
+            'allow_public_submit',
+            'is_external',
+            'external_layer_type',
+            'external_layer_config',
+            'disable_export',
+            'owned_by_group_id',
+            knex.raw("timezone('UTC', last_updated) as last_updated"),
+            'views',
+            'style',
+            'legend_html',
+            'labels',
+            'settings',
+            'extent_bbox',
+            'preview_position'
+          )
+          .table('omh.layers')
+      : knex
+          .select(
+            'layer_id',
+            'shortid',
+            'name',
+            'description',
+            'data_type',
+            'remote',
+            'remote_host',
+            'remote_layer_id',
+            'status',
+            'private',
+            'source',
+            'license',
+            'presets',
+            'allow_public_submit',
+            'is_external',
+            'external_layer_type',
+            'external_layer_config',
+            'owned_by_group_id',
+            knex.raw("timezone('UTC', last_updated) as last_updated"),
+            'views'
+          )
+          .table('omh.layers')
+          .orderBy(knex.raw("name -> 'en'"))
 
     if (includePrivate) {
       query.where({
@@ -449,7 +443,7 @@ module.exports = {
   getUserLayers(
     user_id: number,
     number: number,
-    includePrivate: boolean = false
+    includePrivate = false
   ): Promise<Array<Record<string, any>>> {
     const subquery = knex
       .select()
@@ -687,17 +681,17 @@ module.exports = {
 
           if (result.features) {
             // convert tags to properties
-            result.features.forEach((feature) => {
+            for (const feature of result.features) {
               const tags = feature.properties.tags
 
               if (tags) {
-                Object.keys(tags).forEach((key) => {
+                for (const key of Object.keys(tags)) {
                   const val = tags[key]
                   feature.properties[key] = val
-                })
+                }
                 delete feature.properties.tags
               }
-            })
+            }
           }
 
           result.bbox = JSON.parse(bbox.rows[0].bbox)
@@ -1069,29 +1063,27 @@ module.exports = {
       return Promise.map(mapLayers, async (mapLayer) => {
         const map = await Map.getMap(mapLayer.map_id, trx)
 
-        if (map) {
-          if (
-            !map.private ||
-            map.owned_by_group_id !== layer.owned_by_group_id
-          ) {
-            // delete layer from this map
-            await db('omh.map_layers')
-              .where({
-                layer_id
-              })
-              .del()
-            const layers = await Map.getMapLayers(map.map_id, trx)
-            const style = MapStyles.style.buildMapStyle(layers)
-            return db('omh.maps')
-              .where({
-                map_id: map.map_id
-              })
-              .update({
-                style,
-                screenshot: null,
-                thumbnail: null
-              })
-          }
+        if (
+          map &&
+          (!map.private || map.owned_by_group_id !== layer.owned_by_group_id)
+        ) {
+          // delete layer from this map
+          await db('omh.map_layers')
+            .where({
+              layer_id
+            })
+            .del()
+          const layers = await Map.getMapLayers(map.map_id, trx)
+          const style = MapStyles.style.buildMapStyle(layers)
+          return db('omh.maps')
+            .where({
+              map_id: map.map_id
+            })
+            .update({
+              style,
+              screenshot: null,
+              thumbnail: null
+            })
         }
       })
     }
@@ -1224,33 +1216,31 @@ module.exports = {
     external_layer_config: any,
     user_id: number
   ): any {
-    if (is_external) {
-      return knex('omh.layers')
-        .where({
-          layer_id
-        })
-        .update({
-          is_external,
-          external_layer_type,
-          external_layer_config: JSON.stringify(external_layer_config),
-          updated_by_user_id: user_id,
-          last_updated: knex.raw('now()')
-        })
-    } else {
-      return knex('omh.layers')
-        .where({
-          layer_id
-        })
-        .update({
-          is_empty,
-          data_type: empty_data_type,
-          is_external,
-          external_layer_type,
-          external_layer_config: JSON.stringify(external_layer_config),
-          updated_by_user_id: user_id,
-          last_updated: knex.raw('now()')
-        })
-    }
+    return is_external
+      ? knex('omh.layers')
+          .where({
+            layer_id
+          })
+          .update({
+            is_external,
+            external_layer_type,
+            external_layer_config: JSON.stringify(external_layer_config),
+            updated_by_user_id: user_id,
+            last_updated: knex.raw('now()')
+          })
+      : knex('omh.layers')
+          .where({
+            layer_id
+          })
+          .update({
+            is_empty,
+            data_type: empty_data_type,
+            is_external,
+            external_layer_type,
+            external_layer_config: JSON.stringify(external_layer_config),
+            updated_by_user_id: user_id,
+            last_updated: knex.raw('now()')
+          })
   },
 
   async saveStyle(
@@ -1300,26 +1290,24 @@ module.exports = {
       layer_id
     })
 
-    if (result && result.length === 1) {
-      return knex('omh.layer_notes')
-        .update({
+    return result && result.length === 1
+      ? knex('omh.layer_notes')
+          .update({
+            notes,
+            updated_by: user_id,
+            updated_at: knex.raw('now()')
+          })
+          .where({
+            layer_id
+          })
+      : knex('omh.layer_notes').insert({
+          layer_id,
           notes,
+          created_by: user_id,
+          created_at: knex.raw('now()'),
           updated_by: user_id,
           updated_at: knex.raw('now()')
         })
-        .where({
-          layer_id
-        })
-    } else {
-      return knex('omh.layer_notes').insert({
-        layer_id,
-        notes,
-        created_by: user_id,
-        created_at: knex.raw('now()'),
-        updated_by: user_id,
-        updated_at: knex.raw('now()')
-      })
-    }
   },
 
   async importLayer(
@@ -1359,12 +1347,12 @@ module.exports = {
     }
 
     let styleUpdated = false
-    style.layers.forEach((layer) => {
+    for (const layer of style.layers) {
       if (layer.metadata && layer.metadata['maphubs:layer_id']) {
         layer.metadata['maphubs:layer_id'] = layer_id
         styleUpdated = true
       }
-    })
+    }
 
     if (styleUpdated) {
       await trx('omh.layers')

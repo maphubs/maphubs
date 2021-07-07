@@ -1,31 +1,22 @@
-const Layer = require('../models/layer')
-
-const Map = require('../models/map')
-
-const geobuf = require('geobuf')
-
-const Pbf = require('pbf')
-
-const apiError = require('../services/error-response').apiError
+import Layer from '../models/layer'
+import Map from '../models/map'
+import geobuf from 'geobuf'
+import Pbf from 'pbf'
+import { apiError } from '../services/error-response'
+import local from '../local'
+import moment from 'moment'
+import Promise from 'bluebird'
+import Crypto from 'crypto'
 
 const version = require('../../version.json').version
 
-const local = require('../local')
-
-const moment = require('moment')
-
-const Promise = require('bluebird')
-
-module.exports = {
+export default {
   completeGeoBufExport(req: any, res: any, layer_id: number) {
     Layer.getGeoJSON(layer_id)
       .then((geoJSON) => {
         const resultStr = JSON.stringify(geoJSON)
 
-        const hash = require('crypto')
-          .createHash('md5')
-          .update(resultStr)
-          .digest('hex')
+        const hash = Crypto.createHash('md5').update(resultStr).digest('hex')
 
         const match = req.get('If-None-Match')
 
@@ -72,10 +63,7 @@ module.exports = {
       }
       const resultStr = JSON.stringify(geoJSON)
 
-      const hash = require('crypto')
-        .createHash('md5')
-        .update(resultStr)
-        .digest('hex')
+      const hash = Crypto.createHash('md5').update(resultStr).digest('hex')
 
       const match = req.get('If-None-Match')
 
@@ -116,11 +104,11 @@ module.exports = {
             const layerGeoJSON = await Layer.getGeoJSON(layer.layer_id)
 
             if (layerGeoJSON && layerGeoJSON.features) {
-              layerGeoJSON.features.forEach((feature) => {
+              for (const feature of layerGeoJSON.features) {
                 // label each feature by layer so we can combine then in one big GeoJSON
                 feature.layer_short_id = layer.shortid
                 geoJSON.features.push(feature)
-              })
+              }
             }
           }
         })
@@ -141,10 +129,7 @@ module.exports = {
         }
         const resultStr = JSON.stringify(geoJSON)
 
-        const hash = require('crypto')
-          .createHash('md5')
-          .update(resultStr)
-          .digest('hex')
+        const hash = Crypto.createHash('md5').update(resultStr).digest('hex')
 
         const match = req.get('If-None-Match')
 

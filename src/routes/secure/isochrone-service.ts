@@ -3,7 +3,7 @@ import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import { apiDataError, apiError } from '../../services/error-response'
 import local from '../../local'
 
-module.exports = function (app: any) {
+export default function (app: any): void {
   app.post('/api/isochrone', async (req, res) => {
     const data = req.body
 

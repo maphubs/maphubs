@@ -1,11 +1,11 @@
-const local = require('../local')
+import local from '../local'
 
-const request = require('request-promise')
+import request from 'request-promise'
 
-const urlencode = require('urlencode')
+import urlencode from 'urlencode'
 
-module.exports = {
-  async getManagementToken() {
+export default {
+  async getManagementToken(): Promise<string> {
     const options = {
       method: 'POST',
       url: `https://${local.AUTH0_DOMAIN}/oauth/token`,

@@ -3,7 +3,7 @@ import getConfig from 'next/config'
 const config = getConfig()
 const MAPHUBS_CONFIG = config ? config.publicRuntimeConfig : {}
 
-module.exports = async (mhid: string, imageData: string): Promise<unknown> => {
+export default async (mhid: string, imageData: string): Promise<unknown> => {
   const host = MAPHUBS_CONFIG.host
     ? MAPHUBS_CONFIG.host.replace(/\./g, '')
     : 'unknownhost'
