@@ -1,9 +1,9 @@
 import React from 'react'
-import Document, { Head, Main, NextScript } from 'next/document'
+import Document, { Html, Head, Main, NextScript } from 'next/document'
 import local from '../src/local'
 import version from '../version.json'
 export default class MyDocument extends Document {
-  render() {
+  render(): JSX.Element {
     const data = this.props.__NEXT_DATA__
     const options = data.query
     const props = options.props || {}
@@ -19,13 +19,9 @@ export default class MyDocument extends Document {
       assetHost = local.ASSET_CDN_PREFIX
     }
 
-    let themeUrl = ''
-
-    if (local.themeUrl) {
-      themeUrl = local.themeUrl + iconFolder
-    } else {
-      themeUrl = `${assetHost}/assets/themes/${iconFolder}`
-    }
+    const themeUrl = local.themeUrl
+      ? local.themeUrl + iconFolder
+      : `${assetHost}/assets/themes/${iconFolder}`
 
     let oembedTitle = ''
     let oembedUrl = ''
@@ -54,12 +50,8 @@ export default class MyDocument extends Document {
     }
 
     return (
-      <html lang={options.locale}>
+      <Html lang={options.locale}>
         <Head>
-          <meta name='viewport' content='width=device-width, initial-scale=1' />
-          {options.description && (
-            <meta name='description' content={options.description} />
-          )}
           <link
             rel='apple-touch-icon-precomposed'
             sizes='57x57'
@@ -304,7 +296,7 @@ export default class MyDocument extends Document {
               />
             )}
         </body>
-      </html>
+      </Html>
     )
   }
 }

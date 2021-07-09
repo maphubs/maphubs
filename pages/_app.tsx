@@ -19,6 +19,7 @@ export default class MapHubs extends App {
     return (
       <>
         <Head>
+          <meta name='viewport' content='width=device-width, initial-scale=1' />
           <title>{this.props.router.query.title || 'MapHubs'}</title>
         </Head>
         <Component {...pageProps} />
