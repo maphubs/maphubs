@@ -64,7 +64,7 @@ export default function (app: any): void {
             log.info(`updating story ${story_id}`)
             const result = await Story.updateStory(story_id, data)
 
-            return result && result === 1
+            return result
               ? res.send({
                   success: true,
                   story_id

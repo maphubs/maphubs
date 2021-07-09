@@ -32,7 +32,7 @@ export default {
     shortid: string,
     sourceUrl: string,
     opacity: number,
-    type: string = 'raster'
+    type = 'raster'
   ): {
     layers: Array<{
       id: string
@@ -48,7 +48,7 @@ export default {
       source: string
       type: string
     }>
-    sources: {}
+    sources: mapboxgl.Sources
   } {
     opacity = opacity / 100
     const style = {
@@ -83,7 +83,7 @@ export default {
     shortid: string,
     elc: Record<string, any>,
     opacity: number,
-    type: string = 'raster'
+    type = 'raster'
   ): {
     layers: Array<{
       id: string
@@ -99,7 +99,7 @@ export default {
       source: string
       type: string
     }>
-    sources: {}
+    sources: mapboxgl.Sources
   } {
     opacity = opacity / 100
     const style = {
@@ -160,13 +160,14 @@ export default {
           type: string
         }
     >
-    sources: {}
+    sources: mapboxgl.Sources
   } {
     opacity = opacity / 100
     const style = {
       sources: {},
       layers: []
     }
+    // eslint-disable-next-line unicorn/no-array-for-each
     layers.forEach((raster, i) => {
       const id = `omh-raster-${i}-${shortid}`
       style.layers.push({

@@ -1,9 +1,5 @@
 import MapStyles from '../components/Map/Styles'
-
 import knex from '../connection'
-
-import Promise from 'bluebird'
-
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
 export default {

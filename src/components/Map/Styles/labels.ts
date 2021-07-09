@@ -1,4 +1,9 @@
 import _remove from 'lodash.remove'
+import mapboxgl from 'mapbox-gl'
+
+type LayerWithMeta = mapboxgl.CircleLayer & {
+  metatdata: any
+}
 export default {
   removeStyleLabels(style: mapboxgl.Style): mapboxgl.Style {
     if (
@@ -35,14 +40,14 @@ export default {
     ) {
       let sourceLayer = 'data'
       let filter = ['in', '$type', 'Point']
-      let placement = 'point'
+      let placement: mapboxgl.SymbolLayout['symbol-placement'] = 'point'
       let translate = [0, 0]
 
       switch (data_type) {
         case 'point': {
           translate = [0, -14]
           // if marker
-          for (const layer of style.layers) {
+          for (const layer of style.layers as LayerWithMeta[]) {
             if (
               layer.id.startsWith('omh-data-point') &&
               layer.metadata &&

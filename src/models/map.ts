@@ -4,6 +4,7 @@ import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import Group from './group'
 import shortid from 'shortid'
 import { LocalizedString } from '../types/LocalizedString'
+import { Knex } from 'knex'
 
 const debug = DebugService('models/map')
 
@@ -11,7 +12,7 @@ export default {
   /**
    * Can include private?: Yes
    */
-  async getMap(map_id: number, trx?: any): Promise<any> {
+  async getMap(map_id: number, trx?: Knex.Transaction): Promise<any> {
     const db = trx || knex
 
     const result = await db('omh.maps')
@@ -38,7 +39,7 @@ export default {
   getGroupMaps(
     owned_by_group_id: number,
     includePrivate: boolean,
-    trx?: any
+    trx?: Knex.Transaction
   ): any {
     const db = trx || knex
 
@@ -67,7 +68,7 @@ export default {
   async getMapLayers(
     map_id: number,
     includePrivateLayers: boolean,
-    trx?: any
+    trx?: Knex.Transaction
   ): Promise<any> {
     const db = trx || knex
     const query = db
@@ -148,7 +149,7 @@ export default {
     return Group.allowedToModify(map.owned_by_group_id, user_id)
   },
 
-  getMapsBaseQuery(trx?: any): any {
+  getMapsBaseQuery(trx?: Knex.Transaction): any {
     const db = trx || knex
     return db
       .select(
@@ -166,7 +167,7 @@ export default {
   /**
    * Can include private?: No
    */
-  getAllMaps(trx?: any): any {
+  getAllMaps(trx?: Knex.Transaction): any {
     const query = this.getMapsBaseQuery(trx)
     return query
       .where('omh.maps.private', false)
@@ -299,17 +300,15 @@ export default {
     settings: Record<string, any>,
     user_id: number,
     isPrivate: boolean,
-    trx?: any
+    trx?: Knex.Transaction
   ): Promise<any> {
     const db = trx || knex
 
-    if (layers?.length > 0) {
-      if (!isPrivate) {
-        // confirm no private layers
-        layers.forEach((layer) => {
-          if (layer.private)
-            throw new Error('Private layer not allowed in public map')
-        })
+    if (layers?.length > 0 && !isPrivate) {
+      // confirm no private layers
+      for (const layer of layers) {
+        if (layer.private)
+          throw new Error('Private layer not allowed in public map')
       }
     }
 
@@ -467,6 +466,7 @@ export default {
         .del()
       // insert layers
       const mapLayers = []
+      // eslint-disable-next-line unicorn/no-array-for-each
       layers.forEach((layer, i) => {
         mapLayers.push({
           map_id,
@@ -525,7 +525,7 @@ export default {
     user_id: number,
     group_id: string,
     isPrivate: boolean,
-    trx?: any
+    trx?: Knex.Transaction
   ): Promise<any> {
     const db = trx || knex
 
@@ -559,7 +559,10 @@ export default {
     return map_id // pass on the new map_id
   },
 
-  async getMapByShareId(share_id: string, trx?: any): Promise<any> {
+  async getMapByShareId(
+    share_id: string,
+    trx?: Knex.Transaction
+  ): Promise<any> {
     const db = trx || knex
     const result = await db('omh.maps')
       .select(
@@ -579,7 +582,7 @@ export default {
     return null
   },
 
-  async addPublicShareID(map_id: number, trx?: any): Promise<any> {
+  async addPublicShareID(map_id: number, trx?: Knex.Transaction): Promise<any> {
     const db = trx || knex
     const share_id = shortid.generate()
     await db('omh.maps')
@@ -592,7 +595,10 @@ export default {
     return share_id
   },
 
-  async removePublicShareID(map_id: number, trx?: any): Promise<any> {
+  async removePublicShareID(
+    map_id: number,
+    trx?: Knex.Transaction
+  ): Promise<any> {
     const db = trx || knex
     return db('omh.maps')
       .update({

@@ -1,7 +1,7 @@
 import knex from '../connection'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import ImageUtils from '../services/image-utils'
-import Promise from 'bluebird'
+import Bluebird from 'bluebird'
 
 const debug = DebugService('model/image')
 
@@ -191,7 +191,7 @@ export default {
     const results = await trx('omh.story_images').select('image_id').where({
       story_id
     })
-    return Promise.map(results, async (result) => {
+    return Bluebird.map(results, async (result) => {
       await trx('omh.story_images')
         .where({
           story_id,

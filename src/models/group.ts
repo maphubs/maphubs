@@ -1,15 +1,14 @@
 import knex from '../connection'
-import Promise from 'bluebird'
 import _find from 'lodash.find'
 import Account from './account'
+import Bluebird from 'bluebird'
+import { Knex } from 'knex'
+import { Group } from '../types/group'
+import { LocalizedString } from '../types/LocalizedString'
 
 export default {
-  getAllGroups(trx?: any): any {
-    let db = knex
-
-    if (trx) {
-      db = trx
-    }
+  getAllGroups(trx?: Knex.Transaction): Knex.QueryBuilder {
+    const db = trx || knex
 
     return db
       .select(
@@ -26,7 +25,7 @@ export default {
       )
   },
 
-  getPopularGroups(number: number = 15): any {
+  getPopularGroups(number = 15): Knex.QueryBuilder {
     return knex
       .select(
         'omh.groups.*',
@@ -53,7 +52,7 @@ export default {
       .limit(number)
   },
 
-  getRecentGroups(number: number = 15): any {
+  getRecentGroups(number = 15): Knex.QueryBuilder {
     return knex
       .select(
         'omh.groups.*',
@@ -77,7 +76,7 @@ export default {
       .limit(number)
   },
 
-  getFeaturedGroups(number: number = 15): any {
+  getFeaturedGroups(number = 15): Knex.QueryBuilder {
     return knex
       .select(
         'omh.groups.*',
@@ -99,7 +98,9 @@ export default {
       .limit(number)
   },
 
-  getSearchSuggestions(input: string): any {
+  async getSearchSuggestions(
+    input: string
+  ): Promise<{ name: LocalizedString; group_id: string }[]> {
     input = input.toLowerCase()
     return knex
       .select('name', 'group_id')
@@ -130,7 +131,7 @@ export default {
       )
   },
 
-  async getGroupByID(groupId: string): Promise<any> {
+  async getGroupByID(groupId: string): Promise<Group> {
     const result = await knex
       .select()
       .table('omh.groups')
@@ -144,7 +145,7 @@ export default {
     return null
   },
 
-  getSearchResults(input: string): any {
+  getSearchResults(input: string): Knex.QueryBuilder {
     input = input.toLowerCase()
     return knex
       .select(
@@ -185,7 +186,10 @@ export default {
       )
   },
 
-  async getGroupsForUser(userId: number, trx: any = null): Promise<any> {
+  async getGroupsForUser(
+    userId: number,
+    trx?: Knex.Transaction
+  ): Promise<Group[]> {
     const db = trx || knex
     const groups = await db
       .select(
@@ -206,7 +210,8 @@ export default {
         'omh.group_images.group_id'
       )
       .where('omh.group_memberships.user_id', userId)
-    return Promise.map(groups, async (group) => {
+    // eslint-disable-next-line unicorn/no-array-callback-reference
+    return Bluebird.map(groups, async (group) => {
       const status = await Account.getStatus(group.group_id, trx)
       group.account = status
       return group
@@ -229,15 +234,8 @@ export default {
     return null
   },
 
-  getGroupMembers(
-    groupId: string,
-    trx: any = null
-  ): Promise<Array<Record<string, any>>> {
-    let db = knex
-
-    if (trx) {
-      db = trx
-    }
+  getGroupMembers(groupId: string, trx?: Knex.Transaction): Knex.QueryBuilder {
+    const db = trx || knex
 
     return db
       .select(
@@ -255,7 +253,7 @@ export default {
       .where('omh.group_memberships.group_id', groupId)
   },
 
-  getGroupMembersByRole(groupId: string, role: string): any {
+  getGroupMembersByRole(groupId: string, role: string): Knex.QueryBuilder {
     return knex
       .select(
         'public.users.id',
@@ -275,7 +273,11 @@ export default {
       })
   },
 
-  addGroupMember(groupId: string, userId: number, role: string): any {
+  addGroupMember(
+    groupId: string,
+    userId: number,
+    role: string
+  ): Knex.QueryBuilder {
     return knex('omh.group_memberships').insert({
       group_id: groupId,
       user_id: userId,
@@ -283,7 +285,11 @@ export default {
     })
   },
 
-  updateGroupMemberRole(groupId: string, userId: number, role: string): any {
+  updateGroupMemberRole(
+    groupId: string,
+    userId: number,
+    role: string
+  ): Knex.QueryBuilder {
     return knex('omh.group_memberships')
       .where({
         group_id: groupId,
@@ -294,7 +300,7 @@ export default {
       })
   },
 
-  removeGroupMember(groupId: string, userId: number): any {
+  removeGroupMember(groupId: string, userId: number): Knex.QueryBuilder {
     return knex('omh.group_memberships')
       .where({
         group_id: groupId,
@@ -377,7 +383,7 @@ export default {
     description: string,
     location: string,
     published: boolean
-  ): any {
+  ): Knex.QueryBuilder {
     return knex('omh.groups').where('group_id', groupId).update({
       name,
       description,
@@ -386,8 +392,8 @@ export default {
     })
   },
 
-  async deleteGroup(groupId: string): Promise<any> {
-    return knex.transaction(async (trx) => {
+  async deleteGroup(groupId: string): Promise<boolean> {
+    return knex.transaction(async (trx: Knex.Transaction) => {
       await trx('omh.group_images')
         .where({
           group_id: groupId

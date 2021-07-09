@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
 
-import Promise from 'bluebird'
+import Bluebird from 'bluebird'
 
-const fs: typeof fs = Promise.promisifyAll(require('fs'))
+import fsNode from 'fs'
+const fs = Bluebird.promisifyAll(fsNode)
 
 import local from '../local'
 
@@ -17,7 +18,7 @@ import Crypto from 'crypto'
 const debug = DebugService('image-utils')
 
 export default {
-  processImage(image: string, req: any, res: any) {
+  processImage(image: string, req: any, res: any): void {
     if (!image) {
       res.writeHead(200, {
         'Content-Type': 'image/png',
@@ -57,15 +58,15 @@ export default {
         type: any
       } {
     const matches: any = dataString.match(/^data:([+/A-Za-z-]+);base64,(.+)$/)
-    const response = {}
 
     if (matches.length !== 3) {
       return new Error('Invalid input string')
     }
 
-    response.type = matches[1]
-    response.data = Buffer.from(matches[2], 'base64')
-    return response
+    return {
+      type: matches[1],
+      data: Buffer.from(matches[2], 'base64')
+    }
   },
 
   async resizeBase64(
@@ -74,8 +75,6 @@ export default {
     targetHeight: number,
     crop = false
   ): Promise<any> {
-    const _this = this
-
     const origFile = uuidv4() + '.png'
     const resizedFile = uuidv4() + '.png'
     const convertedFile = uuidv4() + '.jpg'
@@ -85,7 +84,7 @@ export default {
 
     try {
       // decode base64
-      const imageBuffer = _this.decodeBase64Image(dataString)
+      const imageBuffer = this.decodeBase64Image(dataString)
 
       // save it to a file
       await fs.writeFileAsync(origfilePath, imageBuffer.data)
@@ -93,16 +92,16 @@ export default {
         src: origfilePath,
         dst: resizedFilePath,
         background: 'white',
-        cropwidth: undefined,
-        cropheight: undefined,
+        cropWidth: undefined,
+        cropHeight: undefined,
         width: targetWidth,
         height: targetHeight
       }
       let resizedImage
 
       if (crop) {
-        options.cropwidth = targetWidth
-        options.cropheight = targetHeight
+        options.cropWidth = targetWidth
+        options.cropHeight = targetHeight
         debug.log('cropping')
         resizedImage = await easyimg.crop(options)
       } else {

@@ -1,6 +1,5 @@
 import MapStyles from '../components/Map/Styles'
 import knex from '../connection'
-import Promise from 'bluebird'
 import Presets from './presets'
 import assetUpload from '../services/asset-upload'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'

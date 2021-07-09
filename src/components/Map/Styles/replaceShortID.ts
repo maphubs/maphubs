@@ -1,3 +1,5 @@
+import mapboxgl from 'mapbox-gl'
+
 export default (
   oldId: string,
   newId: string,
@@ -5,23 +7,24 @@ export default (
 ): mapboxgl.Style => {
   // source
   if (style.sources[`omh-${oldId}`]) {
-    style.sources[`omh-${newId}`] = style.sources[`omh-${oldId}`]
+    style.sources[`omh-${newId}`] = style.sources[
+      `omh-${oldId}`
+    ] as mapboxgl.VectorSource
     delete style.sources[`omh-${oldId}`]
-
+    const updatedSource = style.sources[`omh-${newId}`] as mapboxgl.VectorSource
     if (
-      style.sources[`omh-${newId}`].type === 'vector' &&
-      style.sources[`omh-${newId}`].url &&
-      style.sources[`omh-${newId}`].url.endsWith('tile.json') &&
-      style.sources[`omh-${newId}`].url.startsWith('{MAPHUBS_DOMAIN}')
+      updatedSource.type === 'vector' &&
+      updatedSource.url &&
+      updatedSource.url.endsWith('tile.json') &&
+      updatedSource.url.startsWith('{MAPHUBS_DOMAIN}')
     ) {
-      style.sources[
-        `omh-${newId}`
-      ].url = `{MAPHUBS_DOMAIN}/api/lyr/${newId}/tile.json`
+      updatedSource.url = `{MAPHUBS_DOMAIN}/api/lyr/${newId}/tile.json`
     }
+    style.sources[`omh-${newId}`] = updatedSource
   }
 
   if (style.layers) {
-    style.layers = style.layers.map((layer) => {
+    style.layers = style.layers.map((layer: mapboxgl.FillLayer) => {
       if (layer.source === `omh-${oldId}`) {
         // layer id
         layer.id = layer.id.replace(oldId, newId)

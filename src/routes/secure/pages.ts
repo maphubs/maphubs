@@ -9,6 +9,7 @@ import {
 } from '../../services/error-response'
 import isAuthenticated from '../../services/auth-check'
 import pageOptions from '../../services/page-options-helper'
+import local from '../../local'
 
 const csrfProtection = csurf({
   cookie: false
@@ -32,7 +33,7 @@ export default function (app): void {
             res,
             '/pageedit',
             await pageOptions(req, {
-              title: req.__('Edit Page') + ' - ' + MAPHUBS_CONFIG.productName,
+              title: req.__('Edit Page') + ' - ' + local.productName,
               props: {
                 page_id,
                 pageConfig
@@ -63,7 +64,7 @@ export default function (app): void {
             res,
             '/configedit',
             await pageOptions(req, {
-              title: req.__('Edit Config') + ' - ' + MAPHUBS_CONFIG.productName,
+              title: req.__('Edit Config') + ' - ' + local.productName,
               props: {
                 page_id: 'config',
                 pageConfig
@@ -94,8 +95,7 @@ export default function (app): void {
             res,
             '/configedit',
             await pageOptions(req, {
-              title:
-                req.__('Edit Map Config') + ' - ' + MAPHUBS_CONFIG.productName,
+              title: req.__('Edit Map Config') + ' - ' + local.productName,
               props: {
                 page_id: 'map',
                 pageConfig

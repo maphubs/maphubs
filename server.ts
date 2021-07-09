@@ -1,12 +1,11 @@
-const local = require('./src/local')
-require('./src/services/inject-maphubs-config')
+import local from './src/local'
 const next = require('next')
 const express = require('express')
 
 const dev = process.env.NODE_ENV !== 'production'
 const nextApp = next({ dev })
 const handle = nextApp.getRequestHandler()
-
+const http = require('http')
 const passport = require('passport')
 const flash = require('connect-flash')
 const logger = require('morgan')
@@ -23,14 +22,10 @@ const KnexSessionStore = require('connect-session-knex')(session)
 const knex = require('./src/connection')
 const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
 
-const Promise = require('bluebird')
-// promise config needs to be here so it runs before anything else uses bluebird.
-Promise.config({
-  // Enable cancellation.
-  cancellation: true
-})
-
 const CMSPages = require('./src/services/cms-pages')
+import PublicRoutes from './src/routes/public-routes/index'
+import SecureRoutes from './src/routes/secure/index'
+
 nextApp
   .prepare()
   .then(async () => {
@@ -105,7 +100,7 @@ nextApp
         resave: false,
         proxy: true,
         saveUninitialized: false,
-        maxAge: 86400000,
+        maxAge: 86_400_000,
         cookie: {
           path: '/',
           domain: local.host,
@@ -142,7 +137,7 @@ nextApp
 
     // load public routes - routes that should always be public, for example login or signup
     console.log('loading public routes')
-    require('./src/routes/public-routes')(server)
+    PublicRoutes(server)
 
     // option to require require login for everything after this point
     if (local.requireLogin) {
@@ -164,7 +159,7 @@ nextApp
 
     // load secure routes
     console.log('loading secure routes')
-    require('./src/routes/secure')(server)
+    SecureRoutes(server)
 
     try {
       await CMSPages(server)
@@ -245,7 +240,6 @@ nextApp
       return handle(req, res)
     })
 
-    const http = require('http')
     const httpServer = http.createServer(server)
     httpServer.setTimeout(10 * 60 * 1000) // 10 * 60 seconds * 1000 msecs
     httpServer.listen(local.internal_port, () => {

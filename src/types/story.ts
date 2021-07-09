@@ -9,4 +9,5 @@ export type Story = {
   owned_by_group_id: string
   groupname: LocalizedString
   published_at: string
+  updated_by?: number
 }

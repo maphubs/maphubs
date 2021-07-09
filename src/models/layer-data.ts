@@ -1,4 +1,6 @@
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { Feature } from 'geojson'
+import { Knex } from 'knex'
 const debug = DebugService('layer-data')
 
 // const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
@@ -18,11 +20,9 @@ export default {
    */
   async createFeature(
     layer_id: number,
-    feature: Record<string, any>,
-    trx: any
-  ): Promise<string | void> | void {
-    const _this = this
-
+    feature: Feature,
+    trx: Knex.Transaction
+  ): Promise<string | void> {
     debug.log('creating feature')
     const result = await trx(`layers.data_${layer_id}`)
       .insert({
@@ -42,7 +42,7 @@ export default {
     if (result && result[0]) {
       const mhid = result[0]
       debug.log(`created: ${mhid}`)
-      await _this.updateLayerExtent(layer_id, trx)
+      await this.updateLayerExtent(layer_id, trx)
       return mhid
     }
   },
@@ -60,10 +60,8 @@ export default {
     layer_id: number,
     mhid: string,
     geojson: Record<string, any>,
-    trx: any
+    trx: Knex.Transaction
   ): Promise<Record<string, any>> {
-    const _this = this
-
     debug.log('updating feature: ' + mhid)
     await trx(`layers.data_${layer_id}`)
       .update({
@@ -78,7 +76,7 @@ export default {
       .where({
         mhid
       })
-    return _this.updateLayerExtent(layer_id, trx)
+    return this.updateLayerExtent(layer_id, trx)
   },
 
   /**
@@ -173,7 +171,10 @@ export default {
       .del()
   },
 
-  async updateLayerExtent(layer_id: number, trx: any): Promise<any> {
+  async updateLayerExtent(
+    layer_id: number,
+    trx: Knex.Transaction
+  ): Promise<boolean> {
     const layerTable = 'layers.data_' + layer_id
     let bbox = await trx.raw(`select 
           '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox 

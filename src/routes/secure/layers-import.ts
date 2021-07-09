@@ -21,7 +21,7 @@ import replaceShortID from '../../components/Map/Styles/replaceShortID'
 import DataLoadUtils from '../../services/data-load-utils'
 import layerViews from '../../services/layer-views'
 import pageOptions from '../../services/page-options-helper'
-import Promise from 'bluebird'
+import Bluebird from 'bluebird'
 import csurf from 'csurf'
 
 const csrfProtection = csurf({
@@ -105,7 +105,7 @@ export default function (app: any) {
                 knex.transaction(async (trx) => {
                   const keys = Object.keys(layerMap)
                   const layersList = []
-                  await Promise.mapSeries(keys, async (old_short_id) => {
+                  await Bluebird.mapSeries(keys, async (old_short_id) => {
                     const maphubsLayer = layerMap[old_short_id]
                     const presets = maphubsLayer.presets
                     // replace shortid
@@ -191,8 +191,8 @@ export default function (app: any) {
                   })
                 })
               } else if (
-                maphubsFile?.version <= 2 ||
-                maphubsFile?.type === 'layer'
+                maphubsFile.version <= 2 ||
+                maphubsFile.type === 'layer'
               ) {
                 // Version 2 only supports layers
                 const maphubsLayer = maphubsFile.layer

@@ -4,7 +4,7 @@ import LayerData from '../../models/layer-data'
 import PhotoAttachment from '../../models/photo-attachment'
 import knex from '../../connection'
 import layerViews from '../../services/layer-views'
-import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+// import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import {
   apiError,
   nextError,
@@ -16,12 +16,13 @@ import isAuthenticated from '../../services/auth-check'
 import pageOptions from '../../services/page-options-helper'
 import local from '../../local'
 import Crypto from 'crypto'
+import { LineString } from 'geojson'
 
 const csrfProtection = csurf({
   cookie: false
 })
 
-export default function (app: any) {
+export default function (app: any): void {
   app.get(
     '/feature/:layer_id/:id/*',
     csrfProtection,
@@ -194,11 +195,13 @@ export default function (app: any) {
 
         if (layer) {
           const geoJSON = await Feature.getGeoJSON(mhid, layer.layer_id)
-          geoJSON.features[0].geometry.type = 'LineString'
-          const coordinates = geoJSON.features[0].geometry.coordinates[0][0]
-          log.info(coordinates)
+          const firstFeature = geoJSON.features[0]
+          const firstGeometry = firstFeature.geometry as LineString
+          firstGeometry.type = 'LineString'
+          const coordinates = firstGeometry.coordinates[0] //[0]
+          //log.info(coordinates)
           const resultStr = JSON.stringify(geoJSON)
-          log.info(resultStr)
+          //log.info(resultStr)
 
           const hash = Crypto.createHash('md5').update(resultStr).digest('hex')
 

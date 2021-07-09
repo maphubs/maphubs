@@ -128,7 +128,7 @@ export default {
     // get color and update fill layer
     let outlineColor
     let legendColor
-    let outlineWidth = {
+    let outlineWidth: number | { base: number; stops: [number, number][] } = {
       base: 0.5,
       stops: [
         [3, 0.1],

@@ -2,7 +2,7 @@ import knex from '../../connection'
 import Layer from '../../models/layer'
 
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import { apiError } from '../../services/error-response'
+import { apiError, apiDataError } from '../../services/error-response'
 
 import turfArea from '@turf/area'
 

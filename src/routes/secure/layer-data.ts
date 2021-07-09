@@ -2,9 +2,13 @@ import Layer from '../../models/layer'
 import LayerData from '../../models/layer-data'
 import csurf from 'csurf'
 import knex from '../../connection'
-import Promise from 'bluebird'
+import Bluebird from 'bluebird'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import { apiError, notAllowedError } from '../../services/error-response'
+import {
+  apiError,
+  apiDataError,
+  notAllowedError
+} from '../../services/error-response'
 import isAuthenticated from '../../services/auth-check'
 
 const debug = DebugService('routes/layer-data')
@@ -52,7 +56,7 @@ export default function (app: any): void {
         if (data && data.layer_id && data.edits) {
           return (await Layer.allowedToModify(data.layer_id, req.user_id))
             ? knex.transaction(async (trx) => {
-                await Promise.map(data.edits, (edit) => {
+                await Bluebird.map(data.edits, (edit) => {
                   switch (edit.status) {
                     case 'create': {
                       return LayerData.createFeature(

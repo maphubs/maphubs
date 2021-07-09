@@ -3,7 +3,7 @@ import multer from 'multer'
 import ogr2ogr from 'ogr2ogr'
 import fs from 'fs'
 import Layer from '../../models/layer'
-import Promise from 'bluebird'
+import Bluebird from 'bluebird'
 import tus from 'tus-node-server'
 import { EVENTS } from 'tus-node-server'
 import express from 'express'
@@ -92,7 +92,7 @@ export default function (app: any): void {
               // eslint-disable-next-line security/detect-non-literal-fs-filename
               fs.rename(path, pathWithExt, (error) => {
                 if (error) reject(error)
-                resolve()
+                resolve(null)
               })
             })
             let importerResult
@@ -269,7 +269,7 @@ export default function (app: any): void {
               .skipfailures()
               .options(['-t_srs', 'EPSG:4326'])
               .timeout(60_000)
-            const geoJSON = await Promise.promisify(ogr.exec, {
+            const geoJSON = await Bluebird.promisify(ogr.exec, {
               context: ogr
             })()
             const result = await DataLoadUtils.storeTempGeoJSON(

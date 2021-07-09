@@ -24,6 +24,7 @@ export type AddPhotoPointStoreState = {
 }
 export default class AddPhotoPointStore extends Reflux.Store {
   state: AddPhotoPointStoreState
+  listenables: any
 
   constructor() {
     super()

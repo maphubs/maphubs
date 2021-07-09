@@ -1,6 +1,12 @@
 import mapboxgl from 'mapbox-gl'
 import Shortid from 'shortid'
 import type { Layer } from '../../../types/layer'
+
+type PatchedSymbolLayer = mapboxgl.SymbolLayer & {
+  layout: mapboxgl.SymbolLayout & {
+    'text-size'?: { base?: number; stops?: any }
+  }
+}
 export default {
   enableMarkers(
     style: mapboxgl.Style,
@@ -18,7 +24,7 @@ export default {
       let metadata = {}
       let pointLayer
       let existingMarkerLayer
-      for (const layer of style.layers) {
+      for (const layer of style.layers as PatchedSymbolLayer[]) {
         if (layer.id.startsWith('omh-markers-')) {
           existingMarkerLayer = layer
           existingMarkerLayer.layout['icon-image'] = imageName
@@ -57,8 +63,9 @@ export default {
             layer.layout['text-size'] = {}
           }
 
-          let offset =
-            layer.layout['text-size'].base / 2 + layer.paint['text-halo-width']
+          const haloWidth: number = layer.paint['text-halo-width'] as number
+
+          let offset = layer.layout['text-size'].base / 2 + haloWidth
 
           if (
             markerOptions.shape === 'MAP_PIN' ||
@@ -89,7 +96,7 @@ export default {
       }
 
       if (!existingMarkerLayer) {
-        const newLayer = {
+        const newLayer: mapboxgl.SymbolLayer = {
           id: 'omh-markers-' + shortid,
           type: 'symbol',
           metadata: {
@@ -121,51 +128,45 @@ export default {
     ) {
       // treat style as immutable and return a copy
       style = JSON.parse(JSON.stringify(style))
-      for (const layer of style.layers) {
-        if (layer.id.startsWith('omh-markers-')) {
-          if (!layer.layout) layer.layout = {}
+      for (const layer of style.layers as PatchedSymbolLayer[]) {
+        const { id } = layer
+        let { metadata, paint, layout } = layer
+
+        if (!paint) paint = {}
+        if (!layout) layout = {}
+        if (!metadata) metadata = {}
+
+        if (id.startsWith('omh-markers-')) {
+          // eslint-disable-next-line unicorn/consistent-destructuring
           layer.layout.visibility = 'none'
-        } else if (layer.id.startsWith('omh-data-point')) {
-          if (!layer.metadata) {
-            layer.metadata = {}
+        } else if (id.startsWith('omh-data-point')) {
+          if (!metadata['maphubs:markers']) {
+            metadata['maphubs:markers'] = {}
           }
 
-          if (!layer.metadata['maphubs:markers']) {
-            layer.metadata['maphubs:markers'] = {}
-          }
-
-          layer.metadata['maphubs:markers'].enabled = false
+          metadata['maphubs:markers'].enabled = false
 
           // re-enable mapbox-gl interaction
-          if (layer.metadata['maphubs:markers'].interactive) {
-            layer.metadata['maphubs:interactive'] = true
+          if (metadata['maphubs:markers'].interactive) {
+            metadata['maphubs:interactive'] = true
           }
 
-          if (!layer.layout) layer.layout = {}
-          layer.layout.visibility = 'visible'
+          layout.visibility = 'visible'
         } else if (layer.id.startsWith('omh-label')) {
           // restore label offset
-          if (!layer.paint) {
-            layer.paint = {}
+
+          if (!paint['text-translate']) {
+            paint['text-translate'] = [0, 0]
           }
 
-          if (!layer.layout) {
-            layer.layout = {}
+          if (!layout['text-size']) {
+            layout['text-size'] = { base: 0 }
           }
 
-          if (!layer.paint['text-translate']) {
-            layer.paint['text-translate'] = [0, 0]
-          }
-
-          if (!layer.layout['text-size']) {
-            layer.layout['text-size'] = {}
-          }
-
-          layer.paint['text-translate'][1] = 0 - layer.layout['text-size'].base
+          paint['text-translate'][1] = 0 - layout['text-size'].base
         } else {
           // re-enable other layers
-          if (!layer.layout) layer.layout = {}
-          layer.layout.visibility = 'visible'
+          layout.visibility = 'visible'
         }
       }
     }

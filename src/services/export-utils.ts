@@ -5,7 +5,7 @@ import Pbf from 'pbf'
 import { apiError } from '../services/error-response'
 import local from '../local'
 import moment from 'moment'
-import Promise from 'bluebird'
+import Bluebird from 'bluebird'
 import Crypto from 'crypto'
 
 const version = require('../../version.json').version
@@ -99,7 +99,7 @@ export default {
           features: [],
           maphubs: {}
         }
-        await Promise.mapSeries(mapLayers, async (layer) => {
+        await Bluebird.mapSeries(mapLayers, async (layer) => {
           if (!layer.is_external && !layer.remote) {
             const layerGeoJSON = await Layer.getGeoJSON(layer.layer_id)
 

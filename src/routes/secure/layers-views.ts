@@ -66,8 +66,7 @@ export default function (app: any) {
       const user_id = req.session.user.maphubsUser.id
       knex
         .transaction(async (trx) => {
-          let layer_id = await Layer.createLayer(user_id, trx)
-          layer_id = Number.parseInt(layer_id, 10)
+          const layer_id = await Layer.createLayer(user_id, trx)
           return app.next.render(
             req,
             res,
@@ -262,8 +261,7 @@ export default function (app: any) {
         const allowed = await Layer.allowedToModify(layer_id, user_id)
         const layer = await Layer.getLayerByID(layer_id)
 
-        if (layer && (allowed || layer.allowPublicSubmission)) {
-          // placeholder for public submission flag on layers
+        if (layer && allowed) {
           return layer.data_type === 'point' && !layer.is_external
             ? app.next.render(
                 req,

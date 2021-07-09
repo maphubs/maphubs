@@ -1,15 +1,20 @@
 import knex from '../connection'
 
-import Promise from 'bluebird'
+import Bluebird from 'bluebird'
 
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import { Knex } from 'knex'
 
 const debug = DebugService('layer-views')
 
 export default {
-  async replaceViews(layer_id, presets, trx): Promise<boolean> {
+  async replaceViews(
+    layer_id: number,
+    presets: any,
+    trx: Knex.Transaction
+  ): Promise<boolean> {
     debug.log('replace views for layer: ' + layer_id)
 
     try {
@@ -21,7 +26,7 @@ export default {
     }
   },
 
-  async dropLayerViews(layer_id: number, trx?: any) {
+  async dropLayerViews(layer_id: number, trx?: Knex.Transaction) {
     debug.log('drop views for layer: ' + layer_id)
     const db = trx || knex
 
@@ -29,7 +34,7 @@ export default {
       `DROP VIEW IF EXISTS layers.centroids_${layer_id}`,
       `DROP VIEW IF EXISTS layers.data_full_${layer_id}`
     ]
-    return Promise.each(commands, (command) => {
+    return Bluebird.each(commands, (command) => {
       return db.raw(command).catch((err) => {
         log.error(err.message) // don't propagate errors in case we are recovering from a incomplete layer
       })
@@ -39,7 +44,11 @@ export default {
     })
   },
 
-  createLayerViews(layer_id, presets, trx?: any) {
+  async createLayerViews(
+    layer_id: number,
+    presets,
+    trx?: Knex.Transaction
+  ): Promise<boolean> {
     const db = trx || knex
 
     return db('omh.layers')
@@ -80,7 +89,7 @@ export default {
         FROM layers.data_full_${layer_id};`)
         }
 
-        return Promise.each(commands, (command) => {
+        return Bluebird.each(commands, (command) => {
           return db.raw(command)
         }).catch((err) => {
           log.error(err.message)

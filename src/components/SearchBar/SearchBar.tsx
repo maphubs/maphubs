@@ -1,7 +1,6 @@
 import React from 'react'
 import { Row, Input } from 'antd'
 import Suggestions from './Suggestions'
-import Promise from 'bluebird'
 const { Search } = Input
 type Suggestion = {
   key: string

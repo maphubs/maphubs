@@ -16,7 +16,7 @@ import fs from 'fs'
 
 import LayerViews from './layer-views'
 
-import Promise from 'bluebird'
+import Bluebird from 'bluebird'
 
 import ogr2ogr from 'ogr2ogr'
 
@@ -141,7 +141,7 @@ export default {
         `PG:host=${local.database.host} user=${local.database.user} dbname=${local.database.database} password=${local.database.password}`
       )
       .timeout(1200000)
-    await Promise.promisify(ogr.exec, {
+    await Bluebird.promisify(ogr.exec, {
       context: ogr
     })()
     return knex.transaction(async (trx) => {

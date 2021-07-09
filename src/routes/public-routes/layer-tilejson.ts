@@ -3,7 +3,7 @@ import Locales from '../../services/locales'
 import Layer from '../../models/layer'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import { apiError } from '../../services/error-response'
-import manetCheck from '../../services/manet-check'
+import { manetCheck } from '../../services/manet-check'
 import local from '../../local'
 
 /*
@@ -23,6 +23,7 @@ export default function (app: any) {
     const legend = layer.legend_html ? layer.legend_html : name
 
     if (layer.is_external && layer.external_layer_config.type === 'raster') {
+      // eslint-disable-next-line unicorn/numeric-separators-style
       let bounds = [-180, -85.05112877980659, 180, 85.0511287798066]
 
       if (layer.external_layer_config.bounds) {
@@ -65,6 +66,7 @@ export default function (app: any) {
       layer.is_external &&
       layer.external_layer_config.type === 'vector'
     ) {
+      // eslint-disable-next-line unicorn/numeric-separators-style
       let bounds = [-180, -85.05112877980659, 180, 85.0511287798066]
       if (layer.extent_bbox) bounds = layer.extent_bbox
       const minzoom = layer.external_layer_config.minzoom
@@ -98,6 +100,7 @@ export default function (app: any) {
       }
       return res.status(200).send(tileJSON)
     } else if (!layer.is_external) {
+      // eslint-disable-next-line unicorn/numeric-separators-style
       let bounds = [-180, -85.05112877980659, 180, 85.0511287798066]
       if (layer.extent_bbox) bounds = layer.extent_bbox
       const minzoom = 0
@@ -157,7 +160,7 @@ export default function (app: any) {
       if (layer) {
         if (
           !local.requireLogin || // login not required
-          manetCheck.check(req) || // or is screenshot service
+          manetCheck(req) || // or is screenshot service
           user_id > 0 // or is logged in
         ) {
           completeLayerTileJSONRequest(req, res, layer)
@@ -187,7 +190,7 @@ export default function (app: any) {
         if (
           !local.requireLogin || // login not required
           isShared || // in public shared map
-          manetCheck.check(req) || // screenshot service
+          manetCheck(req) || // screenshot service
           user_id > 0 // logged in
         ) {
           completeLayerTileJSONRequest(req, res, layer)

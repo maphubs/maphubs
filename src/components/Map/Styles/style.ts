@@ -7,11 +7,22 @@ import _forEachRight from 'lodash.foreachright'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import mapboxgl from 'mapbox-gl'
 const debug = DebugService('MapStyles/style')
+
+type MapHubsSource = {
+  data?: mapboxgl.GeoJSONSourceOptions['data']
+  type:
+    | mapboxgl.Source['type']
+    | 'ags-mapserver-query'
+    | 'ags-mapserver-tiles'
+    | 'ags-featureserver-query'
+  url: string
+  tiles?: string[]
+}
 export default {
   defaultStyle(
     layer_id: number,
     shortid: string,
-    source: mapboxgl.Source,
+    source: string,
     dataType: string
   ): mapboxgl.Style {
     const settings = Settings.defaultLayerSettings()
@@ -29,7 +40,7 @@ export default {
   styleWithColor(
     layer_id: number,
     shortid: string,
-    source: mapboxgl.Source,
+    source: MapHubsSource,
     color: string,
     dataType: string,
     interactive: boolean,
@@ -165,7 +176,7 @@ export default {
   getMapboxStyle(mapboxid: string): mapboxgl.Style {
     // Note: we are treating a mapbox style as a special type of "source"
     // it will be converted to sources and layers when the map loads by downloading the style json from the Mapbox API
-    const style: mapboxgl.Style = {
+    const style = {
       version: 8,
       sources: {},
       layers: [
@@ -179,7 +190,7 @@ export default {
       type: 'mapbox-style',
       mapboxid
     }
-    return style
+    return style as mapboxgl.Style
   },
 
   buildMapStyle(layers: Array<Layer>): mapboxgl.Style {

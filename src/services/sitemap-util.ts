@@ -4,7 +4,7 @@ import Story from '../models/story'
 import Map from '../models/map'
 import Group from '../models/group'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import Promise from 'bluebird'
+import Bluebird from 'bluebird'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import knex from '../connection'
 import moment from 'moment'
@@ -18,7 +18,7 @@ export default {
       remote: true
     })
     const urls = []
-    await Promise.map(
+    await Bluebird.map(
       layers,
       async (layer) => {
         try {

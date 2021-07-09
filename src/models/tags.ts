@@ -1,11 +1,9 @@
-import { $Call } from 'utility-types'
-
 import knex from '../connection'
-
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import { Knex } from 'knex'
 
 export default {
-  async checkIfExists(tag: string, trx?: any): Promise<boolean> {
+  async checkIfExists(tag: string, trx?: Knex.Transaction): Promise<boolean> {
     const db = trx || knex
     const result = await db('omh.tags').select('tag').where({
       tag
@@ -18,7 +16,7 @@ export default {
     return false
   },
 
-  async addTag(tag: string, trx?: any): Promise<boolean> {
+  async addTag(tag: string, trx?: Knex.Transaction): Promise<boolean> {
     const db = trx || knex
 
     return (await this.checkIfExists(tag, db))
@@ -31,7 +29,7 @@ export default {
   async addStoryTag(
     tag: string,
     story_id: number,
-    trx?: any
+    trx?: Knex.Transaction
   ): Promise<boolean> {
     const db = trx || knex
     await this.addTag(tag, db)
@@ -44,8 +42,8 @@ export default {
   async updateStoryTags(
     tags: Array<string>,
     story_id: number,
-    trx?: any
-  ): Promise<Array<$Call<<T>(p: Promise<T> | T) => T, unknown>>> {
+    trx?: Knex.Transaction
+  ): Promise<boolean[]> {
     const db = trx || knex
     log.info(`updating tags for story: ${story_id}`)
     const results = await db('omh.story_tags').select('tag').where({
@@ -81,8 +79,8 @@ export default {
   async updateMapTags(
     tags: Array<string>,
     map_id: number,
-    trx?: any
-  ): Promise<Array<$Call<<T>(p: Promise<T> | T) => T, unknown>>> {
+    trx?: Knex.Transaction
+  ): Promise<boolean[]> {
     const db = trx || knex
     log.info(`updating tags for map: ${map_id}`)
     const results = await db('omh.map_tags').select('tag').where({
@@ -115,7 +113,11 @@ export default {
     )
   },
 
-  async addMapTag(tag: string, map_id: number, trx?: any): Promise<any> {
+  async addMapTag(
+    tag: string,
+    map_id: number,
+    trx?: Knex.Transaction
+  ): Promise<boolean> {
     const db = trx || knex
     await this.addTag(tag, db)
     return db('omh.map_tags').insert({

@@ -1,14 +1,12 @@
 import _bbox from '@turf/bbox'
+import request from 'superagent'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 
-const request = require('superagent')
+import arcgis from 'terraformer-arcgis-parser'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'terraformerGL'
-)
+import jsonp from 'superagent-jsonp' // tools to map ArcGIS data to geoJSON for MapboxGL
 
-const arcgis = require('terraformer-arcgis-parser')
-
-const jsonp = require('superagent-jsonp') // tools to map ArcGIS data to geoJSON for MapboxGL
+const debug = DebugService('terraformerGL')
 
 export default {
   getArcGISGeoJSON(url: string): any {
@@ -67,9 +65,7 @@ export default {
   },
 
   // http://gis.stackexchange.com/a/107660/14089
-  convertAGSData(
-    data: Record<string, any>
-  ): {
+  convertAGSData(data: Record<string, any>): {
     features: Array<any>
     type: string
   } {

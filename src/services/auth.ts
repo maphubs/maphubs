@@ -1,11 +1,10 @@
 import passport from 'passport'
 import local from '../local'
-import AuthUsers from './auth-db/users'
+import { findUser, findUserByEmail } from './auth-db/users'
 import _find from 'lodash.find'
 import User from '../models/user'
 import Admin from '../models/admin'
 import Auth0Helper from '../services/auth0-helper'
-import Promise from 'bluebird'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import shortid from 'shortid'
 import Auth0Strategy from 'passport-auth0'
@@ -61,7 +60,7 @@ const createMapHubsUser = async function (profile: Record<string, any>) {
   log.info(`Created new MapHubs user ${display_name} with id ${user_id}`)
   await saveMapHubsIDToAuth0(profile, user_id)
   // eslint-disable-next-line unicorn/no-fn-reference-in-iterator
-  const maphubsUser = await AuthUsers.find(user_id)
+  const maphubsUser = await findUser(user_id)
   // attach MapHubs User
   profile.maphubsUser = {
     id: maphubsUser.id,
@@ -77,7 +76,17 @@ const createMapHubsUser = async function (profile: Record<string, any>) {
 
 Auth0Strategy.prototype.authorizationParams = function (options) {
   options = options || {}
-  var params = {}
+  const params: {
+    connection?: any
+    connection_scope?: any
+    audience?: any
+    prompt?: any
+    login_hint?: any
+    acr_values?: any
+    max_age?: any
+    nonce?: any
+    screen_hint?: any
+  } = {}
 
   if (options.connection && typeof options.connection === 'string') {
     params.connection = options.connection
@@ -106,7 +115,7 @@ Auth0Strategy.prototype.authorizationParams = function (options) {
     params.acr_values = options.acr_values
   }
 
-  var strategyOptions = this.options
+  const strategyOptions = this.options
 
   if (strategyOptions && typeof strategyOptions.maxAge === 'number') {
     params.max_age = strategyOptions.maxAge
@@ -152,7 +161,7 @@ const strategy = new Auth0Strategy(
 
     if (host && host.user_id) {
       // local user already linked
-      return AuthUsers.find(host.user_id)
+      return findUser(host.user_id)
         .then(async (maphubsUser) => {
           if (maphubsUser.id !== '1' && local.requireInvite) {
             const allowed = await Admin.checkInviteEmail(maphubsUser.email)
@@ -178,7 +187,7 @@ const strategy = new Auth0Strategy(
     } else {
       log.warn(`local user not linked: ${profile._json.email}`)
       // attempt to lookup user by email
-      return AuthUsers.findByEmail(profile._json.email)
+      return findUserByEmail(profile._json.email)
         .then(async (maphubsUser) => {
           if (maphubsUser) {
             if (maphubsUser.id !== '1' && local.requireInvite) {
@@ -206,10 +215,10 @@ const strategy = new Auth0Strategy(
               : Admin.checkInviteConfirmed(profile._json.email).then(
                   (confirmed) => {
                     if (confirmed) {
-                      return createMapHubsUser(profile)
+                      return Promise.resolve(createMapHubsUser(profile))
                     } else {
                       log.warn(`unauthorized user: ${profile._json.email}`)
-                      return false
+                      return Promise.resolve(false)
                     }
                   }
                 )

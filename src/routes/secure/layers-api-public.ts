@@ -98,7 +98,7 @@ export default function (app: any) {
 
       // inject this site's URL into the style source, to support remote layers
       for (const key of Object.keys(layer.style.sources)) {
-        const source = layer.style.sources[key]
+        const source = layer.style.sources[key] as mapboxgl.VectorSource
 
         if (source.url) {
           source.url = source.url.replace(

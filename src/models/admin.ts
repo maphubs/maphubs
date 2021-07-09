@@ -4,6 +4,7 @@ import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import Email from '@bit/kriscarle.maphubs-utils.maphubs-utils.email-util'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import local from '../local'
+import { Knex } from 'knex'
 
 const debug = DebugService('models/user')
 
@@ -149,7 +150,7 @@ export default {
     return result && result.length === 1 ? result[0].email : null
   },
 
-  getMembers(trx?: any): any {
+  getMembers(trx?: Knex.Transaction): any {
     const db = trx || knex
     return db('users')
       .fullOuterJoin(
@@ -170,14 +171,14 @@ export default {
       .orderBy('users.id')
   },
 
-  getAdmins(trx: any): any {
+  getAdmins(trx?: Knex.Transaction): any {
     const db = trx || knex
     return db('omh.admins')
       .leftJoin('users', 'omh.admins.user_id', 'users.id')
       .select('users.id', 'users.email', 'users.display_name')
   },
 
-  deauthorize(email: string, key: string, trx: any): any {
+  deauthorize(email: string, key: string, trx?: Knex.Transaction): any {
     const db = trx || knex
     return db('omh.account_invites').del().where({
       email,
@@ -185,7 +186,7 @@ export default {
     })
   },
 
-  async checkAdmin(userId: number, trx?: any): Promise<boolean> {
+  async checkAdmin(userId: number, trx?: Knex.Transaction): Promise<boolean> {
     const db = trx || knex
     const result = await db('omh.admins').select('user_id').where({
       user_id: userId

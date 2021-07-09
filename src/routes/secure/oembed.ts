@@ -1,7 +1,6 @@
 import Locales from '../../services/locales'
 import Map from '../../models/map'
 import User from '../../models/user'
-import libxml from 'libxmljs'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import { apiError } from '../../services/error-response'
@@ -41,6 +40,9 @@ export default function (app): void {
           }
 
           if (format === 'xml') {
+            res.status(501).send('Ombed XML not available, please use JSON')
+            //TODO: write oembed XML using a JS only XML builder to avoid libxml
+            /*
             const doc = new libxml.Document()
             doc
               .node('oembed')
@@ -76,6 +78,7 @@ export default function (app): void {
               .parent()
             res.header('Content-Type', 'text/xml')
             return res.send(doc.toString())
+            */
           } else {
             // just use JSON
             return res.status(200).send(oembed)

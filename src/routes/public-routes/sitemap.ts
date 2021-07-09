@@ -2,9 +2,9 @@ import local from '../../local'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import siteMapUtil from '../../services/sitemap-util'
 import { nextError } from '../../services/error-response'
-import { SitemapStream, buildSitemapIndex } from 'sitemap'
+import { SitemapStream, SitemapIndexStream } from 'sitemap'
 
-export default function (app: any) {
+export default function (app: any): void {
   app.get('/robots.txt', (req, res) => {
     res.type('text/plain')
 
@@ -32,11 +32,17 @@ Disallow: /xml/map/*
       if (local.requireLogin) return res.status(404).send()
       const baseUrl = urlUtil.getBaseUrl()
       const layerUrls = await siteMapUtil.getSiteMapIndexFeatureURLs()
-      const smi = buildSitemapIndex({
-        urls: [`${baseUrl}/sitemap.xml`, ...layerUrls]
-      })
+      const smis = new SitemapIndexStream()
+      smis.write({ url: `${baseUrl}/sitemap.xml` })
+      for (const url of layerUrls) {
+        smis.write({ url })
+      }
+      smis.end()
+      // send the response
       res.header('Content-Type', 'application/xml')
-      return res.send(smi)
+      smis.pipe(res).on('error', (e) => {
+        throw e
+      })
     } catch (err) {
       nextError(next)(err)
     }

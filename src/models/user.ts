@@ -13,7 +13,12 @@ export default {
    */
   async getUser(id: number, secure = false): Promise<any> {
     debug.log('getting for id: ' + id)
-    let user = {}
+    let user: {
+      creation_ip?: string
+      new_email?: string
+      pass_crypt?: string
+      pass_reset?: string
+    } = {}
     const result = await knex('users').where('id', id)
 
     if (!result || result.length !== 1) {

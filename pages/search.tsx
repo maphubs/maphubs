@@ -1,4 +1,5 @@
 import React from 'react'
+import Head from 'next/head'
 import Header from '../src/components/header'
 import Footer from '../src/components/footer'
 import { Row, message, notification } from 'antd'
@@ -35,22 +36,6 @@ type State = {
   searchCards: Array<CardConfig>
 }
 export default class Search extends React.Component<Props, State> {
-  static async getInitialProps({
-    req,
-    query
-  }: {
-    req: any
-    query: Record<string, any>
-  }): Promise<any> {
-    const isServer = !!req
-
-    if (isServer) {
-      return query.props
-    } else {
-      console.error('getInitialProps called on client')
-    }
-  }
-
   state: State = {
     searchResult: null,
     searchCards: []
@@ -191,50 +176,56 @@ export default class Search extends React.Component<Props, State> {
       ...stories.map((s) => cardUtil.getStoryCard(s, this.t))
     ])
   }
+  t = (v) => v
 
   render(): JSX.Element {
     const { t, props, state, handleSearch } = this
     const { headerConfig, footerConfig } = props
     const { searchCards } = state
     return (
-      <ErrorBoundary>
-        <Header {...headerConfig} />
-        <main
-          style={{
-            margin: 0
-          }}
-        >
-          <Row>
-            <div
-              ref='search'
-              className='container'
-              style={{
-                height: '55px',
-                paddingTop: '10px'
-              }}
-            >
-              <SearchBox
-                label={t('Search') + ' ' + MAPHUBS_CONFIG.productName}
-                onSearch={handleSearch}
-                onReset={() => {
-                  this.onResetSearch()
-                }}
-              />
-            </div>
-          </Row>
-          <Row
+      <>
+        <Head>
+          <title>{`t('Search') - ${MAPHUBS_CONFIG.productName}`}</title>
+        </Head>
+        <ErrorBoundary>
+          <Header {...headerConfig} />
+          <main
             style={{
-              height: 'calc(100% - 50px)',
-              minHeight: '200px'
+              margin: 0
             }}
           >
-            {searchCards && searchCards.length > 0 && (
-              <CardCollection cards={searchCards} t={t} />
-            )}
-          </Row>
-        </main>
-        <Footer t={t} {...footerConfig} />
-      </ErrorBoundary>
+            <Row>
+              <div
+                ref='search'
+                className='container'
+                style={{
+                  height: '55px',
+                  paddingTop: '10px'
+                }}
+              >
+                <SearchBox
+                  label={t('Search') + ' ' + MAPHUBS_CONFIG.productName}
+                  onSearch={handleSearch}
+                  onReset={() => {
+                    this.onResetSearch()
+                  }}
+                />
+              </div>
+            </Row>
+            <Row
+              style={{
+                height: 'calc(100% - 50px)',
+                minHeight: '200px'
+              }}
+            >
+              {searchCards && searchCards.length > 0 && (
+                <CardCollection cards={searchCards} t={t} />
+              )}
+            </Row>
+          </main>
+          <Footer t={t} {...footerConfig} />
+        </ErrorBoundary>
+      </>
     )
   }
 }

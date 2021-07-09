@@ -6,6 +6,7 @@ import pageOptions from './page-options-helper'
 import local from '../local'
 import { Layer as LayerType } from '../types/layer'
 import { Story as StoryType } from '../types/story'
+import { Group as GroupType } from '../types/group'
 
 export default async function (
   app: any,
@@ -14,7 +15,7 @@ export default async function (
   res: any
 ): Promise<unknown> {
   const results: {
-    map: any
+    map?: any
     layers?: LayerType[]
     featuredLayers?: LayerType[]
     popularLayers?: LayerType[]
@@ -22,6 +23,12 @@ export default async function (
     popularStories?: StoryType[]
     featuredStories?: StoryType[]
     recentStories?: StoryType[]
+    featuredGroups?: GroupType[]
+    popularGroups?: GroupType[]
+    recentGroups?: GroupType[]
+    featuredMaps?: any[]
+    popularMaps?: any[]
+    recentMaps?: any[]
   } = {}
 
   // use page config to determine data requests

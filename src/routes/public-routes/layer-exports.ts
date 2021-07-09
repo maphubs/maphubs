@@ -1,7 +1,7 @@
 import exportUtils from '../../services/export-utils'
 import Layer from '../../models/layer'
 import { apiError } from '../../services/error-response'
-import manetCheck from '../../services/manet-check'
+import { manetCheck } from '../../services/manet-check'
 import local from '../../local'
 
 export default (app: any) => {
@@ -20,7 +20,7 @@ export default (app: any) => {
       if (
         !local.requireLogin || // login not required
         isShared || // in public shared map
-        manetCheck.check(req) || // screenshot service
+        manetCheck(req) || // screenshot service
         user_id > 0 // logged in
       ) {
         const geoJSON = await Layer.getGeoJSON(layer.layer_id)
@@ -44,15 +44,12 @@ export default (app: any) => {
       const isShared = await Layer.isSharedInPublicMap(shortid)
       const layer = await Layer.getLayerByShortID(shortid)
 
-      if (local.requireLogin) {
-        return isShared || // in public shared map
-          manetCheck.check(req) || // screenshot service
-          (user_id > 0 && (await privateLayerCheck(layer.layer_id, user_id)))
-          ? exportUtils.completeGeoBufExport(req, res, layer.layer_id)
-          : res.status(404).send()
-      } else {
-        return exportUtils.completeGeoBufExport(req, res, layer.layer_id)
-      }
+      return !local.requireLogin || // login not required
+        isShared || // in public shared map
+        manetCheck(req) || // screenshot service
+        user_id > 0
+        ? exportUtils.completeGeoBufExport(req, res, layer.layer_id)
+        : res.status(404).send()
     } catch (err) {
       apiError(res, 200)(err)
     }

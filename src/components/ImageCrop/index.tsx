@@ -1,7 +1,5 @@
 import React from 'react'
-
 import { Row, Modal, Button, notification, Upload } from 'antd'
-import Promise from 'bluebird'
 import 'cropperjs/dist/cropper.css'
 import $ from 'jquery'
 import ImageCropToolbar from './ImageCropToolbar'
@@ -115,7 +113,7 @@ export default class ImageCrop extends React.Component<Props, State> {
       visible: true
     })
   }
-  checkFileSize = (file: Record<string, any>): void => {
+  checkFileSize = (file: Record<string, any>): Promise<void> => {
     const { t } = this
 
     const _this = this

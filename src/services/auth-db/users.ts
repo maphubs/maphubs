@@ -1,10 +1,9 @@
-const knex = require('../../connection')
+import knex from '../../connection'
 
-const log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'oauth-db/users'
-)
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+const debug = DebugService('oauth-db/users')
 
 function translateUserObject(data: Record<string, any>) {
   const user = {
@@ -17,7 +16,7 @@ function translateUserObject(data: Record<string, any>) {
   return user
 }
 
-exports.find = function (id: number): any {
+const findUser = function (id: number): any {
   debug.log('find by id: ' + id)
   return knex
     .select('*')
@@ -37,7 +36,7 @@ exports.find = function (id: number): any {
     })
 }
 
-exports.findByEmail = function (email: string): any {
+const findUserByEmail = function (email: string): any {
   debug.log(`find by email: ${email}`)
   return knex
     .select('*')
@@ -57,3 +56,4 @@ exports.findByEmail = function (email: string): any {
       throw err
     })
 }
+export { findUser, findUserByEmail }

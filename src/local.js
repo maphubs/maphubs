@@ -10,7 +10,9 @@ if (!tempPath || tempPath === 'undefined') {
 
 var local = {
   connection: {
-    url: `postgres://${getenv('DB_USER')}:${getenv('DB_PASS')}@${getenv('DB_HOST')}:${getenv('DB_PORT')}/${getenv('DB_DATABASE')}`
+    url: `postgres://${getenv('DB_USER')}:${getenv('DB_PASS')}@${getenv(
+      'DB_HOST'
+    )}:${getenv('DB_PORT')}/${getenv('DB_DATABASE')}`
   },
   host: getenv('OMH_HOST'),
   host_internal: getenv('OMH_HOST_INTERNAL'),
@@ -39,7 +41,6 @@ var local = {
   PLANET_LABS_API_KEY: getenv('PLANET_LABS_API_KEY'),
   DG_WMS_CONNECT_ID: getenv('DG_WMS_CONNECT_ID'),
   BING_KEY: getenv('BING_API_KEY'),
-  SENTRY_DSN_PUBLIC: getenv('OMH_SENTRY_DSN_PUBLIC'),
   theme: getenv('OMH_THEME'),
   themeUrl: getenv('OMH_THEME_URL', ''),
   enableUserExport: getenv.bool('OMH_ENABLE_USER_EXPORT', false),
@@ -50,7 +51,6 @@ var local = {
   TILEHOSTING_GEOCODING_API_KEY: getenv('TILEHOSTING_GEOCODING_API_KEY'),
   TILEHOSTING_MAPS_API_KEY: getenv('TILEHOSTING_MAPS_API_KEY'),
   OPENROUTESERVICE_API_KEY: getenv('OPENROUTESERVICE_API_KEY'),
-  SENTRY_DSN: getenv('OMH_SENTRY_DSN'),
   useLocalAuth: getenv.bool('OMH_USE_LOCAL_AUTH', false),
   AUTH0_CLIENT_ID: getenv('AUTH0_CLIENT_ID'),
   AUTH0_CLIENT_SECRET: getenv('AUTH0_CLIENT_SECRET'),
@@ -83,7 +83,10 @@ var local = {
   ASSET_UPLOAD_API: getenv('ASSET_UPLOAD_API'),
   ASSET_UPLOAD_API_KEY: getenv('ASSET_UPLOAD_API_KEY'),
   LANGUAGES: getenv('LANGUAGES', 'en,fr,es,pt,id,it,de'),
-  RASTER_UPLOAD_FILE_SIZE_LIMIT: getenv.int('RASTER_UPLOAD_FILE_SIZE_LIMIT', 157286400),
+  RASTER_UPLOAD_FILE_SIZE_LIMIT: getenv.int(
+    'RASTER_UPLOAD_FILE_SIZE_LIMIT',
+    157286400
+  ),
   HIDE_FEEDBACK: getenv.bool('HIDE_FEEDBACK', false)
 }
 

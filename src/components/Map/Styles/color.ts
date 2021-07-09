@@ -2,6 +2,13 @@ import Shortid from 'shortid'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import mapboxgl from 'mapbox-gl'
 const debug = DebugService('map-styles-color')
+type CircleLineFillLayer =
+  | mapboxgl.CircleLayer
+  | mapboxgl.LineLayer
+  | mapboxgl.FillLayer
+type LayerWithMeta = CircleLineFillLayer & {
+  metatdata: any
+}
 export default {
   // attempt to update a style color without recreating other parts of the style
   // needed for custom style support
@@ -23,7 +30,7 @@ export default {
       glStyle = JSON.parse(JSON.stringify(glStyle))
       let markerImageName
       let markerLayer
-      for (const glLayer of glStyle.layers) {
+      for (const glLayer of glStyle.layers as LayerWithMeta[]) {
         const { id, type, metadata, paint } = glLayer
 
         // patch old outline-only layers

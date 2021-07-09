@@ -22,9 +22,10 @@ services:
       - '../iD:/app/iD'
       - './deploy:/app/deploy'
   db:
+    platform: linux/arm64
     build:
       context: ./db-server
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.arm
     env_file:
       - ./env/dev/db.env
       - ./env/dev/secret/db-pass.env
@@ -45,6 +46,23 @@ services:
       - 'db-data-replica:/var/lib/postgresql/data'
     ports:
       - '5433:5432'
+    depends_on:
+      - db
+  tiles:
+    build:
+      context: ../maphubs-tileserver
+    env_file:
+      - ./env/dev/host.env
+      - ./env/dev/db.env
+      - ./env/dev/secret/db-pass.env
+      - ./env/dev/tiles.env
+      - ./env/dev/secret/web-secret.env
+    volumes:
+      - '../maphubs-tileserver/data:/data'
+      - '../maphubs-tileserver/logs:/logs'
+    ports:
+      - '4001:4001'
+    restart: always
     depends_on:
       - db
   screenshots:

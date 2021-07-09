@@ -46,4 +46,7 @@ export type Layer = {
   complete?: boolean
   canEdit?: boolean
   presets?: any
+  last_updated?: string
+  created_by_user_id?: number
+  updated_by_user_id?: number
 }

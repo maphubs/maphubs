@@ -6,7 +6,6 @@ import _map from 'lodash.map'
 import _find from 'lodash.find'
 import _isequal from 'lodash.isequal'
 import _intersection from 'lodash.intersection'
-import Promise from 'bluebird'
 import LayerSources from '../Sources'
 import mapboxgl from 'mapbox-gl'
 type SourceDriverType = {

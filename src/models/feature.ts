@@ -1,13 +1,14 @@
 import knex from '../connection'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import { Feature, FeatureCollection } from 'geojson'
+import { Knex } from 'knex'
 const debug = DebugService('feature')
 
 export default {
   async getFeatureNotes(
     mhid: string,
     layerId: number,
-    trx?: any
+    trx?: Knex.Transaction
   ): Promise<any> {
     const db = trx || knex
     const result = await db('omh.feature_notes').select('notes').where({
@@ -27,7 +28,7 @@ export default {
     layerId: number,
     userId: number,
     notes: string,
-    trx: any
+    trx?: Knex.Transaction
   ): Promise<any> {
     const db = trx || knex
     const result = await db('omh.feature_notes').select('mhid').where({
@@ -67,7 +68,7 @@ export default {
   async getGeoJSON(
     mhid: string,
     layerId: number,
-    trx?: any
+    trx?: Knex.Transaction
   ): Promise<FeatureCollection> {
     const db = trx || knex
     const layerTable = 'layers.data_' + layerId

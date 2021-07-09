@@ -22,7 +22,7 @@ import features from './features'
 import isochroneService from './isochrone-service'
 import layersImport from './layers-import'
 import mapViews from './map-views'
-import search from './search'
+//import search from './search'
 import groupsApi from './groups-api'
 import layerData from './layer-data'
 import layersRemote from './layers-remote'
@@ -54,7 +54,7 @@ export default function (app: any): void {
   isochroneService(app)
   layersImport(app)
   mapViews(app)
-  search(app)
+  //search(app)
   groupsApi(app)
   layerData(app)
   layersRemote(app)

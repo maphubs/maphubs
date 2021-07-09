@@ -3,6 +3,8 @@ import Group from './group'
 import Tags from './tags'
 
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { Knex } from 'knex'
+import { Story } from '../types/story'
 const debug = DebugService('model/story')
 
 export default {
@@ -42,12 +44,16 @@ export default {
       .groupBy('omh.stories.story_id', 'omh.groups.name')
   },
 
-  getAllStories(trx?: any): any {
+  getAllStories(trx?: Knex.Transaction): Knex.QueryBuilder {
     const query = this.getStoriesBaseQuery(trx)
     return query.where('omh.stories.published', true)
   },
 
-  getGroupStories(group_id: string, canEdit: boolean, trx?: any): any {
+  async getGroupStories(
+    group_id: string,
+    canEdit: boolean,
+    trx?: Knex.Transaction
+  ): Promise<Story[]> {
     const query = this.getStoriesBaseQuery(trx)
     query.where('omh.stories.owned_by_group_id', group_id)
 
@@ -58,7 +64,10 @@ export default {
     return query
   },
 
-  getRecentStories(options: { number: number; tags?: Array<string> }): any {
+  async getRecentStories(options: {
+    number: number
+    tags?: Array<string>
+  }): Promise<Story[]> {
     const { number, tags } = options
     let query = this.getStoriesBaseQuery()
 
@@ -71,7 +80,7 @@ export default {
     return query.orderBy('omh.stories.published_at', 'desc').limit(number || 10)
   },
 
-  getPopularStories(number = 10): any {
+  async getPopularStories(number = 10): Promise<Story[]> {
     const query = this.getStoriesBaseQuery()
     return query
       .where('omh.stories.published', true)
@@ -79,7 +88,7 @@ export default {
       .limit(number)
   },
 
-  getFeaturedStories(number = 10): any {
+  async getFeaturedStories(number = 10): Promise<Story[]> {
     const query = this.getStoriesBaseQuery()
     return query
       .where('omh.stories.published', true)
@@ -96,7 +105,7 @@ export default {
       .where(knex.raw('lower(title)'), 'like', '%' + input + '%')
   },
 
-  async getStoryById(story_id: number): Promise<any> {
+  async getStoryById(story_id: number): Promise<Story> {
     debug.log('get story: ' + story_id)
     const query = this.getStoriesBaseQuery().where({
       'omh.stories.story_id': story_id
@@ -124,7 +133,7 @@ export default {
       owned_by_group_id: string
       tags?: Array<string>
     }
-  ): any {
+  ): Promise<boolean> {
     return knex.transaction(async (trx) => {
       if (data.tags) {
         await Tags.updateStoryTags(data.tags, story_id, trx)
@@ -149,7 +158,7 @@ export default {
     })
   },
 
-  async delete(story_id: number, trx: any): Promise<any> {
+  async delete(story_id: number, trx: Knex.Transaction): Promise<boolean> {
     await trx('omh.story_tags')
       .where({
         story_id
@@ -191,7 +200,7 @@ export default {
     return Number.parseInt(story_id, 10)
   },
 
-  async allowedToModify(story_id: number, user_id: number): Promise<any> {
+  async allowedToModify(story_id: number, user_id: number): Promise<boolean> {
     const story = await this.getStoryById(story_id)
     return Group.allowedToModify(story.owned_by_group_id, user_id)
   }
