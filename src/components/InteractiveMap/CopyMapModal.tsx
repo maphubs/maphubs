@@ -7,7 +7,7 @@ type Props = {
   title: LocalizedString
   map_id: string
   _csrf?: string
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   visible: boolean

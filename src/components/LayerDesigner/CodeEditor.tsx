@@ -8,6 +8,7 @@ import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-min-noconflict/ext-language_tools'
 import 'ace-builds/src-min-noconflict/ext-spellcheck'
 import 'ace-builds/src-min-noconflict/ext-searchbox'
+import { LocalizedString } from '../../types/LocalizedString'
 
 const ace = require('ace-builds/src-noconflict/ace')
 
@@ -29,7 +30,7 @@ type Props = {
   theme?: string
   modal?: boolean
   visible: boolean
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   code: string

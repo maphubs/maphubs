@@ -1,12 +1,13 @@
 import React from 'react'
 import { Row, Col } from 'antd'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
   views: number
   stats: {
     maps: number
     stories: number
   }
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 export default function LayerInfoStats({
   views,

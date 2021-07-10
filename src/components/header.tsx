@@ -1,14 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { MenuOutlined } from '@ant-design/icons'
 import { Layout, Menu, Drawer } from 'antd'
-
+import useT from '../hooks/useT'
 import ExploreDropdown from './Header/ExploreDropdown'
 import AddDropdown from './Header/AddDropdown'
 import HelpDropdown from './Header/HelpDropdown'
 import SearchButton from './Header/SearchButton'
 import LocaleChooser from './LocaleChooser'
 import UserMenu from './Header/UserMenu'
-import type { LocaleStoreState } from '../stores/LocaleStore'
 import getConfig from 'next/config'
 import { LocalizedString } from '../types/LocalizedString'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
@@ -34,43 +33,25 @@ type Props = {
     fontColor?: string
   }
 }
-type State = {
-  visible: boolean
-} & LocaleStoreState
-export default class MapHubsHeader extends React.Component<Props, State> {
-  static defaultProps = {
-    logoLinkUrl: '/',
-    showSearch: true,
-    showHelp: true,
-    showMakeAMap: true,
-    showExplore: true,
-    showOSM: false,
-    showAdd: true,
-    customLinks: []
-  }
-  showDrawer = (): void => {
-    this.setState({
-      visible: true
-    })
-  }
-  onClose = (): void => {
-    this.setState({
-      visible: false
-    })
-  }
-  renderMenu = (className: string, mode: string): JSX.Element => {
-    const { t, props } = this
-    const {
-      customHelpLink,
-      showHelp,
-      activePage,
-      customLinks,
-      showMakeAMap,
-      showSearch,
-      customSearchLink,
-      showExplore,
-      showAdd
-    } = props
+
+const MapHubsHeader = ({
+  customHelpLink,
+  showHelp,
+  activePage,
+  customLinks,
+  showMakeAMap,
+  showSearch,
+  customSearchLink,
+  showExplore,
+  logoLinkUrl,
+  theme,
+  showAdd
+}: Props): JSX.Element => {
+  const [visible, setVisible] = useState(false)
+
+  const { t } = useT()
+
+  const renderMenu = (className: string, mode: any): JSX.Element => {
     return (
       <Menu
         mode={mode}
@@ -111,7 +92,7 @@ export default class MapHubsHeader extends React.Component<Props, State> {
                 height: '50px'
               }}
             >
-              <a href={link.href}>{this.t(link.label)}</a>
+              <a href={link.href}>{t(link.label)}</a>
             </Menu.Item>
           )
         })}
@@ -175,108 +156,118 @@ export default class MapHubsHeader extends React.Component<Props, State> {
     )
   }
 
-  render(): JSX.Element {
-    const { t, props, state, showDrawer, onClose } = this
-    const { logoLinkUrl, theme } = props
-    const { visible } = state
-    const { fontColor } = theme || {}
-    const NavMenu = this.renderMenu('desktop-menu', 'horizontal')
-    const MobileMenu = this.renderMenu('mobile-menu', 'vertical')
-    return (
-      <Header
+  const { fontColor } = theme || {}
+  const NavMenu = renderMenu('desktop-menu', 'horizontal')
+  const MobileMenu = renderMenu('mobile-menu', 'vertical')
+  return (
+    <Header
+      style={{
+        padding: 0,
+        height: '50px'
+      }}
+    >
+      <div
+        className='logo'
         style={{
-          padding: 0,
-          height: '50px'
+          float: 'left'
         }}
       >
-        <div
-          className='logo'
-          style={{
-            float: 'left'
-          }}
-        >
-          <a className='valign-wrapper' href={logoLinkUrl}>
-            <img
-              className='valign'
-              width={MAPHUBS_CONFIG.logoWidth}
-              height={MAPHUBS_CONFIG.logoHeight}
-              style={{
-                margin: '5px'
-              }}
-              src={MAPHUBS_CONFIG.logo}
-              alt={MAPHUBS_CONFIG.productName + ' ' + t('Logo')}
-            />
-            <small
-              id='beta-text'
-              style={{
-                position: 'absolute',
-                top: '12px',
-                left: MAPHUBS_CONFIG.logoWidth + 5 + 'px',
-                fontSize: '12px'
-              }}
-            >
-              {MAPHUBS_CONFIG.betaText}
-            </small>
-          </a>
-        </div>
-        <style jsx global>
-          {`
-            .ant-menu-horizontal > .ant-menu-item {
-              vertical-align: top;
-            }
-
-            .ant-menu-horizontal > .ant-menu-item:hover {
-              border-bottom: none;
-            }
-
-            .ant-menu-horizontal > .ant-menu-item-selected {
-              border-bottom: none;
-            }
-
-            @media (max-width: 1000px) {
-              .hamburger-menu {
-                display: block !important;
-              }
-              .desktop-menu {
-                display: none;
-              }
-            }
-          `}
-        </style>
-        {NavMenu}
-
-        <MenuOutlined
-          className='hamburger-menu'
-          style={{
-            fontSize: '24px',
-            color: fontColor || 'inherit',
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            display: 'none'
-          }}
-          onClick={showDrawer}
-        />
-        <Drawer
-          bodyStyle={{
-            padding: 0,
-            height: '100%'
-          }}
-          placement='right'
-          closable={false}
-          onClose={onClose}
-          visible={visible}
-        >
-          <div
-            className='nav-menu'
+        <a className='valign-wrapper' href={logoLinkUrl}>
+          <img
+            className='valign'
+            width={MAPHUBS_CONFIG.logoWidth}
+            height={MAPHUBS_CONFIG.logoHeight}
             style={{
-              height: '100%'
+              margin: '5px'
+            }}
+            src={MAPHUBS_CONFIG.logo}
+            alt={MAPHUBS_CONFIG.productName + ' ' + t('Logo')}
+          />
+          <small
+            id='beta-text'
+            style={{
+              position: 'absolute',
+              top: '12px',
+              left: MAPHUBS_CONFIG.logoWidth + 5 + 'px',
+              fontSize: '12px'
             }}
           >
-            {MobileMenu}
-          </div>
-        </Drawer>
-      </Header>
-    )
-  }
+            {MAPHUBS_CONFIG.betaText}
+          </small>
+        </a>
+      </div>
+      <style jsx global>
+        {`
+          .ant-menu-horizontal > .ant-menu-item {
+            vertical-align: top;
+          }
+
+          .ant-menu-horizontal > .ant-menu-item:hover {
+            border-bottom: none;
+          }
+
+          .ant-menu-horizontal > .ant-menu-item-selected {
+            border-bottom: none;
+          }
+
+          @media (max-width: 1000px) {
+            .hamburger-menu {
+              display: block !important;
+            }
+            .desktop-menu {
+              display: none;
+            }
+          }
+        `}
+      </style>
+      {NavMenu}
+
+      <MenuOutlined
+        className='hamburger-menu'
+        style={{
+          fontSize: '24px',
+          color: fontColor || 'inherit',
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          display: 'none'
+        }}
+        onClick={() => {
+          setVisible(true)
+        }}
+      />
+      <Drawer
+        bodyStyle={{
+          padding: 0,
+          height: '100%'
+        }}
+        placement='right'
+        closable={false}
+        onClose={() => {
+          setVisible(false)
+        }}
+        visible={visible}
+      >
+        <div
+          className='nav-menu'
+          style={{
+            height: '100%'
+          }}
+        >
+          {MobileMenu}
+        </div>
+      </Drawer>
+    </Header>
+  )
 }
+MapHubsHeader.defaultProps = {
+  logoLinkUrl: '/',
+  showSearch: true,
+  showHelp: true,
+  showMakeAMap: true,
+  showExplore: true,
+  showOSM: false,
+  showAdd: true,
+  customLinks: []
+}
+export default MapHubsHeader

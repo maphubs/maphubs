@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react'
 import { Button, Input, Row } from 'antd'
+import { LocalizedString } from '../../../types/LocalizedString'
 type Props = {
   zoomToCoordinates: (...args: Array<any>) => any
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 
 const CoordinatePanel = ({ t, zoomToCoordinates }: Props): JSX.Element => {

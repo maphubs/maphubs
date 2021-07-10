@@ -13,6 +13,7 @@ import DraggleIndicator from './UI/DraggableIndicator'
 import DragItemConfig from './UI/DragItemConfig'
 
 import 'dnd-core/lib/actions/dragDrop'
+import { LocalizedString } from '../../types/LocalizedString'
 
 type Props = {
   item: Layer
@@ -28,7 +29,7 @@ type Props = {
   isDragging: boolean
   connectDragSource: (...args: Array<any>) => any
   connectDropTarget: (...args: Array<any>) => any
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 
 class LayerListItem extends React.Component<Props> {

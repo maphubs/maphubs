@@ -46,7 +46,7 @@ type Props = {
   gpxLink?: Record<string, any>
   hash?: boolean
   preserveDrawingBuffer?: boolean
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
   primaryColor: string
   logoSmall?: string
   logoSmallWidth?: number

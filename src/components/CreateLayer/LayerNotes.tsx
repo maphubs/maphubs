@@ -3,18 +3,18 @@ import dynamic from 'next/dynamic'
 import { Row, Button, notification, message } from 'antd'
 import request from 'superagent'
 import getConfig from 'next/config'
+import { LocalizedString } from '../../types/LocalizedString.js'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'stores/layer-notes'
-)
+const debug = DebugService('stores/layer-notes')
 
 const NoteCKEditor = dynamic(() => import('../forms/NoteCKEditor.js'), {
   ssr: false
 })
 type Props = {
   notes?: string
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
   layer_id: number
   canEdit: boolean
   _csrf?: string
@@ -35,7 +35,7 @@ export default class LayerNotes extends React.Component<Props, State> {
 
   unloadHandler: any
 
-  componentDidMount() {
+  componentDidMount(): void {
     const _this = this
 
     this.unloadHandler = (e) => {
@@ -48,7 +48,7 @@ export default class LayerNotes extends React.Component<Props, State> {
     window.addEventListener('beforeunload', this.unloadHandler)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 

@@ -185,7 +185,7 @@ export default class Search extends React.Component<Props, State> {
     return (
       <>
         <Head>
-          <title>{`t('Search') - ${MAPHUBS_CONFIG.productName}`}</title>
+          <title>{`${t('Search')} - ${MAPHUBS_CONFIG.productName}`}</title>
         </Head>
         <ErrorBoundary>
           <Header {...headerConfig} />

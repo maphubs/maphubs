@@ -6,11 +6,12 @@ import SearchBox from '../SearchBox'
 import CardCollection from './CardCollection'
 import cardUtil from '../../services/card-util'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import { LocalizedString } from '../../types/LocalizedString'
 const { Title } = Typography
 type Props = {
   cardType: string
   // layer, group, or map
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   searchResults: Array<Record<string, any>>
@@ -84,7 +85,9 @@ export default class CardSearch extends React.Component<Props, State> {
     const { t, cardType } = this.props
     const { searchActive, searchResults } = this.state
     const config = cardTypes[cardType]
-    const searchCards = searchResults ? searchResults.map(config.getCard) : []
+    const searchCards = searchResults
+      ? searchResults.map((result) => config.getCard(result))
+      : []
     return (
       <>
         <Row

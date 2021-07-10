@@ -5,6 +5,7 @@ import { IntlProvider, FormattedNumber } from 'react-intl'
 import turf_centroid from '@turf/centroid'
 import { OpenLocationCode } from 'open-location-code'
 import WGS84 from 'wgs84-util'
+import { LocalizedString } from '../../types/LocalizedString'
 const { Title } = Typography
 
 if (!Intl.PluralRules) {
@@ -28,7 +29,7 @@ if (!Intl.PluralRules) {
 const openLocationCode = new OpenLocationCode()
 type Props = {
   geojson?: Record<string, any>
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
   locale: string
 }
 const FeatureLocation = ({ geojson, t, locale }: Props): JSX.Element => {

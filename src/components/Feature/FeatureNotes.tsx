@@ -2,6 +2,7 @@ import React from 'react'
 import dynamic from 'next/dynamic'
 import { Row, Button, message, notification } from 'antd'
 import request from 'superagent'
+import { LocalizedString } from '../../types/LocalizedString.js'
 const NoteCKEditor = dynamic(() => import('../forms/NoteCKEditor.js'), {
   ssr: false
 })
@@ -11,7 +12,7 @@ type Props = {
   layer_id: number
   mhid: string
   _csrf: string
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   editing: boolean

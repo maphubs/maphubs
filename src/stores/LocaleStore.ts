@@ -11,11 +11,9 @@ export type LocaleStoreState = {
   locale?: string
   _csrf?: string
 }
+
 export default class LocaleStore extends Reflux.Store {
   state: LocaleStoreState
-  setState: any
-  trigger: any
-  listenables: any
   constructor() {
     super()
     this.state = {

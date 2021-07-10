@@ -1,11 +1,12 @@
 import React from 'react'
 import { Button, Upload, Progress, message } from 'antd'
 import { UploadOutlined } from '@ant-design/icons'
+import { LocalizedString } from '../../types/LocalizedString'
 // import FileUploadProgress from 'react-fileupload-progress'
 type Props = {
   action: string
   onUpload: (...args: Array<any>) => any
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
   beforeUpload?: (...args: Array<any>) => any
 }
 type State = {

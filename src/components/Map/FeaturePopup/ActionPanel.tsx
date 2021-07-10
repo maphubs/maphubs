@@ -4,6 +4,7 @@ import Info from '@material-ui/icons/Info'
 import InsertPhoto from '@material-ui/icons/InsertPhoto'
 import Launch from '@material-ui/icons/Launch'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import { LocalizedString } from '../../../types/LocalizedString'
 type Props = {
   layer?: Record<string, any>
   selectedFeature: Record<string, any>
@@ -11,7 +12,7 @@ type Props = {
   toggled?: boolean
   toggleData?: (...args: Array<any>) => any
   featureName: string
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 
 const getFeatureLink = (

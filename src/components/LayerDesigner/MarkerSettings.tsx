@@ -6,12 +6,13 @@ import Select from '../forms/select'
 import _assignIn from 'lodash.assignin'
 import MapStyles from '../Map/Styles'
 import _isequal from 'lodash.isequal'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
   onChange: (...args: Array<any>) => any
   layer: Record<string, any>
   style: Record<string, any>
   color: string
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   options: Record<string, any>

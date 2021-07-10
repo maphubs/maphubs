@@ -4,10 +4,11 @@ import { FixedSizeList as List } from 'react-window'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import type { CardConfig } from './Card'
 import { Empty, Row } from 'antd'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
   cards: Array<CardConfig>
   showAddButton?: boolean
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
   emptyMessage?: Record<string, any>
 }
 export default class CardCarousel extends React.Component<Props> {

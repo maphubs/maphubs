@@ -2,6 +2,8 @@ import local from './src/local'
 const next = require('next')
 const express = require('express')
 
+require('@babel/register')()
+
 const dev = process.env.NODE_ENV !== 'production'
 const nextApp = next({ dev })
 const handle = nextApp.getRequestHandler()

@@ -5,6 +5,7 @@ import OpacityIcon from '@material-ui/icons/Opacity'
 import CodeIcon from '@material-ui/icons/Code'
 import dynamic from 'next/dynamic'
 import mapboxgl from 'mapbox-gl'
+import { LocalizedString } from '../../types/LocalizedString'
 const CodeEditor = dynamic(() => import('./CodeEditor'), {
   ssr: false
 })
@@ -19,7 +20,7 @@ type Props = {
   legendCode: string
   layer: Record<string, any>
   showAdvanced: boolean
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   opacity: number

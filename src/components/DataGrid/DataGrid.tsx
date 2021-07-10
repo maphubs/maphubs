@@ -16,6 +16,7 @@ import Highlighter from 'react-highlight-words'
 import turf_bbox from '@turf/bbox'
 import GetNameField from '../Map/Styles/get-name-field'
 import type { MapHubsField } from '../../types/maphubs-field'
+import { LocalizedString } from '../../types/LocalizedString'
 const { confirm } = Modal
 type Props = {
   geoJSON: Record<string, any>
@@ -27,7 +28,7 @@ type Props = {
     dataEditorState: any
     mapState: any
   }
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
   _csrf: string
 }
 type Column = {

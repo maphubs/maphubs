@@ -7,6 +7,7 @@ import CoordinatePanel from './ToolPanels/CoordinatePanel'
 // import AreaComparisonPanel from './ToolPanels/AreaComparisonPanel'
 import MapToolButton from './MapToolButton'
 import { Drawer, Collapse } from 'antd'
+import { LocalizedString } from '../../types/LocalizedString'
 const Panel = Collapse.Panel
 type Props = {
   show?: boolean
@@ -19,7 +20,7 @@ type Props = {
   measureFeatureClick: (...args: Array<any>) => any
   zoomToCoordinates: (...args: Array<any>) => any
   isochroneResult?: Record<string, any>
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   open?: boolean

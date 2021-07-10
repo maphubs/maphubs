@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Input, Tabs, Tooltip } from 'antd'
 import localeUtil from '../../../locales/util'
 import getConfig from 'next/config'
+import { LocalizedString } from '../../../types/LocalizedString'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const supportedLangs = localeUtil.getSupported()
 let languagesFromConfig
@@ -24,7 +25,7 @@ type Props = {
   onChange?: (...args: Array<any>) => any
   placeholder?: string
   type: string
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   value: Record<string, any>
@@ -46,11 +47,11 @@ export default class LocalizedInput extends React.Component<Props, State> {
 
   shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
     let shouldUpdate = false
-    langs.forEach((lang) => {
+    for (const lang of langs) {
       if (nextState.value[lang.value] !== this.state.value[lang.value]) {
         shouldUpdate = true
       }
-    })
+    }
     return shouldUpdate
   }
 
@@ -78,13 +79,11 @@ export default class LocalizedInput extends React.Component<Props, State> {
       <>
         <style jsx>
           {`
-
-          .localized-input {
-            padding-bottom: 0px;
-            width: 100%;
-          }
-          
-        `}
+            .localized-input {
+              padding-bottom: 0px;
+              width: 100%;
+            }
+          `}
         </style>
         <div className='localized-input'>
           <Tabs

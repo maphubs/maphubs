@@ -13,9 +13,10 @@ import type { LocaleStoreState } from '../../stores/LocaleStore'
 import type { GroupStoreState } from '../../stores/GroupStore'
 import Locales from '../../services/locales'
 import $ from 'jquery'
+import { LocalizedString } from '../../types/LocalizedString'
 
 type Props = {
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
   onCreate?: (...args: Array<any>) => any
 }
 

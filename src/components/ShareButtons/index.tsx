@@ -17,7 +17,7 @@ type Props = {
   url?: string
   photoUrl?: string
   iconSize: number
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   url: string

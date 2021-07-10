@@ -4,11 +4,12 @@ import { Modal, message, notification } from 'antd'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapToolButton from '../Map/MapToolButton'
 import type { LocaleStoreState } from '../../stores/LocaleStore'
+import { LocalizedString } from '../../types/LocalizedString'
 const { confirm } = Modal
 type Props = {
   stopEditingLayer: (...args: Array<any>) => any
   onFeatureUpdate: (...args: Array<any>) => any
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
   _csrf: string
 }
 type State = {} & LocaleStoreState

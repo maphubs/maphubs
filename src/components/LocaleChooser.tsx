@@ -1,6 +1,5 @@
 import React from 'react'
-
-import LocaleActions from '../actions/LocaleActions'
+import useT from '../hooks/useT'
 import debugFactory from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import localeUtil from '../locales/util'
 import { DownOutlined } from '@ant-design/icons'
@@ -22,57 +21,33 @@ if (MAPHUBS_CONFIG.LANGUAGES) {
   })
 }
 
-type Props = {
-  id: string
+const LocaleChooser = (): JSX.Element => {
+  const { t, locale, setLocale } = useT()
+
+  const label = localeUtil.getConfig(locale).label
+  const menu = (
+    <Menu>
+      {langs.map((l) => {
+        return (
+          <Menu.Item key={`locale-${l.value}`}>
+            <a
+              href='#!'
+              id={l.value}
+              onClick={() => {
+                setLocale(l.value)
+              }}
+            >{`${l.name} (${l.label})`}</a>
+          </Menu.Item>
+        )
+      })}
+    </Menu>
+  )
+  return (
+    <Dropdown overlay={menu} trigger={['click']}>
+      <a className='nav-link-item' href='#'>
+        {label} <DownOutlined />
+      </a>
+    </Dropdown>
+  )
 }
-type State = {
-  locale: string
-}
-export default class LocaleChooser extends React.Component<Props, State> {
-  static defaultProps:
-    | any
-    | {
-        id: string
-      } = {
-    id: 'locale-dropdown'
-  }
-
-  shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
-    if (this.state.locale !== nextState.locale) {
-      return true
-    }
-
-    return false
-  }
-
-  onChange: any | ((e: any) => void) = (e: Record<string, any>) => {
-    debug.log('LOCALE CHANGE: ' + e.target.id)
-    LocaleActions.changeLocale(e.target.id)
-  }
-
-  render(): JSX.Element {
-    const label = localeUtil.getConfig(this.state.locale).label
-    const menu = (
-      <Menu>
-        {langs.map((l) => {
-          return (
-            <Menu.Item key={`locale-${l.value}`}>
-              <a
-                href='#!'
-                id={l.value}
-                onClick={this.onChange}
-              >{`${l.name} (${l.label})`}</a>
-            </Menu.Item>
-          )
-        })}
-      </Menu>
-    )
-    return (
-      <Dropdown overlay={menu} trigger={['click']}>
-        <a className='nav-link-item' href='#'>
-          {label} <DownOutlined />
-        </a>
-      </Dropdown>
-    )
-  }
-}
+export default LocaleChooser

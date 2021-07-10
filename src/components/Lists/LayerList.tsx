@@ -7,11 +7,12 @@ import slugify from 'slugify'
 import type { Layer } from '../../types/layer'
 import MapIcon from '@material-ui/icons/Map'
 import InfoIcon from '@material-ui/icons/Info'
+import { LocalizedString } from '../../types/LocalizedString'
 const { Option } = Select
 type Props = {
   layers: Array<Layer>
   groups: Array<Record<string, any>>
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   sortedInfo?: Record<string, any>

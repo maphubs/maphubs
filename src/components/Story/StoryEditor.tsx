@@ -24,6 +24,7 @@ import { subscribe } from '../../services/unstated-props'
 import StoryContainer from './StoryContainer'
 import $ from 'jquery'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import { LocalizedString } from '../../types/LocalizedString'
 const StoryCKEditor = dynamic(() => import('./StoryCKEditor'), {
   ssr: false
 })
@@ -31,7 +32,7 @@ type Props = {
   myMaps: Array<Record<string, any>>
   popularMaps: Array<Record<string, any>>
   groups: Array<Record<string, any>>
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
   locale: string
   containers: any
 }

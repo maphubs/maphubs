@@ -3,6 +3,7 @@ import request from 'superagent'
 import { Tabs, notification, Input, Row, Drawer, List } from 'antd'
 import MapToolButton from '../MapToolButton'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { LocalizedString } from '../../../types/LocalizedString'
 const debug = DebugService('MapSearchPanel')
 const TabPane = Tabs.TabPane
 const Search = Input.Search
@@ -11,7 +12,7 @@ type Props = {
   onSearch: (...args: Array<any>) => any
   onSearchResultClick: (...args: Array<any>) => any
   onSearchReset: (...args: Array<any>) => any
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
   mapboxAccessToken: string
 }
 type State = {

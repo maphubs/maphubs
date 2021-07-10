@@ -1,29 +1,23 @@
-import App from 'next/app'
 import Head from 'next/head'
 import React from 'react'
-export default class MapHubs extends App {
-  static async getInitialProps({ Component, ctx }) {
-    let pageProps = {}
 
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx)
-    }
+// redux
+import { Provider } from 'react-redux'
+import { useStore } from '../src/redux/store'
 
-    return {
-      pageProps
-    }
-  }
-
-  render() {
-    const { Component, pageProps } = this.props
-    return (
-      <>
-        <Head>
-          <meta name='viewport' content='width=device-width, initial-scale=1' />
-          <title>{this.props.router.query.title || 'MapHubs'}</title>
-        </Head>
-        <Component {...pageProps} />
-      </>
-    )
-  }
+const MapHubs = ({ Component, pageProps, err }: any): JSX.Element => {
+  const { session, initialReduxState } = pageProps
+  const store = useStore(initialReduxState)
+  return (
+    <>
+      <Head>
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <title>{'MapHubs'}</title>
+      </Head>
+      <Provider store={store}>
+        <Component {...pageProps} err={err} />
+      </Provider>
+    </>
+  )
 }
+export default MapHubs

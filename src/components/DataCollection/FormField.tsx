@@ -3,10 +3,11 @@ import { Row } from 'antd'
 import TextInput from '../forms/textInput'
 import Toggle from '../forms/toggle'
 import Select from '../forms/select'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
   preset: Record<string, any>
   value: any
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 const FormField = ({ preset, value, t }: Props): JSX.Element => {
   let field = (

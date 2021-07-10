@@ -4,12 +4,13 @@ import type { LocaleStoreState } from '../../stores/LocaleStore'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import superagent from 'superagent'
 import LaunchIcon from '@material-ui/icons/Launch'
+import { LocalizedString } from '../../types/LocalizedString'
 const { confirm } = Modal
 type Props = {
   share_id?: string
   map_id: string
   _csrf?: string
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   share_id?: string

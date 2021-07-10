@@ -5,11 +5,12 @@ import { SearchOutlined } from '@ant-design/icons'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import slugify from 'slugify'
 import MapIcon from '@material-ui/icons/Map'
+import { LocalizedString } from '../../types/LocalizedString'
 const { Option } = Select
 type Props = {
   maps: Array<Record<string, any>>
   groups: Array<Record<string, any>>
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   sortedInfo?: Record<string, any>

@@ -3,6 +3,7 @@ import type { Layer } from '../types/layer'
 import type { CardConfig } from '../components/CardCarousel/Card'
 
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import { LocalizedString } from '../types/LocalizedString'
 
 type CardConfigArray = Array<CardConfig>
 export default {
@@ -37,7 +38,6 @@ export default {
       type: 'layer',
       link: '/lyr/' + layer_id,
       data: layer,
-      private: layer.private,
       onClick
     }
   },
@@ -58,8 +58,7 @@ export default {
       link: '/map/view/' + map.map_id + '/',
       type: 'map',
       data: map,
-      private: map.private,
-      public: map.share_id,
+      isPublic: map.share_id,
       onClick
     }
   },
@@ -91,7 +90,7 @@ export default {
 
   getStoryCard(
     story: Record<string, any>,
-    t: (...args: Array<any>) => any
+    t: (v: string | LocalizedString) => string
   ): {
     data: any
     draft: any

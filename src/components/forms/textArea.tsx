@@ -3,6 +3,7 @@ import { withFormsy } from 'formsy-react'
 
 import _isequal from 'lodash.isequal'
 import { Tooltip, Input } from 'antd'
+import { LocalizedString } from '../../types/LocalizedString'
 type Props = {
   length: number
   value: string
@@ -25,7 +26,7 @@ type Props = {
   setValue: (...args: Array<any>) => any
   errorMessage: string
   showCharCount: boolean
-  t: (...args: Array<any>) => any
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   value: string
