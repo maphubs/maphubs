@@ -8,7 +8,6 @@ import Step3 from '../src/components/CreateLayer/Step3'
 import debugFactory from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 
 import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import LayerStore from '../src/stores/layer-store'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
@@ -16,9 +15,8 @@ import MapContainer from '../src/components/Map/containers/MapContainer'
 import type { Group } from '../src/stores/GroupStore'
 import type { Layer } from '../src/types/layer'
 import type { LayerStoreState } from '../src/stores/layer-store'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
+
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import $ from 'jquery'
 import getConfig from 'next/config'
 import { LocalizedString } from '../src/types/LocalizedString'
@@ -36,8 +34,7 @@ type Props = {
 }
 type State = {
   step: number
-} & LayerStoreState &
-  LocaleStoreState
+} & LayerStoreState
 export default class CreateLayer extends React.Component<Props, State> {
   static async getInitialProps({
     req,
@@ -69,10 +66,7 @@ export default class CreateLayer extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.stores = [LayerStore]
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
+
     const baseMapContainerInit: {
       baseMap?: string
       bingKey: string
@@ -91,12 +85,6 @@ export default class CreateLayer extends React.Component<Props, State> {
 
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
     this.MapState = new MapContainer()
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
 
     Reflux.rehydrate(LayerStore, props.layer)
   }
@@ -193,7 +181,7 @@ export default class CreateLayer extends React.Component<Props, State> {
     }
 
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Provider inject={[this.BaseMapState, this.MapState]}>
           <Header {...headerConfig} />
           <main

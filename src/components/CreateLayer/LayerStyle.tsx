@@ -19,7 +19,6 @@ import LayerDesigner from '../LayerDesigner/LayerDesigner'
 import { Subscribe } from 'unstated'
 import MapContainer from '../Map/containers/MapContainer'
 import type { LayerStoreState } from '../../stores/layer-store'
-import type { LocaleStoreState } from '../../stores/LocaleStore'
 import getConfig from 'next/config'
 import mapboxgl from 'mapbox-gl'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
@@ -35,8 +34,8 @@ type Props = {
 }
 type State = {
   rasterOpacity: number
-} & LayerStoreState &
-  LocaleStoreState
+} & LayerStoreState
+
 export default class LayerStyle extends React.Component<Props, State> {
   static defaultProps:
     | any

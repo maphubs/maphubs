@@ -1,14 +1,11 @@
 import React from 'react'
 import Header from '../src/components/header'
 import StoryEditor from '../src/components/Story/StoryEditor'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
+
 import { Provider } from 'unstated'
 import StoryContainer from '../src/components/Story/StoryContainer'
+
 type Props = {
   story: Record<string, any>
   myMaps: Array<Record<string, any>>
@@ -20,8 +17,8 @@ type Props = {
   headerConfig: Record<string, any>
   user: Record<string, any>
 }
-type State = LocaleStoreState
-export default class EditStory extends React.Component<Props, State> {
+
+export default class EditStory extends React.Component<Props> {
   static async getInitialProps({
     req,
     query
@@ -49,16 +46,6 @@ export default class EditStory extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
 
     this.StoryContainer = new StoryContainer({
       _csrf: props._csrf,
@@ -71,7 +58,7 @@ export default class EditStory extends React.Component<Props, State> {
     const { headerConfig, myMaps, popularMaps, groups } = props
     const { locale } = state
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header {...headerConfig} />
         <main
           style={{

@@ -11,15 +11,11 @@ import SelectGroup from '../src/components/Groups/SelectGroup'
 import Map from '../src/components/Map'
 import MiniLegend from '../src/components/Map/MiniLegend'
 
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import type { Layer } from '../src/types/layer'
 import request from 'superagent'
 import $ from 'jquery'
-import { checkClientError } from '../services/client-error-response'
+import { checkClientError } from '../src/services/client-error-response'
 import LinkIcon from '@material-ui/icons/Link'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
@@ -38,8 +34,10 @@ type State = {
   remote_host?: string
   group_id?: string
   complete: boolean
-} & LocaleStoreState
+}
 export default class CreateRemoteLayer extends React.Component<Props, State> {
+  BaseMapState: any
+  MapState: any
   static async getInitialProps({
     req,
     query
@@ -70,16 +68,6 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
 
     const baseMapContainerInit: {
       baseMap?: string
@@ -100,11 +88,7 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
     this.MapState = new MapContainer()
     addValidationRule('isHttps', (values, value) => {
-      if (value) {
-        return value.startsWith('https://')
-      } else {
-        return false
-      }
+      return value ? value.startsWith('https://') : false
     })
     addValidationRule('validMapHubsLayerPath', (values, value) => {
       if (typeof window !== 'undefined' && value) {
@@ -128,7 +112,7 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
 
   unloadHandler: any
 
-  componentDidMount() {
+  componentDidMount(): void {
     const _this = this
 
     this.unloadHandler = (e) => {
@@ -141,7 +125,7 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
     window.addEventListener('beforeunload', this.unloadHandler)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
@@ -158,7 +142,7 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
   loadRemoteUrl: any | ((model: any) => void) = (
     model: Record<string, any>
   ) => {
-    const _this = this
+    const { setState } = this
 
     const remoteLayerUrl = model.remoteLayerUrl
     const group_id = model.group
@@ -178,14 +162,14 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
         )
         .type('json')
         .accept('json')
-        .timeout(1200000)
+        .timeout(1_200_000)
         .end((err, res) => {
           checkClientError(
             res,
             err,
             () => {},
             (cb) => {
-              _this.setState({
+              setState({
                 remote_host,
                 group_id,
                 layer: res.body.layer
@@ -197,10 +181,10 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
         })
     }
   }
-  saveLayer: any | (() => void) = () => {
-    const _this = this
+  saveLayer = (): void => {
+    const { t, state, setState } = this
 
-    const { layer, group_id, remote_host } = this.state
+    const { layer, group_id, remote_host } = state
 
     if (layer) {
       const name = layer.name || {}
@@ -221,12 +205,12 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
             (cb) => {
               const layer_id = res.body.layer_id
 
-              _this.setState({
+              setState({
                 complete: true
               })
 
               window.location.assign(
-                '/layer/info/' + layer_id + '/' + slugify(_this.t(name))
+                '/layer/info/' + layer_id + '/' + slugify(t(name))
               )
               cb()
             }
@@ -236,14 +220,24 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { t } = this
-    const { groups } = this.props
-    const { layer } = this.state
+    const {
+      t,
+      disableButton,
+      enableButton,
+      loadRemoteUrl,
+      BaseMapState,
+      MapState,
+      saveLayer,
+      state,
+      props
+    } = this
+    const { groups, headerConfig, mapConfig } = props
+    const { layer, canSubmit, locale } = state
 
     if (!groups || groups.length === 0) {
       return (
-        <ErrorBoundary>
-          <Header {...this.props.headerConfig} />
+        <ErrorBoundary t={t}>
+          <Header {...headerConfig} />
           <main>
             <div className='container'>
               <Row
@@ -262,7 +256,7 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
       )
     }
 
-    let layerReview = ''
+    let layerReview = <></>
 
     if (layer) {
       layerReview = (
@@ -283,7 +277,7 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
               }}
               id='remote-layer-preview-map'
               showFeatureInfoEditButtons={false}
-              mapConfig={this.props.mapConfig}
+              mapConfig={mapConfig}
               glStyle={layer.style}
               fitBounds={layer.preview_position?.bbox}
               primaryColor={MAPHUBS_CONFIG.primaryColor}
@@ -291,7 +285,7 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
               logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
               logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
               t={t}
-              locale={this.state.locale}
+              locale={locale}
               mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
               DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
               earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
@@ -323,7 +317,7 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
               textAlign: 'right'
             }}
           >
-            <Button type='primary' onClick={this.saveLayer}>
+            <Button type='primary' onClick={saveLayer}>
               {t('Save Layer')}
             </Button>
           </Row>
@@ -332,9 +326,9 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
     }
 
     return (
-      <ErrorBoundary>
-        <Provider inject={[this.BaseMapState, this.MapState]}>
-          <Header {...this.props.headerConfig} />
+      <ErrorBoundary t={t}>
+        <Provider inject={[BaseMapState, MapState]}>
+          <Header {...headerConfig} />
           <main className='container'>
             <Row justify='center'>
               <Title>{t('Link to a Remote Layer')}</Title>
@@ -350,9 +344,9 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
               }}
             >
               <Formsy
-                onValidSubmit={this.loadRemoteUrl}
-                onValid={this.enableButton}
-                onInvalid={this.disableButton}
+                onValidSubmit={loadRemoteUrl}
+                onValid={enableButton}
+                onInvalid={disableButton}
                 style={{
                   width: '100%'
                 }}
@@ -377,7 +371,7 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
                   required
                   t={t}
                 />
-                <SelectGroup groups={groups} type='layer' />
+                <SelectGroup groups={groups} />
                 <div
                   style={{
                     float: 'right'
@@ -386,7 +380,7 @@ export default class CreateRemoteLayer extends React.Component<Props, State> {
                   <Button
                     type='primary'
                     htmlType='submit'
-                    disabled={!this.state.canSubmit}
+                    disabled={!canSubmit}
                   >
                     {t('Load Remote Layer')}
                   </Button>

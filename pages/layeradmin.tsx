@@ -24,12 +24,10 @@ import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
 import MapContainer from '../src/components/Map/containers/MapContainer'
 import slugify from 'slugify'
-
 import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import UserStore from '../src/stores/UserStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
+
 import type { Layer } from '../src/types/layer'
 import type { LayerStoreState } from '../src/stores/layer-store'
 import type { Group } from '../src/stores/GroupStore'
@@ -55,8 +53,7 @@ type Props = {
 type State = {
   tab: string
   canSavePresets: boolean
-} & LocaleStoreState &
-  LayerStoreState &
+} & LayerStoreState &
   UserStoreState
 export default class LayerAdmin extends React.Component<Props, State> {
   BaseMapState: BaseMapContainer
@@ -86,16 +83,6 @@ export default class LayerAdmin extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.stores = [LayerStore, UserStore]
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
 
     Reflux.rehydrate(LayerStore, props.layer)
     const baseMapContainerInit: {
@@ -273,7 +260,7 @@ export default class LayerAdmin extends React.Component<Props, State> {
     const layerInfoUrl = `/layer/info/${layerId}/${layerName}`
 
     return layer.remote ? (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header {...headerConfig} />
         <main>
           <div className='container'>
@@ -320,7 +307,7 @@ export default class LayerAdmin extends React.Component<Props, State> {
         </main>
       </ErrorBoundary>
     ) : (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Provider inject={[BaseMapState, MapState]}>
           <Header {...headerConfig} />
           <main

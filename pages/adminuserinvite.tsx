@@ -18,8 +18,7 @@ import { MailFilled } from '@ant-design/icons'
 import request from 'superagent'
 
 import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
+
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import UserStore from '../src/stores/UserStore'
 import WarningIcon from '@material-ui/icons/Warning'
@@ -54,7 +53,7 @@ type Props = {
 type State = {
   canSubmit: boolean
   members: Array<User>
-} & LocaleStoreState
+}
 export default class AdminUserInvite extends React.Component<Props, State> {
   static async getInitialProps({
     req,
@@ -74,10 +73,6 @@ export default class AdminUserInvite extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
 
     if (props.user) {
       Reflux.rehydrate(UserStore, {
@@ -449,7 +444,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
       }
     ]
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header {...headerConfig} />
         <main className='container'>
           <Title>{t('Manage Users')}</Title>

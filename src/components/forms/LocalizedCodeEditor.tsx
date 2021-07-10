@@ -147,6 +147,7 @@ export default class LocalizedCodeEditor extends React.Component<Props, State> {
               localizedCode[locale] = val
               this.onChange(localizedCode)
             }}
+            t={t}
           />
         </Row>
         <div

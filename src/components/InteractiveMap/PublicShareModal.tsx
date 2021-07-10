@@ -1,6 +1,5 @@
 import React from 'react'
 import { Modal, Row, Col, Button, Switch, notification } from 'antd'
-import type { LocaleStoreState } from '../../stores/LocaleStore'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import superagent from 'superagent'
 import LaunchIcon from '@material-ui/icons/Launch'
@@ -15,7 +14,7 @@ type Props = {
 type State = {
   share_id?: string
   visible?: boolean
-} & LocaleStoreState
+}
 export default class PublicShareModal extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)

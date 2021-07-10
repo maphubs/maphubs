@@ -1,47 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Formsy from 'formsy-react'
 import { Row, message, notification, Button } from 'antd'
 import TextInput from '../forms/textInput'
 import LayerActions from '../../actions/LayerActions'
-import LayerStore from '../../stores/layer-store'
+import useT from '../../hooks/useT'
+import { useSelector } from 'react-redux'
+import { LocaleState } from '../../redux/reducers/locale'
 
-import type { LocaleStoreState } from '../../stores/LocaleStore'
-import type { LayerStoreState } from '../../stores/layer-store'
-type Props = {
+const EarthEngineSource = ({
+  onSubmit
+}: {
   onSubmit: () => void
-}
-type State = {
-  canSubmit: boolean
-  selectedSource?: string
-} & LocaleStoreState &
-  LayerStoreState
-export default class EarthEngineSource extends React.Component<Props, State> {
-  props: Props
-  state: State = {
-    canSubmit: false
-  }
+}): JSX.Element => {
+  const [canSubmit, setCanSubmit] = useState(false)
+  const { t } = useT()
+  const _csrf = useSelector(
+    (state: { locale: LocaleState }) => state.locale._csrf
+  )
 
-  stores: any
-  constructor(props: Props) {
-    super(props)
-    this.stores = [LayerStore]
-  }
-
-  enableButton = (): void => {
-    this.setState({
-      canSubmit: true
-    })
-  }
-  disableButton = (): void => {
-    this.setState({
-      canSubmit: false
-    })
-  }
-  submit = (model: Record<string, any>): void => {
-    const { t, props, state } = this
-    const { onSubmit } = props
-    const { _csrf } = state
-
+  const submit = (model: Record<string, any>): void => {
     LayerActions.saveDataSettings(
       {
         is_external: true,
@@ -73,84 +50,80 @@ export default class EarthEngineSource extends React.Component<Props, State> {
       }
     )
   }
-  sourceChange = (value: string): void => {
-    this.setState({
-      selectedSource: value
-    })
-  }
 
-  render(): JSX.Element {
-    const { t, state, submit, enableButton, disableButton } = this
-    const { canSubmit } = state
-    return (
-      <Row
-        style={{
-          marginBottom: '20px'
+  return (
+    <Row
+      style={{
+        marginBottom: '20px'
+      }}
+    >
+      <Formsy
+        onValidSubmit={submit}
+        onValid={() => {
+          setCanSubmit(true)
+        }}
+        onInvalid={() => {
+          setCanSubmit(false)
         }}
       >
-        <Formsy
-          onValidSubmit={submit}
-          onValid={enableButton}
-          onInvalid={disableButton}
-        >
-          <div>
-            <p>{t('Earth Engine Source')}</p>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='image_id'
-                label={t('Image ID/Asset ID')}
-                icon='info'
-                validations='maxLength:200'
-                validationErrors={{
-                  maxLength: t('Must be 200 characters or less.')
-                }}
-                length={200}
-                tooltipPosition='top'
-                tooltip={t('EarthEngine Image ID or Asset ID')}
-                required
-                t={t}
-              />
-            </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='min'
-                label={t('Min (Optional)')}
-                icon='info'
-                t={t}
-              />
-            </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='max'
-                label={t('Max (Optional)')}
-                icon='info'
-                t={t}
-              />
-            </Row>
-          </div>
-          <div
+        <div>
+          <p>{t('Earth Engine Source')}</p>
+          <Row
             style={{
-              float: 'right'
+              marginBottom: '20px'
             }}
           >
-            <Button type='primary' htmlType='submit' disabled={!canSubmit}>
-              {t('Save and Continue')}
-            </Button>
-          </div>
-        </Formsy>
-      </Row>
-    )
-  }
+            <TextInput
+              name='image_id'
+              label={t('Image ID/Asset ID')}
+              icon='info'
+              validations='maxLength:200'
+              validationErrors={{
+                maxLength: t('Must be 200 characters or less.')
+              }}
+              length={200}
+              tooltipPosition='top'
+              tooltip={t('EarthEngine Image ID or Asset ID')}
+              required
+              t={t}
+            />
+          </Row>
+          <Row
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <TextInput
+              name='min'
+              label={t('Min (Optional)')}
+              icon='info'
+              t={t}
+            />
+          </Row>
+          <Row
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <TextInput
+              name='max'
+              label={t('Max (Optional)')}
+              icon='info'
+              t={t}
+            />
+          </Row>
+        </div>
+        <div
+          style={{
+            float: 'right'
+          }}
+        >
+          <Button type='primary' htmlType='submit' disabled={!canSubmit}>
+            {t('Save and Continue')}
+          </Button>
+        </div>
+      </Formsy>
+    </Row>
+  )
 }
+export default EarthEngineSource

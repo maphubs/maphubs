@@ -4,11 +4,7 @@ import Footer from '../src/components/footer'
 import { Row, Button, Typography } from 'antd'
 import CardCollection from '../src/components/CardCarousel/CardCollection'
 import CardSearch from '../src/components/CardCarousel/CardSearch'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import FloatingAddButton from '../src/components/FloatingAddButton'
 import cardUtil from '../src/services/card-util'
 import getConfig from 'next/config'
@@ -45,20 +41,6 @@ export default class Maps extends React.Component<Props, State> {
     }
   }
 
-  constructor(props: Props) {
-    super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-  }
-
   render(): JSX.Element {
     const { t, props } = this
     const {
@@ -72,7 +54,7 @@ export default class Maps extends React.Component<Props, State> {
     const recentCards = recentMaps.map((map) => cardUtil.getMapCard(map))
     const popularCards = popularMaps.map((map) => cardUtil.getMapCard(map))
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header activePage='maps' {...headerConfig} />
         <main
           style={{

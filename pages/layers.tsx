@@ -4,12 +4,8 @@ import Footer from '../src/components/footer'
 import { Row, Button, Typography } from 'antd'
 import CardCollection from '../src/components/CardCarousel/CardCollection'
 import CardSearch from '../src/components/CardCarousel/CardSearch'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import type { Layer } from '../src/types/layer'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import FloatingAddButton from '../src/components/FloatingAddButton'
 import cardUtil from '../src/services/card-util'
 const { Title } = Typography
@@ -40,20 +36,6 @@ export default class Layers extends React.Component<Props> {
     }
   }
 
-  constructor(props: Props) {
-    super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-  }
-
   render(): JSX.Element {
     const { t, props } = this
     const {
@@ -73,7 +55,7 @@ export default class Layers extends React.Component<Props> {
       cardUtil.getLayerCard(layer)
     )
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header activePage='layers' {...headerConfig} />
         <main
           style={{

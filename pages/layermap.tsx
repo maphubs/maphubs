@@ -1,13 +1,9 @@
 import React from 'react'
 import Header from '../src/components/header'
 import InteractiveMap from '../src/components/Map/InteractiveMap'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
@@ -38,16 +34,6 @@ export default class LayerMap extends React.Component<Props> {
 
   constructor(props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
 
     let baseMapContainerInit = {
       bingKey: MAPHUBS_CONFIG.BING_KEY,
@@ -71,7 +57,7 @@ export default class LayerMap extends React.Component<Props> {
     const { t, props, BaseMapState } = this
     const { layer, headerConfig, mapConfig, locale } = props
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Provider inject={[BaseMapState]}>
           <Header {...headerConfig} />
           <main

@@ -11,17 +11,13 @@ import MapHubsProLinks from '../src/components/Home/MapHubsProLinks'
 import InteractiveMap from '../src/components/Map/InteractiveMap'
 import _shuffle from 'lodash.shuffle'
 import cardUtil from '../src/services/card-util'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
+
 import type { Layer } from '../src/types/layer'
 import type { Group } from '../src/stores/GroupStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import XComponentReact from '../src/components/XComponentReact'
-import UserStore from '../src/stores/UserStore'
 import getConfig from 'next/config'
 import { Story } from '../src/types/story'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
@@ -52,7 +48,7 @@ type Props = {
 }
 type State = {
   loaded: boolean
-} & LocaleStoreState
+}
 export default class HomePro extends React.Component<Props, State> {
   BaseMapState: any
   static async getInitialProps({
@@ -103,16 +99,6 @@ export default class HomePro extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
 
     const baseMapContainerInit: {
       baseMap?: string
@@ -424,7 +410,7 @@ export default class HomePro extends React.Component<Props, State> {
             )}
           </Title>
         </Row>
-        <ErrorBoundary>
+        <ErrorBoundary t={t}>
           <Row>
             <CardCarousel
               cards={collectionCards}
@@ -592,7 +578,7 @@ export default class HomePro extends React.Component<Props, State> {
     }
 
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Provider inject={[BaseMapState]}>
           <div
             style={{

@@ -2,12 +2,9 @@ import React from 'react'
 import Header from '../src/components/header'
 import Footer from '../src/components/footer'
 import { Row, Col, Button, Typography } from 'antd'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import MapList from '../src/components/Lists/MapList'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
+
 const { Title } = Typography
 type Props = {
   maps: Array<Record<string, any>>
@@ -35,25 +32,11 @@ export default class AllMaps extends React.Component<Props> {
     }
   }
 
-  constructor(props: Props) {
-    super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-  }
-
   render(): JSX.Element {
     const { t, props } = this
     const { maps, groups, headerConfig, footerConfig } = props
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header activePage='maps' {...headerConfig} />
         <main
           style={{

@@ -51,8 +51,7 @@ import request from 'superagent'
 
 import Reflux from '../src/components/Rehydrate'
 import fireResizeEvent from '../src/services/fire-resize-event'
-import LocaleStore from '../src/stores/LocaleStore'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
+
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import moment from 'moment-timezone'
@@ -64,42 +63,6 @@ const TabPane = Tabs.TabPane
 const { Title } = Typography
 
 const debug = DebugService('layerinfo')
-
-if (!Intl.PluralRules) {
-  require('@formatjs/intl-pluralrules/polyfill')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/en')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/es')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/fr')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/pt')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/id')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/it')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/de')
-}
-
-if (!Intl.RelativeTimeFormat) {
-  require('@formatjs/intl-relativetimeformat/polyfill')
-
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/en')
-
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/es')
-
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/pt')
-
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/fr')
-
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/id')
-
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/it')
-
-  require('@formatjs/intl-relativetimeformat/dist/locale-data/de')
-}
 
 type Props = {
   layer: Layer
@@ -125,7 +88,7 @@ type State = {
   area?: number
   length: number
   count?: number
-} & LocaleStoreState
+}
 export default class LayerInfo extends React.Component<Props, State> {
   BaseMapState: BaseMapContainer
   MapState: MapContainer
@@ -162,10 +125,6 @@ export default class LayerInfo extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
 
     if (props.user) {
       Reflux.rehydrate(UserStore, {
@@ -444,7 +403,7 @@ export default class LayerInfo extends React.Component<Props, State> {
       'presets'
     )
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Provider inject={[BaseMapState, MapState, DataEditorState]}>
           <Header {...headerConfig} />
           <main
@@ -726,7 +685,7 @@ export default class LayerInfo extends React.Component<Props, State> {
                   </TabPane>
                   {MAPHUBS_CONFIG.enableComments && (
                     <TabPane tab={t('Discuss')} key='discuss'>
-                      <ErrorBoundary>
+                      <ErrorBoundary t={t}>
                         <Comments />
                       </ErrorBoundary>
                     </TabPane>

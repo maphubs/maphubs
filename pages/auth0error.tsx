@@ -1,10 +1,8 @@
 import React from 'react'
 import Header from '../src/components/header'
 import Footer from '../src/components/footer'
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
+
 type Props = {
   locale: string
   _csrf: string
@@ -31,20 +29,6 @@ export default class Error extends React.Component<Props> {
     }
   }
 
-  constructor(props: Props) {
-    super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-  }
-
   render(): JSX.Element {
     const { t, props } = this
     const { requireInvite, adminEmail, headerConfig, footerConfig } = props
@@ -64,7 +48,7 @@ export default class Error extends React.Component<Props> {
     )
 
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header {...headerConfig} />
         <main>
           <div className='container s12'>

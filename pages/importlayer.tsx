@@ -2,14 +2,12 @@ import React from 'react'
 import Formsy from 'formsy-react'
 import Header from '../src/components/header'
 import SelectGroup from '../src/components/Groups/SelectGroup'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import FileUpload from '../src/components/forms/FileUpload'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import { Steps, Row, Col, notification, message, Button } from 'antd'
+
 const Step = Steps.Step
+
 type Props = {
   groups: Array<Record<string, any>>
   locale: string
@@ -46,20 +44,6 @@ export default class ImportLayer extends React.Component<Props, State> {
         groups: Array<any>
       } = {
     groups: []
-  }
-
-  constructor(props: Props) {
-    super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
   }
 
   unloadHandler: any
@@ -116,7 +100,7 @@ export default class ImportLayer extends React.Component<Props, State> {
 
     if (!groups || groups.length === 0) {
       return (
-        <ErrorBoundary>
+        <ErrorBoundary t={t}>
           <Header {...headerConfig} />
           <main>
             <div className='container'>
@@ -145,7 +129,7 @@ export default class ImportLayer extends React.Component<Props, State> {
     }
 
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header {...headerConfig} />
         <main>
           <div

@@ -5,11 +5,7 @@ import Header from '../src/components/header'
 import Footer from '../src/components/footer'
 import CardCarousel from '../src/components/CardCarousel/CardCarousel'
 import cardUtil from '../src/services/card-util'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import FloatingButton from '../src/components/FloatingButton'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
@@ -52,25 +48,11 @@ export default class UserMaps extends React.Component<Props> {
     myMaps: false
   }
 
-  constructor(props: Props) {
-    super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-  }
-
   render(): JSX.Element {
     const { t, props } = this
     const { myMaps, maps, footerConfig, headerConfig } = props
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header {...headerConfig} />
         <main
           style={{

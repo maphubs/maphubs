@@ -3,17 +3,15 @@ import { Row, Button } from 'antd'
 import Header from '../src/components/header'
 
 import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
 import LayerActions from '../src/actions/LayerActions'
 import LayerStore from '../src/stores/layer-store'
 import slugify from 'slugify'
 import UploadLayerReplacement from '../src/components/CreateLayer/UploadLayerReplacement'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
+
 import type { AddPhotoPointStoreState } from '../src/stores/AddPhotoPointStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
@@ -27,8 +25,7 @@ type Props = {
 type State = {
   downloaded: boolean
   submitted: boolean
-} & LocaleStoreState &
-  AddPhotoPointStoreState
+} & AddPhotoPointStoreState
 export default class LayerReplace extends React.Component<Props, State> {
   BaseMapState: BaseMapContainer
   static async getInitialProps({
@@ -54,16 +51,6 @@ export default class LayerReplace extends React.Component<Props, State> {
       downloaded: false,
       submitted: false,
       layer: props.layer
-    }
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
     }
 
     Reflux.rehydrate(LayerStore, props.layer)
@@ -131,7 +118,7 @@ export default class LayerReplace extends React.Component<Props, State> {
       layer.layer_id
     }/export/maphubs/${slugify(t(layer.name))}.maphubs`
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Provider inject={[BaseMapState]}>
           <Header {...headerConfig} />
           <main

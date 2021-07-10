@@ -6,12 +6,8 @@ import Footer from '../src/components/footer'
 import Comments from '../src/components/Comments'
 import slugify from 'slugify'
 import StoryHeader from '../src/components/Story/StoryHeader'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import ShareButtons from '../src/components/ShareButtons'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import FloatingButton from '../src/components/FloatingButton'
 import Edit from '@material-ui/icons/Edit'
 import getConfig from 'next/config'
@@ -54,20 +50,6 @@ export default class StoryPage extends React.Component<Props> {
     canEdit: false
   }
 
-  constructor(props: Props) {
-    super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-  }
-
   componentDidMount(): void {
     for (const element of document.querySelectorAll('oembed[url]')) {
       // Create the <a href="..." class="embedly-card"></a> element that Embedly uses
@@ -104,7 +86,7 @@ export default class StoryPage extends React.Component<Props> {
             />
           </Row>
           <Row>
-            <ErrorBoundary>
+            <ErrorBoundary t={t}>
               <Comments />
             </ErrorBoundary>
           </Row>
@@ -122,7 +104,7 @@ export default class StoryPage extends React.Component<Props> {
             src='//cdn.embedly.com/widgets/platform.js'
           />
         </Head>
-        <ErrorBoundary>
+        <ErrorBoundary t={t}>
           <Header {...headerConfig} />
           <main>
             <div className='container'>

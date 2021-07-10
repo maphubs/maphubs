@@ -21,26 +21,22 @@ import AddItem from '../src/components/AddItem'
 import GroupStore from '../src/stores/GroupStore'
 import GroupActions from '../src/actions/GroupActions'
 import ImageCrop from '../src/components/ImageCrop'
-
 import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
+
 import type { Group, GroupStoreState } from '../src/stores/GroupStore'
 import Locales from '../src/services/locales'
 import LayerList from '../src/components/Lists/LayerList'
 import MapList from '../src/components/Lists/MapList'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import FloatingButton from '../src/components/FloatingButton'
 import Delete from '@material-ui/icons/Delete'
 import InfoIcon from '@material-ui/icons/Info'
 import DescriptionIcon from '@material-ui/icons/Description'
 import MyLocationIcon from '@material-ui/icons/MyLocation'
-const { confirm } = Modal
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'views/GroupAdmin'
-)
+const { confirm } = Modal
+const debug = DebugService('views/GroupAdmin')
 
 type Props = {
   group: Group
@@ -54,8 +50,7 @@ type Props = {
 }
 type State = {
   canSubmit: boolean
-} & LocaleStoreState &
-  GroupStoreState
+} & GroupStoreState
 export default class GroupAdmin extends React.Component<Props, State> {
   static async getInitialProps({
     req,
@@ -93,16 +88,6 @@ export default class GroupAdmin extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.stores = [GroupStore]
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
 
     Reflux.rehydrate(GroupStore, {
       group: props.group,
@@ -343,7 +328,7 @@ export default class GroupAdmin extends React.Component<Props, State> {
     const isPublished = group.published
     const groupUrl = `/group/${groupId}`
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header {...headerConfig} />
         <main>
           <div className='container'>

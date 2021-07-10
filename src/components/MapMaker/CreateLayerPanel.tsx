@@ -3,13 +3,12 @@ import { notification } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import LayerStore from '../../stores/layer-store'
 
-import type { LocaleStoreState } from '../../stores/LocaleStore'
 type Props = {
   onSubmit?: (...args: Array<any>) => any
 }
 type State = {
   pendingChanges: boolean
-} & LocaleStoreState
+}
 export default class CreateLayerPanel extends React.Component<Props, State> {
   stores: any
   constructor(props: Props) {

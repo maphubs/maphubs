@@ -3,13 +3,9 @@ import Header from '../src/components/header'
 import Footer from '../src/components/footer'
 import { Row, Typography } from 'antd'
 import CardSearch from '../src/components/CardCarousel/CardSearch'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import GroupList from '../src/components/Lists/GroupList'
 import type { Group } from '../src/types/group'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import FloatingAddButton from '../src/components/FloatingAddButton'
 const { Title } = Typography
 type Props = {
@@ -37,25 +33,11 @@ export default class AllGroups extends React.Component<Props> {
     }
   }
 
-  constructor(props: Props) {
-    super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-  }
-
   render(): JSX.Element {
     const { t, props } = this
     const { groups, headerConfig, footerConfig } = props
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header activePage='groups' {...headerConfig} />
         <main
           style={{

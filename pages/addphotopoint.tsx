@@ -1,8 +1,6 @@
 import React from 'react'
 import Header from '../src/components/header'
 import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
-import UserStore from '../src/stores/UserStore'
 import Map from '../src/components/Map'
 import DataCollectionForm from '../src/components/DataCollection/DataCollectionForm'
 import ImageCrop from '../src/components/ImageCrop'
@@ -59,10 +57,7 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.stores = [AddPhotoPointStore]
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
+
     Reflux.rehydrate(AddPhotoPointStore, {
       layer: props.layer
     })
@@ -83,12 +78,6 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
     }
 
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
   }
 
   unloadHandler: any
@@ -290,7 +279,7 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
     }
 
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Provider inject={[BaseMapState]}>
           <Header {...headerConfig} />
           <main

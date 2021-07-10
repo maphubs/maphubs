@@ -2,15 +2,11 @@ import React from 'react'
 import Header from '../src/components/header'
 import MapMaker from '../src/components/MapMaker/MapMaker'
 import slugify from 'slugify'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import '../services/locales'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
 import MapContainer from '../src/components/Map/containers/MapContainer'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import type { Layer } from '../src/types/layer'
 import type { Group } from '../src/stores/GroupStore'
 import getConfig from 'next/config'
@@ -58,16 +54,6 @@ export default class Map extends React.Component<Props> {
 
   constructor(props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
 
     const baseMapContainerInit: {
       baseMap?: string
@@ -104,7 +90,7 @@ export default class Map extends React.Component<Props> {
       groups
     } = props
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Provider inject={[BaseMapState, MapState]}>
           <Header activePage='map' {...headerConfig} />
           <main

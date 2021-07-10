@@ -1,54 +1,29 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { message, notification, Row } from 'antd'
 import LayerActions from '../../actions/LayerActions'
-import LayerStore from '../../stores/layer-store'
+import useT from '../../hooks/useT'
+import { useSelector } from 'react-redux'
+import { LocaleState } from '../../redux/reducers/locale'
 
-import type { LocaleStoreState } from '../../stores/LocaleStore'
-import type { LayerStoreState } from '../../stores/layer-store'
-type Props = {
-  onSubmit: (...args: Array<any>) => any
+const getAPIUrl = (selected: string): void => {
+  // const selectedArr = selected.split(':')
+  // const selectedType = selectedArr[0].trim()
+  // const selectedScene = selectedArr[1].trim()
+  // return url
 }
-type State = {
-  canSubmit: boolean
-  selectedOption: string
-  selectedSceneOption: string
-} & LocaleStoreState &
-  LayerStoreState
-export default class SentinelSource extends React.Component<Props, State> {
-  props: Props
-  state: State = {
-    canSubmit: false,
-    selectedOption: 'scene',
-    selectedSceneOption: 'ortho'
-  }
 
-  stores: any
-  constructor(props: Props) {
-    super(props)
-    this.stores = [LayerStore]
-  }
+const SentinelSource = ({
+  onSubmit
+}: {
+  onSubmit: () => void
+}): JSX.Element => {
+  const [canSubmit, setCanSubmit] = useState(false)
+  const { t } = useT()
+  const _csrf = useSelector(
+    (state: { locale: LocaleState }) => state.locale._csrf
+  )
 
-  enableButton = (): void => {
-    this.setState({
-      canSubmit: true
-    })
-  }
-  disableButton = (): void => {
-    this.setState({
-      canSubmit: false
-    })
-  }
-  getAPIUrl = (selected: string): void => {
-    // const selectedArr = selected.split(':')
-    // const selectedType = selectedArr[0].trim()
-    // const selectedScene = selectedArr[1].trim()
-    // return url
-  }
-  submit = (model: Record<string, any>): void => {
-    const { t, props, state, getAPIUrl } = this
-    const { _csrf } = state
-    const { onSubmit } = props
-
+  const submit = (model: Record<string, any>): void => {
     const layers = []
     const selectedIDs = model.selectedIDs
     const selectedIDArr = selectedIDs.split(',')
@@ -90,22 +65,11 @@ export default class SentinelSource extends React.Component<Props, State> {
       }
     )
   }
-  optionChange = (value: string): void => {
-    this.setState({
-      selectedOption: value
-    })
-  }
-  sceneOptionChange = (value: string): void => {
-    this.setState({
-      selectedSceneOption: value
-    })
-  }
 
-  render(): JSX.Element {
-    return (
-      <Row>
-        <p>Coming Soon!</p>
-      </Row>
-    )
-  }
+  return (
+    <Row>
+      <p>Coming Soon!</p>
+    </Row>
+  )
 }
+export default SentinelSource

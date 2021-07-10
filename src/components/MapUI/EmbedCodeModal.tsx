@@ -3,6 +3,7 @@ import { Modal, Switch, Row, message, Alert, Tooltip } from 'antd'
 import { htmlEncode } from 'js-htmlencode'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import getConfig from 'next/config'
+import { LocalizedString } from '../../types/LocalizedString'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
   show?: boolean

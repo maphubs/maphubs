@@ -3,11 +3,8 @@ import { Steps } from 'antd'
 import Header from '../src/components/header'
 import Step1 from '../src/components/CreateGroup/Step1'
 import Step2 from '../src/components/CreateGroup/Step2'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
+
 const Step = Steps.Step
 type Props = {
   locale: string
@@ -39,20 +36,6 @@ export default class CreateGroup extends React.Component<Props, State> {
     step: 1
   }
 
-  constructor(props: Props) {
-    super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-  }
-
   onComplete: any | ((groupId: string) => void) = (groupId: string) => {
     window.location.assign('/group/' + groupId)
   }
@@ -72,7 +55,7 @@ export default class CreateGroup extends React.Component<Props, State> {
     const { headerConfig } = props
     const { step } = state
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header {...headerConfig} />
         <div className='container'>
           <h4>{t('Create Group')}</h4>

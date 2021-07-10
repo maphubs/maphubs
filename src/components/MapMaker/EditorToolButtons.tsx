@@ -3,7 +3,6 @@ import { Subscribe } from 'unstated'
 import { Modal, message, notification } from 'antd'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapToolButton from '../Map/MapToolButton'
-import type { LocaleStoreState } from '../../stores/LocaleStore'
 import { LocalizedString } from '../../types/LocalizedString'
 const { confirm } = Modal
 type Props = {
@@ -12,8 +11,8 @@ type Props = {
   t: (v: string | LocalizedString) => string
   _csrf: string
 }
-type State = {} & LocaleStoreState
-export default class EditorToolButtons extends React.Component<Props, State> {
+
+export default class EditorToolButtons extends React.Component<Props> {
   saveEdits: (DataEditor: any) => Promise<void> = async (
     DataEditor: Record<string, any>
   ) => {
@@ -36,8 +35,8 @@ export default class EditorToolButtons extends React.Component<Props, State> {
   stopEditing: (DataEditor: any) => void = (
     DataEditor: Record<string, any>
   ) => {
-    const { saveEdits } = this
-    const { stopEditingLayer, t } = this.props
+    const { saveEdits, props } = this
+    const { stopEditingLayer, t } = props
 
     if (DataEditor.state.edits.length > 0) {
       confirm({
@@ -46,7 +45,6 @@ export default class EditorToolButtons extends React.Component<Props, State> {
         okText: t('Save Edits'),
         okType: 'primary',
         cancelText: t('Discard Edits'),
-        cancelType: 'danger',
 
         onOk() {
           saveEdits(DataEditor)
@@ -74,8 +72,8 @@ export default class EditorToolButtons extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { undoEdit, redoEdit, saveEdits, stopEditing } = this
-    const { t } = this.props
+    const { undoEdit, redoEdit, saveEdits, stopEditing, props } = this
+    const { t } = props
     return (
       <Subscribe to={[DataEditorContainer]}>
         {(DataEditor) => {

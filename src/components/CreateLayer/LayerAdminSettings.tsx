@@ -6,7 +6,6 @@ import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
 
 import Toggle from '../forms/toggle'
-import type { LocaleStoreState } from '../../stores/LocaleStore'
 import type { LayerStoreState } from '../../stores/layer-store'
 import type { Group } from '../../stores/GroupStore'
 import dynamic from 'next/dynamic'
@@ -24,8 +23,7 @@ type Props = {
 type State = {
   canSubmit: boolean
   pendingChanges: boolean
-} & LocaleStoreState &
-  LayerStoreState
+} & LayerStoreState
 export default class LayerAdminSettings extends React.Component<Props, State> {
   props: Props
   static defaultProps:

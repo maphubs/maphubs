@@ -3,53 +3,36 @@ import { Row } from 'antd'
 import turf_area from '@turf/area'
 import { IntlProvider, FormattedNumber } from 'react-intl'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-
-if (!Intl.PluralRules) {
-  require('@formatjs/intl-pluralrules/polyfill')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/en')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/es')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/fr')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/pt')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/id')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/it')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/de')
-}
-
+import { FeatureCollection } from 'geojson'
+import useT from '../../hooks/useT'
 const debug = DebugService('feature-area')
 type Props = {
-  geojson?: Record<string, any>
+  geojson?: FeatureCollection
 }
 const comparisons = [
   {
     name: {
       en: 'Grand Canyons'
     },
-    ha: 313994.62
+    ha: 313_994.62
   },
   {
     name: {
       en: 'Rhode Islands'
     },
-    ha: 313994.62
+    ha: 313_994.62
   },
   {
     name: {
       en: 'Luxembourgs'
     },
-    ha: 258827.87
+    ha: 258_827.87
   },
   {
     name: {
       en: 'Washington, DCs'
     },
-    ha: 17699.98
+    ha: 17_699.98
   },
   {
     name: {
@@ -92,6 +75,7 @@ const findComparision = (areaHa: number) => {
       val: areaHa / comparisons[0].ha
     }
   } else {
+    // eslint-disable-next-line unicorn/no-array-for-each
     comparisons.forEach((comparison, i) => {
       if (!result && areaHa > comparison.ha) {
         if (i === 0) {
@@ -125,6 +109,7 @@ const findComparision = (areaHa: number) => {
   return result
 }
 const FeatureArea = ({ geojson }: Props): JSX.Element => {
+  const { t, locale } = useT()
   let featureAreaM2, featureAreaKM2, featureAreaHA
 
   try {
@@ -134,8 +119,8 @@ const FeatureArea = ({ geojson }: Props): JSX.Element => {
   }
 
   if (featureAreaM2 && featureAreaM2 > 0) {
-    featureAreaKM2 = featureAreaM2 * 0.000001
-    featureAreaHA = featureAreaM2 / 10000
+    featureAreaKM2 = featureAreaM2 * 0.000_001
+    featureAreaHA = featureAreaM2 / 10_000
     let value, units
 
     if (featureAreaKM2 < 1) {
@@ -151,14 +136,14 @@ const FeatureArea = ({ geojson }: Props): JSX.Element => {
       <div>
         <Row>
           <span>
-            <IntlProvider locale={this.state.locale}>
+            <IntlProvider locale={locale}>
               <FormattedNumber value={value} />
             </IntlProvider>
             &nbsp;{units}
           </span>
           <br />
           <span>
-            <IntlProvider locale={this.state.locale}>
+            <IntlProvider locale={locale}>
               <FormattedNumber value={featureAreaHA} />
             </IntlProvider>
             &nbsp;ha
@@ -167,10 +152,10 @@ const FeatureArea = ({ geojson }: Props): JSX.Element => {
         <Row>
           <span>
             (or &nbsp;
-            <IntlProvider locale={this.state.locale}>
+            <IntlProvider locale={locale}>
               <FormattedNumber value={comparison.val} />
             </IntlProvider>
-            &nbsp;{this.t(comparison.name)})
+            &nbsp;{t(comparison.name)})
           </span>
         </Row>
       </div>

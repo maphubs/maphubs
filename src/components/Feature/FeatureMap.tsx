@@ -1,29 +1,46 @@
+/* eslint-disable unicorn/numeric-separators-style */
 import React from 'react'
 import { Subscribe } from 'unstated'
-
 import InteractiveMap from '../Map/InteractiveMap'
 import FRContainer from './containers/FRContainer'
-import type { LocaleStoreState } from '../../stores/LocaleStore'
 import getConfig from 'next/config'
+
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
   mapConfig: Record<string, any>
   gpxLink: Record<string, any>
 }
-type State = {} & LocaleStoreState
-export default class FeatureMap extends React.Component<Props, State> {
+
+export default class FeatureMap extends React.Component<Props> {
   map: any
   frToggle: any | ((id: string) => void) = (id: string) => {
-    if (id === 'remaining') {
-      this.map.toggleVisibility(99999901)
-    } else if (id === 'loss') {
-      this.map.toggleVisibility(99999905)
-    } else if (id === 'glad') {
-      this.map.toggleVisibility(99999902)
-    } else if (id === 'ifl') {
-      this.map.toggleVisibility(99999903)
-    } else if (id === 'iflloss') {
-      this.map.toggleVisibility(99999904)
+    switch (id) {
+      case 'remaining': {
+        this.map.toggleVisibility(99999901)
+
+        break
+      }
+      case 'loss': {
+        this.map.toggleVisibility(99999905)
+
+        break
+      }
+      case 'glad': {
+        this.map.toggleVisibility(99999902)
+
+        break
+      }
+      case 'ifl': {
+        this.map.toggleVisibility(99999903)
+
+        break
+      }
+      case 'iflloss': {
+        this.map.toggleVisibility(99999904)
+
+        break
+      }
+      // No default
     }
   }
 

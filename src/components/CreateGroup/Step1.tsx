@@ -7,8 +7,6 @@ import MultiTextInput from '../forms/MultiTextInput'
 import Toggle from '../forms/toggle'
 import GroupStore from '../../stores/GroupStore'
 import GroupActions from '../../actions/GroupActions'
-
-import type { LocaleStoreState } from '../../stores/LocaleStore'
 import type { GroupStoreState } from '../../stores/GroupStore'
 import Locales from '../../services/locales'
 import NavigationIcon from '@material-ui/icons/Navigation'
@@ -26,8 +24,7 @@ type State = {
   showError: boolean
   errorMessage: string
   errorTitle: string
-} & LocaleStoreState &
-  GroupStoreState
+} & GroupStoreState
 export default class CreateGroupStep1 extends React.Component<Props, State> {
   static defaultProps:
     | any

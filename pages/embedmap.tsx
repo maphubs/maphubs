@@ -2,24 +2,18 @@ import React from 'react'
 import InteractiveMap from '../src/components/Map/InteractiveMap'
 import request from 'superagent'
 import _bbox from '@turf/bbox'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
 import MapContainer from '../src/components/Map/containers/MapContainer'
 import type { Layer } from '../src/types/layer'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import { Tooltip } from 'antd'
 import StyleHelper from '../src/components/Map/Styles/style'
 import getConfig from 'next/config'
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite'
 import { LocalizedString } from '../src/types/LocalizedString'
 import mapboxgl from 'mapbox-gl'
-
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-
 import { checkClientError } from '../src/services/client-error-response'
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
@@ -89,10 +83,6 @@ export default class EmbedMap extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
     const baseMapContainerInit: {
       baseMap: string
       bingKey: string
@@ -112,12 +102,6 @@ export default class EmbedMap extends React.Component<Props, State> {
 
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
     this.MapState = new MapContainer()
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
 
     const glStyle = props.map.style
     const layers = props.layers
@@ -423,7 +407,7 @@ export default class EmbedMap extends React.Component<Props, State> {
     }
 
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Provider inject={[BaseMapState, MapState]}>
           <div
             className='embed-map'

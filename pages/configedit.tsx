@@ -4,11 +4,7 @@ import Footer from '../src/components/footer'
 import { message, notification } from 'antd'
 import request from 'superagent'
 
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import dynamic from 'next/dynamic'
 import { checkClientError } from '../src/services/client-error-response'
 
@@ -30,7 +26,7 @@ type Props = {
 }
 type State = {
   pageConfig?: Record<string, any>
-} & LocaleStoreState
+}
 export default class ConfigEdit extends React.Component<Props, State> {
   static async getInitialProps({
     req,
@@ -52,16 +48,6 @@ export default class ConfigEdit extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
 
     this.state = {
       pageConfig: props.pageConfig
@@ -111,7 +97,7 @@ export default class ConfigEdit extends React.Component<Props, State> {
     const { headerConfig, page_id, footerConfig } = props
     const { pageConfig } = state
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header {...headerConfig} />
         <main
           className='container'

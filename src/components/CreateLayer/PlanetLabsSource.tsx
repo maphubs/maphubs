@@ -1,61 +1,36 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Formsy from 'formsy-react'
 import TextArea from '../forms/textArea'
 import { message, notification, Row, Button } from 'antd'
 import LayerActions from '../../actions/LayerActions'
-import LayerStore from '../../stores/layer-store'
-
-import type { LocaleStoreState } from '../../stores/LocaleStore'
-import type { LayerStoreState } from '../../stores/layer-store'
+import useT from '../../hooks/useT'
+import { useSelector } from 'react-redux'
+import { LocaleState } from '../../redux/reducers/locale'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
-type Props = {
-  onSubmit: (...args: Array<any>) => any
+
+const getAPIUrl = (selected: string): string => {
+  const selectedArr = selected.split(':')
+  const selectedType = selectedArr[0].trim()
+  const selectedScene = selectedArr[1].trim()
+  // build planet labs API URL
+  // v1 https://tiles.planet.com/data/v1/PSScene3Band/20161221_024131_0e19/14/12915/8124.png?api_key=your-api-key
+  const url = `https://tiles.planet.com/data/v1/${selectedType}/${selectedScene}/{z}/{x}/{y}.png?api_key=${MAPHUBS_CONFIG.PLANET_LABS_API_KEY}`
+  return url
 }
-type State = {
-  canSubmit: boolean
-  selectedOption: string
-  selectedSceneOption: string
-} & LocaleStoreState &
-  LayerStoreState
-export default class PlanetLabsSource extends React.Component<Props, State> {
-  props: Props
-  state: State = {
-    canSubmit: false,
-    selectedOption: 'scene',
-    selectedSceneOption: 'ortho'
-  }
 
-  stores: any
-  constructor(props: Props) {
-    super(props)
-    this.stores = [LayerStore]
-  }
+const PlanetLabsSource = ({
+  onSubmit
+}: {
+  onSubmit: () => void
+}): JSX.Element => {
+  const { t } = useT()
+  const _csrf = useSelector(
+    (state: { locale: LocaleState }) => state.locale._csrf
+  )
+  const [canSubmit, setCanSubmit] = useState(false)
 
-  enableButton = (): void => {
-    this.setState({
-      canSubmit: true
-    })
-  }
-  disableButton = (): void => {
-    this.setState({
-      canSubmit: false
-    })
-  }
-  getAPIUrl = (selected: string): string => {
-    const selectedArr = selected.split(':')
-    const selectedType = selectedArr[0].trim()
-    const selectedScene = selectedArr[1].trim()
-    // build planet labs API URL
-    // v1 https://tiles.planet.com/data/v1/PSScene3Band/20161221_024131_0e19/14/12915/8124.png?api_key=your-api-key
-    const url = `https://tiles.planet.com/data/v1/${selectedType}/${selectedScene}/{z}/{x}/{y}.png?api_key=${MAPHUBS_CONFIG.PLANET_LABS_API_KEY}`
-    return url
-  }
-  submit = (model: Record<string, any>): void => {
-    const { t, props, state, getAPIUrl } = this
-    const { _csrf } = state
-    const { onSubmit } = props
-
+  const submit = (model: Record<string, any>): void => {
     const layers = []
     const selectedIDs = model.selectedIDs
     const selectedIDArr = selectedIDs.split(',')
@@ -97,61 +72,50 @@ export default class PlanetLabsSource extends React.Component<Props, State> {
       }
     )
   }
-  optionChange = (value: string): void => {
-    this.setState({
-      selectedOption: value
-    })
-  }
-  sceneOptionChange = (value: string): void => {
-    this.setState({
-      selectedSceneOption: value
-    })
-  }
 
-  render(): JSX.Element {
-    const { t, state, enableButton, submit, disableButton } = this
-    const { canSubmit } = state
-    return (
-      <Row
-        style={{
-          marginBottom: '20px'
+  return (
+    <Row
+      style={{
+        marginBottom: '20px'
+      }}
+    >
+      <Formsy
+        onValidSubmit={submit}
+        onValid={() => {
+          setCanSubmit(true)
+        }}
+        onInvalid={() => {
+          setCanSubmit(false)
         }}
       >
-        <Formsy
-          onValidSubmit={submit}
-          onValid={enableButton}
-          onInvalid={disableButton}
-        >
-          <div>
-            <p>
-              {t('Paste the selected IDs from the Planet Explorer API box')}
-            </p>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextArea
-                name='selectedIDs'
-                label={t('Planet Explorer Selected IDs')}
-                length={2000}
-                icon='info'
-                required
-                t={t}
-              />
-            </Row>
-          </div>
-          <div
+        <div>
+          <p>{t('Paste the selected IDs from the Planet Explorer API box')}</p>
+          <Row
             style={{
-              float: 'right'
+              marginBottom: '20px'
             }}
           >
-            <Button type='primary' htmlType='submit' disabled={!canSubmit}>
-              {t('Save and Continue')}
-            </Button>
-          </div>
-        </Formsy>
-      </Row>
-    )
-  }
+            <TextArea
+              name='selectedIDs'
+              label={t('Planet Explorer Selected IDs')}
+              length={2000}
+              icon='info'
+              required
+              t={t}
+            />
+          </Row>
+        </div>
+        <div
+          style={{
+            float: 'right'
+          }}
+        >
+          <Button type='primary' htmlType='submit' disabled={!canSubmit}>
+            {t('Save and Continue')}
+          </Button>
+        </div>
+      </Formsy>
+    </Row>
+  )
 }
+export default PlanetLabsSource

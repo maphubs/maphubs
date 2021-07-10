@@ -3,8 +3,6 @@ import { Row, Col, Button, message, notification } from 'antd'
 import ImageCrop from '../ImageCrop'
 import GroupStore from '../../stores/GroupStore'
 import GroupActions from '../../actions/GroupActions'
-
-import type { LocaleStoreState } from '../../stores/LocaleStore'
 import type { GroupStoreState } from '../../stores/GroupStore'
 import classNames from 'classnames'
 import GroupIcon from '@material-ui/icons/Group'
@@ -16,8 +14,7 @@ type Props = {
 }
 type State = {
   canSubmit: boolean
-} & LocaleStoreState &
-  GroupStoreState
+} & GroupStoreState
 export default class CreateGroupStep2 extends React.Component<Props, State> {
   static defaultProps:
     | any

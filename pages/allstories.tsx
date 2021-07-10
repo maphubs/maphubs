@@ -2,10 +2,6 @@ import React from 'react'
 import { Row, Typography } from 'antd'
 import Header from '../src/components/header'
 import Footer from '../src/components/footer'
-import UserStore from '../src/stores/UserStore'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import StoryList from '../src/components/Lists/StoryList'
 import type { UserStoreState } from '../src/stores/UserStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
@@ -45,27 +41,13 @@ export default class AllStories extends React.Component<Props, State> {
     stories: []
   }
   stores: any
-  constructor(props: Props) {
-    super(props)
-    this.stores = [UserStore]
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-  }
 
   render(): JSX.Element {
     const { t, props } = this
     const { stories, headerConfig, footerConfig } = props
     const hasStories = stories && stories.length > 0
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header activePage='stories' {...headerConfig} />
         <main
           style={{

@@ -3,10 +3,6 @@ import Header from '../src/components/header'
 import Footer from '../src/components/footer'
 import { Row, Col, Button, Typography, Card } from 'antd'
 import StorySummary from '../src/components/Story/StorySummary'
-import UserStore from '../src/stores/UserStore'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import type { UserStoreState } from '../src/stores/UserStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import FloatingAddButton from '../src/components/FloatingAddButton'
@@ -39,29 +35,13 @@ export default class Stories extends React.Component<Props, State> {
     }
   }
 
-  stores: any
-  constructor(props: Props) {
-    super(props)
-    this.stores = [UserStore]
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-  }
-
   render(): JSX.Element {
     const { t, props } = this
     const { recentStories, popularStories, headerConfig, footerConfig } = props
     const hasRecent = recentStories && recentStories.length > 0
     const hasPopular = popularStories && popularStories.length > 0
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header activePage='stories' {...headerConfig} />
         <main>
           <Row

@@ -6,11 +6,7 @@ import LocalizedCodeEditor from '../src/components/forms/LocalizedCodeEditor'
 import request from 'superagent'
 import shortid from 'shortid'
 
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import dynamic from 'next/dynamic'
 
 import { checkClientError } from '../src/services/client-error-response'
@@ -33,7 +29,7 @@ type Props = {
 type State = {
   pageConfig: Record<string, any>
   editingComponent?: Record<string, any>
-} & LocaleStoreState
+}
 export default class PageEdit extends React.Component<Props, State> {
   static async getInitialProps({
     req,
@@ -55,16 +51,6 @@ export default class PageEdit extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
 
     const pageConfig = props.pageConfig || {}
     if (!pageConfig.components) pageConfig.components = []
@@ -133,7 +119,7 @@ export default class PageEdit extends React.Component<Props, State> {
     const { pageConfig, editingComponent } = state
     const components = pageConfig.components
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header {...headerConfig} />
         <main
           style={{
@@ -218,7 +204,7 @@ export default class PageEdit extends React.Component<Props, State> {
                 padding: '20px'
               }}
             >
-              <ErrorBoundary>
+              <ErrorBoundary t={t}>
                 <Row
                   style={{
                     height: '100%'

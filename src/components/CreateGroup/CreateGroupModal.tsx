@@ -9,7 +9,6 @@ import MultiTextInput from '../forms/MultiTextInput'
 import MultiTextArea from '../forms/MultiTextArea'
 import GroupStore from '../../stores/GroupStore'
 import GroupActions from '../../actions/GroupActions'
-import type { LocaleStoreState } from '../../stores/LocaleStore'
 import type { GroupStoreState } from '../../stores/GroupStore'
 import Locales from '../../services/locales'
 import $ from 'jquery'
@@ -24,8 +23,7 @@ type State = {
   visible?: boolean
   canSubmit: boolean
   formModel?: Record<string, any>
-} & LocaleStoreState &
-  GroupStoreState
+} & GroupStoreState
 
 export default class CreateGroupModal extends React.Component<Props, State> {
   stores: any

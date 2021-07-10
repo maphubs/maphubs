@@ -1,10 +1,11 @@
 import React from 'react'
-
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import getConfig from 'next/config'
+import { LocalizedString } from '../types/LocalizedString'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const debug = DebugService('react-error-boundary')
 type Props = {
+  t: (v: string | LocalizedString) => string
   children: JSX.Element | JSX.Element[]
 }
 type State = {
@@ -28,7 +29,8 @@ export default class ErrorBoundary extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { t, props, state } = this
+    const { props, state } = this
+    const { t } = props
 
     return state.error ? (
       <div

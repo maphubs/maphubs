@@ -8,24 +8,6 @@ import WGS84 from 'wgs84-util'
 import { LocalizedString } from '../../types/LocalizedString'
 const { Title } = Typography
 
-if (!Intl.PluralRules) {
-  require('@formatjs/intl-pluralrules/polyfill')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/en')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/es')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/fr')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/pt')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/id')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/it')
-
-  require('@formatjs/intl-pluralrules/dist/locale-data/de')
-}
-
 const openLocationCode = new OpenLocationCode()
 type Props = {
   geojson?: Record<string, any>

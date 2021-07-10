@@ -1,51 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Formsy, { addValidationRule } from 'formsy-react'
 import TextInput from '../forms/textInput'
 import { message, notification, Row, Button } from 'antd'
 import LayerActions from '../../actions/LayerActions'
-import LayerStore from '../../stores/layer-store'
-
 import LinkIcon from '@material-ui/icons/Link'
 import HeightIcon from '@material-ui/icons/Height'
 import AspectRatioIcon from '@material-ui/icons/AspectRatio'
-import type { LocaleStoreState } from '../../stores/LocaleStore'
-import type { LayerStoreState } from '../../stores/layer-store'
-type Props = {
-  onSubmit: (...args: Array<any>) => any
-}
-type State = {
-  canSubmit: boolean
-  selectedSource?: string
-} & LocaleStoreState &
-  LayerStoreState
-export default class WMSSource extends React.Component<Props, State> {
-  props: Props
-  state: State = {
-    canSubmit: false
-  }
+import useT from '../../hooks/useT'
+import { useSelector } from 'react-redux'
+import { LocaleState } from '../../redux/reducers/locale'
 
-  stores: any
-  constructor(props: Props) {
-    super(props)
-    this.stores = [LayerStore]
-    addValidationRule('isHttps', (values, value: string) => {
-      return value ? value.startsWith('https://') : false
-    })
-  }
+const WMSSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
+  const [canSubmit, setCanSubmit] = useState(false)
+  const { t } = useT()
+  const _csrf = useSelector(
+    (state: { locale: LocaleState }) => state.locale._csrf
+  )
+  addValidationRule('isHttps', (values, value: string) => {
+    return value ? value.startsWith('https://') : false
+  })
 
-  enableButton = (): void => {
-    this.setState({
-      canSubmit: true
-    })
-  }
-  disableButton = (): void => {
-    this.setState({
-      canSubmit: false
-    })
-  }
-  submit = (model: Record<string, any>): void => {
-    const { t, props, state } = this
-
+  const submit = (model: Record<string, any>): void => {
     let boundsArr
 
     if (model.bounds) {
@@ -94,7 +69,7 @@ export default class WMSSource extends React.Component<Props, State> {
             tiles: [url]
           }
         },
-        state._csrf,
+        _csrf,
         (err) => {
           if (err) {
             notification.error({
@@ -109,7 +84,7 @@ export default class WMSSource extends React.Component<Props, State> {
               // tell the map that the data is initialized
               LayerActions.tileServiceInitialized()
 
-              props.onSubmit()
+              onSubmit()
             })
           }
         }
@@ -122,133 +97,129 @@ export default class WMSSource extends React.Component<Props, State> {
       })
     }
   }
-  sourceChange = (value: string): void => {
-    this.setState({
-      selectedSource: value
-    })
-  }
 
-  render(): JSX.Element {
-    const { t, state, submit, enableButton, disableButton } = this
-    const { canSubmit } = state
-    return (
-      <Row
+  return (
+    <Row
+      style={{
+        marginBottom: '20px'
+      }}
+    >
+      <Formsy
+        onValidSubmit={submit}
+        onValid={() => {
+          setCanSubmit(true)
+        }}
+        onInvalid={() => {
+          setCanSubmit(false)
+        }}
         style={{
-          marginBottom: '20px'
+          width: '100%'
         }}
       >
-        <Formsy
-          onValidSubmit={submit}
-          onValid={enableButton}
-          onInvalid={disableButton}
-          style={{
-            width: '100%'
-          }}
-        >
-          <div>
-            <p>
-              <b>{t('WMS Source')}</b>
-            </p>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='rasterTileUrl'
-                label={t('WMS URL')}
-                icon={<LinkIcon />}
-                validations='maxLength:500,isHttps'
-                validationErrors={{
-                  maxLength: t('Must be 500 characters or less.'),
-                  isHttps: t(
-                    'SSL required for external links, URLs must start with https://'
-                  )
-                }}
-                length={500}
-                tooltipPosition='top'
-                tooltip={
-                  t(
-                    'Only layers paramater is required, others will be ignored unless pasted in Other Parameters below. Example:'
-                  ) +
-                  'https://geodata.state.nj.us/imagerywms/Natural2015?layers=Natural2015'
-                }
-                required
-                t={t}
-              />
-            </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='other'
-                label={t('Other Parameters (Optional)')}
-                icon={<LinkIcon />}
-                tooltipPosition='top'
-                tooltip={t(
-                  'Additional needed URL parmeters, for example: apikey=1234&query=value>0'
-                )}
-                t={t}
-              />
-            </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='minzoom'
-                label={t('MinZoom (Optional)')}
-                icon={<HeightIcon />}
-                tooltipPosition='top'
-                tooltip={t('Lowest tile zoom level available in data')}
-                t={t}
-              />
-            </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='maxzoom'
-                label={t('MaxZoom (Optional)')}
-                icon={<HeightIcon />}
-                tooltipPosition='top'
-                tooltip={t('Highest tile zoom level available in data')}
-                t={t}
-              />
-            </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='bounds'
-                label={t('Bounds (Optional)')}
-                icon={<AspectRatioIcon />}
-                tooltipPosition='top'
-                tooltip={t(
-                  'Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy'
-                )}
-                t={t}
-              />
-            </Row>
-          </div>
-          <div
+        <div>
+          <p>
+            <b>{t('WMS Source')}</b>
+          </p>
+          <Row
             style={{
-              float: 'right'
+              marginBottom: '20px'
             }}
           >
-            <Button type='primary' htmlType='submit' disabled={!canSubmit}>
-              {t('Save and Continue')}
-            </Button>
-          </div>
-        </Formsy>
-      </Row>
-    )
-  }
+            <TextInput
+              name='rasterTileUrl'
+              label={t('WMS URL')}
+              icon={<LinkIcon />}
+              validations='maxLength:500,isHttps'
+              validationErrors={{
+                maxLength: t('Must be 500 characters or less.'),
+                isHttps: t(
+                  'SSL required for external links, URLs must start with https://'
+                )
+              }}
+              length={500}
+              tooltipPosition='top'
+              tooltip={
+                t(
+                  'Only layers paramater is required, others will be ignored unless pasted in Other Parameters below. Example:'
+                ) +
+                'https://geodata.state.nj.us/imagerywms/Natural2015?layers=Natural2015'
+              }
+              required
+              t={t}
+            />
+          </Row>
+          <Row
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <TextInput
+              name='other'
+              label={t('Other Parameters (Optional)')}
+              icon={<LinkIcon />}
+              tooltipPosition='top'
+              tooltip={t(
+                'Additional needed URL parmeters, for example: apikey=1234&query=value>0'
+              )}
+              t={t}
+            />
+          </Row>
+          <Row
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <TextInput
+              name='minzoom'
+              label={t('MinZoom (Optional)')}
+              icon={<HeightIcon />}
+              tooltipPosition='top'
+              tooltip={t('Lowest tile zoom level available in data')}
+              t={t}
+            />
+          </Row>
+          <Row
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <TextInput
+              name='maxzoom'
+              label={t('MaxZoom (Optional)')}
+              icon={<HeightIcon />}
+              tooltipPosition='top'
+              tooltip={t('Highest tile zoom level available in data')}
+              t={t}
+            />
+          </Row>
+          <Row
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <TextInput
+              name='bounds'
+              label={t('Bounds (Optional)')}
+              icon={<AspectRatioIcon />}
+              tooltipPosition='top'
+              tooltip={t(
+                'Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy'
+              )}
+              t={t}
+            />
+          </Row>
+        </div>
+        <div
+          style={{
+            float: 'right'
+          }}
+        >
+          <Button type='primary' htmlType='submit' disabled={!canSubmit}>
+            {t('Save and Continue')}
+          </Button>
+        </div>
+      </Formsy>
+    </Row>
+  )
 }
+export default WMSSource

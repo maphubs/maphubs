@@ -8,8 +8,6 @@ import Select from '../forms/select'
 import Licenses from './licenses'
 import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
-
-import type { LocaleStoreState } from '../../stores/LocaleStore'
 import type { LayerStoreState } from '../../stores/layer-store'
 import type { Group } from '../../stores/GroupStore'
 import Locales from '../../services/locales'
@@ -35,7 +33,7 @@ type LayerSettingsState = {
   canSubmit: boolean
   pendingChanges: boolean
 }
-type State = LocaleStoreState & LayerStoreState & LayerSettingsState
+type State = LayerStoreState & LayerSettingsState
 export default class LayerSettings extends React.Component<Props, State> {
   props: Props
   static defaultProps: DefaultProps = {

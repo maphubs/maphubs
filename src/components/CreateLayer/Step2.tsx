@@ -3,8 +3,6 @@ import LayerSettings from './LayerSettings'
 import LayerActions from '../../actions/LayerActions'
 import { notification, message, Row } from 'antd'
 import LayerStore from '../../stores/layer-store'
-
-import type { LocaleStoreState } from '../../stores/LocaleStore'
 import type { LayerStoreState } from '../../stores/layer-store'
 import type { Group } from '../../stores/GroupStore'
 import { LocalizedString } from '../../types/LocalizedString'
@@ -13,7 +11,7 @@ type Props = {
   onSubmit: (...args: Array<any>) => any
   t: (v: string | LocalizedString) => string
 }
-type State = LocaleStoreState & LayerStoreState
+type State = LayerStoreState
 export default class Step2 extends React.Component<Props, State> {
   static defaultProps:
     | any

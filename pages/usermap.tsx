@@ -5,9 +5,6 @@ import { message } from 'antd'
 import UserStore from '../src/stores/UserStore'
 import MapMakerStore from '../src/stores/MapMakerStore'
 
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
 import type { UserStoreState } from '../src/stores/UserStore'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
@@ -41,7 +38,7 @@ type UserMapState = {
   share_id?: string
   showEmbedCode?: boolean
 }
-type State = LocaleStoreState & UserStoreState & UserMapState
+type State = UserMapState
 export default class UserMap extends React.Component<Props, State> {
   BaseMapState: any
   static async getInitialProps({
@@ -74,10 +71,7 @@ export default class UserMap extends React.Component<Props, State> {
     this.state = {
       share_id: props.map.share_id
     }
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
+
     const baseMapContainerInit: {
       baseMap: string
       bingKey: string
@@ -96,12 +90,6 @@ export default class UserMap extends React.Component<Props, State> {
     }
 
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
   }
 
   onEdit = (): void => {
@@ -158,7 +146,7 @@ export default class UserMap extends React.Component<Props, State> {
     // TODO: change copied map title in other languages
     copyMapTitle.en = `${copyMapTitle.en} - Copy`
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Provider inject={[BaseMapState]}>
           <Header {...headerConfig} />
           <main

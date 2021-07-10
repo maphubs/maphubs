@@ -1,57 +1,39 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import UppyFileUpload from '../forms/UppyFileUpload'
 import Map from '../Map'
-import LayerStore from '../../stores/layer-store'
+import { Element, scroller } from 'react-scroll'
 import LayerActions from '../../actions/LayerActions'
-
-import type { LocaleStoreState } from '../../stores/LocaleStore'
-import type { LayerStoreState } from '../../stores/layer-store'
 import superagent from 'superagent'
 import { Row, message, notification, Button } from 'antd'
-// import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-// const debug = DebugService('UploadLocalSource')
+import useT from '../../hooks/useT'
+import { useSelector } from 'react-redux'
+import { LocaleState } from '../../redux/reducers/locale'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
-let scrollToComponent
 type Props = {
-  onSubmit: (...args: Array<any>) => any
+  onSubmit: () => void
   mapConfig: Record<string, any>
 }
-type State = {
-  canSubmit: boolean
-  bbox?: Record<string, any>
-} & LocaleStoreState &
-  LayerStoreState
-export default class UploadRasterSource extends React.Component<Props, State> {
-  state: State = {
-    canSubmit: false,
-    layer: {}
-  }
+const UploadRasterSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
+  const [canSubmit, setCanSubmit] = useState(false)
+  const [bbox, setBBOX] = useState()
+  const { t, locale } = useT()
+  const _csrf = useSelector(
+    (state: { locale: LocaleState }) => state.locale._csrf
+  )
+  const layer = useSelector((state: { layer: any }) => state.layer)
+  const { layer_id, style } = layer
 
-  stores: any
-  constructor(props: Props) {
-    super(props)
-    this.stores = [LayerStore]
-  }
+  useEffect(() => {
+    scroller.scrollTo('scrollToMap')
+  }, [])
 
-  componentDidMount(): void {
-    scrollToComponent = require('react-scroll-to-component')
-  }
-
-  componentDidUpdate(): void {
-    if (this.state.canSubmit) {
-      scrollToComponent(this.refs.mapSection)
-    }
-  }
-
-  onSubmit = (): void => {
-    const { t, props } = this
+  const submit = (): void => {
     message.success(t('Layer Saved'))
-    props.onSubmit()
+    onSubmit()
   }
-  onUpload = (file: Record<string, any>): void => {
-    const { t, state, onUploadError } = this
 
+  const onUpload = (file: Record<string, any>): void => {
     const closeMessage = message.loading(t('Processing'), 0)
     superagent
       .post(`${MAPHUBS_CONFIG.RASTER_UPLOAD_API}/upload/complete`)
@@ -84,7 +66,7 @@ export default class UploadRasterSource extends React.Component<Props, State> {
                 scheme: result.scheme
               }
             },
-            state._csrf,
+            _csrf,
             (err) => {
               if (err) {
                 notification.error({
@@ -97,18 +79,16 @@ export default class UploadRasterSource extends React.Component<Props, State> {
                 LayerActions.resetStyle()
                 // tell the map that the data is initialized
                 LayerActions.tileServiceInitialized()
-                this.setState({
-                  canSubmit: true,
-                  bbox: result.bounds
-                })
+                // set local state
+                setBBOX(result.bounds)
+                setCanSubmit(true)
               }
             }
           )
         }
       })
   }
-  onUploadError = (err: string): void => {
-    const { t } = this
+  const onUploadError = (err: string): void => {
     notification.error({
       message: t('Error'),
       description: err,
@@ -116,56 +96,52 @@ export default class UploadRasterSource extends React.Component<Props, State> {
     })
   }
 
-  render(): JSX.Element {
-    const { t, props, state, onUpload, onUploadError, onSubmit } = this
-    const { canSubmit, style, bbox, locale, layer_id } = state
-    const { mapConfig } = props
-    return (
-      <Row>
-        <style jsx>
-          {`
-            #upload-process-progess {
-              z-index: 9999 !important;
-            }
-          `}
-        </style>
-        <Row
+  return (
+    <Row>
+      <style jsx>
+        {`
+          #upload-process-progess {
+            z-index: 9999 !important;
+          }
+        `}
+      </style>
+      <Row
+        style={{
+          marginBottom: '20px'
+        }}
+      >
+        <div
           style={{
-            marginBottom: '20px'
+            margin: 'auto auto',
+            maxWidth: '750px'
           }}
         >
-          <div
-            style={{
-              margin: 'auto auto',
-              maxWidth: '750px'
+          <UppyFileUpload
+            endpoint={`${MAPHUBS_CONFIG.RASTER_UPLOAD_API}/upload/save`}
+            headers={{
+              authorization: `Bearer ${MAPHUBS_CONFIG.RASTER_UPLOAD_API_KEY}`
             }}
-          >
-            <UppyFileUpload
-              endpoint={`${MAPHUBS_CONFIG.RASTER_UPLOAD_API}/upload/save`}
-              headers={{
-                authorization: `Bearer ${MAPHUBS_CONFIG.RASTER_UPLOAD_API_KEY}`
-              }}
-              note='Supports: GeoTiffs and MBTiles, GeoTiffs must have RGB visual bands'
-              maxFileSize={
-                MAPHUBS_CONFIG.RASTER_UPLOAD_FILE_SIZE_LIMIT || 157286400
-              }
-              allowedFileTypes={['.tif', '.tiff', '.mbtiles']}
-              meta={{
-                layer_id: layer_id || 0
-              }}
-              onComplete={onUpload}
-              onError={onUploadError}
-            />
-          </div>
-        </Row>
-        <Row
-          style={{
-            marginBottom: '20px'
-          }}
-        >
-          {canSubmit && style && (
+            note='Supports: GeoTiffs and MBTiles, GeoTiffs must have RGB visual bands'
+            maxFileSize={
+              MAPHUBS_CONFIG.RASTER_UPLOAD_FILE_SIZE_LIMIT || 157_286_400
+            }
+            allowedFileTypes={['.tif', '.tiff', '.mbtiles']}
+            meta={{
+              layer_id: layer_id || 0
+            }}
+            onComplete={onUpload}
+            onError={onUploadError}
+          />
+        </div>
+      </Row>
+      <Row
+        style={{
+          marginBottom: '20px'
+        }}
+      >
+        {canSubmit && style && (
+          <Element name='scrollToMap'>
             <div
-              ref='mapSection'
               style={{
                 width: '100%'
               }}
@@ -196,14 +172,15 @@ export default class UploadRasterSource extends React.Component<Props, State> {
                 earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
               />
             </div>
-          )}
-        </Row>
-        <Row justify='end'>
-          <Button type='primary' disabled={!canSubmit} onClick={onSubmit}>
-            {t('Save and Continue')}
-          </Button>
-        </Row>
+          </Element>
+        )}
       </Row>
-    )
-  }
+      <Row justify='end'>
+        <Button type='primary' disabled={!canSubmit} onClick={onSubmit}>
+          {t('Save and Continue')}
+        </Button>
+      </Row>
+    </Row>
+  )
 }
+export default UploadRasterSource

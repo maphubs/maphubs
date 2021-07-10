@@ -20,8 +20,7 @@ import {
 } from '../src/components/Feature'
 
 import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
+
 import type { FeaturePhotoStoreState } from '../src/stores/FeaturePhotoStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import UserStore from '../src/stores/UserStore'
@@ -47,8 +46,7 @@ type Props = {
 type State = {
   tab: string
   frActive?: boolean
-} & LocaleStoreState &
-  FeaturePhotoStoreState
+} & FeaturePhotoStoreState
 export default class FeatureInfo extends React.Component<Props, State> {
   BaseMapState: BaseMapContainer
   MapState: MapContainer
@@ -73,16 +71,6 @@ export default class FeatureInfo extends React.Component<Props, State> {
     super(props)
     this.stores = [FeaturePhotoStore, UserStore]
     const { locale, _csrf, user, feature, photo, mapConfig } = props
-    Reflux.rehydrate(LocaleStore, {
-      locale,
-      _csrf
-    })
-
-    if (user) {
-      Reflux.rehydrate(UserStore, {
-        user
-      })
-    }
 
     Reflux.rehydrate(FeaturePhotoStore, {
       feature,
@@ -197,7 +185,7 @@ export default class FeatureInfo extends React.Component<Props, State> {
     }
 
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Provider inject={[this.BaseMapState, this.MapState, this.FRState]}>
           <Header {...headerConfig} />
           <Subscribe to={[MapContainer]}>
@@ -349,7 +337,7 @@ export default class FeatureInfo extends React.Component<Props, State> {
                         )}
                         {MAPHUBS_CONFIG.enableComments && (
                           <TabPane tab={t('Discussion')} key='discussion'>
-                            <ErrorBoundary>
+                            <ErrorBoundary t={t}>
                               <Comments />
                             </ErrorBoundary>
                           </TabPane>

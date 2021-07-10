@@ -10,6 +10,7 @@ import 'ace-builds/src-min-noconflict/ext-spellcheck'
 import 'ace-builds/src-min-noconflict/ext-searchbox'
 
 import ace from 'ace-builds/src-noconflict/ace'
+import { LocalizedString } from '../../types/LocalizedString'
 
 ace.config.set(
   'basePath',
@@ -25,6 +26,7 @@ type Props = {
   value: string
   mode: string
   theme: string
+  t: (v: string | LocalizedString) => string
 }
 type State = {
   canSave?: boolean
@@ -55,9 +57,9 @@ export default class CodeEditor extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const { name, mode, theme, value } = this.props
+    const { name, mode, theme, value, t } = this.props
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <AceEditor
           ref='ace'
           mode={mode}

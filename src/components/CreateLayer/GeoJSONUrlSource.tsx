@@ -1,55 +1,37 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Formsy, { addValidationRule } from 'formsy-react'
 import { Row, message, notification, Button } from 'antd'
 import LinkIcon from '@material-ui/icons/Link'
 import TextInput from '../forms/textInput'
 import LayerActions from '../../actions/LayerActions'
 import Radio from '../forms/radio'
-import LayerStore from '../../stores/layer-store'
+import useT from '../../hooks/useT'
+import { useSelector } from 'react-redux'
+import { LocaleState } from '../../redux/reducers/locale'
 
-import type { LocaleStoreState } from '../../stores/LocaleStore'
-import type { LayerStoreState } from '../../stores/layer-store'
 type Props = {
   onSubmit: (...args: Array<any>) => any
 }
 type State = {
   canSubmit: boolean
   selectedSource?: string
-} & LocaleStoreState &
-  LayerStoreState
-export default class GeoJSONUrlSource extends React.Component<Props, State> {
-  props: Props
-  state: State = {
-    canSubmit: false
-  }
-  stores: any
-  constructor(props: Props) {
-    super(props)
-    this.stores = [LayerStore]
-    addValidationRule('isHttps', (values, value) => {
-      if (value) {
-        return value.startsWith('https://')
-      } else {
-        return false
-      }
-    })
-  }
+}
 
-  enableButton: any | (() => void) = () => {
-    this.setState({
-      canSubmit: true
-    })
-  }
-  disableButton: any | (() => void) = () => {
-    this.setState({
-      canSubmit: false
-    })
-  }
-  submit: any | ((model: any) => void) = (model: Record<string, any>) => {
-    const { t } = this
+const GeoJSONUrlSource = ({
+  onSubmit
+}: {
+  onSubmit: () => void
+}): JSX.Element => {
+  const [canSubmit, setCanSubmit] = useState(false)
+  const { t } = useT()
+  const _csrf = useSelector(
+    (state: { locale: LocaleState }) => state.locale._csrf
+  )
+  addValidationRule('isHttps', (values, value) => {
+    return value ? value.startsWith('https://') : false
+  })
 
-    const _this = this
-
+  const submit = (model: Record<string, any>): void => {
     LayerActions.saveDataSettings(
       {
         is_external: true,
@@ -61,7 +43,7 @@ export default class GeoJSONUrlSource extends React.Component<Props, State> {
           data: model.geojsonUrl
         }
       },
-      _this.state._csrf,
+      _csrf,
       (err) => {
         if (err) {
           notification.error({
@@ -76,119 +58,112 @@ export default class GeoJSONUrlSource extends React.Component<Props, State> {
             // tell the map that the data is initialized
             LayerActions.tileServiceInitialized()
 
-            _this.props.onSubmit()
+            onSubmit()
           })
         }
       }
     )
   }
-  sourceChange: any | ((value: string) => void) = (value: string) => {
-    this.setState({
-      selectedSource: value
-    })
-  }
 
-  render(): JSX.Element {
-    const { t } = this
-    const dataTypeOptions = [
-      {
-        value: 'point',
-        label: t('Point')
-      },
-      {
-        value: 'line',
-        label: t('Line')
-      },
-      {
-        value: 'polygon',
-        label: t('Polygon')
-      }
-    ]
-    return (
-      <Row
+  const dataTypeOptions = [
+    {
+      value: 'point',
+      label: t('Point')
+    },
+    {
+      value: 'line',
+      label: t('Line')
+    },
+    {
+      value: 'polygon',
+      label: t('Polygon')
+    }
+  ]
+  return (
+    <Row
+      style={{
+        marginBottom: '20px'
+      }}
+    >
+      <Formsy
+        onValidSubmit={submit}
+        onValid={() => {
+          setCanSubmit(true)
+        }}
+        onInvalid={() => {
+          setCanSubmit(false)
+        }}
         style={{
-          marginBottom: '20px'
+          width: '100%'
         }}
       >
-        <Formsy
-          onValidSubmit={this.submit}
-          onValid={this.enableButton}
-          onInvalid={this.disableButton}
-          style={{
-            width: '100%'
-          }}
-        >
-          <div>
-            <p>{t('GeoJSON URL')}</p>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='geojsonUrl'
-                label={t('GeoJSON URL')}
-                icon={<LinkIcon />}
-                validations='maxLength:500,isHttps'
-                validationErrors={{
-                  maxLength: t('Must be 500 characters or less.'),
-                  isHttps: t(
-                    'SSL required for external links, URLs must start with https://'
-                  )
-                }}
-                length={500}
-                tooltipPosition='top'
-                tooltip={
-                  t('Vector Tile URL for example:') +
-                  'http://myserver/tiles/{z}/{x}/{y}.pbf'
-                }
-                required
-                t={t}
-              />
-            </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='id'
-                label={t('ID Property (Optional)')}
-                tooltipPosition='top'
-                tooltip={t(
-                  'Some features require idenify a unique identifier that can be used to select features'
-                )}
-                t={t}
-              />
-            </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <Radio
-                name='data_type'
-                label=''
-                defaultValue='point'
-                options={dataTypeOptions}
-              />
-            </Row>
-          </div>
-          <div
+        <div>
+          <p>{t('GeoJSON URL')}</p>
+          <Row
             style={{
-              float: 'right'
+              marginBottom: '20px'
             }}
           >
-            <Button
-              type='primary'
-              htmlType='submit'
-              disabled={!this.state.canSubmit}
-            >
-              {t('Save and Continue')}
-            </Button>
-          </div>
-        </Formsy>
-      </Row>
-    )
-  }
+            <TextInput
+              name='geojsonUrl'
+              label={t('GeoJSON URL')}
+              icon={<LinkIcon />}
+              validations='maxLength:500,isHttps'
+              validationErrors={{
+                maxLength: t('Must be 500 characters or less.'),
+                isHttps: t(
+                  'SSL required for external links, URLs must start with https://'
+                )
+              }}
+              length={500}
+              tooltipPosition='top'
+              tooltip={
+                t('Vector Tile URL for example:') +
+                'http://myserver/tiles/{z}/{x}/{y}.pbf'
+              }
+              required
+              t={t}
+            />
+          </Row>
+          <Row
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <TextInput
+              name='id'
+              label={t('ID Property (Optional)')}
+              tooltipPosition='top'
+              tooltip={t(
+                'Some features require idenify a unique identifier that can be used to select features'
+              )}
+              t={t}
+            />
+          </Row>
+          <Row
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <Radio
+              name='data_type'
+              label=''
+              defaultValue='point'
+              options={dataTypeOptions}
+            />
+          </Row>
+        </div>
+        <div
+          style={{
+            float: 'right'
+          }}
+        >
+          <Button type='primary' htmlType='submit' disabled={!canSubmit}>
+            {t('Save and Continue')}
+          </Button>
+        </div>
+      </Formsy>
+    </Row>
+  )
 }
+export default GeoJSONUrlSource

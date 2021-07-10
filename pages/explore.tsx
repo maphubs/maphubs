@@ -6,16 +6,14 @@ import CardCarousel from '../src/components/CardCarousel/CardCarousel'
 import _shuffle from 'lodash.shuffle'
 import CardFilter from '../src/components/Home/CardFilter'
 import cardUtil from '../src/services/card-util'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import getConfig from 'next/config'
 import { Row, Col, Button, Divider, Typography } from 'antd'
 import { Layer } from '../src/types/layer'
+
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
+
 type Props = {
   featuredLayers: Layer[]
   featuredGroups: Array<Record<string, any>>
@@ -60,16 +58,6 @@ export default class Home extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
 
     this.state = {
       storyMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
@@ -211,7 +199,7 @@ export default class Home extends React.Component<Props, State> {
     }
 
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header activePage='explore' {...headerConfig} />
         <main
           style={{

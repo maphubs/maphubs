@@ -28,7 +28,6 @@ import EditorToolButtons from './EditorToolButtons'
 import IsochroneLegendHelper from '../Map/IsochroneLegendHelper'
 
 import Reflux from '../Rehydrate'
-import type { LocaleStoreState } from '../../stores/LocaleStore'
 import type { UserStoreState } from '../../stores/UserStore'
 import type { MapMakerStoreState } from '../../stores/MapMakerStore'
 import type { Layer } from '../../types/layer'
@@ -73,8 +72,7 @@ type State = {
   saved: boolean
   activeTab: string
   showAddLayer?: boolean
-} & LocaleStoreState &
-  MapMakerStoreState &
+} & MapMakerStoreState &
   UserStoreState
 
 class MapMaker extends React.Component<Props, State> {

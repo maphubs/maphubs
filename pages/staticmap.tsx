@@ -3,13 +3,9 @@ import MiniLegend from '../src/components/Map/MiniLegend'
 import Map from '../src/components/Map'
 import { Row, Col, Switch, Modal, message } from 'antd'
 import _debounce from 'lodash.debounce'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import fireResizeEvent from '../src/services/fire-resize-event'
 import getConfig from 'next/config'
 import { LocalizedString } from '../src/types/LocalizedString'
@@ -80,16 +76,6 @@ export default class StaticMap extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
 
     const baseMapContainerInit: {
       baseMap: string
@@ -284,7 +270,7 @@ export default class StaticMap extends React.Component<Props, State> {
 
     insetConfig.collapsible = false
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Provider inject={[BaseMapState]}>
           <style jsx global>
             {`

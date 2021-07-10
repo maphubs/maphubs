@@ -7,12 +7,8 @@ import SearchBox from '../src/components/SearchBox'
 import CardCollection from '../src/components/CardCarousel/CardCollection'
 import request from 'superagent'
 import _shuffle from 'lodash.shuffle'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import type { CardConfig } from '../src/components/CardCarousel/Card'
-import UserStore from '../src/stores/UserStore'
 import cardUtil from '../src/services/card-util'
 import getConfig from 'next/config'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
@@ -39,20 +35,6 @@ export default class Search extends React.Component<Props, State> {
   state: State = {
     searchResult: null,
     searchCards: []
-  }
-
-  constructor(props: Props) {
-    super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
   }
 
   getParameterByName: any | ((name: string, url: any) => null | string) = (
@@ -187,7 +169,7 @@ export default class Search extends React.Component<Props, State> {
         <Head>
           <title>{`${t('Search')} - ${MAPHUBS_CONFIG.productName}`}</title>
         </Head>
-        <ErrorBoundary>
+        <ErrorBoundary t={t}>
           <Header {...headerConfig} />
           <main
             style={{

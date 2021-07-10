@@ -219,7 +219,7 @@ class StoryEditor extends React.Component<Props, State> {
             height: '100%'
           }}
         >
-          <ErrorBoundary>
+          <ErrorBoundary t={t}>
             <StoryCKEditor
               initialData={body}
               onChange={story.bodyChange}
@@ -243,7 +243,7 @@ class StoryEditor extends React.Component<Props, State> {
             padding: '10px'
           }}
         >
-          <ErrorBoundary>
+          <ErrorBoundary t={t}>
             <Row
               style={{
                 textAlign: 'left',
@@ -327,7 +327,7 @@ class StoryEditor extends React.Component<Props, State> {
               </style>
             </Row>
           </ErrorBoundary>
-          <ErrorBoundary>
+          <ErrorBoundary t={t}>
             <Row
               style={{
                 marginBottom: '10px'
@@ -364,7 +364,7 @@ class StoryEditor extends React.Component<Props, State> {
               </Row>
             </Row>
           </ErrorBoundary>
-          <ErrorBoundary>
+          <ErrorBoundary t={t}>
             <Row
               style={{
                 marginBottom: '10px'

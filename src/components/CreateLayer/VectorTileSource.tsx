@@ -1,51 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Formsy, { addValidationRule } from 'formsy-react'
 import TextInput from '../forms/textInput'
 import { message, notification, Row, Button } from 'antd'
 import LayerActions from '../../actions/LayerActions'
-import LayerStore from '../../stores/layer-store'
-
-import type { LocaleStoreState } from '../../stores/LocaleStore'
-import type { LayerStoreState } from '../../stores/layer-store'
 import LinkIcon from '@material-ui/icons/Link'
 import HeightIcon from '@material-ui/icons/Height'
 import AspectRatioIcon from '@material-ui/icons/AspectRatio'
-type Props = {
-  onSubmit: (...args: Array<any>) => any
-}
-type State = {
-  canSubmit: boolean
-  selectedSource?: string
-} & LocaleStoreState &
-  LayerStoreState
-export default class RasterTileSource extends React.Component<Props, State> {
-  props: Props
-  state: State = {
-    canSubmit: false
-  }
+import useT from '../../hooks/useT'
+import { useSelector } from 'react-redux'
+import { LocaleState } from '../../redux/reducers/locale'
 
-  stores: any
-  constructor(props: Props) {
-    super(props)
-    this.stores = [LayerStore]
-    addValidationRule('isHttps', (values, value: string) => {
-      return value ? value.startsWith('https://') : false
-    })
-  }
+const RasterTileSource = ({
+  onSubmit
+}: {
+  onSubmit: () => void
+}): JSX.Element => {
+  const [canSubmit, setCanSubmit] = useState(false)
+  const { t } = useT()
+  const _csrf = useSelector(
+    (state: { locale: LocaleState }) => state.locale._csrf
+  )
+  addValidationRule('isHttps', (values, value: string) => {
+    return value ? value.startsWith('https://') : false
+  })
 
-  enableButton = (): void => {
-    this.setState({
-      canSubmit: true
-    })
-  }
-  disableButton = (): void => {
-    this.setState({
-      canSubmit: false
-    })
-  }
-  submit = (model: Record<string, any>): void => {
-    const { t, props, state } = this
-
+  const submit = (model: Record<string, any>): void => {
     let boundsArr = []
 
     if (model.bounds) {
@@ -67,7 +46,7 @@ export default class RasterTileSource extends React.Component<Props, State> {
           tiles: [model.vectorTileUrl]
         }
       },
-      state._csrf,
+      _csrf,
       (err) => {
         if (err) {
           notification.error({
@@ -82,119 +61,115 @@ export default class RasterTileSource extends React.Component<Props, State> {
             // tell the map that the data is initialized
             LayerActions.tileServiceInitialized()
 
-            props.onSubmit()
+            onSubmit()
           })
         }
       }
     )
   }
-  sourceChange: any | ((value: string) => void) = (value: string) => {
-    this.setState({
-      selectedSource: value
-    })
-  }
 
-  render(): JSX.Element {
-    const { t, state, submit, enableButton, disableButton } = this
-    const { canSubmit } = state
-    return (
-      <Row>
-        <Formsy
-          onValidSubmit={submit}
-          onValid={enableButton}
-          onInvalid={disableButton}
-          style={{
-            width: '100%'
-          }}
-        >
-          <div>
-            <p>
-              <b>{t('Vector Tile Source')}</b>
-            </p>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='vectorTileUrl'
-                label={t('Vector Tile URL')}
-                icon={<LinkIcon />}
-                validations='maxLength:500,isHttps'
-                validationErrors={{
-                  maxLength: t('Must be 500 characters or less.'),
-                  isHttps: t(
-                    'SSL required for external links, URLs must start with https://'
-                  )
-                }}
-                length={500}
-                tooltipPosition='top'
-                tooltip={
-                  t('Vector Tile URL for example:') +
-                  'http://myserver/tiles/{z}/{x}/{y}.pbf'
-                }
-                required
-                t={t}
-              />
-            </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='minzoom'
-                label={t('MinZoom')}
-                icon={<HeightIcon />}
-                tooltipPosition='top'
-                tooltip={t('Lowest tile zoom level available in data')}
-                required
-                t={t}
-              />
-            </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='maxzoom'
-                label={t('MaxZoom')}
-                icon={<HeightIcon />}
-                tooltipPosition='top'
-                tooltip={t('Highest tile zoom level available in data')}
-                required
-                t={t}
-              />
-            </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='bounds'
-                label={t('Bounds')}
-                icon={<AspectRatioIcon />}
-                tooltipPosition='top'
-                tooltip={t(
-                  'Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy'
-                )}
-                t={t}
-              />
-            </Row>
-          </div>
-          <div
+  return (
+    <Row>
+      <Formsy
+        onValidSubmit={submit}
+        onValid={() => {
+          setCanSubmit(true)
+        }}
+        onInvalid={() => {
+          setCanSubmit(false)
+        }}
+        style={{
+          width: '100%'
+        }}
+      >
+        <div>
+          <p>
+            <b>{t('Vector Tile Source')}</b>
+          </p>
+          <Row
             style={{
-              float: 'right'
+              marginBottom: '20px'
             }}
           >
-            <Button type='primary' htmlType='submit' disabled={!canSubmit}>
-              {t('Save and Continue')}
-            </Button>
-          </div>
-        </Formsy>
-      </Row>
-    )
-  }
+            <TextInput
+              name='vectorTileUrl'
+              label={t('Vector Tile URL')}
+              icon={<LinkIcon />}
+              validations='maxLength:500,isHttps'
+              validationErrors={{
+                maxLength: t('Must be 500 characters or less.'),
+                isHttps: t(
+                  'SSL required for external links, URLs must start with https://'
+                )
+              }}
+              length={500}
+              tooltipPosition='top'
+              tooltip={
+                t('Vector Tile URL for example:') +
+                'http://myserver/tiles/{z}/{x}/{y}.pbf'
+              }
+              required
+              t={t}
+            />
+          </Row>
+          <Row
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <TextInput
+              name='minzoom'
+              label={t('MinZoom')}
+              icon={<HeightIcon />}
+              tooltipPosition='top'
+              tooltip={t('Lowest tile zoom level available in data')}
+              required
+              t={t}
+            />
+          </Row>
+          <Row
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <TextInput
+              name='maxzoom'
+              label={t('MaxZoom')}
+              icon={<HeightIcon />}
+              tooltipPosition='top'
+              tooltip={t('Highest tile zoom level available in data')}
+              required
+              t={t}
+            />
+          </Row>
+          <Row
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <TextInput
+              name='bounds'
+              label={t('Bounds')}
+              icon={<AspectRatioIcon />}
+              tooltipPosition='top'
+              tooltip={t(
+                'Comma delimited WGS84 coordinates for extent of the data: minx, miny, maxx, maxy'
+              )}
+              t={t}
+            />
+          </Row>
+        </div>
+        <div
+          style={{
+            float: 'right'
+          }}
+        >
+          <Button type='primary' htmlType='submit' disabled={!canSubmit}>
+            {t('Save and Continue')}
+          </Button>
+        </div>
+      </Formsy>
+    </Row>
+  )
 }
+export default RasterTileSource

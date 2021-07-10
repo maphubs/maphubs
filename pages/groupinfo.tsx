@@ -1,13 +1,9 @@
 import React from 'react'
 import Header from '../src/components/header'
 import CardCarousel from '../src/components/CardCarousel/CardCarousel'
-import cardUtil from '../services/card-util'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
+import cardUtil from '../src/services/card-util'
 import type { Group } from '../src/stores/GroupStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import { PlusOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
 import {
   Row,
@@ -71,17 +67,6 @@ export default class GroupInfo extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-
     this.state = {}
   }
 
@@ -107,7 +92,7 @@ export default class GroupInfo extends React.Component<Props, State> {
     }
 
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header {...this.props.headerConfig} />
         <div
           style={{

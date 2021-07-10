@@ -1,10 +1,7 @@
 import React from 'react'
-
 import Header from '../src/components/header'
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
+
 type Props = {
   title: string
   error: string
@@ -32,27 +29,13 @@ export default class Error extends React.Component<Props> {
     }
   }
 
-  constructor(props: Props) {
-    super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-  }
-
   componentDidMount(): void {
     //TODO: Show Sentry dialog
   }
 
   render(): JSX.Element {
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header {...this.props.headerConfig} />
         <main>
           <div className='container s12'>

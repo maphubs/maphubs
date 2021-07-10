@@ -5,11 +5,7 @@ import { Row, Button, Typography } from 'antd'
 import CardCollection from '../src/components/CardCarousel/CardCollection'
 import CardSearch from '../src/components/CardCarousel/CardSearch'
 import cardUtil from '../src/services/card-util'
-
-import Reflux from '../src/components/Rehydrate'
-import LocaleStore from '../src/stores/LocaleStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import UserStore from '../src/stores/UserStore'
 import FloatingAddButton from '../src/components/FloatingAddButton'
 const { Title } = Typography
 type Props = {
@@ -47,20 +43,6 @@ export default class Groups extends React.Component<Props> {
     groups: []
   }
 
-  constructor(props: Props) {
-    super(props)
-    Reflux.rehydrate(LocaleStore, {
-      locale: props.locale,
-      _csrf: props._csrf
-    })
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-  }
-
   render(): JSX.Element {
     const { t, props } = this
     const {
@@ -80,7 +62,7 @@ export default class Groups extends React.Component<Props> {
       cardUtil.getGroupCard(group)
     )
     return (
-      <ErrorBoundary>
+      <ErrorBoundary t={t}>
         <Header activePage='groups' {...headerConfig} />
         <main
           style={{
