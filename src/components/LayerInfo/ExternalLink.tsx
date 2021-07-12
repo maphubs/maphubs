@@ -4,21 +4,16 @@ import slugify from 'slugify'
 import type { Layer } from '../../types/layer'
 import LaunchIcon from '@material-ui/icons/Launch'
 import { LocalizedString } from '../../types/LocalizedString'
+import ustT from '../../hooks/useT'
 type Props = {
-  layer: Layer
-  t: (v: string | LocalizedString) => string
-}
-
-const copyToClipboard = (val: string) => {
-  const clipboard = require('clipboard-polyfill').default
-
-  clipboard.writeText(val)
+  layer: Layerng
 }
 
 export default function LayerInfoExternalLink({
   layer,
   t
 }: Props): JSX.Element {
+  const { t } = useT()
   const {
     is_external,
     external_layer_type,
@@ -102,7 +97,7 @@ export default function LayerInfoExternalLink({
               cursor: 'pointer'
             }}
             onClick={() => {
-              copyToClipboard(externalUrl)
+              navigator.clipboard.writeText(externalUrl)
             }}
           />
         </Tooltip>

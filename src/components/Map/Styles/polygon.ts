@@ -120,8 +120,8 @@ export default {
     style: mapboxgl.Style,
     fill: boolean
   ): {
-    legendColor: void
-    style: any
+    legendColor: string
+    style: mapboxgl.Style
   } {
     // treat style as immutable and return a copy
     style = JSON.parse(JSON.stringify(style))

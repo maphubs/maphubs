@@ -28,7 +28,6 @@ import turf_area from '@turf/area'
 import turf_length from '@turf/length'
 import numeral from 'numeral'
 import slugify from 'slugify'
-import UserStore from '../src/stores/UserStore'
 import LayerExport from '../src/components/LayerInfo/LayerExport'
 import Stats from '../src/components/LayerInfo/Stats'
 import ExternalLink from '../src/components/LayerInfo/ExternalLink'
@@ -49,7 +48,6 @@ import {
 } from 'react-intl'
 import request from 'superagent'
 
-import Reflux from '../src/components/Rehydrate'
 import fireResizeEvent from '../src/services/fire-resize-event'
 
 import ErrorBoundary from '../src/components/ErrorBoundary'
@@ -93,7 +91,7 @@ export default class LayerInfo extends React.Component<Props, State> {
   BaseMapState: BaseMapContainer
   MapState: MapContainer
   DataEditorState: DataEditorContainer
-  clipboard: any
+
   menuButton: HTMLDivElement
   static async getInitialProps({
     req,
@@ -125,13 +123,6 @@ export default class LayerInfo extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props)
-
-    if (props.user) {
-      Reflux.rehydrate(UserStore, {
-        user: props.user
-      })
-    }
-
     const baseMapContainerInit: {
       baseMap?: string
       bingKey: string
@@ -155,7 +146,6 @@ export default class LayerInfo extends React.Component<Props, State> {
 
   async componentDidMount(): Promise<void> {
     const { t, props } = this
-    this.clipboard = require('clipboard-polyfill').default
     const { layer } = props
     const elc = layer.external_layer_config
 
@@ -276,7 +266,7 @@ export default class LayerInfo extends React.Component<Props, State> {
     )
   }
   copyToClipboard = (val: string): void => {
-    this.clipboard.writeText(val)
+    navigator.clipboard.writeText(val)
   }
 
   render(): JSX.Element {
@@ -541,7 +531,7 @@ export default class LayerInfo extends React.Component<Props, State> {
                           />
                         </Row>
                         <Row>
-                          <ExternalLink layer={layer} t={t} />
+                          <ExternalLink layer={layer} />
                         </Row>
                       </Col>
                       <Col

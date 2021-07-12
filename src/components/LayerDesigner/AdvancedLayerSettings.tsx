@@ -1,14 +1,13 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Formsy from 'formsy-react'
 import { Row } from 'antd'
 import Toggle from '../forms/toggle'
 import MapStyles from '../Map/Styles'
-
-import _isequal from 'lodash.isequal'
 import type { Layer } from '../../types/layer'
 import mapboxgl from 'mapbox-gl'
+import useT from '../../hooks/useT'
 type Props = {
-  onChange: (...args: Array<any>) => void
+  onChange: (style, legend) => void
   layer: Layer
   style: mapboxgl.Style
 }
@@ -17,91 +16,79 @@ type State = {
   showBehindBaseMapLabels: boolean
   fill: boolean
 }
-export default class AdvancedLayerSettings extends React.Component<
-  Props,
-  State
-> {
-  props: Props
-  state: State
 
-  constructor(props: Props) {
-    super(props)
-    const state = this.getStateFromStyleProp(props)
-    this.state = state
-  }
+const getStateFromStyleProp = (style: mapboxgl.Style, layer: Layer): State => {
+  const defaults = MapStyles.settings.defaultLayerSettings()
 
-  getStateFromStyleProp(props: Props): State {
-    const defaults = MapStyles.settings.defaultLayerSettings()
+  if (layer.layer_id && layer.data_type && style) {
+    const glLayerId = style.layers[0].id
+    let interactive = defaults.interactive
+    const interactiveSetting: any = MapStyles.settings.getLayerSetting(
+      style,
+      glLayerId,
+      'interactive'
+    )
 
-    if (props.layer.layer_id && props.layer.data_type && props.style) {
-      const glLayerId = props.style.layers[0].id
-      let interactive = defaults.interactive
-      const interactiveSetting: any = MapStyles.settings.getLayerSetting(
-        props.style,
-        glLayerId,
-        'interactive'
-      )
-
-      if (typeof interactiveSetting !== 'undefined') {
-        interactive = interactiveSetting
-      }
-
-      let showBehindBaseMapLabels = defaults.showBehindBaseMapLabels
-      const showBehindBaseMapLabelsSetting = MapStyles.settings.getLayerSetting(
-        props.style,
-        glLayerId,
-        'showBehindBaseMapLabels'
-      )
-
-      if (typeof showBehindBaseMapLabelsSetting !== 'undefined') {
-        showBehindBaseMapLabels = showBehindBaseMapLabelsSetting
-      }
-
-      let fill = defaults.fill
-      const fillSetting = MapStyles.settings.getLayerSetting(
-        props.style,
-        glLayerId,
-        'outline-only'
-      )
-
-      if (typeof fillSetting !== 'undefined') {
-        fill = !fillSetting
-      }
-
-      return {
-        style: props.style,
-        interactive,
-        showBehindBaseMapLabels,
-        fill
-      }
-    } else {
-      return this.state
-    }
-  }
-
-  componentWillReceiveProps(nextProps: Props) {
-    const state = this.getStateFromStyleProp(nextProps)
-    this.setState(state)
-  }
-
-  shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
-    // only update if something changes
-    if (!_isequal(this.props, nextProps)) {
-      return true
+    if (typeof interactiveSetting !== 'undefined') {
+      interactive = interactiveSetting
     }
 
-    if (!_isequal(this.state, nextState)) {
-      return true
+    let showBehindBaseMapLabels = defaults.showBehindBaseMapLabels
+    const showBehindBaseMapLabelsSetting = MapStyles.settings.getLayerSetting(
+      style,
+      glLayerId,
+      'showBehindBaseMapLabels'
+    )
+
+    if (typeof showBehindBaseMapLabelsSetting !== 'undefined') {
+      showBehindBaseMapLabels = showBehindBaseMapLabelsSetting
     }
 
-    return false
+    let fill = defaults.fill
+    const fillSetting = MapStyles.settings.getLayerSetting(
+      style,
+      glLayerId,
+      'outline-only'
+    )
+
+    if (typeof fillSetting !== 'undefined') {
+      fill = !fillSetting
+    }
+
+    return {
+      interactive,
+      showBehindBaseMapLabels,
+      fill
+    }
+  } else {
+    return {
+      interactive: true,
+      showBehindBaseMapLabels: false,
+      fill: true
+    }
   }
+}
 
-  onFormChange = (values: Record<string, any>): void => {
-    let legend = this.props.layer.legend_html
-    let style = this.props.style
+const AdvancedLayerSettings = ({
+  style,
+  layer,
+  onChange
+}: Props): JSX.Element => {
+  const { t } = useT()
+  const [settings, setSettings] = useState<State>(
+    getStateFromStyleProp(style, layer)
+  )
 
-    if (values.interactive !== this.state.interactive) {
+  useEffect(() => {
+    setSettings(getStateFromStyleProp(style, layer))
+  }, [style, layer])
+
+  const { fill, interactive, showBehindBaseMapLabels } = settings
+
+  const onFormChange = (values: Record<string, any>): void => {
+    let legend = layer.legend_html
+
+    if (values.interactive !== interactive) {
       const glLayerId = style.layers[0].id
       style = MapStyles.settings.setLayerSetting(
         style,
@@ -109,25 +96,24 @@ export default class AdvancedLayerSettings extends React.Component<
         'interactive',
         values.interactive
       )
-      this.setState({
-        interactive: values.interactive
+      setSettings({
+        interactive: values.interactive,
+        showBehindBaseMapLabels,
+        fill
       })
-    } else if (
-      values.showBehindBaseMapLabels !== this.state.showBehindBaseMapLabels
-    ) {
+    } else if (values.showBehindBaseMapLabels !== showBehindBaseMapLabels) {
       style = MapStyles.settings.setLayerSettingAll(
         style,
         'showBehindBaseMapLabels',
         values.showBehindBaseMapLabels,
         'symbol'
       )
-      this.setState({
-        showBehindBaseMapLabels: values.showBehindBaseMapLabels
+      setSettings({
+        showBehindBaseMapLabels: values.showBehindBaseMapLabels,
+        interactive,
+        fill
       })
-    } else if (
-      values.fill !== this.state.fill &&
-      this.props.layer.data_type === 'polygon'
-    ) {
+    } else if (values.fill !== fill && layer.data_type === 'polygon') {
       style = MapStyles.settings.setLayerSettingAll(
         style,
         'outline-only',
@@ -136,109 +122,98 @@ export default class AdvancedLayerSettings extends React.Component<
       )
       const result = MapStyles.polygon.toggleFill(style, values.fill)
       style = result.style
-      this.setState({
-        fill: values.fill
+      setSettings({
+        fill: values.fill,
+        showBehindBaseMapLabels,
+        interactive
       })
 
       legend = values.fill
-        ? MapStyles.legend.legendWithColor(this.props.layer, result.legendColor)
-        : MapStyles.legend.outlineLegendWithColor(
-            this.props.layer,
-            result.legendColor
-          )
+        ? MapStyles.legend.legendWithColor(layer, result.legendColor)
+        : MapStyles.legend.outlineLegendWithColor(layer, result.legendColor)
     } else {
       // nochange
       return
     }
 
-    this.props.onChange(style, legend)
+    onChange(style, legend)
   }
 
-  render(): JSX.Element {
-    const { t, props, state, onFormChange } = this
-    const { layer } = props
-    const { fill, interactive, showBehindBaseMapLabels } = state
-    let toggleFill
-
-    if (layer.data_type === 'polygon') {
-      toggleFill = (
+  return (
+    <Row
+      style={{
+        marginLeft: '10px',
+        marginBottom: '20px'
+      }}
+    >
+      <Formsy onChange={onFormChange}>
+        {layer.data_type === 'polygon' && (
+          <Row
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <Row>
+              <b>{t('Fill')}</b>
+            </Row>
+            <Row>
+              <Toggle
+                name='fill'
+                labelOff={t('Outline Only')}
+                labelOn={t('Fill')}
+                checked={fill}
+                tooltipPosition='right'
+                tooltip={t(
+                  'Hide polygon fill and only show the outline in the selected color'
+                )}
+              />
+            </Row>
+          </Row>
+        )}
         <Row
           style={{
             marginBottom: '20px'
           }}
         >
           <Row>
-            <b>{t('Fill')}</b>
+            <b>{t('Interactive')}</b>
           </Row>
           <Row>
             <Toggle
-              name='fill'
-              labelOff={t('Outline Only')}
-              labelOn={t('Fill')}
-              checked={fill}
+              name='interactive'
+              labelOff={t('Off')}
+              labelOn={t('On')}
+              checked={interactive}
               tooltipPosition='right'
               tooltip={t(
-                'Hide polygon fill and only show the outline in the selected color'
+                'Allow users to interact with this layer by clicking the map'
               )}
             />
           </Row>
         </Row>
-      )
-    }
-
-    return (
-      <Row
-        style={{
-          marginLeft: '10px',
-          marginBottom: '20px'
-        }}
-      >
-        <Formsy ref='form' onChange={onFormChange}>
-          {toggleFill}
-          <Row
-            style={{
-              marginBottom: '20px'
-            }}
-          >
-            <Row>
-              <b>{t('Interactive')}</b>
-            </Row>
-            <Row>
-              <Toggle
-                name='interactive'
-                labelOff={t('Off')}
-                labelOn={t('On')}
-                checked={interactive}
-                tooltipPosition='right'
-                tooltip={t(
-                  'Allow users to interact with this layer by clicking the map'
-                )}
-              />
-            </Row>
+        <Row
+          style={{
+            marginBottom: '20px'
+          }}
+        >
+          <Row>
+            <b>{t('Show Below Base Map Labels')}</b>
           </Row>
-          <Row
-            style={{
-              marginBottom: '20px'
-            }}
-          >
-            <Row>
-              <b>{t('Show Below Base Map Labels')}</b>
-            </Row>
-            <Row>
-              <Toggle
-                name='showBehindBaseMapLabels'
-                labelOff={t('Off')}
-                labelOn={t('On')}
-                checked={showBehindBaseMapLabels}
-                tooltipPosition='right'
-                tooltip={t(
-                  'Allow base map labels to display on top of this layer'
-                )}
-              />
-            </Row>
+          <Row>
+            <Toggle
+              name='showBehindBaseMapLabels'
+              labelOff={t('Off')}
+              labelOn={t('On')}
+              checked={showBehindBaseMapLabels}
+              tooltipPosition='right'
+              tooltip={t(
+                'Allow base map labels to display on top of this layer'
+              )}
+            />
           </Row>
-        </Formsy>
-      </Row>
-    )
-  }
+        </Row>
+      </Formsy>
+    </Row>
+  )
 }
+export default AdvancedLayerSettings

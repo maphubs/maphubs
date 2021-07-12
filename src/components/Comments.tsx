@@ -1,33 +1,23 @@
-import React from 'react'
-import UserStore from '../stores/UserStore'
-
-import type { UserStoreState } from '../stores/UserStore'
+import React, { useEffect } from 'react'
+import { useSession } from 'next-auth/client'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
-type Props = {
-  id: string
-}
-export default class Comments extends React.Component<Props, UserStoreState> {
-  static defaultProps:
-    | any
-    | {
-        id: string
-      } = {
-    id: 'coral-comments'
-  }
-  stores: any
-  constructor(props: Props) {
-    super(props)
-    this.stores = [UserStore]
+
+const Comments = (): JSX.Element => {
+  const [session, loading] = useSession()
+
+  let user
+  if (!loading) {
+    user = session.user
   }
 
-  componentDidMount(): void {
+  useEffect(() => {
     // eslint-disable-next-line no-undef
-    if (Coral) {
+    if (Coral && user) {
       // eslint-disable-next-line no-undef
       Coral.createStreamEmbed({
-        accessToken: this.state.user?.coral_jwt,
-        id: this.props.id,
+        accessToken: user.coral_jwt,
+        id: 'coral-comments',
         autoRender: true,
         rootURL: MAPHUBS_CONFIG.CORAL_TALK_HOST // Uncomment these lines and replace with the ID of the
         // story's ID and URL from your CMS to provide the
@@ -38,16 +28,15 @@ export default class Comments extends React.Component<Props, UserStoreState> {
         // storyURL: '${storyURL}',
       })
     }
-  }
+  }, [user])
 
-  render(): JSX.Element {
-    return (
-      <div
-        style={{
-          width: '100%'
-        }}
-        id={this.props.id}
-      />
-    )
-  }
+  return (
+    <div
+      style={{
+        width: '100%'
+      }}
+      id='coral-comments'
+    />
+  )
 }
+export default Comments

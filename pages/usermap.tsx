@@ -5,7 +5,6 @@ import { message } from 'antd'
 import UserStore from '../src/stores/UserStore'
 import MapMakerStore from '../src/stores/MapMakerStore'
 
-import type { UserStoreState } from '../src/stores/UserStore'
 import { Provider } from 'unstated'
 import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
 import PublicShareModal from '../src/components/InteractiveMap/PublicShareModal'
@@ -262,7 +261,6 @@ export default class UserMap extends React.Component<Props, State> {
                 map_id={map.map_id}
                 share_id={share_id}
                 _csrf={_csrf}
-                t={t}
               />
             )}
             {user && !publicShare && (
@@ -284,7 +282,6 @@ export default class UserMap extends React.Component<Props, State> {
                     showEmbedCode: false
                   })
                 }}
-                t={t}
               />
             )}
           </main>

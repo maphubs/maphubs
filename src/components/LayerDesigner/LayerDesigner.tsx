@@ -11,6 +11,7 @@ import AdvancedLayerSettings from './AdvancedLayerSettings'
 import MapStyles from '../Map/Styles'
 import { SketchPicker, SwatchesPicker } from 'react-color'
 import dynamic from 'next/dynamic'
+import { Layer } from '../../types/layer'
 const CodeEditor = dynamic(() => import('./CodeEditor'), {
   ssr: false
 })
@@ -34,7 +35,7 @@ type Props = {
   style: Record<string, any>
   labels: Record<string, any>
   legend: string
-  layer: Record<string, any>
+  layer: Layer
   showAdvanced: boolean
 }
 type State = {
@@ -414,10 +415,9 @@ export default class LayerDesigner extends React.Component<Props, State> {
             >
               <MarkerSettings
                 onChange={onMarkersChange}
-                style={style}
+                initialStyle={style}
                 color={color}
                 layer={layer}
-                t={t}
               />
             </TabPane>
           )}
@@ -463,11 +463,10 @@ export default class LayerDesigner extends React.Component<Props, State> {
           visible={showStyleEditor}
           id='layer-style-editor'
           mode='json'
-          code={JSON.stringify(style, undefined, 2)}
+          initialCode={JSON.stringify(style, undefined, 2)}
           title={t('Editing Layer Style')}
           onSave={onCodeStyleChange}
           onCancel={hideStyleEditor}
-          t={t}
         />
         <CodeEditor
           visible={showLegendEditor}

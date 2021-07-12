@@ -86,12 +86,6 @@ export default class AdminUserInvite extends React.Component<Props, State> {
     }
   }
 
-  clipboard: any
-
-  componentDidMount() {
-    this.clipboard = require('clipboard-polyfill').default
-  }
-
   enableButton: any | (() => void) = () => {
     this.setState({
       canSubmit: true
@@ -119,7 +113,7 @@ export default class AdminUserInvite extends React.Component<Props, State> {
   copyInviteLink: any | ((user: User) => void) = (user: User) => {
     const baseUrl = urlUtil.getBaseUrl()
     const url = `${baseUrl}/signup/invite/${user.key}`
-    this.clipboard.writeText(url)
+    navigator.clipboard.writeText(url)
     message.info(this.t('Copied'))
   }
   submitInvite: any | ((user: User) => void) = (user: User) => {

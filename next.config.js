@@ -31,7 +31,7 @@ const postCSSConfig = styles.getPostCssConfig({
 
 const antdThemeVariables = getThemeVariables({
   dark: false,
-  compact: true
+  compact: false
 })
 
 const customThemeVariables = lessToJS(

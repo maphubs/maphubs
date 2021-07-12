@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Row, Divider, notification, message, Typography, Button } from 'antd'
 import { CloseSquareFilled } from '@ant-design/icons'
 import request from 'superagent'
@@ -6,15 +6,14 @@ import SearchBox from '../SearchBox'
 import CardCollection from './CardCollection'
 import cardUtil from '../../services/card-util'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import { LocalizedString } from '../../types/LocalizedString'
+import useT from '../../hooks/useT'
+import { CardConfig } from './Card'
 const { Title } = Typography
 type Props = {
-  cardType: string
-  // layer, group, or map
-  t: (v: string | LocalizedString) => string
+  cardType: 'layer' | 'group' | 'map'
 }
 type State = {
-  searchResults: Array<Record<string, any>>
+  searchResults: CardConfig[]
   searchActive: boolean
 }
 const cardTypes = {
@@ -40,13 +39,14 @@ const cardTypes = {
     getCard: cardUtil.getMapCard
   }
 }
-export default class CardSearch extends React.Component<Props, State> {
-  state: State = {
+const CardSearch = ({ cardType }: Props): JSX.Element => {
+  const { t } = useT()
+  const [searchState, setSearchState] = useState<State>({
     searchResults: [],
     searchActive: false
-  }
-  handleSearch: (input: string) => Promise<void> = async (input: string) => {
-    const { t, cardType } = this.props
+  })
+
+  const handleSearch = async (input: string) => {
     const config = cardTypes[cardType]
     console.log('searching for: ' + input)
 
@@ -58,7 +58,7 @@ export default class CardSearch extends React.Component<Props, State> {
       const searchResults = res.body[config.dataIndex]
 
       if (searchResults && searchResults.length > 0) {
-        this.setState({
+        setSearchState({
           searchActive: true,
           searchResults
         })
@@ -74,84 +74,82 @@ export default class CardSearch extends React.Component<Props, State> {
       })
     }
   }
-  resetSearch: () => void = () => {
-    this.setState({
+  const resetSearch = (): void => {
+    setSearchState({
       searchActive: false,
       searchResults: []
     })
   }
 
-  render(): JSX.Element {
-    const { t, cardType } = this.props
-    const { searchActive, searchResults } = this.state
-    const config = cardTypes[cardType]
-    const searchCards = searchResults
-      ? searchResults.map((result) => config.getCard(result))
-      : []
-    return (
-      <>
-        <Row
-          justify='end'
+  const { searchActive, searchResults } = searchState
+  const config = cardTypes[cardType]
+  const searchCards = searchResults
+    ? searchResults.map((result) => config.getCard(result))
+    : []
+  return (
+    <>
+      <Row
+        justify='end'
+        style={{
+          marginBottom: '20px'
+        }}
+      >
+        <div
           style={{
-            marginBottom: '20px'
+            width: '100%',
+            maxWidth: '500px'
           }}
         >
-          <div
-            style={{
-              width: '100%',
-              maxWidth: '500px'
-            }}
-          >
-            <SearchBox
-              label={t(config.label)}
-              suggestionUrl={config.suggestionUrl}
-              onSearch={this.handleSearch}
-              onReset={this.resetSearch}
-            />
-          </div>
-        </Row>
-        <Row>
-          {searchActive && (
-            <>
-              {searchResults && searchResults.length > 0 && (
-                <>
-                  <div
-                    style={{
-                      position: 'absolute',
-                      right: '10px',
-                      zIndex: 999
-                    }}
+          <SearchBox
+            label={t(config.label)}
+            suggestionUrl={config.suggestionUrl}
+            onSearch={handleSearch}
+            onReset={resetSearch}
+          />
+        </div>
+      </Row>
+      <Row>
+        {searchActive && (
+          <>
+            {searchResults && searchResults.length > 0 && (
+              <>
+                <div
+                  style={{
+                    position: 'absolute',
+                    right: '10px',
+                    zIndex: 999
+                  }}
+                >
+                  <Button
+                    size='small'
+                    onClick={resetSearch}
+                    icon={<CloseSquareFilled />}
                   >
-                    <Button
-                      size='small'
-                      onClick={this.resetSearch}
-                      icon={<CloseSquareFilled />}
-                    >
-                      {t('Clear Results')}
-                    </Button>
-                  </div>
-                  <CardCollection
-                    title={t('Search Results')}
-                    cards={searchCards}
-                    t={t}
-                  />
-                </>
-              )}
+                    {t('Clear Results')}
+                  </Button>
+                </div>
+                <CardCollection
+                  title={t('Search Results')}
+                  cards={searchCards}
+                  t={t}
+                />
+              </>
+            )}
 
-              {searchResults && searchResults.length === 0 && (
-                <Row>
-                  <Title level={3}>{t('Search Results')}</Title>
+            {searchResults && searchResults.length === 0 && (
+              <Row>
+                <Title level={3}>{t('Search Results')}</Title>
 
-                  <Divider />
-                  <p>
-                    <b>{t('No Results Found')}</b>
-                  </p>
-                </Row>
-              )}
-            </>
-          )}
-        </Row>
-      </>
-    )
-  }
+                <Divider />
+                <p>
+                  <b>{t('No Results Found')}</b>
+                </p>
+              </Row>
+            )}
+          </>
+        )}
+      </Row>
+    </>
+  )
 }
+export default CardSearch

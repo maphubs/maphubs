@@ -1,16 +1,13 @@
 @charset "UTF-8";
 
 //override with our theme colors
-@import "./theme.scss";
-
-//load our component css
-@import "./sass/components/_all.scss";
+@import './theme.scss';
 
 //layout helper classes
-@import "./sass/_layout.scss";
+@import './sass/_layout.scss';
 
 //load OLD application-wide css
-@import "./sass/app.scss";
+@import './sass/app.scss';
 
 //print css
-@import "./sass/_print.scss";
+@import './sass/_print.scss';

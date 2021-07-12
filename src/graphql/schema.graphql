@@ -1,0 +1,16 @@
+scalar JSON
+
+type Group {
+
+}
+
+type Query {
+  # Companies
+  groups(locale: String): [Group] #locale is used to pre-sort alphabetically
+  group(id: String): Group
+
+}
+
+type Mutation {
+
+}

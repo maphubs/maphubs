@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState } from 'react'
 import TextArea from './textArea'
 
 import _isequal from 'lodash.isequal'
@@ -6,6 +6,8 @@ import { Tabs, Tooltip } from 'antd'
 import localeUtil from '../../locales/util'
 import getConfig from 'next/config'
 import { LocalizedString } from '../../types/LocalizedString'
+import { useEffect } from 'react'
+import useT from '../../hooks/useT'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const supportedLangs = localeUtil.getSupported()
 let languagesFromConfig
@@ -46,152 +48,105 @@ type Props = {
 type State = {
   value: LocalizedString
 }
-export default class MultiTextArea extends React.Component<Props, State> {
-  static defaultProps:
-    | any
-    | {
-        dataDelay: number
-        defaultValue: string
-        disabled: boolean
-        length: number
-        showCharCount: boolean
-        style: {}
-        successText: string
-        type: string
-        validationErrors: {}
-        validations: string
-        value: string
-      } = {
-    length: 100,
-    successText: '',
-    defaultValue: '',
-    disabled: false,
-    value: '',
-    dataDelay: 100,
-    type: 'text',
-    style: {},
-    showCharCount: true,
-    validations: '',
-    validationErrors: {}
+const MultiTextArea = ({
+  length,
+  required,
+  showCharCount,
+  tooltipPosition,
+  tooltip,
+  dataDelay,
+  validations,
+  validationErrors,
+  successText,
+  icon,
+  value,
+  name,
+  label
+}: Props): JSX.Element => {
+  const { t } = useT()
+
+  let tempValue: LocalizedString = localeUtil.getEmptyLocalizedString()
+  if (typeof value === 'string') {
+    tempValue.en = value
+  } else if (value) {
+    tempValue = value
   }
+  const [localValue, setLocalValue] = useState(tempValue)
 
-  constructor(props: Props) {
-    super(props)
-    let value: LocalizedString = localeUtil.getEmptyLocalizedString()
-
-    if (typeof props.value === 'string') {
-      value.en = props.value
-    } else if (props.value) {
-      value = props.value
-    }
-
-    this.state = {
-      value
-    }
-  }
-
-  componentWillReceiveProps(nextProps: Props): void {
-    if (!_isequal(this.props.value, nextProps.value)) {
-      if (nextProps.value) {
-        this.setState({
-          value: nextProps.value
-        })
+  useEffect(() => {
+    if (!_isequal(value, localValue)) {
+      if (value) {
+        setLocalValue(value)
       } else {
-        this.setState({
-          value: localeUtil.getEmptyLocalizedString()
-        })
+        setLocalValue(localeUtil.getEmptyLocalizedString())
       }
     }
+  }, [localValue, value])
+
+  const commonProps = {
+    length,
+    showCharCount,
+    tooltipPosition,
+    tooltip,
+    dataDelay,
+    validations,
+    validationErrors,
+    successText,
+    icon
   }
-
-  shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
-    // only update if something changes
-    if (!_isequal(this.props, nextProps)) {
-      return true
-    }
-
-    if (!_isequal(this.state, nextState)) {
-      return true
-    }
-
-    return false
-  }
-
-  changeValue = (model: Record<string, any>): void => {
-    this.setState({
-      value: model
-    })
-  }
-
-  render(): JSX.Element {
-    const { t, props, state } = this
-    const {
-      length,
-      required,
-      showCharCount,
-      tooltipPosition,
-      tooltip,
-      dataDelay,
-      validations,
-      validationErrors,
-      successText,
-      icon,
-      label
-    } = props
-
-    const { value } = state
-
-    const commonProps = {
-      length,
-      showCharCount,
-      tooltipPosition,
-      tooltip,
-      dataDelay,
-      validations,
-      validationErrors,
-      successText,
-      icon
-    }
-    return (
-      <Tabs
-        type='card'
-        tabBarStyle={{
-          marginBottom: 0
-        }}
-        animated={false}
-        style={{
-          width: '100%'
-        }}
-      >
-        {langs.map((locale) => {
-          return (
-            <TabPane
-              tab={
-                <Tooltip title={locale.name}>
-                  <span>{locale.label}</span>
-                </Tooltip>
-              }
-              key={locale.value}
+  return (
+    <Tabs
+      type='card'
+      tabBarStyle={{
+        marginBottom: 0
+      }}
+      animated={false}
+      style={{
+        width: '100%'
+      }}
+    >
+      {langs.map((locale) => {
+        return (
+          <TabPane
+            tab={
+              <Tooltip title={locale.name}>
+                <span>{locale.label}</span>
+              </Tooltip>
+            }
+            key={locale.value}
+          >
+            <div
+              style={{
+                border: '1px solid #ddd',
+                padding: '10px'
+              }}
             >
-              <div
-                style={{
-                  border: '1px solid #ddd',
-                  padding: '10px'
-                }}
-              >
-                <TextArea
-                  name={`${props.name}-${locale.value}`}
-                  value={value[locale.value]}
-                  label={label[locale.value]}
-                  required={required && locale.value === 'en'}
-                  {...commonProps}
-                  t={t}
-                />
-              </div>
-            </TabPane>
-          )
-        })}
-      </Tabs>
-    )
-  }
+              <TextArea
+                name={`${name}-${locale.value}`}
+                value={localValue[locale.value]}
+                label={label[locale.value]}
+                required={required && locale.value === 'en'}
+                {...commonProps}
+                t={t}
+              />
+            </div>
+          </TabPane>
+        )
+      })}
+    </Tabs>
+  )
 }
+MultiTextArea.defaultProps = {
+  length: 100,
+  successText: '',
+  defaultValue: '',
+  disabled: false,
+  value: '',
+  dataDelay: 100,
+  type: 'text',
+  style: {},
+  showCharCount: true,
+  validations: '',
+  validationErrors: {}
+}
+export default MultiTextArea

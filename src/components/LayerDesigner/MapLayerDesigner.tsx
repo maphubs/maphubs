@@ -195,7 +195,6 @@ export default class MapLayerDesigner extends React.Component<Props, State> {
             legendCode={legendCode}
             onLegendChange={setLegend}
             showAdvanced
-            t={t}
           />
         </div>
       )

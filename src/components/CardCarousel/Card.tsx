@@ -9,6 +9,7 @@ import LayersIcon from '@material-ui/icons/Layers'
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks'
 import { LocalizedString } from '../../types/LocalizedString'
 import { CSSProperties } from 'react'
+import useT from '../../hooks/useT'
 export type CardConfig = {
   id: string
   title?: LocalizedString
@@ -26,14 +27,12 @@ export type CardConfig = {
   onClick?: (...args: Array<any>) => any
 }
 type Props = {
-  t: (v: string | LocalizedString) => string
   showAddButton?: boolean
 } & CardConfig
 type State = {
   imageFailed?: boolean
 }
 const MapHubsCard = ({
-  t,
   showAddButton,
   onClick,
   data,
@@ -48,6 +47,7 @@ const MapHubsCard = ({
   draft,
   isPublic
 }: Props): JSX.Element => {
+  const { t } = useT()
   const [imageFailed, setImageFailed] = useState(false)
 
   let icon = <></>

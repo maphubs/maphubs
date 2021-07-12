@@ -717,6 +717,7 @@ class MapMaker extends React.Component<Props, State> {
             >
               <SaveMapModal
                 {...state}
+                initialTitle={state.title}
                 editing={edit}
                 onSave={onSave}
                 _csrf={_csrf}

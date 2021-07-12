@@ -201,8 +201,6 @@ export default class LayerStyle extends React.Component<Props, State> {
 
     const legendCode: string = legend_html || ''
 
-    const cssStyle: Record<string, any> = style || {}
-
     let colorChooserMode = 'default'
 
     if (
@@ -291,7 +289,7 @@ export default class LayerStyle extends React.Component<Props, State> {
                   >
                     <LayerDesigner
                       onColorChange={onColorChange}
-                      style={cssStyle}
+                      style={style}
                       onStyleChange={setStyle}
                       labels={labels}
                       onLabelsChange={setLabels}
@@ -312,14 +310,13 @@ export default class LayerStyle extends React.Component<Props, State> {
                     <OpacityChooser
                       value={rasterOpacity}
                       onChange={setRasterOpacity}
-                      style={cssStyle}
+                      style={style}
                       onStyleChange={setStyle}
                       onColorChange={onColorChange}
                       layer={state}
                       legendCode={legendCode}
                       onLegendChange={setLegend}
                       showAdvanced
-                      t={t}
                     />
                   </Row>
                 )}

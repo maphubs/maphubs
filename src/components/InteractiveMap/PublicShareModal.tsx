@@ -1,50 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Modal, Row, Col, Button, Switch, notification } from 'antd'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import superagent from 'superagent'
 import LaunchIcon from '@material-ui/icons/Launch'
-import { LocalizedString } from '../../types/LocalizedString'
+import useT from '../../hooks/useT'
 const { confirm } = Modal
 type Props = {
   share_id?: string
   map_id: string
   _csrf?: string
-  t: (v: string | LocalizedString) => string
 }
-type State = {
-  share_id?: string
-  visible?: boolean
-}
-export default class PublicShareModal extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.state = {
-      sharing: !!props.share_id,
-      share_id: props.share_id
-    }
-  }
 
-  clipboard: any
+const PublicShareModal = ({ map_id, _csrf, share_id }: Props): JSX.Element => {
+  const { t } = useT()
+  const [sharing, setSharing] = useState(!!share_id)
+  const [shareID, setShareID] = useState(share_id)
+  const [visible, setVisible] = useState(false)
 
-  componentDidMount() {
-    this.clipboard = require('clipboard-polyfill').default
-  }
-
-  show: () => void = () => {
-    this.setState({
-      visible: true
-    })
-  }
-  close: () => void = () => {
-    this.setState({
-      visible: false
-    })
-  }
-  setPublic: (isPublic: boolean) => Promise<void> = async (
-    isPublic: boolean
-  ) => {
-    const { map_id, _csrf, t } = this.props
-
+  const setPublic = async (isPublic: boolean): Promise<void> => {
     try {
       const res = await superagent
         .post('/api/map/public')
@@ -55,7 +28,6 @@ export default class PublicShareModal extends React.Component<Props, State> {
           isPublic,
           _csrf
         })
-      const share_id = res.body.share_id
 
       if (!res.body.success) {
         notification.error({
@@ -64,9 +36,7 @@ export default class PublicShareModal extends React.Component<Props, State> {
           duration: 0
         })
       } else {
-        this.setState({
-          share_id
-        })
+        setShareID(res.body.share_id)
       }
     } catch (err) {
       notification.error({
@@ -76,11 +46,7 @@ export default class PublicShareModal extends React.Component<Props, State> {
       })
     }
   }
-  onChange: (checked: boolean) => void = (checked: boolean) => {
-    const { t } = this.props
-
-    const _this = this
-
+  const onChange = (checked: boolean): void => {
     if (checked) {
       confirm({
         title: t('Share Map'),
@@ -92,7 +58,7 @@ export default class PublicShareModal extends React.Component<Props, State> {
         cancelText: t('Cancel'),
 
         onOk() {
-          _this.setPublic(checked)
+          setPublic(checked)
         }
       })
     } else {
@@ -106,120 +72,130 @@ export default class PublicShareModal extends React.Component<Props, State> {
         ),
 
         onOk() {
-          _this.setPublic(checked)
+          setPublic(checked)
         }
       })
     }
   }
-  writeToClipboard: () => void = () => {
-    const share_id = this.state.share_id
-    if (share_id)
-      this.clipboard.writeText(`${urlUtil.getBaseUrl()}/map/share/${share_id}`)
+  const writeToClipboard = (): void => {
+    if (shareID)
+      navigator.clipboard.writeText(
+        `${urlUtil.getBaseUrl()}/map/share/${shareID}`
+      )
   }
 
-  render(): JSX.Element {
-    const { t } = this.props
-    const { share_id, visible } = this.state
-    let shareUrl = ''
+  let shareUrl = ''
 
-    if (share_id) {
-      shareUrl = `${urlUtil.getBaseUrl()}/map/share/${share_id}`
-    }
+  if (shareID) {
+    shareUrl = `${urlUtil.getBaseUrl()}/map/share/${shareID}`
+  }
 
-    return (
-      <Modal
-        title={t('Share Map')}
-        visible={visible}
-        onOk={this.close}
-        centered
-        onCancel={this.close}
-        footer={[
-          <Button key='back' onClick={this.close}>
-            {t('Close')}
-          </Button>,
-          <Button
-            key='submit'
-            type='primary'
-            disabled={!share_id}
-            onClick={() => {
-              this.writeToClipboard()
-              this.close()
-            }}
-          >
-            {t('Copy Link')}
-          </Button>
-        ]}
-      >
-        <Row>
-          <Row
-            style={{
-              marginBottom: '10px'
-            }}
-          >
-            <Col span={4}>
-              <Switch defaultChecked={share_id} onChange={this.onChange} />
-            </Col>
-            <Col span={20}>
-              {share_id && (
-                <p
-                  style={{
-                    fontSize: '16px'
-                  }}
-                >
-                  <b>{t('Sharing')}</b>&nbsp;-&nbsp;
-                  <span>{t('Anyone can use this link to view the map.')}</span>
-                </p>
-              )}
-              {!share_id && (
-                <p
-                  style={{
-                    fontSize: '16px'
-                  }}
-                >
-                  <b>{t('Protected')}</b>&nbsp;-&nbsp;
-                  <span>{t('Only authorized users can see this map.')}</span>
-                </p>
-              )}
-            </Col>
-          </Row>
-          <Row>
-            {share_id && (
-              <div>
-                <p
-                  style={{
-                    fontSize: '16px'
-                  }}
-                >
-                  <b>{t('Share Link: ')}</b>
-                  &nbsp;-&nbsp;
-                  <a href={shareUrl} target='_blank' rel='noopener noreferrer'>
-                    {shareUrl}
-                  </a>
-                  <LaunchIcon
-                    className='omh-accent-text'
-                    style={{
-                      cursor: 'pointer'
-                    }}
-                    onClick={this.writeToClipboard}
-                  />
-                </p>
-                <p className='no-margin'>
-                  {t(
-                    'Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.'
-                  )}
-                </p>
-              </div>
-            )}
-            {!share_id && (
-              <p>
-                {t(
-                  'Create a public link to this map and associated map layers that can be viewed by anyone with the link without needing a MapHubs account or permissions on this site.'
-                )}
+  return (
+    <Modal
+      title={t('Share Map')}
+      visible={visible}
+      onOk={() => {
+        setVisible(false)
+      }}
+      centered
+      onCancel={() => {
+        setVisible(false)
+      }}
+      footer={[
+        <Button
+          key='back'
+          onClick={() => {
+            setVisible(false)
+          }}
+        >
+          {t('Close')}
+        </Button>,
+        <Button
+          key='submit'
+          type='primary'
+          disabled={!shareID}
+          onClick={() => {
+            writeToClipboard()
+            setVisible(false)
+          }}
+        >
+          {t('Copy Link')}
+        </Button>
+      ]}
+    >
+      <Row>
+        <Row
+          style={{
+            marginBottom: '10px'
+          }}
+        >
+          <Col span={4}>
+            <Switch
+              defaultChecked={shareID ? true : false}
+              onChange={onChange}
+            />
+          </Col>
+          <Col span={20}>
+            {shareID && (
+              <p
+                style={{
+                  fontSize: '16px'
+                }}
+              >
+                <b>{t('Sharing')}</b>&nbsp;-&nbsp;
+                <span>{t('Anyone can use this link to view the map.')}</span>
               </p>
             )}
-          </Row>
+            {!shareID && (
+              <p
+                style={{
+                  fontSize: '16px'
+                }}
+              >
+                <b>{t('Protected')}</b>&nbsp;-&nbsp;
+                <span>{t('Only authorized users can see this map.')}</span>
+              </p>
+            )}
+          </Col>
         </Row>
-      </Modal>
-    )
-  }
+        <Row>
+          {shareID && (
+            <div>
+              <p
+                style={{
+                  fontSize: '16px'
+                }}
+              >
+                <b>{t('Share Link: ')}</b>
+                &nbsp;-&nbsp;
+                <a href={shareUrl} target='_blank' rel='noopener noreferrer'>
+                  {shareUrl}
+                </a>
+                <LaunchIcon
+                  className='omh-accent-text'
+                  style={{
+                    cursor: 'pointer'
+                  }}
+                  onClick={writeToClipboard}
+                />
+              </p>
+              <p className='no-margin'>
+                {t(
+                  'Warning: disabling sharing will invalidate the current link. Sharing again will generate a new unique link.'
+                )}
+              </p>
+            </div>
+          )}
+          {!shareID && (
+            <p>
+              {t(
+                'Create a public link to this map and associated map layers that can be viewed by anyone with the link without needing a MapHubs account or permissions on this site.'
+              )}
+            </p>
+          )}
+        </Row>
+      </Row>
+    </Modal>
+  )
 }
+export default PublicShareModal

@@ -10,7 +10,6 @@ import BaseMapContainer from '../src/components/Map/containers/BaseMapContainer'
 import Actions from '../src/actions/AddPhotoPointActions'
 import GetNameField from '../src/components/Map/Styles/get-name-field'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import type { LocaleStoreState } from '../src/stores/LocaleStore'
 import type { AddPhotoPointStoreState } from '../src/stores/AddPhotoPointStore'
 import { Modal, message, notification, Row, Col, Button } from 'antd'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
@@ -28,7 +27,7 @@ type Props = {
   headerConfig: Record<string, any>
   user: Record<string, any>
 }
-type State = LocaleStoreState & AddPhotoPointStoreState
+type State = AddPhotoPointStoreState
 export default class AddPhotoPoint extends React.Component<Props, State> {
   BaseMapState: BaseMapContainer
   static async getInitialProps({

@@ -174,12 +174,11 @@ export default class LayerAdminSettings extends React.Component<Props, State> {
           <CodeEditor
             id='layer-elc-editor'
             mode='json'
-            code={JSON.stringify(external_layer_config, undefined, 2)}
+            initialCode={JSON.stringify(external_layer_config, undefined, 2)}
             title={t('External Layer Config')}
             onSave={saveExternalLayerConfig}
             visible
             modal={false}
-            t={t}
           />
         </Row>
       )

@@ -1,38 +1,29 @@
-import * as React from 'react'
-
-import UserStore from '../stores/UserStore'
-import type { UserStoreState } from '../stores/UserStore'
+import React from 'react'
+import { useSession } from 'next-auth/client'
 import FloatingButton from './FloatingButton'
 type Props = {
   tooltip?: string
-  icon?: React.ReactNode
+  icon?: JSX.Element
   onClick?: (...args: Array<any>) => any
   style?: Record<string, any>
   actionButtonStyles?: Record<string, any>
   position?: Record<string, any>
   children?: any
 }
-type State = UserStoreState
-export default class FloatingAddButton extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.stores = [UserStore]
-  }
-  stores: any
 
-  shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
-    if (!this.state.user && nextState.user) return true
-    return false
+const FloatingAddButton = (props: Props): JSX.Element => {
+  const [session, loading] = useSession()
+
+  let user
+  if (!loading) {
+    user = session.user
   }
 
-  render(): JSX.Element {
-    // only render on the client side
-    if (typeof window === 'undefined') {
-      return <></>
-    }
-
-    const { user } = this.state
-
-    return user ? <FloatingButton {...this.props} /> : <></>
+  // only render on the client side
+  if (typeof window === 'undefined') {
+    return <></>
   }
+
+  return user ? <FloatingButton {...props} /> : <></>
 }
+export default FloatingAddButton
