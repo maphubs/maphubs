@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+// import dynamic from 'next/dynamic'
 import { Row, Modal, Button, notification, Upload } from 'antd'
 import 'cropperjs/dist/cropper.css'
 import $ from 'jquery'
@@ -7,13 +8,28 @@ import EXIF from 'exif-js'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate'
 import getConfig from 'next/config'
+import useT from '../../hooks/useT'
+import Cropper, { ReactCropperElement } from 'react-cropper'
+import Pica from 'pica'
+import { RcFile } from 'rc-upload/lib/interface'
+
+/*
+const Pica = dynamic(
+  () => import('../../../node_modules/pica/dist/pica.min.js'),
+  {
+    ssr: false
+  }
+)
+*/
+
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Dragger } = Upload
 const debug = DebugService('ImageCrop')
-let Cropper
+
 type Props = {
-  onCrop: (...args: Array<any>) => any
-  lockAspect: boolean
+  onCrop: (dataURL: string, info: Record<string, unknown>) => void
+  onCancel: () => void
+  lockAspect?: boolean
   aspectRatio?: number
   autoCropArea: number
   allowedExtensions: Array<string>
@@ -31,95 +47,71 @@ type File = {
   size: number
   type: string
 }
-type State = {
+type FileState = {
   img?: Record<string, any>
   file?: File
-  visible: boolean
   preview?: Record<string, any>
-  loading: boolean
-  cropWidth: number
-  cropHeight: number
-  cropScaleX?: number
-  cropScaleY?: number
   selectedFile?: string
   exif: Record<string, any>
   ext?: string
   src?: any
 }
-export default class ImageCrop extends React.Component<Props, State> {
-  static defaultProps:
-    | any
-    | {
-        allowedExtensions: string
-        autoCropArea: number
-        jpeg_quality: number
-        lockAspect: boolean
-        max_size: number
-        skip_size: number
-      } = {
-    lockAspect: false,
-    autoCropArea: 1,
-    allowedExtensions: '.jpg,.jpeg,.png',
-    max_size: 5242880,
-    // 5MB
-    skip_size: 10000,
-    // 10kb
-    jpeg_quality: 75
-  }
-  state: State = {
+
+type CropState = {
+  cropWidth: number
+  cropHeight: number
+  cropScaleX?: number
+  cropScaleY?: number
+}
+
+const ImageCrop = ({
+  lockAspect,
+  autoCropArea,
+  aspectRatio,
+  allowedExtensions,
+  max_size,
+  imageData,
+  resize_height,
+  resize_width,
+  resize_max_height,
+  resize_max_width,
+  jpeg_quality,
+  skip_size,
+  onCancel,
+  onCrop,
+  visible
+}: Props): JSX.Element => {
+  const { t } = useT()
+  const cropperRef = useRef<ReactCropperElement>()
+  const [loading, setLoading] = useState(false)
+  const [fileState, setFileState] = useState<FileState>({
     file: {
       size: 0,
       type: ''
     },
-    visible: false,
-    loading: false,
-    cropWidth: 0,
-    cropHeight: 0,
     selectedFile: '',
     exif: {}
-  }
-  cropperInstance: any
+  })
+  const [cropState, setCropState] = useState<CropState>({
+    cropWidth: 0,
+    cropHeight: 0
+  })
 
-  componentDidMount(): void {
-    Cropper = require('react-cropper').default
-  }
+  const cropperInstance = cropperRef.current.cropper
 
-  componentWillReceiveProps(nextProps: Props): void {
-    const updateProps = {}
-
-    if (nextProps.aspectRatio) {
-      debug.log('update aspectratio to: ' + nextProps.aspectRatio)
-      updateProps.aspectRatio = nextProps.aspectRatio
+  // allow imageData to be loaded dynamically (used by Story editor toolbar?)
+  useEffect(() => {
+    if (imageData && !fileState.src) {
+      setFileState({
+        ...fileState,
+        src: imageData
+      })
     }
+  }, [fileState, imageData])
 
-    if (nextProps.autoCropArea) {
-      debug.log('update autoCropArea to: ' + nextProps.autoCropArea)
-      updateProps.autoCropArea = nextProps.autoCropArea
-    }
-
-    if (nextProps.visible !== this.state.visible) {
-      updateProps.visible = nextProps.visible
-    }
-
-    if (nextProps.imageData && !this.state.src) {
-      updateProps.src = nextProps.imageData
-    }
-
-    this.setState(updateProps)
-  }
-
-  show = (): void => {
-    this.setState({
-      visible: true
-    })
-  }
-  checkFileSize = (file: Record<string, any>): Promise<void> => {
-    const { t } = this
-
-    const _this = this
-
+  const checkFileSize = (file: Record<string, any>): Promise<void> => {
     return new Promise((resolve, reject) => {
-      const maxSize = _this.props.max_size
+      const maxSize = max_size
       let message
 
       if (file.size > maxSize) {
@@ -131,39 +123,23 @@ export default class ImageCrop extends React.Component<Props, State> {
       return resolve()
     })
   }
-  resizeImage = (sourceCanvas: any): Promise<Record<string, any>> => {
-    let pica
-
-    if (typeof window === 'undefined') {
-      return new Promise((resolve) => {
-        resolve()
-      })
-    } else {
-      pica = require('../../../node_modules/pica/dist/pica.min.js')()
-    }
-
-    const _this = this
-
+  const resizeImage = (sourceCanvas: any): Promise<string | null> => {
     return new Promise((resolve, reject) => {
       // If image size smaller than 'skip_size' - skip resizing
-      if (_this.state.file && _this.state.file.size < _this.props.skip_size) {
-        const data = sourceCanvas.toDataURL(_this.state.file.type)
+      if (fileState.file && fileState.file.size < skip_size) {
+        const data = sourceCanvas.toDataURL(fileState.file.type)
         resolve(data)
         return
       }
 
       let scaledHeight: number, scaledWidth: number
-      const resize_height = _this.props.resize_height
-      const resize_width = _this.props.resize_width
-      const resize_max_height: number = _this.props.resize_max_height
-      const resize_max_width: number = _this.props.resize_max_width
 
       if (resize_height && !resize_width) {
         // If only height defined - scale to fit height,
         // and crop by max_width
         scaledHeight = resize_height
         const proportionalWidth: number = Math.floor(
-          (_this.state.cropWidth * scaledHeight) / _this.state.cropHeight
+          (cropState.cropWidth * scaledHeight) / cropState.cropHeight
         )
         scaledWidth =
           !resize_max_width || resize_max_width > proportionalWidth
@@ -174,7 +150,7 @@ export default class ImageCrop extends React.Component<Props, State> {
         // and crop by max_height
         scaledWidth = resize_width
         const proportionalHeight: number = Math.floor(
-          (_this.state.cropHeight * scaledWidth) / _this.state.cropWidth
+          (cropState.cropHeight * scaledWidth) / cropState.cropWidth
         )
         scaledHeight =
           !resize_max_height || resize_max_height > proportionalHeight
@@ -186,10 +162,10 @@ export default class ImageCrop extends React.Component<Props, State> {
         scaledHeight = resize_height
       } else if (!resize_width && resize_max_width) {
         // force a maximum, but allow any dimensions less than, unlike the options above this is not garunteed to return a specific width
-        if (_this.state.cropWidth > resize_max_width) {
+        if (cropState.cropWidth > resize_max_width) {
           scaledWidth = resize_max_width
           const proportionalHeight = Math.floor(
-            (_this.state.cropHeight * scaledWidth) / _this.state.cropWidth
+            (cropState.cropHeight * scaledWidth) / cropState.cropWidth
           )
           scaledHeight =
             !resize_max_height || resize_max_height > proportionalHeight
@@ -197,8 +173,8 @@ export default class ImageCrop extends React.Component<Props, State> {
               : resize_max_height
         } else {
           // no need to resize
-          if (_this.state.file) {
-            const data = sourceCanvas.toDataURL(_this.state.file.type)
+          if (fileState.file) {
+            const data = sourceCanvas.toDataURL(fileState.file.type)
             resolve(data)
           } else {
             throw new Error('missing file')
@@ -208,23 +184,24 @@ export default class ImageCrop extends React.Component<Props, State> {
         }
       }
 
-      const quality = _this.props.jpeg_quality
-      const alpha = _this.state.ext === 'png'
+      const quality = jpeg_quality
+      const alpha = fileState.ext === 'png'
       const dest = document.createElement('canvas')
       dest.width = scaledWidth
       dest.height = scaledHeight
 
-      if (pica) {
-        return pica
+      if (Pica) {
+        const picaInstance = Pica()
+        return picaInstance
           .resize(sourceCanvas, dest, {
             alpha,
-            unsharpAmount: 80,
+            unsharpAmount: 160,
             unsharpRadius: 0.6,
-            unsharpThreshold: 2
+            unsharpThreshold: 1
           })
           .then((result) => {
-            if (_this.state.file) {
-              const data = result.toDataURL(_this.state.file.type, quality)
+            if (fileState.file) {
+              const data = result.toDataURL(fileState.file.type, quality)
               return resolve(data)
             } else {
               throw new Error('missing file')
@@ -245,26 +222,22 @@ export default class ImageCrop extends React.Component<Props, State> {
       }
     })
   }
-  _onFileUpload = async (getFile: Promise): Promise<void> => {
-    const { t } = this
-
-    const _this = this
-
+  const _onFileUpload = async (getFile: RcFile): Promise<string> => {
     const file = await getFile
     console.log(file)
 
-    _this.setState({
-      loading: true
-    })
+    setLoading(true)
 
     if (file) {
       const ext = file.name.split('.').pop()
 
       // check if file is supported
       try {
-        await this.checkFileSize(file)
+        await checkFileSize(file)
         // read the file
-        const img = new Image()
+        const img = new Image() as HTMLImageElement & {
+          exifdata: Record<string, unknown>
+        }
         img.addEventListener('load', () => {
           // get the original size
           const width = img.width
@@ -335,14 +308,14 @@ export default class ImageCrop extends React.Component<Props, State> {
 
             const data = tempCanvas.toDataURL(file.type, 1)
 
-            _this.setState({
+            setFileState({
               src: data,
               exif: exifdata,
               file,
               img,
-              ext,
-              loading: false
+              ext
             })
+            setLoading(false)
 
             $(tempCanvas).remove()
           })
@@ -366,47 +339,39 @@ export default class ImageCrop extends React.Component<Props, State> {
         })
       }
     }
+    return '' //not clear if rc-upload does anything with this, but keeps TS happy
   }
-  _crop:
-    | any
-    | ((e: {
-        height: number
-        scaleX: number
-        scaleY: number
-        width: number
-      }) => void) = (e: {
-    width: number
-    height: number
-    scaleX: number
-    scaleY: number
+  const _crop = (e: {
+    detail: {
+      x: number
+      y: number
+      width: number
+      height: number
+      rotate: number
+      scaleX: number
+      scaleY: number
+    }
   }) => {
-    this.setState({
-      cropWidth: e.width,
-      cropHeight: e.height,
-      cropScaleX: e.scaleX,
-      cropScaleY: e.scaleY
+    setCropState({
+      cropWidth: e.detail.width,
+      cropHeight: e.detail.height,
+      cropScaleX: e.detail.scaleX,
+      cropScaleY: e.detail.scaleY
     })
   }
-  onSave: any | (() => void) = () => {
-    const _this = this
-
-    const cropper = this.cropperInstance
-    const canvas = cropper.getCroppedCanvas()
+  const onSave = () => {
+    const canvas = cropperInstance.getCroppedCanvas()
     // resize the image
-    this.resizeImage(canvas)
+    resizeImage(canvas)
       .then((dataURL) => {
-        _this.setState({
-          visible: false
-        })
-
         const info = {
-          width: _this.state.cropWidth,
-          height: _this.state.cropHeight,
-          exif: _this.state.exif
+          width: cropState.cropWidth,
+          height: cropState.cropHeight,
+          exif: fileState.exif
         }
-        if (_this.props.onCrop) _this.props.onCrop(dataURL, info)
+        if (onCrop) onCrop(dataURL, info)
 
-        _this.resetImageCrop()
+        resetImageCrop()
       })
       .catch((err) => {
         debug.error(err)
@@ -417,195 +382,178 @@ export default class ImageCrop extends React.Component<Props, State> {
         })
       })
   }
-  handleCloseSelected: any | (() => void) = () => {
-    this.resetImageCrop()
-    this.setState({
-      visible: false
-    })
-  }
-  zoomIn = (): void => {
-    this.cropperInstance.zoom(0.1)
-  }
-  zoomOut = (): void => {
-    this.cropperInstance.zoom(-0.1)
-  }
-  cropOriginal = (): void => {
-    this.resetCropPosition()
-    const { img } = this.state
 
+  const handleCloseSelected = () => {
+    resetImageCrop()
+    onCancel()
+  }
+
+  const zoomIn = (): void => {
+    cropperInstance.zoom(0.1)
+  }
+  const zoomOut = (): void => {
+    cropperInstance.zoom(-0.1)
+  }
+
+  const cropOriginal = (): void => {
+    resetCropPosition()
+    const { img } = fileState
     if (img) {
-      this.cropperInstance.setAspectRatio(img.width / img.height)
+      cropperInstance.setAspectRatio(img.width / img.height)
     }
   }
-  aspect16by9 = (): void => {
-    this.cropperInstance.setAspectRatio(16 / 9)
+
+  const aspect16by9 = (): void => {
+    cropperInstance.setAspectRatio(16 / 9)
   }
-  aspect3by2 = (): void => {
-    this.cropperInstance.setAspectRatio(3 / 2)
+  const aspect3by2 = (): void => {
+    cropperInstance.setAspectRatio(3 / 2)
   }
-  aspectSquare = (): void => {
-    this.cropperInstance.setAspectRatio(1)
+  const aspectSquare = (): void => {
+    cropperInstance.setAspectRatio(1)
   }
-  resetCropPosition = (): void => {
+  const resetCropPosition = (): void => {
     console.log('resetting crop position')
-    if (this.cropperInstance?.reset) this.cropperInstance.reset()
+    if (cropperInstance.reset) cropperInstance.reset()
   }
-  resetImageCrop = (): void => {
-    if (this.cropperInstance?.reset) this.cropperInstance.reset()
-    if (this.cropperInstance?.clear) this.cropperInstance.clear()
-    this.setState({
+  const resetImageCrop = (): void => {
+    if (cropperInstance.reset) cropperInstance.reset()
+    if (cropperInstance.clear) cropperInstance.clear()
+    setFileState({
       src: undefined,
-      visible: false,
       img: undefined,
       file: {
         size: 0,
         type: ''
       },
       preview: undefined,
-      loading: false,
-      cropWidth: 0,
-      cropHeight: 0,
       selectedFile: '',
       exif: {}
     })
+    setCropState({
+      cropWidth: 0,
+      cropHeight: 0
+    })
+    setLoading(false)
   }
 
-  render(): JSX.Element {
-    const {
-      t,
-      _crop,
-      onSave,
-      handleCloseSelected,
-      _onFileUpload,
-      zoomIn,
-      zoomOut,
-      cropOriginal,
-      aspect3by2,
-      aspectSquare,
-      resetCropPosition,
-      aspect16by9
-    } = this
-    const { lockAspect, autoCropArea, aspectRatio, allowedExtensions } =
-      this.props
-    const { src, img, visible } = this.state
-    return (
-      <div>
-        <style jsx global>
-          {' '}
-          {`
-            .ant-modal-content {
-              height: 100%;
-            }
-          `}
-        </style>
-        <Modal
-          title={t('Select Image')}
-          visible={visible}
-          destroyOnClose
-          onOk={onSave}
-          centered
-          bodyStyle={{
-            height: 'calc(100% - 110px)',
-            padding: '2px'
-          }}
-          width='80vw'
-          height='90vh'
-          footer={[
-            <Button key='back' onClick={handleCloseSelected}>
-              Cancel
-            </Button>,
-            <Button
-              key='submit'
-              type='primary'
-              disabled={!src}
-              onClick={onSave}
+  const { src, img } = fileState
+  return (
+    <div>
+      <style jsx global>
+        {`
+          .ant-modal-content {
+            height: 100%;
+          }
+        `}
+      </style>
+      <Modal
+        title={t('Select Image')}
+        visible={visible}
+        destroyOnClose
+        onOk={onSave}
+        centered
+        bodyStyle={{
+          height: 'calc(100% - 110px)',
+          padding: '2px'
+        }}
+        width='80vw'
+        footer={[
+          <Button key='back' onClick={handleCloseSelected}>
+            Cancel
+          </Button>,
+          <Button key='submit' type='primary' disabled={!src} onClick={onSave}>
+            Save
+          </Button>
+        ]}
+        onCancel={handleCloseSelected}
+      >
+        {!src && (
+          <Row
+            justify='center'
+            align='middle'
+            style={{
+              height: '100%'
+            }}
+          >
+            <Dragger
+              name='file'
+              action={_onFileUpload}
+              style={{
+                width: '400px'
+              }}
+              accept={allowedExtensions.toString()}
             >
-              Save
-            </Button>
-          ]}
-          onCancel={handleCloseSelected}
-        >
-          {!src && (
+              <p className='ant-upload-drag-icon'>
+                <AddPhotoAlternateIcon
+                  style={{
+                    color: MAPHUBS_CONFIG.primaryColor,
+                    fontSize: 64
+                  }}
+                />
+              </p>
+              <p className='ant-upload-text'>
+                {t('Click or drag file to this area to upload')}
+              </p>
+              <p className='ant-upload-hint'>PNG (.png), JPEG (.jpg, .jpeg)</p>
+            </Dragger>
+          </Row>
+        )}
+        {src && (
+          <>
             <Row
-              justify='center'
               align='middle'
               style={{
-                height: '100%'
+                height: '50px'
               }}
             >
-              <Dragger
-                name='file'
-                action={_onFileUpload}
-                style={{
-                  width: '400px'
-                }}
-                accept={allowedExtensions}
-              >
-                <p className='ant-upload-drag-icon'>
-                  <AddPhotoAlternateIcon
-                    style={{
-                      color: MAPHUBS_CONFIG.primaryColor,
-                      fontSize: 64
-                    }}
-                  />
-                </p>
-                <p className='ant-upload-text'>
-                  {t('Click or drag file to this area to upload')}
-                </p>
-                <p className='ant-upload-hint'>
-                  PNG (.png), JPEG (.jpg, .jpeg)
-                </p>
-              </Dragger>
+              <ImageCropToolbar
+                lockAspect={lockAspect}
+                zoomIn={zoomIn}
+                zoomOut={zoomOut}
+                cropOriginal={cropOriginal}
+                aspect16by9={aspect16by9}
+                aspect3by2={aspect3by2}
+                aspectSquare={aspectSquare}
+                resetCropPosition={resetCropPosition}
+                t={t}
+              />
             </Row>
-          )}
-          {src && (
-            <>
-              <Row
-                align='middle'
+            <Row
+              style={{
+                height: 'calc(100% - 50px)'
+              }}
+            >
+              <Cropper
                 style={{
-                  height: '50px'
+                  height: '100%',
+                  width: '100%'
                 }}
-              >
-                <ImageCropToolbar
-                  lockAspect={lockAspect}
-                  zoomIn={zoomIn}
-                  zoomOut={zoomOut}
-                  cropOriginal={cropOriginal}
-                  aspect16by9={aspect16by9}
-                  aspect3by2={aspect3by2}
-                  aspectSquare={aspectSquare}
-                  resetCropPosition={resetCropPosition}
-                  t={t}
-                />
-              </Row>
-              <Row
-                style={{
-                  height: 'calc(100% - 50px)'
-                }}
-              >
-                <Cropper
-                  style={{
-                    height: '100%',
-                    width: '100%'
-                  }}
-                  autoCropArea={autoCropArea}
-                  aspectRatio={
-                    aspectRatio || (img?.width ?? 1) / (img?.height ?? 1)
-                  }
-                  guides={false}
-                  minContainerWidth='100%'
-                  minContainerHeight='200'
-                  src={src}
-                  ref={(el) => {
-                    this.cropperInstance = el
-                  }}
-                  crop={_crop}
-                />
-              </Row>
-            </>
-          )}
-        </Modal>
-      </div>
-    )
-  }
+                autoCropArea={autoCropArea}
+                initialAspectRatio={
+                  aspectRatio || (img?.width ?? 1) / (img?.height ?? 1)
+                }
+                guides={false}
+                minContainerWidth={200}
+                minContainerHeight={200}
+                src={src}
+                ref={cropperRef}
+                crop={_crop}
+              />
+            </Row>
+          </>
+        )}
+      </Modal>
+    </div>
+  )
 }
+ImageCrop.defaultProps = {
+  autoCropArea: 1,
+  allowedExtensions: '.jpg,.jpeg,.png',
+  max_size: 5_242_880,
+  // 5MB
+  skip_size: 10_000,
+  // 10kb
+  jpeg_quality: 75
+}
+export default ImageCrop

@@ -1,54 +1,44 @@
-import React from 'react'
+import React, { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { Row, Button, message, notification } from 'antd'
 import request from 'superagent'
-import { LocalizedString } from '../../types/LocalizedString.js'
+import useT from '../../hooks/useT.js'
+import useUnload from '../../hooks/useUnload.js'
 const NoteCKEditor = dynamic(() => import('../forms/NoteCKEditor.js'), {
   ssr: false
 })
 type Props = {
-  notes: string
+  initialNotes: string
   canEdit: boolean
   layer_id: number
   mhid: string
   _csrf: string
-  t: (v: string | LocalizedString) => string
 }
 type State = {
   editing: boolean
   notes: string
-  unsavedChanges?: boolean
 }
-export default class FeatureNotes extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.state = {
-      notes: props.notes || '',
-      editing: false
+const FeatureNotes = ({
+  initialNotes,
+  canEdit,
+  mhid,
+  layer_id,
+  _csrf
+}: Props): JSX.Element => {
+  const { t } = useT()
+  const [editing, setEditing] = useState(false)
+  const [notes, setNotes] = useState(initialNotes || '')
+
+  useUnload((e) => {
+    e.preventDefault()
+    if (editing) {
+      const exit = confirm(t('Any pending changes will be lost'))
+      if (exit) window.close()
     }
-  }
+    window.close()
+  })
 
-  unloadHandler: any
-
-  componentDidMount() {
-    const _this = this
-
-    this.unloadHandler = (e) => {
-      if (_this.state.editing) {
-        e.preventDefault()
-        e.returnValue = ''
-      }
-    }
-
-    window.addEventListener('beforeunload', this.unloadHandler)
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.unloadHandler)
-  }
-
-  saveNotes: () => Promise<void> = async () => {
-    const { mhid, layer_id, _csrf, t } = this.props
+  const saveNotes = async () => {
     const closeSavingMessage = message.loading(t('Saving'), 0)
 
     try {
@@ -59,13 +49,11 @@ export default class FeatureNotes extends React.Component<Props, State> {
         .send({
           layer_id,
           mhid,
-          notes: this.state.notes,
+          notes,
           _csrf
         })
       closeSavingMessage()
-      this.setState({
-        editing: false
-      })
+      setEditing(false)
       message.info(t('Notes Saved'))
     } catch (err) {
       closeSavingMessage()
@@ -76,74 +64,64 @@ export default class FeatureNotes extends React.Component<Props, State> {
       })
     }
   }
-  setNotes: (notes: string) => void = (notes: string) => {
-    this.setState({
-      notes,
-      unsavedChanges: true
-    })
-  }
-  startEditingNotes: () => void = () => {
-    this.setState({
-      editing: true
-    })
-  }
 
-  render(): JSX.Element {
-    const { setNotes, startEditingNotes, saveNotes } = this
-    const { canEdit, t } = this.props
-    const { editing, notes } = this.state
-    return (
-      <>
-        <Row
-          style={{
-            marginLeft: '0px',
-            height: 'calc(100% - 50px)'
-          }}
-        >
-          {editing && (
-            <Row
-              style={{
-                height: '100%',
-                overflow: 'auto'
-              }}
-            >
-              <NoteCKEditor initialData={notes} onChange={setNotes} />
-            </Row>
-          )}
-          {!editing && (
-            <div
-              className='notes-content'
-              style={{
-                height: '100%',
-                overflow: 'auto',
-                padding: '20px'
-              }}
-              dangerouslySetInnerHTML={{
-                __html: notes
-              }}
-            />
-          )}
-        </Row>
-        <Row
-          justify='end'
-          style={{
-            textAlign: 'right',
-            marginRight: '20px',
-            marginTop: '10px'
-          }}
-        >
-          {editing && (
-            <Button type='primary' onClick={saveNotes}>
-              {t('Save')}
-            </Button>
-          )}
-          {!editing && canEdit && (
-            <Button type='primary' onClick={startEditingNotes}>
-              {t('Edit')}
-            </Button>
-          )}
-        </Row>
-      </>
-    )
-  }
+  return (
+    <>
+      <Row
+        style={{
+          marginLeft: '0px',
+          height: 'calc(100% - 50px)'
+        }}
+      >
+        {editing && (
+          <Row
+            style={{
+              height: '100%',
+              overflow: 'auto'
+            }}
+          >
+            <NoteCKEditor initialData={notes} onChange={setNotes} />
+          </Row>
+        )}
+        {!editing && (
+          <div
+            className='notes-content'
+            style={{
+              height: '100%',
+              overflow: 'auto',
+              padding: '20px'
+            }}
+            dangerouslySetInnerHTML={{
+              __html: notes
+            }}
+          />
+        )}
+      </Row>
+      <Row
+        justify='end'
+        style={{
+          textAlign: 'right',
+          marginRight: '20px',
+          marginTop: '10px'
+        }}
+      >
+        {editing && (
+          <Button type='primary' onClick={saveNotes}>
+            {t('Save')}
+          </Button>
+        )}
+        {!editing && canEdit && (
+          <Button
+            type='primary'
+            onClick={() => {
+              setEditing(true)
+            }}
+          >
+            {t('Edit')}
+          </Button>
+        )}
+      </Row>
+    </>
+  )
 }
+export default FeatureNotes

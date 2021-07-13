@@ -9,6 +9,8 @@ import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp'
 import { LocalizedString } from '../../types/LocalizedString'
 import { Layer } from '../../types/layer'
+import useT from '../../hooks/useT'
+
 type Props = {
   title?: LocalizedString
   layers: Layer[]
@@ -18,13 +20,11 @@ type Props = {
   openLayersPanel?: () => void
   maxHeight: string
   style: React.CSSProperties
-  t: (v: string | LocalizedString) => string
 }
 type State = {
   collapsed: boolean
 }
 const MiniLegend = ({
-  t,
   title,
   layers,
   showLayersButton,
@@ -34,6 +34,7 @@ const MiniLegend = ({
   style,
   openLayersPanel
 }: Props): JSX.Element => {
+  const { t } = useT()
   const [collapsed, setCollapsed] = useState(false)
   const toggleCollapsed = (): void => {
     setCollapsed(!collapsed)

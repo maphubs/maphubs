@@ -565,7 +565,7 @@ class DataGrid extends React.Component<Props, State> {
             }}
             columns={columns}
             rowKey={rowKey}
-            dataSource={rows}
+            initialDataSource={rows}
             editing={editing}
             onChange={this.onDataChange}
             rowSelection={rowSelection}

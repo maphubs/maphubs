@@ -241,7 +241,7 @@ export default class Home extends React.Component<Props, State> {
                 }}
               >
                 <CardFilter
-                  defaultValue={storyMode}
+                  value={storyMode}
                   onChange={(value) => {
                     setState({
                       storyMode: value
@@ -296,7 +296,7 @@ export default class Home extends React.Component<Props, State> {
                 }}
               >
                 <CardFilter
-                  defaultValue={mapMode}
+                  value={mapMode}
                   onChange={(value) => {
                     setState({
                       mapMode: value
@@ -351,7 +351,7 @@ export default class Home extends React.Component<Props, State> {
                 }}
               >
                 <CardFilter
-                  defaultValue={groupMode}
+                  value={groupMode}
                   onChange={(value) => {
                     setState({
                       groupMode: value
@@ -406,7 +406,7 @@ export default class Home extends React.Component<Props, State> {
                 }}
               >
                 <CardFilter
-                  defaultValue={layerMode}
+                  value={layerMode}
                   onChange={(value) => {
                     setState({
                       layerMode: value

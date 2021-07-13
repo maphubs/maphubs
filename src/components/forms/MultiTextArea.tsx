@@ -25,25 +25,23 @@ if (MAPHUBS_CONFIG.LANGUAGES) {
 
 const TabPane = Tabs.TabPane
 type Props = {
-  id: string
   value?: LocalizedString
   label: LocalizedString
   length: number
-  successText: string
-  disabled: boolean
+  successText?: string
+  disabled?: boolean
   icon?: React.ReactNode
   tooltip: string
   dataDelay: number
   tooltipPosition: string
   name: string
   required: boolean
-  placeholder: string
   type: string
   style: Record<string, any>
-  showCharCount: boolean
-  onClick: (...args: Array<any>) => any
-  validations: string
-  validationErrors: Record<string, any>
+  showCharCount?: boolean
+  onClick?: (...args: Array<any>) => any
+  validations?: string
+  validationErrors?: Record<string, any>
 }
 type State = {
   value: LocalizedString

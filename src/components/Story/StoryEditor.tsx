@@ -377,7 +377,6 @@ class StoryEditor extends React.Component<Props, State> {
               >
                 <SelectGroup
                   groups={groups}
-                  type='layer'
                   group_id={owned_by_group_id}
                   onGroupChange={story.groupChange}
                   canChangeGroup={canChangeGroup}
@@ -436,6 +435,9 @@ class StoryEditor extends React.Component<Props, State> {
         />
         <ImageCrop
           visible={showImageCrop}
+          onCancel={() => {
+            this.setState({ showImageCrop: false })
+          }}
           imageData={imageData}
           onCrop={onCrop}
           resize_max_width={1200}

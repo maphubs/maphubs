@@ -23,7 +23,7 @@ import GroupActions from '../src/actions/GroupActions'
 import ImageCrop from '../src/components/ImageCrop'
 import Reflux from '../src/components/Rehydrate'
 
-import type { Group, GroupStoreState } from '../src/stores/GroupStore'
+import type { GroupStoreState } from '../src/stores/GroupStore'
 import Locales from '../src/services/locales'
 import LayerList from '../src/components/Lists/LayerList'
 import MapList from '../src/components/Lists/MapList'
@@ -34,6 +34,7 @@ import InfoIcon from '@material-ui/icons/Info'
 import DescriptionIcon from '@material-ui/icons/Description'
 import MyLocationIcon from '@material-ui/icons/MyLocation'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { Group } from '../src/types/group'
 
 const { confirm } = Modal
 const debug = DebugService('views/GroupAdmin')
@@ -50,6 +51,7 @@ type Props = {
 }
 type State = {
   canSubmit: boolean
+  showImageCrop: boolean
 } & GroupStoreState
 export default class GroupAdmin extends React.Component<Props, State> {
   static async getInitialProps({
@@ -81,6 +83,7 @@ export default class GroupAdmin extends React.Component<Props, State> {
   }
   state: State = {
     canSubmit: false,
+    showImageCrop: false,
     group: {},
     members: []
   }
@@ -96,17 +99,17 @@ export default class GroupAdmin extends React.Component<Props, State> {
     })
   }
 
-  enableButton: any | (() => void) = () => {
+  enableButton = () => {
     this.setState({
       canSubmit: true
     })
   }
-  disableButton: any | (() => void) = () => {
+  disableButton = (): void => {
     this.setState({
       canSubmit: false
     })
   }
-  onError: any | ((msg: string) => void) = (msg: string) => {
+  onError = (msg: string): void => {
     notification.error({
       message: 'Error',
       description: msg,
@@ -278,13 +281,12 @@ export default class GroupAdmin extends React.Component<Props, State> {
       }
     })
   }
-  showImageCrop: any | (() => void) = () => {
-    this.refs.imagecrop.show()
-  }
+
   onCrop: any | ((data: any) => void) = (data: Record<string, any>) => {
     const { t, state } = this
     const { _csrf } = state
     // send data to server
+    this.setState({ showImageCrop: false })
     GroupActions.setGroupImage(data, _csrf, (err) => {
       if (err) {
         notification.error({
@@ -311,11 +313,10 @@ export default class GroupAdmin extends React.Component<Props, State> {
       handleGroupDelete,
       onCrop,
       handleMemberMakeAdmin,
-      handleMemberDelete,
-      showImageCrop
+      handleMemberDelete
     } = this
     const { layers, maps, headerConfig } = props
-    const { members, group } = state
+    const { members, group, showImageCrop } = state
     const groupId = group.group_id || ''
     const membersList = members.map((user) => {
       return {
@@ -363,7 +364,12 @@ export default class GroupAdmin extends React.Component<Props, State> {
                 />
               </Col>
               <Col sm={24} md={12}>
-                <Button type='primary' onClick={showImageCrop}>
+                <Button
+                  type='primary'
+                  onClick={() => {
+                    this.setState({ showImageCrop: true })
+                  }}
+                >
                   {t('Change Image')}
                 </Button>
               </Col>
@@ -554,7 +560,7 @@ export default class GroupAdmin extends React.Component<Props, State> {
                   padding: '2px'
                 }}
               >
-                <MapList maps={maps} groups={[group]} t={t} />
+                <MapList maps={maps} groups={[group]} />
               </Col>
             </Row>
             <FloatingButton
@@ -568,7 +574,12 @@ export default class GroupAdmin extends React.Component<Props, State> {
             />
           </div>
           <ImageCrop
-            ref='imagecrop'
+            visible={showImageCrop}
+            onCancel={() => {
+              this.setState({
+                showImageCrop: false
+              })
+            }}
             aspectRatio={1}
             lockAspect
             resize_width={600}

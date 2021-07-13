@@ -466,11 +466,7 @@ export default class LayerAdmin extends React.Component<Props, State> {
                       height: 'calc(100% - 50px)'
                     }}
                   >
-                    <LayerStyle
-                      showPrev={false}
-                      onSubmit={onSave}
-                      mapConfig={mapConfig}
-                    />
+                    <LayerStyle onSubmit={onSave} mapConfig={mapConfig} />
                   </Row>
                 </TabPane>
                 {user?.admin && (

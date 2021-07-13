@@ -1,39 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Modal, message, notification } from 'antd'
 import superagent from 'superagent'
 import SaveMapPanel from '../MapMaker/SaveMapPanel'
 import { LocalizedString } from '../../types/LocalizedString'
+import useT from '../../hooks/useT'
 type Props = {
   title: LocalizedString
   map_id: string
   _csrf?: string
-  t: (v: string | LocalizedString) => string
 }
-type State = {
-  visible: boolean
-}
-export default class CopyMapModal extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.state = {
-      visible: false
-    }
-  }
 
-  show: () => void = () => {
-    this.setState({
-      visible: true
-    })
-  }
-  close: () => void = () => {
-    this.setState({
-      visible: false
-    })
-  }
-  onCopyMap: (formData: any) => Promise<void> = async (
-    formData: Record<string, any>
-  ) => {
-    const { map_id, _csrf, t } = this.props
+const CopyMapModal = ({ title, map_id, _csrf }: Props): JSX.Element => {
+  const { t } = useT()
+  const [visible, setVisible] = useState(false)
+
+  const onCopyMap = async (formData: {
+    title: LocalizedString
+    group: string
+  }) => {
     const data = {
       map_id,
       title: formData.title,
@@ -69,20 +53,21 @@ export default class CopyMapModal extends React.Component<Props, State> {
     }
   }
 
-  render(): JSX.Element {
-    const { title, t, _csrf } = this.props
-    const { visible } = this.state
-    return (
-      <Modal
-        title={t('Copy Map')}
-        visible={visible}
-        onOk={this.close}
-        centered
-        onCancel={this.close}
-        footer={[]}
-      >
-        <SaveMapPanel title={title} onSave={this.onCopyMap} _csrf={_csrf} />
-      </Modal>
-    )
-  }
+  return (
+    <Modal
+      title={t('Copy Map')}
+      visible={visible}
+      onOk={() => {
+        setVisible(false)
+      }}
+      centered
+      onCancel={() => {
+        setVisible(false)
+      }}
+      footer={[]}
+    >
+      <SaveMapPanel title={title} onSave={onCopyMap} _csrf={_csrf} />
+    </Modal>
+  )
 }
+export default CopyMapModal

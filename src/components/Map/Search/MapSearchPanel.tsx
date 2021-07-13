@@ -1,111 +1,95 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import request from 'superagent'
 import { Tabs, notification, Input, Row, Drawer, List } from 'antd'
 import MapToolButton from '../MapToolButton'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import { LocalizedString } from '../../../types/LocalizedString'
+import useT from '../../../hooks/useT'
+
 const debug = DebugService('MapSearchPanel')
 const TabPane = Tabs.TabPane
 const Search = Input.Search
 type Props = {
-  show: boolean
+  show?: boolean
   onSearch: (...args: Array<any>) => any
   onSearchResultClick: (...args: Array<any>) => any
   onSearchReset: (...args: Array<any>) => any
-  t: (v: string | LocalizedString) => string
   mapboxAccessToken: string
 }
 type State = {
-  results?: Record<string, any> | null | undefined
-  locationSearchResults?: Record<string, any> | null | undefined
-  tab: string
+  results?: { list: Record<string, unknown>[] }
+  locationSearchResults?: Record<string, unknown>[]
   query?: string
-  open?: boolean
 }
-export default class MapSearchPanel extends React.Component<Props, State> {
-  static defaultProps: {
-    show: boolean
-  } = {
-    show: false
-  }
+const MapSearchPanel = ({
+  show,
+  mapboxAccessToken,
+  onSearch,
+  onSearchReset,
+  onSearchResultClick
+}: Props): JSX.Element => {
+  const drawerContainer = useRef()
+  const { t } = useT()
+  const [tab, setTab] = useState('data')
+  const [open, setOpen] = useState(false)
+  const [searchResults, setSearchResults] = useState<State>()
 
-  constructor(props: Props) {
-    super(props)
-    this.state = {
-      tab: 'data'
-    }
-  }
-
-  drawerContainer: any
-  onSetOpen: (open: boolean) => void = (open: boolean) => {
-    this.setState({
-      open
-    })
-  }
-  onSearch: (e: any) => Promise<void> = async (e: any) => {
+  const search = async (e: any) => {
     const query = e.target.value
 
     if (!query) {
-      this.onReset()
+      onReset()
       return
     }
 
-    if (this.state.tab === 'data') {
-      const results = await this.props.onSearch(query)
-      this.setState({
+    if (tab === 'data') {
+      const results = await onSearch(query)
+      setSearchResults({
         results,
         query
       })
-    } else if (this.state.tab === 'location') {
-      this.runLocationSearch(query)
+    } else if (tab === 'location') {
+      runLocationSearch(query)
     }
   }
-  onSubmit: () => void = () => {
-    // enter is pressed in search box
-    // do nothing, since we update automatically
-  }
-  onReset: () => void = () => {
-    this.setState({
+
+  const onReset = () => {
+    setSearchResults({
       results: undefined,
       locationSearchResults: undefined,
       query: undefined
     })
-    this.props.onSearchReset()
+    onSearchReset()
   }
-  onClickResult: (result: any) => void = (result: Record<string, any>) => {
-    this.props.onSearchResultClick(result)
+  const onClickResult = (result: Record<string, any>) => {
+    onSearchResultClick(result)
   }
-  selectTab: (tab: string) => void = (tab: string) => {
-    if (tab === 'location' && this.state.tab !== 'location') {
-      this.setState({
-        tab
-      })
+  const selectTab = (selectedTab: string) => {
+    if (selectedTab === 'location' && tab !== 'location') {
+      setTab(selectedTab)
 
-      if (this.state.query && !this.state.locationSearchResults) {
-        this.runLocationSearch(this.state.query)
+      if (searchResults.query && !searchResults.locationSearchResults) {
+        runLocationSearch(searchResults.query)
       }
     } else if (
-      tab === 'data' &&
-      this.state.tab !== 'data' &&
-      this.state.query
+      selectedTab === 'data' &&
+      tab !== 'data' &&
+      searchResults.query
     ) {
-      this.setState({
-        tab
-      })
+      setTab(selectedTab)
 
-      if (!this.state.results) {
-        const results = this.props.onSearch(this.state.query)
-        this.setState({
-          results
+      if (!searchResults.results) {
+        const results = onSearch(searchResults.query)
+        setSearchResults({
+          results,
+          query: searchResults.query
         })
       }
     }
   }
 
-  runLocationSearch(query: string): void {
-    const { setState } = this
+  const runLocationSearch = (query: string): void => {
     // run autocomplete search
-    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${this.props.mapboxAccessToken}&autocomplete=true`
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?access_token=${mapboxAccessToken}&autocomplete=true`
     request
       .get(url)
       .then((res) => {
@@ -125,7 +109,7 @@ export default class MapSearchPanel extends React.Component<Props, State> {
               }
             }
           })
-          return setState({
+          return setSearchResults({
             locationSearchResults: featuresCleaned,
             query
           })
@@ -141,120 +125,107 @@ export default class MapSearchPanel extends React.Component<Props, State> {
       })
   }
 
-  render(): JSX.Element {
-    const {
-      props,
-      state,
-      drawerContainer,
-      onSearch,
-      onSubmit,
-      selectTab,
-      onClickResult
-    } = this
-    const { t, show } = props
-    const { tab, results, locationSearchResults, open } = state
-    let searchLabel = ''
+  let searchLabel = ''
 
-    if (tab === 'data') {
-      searchLabel = t('Search Data')
-    } else if (tab === 'location') {
-      searchLabel = t('Find Place or Address')
-    }
-
-    return (
-      <div>
-        <MapToolButton
-          onMouseDown={() => {
-            this.onSetOpen(true)
-          }}
-          tooltipText={t('Search')}
-          top='10px'
-          right='50px'
-          show={show}
-          icon='search'
-        />
-        <div
-          ref={(el) => {
-            this.drawerContainer = el
-          }}
-        />
-        <Drawer
-          getContainer={() => drawerContainer}
-          title={t('Search')}
-          visible={open}
-          onClose={() => {
-            this.onSetOpen(false)
-          }}
-          bodyStyle={{
-            padding: '2px'
-          }}
-          placement='right'
-          width='240px'
-        >
-          <Row>
-            <Search
-              placeholder={searchLabel}
-              onChange={onSearch}
-              onSearch={onSubmit}
-              style={{}}
-              allowClear
-            />
-          </Row>
-          <Row>
-            <Tabs animated={false} defaultActiveKey='data' onChange={selectTab}>
-              <TabPane tab={t('Data')} key='data'>
-                {results && results.list.length > 0 && (
-                  <List
-                    size='small'
-                    bordered
-                    dataSource={results.list}
-                    renderItem={(item: { id: string; name: string }) => {
-                      return (
-                        <List.Item>
-                          <a
-                            key={item.id}
-                            href='#!'
-                            onClick={() => {
-                              onClickResult(item)
-                            }}
-                          >
-                            {item.name}
-                          </a>
-                        </List.Item>
-                      )
-                    }}
-                  />
-                )}
-              </TabPane>
-              <TabPane tab={t('Location')} key='location'>
-                {locationSearchResults && locationSearchResults.length > 0 && (
-                  <List
-                    size='small'
-                    bordered
-                    dataSource={locationSearchResults}
-                    renderItem={(item) => {
-                      return (
-                        <List.Item>
-                          <a
-                            key={item.key}
-                            href='#!'
-                            className='collection-item'
-                            onClick={() => {
-                              onClickResult(item.feature)
-                            }}
-                          >
-                            {item.value}
-                          </a>
-                        </List.Item>
-                      )
-                    }}
-                  />
-                )}
-              </TabPane>
-            </Tabs>
-          </Row>
-        </Drawer>
-      </div>
-    )
+  if (tab === 'data') {
+    searchLabel = t('Search Data')
+  } else if (tab === 'location') {
+    searchLabel = t('Find Place or Address')
   }
+
+  const { results, query, locationSearchResults } = searchResults
+
+  return (
+    <div>
+      <MapToolButton
+        onMouseDown={() => {
+          setOpen(true)
+        }}
+        tooltipText={t('Search')}
+        top='10px'
+        right='50px'
+        show={show}
+        icon='search'
+      />
+      <div ref={drawerContainer} />
+      <Drawer
+        getContainer={() => drawerContainer.current}
+        title={t('Search')}
+        visible={open}
+        onClose={() => {
+          setOpen(false)
+        }}
+        bodyStyle={{
+          padding: '2px'
+        }}
+        placement='right'
+        width='240px'
+      >
+        <Row>
+          <Search
+            placeholder={searchLabel}
+            onChange={search}
+            onSearch={() => {
+              //do nothing, results update automatically
+            }}
+            style={{}}
+            allowClear
+          />
+        </Row>
+        <Row>
+          <Tabs animated={false} defaultActiveKey='data' onChange={selectTab}>
+            <TabPane tab={t('Data')} key='data'>
+              {results && results.list.length > 0 && (
+                <List
+                  size='small'
+                  bordered
+                  dataSource={results.list}
+                  renderItem={(item: { id: string; name: string }) => {
+                    return (
+                      <List.Item>
+                        <a
+                          key={item.id}
+                          href='#!'
+                          onClick={() => {
+                            onClickResult(item)
+                          }}
+                        >
+                          {item.name}
+                        </a>
+                      </List.Item>
+                    )
+                  }}
+                />
+              )}
+            </TabPane>
+            <TabPane tab={t('Location')} key='location'>
+              {locationSearchResults && locationSearchResults.length > 0 && (
+                <List
+                  size='small'
+                  bordered
+                  dataSource={locationSearchResults}
+                  renderItem={(item) => {
+                    return (
+                      <List.Item>
+                        <a
+                          href='#!'
+                          className='collection-item'
+                          onClick={() => {
+                            onClickResult(item.feature)
+                          }}
+                        >
+                          {item.value}
+                        </a>
+                      </List.Item>
+                    )
+                  }}
+                />
+              )}
+            </TabPane>
+          </Tabs>
+        </Row>
+      </Drawer>
+    </div>
+  )
 }
+export default MapSearchPanel

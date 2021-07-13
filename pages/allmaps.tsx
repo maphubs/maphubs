@@ -4,11 +4,12 @@ import Footer from '../src/components/footer'
 import { Row, Col, Button, Typography } from 'antd'
 import MapList from '../src/components/Lists/MapList'
 import ErrorBoundary from '../src/components/ErrorBoundary'
+import { Group } from '../src/types/group'
 
 const { Title } = Typography
 type Props = {
   maps: Array<Record<string, any>>
-  groups: Array<Record<string, any>>
+  groups: Group[]
   locale: string
   _csrf: string
   footerConfig: Record<string, any>
@@ -74,7 +75,7 @@ export default class AllMaps extends React.Component<Props> {
               height: 'calc(100vh - 150px)'
             }}
           >
-            <MapList maps={maps} groups={groups} t={t} />
+            <MapList maps={maps} groups={groups} />
           </Row>
         </main>
         <Footer t={t} {...footerConfig} />

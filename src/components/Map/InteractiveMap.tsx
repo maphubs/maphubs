@@ -365,7 +365,6 @@ export default class InteractiveMap extends React.Component<Props, State> {
       const legendMaxHeight = topOffset + insetOffset
       legend = (
         <MiniLegend
-          t={t}
           style={{
             position: 'absolute',
             top: '5px',
@@ -468,7 +467,6 @@ export default class InteractiveMap extends React.Component<Props, State> {
           >
             {width && width < 600 && (
               <MiniLegend
-                t={t}
                 style={{
                   width: '100%'
                 }}

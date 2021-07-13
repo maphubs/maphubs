@@ -772,14 +772,11 @@ class MapMaker extends React.Component<Props, State> {
                   <EditorToolButtons
                     stopEditingLayer={stopEditingLayer}
                     onFeatureUpdate={mapState.state.map.onFeatureUpdate}
-                    t={t}
-                    _csrf={_csrf}
                   />
                 )}
               </Map>
 
               <MiniLegend
-                t={t}
                 style={{
                   position: 'absolute',
                   top: '5px',

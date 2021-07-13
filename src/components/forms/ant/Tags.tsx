@@ -1,118 +1,103 @@
-import * as React from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { PlusOutlined } from '@ant-design/icons'
 import { Tag, Input, Tooltip } from 'antd'
 import getConfig from 'next/config'
+import useT from '../../../hooks/useT'
+
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 type Props = {
-  initialTags?: Array<string>
-  onChange?: (...args: Array<any>) => any
+  initialTags?: string[]
+  onChange?: (tags: string[]) => void
 }
 type State = {
-  tags: Array<string>
+  tags: string[]
   inputVisible: boolean
   inputValue: string
 }
-export default class Tags extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super()
-    this.state = {
-      tags: props.initialTags || [],
-      inputVisible: false,
-      inputValue: ''
+const Tags = ({ initialTags, onChange }: Props): JSX.Element => {
+  const input = useRef<Input>()
+  const { t } = useT()
+  const [tags, setTags] = useState(initialTags || [])
+  const [inputVisible, setInputVisible] = useState(false)
+  const [inputValue, setInputValue] = useState('')
+
+  const handleClose = (removedTag: string) => {
+    const filteredTags = tags.filter((tag) => tag !== removedTag)
+    setTags(filteredTags)
+    if (onChange) onChange(tags)
+  }
+
+  // focus the input once it is visible
+  useEffect(() => {
+    if (inputVisible) {
+      input.current.focus()
     }
-  }
+  }, [inputVisible])
 
-  input: any
-  handleClose: (removedTag: string) => void = (removedTag: string) => {
-    const tags = this.state.tags.filter((tag) => tag !== removedTag)
-    console.log(tags)
-    this.setState({
-      tags
-    })
-    if (this.props.onChange) this.props.onChange(tags)
-  }
-  showInput: () => void = () => {
-    this.setState(
-      {
-        inputVisible: true
-      },
-      () => this.input.focus()
-    )
-  }
-  handleInputChange: (e: any) => void = (e: any) => {
-    this.setState({
-      inputValue: e.target.value
-    })
-  }
-  handleInputConfirm: () => void = () => {
-    const { inputValue } = this.state
-    let { tags } = this.state
-
+  const handleInputConfirm = () => {
     if (inputValue && !tags.includes(inputValue)) {
-      tags = [...tags, inputValue]
+      setTags([...tags, inputValue])
     }
 
-    console.log(tags)
-    this.setState({
-      tags,
-      inputVisible: false,
-      inputValue: ''
-    })
-    if (this.props.onChange) this.props.onChange(tags)
+    setInputVisible(false)
+    setInputValue('')
+    if (onChange) onChange(tags)
   }
-  saveInputRef: (input: any) => any = (input: any) => (this.input = input)
 
-  render(): React.ReactElement<'div'> {
-    const { tags, inputVisible, inputValue } = this.state
-    return (
-      <div>
-        {tags.map((tag, index) => {
-          if (!tag) return ''
-          const isLongTag = tag.length > 20
-          const tagElem = (
-            <Tag
-              key={tag}
-              color={MAPHUBS_CONFIG.primaryColor}
-              closable
-              onClose={() => this.handleClose(tag)}
-            >
-              {isLongTag ? `${tag.slice(0, 20)}...` : tag}
-            </Tag>
-          )
-          return isLongTag ? (
-            <Tooltip title={tag} key={tag}>
-              {tagElem}
-            </Tooltip>
-          ) : (
-            tagElem
-          )
-        })}
-        {inputVisible && (
-          <Input
-            ref={this.saveInputRef}
-            type='text'
-            size='small'
-            style={{
-              width: 78
-            }}
-            value={inputValue}
-            onChange={this.handleInputChange}
-            onBlur={this.handleInputConfirm}
-            onPressEnter={this.handleInputConfirm}
-          />
-        )}
-        {!inputVisible && (
+  return (
+    <div>
+      {tags.map((tag, index) => {
+        if (!tag) return ''
+        const isLongTag = tag.length > 20
+        const tagElem = (
           <Tag
-            onClick={this.showInput}
-            style={{
-              background: '#fff',
-              borderStyle: 'dashed'
-            }}
+            key={tag}
+            color={MAPHUBS_CONFIG.primaryColor}
+            closable
+            onClose={() => handleClose(tag)}
           >
-            <PlusOutlined /> New Tag
+            {isLongTag ? `${tag.slice(0, 20)}...` : tag}
           </Tag>
-        )}
-      </div>
-    )
-  }
+        )
+        return isLongTag ? (
+          <Tooltip title={tag} key={tag}>
+            {tagElem}
+          </Tooltip>
+        ) : (
+          tagElem
+        )
+      })}
+      {inputVisible && (
+        <Input
+          ref={input}
+          type='text'
+          size='small'
+          style={{
+            width: 78
+          }}
+          value={inputValue}
+          onChange={(e) => {
+            setInputValue(e.target.value)
+          }}
+          onBlur={handleInputConfirm}
+          onPressEnter={handleInputConfirm}
+        />
+      )}
+      {!inputVisible && (
+        <Tag
+          onClick={() => {
+            setInputVisible(true)
+          }}
+          style={{
+            background: '#fff',
+            borderStyle: 'dashed'
+          }}
+        >
+          <PlusOutlined /> {t('New Tag')}
+        </Tag>
+      )}
+    </div>
+  )
 }
+export default Tags

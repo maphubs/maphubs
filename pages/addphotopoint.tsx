@@ -27,7 +27,7 @@ type Props = {
   headerConfig: Record<string, any>
   user: Record<string, any>
 }
-type State = AddPhotoPointStoreState
+type State = { showImageCrop: boolean } & AddPhotoPointStoreState
 export default class AddPhotoPoint extends React.Component<Props, State> {
   BaseMapState: BaseMapContainer
   static async getInitialProps({
@@ -48,7 +48,8 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
 
   state: State = {
     saving: false,
-    layer: {}
+    layer: {},
+    showImageCrop: false
   }
 
   stores: any
@@ -98,18 +99,19 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
     window.removeEventListener('beforeunload', this.unloadHandler)
   }
 
-  showImageCrop: any | (() => void) = () => {
-    this.refs.imagecrop.show()
+  hideImageCrop = () => {
+    this.setState({ showImageCrop: false })
   }
   resetPhoto: any | (() => void) = () => {
     Actions.resetPhoto()
-    this.showImageCrop()
+    this.setState({ showImageCrop: true })
   }
   onCrop: any | ((data: any, info: any) => void) = (
     data: any,
     info: Record<string, any>
   ) => {
     const { t } = this
+    this.hideImageCrop()
     Actions.setImage(data, info, function (err) {
       if (err) {
         notification.error({
@@ -184,16 +186,7 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
   }
 
   render(): JSX.Element {
-    const {
-      t,
-      props,
-      state,
-      resetPhoto,
-      onSubmit,
-      showImageCrop,
-      onCrop,
-      BaseMapState
-    } = this
+    const { t, props, state, resetPhoto, onSubmit, onCrop, BaseMapState } = this
     const { layer, mapConfig, headerConfig } = props
     const { geoJSON, image } = state
     let dataReview = <></>
@@ -269,7 +262,9 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
             style={{
               marginLeft: '10px'
             }}
-            onClick={showImageCrop}
+            onClick={() => {
+              this.setState({ showImageCrop: true })
+            }}
           >
             {t('Add Photo')}
           </Button>
@@ -307,7 +302,8 @@ export default class AddPhotoPoint extends React.Component<Props, State> {
               </Row>
             </div>
             <ImageCrop
-              ref='imagecrop'
+              visible={this.state.showImageCrop}
+              onCancel={hideImageCrop}
               aspectRatio={1}
               lockAspect
               resize_max_width={1000}

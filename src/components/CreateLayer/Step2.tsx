@@ -2,44 +2,28 @@ import React from 'react'
 import LayerSettings from './LayerSettings'
 import LayerActions from '../../actions/LayerActions'
 import { notification, message, Row } from 'antd'
-import LayerStore from '../../stores/layer-store'
-import type { LayerStoreState } from '../../stores/layer-store'
-import type { Group } from '../../stores/GroupStore'
-import { LocalizedString } from '../../types/LocalizedString'
-type Props = {
-  groups: Array<Group>
-  onSubmit: (...args: Array<any>) => any
-  t: (v: string | LocalizedString) => string
-}
-type State = LayerStoreState
-export default class Step2 extends React.Component<Props, State> {
-  static defaultProps:
-    | any
-    | {
-        groups: Array<any>
-      } = {
-    groups: []
-  }
-  stores: any
-  constructor(props: Props) {
-    super(props)
-    this.stores = [LayerStore]
-  }
+import { Group } from '../../types/group'
+import useT from '../../hooks/useT'
 
-  onSubmit: any | (() => any | void) = () => {
+const Step2 = ({
+  groups,
+  onSubmit
+}: {
+  groups: Group[]
+  onSubmit: () => void
+}): JSX.Element => {
+  const { t } = useT()
+
+  const submit = () => {
     if (!this.state.is_external && !this.state.is_empty) {
-      return this.saveDataLoad()
+      return saveDataLoad()
     } else if (this.state.is_empty) {
-      return this.initEmptyLayer()
+      return initEmptyLayer()
     } else {
-      return this.saveExternal()
+      return saveExternal()
     }
   }
-  initEmptyLayer: any | (() => void) = () => {
-    const { t, props, state } = this
-    const { _csrf } = state
-    const { onSubmit } = props
-
+  const initEmptyLayer = (): void => {
     // save presets
     LayerActions.loadDefaultPresets()
     LayerActions.submitPresets(true, _csrf, (err) => {
@@ -66,11 +50,7 @@ export default class Step2 extends React.Component<Props, State> {
       }
     })
   }
-  saveDataLoad: any | (() => void) = () => {
-    const { t, props, state } = this
-    const { _csrf } = state
-    const { onSubmit } = props
-
+  const saveDataLoad = (): void => {
     const closeMessage = message.loading(t('Saving'), 0)
     // save presets
     LayerActions.submitPresets(false, _csrf, (err) => {
@@ -100,26 +80,24 @@ export default class Step2 extends React.Component<Props, State> {
       }
     })
   }
-  saveExternal: any | (() => void) = () => {
+  const saveExternal = (): void => {
     LayerActions.tileServiceInitialized()
 
-    if (this.props.onSubmit) {
-      this.props.onSubmit()
+    if (onSubmit) {
+      onSubmit()
     }
   }
 
-  render(): JSX.Element {
-    const { t, groups } = this.props
-    return (
-      <Row>
-        <p>{t('Provide Information About the Data Layer')}</p>
-        <LayerSettings
-          groups={groups}
-          submitText={t('Save and Continue')}
-          onSubmit={this.onSubmit}
-          warnIfUnsaved={false}
-        />
-      </Row>
-    )
-  }
+  return (
+    <Row>
+      <p>{t('Provide Information About the Data Layer')}</p>
+      <LayerSettings
+        groups={groups}
+        submitText={t('Save and Continue')}
+        onSubmit={submit}
+        warnIfUnsaved={false}
+      />
+    </Row>
+  )
 }
+export default Step2

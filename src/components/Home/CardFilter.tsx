@@ -1,111 +1,56 @@
 import React from 'react'
+import useT from '../../hooks/useT'
 
 type Props = {
-  defaultValue: string
-  onChange: (...args: Array<any>) => void
-}
-type State = {
   value: string
+  onChange: (value: string) => void
 }
-export default class CardFilter extends React.Component<Props, State> {
-  static defaultProps:
-    | any
-    | {
-        defaultValue: string
-      } = {
-    defaultValue: 'featured'
-  }
 
-  constructor(props: Props) {
-    super(props)
-    this.state = {
-      value: props.defaultValue
-    }
-  }
-
-  onFeatured = (): void => {
-    this.setState({
-      value: 'featured'
-    })
-    this.props.onChange('featured')
-  }
-  onPopular = (): void => {
-    this.setState({
-      value: 'popular'
-    })
-    this.props.onChange('popular')
-  }
-  onRecent = (): void => {
-    this.setState({
-      value: 'recent'
-    })
-    this.props.onChange('recent')
-  }
-
-  render(): JSX.Element {
-    const { t, state, onFeatured, onPopular, onRecent } = this
-    const { value } = state
-    const activeClass = 'omh-accent-text'
-    let featuredClass = ''
-    let popularClass = ''
-    let recentClass = ''
-
-    switch (value) {
-      case 'featured': {
-        featuredClass = activeClass
-
-        break
-      }
-      case 'popular': {
-        popularClass = activeClass
-
-        break
-      }
-      case 'recent': {
-        recentClass = activeClass
-
-        break
-      }
-      // No default
-    }
-
-    return (
-      <div
-        className='valign right-align'
+const CardFilter = ({ value, onChange }: Props): JSX.Element => {
+  const { t } = useT()
+  return (
+    <div
+      className='valign right-align'
+      style={{
+        width: '100%'
+      }}
+    >
+      <span
+        className={value === 'featured' ? 'omh-accent-text' : ''}
+        onClick={() => {
+          onChange('featured')
+        }}
         style={{
-          width: '100%'
+          cursor: 'pointer'
         }}
       >
-        <span
-          className={featuredClass}
-          onClick={onFeatured}
-          style={{
-            cursor: 'pointer'
-          }}
-        >
-          {t('Featured')}
-        </span>{' '}
-        |&nbsp;
-        <span
-          className={popularClass}
-          onClick={onPopular}
-          style={{
-            cursor: 'pointer'
-          }}
-        >
-          {t('Popular')}
-        </span>{' '}
-        |&nbsp;
-        <span
-          className={recentClass}
-          onClick={onRecent}
-          style={{
-            cursor: 'pointer'
-          }}
-        >
-          {t('Recent')}
-        </span>
-      </div>
-    )
-  }
+        {t('Featured')}
+      </span>{' '}
+      |&nbsp;
+      <span
+        className={value === 'popular' ? 'omh-accent-text' : ''}
+        onClick={() => {
+          onChange('popular')
+        }}
+        style={{
+          cursor: 'pointer'
+        }}
+      >
+        {t('Popular')}
+      </span>{' '}
+      |&nbsp;
+      <span
+        className={value === 'recent' ? 'omh-accent-text' : ''}
+        onClick={() => {
+          onChange('recent')
+        }}
+        style={{
+          cursor: 'pointer'
+        }}
+      >
+        {t('Recent')}
+      </span>
+    </div>
+  )
 }
+export default CardFilter

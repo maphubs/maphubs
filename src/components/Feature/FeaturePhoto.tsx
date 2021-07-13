@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useState } from 'react'
 import ImageCrop from '../ImageCrop'
 import { message, notification, Modal, Tooltip } from 'antd'
 import FeaturePhotoActions from '../../actions/FeaturePhotoActions'
@@ -12,9 +12,10 @@ type Props = {
   t: (v: string) => string
 }
 const FeaturePhoto = ({ photo, canEdit, t }: Props): JSX.Element => {
-  const imagecrop = useRef()
-  const onCrop = (data: Record<string, any>, info: Record<string, any>) => {
+  const [showImageCrop, setShowImageCrop] = useState(false)
+  const onCrop = (data: string, info: Record<string, any>) => {
     const { _csrf } = this.state
+    setShowImageCrop(false)
     // send data to server
     FeaturePhotoActions.addPhoto(data, info, _csrf, (err) => {
       if (err) {
@@ -114,7 +115,10 @@ const FeaturePhoto = ({ photo, canEdit, t }: Props): JSX.Element => {
         )}
         {canEdit && (
           <ImageCrop
-            ref={imagecrop}
+            visible={showImageCrop}
+            onCancel={() => {
+              setShowImageCrop(false)
+            }}
             aspectRatio={1}
             lockAspect
             resize_max_width={1000}
@@ -135,7 +139,9 @@ const FeaturePhoto = ({ photo, canEdit, t }: Props): JSX.Element => {
         >
           <Tooltip title={t('Add Photo')} position='left' inertia followCursor>
             <AddAPhotoIcon
-              onClick={this.showImageCrop}
+              onClick={() => {
+                setShowImageCrop(true)
+              }}
               style={{
                 fontSize: '24px',
                 position: 'absolute',
@@ -147,7 +153,10 @@ const FeaturePhoto = ({ photo, canEdit, t }: Props): JSX.Element => {
           </Tooltip>
         </div>
         <ImageCrop
-          ref={imagecrop}
+          visible={showImageCrop}
+          onCancel={() => {
+            setShowImageCrop(false)
+          }}
           aspectRatio={1}
           lockAspect
           resize_max_width={1000}

@@ -1,103 +1,57 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Formsy from 'formsy-react'
 import { Row, Col, notification, Button } from 'antd'
 import SelectGroup from '../Groups/SelectGroup'
-import LayerStore from '../../stores/layer-store'
 import LayerActions from '../../actions/LayerActions'
-
+import useT from '../../hooks/useT'
+import useUnload from '../../hooks/useUnload'
 import Toggle from '../forms/toggle'
 import type { LayerStoreState } from '../../stores/layer-store'
-import type { Group } from '../../stores/GroupStore'
 import dynamic from 'next/dynamic'
+import { useSelector } from 'react-redux'
+import { LocaleState } from '../../redux/reducers/locale'
+import { Group } from '../../types/group'
 const CodeEditor = dynamic(() => import('../LayerDesigner/CodeEditor'), {
   ssr: false
 })
 type Props = {
   onSubmit: (...args: Array<any>) => any
-  onValid?: (...args: Array<any>) => any
-  onInValid?: (...args: Array<any>) => any
   submitText: string
-  warnIfUnsaved: boolean
-  groups: Array<Group>
+  warnIfUnsaved?: boolean
+  groups: Group[]
 }
+
 type State = {
   canSubmit: boolean
   pendingChanges: boolean
 } & LayerStoreState
-export default class LayerAdminSettings extends React.Component<Props, State> {
-  props: Props
-  static defaultProps:
-    | any
-    | {
-        groups: Array<any>
-        showGroup: boolean
-        showPrev: boolean
-        warnIfUnsaved: boolean
-      } = {
-    showGroup: true,
-    warnIfUnsaved: false,
-    showPrev: false,
-    groups: []
-  }
-  state: State = {
-    canSubmit: false,
-    pendingChanges: false,
-    layer: {}
-  }
 
-  stores: any
-  constructor(props: Props) {
-    super(props)
-    this.stores = [LayerStore]
-  }
+const LayerAdminSettings = ({
+  groups,
+  submitText,
+  warnIfUnsaved,
+  onSubmit
+}: Props): JSX.Element => {
+  const { t } = useT()
+  const [canSubmit, setCanSubmit] = useState(false)
+  const [pendingChanges, setPendingChanges] = useState(false)
 
-  unloadHandler: any
+  const layerState = useSelector((state: { layer: any }) => state.layer)
+  const _csrf = useSelector(
+    (state: { locale: LocaleState }) => state.locale._csrf
+  )
 
-  componentDidMount(): void {
-    const { props, state, unloadHandler } = this
-    const { warnIfUnsaved } = props
-    const { pendingChanges } = state
-    this.unloadHandler = (e) => {
-      if (warnIfUnsaved && pendingChanges) {
-        e.preventDefault()
-        e.returnValue = ''
-      }
+  useUnload((e) => {
+    e.preventDefault()
+    if (warnIfUnsaved && pendingChanges) {
+      const exit = confirm(t('Any pending changes will be lost'))
+      if (exit) window.close()
     }
+    window.close()
+  })
 
-    window.addEventListener('beforeunload', unloadHandler)
-  }
-
-  componentWillUnmount(): void {
-    window.removeEventListener('beforeunload', this.unloadHandler)
-  }
-
-  onFormChange = (): void => {
-    this.setState({
-      pendingChanges: true
-    })
-  }
-  onValid = (): void => {
-    this.setState({
-      canSubmit: true
-    })
-
-    if (this.props.onValid) {
-      this.props.onValid()
-    }
-  }
-  onInvalid = (): void => {
-    this.setState({
-      canSubmit: false
-    })
-
-    if (this.props.onInValid) {
-      this.props.onInValid()
-    }
-  }
-  onSubmit = (model: Record<string, any>): void => {
-    const { t, props, state, setState } = this
-    const { onSubmit } = props
-    const { owned_by_group_id, _csrf } = state
+  const submit = (model: Record<string, any>): void => {
+    const { owned_by_group_id } = layerState
 
     if (!model.group && owned_by_group_id) {
       // editing settings on an existing layer
@@ -112,19 +66,12 @@ export default class LayerAdminSettings extends React.Component<Props, State> {
           duration: 0
         })
       } else {
-        setState({
-          pendingChanges: false
-        })
-
+        setPendingChanges(false)
         onSubmit()
       }
     })
   }
-  saveExternalLayerConfig = (config: Record<string, any>): void => {
-    const { t, state, props, setState } = this
-    const { onSubmit } = props
-    const { _csrf } = state
-
+  const saveExternalLayerConfig = (config: string): void => {
     LayerActions.saveExternalLayerConfig(config, _csrf, (err) => {
       if (err) {
         notification.error({
@@ -133,132 +80,122 @@ export default class LayerAdminSettings extends React.Component<Props, State> {
           duration: 0
         })
       } else {
-        setState({
-          pendingChanges: false
-        })
-
+        setPendingChanges(false)
         onSubmit()
       }
     })
   }
 
-  render(): JSX.Element {
-    const {
-      t,
-      props,
-      state,
-      saveExternalLayerConfig,
-      onSubmit,
-      onFormChange,
-      onValid,
-      onInvalid
-    } = this
-    const {
-      is_external,
-      external_layer_config,
-      allow_public_submit,
-      disable_export,
-      owned_by_group_id,
-      canSubmit
-    } = state
-    const { groups, submitText } = props
-    let elcEditor = <></>
+  const {
+    is_external,
+    external_layer_config,
+    allow_public_submit,
+    disable_export,
+    owned_by_group_id
+  } = layerState
 
-    if (is_external && external_layer_config) {
-      elcEditor = (
-        <Row
-          style={{
-            height: '300px'
-          }}
-        >
-          <CodeEditor
-            id='layer-elc-editor'
-            mode='json'
-            initialCode={JSON.stringify(external_layer_config, undefined, 2)}
-            title={t('External Layer Config')}
-            onSave={saveExternalLayerConfig}
-            visible
-            modal={false}
-          />
-        </Row>
-      )
-    }
+  let elcEditor = <></>
 
-    return (
-      <div
+  if (is_external && external_layer_config) {
+    elcEditor = (
+      <Row
         style={{
-          marginRight: '2%',
-          marginLeft: '2%',
-          marginTop: '10px'
+          height: '300px'
         }}
       >
-        <Formsy
-          onValidSubmit={onSubmit}
-          onChange={onFormChange}
-          onValid={onValid}
-          onInvalid={onInvalid}
-        >
-          <Row
-            style={{
-              marginBottom: '20px'
-            }}
-          >
-            <Col span={12}>
-              <Row
-                style={{
-                  marginBottom: '20px'
-                }}
-              >
-                <Toggle
-                  name='disableExport'
-                  labelOff={t('Allow Export')}
-                  labelOn={t('Disable Export')}
-                  checked={disable_export}
-                />
-              </Row>
-              <Row
-                style={{
-                  marginBottom: '20px'
-                }}
-              >
-                <Toggle
-                  name='allowPublicSubmit'
-                  labelOff={t('Disabled')}
-                  labelOn={t('Allow Public Data Submission')}
-                  checked={allow_public_submit}
-                />
-              </Row>
-              {elcEditor}
-            </Col>
-            <Col span={12}>
-              <Row
-                style={{
-                  marginBottom: '20px'
-                }}
-              >
-                <SelectGroup
-                  groups={groups}
-                  type='layer'
-                  group_id={owned_by_group_id}
-                  canChangeGroup
-                  editing={false}
-                />
-              </Row>
-            </Col>
-          </Row>
-          <div className='container'>
-            <div
-              style={{
-                float: 'right'
-              }}
-            >
-              <Button type='primary' htmlType='submit' disabled={!canSubmit}>
-                {submitText}
-              </Button>
-            </div>
-          </div>
-        </Formsy>
-      </div>
+        <CodeEditor
+          id='layer-elc-editor'
+          mode='json'
+          initialCode={JSON.stringify(external_layer_config, undefined, 2)}
+          title={t('External Layer Config')}
+          onSave={saveExternalLayerConfig}
+          visible
+          modal={false}
+        />
+      </Row>
     )
   }
+
+  return (
+    <div
+      style={{
+        marginRight: '2%',
+        marginLeft: '2%',
+        marginTop: '10px'
+      }}
+    >
+      <Formsy
+        onValidSubmit={submit}
+        onChange={() => {
+          setPendingChanges(true)
+        }}
+        onValid={() => {
+          setCanSubmit(true)
+        }}
+        onInvalid={() => {
+          setCanSubmit(false)
+        }}
+      >
+        <Row
+          style={{
+            marginBottom: '20px'
+          }}
+        >
+          <Col span={12}>
+            <Row
+              style={{
+                marginBottom: '20px'
+              }}
+            >
+              <Toggle
+                name='disableExport'
+                labelOff={t('Allow Export')}
+                labelOn={t('Disable Export')}
+                checked={disable_export}
+              />
+            </Row>
+            <Row
+              style={{
+                marginBottom: '20px'
+              }}
+            >
+              <Toggle
+                name='allowPublicSubmit'
+                labelOff={t('Disabled')}
+                labelOn={t('Allow Public Data Submission')}
+                checked={allow_public_submit}
+              />
+            </Row>
+            {elcEditor}
+          </Col>
+          <Col span={12}>
+            <Row
+              style={{
+                marginBottom: '20px'
+              }}
+            >
+              <SelectGroup
+                groups={groups}
+                group_id={owned_by_group_id}
+                canChangeGroup
+                editing={false}
+              />
+            </Row>
+          </Col>
+        </Row>
+        <div className='container'>
+          <div
+            style={{
+              float: 'right'
+            }}
+          >
+            <Button type='primary' htmlType='submit' disabled={!canSubmit}>
+              {submitText}
+            </Button>
+          </div>
+        </div>
+      </Formsy>
+    </div>
+  )
 }
+export default LayerAdminSettings

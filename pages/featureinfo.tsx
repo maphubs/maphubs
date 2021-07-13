@@ -351,11 +351,10 @@ export default class FeatureInfo extends React.Component<Props, State> {
                           }}
                         >
                           <FeatureNotes
-                            notes={notes}
+                            initialNotes={notes}
                             canEdit={canEdit}
                             layer_id={layer.layer_id}
                             mhid={geoJSONProps.mhid}
-                            t={t}
                             _csrf={_csrf}
                           />
                         </TabPane>
