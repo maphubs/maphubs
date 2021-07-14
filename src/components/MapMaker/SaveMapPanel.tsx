@@ -82,9 +82,9 @@ const SaveMapPanel = ({
         }}
       >
         <MultiTextInput
-          name='title'
+          inputName='title'
           id='title'
-          value={title}
+          initialValue={title}
           label={{
             en: 'Map Title',
             fr: 'Titre de la carte',
@@ -99,7 +99,6 @@ const SaveMapPanel = ({
           }}
           length={100}
           required
-          t={t}
         />
       </Row>
       <Row

@@ -140,7 +140,7 @@ const LayerSettings = ({
               }}
             >
               <MultiTextInput
-                name='name'
+                inputName='name'
                 id='layer-name'
                 label={{
                   en: 'Name',
@@ -150,7 +150,7 @@ const LayerSettings = ({
                   id: 'Nama',
                   pt: 'Nome'
                 }}
-                value={name}
+                initialValue={name}
                 validations='maxLength:100'
                 validationErrors={{
                   maxLength: t('Must be 100 characters or less.')
@@ -159,7 +159,6 @@ const LayerSettings = ({
                 tooltipPosition='top'
                 tooltip={t('Short Descriptive Name for the Layer')}
                 required
-                t={t}
               />
             </Row>
             <Row
@@ -215,7 +214,7 @@ const LayerSettings = ({
               }}
             >
               <MultiTextInput
-                name='source'
+                inputName='source'
                 id='layer-source'
                 label={{
                   en: 'Source',
@@ -225,7 +224,7 @@ const LayerSettings = ({
                   pt: 'Fonte',
                   id: 'Sumber'
                 }}
-                value={source}
+                initialValue={source}
                 validations='maxLength:300'
                 validationErrors={{
                   maxLength: t('Must be 300 characters or less.')
@@ -234,7 +233,6 @@ const LayerSettings = ({
                 tooltipPosition='top'
                 tooltip={t('Short Description of the Layer Source')}
                 required
-                t={t}
               />
             </Row>
             <Row

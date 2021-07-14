@@ -1,115 +1,74 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from 'antd'
 import Formsy from 'formsy-react'
 import FormField from './FormField'
+import useT from '../../hooks/useT'
 
-import Locales from '../../services/locales'
 type Props = {
   presets: Array<Record<string, any>>
   values?: Record<string, any>
-  showSubmit: boolean
-  onSubmit?: (...args: Array<any>) => any
-  onValid?: (...args: Array<any>) => any
-  onInValid?: (...args: Array<any>) => any
-  onChange?: (...args: Array<any>) => any
-  submitText?: string
-  style?: Record<string, any>
+  showSubmit?: boolean
+  onSubmit?: (model: Record<string, unknown>) => void
+  onChange?: (model: Record<string, unknown>) => void
+  style?: React.CSSProperties
 }
-type State = {
-  canSubmit: boolean
-  submitText: string
+
+const DataCollectionForm = ({
+  style,
+  showSubmit,
+  presets,
+  values,
+  onSubmit,
+  onChange
+}: Props): JSX.Element => {
+  const { t } = useT()
+  const [canSubmit, setCanSubmit] = useState(false)
+
+  return (
+    <div style={style}>
+      <Formsy
+        onValidSubmit={(model: Record<string, unknown>) => {
+          if (onSubmit) onSubmit(model)
+        }}
+        onChange={(model: Record<string, unknown>) => {
+          if (onChange) onChange(model)
+        }}
+        onValid={() => {
+          setCanSubmit(true)
+        }}
+        onInvalid={() => {
+          setCanSubmit(false)
+        }}
+      >
+        {presets.map((preset) => {
+          let value
+
+          if (values && values[preset.tag]) {
+            value = values[preset.tag]
+          }
+
+          if (preset.tag !== 'photo_url') {
+            return (
+              <FormField t={t} key={preset.tag} preset={preset} value={value} />
+            )
+          }
+        })}
+        {showSubmit && (
+          <div
+            style={{
+              float: 'right'
+            }}
+          >
+            <Button type='primary' htmlType='submit' disabled={!canSubmit}>
+              {t('Submit')}
+            </Button>
+          </div>
+        )}
+      </Formsy>
+    </div>
+  )
 }
-export default class DataCollectionForm extends React.Component<Props, State> {
-  static defaultProps:
-    | any
-    | {
-        showSubmit: boolean
-      } = {
-    showSubmit: true
-  }
-
-  constructor(props: Props) {
-    super(props)
-    const { state } = this
-    let submitText = ''
-
-    if (props.submitText) {
-      submitText = props.submitText
-    } else if (state && state.locale) {
-      submitText = Locales.getLocaleString(state.locale, 'Submit')
-    } else {
-      submitText = 'Submit'
-    }
-
-    this.state = {
-      canSubmit: false,
-      submitText
-    }
-  }
-
-  onSubmit = (model: Record<string, any>): void => {
-    if (this.props.onSubmit) this.props.onSubmit(model)
-  }
-  onValid = (): void => {
-    this.setState({
-      canSubmit: true
-    })
-    if (this.props.onValid) this.props.onValid()
-  }
-  onInValid = (): void => {
-    this.setState({
-      canSubmit: false
-    })
-    if (this.props.onInValid) this.props.onInValid()
-  }
-  onChange = (model: Record<string, any>): void => {
-    if (this.props.onChange) this.props.onChange(model)
-  }
-
-  render(): JSX.Element {
-    const { t, props, state, onSubmit, onChange, onValid, onInValid } = this
-    const { style, showSubmit, presets, values } = props
-    const { canSubmit, submitText } = state
-
-    return (
-      <div style={style}>
-        <Formsy
-          onValidSubmit={onSubmit}
-          onChange={onChange}
-          onValid={onValid}
-          onInvalid={onInValid}
-        >
-          {presets.map((preset) => {
-            let value
-
-            if (values && values[preset.tag]) {
-              value = values[preset.tag]
-            }
-
-            if (preset.tag !== 'photo_url') {
-              return (
-                <FormField
-                  t={t}
-                  key={preset.tag}
-                  preset={preset}
-                  value={value}
-                />
-              )
-            }
-          })}
-          {showSubmit && (
-            <div
-              style={{
-                float: 'right'
-              }}
-            >
-              <Button type='primary' htmlType='submit' disabled={!canSubmit}>
-                {submitText}
-              </Button>
-            </div>
-          )}
-        </Formsy>
-      </div>
-    )
-  }
+DataCollectionForm.defaultProps = {
+  showSubmit: true
 }
+export default DataCollectionForm

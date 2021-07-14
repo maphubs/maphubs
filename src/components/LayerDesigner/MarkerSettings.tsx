@@ -15,7 +15,7 @@ type Props = {
   color: string
 }
 
-type MarkerOptions = {
+export type MarkerOptions = {
   shape: 'MAP_PIN' | 'SQUARE_PIN' | 'SQUARE_ROUNDED' | 'SQUARE' | 'CIRCLE'
   size: string
   width: number

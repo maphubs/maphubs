@@ -1,4 +1,5 @@
 import mapboxgl from 'mapbox-gl'
+import { Labels } from '../components/LayerDesigner/LabelSettings'
 import { LocalizedString } from './LocalizedString'
 
 export type Layer = {
@@ -8,7 +9,7 @@ export type Layer = {
   description?: LocalizedString
   source?: LocalizedString
   style?: mapboxgl.Style | null | undefined
-  labels?: Record<string, any>
+  labels?: Labels
   settings?: {
     active: boolean
   }

@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Row, Select } from 'antd'
 import dynamic from 'next/dynamic'
-import _isequal from 'lodash.isequal'
-
 import localeUtil from '../../locales/util'
 import getConfig from 'next/config'
 import { LocalizedString } from '../../types/LocalizedString'
+import useT from '../../hooks/useT'
 const SimpleCodeEditor = dynamic(() => import('./SimpleCodeEditor'), {
   ssr: false
 })
@@ -29,145 +28,99 @@ type Props = {
   id: string
   onSave: (...args: Array<any>) => any
   title: string
-  localizedCode: LocalizedString
+  initialLocalizedCode: LocalizedString
   mode: string
   theme: string
   modal: boolean
 }
-type State = {
-  localizedCode: LocalizedString
-  canSave: boolean
-  locale: string
-}
-export default class LocalizedCodeEditor extends React.Component<Props, State> {
-  props: Props
-  static defaultProps:
-    | any
-    | {
-        id: string
-        modal: boolean
-        mode: string
-        theme: string
-      } = {
-    id: 'code-editor',
-    mode: 'json',
-    theme: 'monokai',
-    modal: true
-  }
 
-  constructor(props: Props) {
-    super(props)
-    this.state = {
-      localizedCode: props.localizedCode,
-      canSave: true,
-      locale: 'en'
-    }
-  }
+const LocalizedCodeEditor = ({
+  initialLocalizedCode,
+  title,
+  mode,
+  theme,
+  onSave
+}: Props): JSX.Element => {
+  const { t } = useT()
+  const [localizedCode, setLocalizedCode] = useState(initialLocalizedCode)
+  const [locale, setLocale] = useState('en')
+  const [canSave, setCanSave] = useState(true)
 
-  componentWillReceiveProps(nextProps: Props): void {
-    this.setState({
-      localizedCode: nextProps.localizedCode
-    })
-  }
-
-  shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
-    // only update if something changes
-    if (!_isequal(this.props, nextProps)) {
-      return true
-    }
-
-    if (!_isequal(this.state, nextState)) {
-      return true
-    }
-
-    return false
-  }
-
-  onChange = (localizedCode: any): void => {
-    this.setState({
-      localizedCode
-    })
-  }
-
-  onSave = (): void => {
-    if (this.state.canSave) {
-      this.props.onSave(this.state.localizedCode)
-    }
-  }
-  onLocaleChange = (locale: string): void => {
-    this.setState({
-      locale
-    })
-  }
-
-  render(): JSX.Element {
-    const { t, props, state, onLocaleChange, onSave } = this
-    const { title, mode, theme } = props
-    const { canSave, localizedCode, locale } = state
-    return (
-      <div
+  return (
+    <div
+      style={{
+        height: 'calc(100% - 100px)',
+        width: '100%'
+      }}
+    >
+      <Row>
+        <p className='left no-padding'>{title}</p>
+      </Row>
+      <Row
         style={{
-          height: 'calc(100% - 100px)',
-          width: '100%'
+          marginBottom: '10px'
         }}
       >
-        <Row>
-          <p className='left no-padding'>{title}</p>
-        </Row>
-        <Row
+        <Select
+          defaultValue='en'
           style={{
-            marginBottom: '10px'
+            width: 120
+          }}
+          onChange={(locale: string) => {
+            setLocale(locale)
           }}
         >
-          <Select
-            defaultValue='en'
-            style={{
-              width: 120
-            }}
-            onChange={onLocaleChange}
-          >
-            {langs.map((locale) => (
-              <Option key={locale.value} value={locale.value}>
-                {locale.label}
-              </Option>
-            ))}
-          </Select>
-        </Row>
-        <Row
+          {langs.map((locale) => (
+            <Option key={locale.value} value={locale.value}>
+              {locale.label}
+            </Option>
+          ))}
+        </Select>
+      </Row>
+      <Row
+        style={{
+          height: 'calc(100% - 100px)'
+        }}
+      >
+        <SimpleCodeEditor
+          mode={mode}
+          theme={theme}
+          name='component-html-editor'
+          value={localizedCode[locale]}
+          onChange={(val) => {
+            localizedCode[locale] = val
+            setLocalizedCode(localizedCode)
+          }}
+        />
+      </Row>
+      <div
+        style={{
+          float: 'right'
+        }}
+      >
+        <Button
+          type='primary'
           style={{
-            height: 'calc(100% - 100px)'
+            float: 'none',
+            marginTop: '15px'
+          }}
+          disabled={!canSave}
+          onClick={() => {
+            if (canSave) {
+              onSave(localizedCode)
+            }
           }}
         >
-          <SimpleCodeEditor
-            mode={mode}
-            theme={theme}
-            name='component-html-editor'
-            value={localizedCode[locale]}
-            onChange={(val) => {
-              localizedCode[locale] = val
-              this.onChange(localizedCode)
-            }}
-            t={t}
-          />
-        </Row>
-        <div
-          style={{
-            float: 'right'
-          }}
-        >
-          <Button
-            type='primary'
-            style={{
-              float: 'none',
-              marginTop: '15px'
-            }}
-            disabled={!canSave}
-            onClick={onSave}
-          >
-            {t('Save')}
-          </Button>
-        </div>
+          {t('Save')}
+        </Button>
       </div>
-    )
-  }
+    </div>
+  )
 }
+LocalizedCodeEditor.defaultProps = {
+  id: 'code-editor',
+  mode: 'json',
+  theme: 'monokai',
+  modal: true
+}
+export default LocalizedCodeEditor

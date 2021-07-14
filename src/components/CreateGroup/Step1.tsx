@@ -218,7 +218,7 @@ const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
               }}
             >
               <MultiTextInput
-                name='name'
+                inputName='name'
                 id='name'
                 label={{
                   en: 'Name',
@@ -237,7 +237,6 @@ const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
                 tooltipPosition='top'
                 tooltip={t('Short Descriptive Name for the Group')}
                 required
-                t={t}
               />
             </Row>
             <Row

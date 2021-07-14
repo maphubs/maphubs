@@ -261,7 +261,7 @@ const LayerStyle = ({
                 >
                   <LayerDesigner
                     onColorChange={onColorChange}
-                    style={style}
+                    initialStyle={style}
                     onStyleChange={setStyle}
                     labels={labels}
                     onLabelsChange={setLabels}

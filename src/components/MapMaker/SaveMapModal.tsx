@@ -114,10 +114,9 @@ const SaveMapModal = ({
           <>
             <Row>
               <LocalizedInput
-                value={title}
+                initialValue={title}
                 placeholder={t('Title')}
                 onChange={setTitle}
-                t={t}
               />
             </Row>
             <Row>

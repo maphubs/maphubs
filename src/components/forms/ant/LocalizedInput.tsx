@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useState } from 'react'
 import { Input, Tabs, Tooltip } from 'antd'
 import localeUtil from '../../../locales/util'
 import getConfig from 'next/config'
@@ -21,118 +21,89 @@ if (MAPHUBS_CONFIG.LANGUAGES) {
 const TabPane = Tabs.TabPane
 const { TextArea } = Input
 type Props = {
-  value?: Record<string, any>
+  initialValue?: LocalizedString
   onChange?: (...args: Array<any>) => any
   placeholder?: string
-  type: string
-  t: (v: string | LocalizedString) => string
+  type?: string
 }
 type State = {
   value: Record<string, any>
 }
-export default class LocalizedInput extends React.Component<Props, State> {
-  static defaultProps: {
-    type: string
-  } = {
-    type: 'input'
-  }
+const LocalizedInput = ({
+  initialValue,
+  type,
+  placeholder,
+  onChange
+}: Props): JSX.Element => {
+  const [value, setValue] = useState(initialValue || {})
 
-  constructor(props: Props) {
-    super(props)
-    const value = props.value || {}
-    this.state = {
-      value
-    }
-  }
-
-  shouldComponentUpdate(nextProps: Props, nextState: State): boolean {
-    let shouldUpdate = false
-    for (const lang of langs) {
-      if (nextState.value[lang.value] !== this.state.value[lang.value]) {
-        shouldUpdate = true
-      }
-    }
-    return shouldUpdate
-  }
-
-  handleChange: (lang: string, val: string) => void = (
-    lang: string,
-    val: string
-  ) => {
+  const handleChange = (lang: string, val: string) => {
     const changedValue = {}
     changedValue[lang] = val
-    this.setState({
-      value: Object.assign({}, this.state.value, changedValue)
-    })
-    const onChange = this.props.onChange
-
-    if (onChange) {
-      onChange(Object.assign({}, this.state.value, changedValue))
-    }
+    const updatedValue = { ...value, ...changedValue }
+    setValue(updatedValue)
+    if (onChange) onChange(updatedValue)
   }
 
-  render(): React.ReactNode {
-    const { value } = this.state
-    const { placeholder, type, t } = this.props
-    const { handleChange } = this
-    return (
-      <>
-        <style jsx>
-          {`
-            .localized-input {
-              padding-bottom: 0px;
-              width: 100%;
-            }
-          `}
-        </style>
-        <div className='localized-input'>
-          <Tabs
-            animated={false}
-            size='small'
-            tabBarStyle={{
-              margin: 0
-            }}
-          >
-            {langs.map((locale) => {
-              return (
-                <TabPane
-                  tab={
-                    <Tooltip title={locale.name}>
-                      <span>{locale.label}</span>
-                    </Tooltip>
-                  }
-                  key={locale.value}
-                >
-                  {type === 'input' && (
-                    <Input
-                      type='text'
-                      value={value[locale.value]}
-                      placeholder={placeholder}
-                      onChange={(e) => {
-                        const val = e.target.value
-                        handleChange(locale.value, val)
-                      }}
-                    />
-                  )}
-                  {type === 'area' && (
-                    <TextArea
-                      rows={4}
-                      type='text'
-                      value={value[locale.value]}
-                      placeholder={placeholder}
-                      onChange={(e) => {
-                        const val = e.target.value
-                        handleChange(locale.value, val)
-                      }}
-                      t={t}
-                    />
-                  )}
-                </TabPane>
-              )
-            })}
-          </Tabs>
-        </div>
-      </>
-    )
-  }
+  return (
+    <>
+      <style jsx>
+        {`
+          .localized-input {
+            padding-bottom: 0px;
+            width: 100%;
+          }
+        `}
+      </style>
+      <div className='localized-input'>
+        <Tabs
+          animated={false}
+          size='small'
+          tabBarStyle={{
+            margin: 0
+          }}
+        >
+          {langs.map((locale) => {
+            return (
+              <TabPane
+                tab={
+                  <Tooltip title={locale.name}>
+                    <span>{locale.label}</span>
+                  </Tooltip>
+                }
+                key={locale.value}
+              >
+                {type === 'input' && (
+                  <Input
+                    type='text'
+                    value={value[locale.value]}
+                    placeholder={placeholder}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      handleChange(locale.value, val)
+                    }}
+                  />
+                )}
+                {type === 'area' && (
+                  <TextArea
+                    rows={4}
+                    value={value[locale.value]}
+                    placeholder={placeholder}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      handleChange(locale.value, val)
+                    }}
+                  />
+                )}
+              </TabPane>
+            )
+          })}
+        </Tabs>
+      </div>
+    </>
+  )
 }
+LocalizedInput.defaultProps = {
+  type: 'input'
+}
+export default LocalizedInput

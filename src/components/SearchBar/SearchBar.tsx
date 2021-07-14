@@ -1,136 +1,107 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import { Row, Input } from 'antd'
 import Suggestions from './Suggestions'
+import useBodyClick from '../../hooks/useBodyClick'
 const { Search } = Input
 type Suggestion = {
   key: string
   value: string
 }
 type Props = {
-  autosuggestDelay: number
   placeholder: string
-  onReset: (...args: Array<any>) => void
-  onSubmit: (...args: Array<any>) => void
-  onChange: (...args: Array<any>) => void
+  onReset: () => void
+  onSubmit: (value: string) => void
+  onChange: (value: string, resolve: (value: unknown) => void) => void
 }
 type State = {
   value: string
   suggestions: Array<Suggestion>
 }
-export default class SearchBar extends React.Component<Props, State> {
-  static defaultProps: {
-    autosuggestDelay: number
-  } = {
-    autosuggestDelay: 250
-  }
-  state: State = {
-    value: '',
-    suggestions: []
-  }
-  suggestions: any
-  _timerId: any
+const SearchBar = ({
+  placeholder,
+  onReset,
+  onSubmit,
+  onChange
+}: Props): JSX.Element => {
+  const timer = useRef<NodeJS.Timeout>()
+  const [value, setValue] = useState('')
+  const [suggestions, setSuggestions] = useState<Suggestion[]>([])
 
-  componentDidMount(): void {
-    document.body.addEventListener('click', this.hideSuggestions)
-  }
-
-  componentWillUnmount(): void {
-    document.body.removeEventListener('click', this.hideSuggestions)
-  }
-
-  displaySuggestions: (suggestions: Array<Suggestion>) => void = (
-    suggestions: Array<Suggestion>
-  ) => {
-    this.setState({
-      suggestions
-    })
-  }
-  hideSuggestions: (e: any) => void = (e: any) => {
+  useBodyClick((e) => {
     console.log(e)
     if (e?.target?.parentElement?.classList.contains('dropdown-content-item'))
       return
-    this.setState({
-      suggestions: []
-    })
+    setSuggestions([])
+  })
+
+  const fillInSuggestion = (suggestion: Suggestion) => {
+    search(suggestion.value)
   }
-  fillInSuggestion: (suggestion: Suggestion) => void = (
-    suggestion: Suggestion
-  ) => {
-    this.search(suggestion.value)
-  }
-  handleChange: (e: any) => void = (e: any) => {
-    clearTimeout(this._timerId)
+
+  const handleChange = (e) => {
+    clearTimeout(timer.current)
     const input = e.target.value
-    this.setState({
-      value: input
-    })
+    setValue(input)
 
     if (input) {
-      this._timerId = setTimeout(() => {
+      timer.current = setTimeout(() => {
         new Promise((resolve) => {
-          this.props.onChange(input, resolve)
-        }).then((suggestions) => {
-          if (!this.state.value) return
-          this.displaySuggestions(suggestions)
+          onChange(input, resolve)
+        }).then((suggestionsUpdate: Suggestion[]) => {
+          if (!value) return
+          setSuggestions(suggestionsUpdate)
         })
-      }, this.props.autosuggestDelay)
+      }, 250)
     } else {
-      this.reset()
+      reset()
     }
   }
-  search: (value: string) => void = (value: string) => {
-    if (this.state.value && typeof this.state.value === 'string') {
-      clearTimeout(this._timerId)
-      this.props.onSubmit(value)
-      this.setState({
-        suggestions: [],
-        value
-      })
+  const search = (valueUpdate: string) => {
+    if (valueUpdate && typeof valueUpdate === 'string') {
+      clearTimeout(timer.current)
+      onSubmit(valueUpdate)
+      setSuggestions([])
+      setValue(valueUpdate)
     } else {
-      this.reset()
+      reset()
     }
   }
-  reset: () => void = () => {
-    clearTimeout(this._timerId)
-    this.setState({
-      value: '',
-      suggestions: []
-    })
-    if (this.props.onReset) this.props.onReset()
+  const reset: () => void = () => {
+    clearTimeout(timer.current)
+    setSuggestions([])
+    setValue('')
+    if (onReset) onReset()
   }
 
-  render(): JSX.Element {
-    const { placeholder } = this.props
-    const { suggestions, value } = this.state
-    return (
-      <>
-        <Row>
-          <Search
-            placeholder={placeholder}
-            onSearch={this.search}
-            enterButton
-            size='large'
-            onPressEnter={(e) => {
-              this.search(e.target.value)
-            }}
-            onChange={this.handleChange}
-            allowClear
-            value={value}
-          />
-        </Row>
-        <Row
-          style={{
-            position: 'relative'
+  return (
+    <>
+      <Row>
+        <Search
+          placeholder={placeholder}
+          onSearch={search}
+          enterButton
+          size='large'
+          onPressEnter={() => {
+            search(value)
           }}
-        >
-          {suggestions?.length > 0 && (
-            <Suggestions
-              suggestions={suggestions}
-              onSelection={this.fillInSuggestion}
-            />
-          )}
-        </Row>
-      </>
-    )
-  }
+          onChange={handleChange}
+          allowClear
+          value={value}
+        />
+      </Row>
+      <Row
+        style={{
+          position: 'relative'
+        }}
+      >
+        {suggestions?.length > 0 && (
+          <Suggestions
+            suggestions={suggestions}
+            onSelection={fillInSuggestion}
+          />
+        )}
+      </Row>
+    </>
+  )
 }
+export default SearchBar

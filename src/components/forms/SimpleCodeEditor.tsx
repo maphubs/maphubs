@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import _isequal from 'lodash.isequal'
 import ErrorBoundary from '../ErrorBoundary'
 import AceEditor from 'react-ace'
@@ -10,7 +10,7 @@ import 'ace-builds/src-min-noconflict/ext-spellcheck'
 import 'ace-builds/src-min-noconflict/ext-searchbox'
 
 import ace from 'ace-builds/src-noconflict/ace'
-import { LocalizedString } from '../../types/LocalizedString'
+import useT from '../../hooks/useT'
 
 ace.config.set(
   'basePath',
@@ -22,76 +22,61 @@ ace.config.setModuleUrl(
 )
 type Props = {
   name: string
-  onChange: (...args: Array<any>) => any
+  onChange: (code: string) => void
   value: string
   mode: string
   theme: string
-  t: (v: string | LocalizedString) => string
 }
 type State = {
   canSave?: boolean
 }
-export default class CodeEditor extends React.Component<Props, State> {
-  static defaultProps: {
-    mode: string
-    name: string
-    theme: string
-  } = {
-    name: 'code-editor',
-    mode: 'json',
-    theme: 'monokai'
-  }
-  editor: any
+const CodeEditor = ({
+  name,
+  mode,
+  theme,
+  value,
+  onChange
+}: Props): JSX.Element => {
+  const { t } = useT()
+  const [canSave, setCanSave] = useState(false)
 
-  shouldComponentUpdate(nextProps: Props): boolean {
-    // only update if something changes
-    if (!_isequal(this.props, nextProps)) {
-      return true
-    }
+  return (
+    <ErrorBoundary t={t}>
+      <AceEditor
+        mode={mode}
+        theme={theme}
+        onChange={(code: string) => {
+          if (canSave) onChange(code)
+        }}
+        name={name}
+        width='100%'
+        height='100%'
+        highlightActiveLine
+        value={value}
+        enableBasicAutocompletion
+        enableLiveAutocompletion
+        editorProps={{
+          $blockScrolling: true
+        }}
+        onValidate={(annotations) => {
+          let canSaveUpdate = true
 
-    return false
-  }
-
-  onChange: (value: any) => void = (value: any) => {
-    if (this.state.canSave) this.props.onChange(value)
-  }
-
-  render(): JSX.Element {
-    const { name, mode, theme, value, t } = this.props
-    return (
-      <ErrorBoundary t={t}>
-        <AceEditor
-          ref='ace'
-          mode={mode}
-          theme={theme}
-          onChange={this.onChange}
-          name={name}
-          width='100%'
-          height='100%'
-          highlightActiveLine
-          value={value}
-          enableBasicAutocompletion
-          enableLiveAutocompletion
-          editorProps={{
-            $blockScrolling: true
-          }}
-          onValidate={(annotations) => {
-            let canSave = true
-
-            if (annotations?.length > 0) {
-              for (const anno of annotations) {
-                if (anno.type === 'error') {
-                  canSave = false
-                }
+          if (annotations?.length > 0) {
+            for (const anno of annotations) {
+              if (anno.type === 'error') {
+                canSaveUpdate = false
               }
             }
-
-            this.setState({
-              canSave
-            })
-          }}
-        />
-      </ErrorBoundary>
-    )
-  }
+          }
+          setCanSave(canSaveUpdate)
+        }}
+      />
+    </ErrorBoundary>
+  )
 }
+CodeEditor.defaultProps = {
+  name: 'code-editor',
+  mode: 'json',
+  theme: 'monokai'
+}
+export default CodeEditor

@@ -83,11 +83,7 @@ class SelectFormItem extends React.Component<Props, State> {
   }
   validate = () => {
     if (this.props.isRequired) {
-      if (this.props.value && this.props.value !== '') {
-        return true
-      } else {
-        return false
-      }
+      return this.props.value && this.props.value !== '' ? true : false
     } else {
       return true
     }
@@ -142,12 +138,9 @@ class SelectFormItem extends React.Component<Props, State> {
                   width: '100%'
                 }}
                 filterOption={(input, option) => {
-                  // eslint-disable-next-line unicorn/prefer-includes
-                  return (
-                    option.props.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  )
+                  return option.props.children
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
                 }}
               >
                 {options.map((option) => (
@@ -159,10 +152,10 @@ class SelectFormItem extends React.Component<Props, State> {
             </Tooltip>
             <style jsx global>
               {`
-              .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
-                color: #FFF;
-              }
-            `}
+                .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
+                  color: #fff;
+                }
+              `}
             </style>
           </Row>
         </Row>

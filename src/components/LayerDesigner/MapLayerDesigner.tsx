@@ -5,10 +5,16 @@ import MapStyles from '../Map/Styles'
 import useT from '../../hooks/useT'
 import type { Layer } from '../../types/layer'
 import mapboxgl from 'mapbox-gl'
+import { Labels } from './LabelSettings'
 
 type Props = {
   layer: Layer
-  onStyleChange: (...args: Array<any>) => void
+  onStyleChange: (
+    layer_id: number,
+    style: mapboxgl.Style,
+    labels: Labels,
+    legend_html: string
+  ) => void
 }
 type State = {
   rasterOpacity: number
@@ -52,10 +58,7 @@ const MapLayerDesigner = ({ layer, onStyleChange }: Props): JSX.Element => {
     onStyleChange(layer_id, style, labels, legend_html)
   }
 
-  const setLabels = (
-    style: mapboxgl.Style,
-    labels: Record<string, any>
-  ): void => {
+  const setLabels = (style: mapboxgl.Style, labels: Labels): void => {
     onStyleChange(layer.layer_id, style, labels, layer.legend_html)
   }
   const setMarkers = (style: mapboxgl.Style): void => {
@@ -114,13 +117,12 @@ const MapLayerDesigner = ({ layer, onStyleChange }: Props): JSX.Element => {
     designer = (
       <LayerDesigner
         onColorChange={onColorChange}
-        style={style}
+        initialStyle={style}
         onStyleChange={setStyle}
         labels={labels}
         onLabelsChange={setLabels}
         onMarkersChange={setMarkers}
         layer={layer}
-        showAdvanced //always show advanced options in map maker
         legend={legendCode}
         onLegendChange={setLegend}
       />

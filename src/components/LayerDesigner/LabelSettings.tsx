@@ -7,20 +7,15 @@ import MapStyles from '../Map/Styles'
 import { Layer } from '../../types/layer'
 import { useEffect } from 'react'
 import useT from '../../hooks/useT'
-type Labels = {
+export type Labels = {
   enabled: boolean
   field: string
 }
 type Props = {
-  onChange: (style: mapboxgl.Style, values: LabelSettings) => void
+  onChange: (style: mapboxgl.Style, values: Labels) => void
   layer: Layer
   initialStyle: mapboxgl.Style
   labels: Labels
-}
-
-type LabelSettings = {
-  enabled: boolean
-  field: string
 }
 
 const LabelSettings = ({
@@ -39,7 +34,7 @@ const LabelSettings = ({
     setStyle(initialStyle)
   }, [initialStyle])
 
-  const onFormChange = (values: LabelSettings): void => {
+  const onFormChange = (values: Labels): void => {
     let style
 
     if (values.enabled && values.field) {

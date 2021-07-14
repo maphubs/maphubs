@@ -84,42 +84,27 @@ export default {
     elc: Record<string, any>,
     opacity: number,
     type = 'raster'
-  ): {
-    layers: Array<{
-      id: string
-      maxzoom: number
-      metadata: {
-        'maphubs:globalid': string
-        'maphubs:layer_id': number
-      }
-      minzoom: number
-      paint: {
-        'raster-opacity': number
-      }
-      source: string
-      type: string
-    }>
-    sources: mapboxgl.Sources
-  } {
+  ): mapboxgl.Style {
     opacity = opacity / 100
+
+    const rasterLayer: mapboxgl.RasterLayer = {
+      id: 'omh-raster-' + shortid,
+      type: 'raster',
+      metadata: {
+        'maphubs:layer_id': layer_id,
+        'maphubs:globalid': shortid
+      },
+      source: 'omh-' + shortid,
+      minzoom: 0,
+      maxzoom: 18,
+      paint: {
+        'raster-opacity': opacity
+      }
+    }
     const style = {
+      version: 8,
       sources: {},
-      layers: [
-        {
-          id: 'omh-raster-' + shortid,
-          type: 'raster',
-          metadata: {
-            'maphubs:layer_id': layer_id,
-            'maphubs:globalid': shortid
-          },
-          source: 'omh-' + shortid,
-          minzoom: 0,
-          maxzoom: 18,
-          paint: {
-            'raster-opacity': opacity
-          }
-        }
-      ]
+      layers: [rasterLayer]
     }
     const metadata = {}
     for (const key of Object.keys(elc)) {
@@ -142,28 +127,10 @@ export default {
     layers: Array<Record<string, any>>,
     opacity: number,
     type = 'raster'
-  ): {
-    layers: Array<
-      | any
-      | {
-          id: string
-          maxzoom: number
-          metadata: {
-            'maphubs:globalid': string
-            'maphubs:layer_id': number
-          }
-          minzoom: number
-          paint: {
-            'raster-opacity': number
-          }
-          source: string
-          type: string
-        }
-    >
-    sources: mapboxgl.Sources
-  } {
+  ): mapboxgl.Style {
     opacity = opacity / 100
     const style = {
+      version: 8,
       sources: {},
       layers: []
     }

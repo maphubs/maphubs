@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Formsy from 'formsy-react'
 import slugify from 'slugify'
 import dynamic from 'next/dynamic'
@@ -20,11 +20,10 @@ import moment from 'moment'
 import ErrorBoundary from '../ErrorBoundary'
 import Tags from '../forms/ant/Tags'
 import SelectGroup from '../Groups/SelectGroup'
-import { subscribe } from '../../services/unstated-props'
-import StoryContainer from './StoryContainer'
 import $ from 'jquery'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import { LocalizedString } from '../../types/LocalizedString'
+import useT from '../../hooks/useT'
+import useUnload from '../../hooks/useUnload'
 const StoryCKEditor = dynamic(() => import('./StoryCKEditor'), {
   ssr: false
 })
@@ -32,46 +31,35 @@ type Props = {
   myMaps: Array<Record<string, any>>
   popularMaps: Array<Record<string, any>>
   groups: Array<Record<string, any>>
-  t: (v: string | LocalizedString) => string
-  locale: string
-  containers: any
-}
-type State = {
-  showAddMap: boolean
-  getMapCallback: (...args: Array<any>) => any
-  showImageCrop: boolean
-  imageData: any
-  imageCropCallback: (...args: Array<any>) => any
 }
 
-class StoryEditor extends React.Component<Props, State> {
-  state = {
-    showAddMap: false,
-    showImageCrop: false,
-    getMapCallback: () => {},
-    imageCropCallback: () => {},
-    imageData: ''
-  }
-  unloadHandler: any
+type ImageCropState = {
+  imageData: string
+  imageCropCallback: (imageData: string) => void
+}
 
-  componentDidMount() {
-    const _this = this
+const StoryEditor = ({ myMaps, popularMaps, groups }: Props): JSX.Element => {
+  const { t, locale } = useT()
+  const [showAddMap, setShowAddMap] = useState(false)
+  const [showImageCrop, setShowImageCrop] = useState(false)
+  const [imageCropState, setImageCropState] = useState<ImageCropState>({
+    imageData: '',
+    imageCropCallback: () => {}
+  })
+  const [getMapCallback, setGetMapCallback] = useState<(url: string) => void>(
+    () => {}
+  )
 
-    this.unloadHandler = (e) => {
-      if (_this.props.containers.story.state.modified) {
-        e.preventDefault()
-        e.returnValue = ''
-      }
+  useUnload((e) => {
+    e.preventDefault()
+    if (storyState.modified) {
+      const exit = confirm(t('Any pending changes will be lost'))
+      if (exit) window.close()
     }
+    window.close()
+  })
 
-    window.addEventListener('beforeunload', this.unloadHandler)
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.unloadHandler)
-  }
-
-  getFirstImage = () => {
+  const getFirstImage = () => {
     // attempt to find the first map or image
     let firstImg
     const firstEmbed = $('.ck-content').find('img, .ck-media__wrapper').first()
@@ -96,10 +84,8 @@ class StoryEditor extends React.Component<Props, State> {
 
     return firstImg
   }
-  save = async () => {
-    const { t, containers } = this.props
-    const { story } = containers
-    const { title, author, body } = story.state
+  const save = async () => {
+    const { title, author, body } = storyState
 
     if (!title) {
       message.warning(t('Please add a title'), 5)
@@ -116,7 +102,7 @@ class StoryEditor extends React.Component<Props, State> {
       return
     }
 
-    const firstimage = this.getFirstImage()
+    const firstimage = getFirstImage()
     const closeSavingMessage = message.loading(t('Saving'), 0)
 
     try {
@@ -133,11 +119,9 @@ class StoryEditor extends React.Component<Props, State> {
       })
     }
   }
-  delete = async () => {
-    const { t, containers } = this.props
-
+  const deleteStory = async () => {
     try {
-      await containers.story.delete()
+      await story.delete()
       message.info(t('Story Deleted'), 1, () => {
         window.location.assign('/')
       })
@@ -149,304 +133,282 @@ class StoryEditor extends React.Component<Props, State> {
       })
     }
   }
-  showAddMap = () => {
-    this.setState({
-      showAddMap: true
-    })
-  }
-  onAddMap = (map) => {
+
+  const onAddMap = (map) => {
     // get the URL for the map
     const url = `${urlUtil.getBaseUrl()}/map/view/${map.map_id}/`
-    this.setState({
-      showAddMap: false
-    })
-    this.state.getMapCallback(url)
+    setShowAddMap(false)
+    getMapCallback(url)
   }
-  onSelectImage = (data: any) => {
+
+  const onSelectImage = async (data: any) => {
     return new Promise((resolve, reject) => {
-      message.info(this.props.t('Cropping Image'))
-      this.setState({
-        showImageCrop: true,
+      message.info(t('Cropping Image'))
+
+      setImageCropState({
         imageCropCallback: resolve,
         imageData: data
       })
+      setShowImageCrop(true)
     })
   }
-  onCrop = (dataURL: string, info: Record<string, any>) => {
-    message.info(this.props.t('Saving Image Crop'))
-    // console.log(dataURL)
-    // console.log(info)
-    this.setState({
-      showImageCrop: false,
-      imageData: undefined
-    })
-    this.state.imageCropCallback(dataURL)
-  }
-  onMapCancel = () => {
-    this.setState({
-      showAddMap: false
-    })
+  const onCrop = (dataURL: string, info: Record<string, any>) => {
+    message.info(t('Saving Image Crop'))
+    setImageCropState({ imageData: '', imageCropCallback: () => {} })
+    setShowImageCrop(false)
+    imageCropState.imageCropCallback(dataURL)
   }
 
-  render() {
-    const { save, onAddMap, onMapCancel, onSelectImage, onCrop, props, state } =
-      this
-    const { t, containers, myMaps, popularMaps, locale, groups } = props
-    const { showAddMap, showImageCrop, imageData } = state
-    const { story } = containers
-    const {
-      story_id,
-      title,
-      author,
-      body,
-      summary,
-      published,
-      published_at,
-      owned_by_group_id,
-      modified,
-      canChangeGroup,
-      tags
-    } = story.state
-    return (
-      <Row
+  const onMapCancel = () => {
+    setShowAddMap(false)
+  }
+
+  const { imageData } = imageCropState
+  const {
+    story_id,
+    title,
+    author,
+    body,
+    summary,
+    published,
+    published_at,
+    owned_by_group_id,
+    modified,
+    canChangeGroup,
+    tags
+  } = storyState
+  return (
+    <Row
+      style={{
+        height: '100%'
+      }}
+    >
+      <Col
+        span={18}
         style={{
           height: '100%'
         }}
       >
-        <Col
-          span={18}
-          style={{
-            height: '100%'
-          }}
-        >
-          <ErrorBoundary t={t}>
-            <StoryCKEditor
-              initialData={body}
-              onChange={story.bodyChange}
-              cropImage={onSelectImage}
-              onUploadImage={() => {
-                message.info(t('Image Saved'))
-              }}
-              getMap={(cb) => {
-                message.info(t('Selecting a Map'))
-                this.setState({
-                  showAddMap: true,
-                  getMapCallback: cb
-                })
-              }}
-            />
-          </ErrorBoundary>
-        </Col>
-        <Col
-          span={6}
-          style={{
-            padding: '10px'
-          }}
-        >
-          <ErrorBoundary t={t}>
-            <Row
-              style={{
-                textAlign: 'left',
-                lineHeight: '32px',
-                marginBottom: '10px'
-              }}
-            >
-              <Col span={12}>
-                <span
-                  style={{
-                    marginRight: '5px',
-                    fontWeight: 'bold',
-                    fontSize: '12px'
-                  }}
-                >
-                  Draft
-                </span>
-                <Switch
-                  defaultChecked={published}
-                  onChange={story.togglePublished}
-                />
-                <span
-                  style={{
-                    marginLeft: '5px',
-                    fontWeight: 'bold',
-                    fontSize: '12px'
-                  }}
-                >
-                  Published
-                </span>
-              </Col>
-              <Col
-                span={12}
-                style={{
-                  textAlign: 'right'
-                }}
-              >
-                <Button
-                  type='primary'
-                  ghost
-                  disabled={modified}
-                  onClick={() => {
-                    window.location.assign(
-                      `/story/${slugify(title[locale])}/${story_id}`
-                    )
-                  }}
-                >
-                  {t('View Story')}
-                  <RightOutlined />
-                </Button>
-              </Col>
-            </Row>
-            <Row
-              style={{
-                marginBottom: '10px'
-              }}
-            >
-              <p>
-                <b>Published Date</b>
-              </p>
-              <DatePicker
-                onChange={story.publishDateChange}
-                defaultValue={moment(published_at)}
-                format='YYYY-MM-DD'
-              />
-              <style jsx global>
-                {`
-                  .ant-calendar-input {
-                    background-color: #fff !important;
-                    border: 0 !important;
-                    border-bottom: none !important;
-                    height: 22px !important;
-                    padding: 4px 11px !important;
-                    margin: 0 !important;
-                  }
-                  .ant-calendar-picker-input {
-                    height: 32px !important;
-                    font-size: 14px !important;
-                  }
-                `}
-              </style>
-            </Row>
-          </ErrorBoundary>
-          <ErrorBoundary t={t}>
-            <Row
-              style={{
-                marginBottom: '10px'
-              }}
-            >
-              <Row
-                style={{
-                  marginBottom: '10px'
-                }}
-              >
-                <LocalizedInput
-                  value={title}
-                  placeholder='Title'
-                  onChange={story.titleChange}
-                  t={t}
-                />
-              </Row>
-              <Row>
-                <LocalizedInput
-                  value={author}
-                  placeholder='Author'
-                  onChange={story.authorChange}
-                  t={t}
-                />
-              </Row>
-              <Row>
-                <LocalizedInput
-                  type='area'
-                  value={summary}
-                  placeholder='Summary'
-                  onChange={story.summaryChange}
-                  t={t}
-                />
-              </Row>
-            </Row>
-          </ErrorBoundary>
-          <ErrorBoundary t={t}>
-            <Row
-              style={{
-                marginBottom: '10px'
-              }}
-            >
-              <Formsy
-                style={{
-                  width: '100%'
-                }}
-              >
-                <SelectGroup
-                  groups={groups}
-                  group_id={owned_by_group_id}
-                  onGroupChange={story.groupChange}
-                  canChangeGroup={canChangeGroup}
-                />
-              </Formsy>
-            </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <Tags initialTags={tags} onChange={story.tagsChange} />
-            </Row>
-          </ErrorBoundary>
-          <Row justify='start'>
+        <ErrorBoundary t={t}>
+          <StoryCKEditor
+            initialData={body}
+            onChange={story.bodyChange}
+            cropImage={onSelectImage}
+            onUploadImage={() => {
+              message.info(t('Image Saved'))
+            }}
+            getMap={(cb) => {
+              message.info(t('Selecting a Map'))
+              setGetMapCallback(cb)
+              setShowAddMap(true)
+            }}
+          />
+        </ErrorBoundary>
+      </Col>
+      <Col
+        span={6}
+        style={{
+          padding: '10px'
+        }}
+      >
+        <ErrorBoundary t={t}>
+          <Row
+            style={{
+              textAlign: 'left',
+              lineHeight: '32px',
+              marginBottom: '10px'
+            }}
+          >
             <Col span={12}>
-              <Button type='primary' disabled={!modified} onClick={save}>
-                {t('Save')}
-              </Button>
-            </Col>
-            {story_id && (
-              <Col span={12}>
-                <Popconfirm
-                  placement='top'
-                  title={t('Delete this story?')}
-                  okText='Yes'
-                  cancelText='No'
-                  onConfirm={this.delete}
-                >
-                  <Button danger icon={<DeleteOutlined />}>
-                    {t('Delete')}
-                  </Button>
-                </Popconfirm>
-              </Col>
-            )}
-          </Row>
-          <Row>
-            {modified && (
               <span
                 style={{
-                  marginRight: '10px'
+                  marginRight: '5px',
+                  fontWeight: 'bold',
+                  fontSize: '12px'
                 }}
               >
-                Not Saved
+                Draft
               </span>
-            )}
+              <Switch
+                defaultChecked={published}
+                onChange={story.togglePublished}
+              />
+              <span
+                style={{
+                  marginLeft: '5px',
+                  fontWeight: 'bold',
+                  fontSize: '12px'
+                }}
+              >
+                Published
+              </span>
+            </Col>
+            <Col
+              span={12}
+              style={{
+                textAlign: 'right'
+              }}
+            >
+              <Button
+                type='primary'
+                ghost
+                disabled={modified}
+                onClick={() => {
+                  window.location.assign(
+                    `/story/${slugify(title[locale])}/${story_id}`
+                  )
+                }}
+              >
+                {t('View Story')}
+                <RightOutlined />
+              </Button>
+            </Col>
           </Row>
-        </Col>
-        <AddMapDrawer
-          visible={showAddMap}
-          onAdd={onAddMap}
-          onClose={onMapCancel}
-          myMaps={myMaps}
-          popularMaps={popularMaps}
-          t={t}
-        />
-        <ImageCrop
-          visible={showImageCrop}
-          onCancel={() => {
-            this.setState({ showImageCrop: false })
-          }}
-          imageData={imageData}
-          onCrop={onCrop}
-          resize_max_width={1200}
-        />
-      </Row>
-    )
-  }
+          <Row
+            style={{
+              marginBottom: '10px'
+            }}
+          >
+            <p>
+              <b>Published Date</b>
+            </p>
+            <DatePicker
+              onChange={story.publishDateChange}
+              defaultValue={moment(published_at)}
+              format='YYYY-MM-DD'
+            />
+            <style jsx global>
+              {`
+                .ant-calendar-input {
+                  background-color: #fff !important;
+                  border: 0 !important;
+                  border-bottom: none !important;
+                  height: 22px !important;
+                  padding: 4px 11px !important;
+                  margin: 0 !important;
+                }
+                .ant-calendar-picker-input {
+                  height: 32px !important;
+                  font-size: 14px !important;
+                }
+              `}
+            </style>
+          </Row>
+        </ErrorBoundary>
+        <ErrorBoundary t={t}>
+          <Row
+            style={{
+              marginBottom: '10px'
+            }}
+          >
+            <Row
+              style={{
+                marginBottom: '10px'
+              }}
+            >
+              <LocalizedInput
+                initialValue={title}
+                placeholder='Title'
+                onChange={story.titleChange}
+              />
+            </Row>
+            <Row>
+              <LocalizedInput
+                initialValue={author}
+                placeholder='Author'
+                onChange={story.authorChange}
+              />
+            </Row>
+            <Row>
+              <LocalizedInput
+                type='area'
+                initialValue={summary}
+                placeholder='Summary'
+                onChange={story.summaryChange}
+              />
+            </Row>
+          </Row>
+        </ErrorBoundary>
+        <ErrorBoundary t={t}>
+          <Row
+            style={{
+              marginBottom: '10px'
+            }}
+          >
+            <Formsy
+              style={{
+                width: '100%'
+              }}
+            >
+              <SelectGroup
+                groups={groups}
+                group_id={owned_by_group_id}
+                onGroupChange={story.groupChange}
+                canChangeGroup={canChangeGroup}
+              />
+            </Formsy>
+          </Row>
+          <Row
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+            <Tags initialTags={tags} onChange={story.tagsChange} />
+          </Row>
+        </ErrorBoundary>
+        <Row justify='start'>
+          <Col span={12}>
+            <Button type='primary' disabled={!modified} onClick={save}>
+              {t('Save')}
+            </Button>
+          </Col>
+          {story_id && (
+            <Col span={12}>
+              <Popconfirm
+                placement='top'
+                title={t('Delete this story?')}
+                okText='Yes'
+                cancelText='No'
+                onConfirm={deleteStory}
+              >
+                <Button danger icon={<DeleteOutlined />}>
+                  {t('Delete')}
+                </Button>
+              </Popconfirm>
+            </Col>
+          )}
+        </Row>
+        <Row>
+          {modified && (
+            <span
+              style={{
+                marginRight: '10px'
+              }}
+            >
+              Not Saved
+            </span>
+          )}
+        </Row>
+      </Col>
+      <AddMapDrawer
+        visible={showAddMap}
+        onAdd={onAddMap}
+        onClose={() => {
+          setShowAddMap(false)
+        }}
+        myMaps={myMaps}
+        popularMaps={popularMaps}
+      />
+      <ImageCrop
+        visible={showImageCrop}
+        onCancel={() => {
+          setShowImageCrop(false)
+        }}
+        imageData={imageData}
+        onCrop={onCrop}
+        resize_max_width={1200}
+      />
+    </Row>
+  )
 }
-
-export default subscribe(StoryEditor, {
-  story: StoryContainer
-}) as any
+export default StoryEditor
