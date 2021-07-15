@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import InteractiveMap from '../src/components/Map/InteractiveMap'
 import Header from '../src/components/header'
 import _find from 'lodash.find'
@@ -56,6 +56,8 @@ import moment from 'moment-timezone'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import getConfig from 'next/config'
 import { Layer } from '../src/types/layer'
+import useT from '../src/hooks/useT'
+import { FeatureCollection } from 'geojson'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const TabPane = Tabs.TabPane
 const { Title } = Typography
@@ -67,62 +69,21 @@ type Props = {
   notes: string
   stats: Record<string, any>
   canEdit: boolean
-  createdByUser: Record<string, any>
-  updatedByUser: Record<string, any>
-  locale: string
-  _csrf: string
-  headerConfig: Record<string, any>
-  mapConfig: Record<string, any>
-  user: Record<string, any>
 }
-type DefaultProps = {
-  stats: Record<string, any>
-  canEdit: boolean
-}
-type State = {
-  userResize?: boolean
-  geoJSON?: Record<string, any>
-  dataMsg?: string
-  area?: number
+
+type GeoJSONState = {
+  geoJSON: FeatureCollection
   length: number
-  count?: number
 }
-export default class LayerInfo extends React.Component<Props, State> {
-  BaseMapState: BaseMapContainer
-  MapState: MapContainer
-  DataEditorState: DataEditorContainer
 
-  menuButton: HTMLDivElement
-  static async getInitialProps({
-    req,
-    query
-  }: {
-    req: any
-    query: Record<string, any>
-  }): Promise<any> {
-    const isServer = !!req
+const LayerInfo = () => {
+  const { t, locale } = useT()
+  const [dataMsg, setDataMsg] = useState(t('Data Loading'))
+  const [geoJSONState, setGeoJSONState] = useState({
+    length: 0
+  })
 
-    if (isServer) {
-      return query.props
-    } else {
-      console.error('getInitialProps called on client')
-    }
-  }
-
-  static defaultProps: DefaultProps = {
-    stats: {
-      maps: 0,
-      stories: 0
-    },
-    canEdit: false
-  }
-  state: State = {
-    length: 0,
-    dataMsg: this.t('Data Loading')
-  }
-
-  constructor(props: Props) {
-    super(props)
+  /*
     const baseMapContainerInit: {
       baseMap?: string
       bingKey: string
@@ -134,19 +95,9 @@ export default class LayerInfo extends React.Component<Props, State> {
       tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY,
       mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
     }
+    */
 
-    if (props.mapConfig && props.mapConfig.baseMapOptions) {
-      baseMapContainerInit.baseMapOptions = props.mapConfig.baseMapOptions
-    }
-
-    this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
-    this.MapState = new MapContainer()
-    this.DataEditorState = new DataEditorContainer()
-  }
-
-  async componentDidMount(): Promise<void> {
-    const { t, props } = this
-    const { layer } = props
+  useEffect(() => {
     const elc = layer.external_layer_config
 
     try {
@@ -157,39 +108,31 @@ export default class LayerInfo extends React.Component<Props, State> {
         switch (elc.type) {
           case 'ags-mapserver-query': {
             geoJSON = await TerraformerGL.getArcGISGeoJSON(elc.url)
-
             break
           }
           case 'ags-featureserver-query': {
             geoJSON = await TerraformerGL.getArcGISFeatureServiceGeoJSON(
               elc.url
             )
-
             break
           }
           case 'geojson': {
             const res = await request.get(elc.data).type('json').accept('json')
             geoJSON = res.body
-
             break
           }
           default: {
-            this.setState({
-              dataMsg: t('Data table not support for this layer.')
-            })
+            setDataMsg(t('Data table not support for this layer.'))
           }
         }
 
         if (geoJSON)
-          this.setState({
+          setGeoJSONState({
             geoJSON
           })
       } else {
-        this.getGeoJSON()
-
-        this.setState({
-          dataMsg: t('Data Loading')
-        })
+        getGeoJSON()
+        setDataMsg(t('Data Loading'))
       }
     } catch (err) {
       debug.error(err)
@@ -199,16 +142,9 @@ export default class LayerInfo extends React.Component<Props, State> {
         duration: 0
       })
     }
-  }
+  }, [])
 
-  componentDidUpdate(prevProps: Props, prevState: State): void {
-    if (!this.state.userResize) {
-      fireResizeEvent()
-    }
-  }
-
-  getGeoJSON = async (): Promise<void> => {
-    const { layer } = this.props
+  const getGeoJSON = async (): Promise<void> => {
     let baseUrl, dataUrl
 
     if (layer.remote) {
@@ -249,7 +185,7 @@ export default class LayerInfo extends React.Component<Props, State> {
         }
       }
 
-      this.setState({
+      setGeoJSONState({
         geoJSON,
         count,
         area,
@@ -259,339 +195,337 @@ export default class LayerInfo extends React.Component<Props, State> {
       debug.error(err)
     }
   }
-  openEditor = (): void => {
+  const openEditor = (): void => {
     const baseUrl = urlUtil.getBaseUrl()
     window.location.assign(
-      `${baseUrl}/map/new?editlayer=${this.props.layer.layer_id}${window.location.hash}`
+      `${baseUrl}/map/new?editlayer=${layer.layer_id}${window.location.hash}`
     )
   }
-  copyToClipboard = (val: string): void => {
+  const copyToClipboard = (val: string): void => {
     navigator.clipboard.writeText(val)
   }
 
-  render(): JSX.Element {
-    const {
-      openEditor,
-      t,
-      props,
-      state,
-      BaseMapState,
-      MapState,
-      DataEditorState
-    } = this
-    const {
-      layer,
-      canEdit,
-      updatedByUser,
-      stats,
-      notes,
-      mapConfig,
-      headerConfig
-    } = props
-    const { geoJSON, dataMsg, locale, count, area, _csrf } = state
-    const glStyle = layer.style
-    const showMapEditButton = canEdit && !layer.is_external && !layer.remote
-    const showAddPhotoPointButton =
-      showMapEditButton && layer.data_type === 'point'
+  const { geoJSON, count, area } = geoJSONState
+  const glStyle = layer.style
+  const showMapEditButton = canEdit && !layer.is_external && !layer.remote
+  const showAddPhotoPointButton =
+    showMapEditButton && layer.data_type === 'point'
 
-    const editButton = canEdit ? (
+  const editButton = canEdit ? (
+    <Fab
+      icon={<MoreVertIcon />}
+      mainButtonStyles={{
+        backgroundColor: MAPHUBS_CONFIG.primaryColor
+      }}
+      position={{
+        bottom: 65,
+        right: 0
+      }}
+    >
+      <Action
+        text={t('Manage Layer')}
+        onClick={() => {
+          window.location.assign(
+            `/layer/admin/${layer.layer_id}/${slugify(t(layer.name))}`
+          )
+        }}
+      >
+        <SettingsIcon />
+      </Action>
+      {showMapEditButton && (
+        <Action
+          text={t('Edit Map Data')}
+          style={{
+            backgroundColor: 'green'
+          }}
+          onClick={openEditor}
+        >
+          <EditIcon />
+        </Action>
+      )}
+      {showAddPhotoPointButton && (
+        <Action
+          text={t('Add Photo')}
+          style={{
+            backgroundColor: '#2196F3'
+          }}
+          onClick={() => {
+            window.location.assign(`/layer/adddata/${layer.layer_id}`)
+          }}
+        >
+          <PhotoIcon />
+        </Action>
+      )}
+    </Fab>
+  ) : (
+    <div className='hide-on-med-and-up'>
       <Fab
-        icon={<MoreVertIcon />}
+        icon={<MapIcon />}
+        text={t('View Map')}
         mainButtonStyles={{
           backgroundColor: MAPHUBS_CONFIG.primaryColor
         }}
-        position={{
-          bottom: 65,
-          right: 0
+        event='click'
+        onClick={() => {
+          window.location.assign(
+            `/layer/map/${layer.layer_id}/${slugify(t(layer.name))}`
+          )
         }}
-      >
-        <Action
-          text={t('Manage Layer')}
-          onClick={() => {
-            window.location.assign(
-              `/layer/admin/${layer.layer_id}/${slugify(t(layer.name))}`
-            )
+      />
+    </div>
+  )
+
+  const guessedTz = moment.tz.guess()
+  const creationTime = moment.tz(layer.creation_time, guessedTz)
+  const daysSinceCreated = creationTime.diff(moment(), 'days')
+  const updatedTime = moment.tz(layer.last_updated, guessedTz)
+  const daysSinceUpdated = updatedTime.diff(moment(), 'days')
+  const licenseOptions = Licenses.getLicenses(t)
+
+  const license = _find(licenseOptions, {
+    value: layer.license
+  })
+
+  let descriptionWithLinks = ''
+
+  if (layer.description) {
+    // regex for detecting links
+    const localizedDescription = t(layer.description)
+    const regex = /(https?:\/\/([\w.-]+)+(:\d+)?(\/([\w./]*(\?\S+)?)?)?)/gi
+    descriptionWithLinks = localizedDescription.replace(
+      regex,
+      "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>"
+    )
+  }
+
+  const firstSource = Object.keys(layer.style.sources)[0]
+  const presets = MapStyles.settings.getSourceSetting(
+    layer.style,
+    firstSource,
+    'presets'
+  )
+  return (
+    <ErrorBoundary t={t}>
+      <Provider inject={[BaseMapState, MapState, DataEditorState]}>
+        <Header {...headerConfig} />
+        <main
+          style={{
+            height: 'calc(100% - 51px)',
+            marginTop: 0
           }}
         >
-          <SettingsIcon />
-        </Action>
-        {showMapEditButton && (
-          <Action
-            text={t('Edit Map Data')}
+          <Row
             style={{
-              backgroundColor: 'green'
-            }}
-            onClick={openEditor}
-          >
-            <EditIcon />
-          </Action>
-        )}
-        {showAddPhotoPointButton && (
-          <Action
-            text={t('Add Photo')}
-            style={{
-              backgroundColor: '#2196F3'
-            }}
-            onClick={() => {
-              window.location.assign(`/layer/adddata/${layer.layer_id}`)
+              height: '100%',
+              margin: 0
             }}
           >
-            <PhotoIcon />
-          </Action>
-        )}
-      </Fab>
-    ) : (
-      <div
-        ref={(el) => {
-          this.menuButton = el
-        }}
-        className='hide-on-med-and-up'
-      >
-        <Fab
-          icon={<MapIcon />}
-          text={t('View Map')}
-          mainButtonStyles={{
-            backgroundColor: MAPHUBS_CONFIG.primaryColor
-          }}
-          event='click'
-          onClick={() => {
-            window.location.assign(
-              `/layer/map/${layer.layer_id}/${slugify(t(layer.name))}`
-            )
-          }}
-        />
-      </div>
-    )
-
-    const guessedTz = moment.tz.guess()
-    const creationTime = moment.tz(layer.creation_time, guessedTz)
-    const daysSinceCreated = creationTime.diff(moment(), 'days')
-    const updatedTime = moment.tz(layer.last_updated, guessedTz)
-    const daysSinceUpdated = updatedTime.diff(moment(), 'days')
-    const licenseOptions = Licenses.getLicenses(t)
-
-    const license = _find(licenseOptions, {
-      value: layer.license
-    })
-
-    let descriptionWithLinks = ''
-
-    if (layer.description) {
-      // regex for detecting links
-      const localizedDescription = this.t(layer.description)
-      const regex = /(https?:\/\/([\w.-]+)+(:\d+)?(\/([\w./]*(\?\S+)?)?)?)/gi
-      descriptionWithLinks = localizedDescription.replace(
-        regex,
-        "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>"
-      )
-    }
-
-    const firstSource = Object.keys(layer.style.sources)[0]
-    const presets = MapStyles.settings.getSourceSetting(
-      layer.style,
-      firstSource,
-      'presets'
-    )
-    return (
-      <ErrorBoundary t={t}>
-        <Provider inject={[BaseMapState, MapState, DataEditorState]}>
-          <Header {...headerConfig} />
-          <main
-            style={{
-              height: 'calc(100% - 51px)',
-              marginTop: 0
-            }}
-          >
-            <Row
+            <Col
+              sm={24}
+              md={12}
               style={{
-                height: '100%',
-                margin: 0
+                height: '100%'
               }}
             >
-              <Col
-                sm={24}
-                md={12}
+              {layer.private && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '15px',
+                    right: '10px'
+                  }}
+                >
+                  <Tooltip title={t('Private')} placement='left'>
+                    <LockIcon />
+                  </Tooltip>
+                </div>
+              )}
+
+              <style jsx global>
+                {`
+                  .ant-tabs-content {
+                    height: calc(100% - 44px);
+                  }
+                  .ant-tabs-tabpane {
+                    height: 100%;
+                  }
+
+                  .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
+                    display: none;
+                  }
+
+                  .ant-tabs-nav-container {
+                    margin-left: 5px;
+                  }
+                `}
+              </style>
+              <Tabs
+                defaultActiveKey='info'
                 style={{
                   height: '100%'
                 }}
+                tabBarStyle={{
+                  marginBottom: 0
+                }}
+                animated={false}
               >
-                {layer.private && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '15px',
-                      right: '10px'
-                    }}
-                  >
-                    <Tooltip title={t('Private')} placement='left'>
-                      <LockIcon />
-                    </Tooltip>
-                  </div>
-                )}
-
-                <style jsx global>
-                  {`
-                    .ant-tabs-content {
-                      height: calc(100% - 44px);
-                    }
-                    .ant-tabs-tabpane {
-                      height: 100%;
-                    }
-
-                    .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
-                      display: none;
-                    }
-
-                    .ant-tabs-nav-container {
-                      margin-left: 5px;
-                    }
-                  `}
-                </style>
-                <Tabs
-                  defaultActiveKey='info'
+                <TabPane
+                  tab={t('Info')}
+                  key='info'
                   style={{
-                    height: '100%'
+                    position: 'relative'
                   }}
-                  tabBarStyle={{
-                    marginBottom: 0
-                  }}
-                  animated={false}
                 >
-                  <TabPane
-                    tab={t('Info')}
-                    key='info'
+                  <Row
                     style={{
-                      position: 'relative'
+                      height: '50%',
+                      overflowY: 'auto',
+                      overflowX: 'hidden'
                     }}
                   >
-                    <Row
+                    <Col
+                      sm={24}
+                      md={12}
                       style={{
-                        height: '50%',
-                        overflowY: 'auto',
-                        overflowX: 'hidden'
+                        height: '100%',
+                        padding: '5px',
+                        border: '1px solid #ddd',
+                        minHeight: '200px',
+                        overflowY: 'auto'
                       }}
                     >
-                      <Col
-                        sm={24}
-                        md={12}
-                        style={{
-                          height: '100%',
-                          padding: '5px',
-                          border: '1px solid #ddd',
-                          minHeight: '200px',
-                          overflowY: 'auto'
-                        }}
-                      >
-                        <Row>
-                          <Title
-                            level={2}
-                            style={{
-                              marginTop: 0
-                            }}
-                          >
-                            {t(layer.name)}
-                          </Title>
-                        </Row>
-                        <Row>
-                          <Col span={4}>
-                            <GroupTag
-                              group={layer.owned_by_group_id}
-                              size={32}
-                            />
-                          </Col>
-                          <Col span={20}>
-                            <span
-                              style={{
-                                lineHeight: '32px'
-                              }}
-                            >
-                              <b>{t('Group: ')}</b>
-                              {layer.owned_by_group_id}
-                            </span>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <p
-                            style={{
-                              maxHeight: '55px',
-                              overflow: 'auto'
-                            }}
-                          >
-                            <b>{t('Data Source:')}</b> {t(layer.source)}
-                          </p>
-                        </Row>
-                        <Row>
-                          <p>
-                            <b>{t('License:')}</b> {license.label}
-                          </p>
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: license.note
-                            }}
-                          />
-                        </Row>
-                        <Row>
-                          <ExternalLink layer={layer} />
-                        </Row>
-                      </Col>
-                      <Col
-                        sm={24}
-                        md={12}
-                        style={{
-                          height: '100%',
-                          minHeight: '200px',
-                          overflow: 'auto',
-                          border: '1px solid #ddd'
-                        }}
-                      >
-                        <Card
-                          size='small'
-                          bordered={false}
-                          title={t('Description')}
+                      <Row>
+                        <Title
+                          level={2}
                           style={{
-                            width: '100%',
-                            height: '100%'
+                            marginTop: 0
                           }}
                         >
-                          <div
-                            dangerouslySetInnerHTML={{
-                              __html: descriptionWithLinks
+                          {t(layer.name)}
+                        </Title>
+                      </Row>
+                      <Row>
+                        <Col span={4}>
+                          <GroupTag group={layer.owned_by_group_id} size={32} />
+                        </Col>
+                        <Col span={20}>
+                          <span
+                            style={{
+                              lineHeight: '32px'
                             }}
-                          />
-                        </Card>
-                      </Col>
-                    </Row>
-                    <Row
+                          >
+                            <b>{t('Group: ')}</b>
+                            {layer.owned_by_group_id}
+                          </span>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <p
+                          style={{
+                            maxHeight: '55px',
+                            overflow: 'auto'
+                          }}
+                        >
+                          <b>{t('Data Source:')}</b> {t(layer.source)}
+                        </p>
+                      </Row>
+                      <Row>
+                        <p>
+                          <b>{t('License:')}</b> {license.label}
+                        </p>
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: license.note
+                          }}
+                        />
+                      </Row>
+                      <Row>
+                        <ExternalLink layer={layer} />
+                      </Row>
+                    </Col>
+                    <Col
+                      sm={24}
+                      md={12}
                       style={{
-                        height: 'calc(50% - 58px)'
+                        height: '100%',
+                        minHeight: '200px',
+                        overflow: 'auto',
+                        border: '1px solid #ddd'
                       }}
                     >
-                      <Col
-                        sm={24}
-                        md={12}
+                      <Card
+                        size='small'
+                        bordered={false}
+                        title={t('Description')}
                         style={{
-                          height: '100%',
-                          padding: '5px',
-                          border: '1px solid #ddd'
+                          width: '100%',
+                          height: '100%'
                         }}
                       >
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: descriptionWithLinks
+                          }}
+                        />
+                      </Card>
+                    </Col>
+                  </Row>
+                  <Row
+                    style={{
+                      height: 'calc(50% - 58px)'
+                    }}
+                  >
+                    <Col
+                      sm={24}
+                      md={12}
+                      style={{
+                        height: '100%',
+                        padding: '5px',
+                        border: '1px solid #ddd'
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontSize: '16px'
+                        }}
+                      >
+                        <b>{t('Created:')} </b>
+                        <IntlProvider locale={locale}>
+                          <FormattedDate value={creationTime} />
+                        </IntlProvider>
+                        &nbsp;
+                        <IntlProvider locale={locale}>
+                          <FormattedTime value={creationTime} />
+                        </IntlProvider>
+                        &nbsp; (
+                        <IntlProvider locale={locale}>
+                          <FormattedRelativeTime
+                            value={daysSinceCreated}
+                            numeric='auto'
+                            unit='day'
+                          />
+                        </IntlProvider>
+                        )&nbsp;
+                        {t('by') + ' ' + updatedByUser.display_name}
+                      </p>
+                      {updatedTime > creationTime && (
                         <p
                           style={{
                             fontSize: '16px'
                           }}
                         >
-                          <b>{t('Created:')} </b>
+                          <b>{t('Last Update:')} </b>
                           <IntlProvider locale={locale}>
-                            <FormattedDate value={creationTime} />
+                            <FormattedDate value={updatedTime} />
                           </IntlProvider>
                           &nbsp;
                           <IntlProvider locale={locale}>
-                            <FormattedTime value={creationTime} />
+                            <FormattedTime value={updatedTime} />
                           </IntlProvider>
                           &nbsp; (
                           <IntlProvider locale={locale}>
                             <FormattedRelativeTime
-                              value={daysSinceCreated}
+                              value={daysSinceUpdated}
                               numeric='auto'
                               unit='day'
                             />
@@ -599,147 +533,122 @@ export default class LayerInfo extends React.Component<Props, State> {
                           )&nbsp;
                           {t('by') + ' ' + updatedByUser.display_name}
                         </p>
-                        {updatedTime > creationTime && (
-                          <p
-                            style={{
-                              fontSize: '16px'
-                            }}
-                          >
-                            <b>{t('Last Update:')} </b>
-                            <IntlProvider locale={locale}>
-                              <FormattedDate value={updatedTime} />
-                            </IntlProvider>
-                            &nbsp;
-                            <IntlProvider locale={locale}>
-                              <FormattedTime value={updatedTime} />
-                            </IntlProvider>
-                            &nbsp; (
-                            <IntlProvider locale={locale}>
-                              <FormattedRelativeTime
-                                value={daysSinceUpdated}
-                                numeric='auto'
-                                unit='day'
-                              />
-                            </IntlProvider>
-                            )&nbsp;
-                            {t('by') + ' ' + updatedByUser.display_name}
-                          </p>
-                        )}
-                      </Col>
-                      <Col
-                        sm={24}
-                        md={12}
-                        style={{
-                          height: '100%',
-                          border: '1px solid #ddd'
-                        }}
-                      >
-                        <Card
-                          size='small'
-                          bordered={false}
-                          title={t('Info')}
-                          style={{
-                            width: '100%',
-                            height: '100%'
-                          }}
-                        >
-                          <p>
-                            <b>{t('Feature Count:')} </b>
-                            {numeral(count).format('0,0')}
-                          </p>
-                          {area && (
-                            <p>
-                              <b>{t('Area')} </b>
-                              {numeral(area).format('0,0.00')} ha
-                            </p>
-                          )}
-                          {state.length > 0 && (
-                            <p>
-                              <b>{t('Length')} </b>
-                              {numeral(state.length).format('0,0.00')} km
-                            </p>
-                          )}
-                        </Card>
-                      </Col>
-                    </Row>
-                    <Stats views={layer.views} stats={stats} t={t} />
-                  </TabPane>
-                  <TabPane tab={t('Notes')} key='notes'>
-                    <LayerNotes
-                      canEdit={canEdit}
-                      notes={notes}
-                      layer_id={layer.layer_id}
-                      t={t}
-                      _csrf={_csrf}
-                    />
-                  </TabPane>
-                  {MAPHUBS_CONFIG.enableComments && (
-                    <TabPane tab={t('Discuss')} key='discuss'>
-                      <ErrorBoundary t={t}>
-                        <Comments />
-                      </ErrorBoundary>
-                    </TabPane>
-                  )}
-                  <TabPane tab={t('Data')} key='data'>
-                    <Row
+                      )}
+                    </Col>
+                    <Col
+                      sm={24}
+                      md={12}
                       style={{
-                        height: '100%'
+                        height: '100%',
+                        border: '1px solid #ddd'
                       }}
                     >
-                      {geoJSON && (
-                        <DataGrid
-                          layer={layer}
-                          geoJSON={geoJSON}
-                          presets={presets}
-                          canEdit={canEdit}
-                          t={t}
-                          _csrf={_csrf}
-                        />
-                      )}
-                      {!geoJSON && <Result title={dataMsg} />}
-                    </Row>
+                      <Card
+                        size='small'
+                        bordered={false}
+                        title={t('Info')}
+                        style={{
+                          width: '100%',
+                          height: '100%'
+                        }}
+                      >
+                        <p>
+                          <b>{t('Feature Count:')} </b>
+                          {numeral(count).format('0,0')}
+                        </p>
+                        {area && (
+                          <p>
+                            <b>{t('Area')} </b>
+                            {numeral(area).format('0,0.00')} ha
+                          </p>
+                        )}
+                        {state.length > 0 && (
+                          <p>
+                            <b>{t('Length')} </b>
+                            {numeral(state.length).format('0,0.00')} km
+                          </p>
+                        )}
+                      </Card>
+                    </Col>
+                  </Row>
+                  <Stats views={layer.views} stats={stats} t={t} />
+                </TabPane>
+                <TabPane tab={t('Notes')} key='notes'>
+                  <LayerNotes
+                    canEdit={canEdit}
+                    notes={notes}
+                    layer_id={layer.layer_id}
+                    t={t}
+                    _csrf={_csrf}
+                  />
+                </TabPane>
+                {MAPHUBS_CONFIG.enableComments && (
+                  <TabPane tab={t('Discuss')} key='discuss'>
+                    <ErrorBoundary t={t}>
+                      <Comments />
+                    </ErrorBoundary>
                   </TabPane>
-                  <TabPane tab={t('Download')} key='export'>
-                    <LayerExport layer={layer} t={t} />
-                  </TabPane>
-                </Tabs>
-              </Col>
-              <Col
-                sm={24}
-                md={12}
-                className='hide-on-small-only'
-                style={{
-                  height: '100%'
-                }}
-              >
-                <InteractiveMap
-                  ref='interactiveMap'
-                  height='100vh - 50px'
-                  fitBounds={layer.preview_position.bbox}
-                  style={glStyle}
-                  layers={[layer]}
-                  map_id={layer.layer_id}
-                  mapConfig={mapConfig}
-                  title={layer.name}
-                  showTitle={false}
-                  hideInactive={false}
-                  disableScrollZoom={false}
-                  primaryColor={MAPHUBS_CONFIG.primaryColor}
-                  logoSmall={MAPHUBS_CONFIG.logoSmall}
-                  logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-                  logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-                  mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-                  DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-                  earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
-                  t={t}
-                  locale={locale}
-                />
-              </Col>
-            </Row>
-            {editButton}
-          </main>
-        </Provider>
-      </ErrorBoundary>
-    )
-  }
+                )}
+                <TabPane tab={t('Data')} key='data'>
+                  <Row
+                    style={{
+                      height: '100%'
+                    }}
+                  >
+                    {geoJSON && (
+                      <DataGrid
+                        layer={layer}
+                        geoJSON={geoJSON}
+                        presets={presets}
+                        canEdit={canEdit}
+                        t={t}
+                        _csrf={_csrf}
+                      />
+                    )}
+                    {!geoJSON && <Result title={dataMsg} />}
+                  </Row>
+                </TabPane>
+                <TabPane tab={t('Download')} key='export'>
+                  <LayerExport layer={layer} t={t} />
+                </TabPane>
+              </Tabs>
+            </Col>
+            <Col
+              sm={24}
+              md={12}
+              className='hide-on-small-only'
+              style={{
+                height: '100%'
+              }}
+            >
+              <InteractiveMap
+                ref='interactiveMap'
+                height='100vh - 50px'
+                fitBounds={layer.preview_position.bbox}
+                style={glStyle}
+                layers={[layer]}
+                map_id={layer.layer_id}
+                mapConfig={mapConfig}
+                title={layer.name}
+                showTitle={false}
+                hideInactive={false}
+                disableScrollZoom={false}
+                primaryColor={MAPHUBS_CONFIG.primaryColor}
+                logoSmall={MAPHUBS_CONFIG.logoSmall}
+                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
+                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+                mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
+                DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
+                earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+                t={t}
+                locale={locale}
+              />
+            </Col>
+          </Row>
+          {editButton}
+        </main>
+      </Provider>
+    </ErrorBoundary>
+  )
 }
+export default LayerInfo

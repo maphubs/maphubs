@@ -1,23 +1,18 @@
 import React from 'react'
 import { Row, Col, Typography } from 'antd'
 import CardCarousel from './CardCarousel'
-
 import type { CardConfig } from './Card'
-import { LocalizedString } from '../../types/LocalizedString'
+import useT from '../../hooks/useT'
+
 const { Title } = Typography
 type Props = {
   cards: Array<CardConfig>
   title?: string
   viewAllLink?: string
-  t: (v: string | LocalizedString) => string
 }
 
-const CardCollection = ({
-  t,
-  title,
-  viewAllLink,
-  cards
-}: Props): JSX.Element => {
+const CardCollection = ({ title, viewAllLink, cards }: Props): JSX.Element => {
+  const { t } = useT()
   return (
     <Row
       style={{
@@ -51,7 +46,7 @@ const CardCollection = ({
         </Col>
       </Row>
       <Row>
-        <CardCarousel cards={cards} t={t} />
+        <CardCarousel cards={cards} />
       </Row>
     </Row>
   )

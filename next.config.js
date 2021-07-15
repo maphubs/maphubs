@@ -88,7 +88,8 @@ module.exports = withAntdLess({
     ASSET_UPLOAD_API: config.ASSET_UPLOAD_API,
     ASSET_UPLOAD_API_KEY: config.ASSET_UPLOAD_API_KEY,
     LANGUAGES: config.LANGUAGES,
-    RASTER_UPLOAD_FILE_SIZE_LIMIT: config.RASTER_UPLOAD_FILE_SIZE_LIMIT
+    RASTER_UPLOAD_FILE_SIZE_LIMIT: config.RASTER_UPLOAD_FILE_SIZE_LIMIT,
+    requireLogin: config.requireLogin
   },
   // postcssLoaderOptions: postCSSConfig,
   assetPrefix,

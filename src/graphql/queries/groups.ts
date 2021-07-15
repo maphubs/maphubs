@@ -7,19 +7,50 @@ export default {
     _: unknown,
     args: { locale?: string },
     context: Context
-  ): Promise<Array<Group>> {
+  ): Promise<Group[]> {
     //const { user } = context
     return GroupModel.getAllGroups().orderByRaw(
       `lower((omh.groups.name -> '${args.locale || 'end'}')::text)`
     )
   },
 
-  group(
+  group(_: unknown, args: { id: string }): Promise<Group | void> {
+    return GroupModel.getGroupByID(args.id)
+  },
+
+  featuredGroups(_: unknown, args: { limits: number }): Promise<Group[]> {
+    return GroupModel.getFeaturedGroups(args.limits)
+  },
+
+  recentGroups(_: unknown, args: { limits: number }): Promise<Group[]> {
+    return GroupModel.getRecentGroups(args.limits)
+  },
+
+  popularGroups(_: unknown, args: { limits: number }): Promise<Group[]> {
+    return GroupModel.getPopularGroups(args.limits)
+  },
+
+  allowedToModifyGroup(
     _: unknown,
     args: { id: string },
     context: Context
-  ): Promise<Group | void> {
+  ): Promise<boolean> {
     const { user } = context
-    return GroupModel.byID(args.id)
+    return GroupModel.allowedToModify(args.id, user.sub)
+  },
+
+  async groupMembers(
+    _: unknown,
+    args: { id: string },
+    context: Context
+  ): Promise<boolean> {
+    const { user } = context
+    // only reveal the members list to other members
+    const canEdit = await GroupModel.allowedToModify(args.id, user.sub)
+    if (canEdit) {
+      return GroupModel.getGroupMembers(args.id)
+    } else {
+      throw new Error('Unauthorized')
+    }
   }
 }

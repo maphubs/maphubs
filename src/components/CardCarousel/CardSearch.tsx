@@ -131,7 +131,6 @@ const CardSearch = ({ cardType }: Props): JSX.Element => {
                 <CardCollection
                   title={t('Search Results')}
                   cards={searchCards}
-                  t={t}
                 />
               </>
             )}

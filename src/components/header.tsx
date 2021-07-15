@@ -16,8 +16,8 @@ type Link = {
   href: string
   label: LocalizedString
 }
-type Props = {
-  activePage?: string
+
+export type HeaderConfig = {
   logoLinkUrl?: string
   showSearch?: boolean
   showHelp?: boolean
@@ -25,7 +25,6 @@ type Props = {
   customHelpLink?: string
   showMakeAMap?: boolean
   showExplore?: boolean
-  showOSM?: boolean
   showAdd?: boolean
   customLinks?: Array<Link>
   theme?: {
@@ -33,6 +32,9 @@ type Props = {
     fontColor?: string
   }
 }
+type Props = {
+  activePage?: string
+} & HeaderConfig
 
 const MapHubsHeader = ({
   customHelpLink,
@@ -266,7 +268,6 @@ MapHubsHeader.defaultProps = {
   showHelp: true,
   showMakeAMap: true,
   showExplore: true,
-  showOSM: false,
   showAdd: true,
   customLinks: []
 }

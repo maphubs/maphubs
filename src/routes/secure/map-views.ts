@@ -63,15 +63,10 @@ export default function (app: any) {
       } else {
         // get user id
         const user_id = req.session.user.maphubsUser.id
-        const canAddPrivateLayers = true // TODO: adjust this based on group settings?
 
         const popularLayers = await Layer.getPopularLayers()
         await Layer.attachPermissionsToLayers(popularLayers, user_id)
-        const myLayers = await Layer.getUserLayers(
-          user_id,
-          50,
-          canAddPrivateLayers
-        )
+        const myLayers = await Layer.getUserLayers(user_id, 50)
         await Layer.attachPermissionsToLayers(myLayers, user_id)
         const editLayerId = req.query.editlayer
         let editLayer

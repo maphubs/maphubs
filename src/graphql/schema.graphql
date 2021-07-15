@@ -1,16 +1,115 @@
 scalar JSON
 
 type Group {
+  group_id: ID!
+  name: JSON
+  description: JSON
+}
 
+type Layer {
+  layer_id: ID!
+  shortid: String!
+  name: JSON
+  description: JSON
+  data_type: String
+  remote: Boolean
+  remote_host: String
+  remote_layer_id: String
+  status: String
+  source: JSON
+  license: String
+  presets: JSON
+  is_external: Boolean
+  external_layer_type: String
+  external_layer_config: JSON
+  owned_by_group_id: String
+}
+
+type LayerStats {
+  stats: JSON
+}
+
+type Story {
+  story_id: ID!
+  title: JSON
+  firstimage: String
+  summary: JSON
+  published: Boolean
+  author: JSON
+  owned_by_group_id: String
+  groupname: JSON
+  published_at: String
+}
+
+type Map {
+  map_id: ID!
+  title: JSON
+  position: JSON
+  style: JSON
+  settings: JSON
+  basemap: String
+  created_at: String
+  updated_at: String
+  views: Int
+  owned_by_group_id: String
+  share_id: String
+  has_screenshot: Boolean
+}
+
+type User {
+  id: ID!
+}
+
+type PageConfig {
+  headerConfig: JSON
+  footerConfig: JSON
+  mapConfig: JSON
 }
 
 type Query {
-  # Companies
+  # Groups
   groups(locale: String): [Group] #locale is used to pre-sort alphabetically
-  group(id: String): Group
+  group(id: String!): Group
+  featuredGroups(limits: Int): [Group]
+  recentGroups(limits: Int): [Group]
+  popularGroups(limits: Int): [Group]
+  groupLayers(id: String!, includeMapInfo: Boolean): [Layer]
+  groupMaps(id: String!): [Map]
+  groupStories(id: String!): [Story]
+  allowedToModifyGroup(id: String): Boolean
+  groupMembers(id: String!): [User]
 
+  # Layers
+  layer(id: Int!): Layer
+  layers: [Layer]
+  featuredLayers(limits: Int): [Layer]
+  recentLayers(limits: Int): [Layer]
+  popularLayers(limits: Int): [Layer]
+  layerStats: LayerStats
+  allowedToModifyLayer(id: Int!): Boolean
+  myLayers: [Layer]
+
+  # Stories
+  stories: [Story]
+  story(id: Int!): Story
+  popularStories(limits: Int): [Story]
+  recentStories(limits: Int, tags: [String]): [Story]
+  allowedToModifyStory(id: Int!): Boolean
+
+  # Maps
+  maps: [Map]
+  map(id: Int!): Map
+  featuredMaps(limits: Int): [Map]
+  recentMaps(limits: Int): [Map]
+  popularMaps(limits: Int): [Map]
+  mapLayers(id: Int!): [Layer]
+  allowedToModifyMap(id: Int!): Boolean
+
+  # Users
+  #account: User
+
+  # Other
+  pageConfig: PageConfig
 }
 
-type Mutation {
-
-}
+#type Mutation

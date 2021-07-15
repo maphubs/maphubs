@@ -1,70 +1,62 @@
 import React from 'react'
-import Header from '../src/components/header'
-import Footer from '../src/components/footer'
+import Layout from '../src/components/Layout'
 import { Row, Button, Typography } from 'antd'
 import CardCollection from '../src/components/CardCarousel/CardCollection'
 import CardSearch from '../src/components/CardCarousel/CardSearch'
 import cardUtil from '../src/services/card-util'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import FloatingAddButton from '../src/components/FloatingAddButton'
+import useT from '../src/hooks/useT'
+import useSWR from 'swr'
+import useStickyResult from '../src/hooks/useStickyResult'
+import { Group } from '../src/types/group'
+
 const { Title } = Typography
+
 type Props = {
   featuredGroups: Array<Record<string, any>>
   recentGroups: Array<Record<string, any>>
   popularGroups: Array<Record<string, any>>
-  locale: string
-  _csrf: string
-  footerConfig: Record<string, any>
-  headerConfig: Record<string, any>
-  user: Record<string, any>
 }
-export default class Groups extends React.Component<Props> {
-  static async getInitialProps({
-    req,
-    query
-  }: {
-    req: any
-    query: Record<string, any>
-  }): Promise<any> {
-    const isServer = !!req
-
-    if (isServer) {
-      return query.props
-    } else {
-      console.error('getInitialProps called on client')
+const Groups = () => {
+  const { t } = useT()
+  const { data } = useSWR(`
+  {
+    featuredGroups(limit: 25) {
+      group_id
+      name
+      description
+    }
+    popularGroups(limit: 25) {
+      group_id
+      name
+      description
+    }
+    recentGroups(limit: 25) {
+      group_id
+      name
+      description
     }
   }
+  `)
+  const stickyData: {
+    featuredGroups: Group[]
+    popularGroups: Group[]
+    recentGroups: Group[]
+  } = useStickyResult(data) || {}
+  const { featuredGroups, popularGroups, recentGroups } = stickyData
 
-  static defaultProps:
-    | any
-    | {
-        groups: Array<any>
-      } = {
-    groups: []
-  }
-
-  render(): JSX.Element {
-    const { t, props } = this
-    const {
-      featuredGroups,
-      popularGroups,
-      recentGroups,
-      headerConfig,
-      footerConfig
-    } = props
-    const featuredCards = featuredGroups.map((group) =>
-      cardUtil.getGroupCard(group)
-    )
-    const popularCards = popularGroups.map((group) =>
-      cardUtil.getGroupCard(group)
-    )
-    const recentCards = recentGroups.map((group) =>
-      cardUtil.getGroupCard(group)
-    )
-    return (
-      <ErrorBoundary t={t}>
-        <Header activePage='groups' {...headerConfig} />
-        <main
+  const featuredCards = featuredGroups.map((group) =>
+    cardUtil.getGroupCard(group)
+  )
+  const popularCards = popularGroups.map((group) =>
+    cardUtil.getGroupCard(group)
+  )
+  const recentCards = recentGroups.map((group) => cardUtil.getGroupCard(group))
+  return (
+    <ErrorBoundary t={t}>
+      <Layout title={t('Groups')} activePage='groups'>
+        <div
           style={{
             margin: '10px'
           }}
@@ -86,20 +78,17 @@ export default class Groups extends React.Component<Props> {
                 title={t('Featured')}
                 cards={featuredCards}
                 viewAllLink='/groups/all'
-                t={t}
               />
             )}
             <CardCollection
               title={t('Popular')}
               cards={popularCards}
               viewAllLink='/groups/all'
-              t={t}
             />
             <CardCollection
               title={t('Recent')}
               cards={recentCards}
               viewAllLink='/groups/all'
-              t={t}
             />
 
             <FloatingAddButton
@@ -120,9 +109,9 @@ export default class Groups extends React.Component<Props> {
               {t('View All Groups')}
             </Button>
           </Row>
-        </main>
-        <Footer t={t} {...footerConfig} />
-      </ErrorBoundary>
-    )
-  }
+        </div>
+      </Layout>
+    </ErrorBoundary>
+  )
 }
+export default Groups

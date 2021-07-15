@@ -5,9 +5,10 @@ import { importSchema } from 'graphql-import'
 import jwt from 'next-auth/jwt'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import { NextApiRequest, NextApiResponse } from 'next'
+import local from '../../src/config'
 
 const signingKey = process.env.JWT_SIGNING_PRIVATE_KEY
-const schema = importSchema('./graphql/schema.graphql')
+const schema = importSchema('./src/graphql/schema.graphql')
 const typeDefs = gql`
   ${schema}
 `
@@ -60,10 +61,14 @@ export default async (
         path: '/api/graphql'
       })(req, res)
     } else {
-      res.status(401).send('unauthorized, not an active member')
+      res.status(401).send('unauthorized')
     }
+  } else if (!local.requireLogin) {
+    return apolloServer.createHandler({
+      path: '/api/graphql'
+    })(req, res)
   } else {
     // Not Signed in
-    res.status(401).end('')
+    res.status(401).send('unauthorized')
   }
 }

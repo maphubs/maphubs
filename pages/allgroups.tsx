@@ -1,45 +1,23 @@
 import React from 'react'
-import Header from '../src/components/header'
-import Footer from '../src/components/footer'
+import Layout from '../src/components/Layout'
 import { Row, Typography } from 'antd'
 import CardSearch from '../src/components/CardCarousel/CardSearch'
 import GroupList from '../src/components/Lists/GroupList'
 import type { Group } from '../src/types/group'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import FloatingAddButton from '../src/components/FloatingAddButton'
+import useT from '../src/hooks/useT'
 const { Title } = Typography
 type Props = {
   groups: Group[]
-  locale: string
-  _csrf: string
-  footerConfig: Record<string, any>
-  headerConfig: Record<string, any>
-  user: Record<string, any>
 }
-export default class AllGroups extends React.Component<Props> {
-  static async getInitialProps({
-    req,
-    query
-  }: {
-    req: any
-    query: Record<string, any>
-  }): Promise<any> {
-    const isServer = !!req
 
-    if (isServer) {
-      return query.props
-    } else {
-      console.error('getInitialProps called on client')
-    }
-  }
-
-  render(): JSX.Element {
-    const { t, props } = this
-    const { groups, headerConfig, footerConfig } = props
-    return (
-      <ErrorBoundary t={t}>
-        <Header activePage='groups' {...headerConfig} />
-        <main
+const AllGroups = (): JSX.Element => {
+  const { t } = useT()
+  return (
+    <ErrorBoundary t={t}>
+      <Layout title={t('Groups')} activePage='groups'>
+        <div
           style={{
             margin: '10px'
           }}
@@ -67,9 +45,9 @@ export default class AllGroups extends React.Component<Props> {
             }}
             tooltip={t('Create New Group')}
           />
-        </main>
-        <Footer t={t} {...footerConfig} />
-      </ErrorBoundary>
-    )
-  }
+        </div>
+      </Layout>
+    </ErrorBoundary>
+  )
 }
+export default AllGroups

@@ -21,7 +21,7 @@ const html = ({ url, email }) => {
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td align="center" style="padding: 10px 0px 20px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-        <strong>Palmoil.io Login</strong>
+        <strong>MapHubs Login</strong>
       </td>
     </tr>
   </table>
@@ -56,22 +56,19 @@ const html = ({ url, email }) => {
 }
 
 // Email text body – fallback for email clients that don't render HTML
-const text = ({ url }) => `Login to Palmoil.io\n${url}\n\n`
+const text = ({ url }) => `Login to MapHubs\n${url}\n\n`
 
 const sendVerificationRequest = ({ identifier: email, url, provider }) => {
   return new Promise((resolve, reject) => {
     const { server, from } = provider
     // Strip protocol from URL and use domain as site name
-    const site = 'Palmoil.io'
-    url = url.replace(
-      '/dashboard/api/auth/callback/email',
-      '/dashboard/verify-email'
-    )
+    const site = MAPHUBS_CONFIG.productName
+    url = url.replace('/api/auth/callback/email', '/verify-email')
     nodemailer.createTransport(server).sendMail(
       {
         to: email,
         from,
-        subject: `Login to Palmoil.io`,
+        subject: `Login to ${site}`,
         text: text({
           url
         }),

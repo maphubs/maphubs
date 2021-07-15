@@ -19,7 +19,7 @@ export default NextAuth({
           pass: process.env.EMAIL_SERVER_PASSWORD
         }
       },
-      from: 'Palmoil.io <info@maphubs.com>',
+      from: 'MapHubs <info@maphubs.com>',
       sendVerificationRequest
     })
   ],
@@ -73,7 +73,7 @@ export default NextAuth({
           log.warn('User is not allowed to sign in')
           console.log(user)
         }
-        return isAllowedToSignIn ? true : '/dashboard/membership'
+        return isAllowedToSignIn ? true : '/membership'
         // before email sent to user
       } else {
         // only sent to existing users
@@ -83,7 +83,7 @@ export default NextAuth({
         } else {
           log.warn(`Login attempt for unknown user: ${user.email}`)
         }
-        return isExistingMember ? true : '/dashboard/api/auth/verify-request' // send guessed or non-member emails to the verification page so we won't reveal legit emails
+        return isExistingMember ? true : '/api/auth/verify-request' // send guessed or non-member emails to the verification page so we won't reveal legit emails
       }
     },
 
@@ -123,7 +123,7 @@ export default NextAuth({
     },
 
     async redirect() {
-      return '/dashboard'
+      return '/'
     }
   },
 
@@ -164,11 +164,11 @@ export default NextAuth({
   // The routes shown here are the default URLs that will be used.
   // @link https://next-auth.js.org/configuration/pages
   pages: {
-    signIn: '/dashboard/login',
+    signIn: '/login',
     //signOut: '/api/auth/signout',
-    error: '/dashboard/auth-error', // Error code passed in query string as ?error=
+    error: '/auth-error', // Error code passed in query string as ?error=
     //verifyRequest: '/api/auth/verify-request' // (used for check email message)
-    newUser: '/dashboard/welcome'
+    newUser: '/welcome'
   },
 
   // Additional options

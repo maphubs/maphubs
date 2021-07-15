@@ -4,7 +4,7 @@ import queries from './queries'
 import mutations from './mutations'
 const resolvers = {
   Query: queries,
-  JSON: GraphQLJSON,
-  Mutation: mutations
+  JSON: GraphQLJSON
+  //Mutation: mutations
 }
 export default resolvers

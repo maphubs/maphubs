@@ -348,11 +348,7 @@ export default {
   /**
    * Can include private?: If Requested
    */
-  getGroupLayers(
-    group_id: string,
-    includePrivate = false,
-    includeMapInfo = false
-  ): Promise<Array<Record<string, any>>> {
+  getGroupLayers(group_id: string, includeMapInfo = false): Promise<Layer[]> {
     const query = includeMapInfo
       ? knex
           .select(
@@ -410,19 +406,10 @@ export default {
           .table('omh.layers')
           .orderBy(knex.raw("name -> 'en'"))
 
-    if (includePrivate) {
-      query.where({
-        status: 'published',
-        owned_by_group_id: group_id
-      })
-    } else {
-      query.where({
-        private: false,
-        status: 'published',
-        owned_by_group_id: group_id
-      })
-    }
-
+    query.where({
+      status: 'published',
+      owned_by_group_id: group_id
+    })
     return query
   },
 
@@ -431,8 +418,7 @@ export default {
    */
   getUserLayers(
     user_id: number,
-    number: number,
-    includePrivate = false
+    number: number
   ): Promise<Array<Record<string, any>>> {
     const subquery = knex
       .select()
@@ -477,13 +463,6 @@ export default {
       })
       .orderBy('last_updated', 'desc')
       .limit(number)
-
-    if (!includePrivate) {
-      query.where({
-        private: false,
-        status: 'published'
-      })
-    }
 
     return query
   },

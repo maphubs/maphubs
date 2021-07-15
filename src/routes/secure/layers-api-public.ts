@@ -1,6 +1,5 @@
 import Locales from '../../services/locales'
 import Layer from '../../models/layer'
-import Group from '../../models/group'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import { apiError } from '../../services/error-response'
 
@@ -65,9 +64,7 @@ export default function (app: any) {
         userId = req.session.user.maphubsUser.id
       }
 
-      const includePrivate =
-        userId && (await Group.allowedToModify(groupId, userId))
-      const layers = await Layer.getGroupLayers(groupId, includePrivate, true)
+      const layers = await Layer.getGroupLayers(groupId, true)
 
       if (userId) {
         await Layer.attachPermissionsToLayers(layers, userId)

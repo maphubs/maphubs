@@ -1,55 +1,35 @@
 import React from 'react'
 import { Row, Typography } from 'antd'
-import Header from '../src/components/header'
-import Footer from '../src/components/footer'
+import Layout from '../src/components/Layout'
 import StoryList from '../src/components/Lists/StoryList'
-import type { UserStoreState } from '../src/stores/UserStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import FloatingAddButton from '../src/components/FloatingAddButton'
-const { Title } = Typography
-type Props = {
-  stories: Array<Record<string, any>>
-  locale: string
-  _csrf: string
-  footerConfig: Record<string, any>
-  headerConfig: Record<string, any>
-  user: Record<string, any>
-}
-type State = UserStoreState
-export default class AllStories extends React.Component<Props, State> {
-  static async getInitialProps({
-    req,
-    query
-  }: {
-    req: any
-    query: Record<string, any>
-  }): Promise<any> {
-    const isServer = !!req
+import useT from '../src/hooks/useT'
+import { Story } from '../src/types/story'
+import useSWR from 'swr'
+import useStickyResult from '../src/hooks/useStickyResult'
 
-    if (isServer) {
-      return query.props
-    } else {
-      console.error('getInitialProps called on client')
+const { Title } = Typography
+
+const AllStories = (): JSX.Element => {
+  const { t } = useT()
+  const { data } = useSWR(`
+  {
+    stories {
+      story_id
+      title
     }
   }
-
-  static defaultProps:
-    | any
-    | {
-        stories: Array<any>
-      } = {
-    stories: []
-  }
-  stores: any
-
-  render(): JSX.Element {
-    const { t, props } = this
-    const { stories, headerConfig, footerConfig } = props
-    const hasStories = stories && stories.length > 0
-    return (
-      <ErrorBoundary t={t}>
-        <Header activePage='stories' {...headerConfig} />
-        <main
+  `)
+  const stickyData: {
+    stories: Story[]
+  } = useStickyResult(data) || {}
+  const { stories } = stickyData
+  const hasStories = stories && stories.length > 0
+  return (
+    <ErrorBoundary t={t}>
+      <Layout title={t('Stories')} activePage='stories'>
+        <div
           style={{
             padding: '10px'
           }}
@@ -66,7 +46,7 @@ export default class AllStories extends React.Component<Props, State> {
             {hasStories && (
               <Row>
                 <div className='container'>
-                  <StoryList showTitle={false} stories={stories} t={t} />
+                  <StoryList stories={stories} />
                 </div>
               </Row>
             )}
@@ -88,9 +68,9 @@ export default class AllStories extends React.Component<Props, State> {
             }}
             tooltip={t('Create New Story')}
           />
-        </main>
-        <Footer t={t} {...footerConfig} />
-      </ErrorBoundary>
-    )
-  }
+        </div>
+      </Layout>
+    </ErrorBoundary>
+  )
 }
+export default AllStories

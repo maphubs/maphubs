@@ -5,19 +5,19 @@ import Group from './group'
 import shortid from 'shortid'
 import { LocalizedString } from '../types/LocalizedString'
 import { Knex } from 'knex'
+import { Map, MapPosition } from '../types/map'
+import { Layer } from '../types/layer'
+import mapboxgl from 'mapbox-gl'
 
 const debug = DebugService('models/map')
 
 export default {
-  /**
-   * Can include private?: Yes
-   */
-  async getMap(map_id: number, trx?: Knex.Transaction): Promise<any> {
+  async getMap(map_id: number, trx?: Knex.Transaction): Promise<Map> {
     const db = trx || knex
 
     const result = await db('omh.maps')
       .select(
-        knex.raw(`map_id, title, position, style, settings, basemap, private, created_by,
+        knex.raw(`map_id, title, position, style, settings, basemap, created_by,
       created_at, updated_by, updated_at, views, owned_by_group_id,
       share_id,
      CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`)
@@ -33,19 +33,15 @@ export default {
     return null
   },
 
-  /**
-   * Can include private?: Yes
-   */
   getGroupMaps(
-    owned_by_group_id: number,
-    includePrivate: boolean,
+    owned_by_group_id: string,
     trx?: Knex.Transaction
-  ): any {
+  ): Knex.QueryBuilder {
     const db = trx || knex
 
     const query = db('omh.maps')
       .select(
-        knex.raw(`map_id, title, position, style, basemap, private, created_by,
+        knex.raw(`map_id, title, position, style, basemap, created_by,
       created_at, updated_by, updated_at, views, owned_by_group_id,
      CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`)
       )
@@ -53,23 +49,10 @@ export default {
         owned_by_group_id
       })
 
-    if (!includePrivate) {
-      query.where({
-        private: false
-      })
-    }
-
     return query
   },
 
-  /**
-   * Can include private?: Yes
-   */
-  async getMapLayers(
-    map_id: number,
-    includePrivateLayers: boolean,
-    trx?: Knex.Transaction
-  ): Promise<any> {
+  async getMapLayers(map_id: number, trx?: Knex.Transaction): Promise<Layer[]> {
     const db = trx || knex
     const query = db
       .select(
@@ -116,10 +99,6 @@ export default {
       .where('omh.maps.map_id', map_id)
       .orderBy('position')
 
-    if (!includePrivateLayers) {
-      query.where('omh.layers.private', false)
-    }
-
     const layers = await query
     layers.map((layer) => {
       // repair layer settings if not set
@@ -132,30 +111,17 @@ export default {
     return layers
   },
 
-  async isPrivate(map_id: number): Promise<boolean> {
-    const result = await knex.select('private').from('omh.maps').where({
-      map_id
-    })
-
-    if (result && result.length === 1) {
-      return result[0].private
-    }
-
-    return true // if we don't find the layer, assume it should be private
-  },
-
-  async allowedToModify(map_id: number, user_id: number): Promise<any> {
+  async allowedToModify(map_id: number, user_id: number): Promise<boolean> {
     const map = await this.getMap(map_id)
     return Group.allowedToModify(map.owned_by_group_id, user_id)
   },
 
-  getMapsBaseQuery(trx?: Knex.Transaction): any {
+  getMapsBaseQuery(trx?: Knex.Transaction): Knex.QueryBuilder {
     const db = trx || knex
     return db
       .select(
         'omh.maps.map_id',
         'omh.maps.title',
-        'omh.maps.private',
         'omh.maps.share_id',
         'omh.maps.owned_by_group_id',
         knex.raw("timezone('UTC', omh.maps.updated_at) as updated_at"),
@@ -164,60 +130,38 @@ export default {
       .from('omh.maps')
   },
 
-  /**
-   * Can include private?: No
-   */
-  getAllMaps(trx?: Knex.Transaction): any {
+  getAllMaps(trx?: Knex.Transaction): Knex.QueryBuilder {
     const query = this.getMapsBaseQuery(trx)
-    return query
-      .where('omh.maps.private', false)
-      .whereRaw("omh.maps.title -> 'en' <> '\"\"'")
+    // FIXME: this appears to be an old hack to avoid loading incomplete or broken maps
+    return query.whereRaw("omh.maps.title -> 'en' <> '\"\"'")
   },
 
-  /**
-   * Can include private?: No
-   */
-  getFeaturedMaps(number: number = 10): any {
+  getFeaturedMaps(number = 10): Knex.QueryBuilder {
     const query = this.getMapsBaseQuery()
     return query
       .where('omh.maps.featured', true)
-      .where('omh.maps.private', false)
       .orderBy('omh.maps.updated_at', 'desc')
       .limit(number)
   },
 
-  /**
-   * Can include private?: No
-   */
-  getPopularMaps(number: number = 10): any {
+  getPopularMaps(number = 10): Knex.QueryBuilder {
     const query = this.getMapsBaseQuery()
     return query
-      .where('omh.maps.private', false)
       .whereNotNull('omh.maps.views')
       .orderBy('omh.maps.views', 'desc')
       .limit(number)
   },
 
-  /**
-   * Can include private?: No
-   */
-  getRecentMaps(number: number = 10): any {
+  getRecentMaps(number = 10): Knex.QueryBuilder {
     const query = this.getMapsBaseQuery()
-    return query
-      .where('omh.maps.private', false)
-      .orderBy('omh.maps.updated_at', 'desc')
-      .limit(number)
+    return query.orderBy('omh.maps.updated_at', 'desc').limit(number)
   },
 
-  /**
-   * Can include private?: Yes
-   */
-  getUserMaps(user_id: number): any {
+  getUserMaps(user_id: number): Knex.QueryBuilder {
     return knex
       .select(
         'omh.maps.map_id',
         'omh.maps.title',
-        'omh.maps.private',
         'omh.maps.updated_at',
         'omh.maps.share_id',
         'omh.maps.owned_by_group_id',
@@ -237,10 +181,7 @@ export default {
       })
   },
 
-  /**
-   * Can include private?: No
-   */
-  getSearchSuggestions(input: string): any {
+  getSearchSuggestions(input: string): Knex.QueryBuilder {
     input = input.toLowerCase()
     return knex
       .select('title', 'map_id')
@@ -248,13 +189,10 @@ export default {
       .where(
         knex.raw(
           `
-    private = false
-    AND (
     to_tsvector('english', (title -> 'en')::text) @@ plainto_tsquery(:input)
     OR to_tsvector('spanish', (title -> 'es')::text) @@ plainto_tsquery(:input)
     OR to_tsvector('french', (title -> 'fr')::text) @@ plainto_tsquery(:input)
     OR to_tsvector('italian', (title -> 'it')::text) @@ plainto_tsquery(:input)
-    )
     `,
           {
             input
@@ -264,23 +202,17 @@ export default {
       .orderBy('title')
   },
 
-  /**
-   * Can include private?: No
-   */
-  getSearchResults(input: string): any {
+  getSearchResults(input: string): Knex.QueryBuilder {
     input = input.toLowerCase()
     const query = this.getMapsBaseQuery()
     return query
       .where(
         knex.raw(
           `
-      omh.maps.private = false
-      AND ( 
       to_tsvector('english', (title -> 'en')::text) @@ plainto_tsquery(:input)
       OR to_tsvector('spanish', (title -> 'es')::text) @@ plainto_tsquery(:input)
       OR to_tsvector('french', (title -> 'fr')::text) @@ plainto_tsquery(:input)
       OR to_tsvector('italian', (title -> 'it')::text) @@ plainto_tsquery(:input)
-      )
       `,
           {
             input
@@ -292,25 +224,16 @@ export default {
   },
 
   async createMap(
-    layers: Array<Record<string, any>>,
-    style: any,
+    layers: Layer[],
+    style: mapboxgl.Style,
     basemap: string,
-    position: any,
+    position: MapPosition,
     title: string,
-    settings: Record<string, any>,
+    settings: Record<string, unknown>,
     user_id: number,
-    isPrivate: boolean,
     trx?: Knex.Transaction
-  ): Promise<any> {
+  ): Promise<number> {
     const db = trx || knex
-
-    if (layers?.length > 0 && !isPrivate) {
-      // confirm no private layers
-      for (const layer of layers) {
-        if (layer.private)
-          throw new Error('Private layer not allowed in public map')
-      }
-    }
 
     const result = await db('omh.maps')
       .insert({
@@ -319,7 +242,6 @@ export default {
         basemap,
         title,
         settings,
-        private: isPrivate,
         created_by: user_id,
         created_at: db.raw('now()'),
         updated_by: user_id,
@@ -332,7 +254,8 @@ export default {
     const mapLayers = []
 
     if (layers?.length > 0) {
-      layers.forEach((layer: Record<string, any>, i: number) => {
+      // eslint-disable-next-line unicorn/no-array-for-each
+      layers.forEach((layer: Layer, i: number) => {
         mapLayers.push({
           map_id,
           layer_id: layer.layer_id,
@@ -351,14 +274,13 @@ export default {
 
   /**
    * Create a new map as a copy of the requested map an assign to the requested group
-   * Can include private?: If requested
    */
   async copyMapToGroup(
     map_id: number,
     to_group_id: string,
     user_id: number,
     title?: LocalizedString
-  ): Promise<any> {
+  ): Promise<number> {
     const map = await this.getMap(map_id)
     const layers = await this.getMapLayers(map_id)
     const copyTitle = title || map.title
@@ -372,13 +294,16 @@ export default {
         map.settings,
         user_id,
         to_group_id,
-        map.private,
         trx
       )
     })
   },
 
-  transferMapToGroup(map_id: number, group_id: string, user_id: number): any {
+  transferMapToGroup(
+    map_id: number,
+    group_id: string,
+    user_id: number
+  ): Knex.QueryBuilder {
     return knex('omh.maps')
       .update({
         owned_by_group_id: group_id,
@@ -390,57 +315,16 @@ export default {
       })
   },
 
-  async setPrivate(
-    map_id: string,
-    isPrivate: boolean,
-    user_id: number
-  ): Promise<any> {
-    const map = await this.getMap(map_id)
-
-    if (map.private && !isPrivate) {
-      // private to public
-      const layers = await this.getMapLayers(map_id)
-
-      if (layers?.length > 0) {
-        // confirm no private layers
-        for (const layer of layers) {
-          if (layer.private)
-            throw new Error('Private layer not allowed in public map')
-        }
-      }
-
-      return knex('omh.maps')
-        .where('map_id', map_id)
-        .update({
-          private: isPrivate,
-          updated_by: user_id,
-          updated_at: knex.raw('now()')
-        })
-    } else if (!map.private && isPrivate) {
-      // public to private - just update
-      return knex('omh.maps')
-        .where('map_id', map_id)
-        .update({
-          private: isPrivate,
-          updated_by: user_id,
-          updated_at: knex.raw('now()')
-        })
-    } else {
-      // not changing
-      return null
-    }
-  },
-
   async updateMap(
     map_id: number,
-    layers: Array<Record<string, any>>,
-    style: Record<string, any>,
+    layers: Layer[],
+    style: mapboxgl.Style,
     basemap: string,
-    position: any,
-    title: string,
-    settings: Record<string, any>,
+    position: MapPosition,
+    title: LocalizedString,
+    settings: Record<string, unknown>,
     user_id: number
-  ): Promise<any> {
+  ): Promise<boolean> {
     return knex.transaction(async (trx) => {
       await trx('omh.maps')
         .update({
@@ -483,7 +367,7 @@ export default {
     })
   },
 
-  async deleteMap(map_id: number): Promise<any> {
+  async deleteMap(map_id: number): Promise<boolean> {
     return knex.transaction(async (trx) => {
       await trx('omh.map_views')
         .where({
@@ -516,26 +400,17 @@ export default {
   },
 
   async createGroupMap(
-    layers: Array<Record<string, any>>,
-    style: Record<string, any>,
+    layers: Layer[],
+    style: mapboxgl.Style,
     basemap: string,
-    position: any,
+    position: MapPosition,
     title: string,
-    settings: Record<string, any>,
+    settings: Record<string, unknown>,
     user_id: number,
     group_id: string,
-    isPrivate: boolean,
     trx?: Knex.Transaction
-  ): Promise<any> {
+  ): Promise<number> {
     const db = trx || knex
-
-    if (layers && Array.isArray(layers) && layers.length > 0 && isPrivate) {
-      // confirm all private layers owned by same group
-      for (const layer of layers) {
-        if (layer.owned_by_group_id !== group_id)
-          throw new Error('Private layers must be owned by the same group')
-      }
-    }
 
     const map_id = await this.createMap(
       layers,
@@ -545,7 +420,6 @@ export default {
       title,
       settings,
       user_id,
-      isPrivate,
       db
     )
     debug.log('Saving User Map with ID: ' + map_id)
@@ -562,11 +436,11 @@ export default {
   async getMapByShareId(
     share_id: string,
     trx?: Knex.Transaction
-  ): Promise<any> {
+  ): Promise<Map | null> {
     const db = trx || knex
     const result = await db('omh.maps')
       .select(
-        knex.raw(`map_id, title, position, style, settings, basemap, private, created_by,
+        knex.raw(`map_id, title, position, style, settings, basemap, created_by,
       created_at, updated_by, updated_at, views, owned_by_group_id,
       share_id,
      CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`)
@@ -582,7 +456,10 @@ export default {
     return null
   },
 
-  async addPublicShareID(map_id: number, trx?: Knex.Transaction): Promise<any> {
+  async addPublicShareID(
+    map_id: number,
+    trx?: Knex.Transaction
+  ): Promise<string> {
     const db = trx || knex
     const share_id = shortid.generate()
     await db('omh.maps')
@@ -598,7 +475,7 @@ export default {
   async removePublicShareID(
     map_id: number,
     trx?: Knex.Transaction
-  ): Promise<any> {
+  ): Promise<boolean> {
     const db = trx || knex
     return db('omh.maps')
       .update({

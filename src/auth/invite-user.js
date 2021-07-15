@@ -26,14 +26,14 @@ const html = ({ url, email }) => {
   <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
       <td align="center" style="padding: 10px 0px 20px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-        <strong>Welcome to Palmoil.io</strong>
+        <strong>Welcome to MapHubs</strong>
       </td>
     </tr>
   </table>
   <table width="100%" border="0" cellspacing="20" cellpadding="0" style="background: ${mainBackgroundColor}; max-width: 600px; margin: auto; border-radius: 10px;">
     <tr>
       <td align="center" style="padding: 10px 0px 0px 0px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-        This email <strong>${escapedEmail}</strong> was invited to Palmoil.io. Use your email address each time you login.
+        This email <strong>${escapedEmail}</strong> was invited to MapHubs. Use your email address each time you login.
       </td>
     </tr>
     <tr>
@@ -74,7 +74,7 @@ const provider = Providers.Email({
       pass: process.env.EMAIL_SERVER_PASSWORD
     }
   },
-  from: 'Palmoil.io <info@maphubs.com>',
+  from: 'MapHubs <info@maphubs.com>',
   maxAge: 24 * 60 * 60 * 60,
   // 24 hours/day * 60 minutes/hour * 60 seconds/minute * 60 days =  60 days in seconds
   sendVerificationRequest: ({
@@ -87,11 +87,8 @@ const provider = Providers.Email({
     return new Promise((resolve, reject) => {
       const { server, from } = provider
       // Strip protocol from URL and use domain as site name
-      const site = 'Palmoil.io'
-      url = url.replace(
-        '/dashboard/api/auth/callback/email',
-        '/dashboard/verify-email'
-      )
+      const site = MAPHUBS_CONFIG.productName
+      url = url.replace('/api/auth/callback/email', '/verify-email')
       nodemailer.createTransport(server).sendMail(
         {
           to: email,
@@ -172,7 +169,7 @@ const inviteUser = async (email, name) => {
       provider.id
     )}?email=${encodeURIComponent(email)}&token=${encodeURIComponent(
       token
-    )}&callbackUrl=${encodeURIComponent(`${baseUrl}/dashboard`)}`
+    )}&callbackUrl=${encodeURIComponent(`${baseUrl}`)}`
     return createVerificationRequest(email, url, token, secret, provider)
   }
 }

@@ -4,8 +4,8 @@ const debug = DebugService('model/stats')
 
 export default {
   async getLayerStats(layer_id: number): Promise<{
-    maps: void
-    stories: void
+    maps: number
+    stories: number
     viewsByDay: any
   }> {
     let maps

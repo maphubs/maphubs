@@ -132,9 +132,7 @@ export default function (app: any) {
               layer,
               notes,
               stats: await Stats.getLayerStats(layer_id),
-              canEdit: await Layer.allowedToModify(layer_id, user_id),
-              createdByUser: await User.getUser(layer.created_by_user_id),
-              updatedByUser: await User.getUser(layer.updated_by_user_id)
+              canEdit: await Layer.allowedToModify(layer_id, user_id)
             },
             talkComments: true,
             twitterCard: {

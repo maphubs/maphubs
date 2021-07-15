@@ -1,25 +1,24 @@
 import React from 'react'
 import getConfig from 'next/config'
 import { Row, Col } from 'antd'
+import useT from '../hooks/useT'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
-type Props = {
+export type FooterConfig = {
   copyrightText?: string
   showPoweredByMapHubs?: boolean
-  showMapForEnvironmentMoabiLogo?: boolean
   showContactUs?: boolean
   customLeftColumnItems?: Array<string>
   links?: Array<Record<string, any>>
-  t: any
 }
+type Props = FooterConfig
 const Footer = ({
-  showMapForEnvironmentMoabiLogo,
   copyrightText,
   showPoweredByMapHubs,
   showContactUs,
   links,
-  customLeftColumnItems,
-  t
+  customLeftColumnItems
 }: Props): JSX.Element => {
+  const { t } = useT()
   return (
     <footer className='page-footer'>
       <div className='container'>
@@ -31,40 +30,6 @@ const Footer = ({
           }}
         >
           <Col sm={24} lg={12}>
-            {showMapForEnvironmentMoabiLogo && (
-              <ul
-                style={{
-                  marginTop: '0px'
-                }}
-              >
-                <li className='valign-wrapper'>
-                  <a
-                    href='http://moabi.org'
-                    className='valign page-footer no-padding'
-                    style={{
-                      float: 'left',
-                      paddingRight: '5px'
-                    }}
-                  >
-                    <img
-                      width='75'
-                      height='75'
-                      style={{
-                        marginLeft: '-10px'
-                      }}
-                      src='https://hpvhe47439ygwrt.belugacdn.link/maphubs/assets/moabi-logo.png'
-                      alt='Moabi.org'
-                    />
-                  </a>
-                  <span className='valign'>
-                    {MAPHUBS_CONFIG.productName +
-                      t(
-                        ' is a non-profit initiative of the Moabi organization'
-                      )}
-                  </span>
-                </li>
-              </ul>
-            )}
             {showPoweredByMapHubs && (
               <ul>
                 <li className='valign-wrapper'>
@@ -165,7 +130,6 @@ const Footer = ({
 
 Footer.defaultProps = {
   showPoweredByMapHubs: true,
-  showMapForEnvironmentMoabiLogo: false,
   showContactUs: true,
   customLeftColumnItems: []
 }

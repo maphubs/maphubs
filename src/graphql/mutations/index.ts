@@ -1,5 +1,3 @@
-import groups from './groups'
-
 const mutations = {}
-Object.assign(mutations, groups)
+Object.assign(mutations)
 export default mutations

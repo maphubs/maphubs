@@ -7,6 +7,9 @@ import { Provider as NextAuthProvider } from 'next-auth/client'
 import { Provider } from 'react-redux'
 import { useStore } from '../src/redux/store'
 
+//SWR
+import SWRConfig from '../src/components/SWRConfig'
+
 import '../src/maphubs.scss'
 
 const MapHubs = ({ Component, pageProps, err }: any): JSX.Element => {
@@ -25,7 +28,9 @@ const MapHubs = ({ Component, pageProps, err }: any): JSX.Element => {
         }}
       >
         <Provider store={store}>
-          <Component {...pageProps} err={err} />
+          <SWRConfig>
+            <Component {...pageProps} err={err} />
+          </SWRConfig>
         </Provider>
       </NextAuthProvider>
     </>

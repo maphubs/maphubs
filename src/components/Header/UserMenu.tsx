@@ -3,7 +3,7 @@ import useT from '../../hooks/useT'
 import { Menu, Dropdown, Divider, Button } from 'antd'
 import UserIcon from '../user/UserIcon'
 import urlencode from 'urlencode'
-
+import { signin, signout } from 'next-auth/client'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
