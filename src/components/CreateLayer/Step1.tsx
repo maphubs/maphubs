@@ -3,8 +3,6 @@ import { message, notification, Row } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import CreateLayer from './CreateLayer'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 
 type Props = {
   onSubmit: () => void
@@ -13,14 +11,12 @@ type Props = {
 
 const Step1 = ({ onSubmit, mapConfig }: Props): JSX.Element => {
   const { t } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
+
   const [warnIfUnsaved, setWarnIfUnsaved] = useState(false)
 
   const onCancel = (): void => {
     // delete the layer
-    LayerActions.cancelLayer(_csrf, (err) => {
+    LayerActions.cancelLayer((err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),

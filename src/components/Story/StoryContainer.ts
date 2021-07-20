@@ -14,7 +14,6 @@ export type Story = {
 }
 type StoryContainerState = {
   modified?: boolean
-  _csrf: string
   canChangeGroup: boolean
 } & Story
 export default class StoryContainer extends Container<StoryContainerState> {
@@ -107,8 +106,7 @@ export default class StoryContainer extends Container<StoryContainerState> {
       summary,
       published,
       published_at,
-      tags,
-      _csrf
+      tags
     } = this.state
     return request.post('/api/story/save').type('json').accept('json').send({
       story_id,
@@ -120,14 +118,12 @@ export default class StoryContainer extends Container<StoryContainerState> {
       published,
       published_at,
       tags,
-      firstimage,
-      _csrf
+      firstimage
     })
   }
   delete: () => Promise<any> = async () => {
     return request.post('/api/story/delete').type('json').accept('json').send({
-      story_id: this.state.story_id,
-      _csrf: this.state._csrf
+      story_id: this.state.story_id
     })
   }
 }

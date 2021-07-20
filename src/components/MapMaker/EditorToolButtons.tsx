@@ -3,10 +3,7 @@ import { Subscribe } from 'unstated'
 import { Modal, message, notification } from 'antd'
 import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapToolButton from '../Map/MapToolButton'
-
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 
 const { confirm } = Modal
 type Props = {
@@ -19,13 +16,10 @@ const EditorToolButtons = ({
   onFeatureUpdate
 }: Props): JSX.Element => {
   const { t } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
 
   const saveEdits = async (DataEditor: Record<string, any>): Promise<void> => {
     const closeMessage = message.loading(t('Saving'), 0)
-    await DataEditor.saveEdits(_csrf, (err) => {
+    await DataEditor.saveEdits((err) => {
       closeMessage()
 
       if (err) {

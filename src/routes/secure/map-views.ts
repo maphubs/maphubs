@@ -1,9 +1,7 @@
 import Locales from '../../services/locales'
-import User from '../../models/user'
 import Map from '../../models/map'
 import Layer from '../../models/layer'
 import Group from '../../models/group'
-import Stats from '../../models/stats'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import MapUtils from '../../services/map-utils'
 import { nextError, apiDataError } from '../../services/error-response'
@@ -18,27 +16,6 @@ const csrfProtection = csurf({
 const debug = DebugService('routes/map')
 
 export default function (app: any) {
-  const recordMapView = function (
-    session: Record<string, any>,
-    map_id: number,
-    user_id: number,
-    next: any
-  ) {
-    if (!session.mapviews) {
-      session.mapviews = {}
-    }
-
-    if (!session.mapviews[map_id]) {
-      session.mapviews[map_id] = 1
-      Stats.addMapView(map_id, user_id).catch(nextError(next))
-    } else {
-      const views = session.mapviews[map_id]
-      session.mapviews[map_id] = views + 1
-    }
-
-    session.views = (session.views || 0) + 1
-  }
-
   app.get('/map/new', csrfProtection, async (req, res, next) => {
     try {
       if (
@@ -102,106 +79,7 @@ export default function (app: any) {
       nextError(next)(err)
     }
   })
-  app.get('/maps', csrfProtection, async (req, res, next) => {
-    try {
-      return app.next.render(
-        req,
-        res,
-        '/maps',
-        await pageOptions(req, {
-          title: req.__('Maps') + ' - ' + local.productName,
-          props: {
-            featuredMaps: await Map.getFeaturedMaps(),
-            recentMaps: await Map.getRecentMaps(),
-            popularMaps: await Map.getPopularMaps()
-          }
-        })
-      )
-    } catch (err) {
-      nextError(next)(err)
-    }
-  })
-  app.get('/maps/all', csrfProtection, async (req, res, next) => {
-    try {
-      const locale = req.locale ? req.locale : 'en'
-      const maps = await Map.getAllMaps().orderByRaw(
-        `lower((omh.maps.title -> '${locale}')::text)`
-      )
-      const groups = await Group.getAllGroups().orderByRaw(
-        `lower((omh.groups.name -> '${locale}')::text)`
-      )
-      return app.next.render(
-        req,
-        res,
-        '/allmaps',
-        await pageOptions(req, {
-          title: req.__('Maps') + ' - ' + local.productName,
-          props: {
-            maps,
-            groups
-          }
-        })
-      )
-    } catch (err) {
-      nextError(next)(err)
-    }
-  })
-  app.get('/user/:username/maps', csrfProtection, async (req, res, next) => {
-    try {
-      const username = req.params.username
-      debug.log(username)
 
-      if (!username) {
-        apiDataError(res)
-      }
-
-      let myMaps = false
-
-      const completeRequest = async function () {
-        const user = await User.getUserByName(username)
-
-        if (user) {
-          const maps = await Map.getUserMaps(user.id)
-          return app.next.render(
-            req,
-            res,
-            '/usermaps',
-            await pageOptions(req, {
-              title: 'Maps - ' + username,
-              props: {
-                user,
-                maps,
-                myMaps
-              }
-            })
-          )
-        } else {
-          return res.redirect('/notfound?path=' + req.path)
-        }
-      }
-
-      if (
-        !req.isAuthenticated ||
-        !req.isAuthenticated() ||
-        !req.session ||
-        !req.session.user
-      ) {
-        completeRequest()
-      } else {
-        const user_id = req.session.user.maphubsUser.id
-        const user = await User.getUser(user_id)
-
-        // flag if requested user is logged in user
-        if (user.display_name === username) {
-          myMaps = true
-        }
-
-        completeRequest()
-      }
-    } catch (err) {
-      nextError(next)(err)
-    }
-  })
   app.get('/map/view/:map_id/*', csrfProtection, (req, res, next) => {
     const map_id = req.params.map_id
 
@@ -214,8 +92,6 @@ export default function (app: any) {
     if (req.session.user) {
       user_id = req.session.user.maphubsUser.id
     }
-
-    recordMapView(req.session, map_id, user_id, next)
 
     if (
       !req.isAuthenticated ||
@@ -328,8 +204,6 @@ export default function (app: any) {
       user_id = req.session.user.maphubsUser.id
     }
 
-    recordMapView(req.session, map_id, user_id, next)
-
     if (
       !req.isAuthenticated ||
       !req.isAuthenticated() ||
@@ -377,8 +251,6 @@ export default function (app: any) {
     if (req.session.user) {
       user_id = req.session.user.maphubsUser.id
     }
-
-    recordMapView(req.session, map_id, user_id, next)
 
     if (
       !req.isAuthenticated ||
@@ -430,8 +302,6 @@ export default function (app: any) {
       if (req.session.user) {
         user_id = req.session.user.maphubsUser.id
       }
-
-      recordMapView(req.session, map_id, user_id, next)
 
       if (
         !req.isAuthenticated ||

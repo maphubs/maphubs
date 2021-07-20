@@ -7,7 +7,6 @@ import { Element, scroller } from 'react-scroll'
 import type { FeatureCollection } from 'geojson'
 import useT from '../../hooks/useT'
 import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -23,9 +22,7 @@ const UploadLayerReplacement = ({
   const [canSubmit, setCanSubmit] = useState(false)
   const [geoJSON, setGeoJSON] = useState<FeatureCollection>()
   const { t, locale } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
+
   const layer_id = useSelector((state: { layer: any }) => state.layer.layer_id)
 
   useEffect(() => {
@@ -33,7 +30,7 @@ const UploadLayerReplacement = ({
   }, [])
 
   const submit = (): void => {
-    LayerActions.submitPresets(false, _csrf, (err) => {
+    LayerActions.submitPresets(false, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),
@@ -41,7 +38,7 @@ const UploadLayerReplacement = ({
           duration: 0
         })
       } else {
-        LayerActions.replaceData(_csrf, (err) => {
+        LayerActions.replaceData((err) => {
           if (err) {
             notification.error({
               message: t('Server Error'),

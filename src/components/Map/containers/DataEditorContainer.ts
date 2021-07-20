@@ -212,7 +212,7 @@ export default class DataEditorContainer extends Container<DataEditorState> {
   /**
    * Save all edits to the server and reset current edits
    */
-  saveEdits(_csrf: string, cb: (...args: Array<any>) => any): void {
+  saveEdits(cb: (...args: Array<any>) => any): void {
     console.log('saving edits')
     //console.log(this.state.edits)
     const { state, setState } = this
@@ -242,8 +242,7 @@ export default class DataEditorContainer extends Container<DataEditorState> {
         .accept('json')
         .send({
           layer_id,
-          edits: editsToSave,
-          _csrf
+          edits: editsToSave
         })
         .end((err, res) => {
           checkClientError(res, err, cb, (cb) => {

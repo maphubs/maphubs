@@ -1,9 +1,7 @@
 import LayerModel from '../../models/layer'
 import StatsModel from '../../models/stats'
-import GroupModel from '../../models/group'
 import { Layer } from '../../types/layer'
 import { Context } from '../../types/graphqlContext'
-import stories from './stories'
 
 export default {
   layers(): Promise<Layer[]> {
@@ -22,15 +20,38 @@ export default {
     return LayerModel.getRecentLayers(args.limits)
   },
 
-  popularLayers(_: unknown, args: { limits: number }): Promise<Layer[]> {
-    return LayerModel.getPopularLayers(args.limits)
+  async popularLayers(
+    _: unknown,
+    args: { limits: number; attachPermissions?: boolean },
+    context: Context
+  ): Promise<Layer[]> {
+    const { user } = context
+    let layers = await LayerModel.getPopularLayers(args.limits)
+    if (args.attachPermissions) {
+      layers = await LayerModel.attachPermissionsToLayers(layers, user.sub)
+    }
+    return layers
+  },
+
+  async myLayers(
+    _: unknown,
+    args: { limits: number },
+    context: Context
+  ): Promise<Layer[]> {
+    const { user } = context
+    const layers = await LayerModel.getUserLayers(user.sub, args.limits)
+    return LayerModel.attachPermissionsToLayers(layers, user.sub)
   },
 
   layerStats(
     _: unknown,
     args: { id: number }
-  ): Promise<{ maps: number; stories: number; viewsByDay: any }> {
+  ): Promise<{ maps: number; stories: number }> {
     return StatsModel.getLayerStats(args.id)
+  },
+
+  layerNotes(_: unknown, args: { id: number }): Promise<{ notes: string }> {
+    return LayerModel.getLayerNotes(args.id)
   },
 
   allowedToModifyLayer(

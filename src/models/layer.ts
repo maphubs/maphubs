@@ -136,6 +136,14 @@ export default {
    * Can include private?: No
    */
   async getPopularLayers(number = 15): Promise<Layer[]> {
+    // TODO switch to a count of map usage since we are removing view tracking
+    /*
+    const mapsResult = await knex('omh.map_layers')
+      .select('layer_id', knex.raw('count(map_id) as mapCount'))
+      .where({
+        layer_id
+      })
+      */
     return knex
       .select(
         'layer_id',
@@ -161,12 +169,10 @@ export default {
         'extent_bbox',
         'preview_position',
         'owned_by_group_id',
-        knex.raw("timezone('UTC', last_updated) as last_updated"),
-        'views'
+        knex.raw("timezone('UTC', last_updated) as last_updated")
       )
       .table('omh.layers')
       .where({
-        private: false,
         status: 'published'
       })
       .whereNotNull('omh.layers.views')
@@ -416,10 +422,7 @@ export default {
   /**
    * Can include private?: If Requested
    */
-  getUserLayers(
-    user_id: number,
-    number: number
-  ): Promise<Array<Record<string, any>>> {
+  getUserLayers(user_id: number, number: number): Promise<Layer[]> {
     const subquery = knex
       .select()
       .distinct('group_id')
@@ -719,9 +722,9 @@ export default {
   },
 
   async attachPermissionsToLayers(
-    layers: Array<Record<string, any>>,
+    layers: Layer[],
     user_id: number
-  ): Promise<any> {
+  ): Promise<Layer[]> {
     return Promise.all(
       layers.map(async (layer) => {
         const allowed = await this.allowedToModify(layer.layer_id, user_id)
@@ -936,7 +939,7 @@ export default {
       })
       .del()
     // rebuild map styles
-    // eslint-disable-next-line unicorn/no-array-callback-reference
+    // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
     return Bluebird.map(maps, async (map) => {
       const map_id = map.map_id
       debug.log('removing layer: ' + layer_id + ' from map: ' + map_id)

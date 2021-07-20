@@ -1,11 +1,9 @@
 export type LocaleState = {
   locale?: string
-  _csrf?: string
 }
 
 const initialLocaleState = {
-  locale: 'en',
-  _csrf: null
+  locale: 'en'
 }
 
 const locale = (

@@ -6,8 +6,6 @@ import TextInput from '../forms/textInput'
 import LayerActions from '../../actions/LayerActions'
 import Radio from '../forms/radio'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 
 type Props = {
   onSubmit: (...args: Array<any>) => any
@@ -24,9 +22,7 @@ const GeoJSONUrlSource = ({
 }): JSX.Element => {
   const [canSubmit, setCanSubmit] = useState(false)
   const { t } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
+
   addValidationRule('isHttps', (values, value) => {
     return value ? value.startsWith('https://') : false
   })
@@ -43,7 +39,6 @@ const GeoJSONUrlSource = ({
           data: model.geojsonUrl
         }
       },
-      _csrf,
       (err) => {
         if (err) {
           notification.error({

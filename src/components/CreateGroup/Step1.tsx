@@ -29,9 +29,6 @@ const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
   const [groupIdAvailable, setGroupIdAvailable] = useState(false)
 
   const created = useSelector((state: { group: any }) => state.group.created)
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
 
   addValidationRule('isAvailable', (values: string[], value: string) => {
     if (created) return true
@@ -95,7 +92,6 @@ const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
         model.description,
         model.location,
         model.published,
-        _csrf,
         (err) => {
           if (err) {
             notification.error({
@@ -115,7 +111,6 @@ const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
         model.description,
         model.location,
         model.published,
-        _csrf,
         (err) => {
           if (err) {
             notification.error({
@@ -132,7 +127,7 @@ const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
   }
   const handleCancel = (): void => {
     if (created) {
-      GroupActions.deleteGroup(_csrf, (err) => {
+      GroupActions.deleteGroup((err) => {
         if (err) {
           notification.error({
             message: t('Server Error'),

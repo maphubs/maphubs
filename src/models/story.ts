@@ -80,14 +80,6 @@ export default {
     return query.orderBy('omh.stories.published_at', 'desc').limit(number || 10)
   },
 
-  async getPopularStories(number = 10): Promise<Story[]> {
-    const query = this.getStoriesBaseQuery()
-    return query
-      .where('omh.stories.published', true)
-      .orderBy('omh.stories.views', 'desc')
-      .limit(number)
-  },
-
   async getFeaturedStories(number = 10): Promise<Story[]> {
     const query = this.getStoriesBaseQuery()
     return query

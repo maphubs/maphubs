@@ -72,7 +72,6 @@ export default class GroupStore extends Reflux.Store {
     description: string,
     location: string,
     published: boolean,
-    _csrf: string,
     cb: (...args: Array<any>) => any
   ): void {
     debug.log('create group')
@@ -88,8 +87,7 @@ export default class GroupStore extends Reflux.Store {
         name,
         description,
         location,
-        published,
-        _csrf
+        published
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -119,8 +117,7 @@ export default class GroupStore extends Reflux.Store {
     name: string,
     description: string,
     location: string,
-    published: boolean,
-    _csrf: string,
+    published: boolean
     cb: (...args: Array<any>) => any
   ): void {
     debug.log('update group')
@@ -136,8 +133,7 @@ export default class GroupStore extends Reflux.Store {
         name,
         description,
         location,
-        published,
-        _csrf
+        published
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -161,15 +157,14 @@ export default class GroupStore extends Reflux.Store {
       })
   }
 
-  deleteGroup(_csrf: string, cb: (...args: Array<any>) => any): void {
+  deleteGroup(cb: (...args: Array<any>) => any): void {
     debug.log('delete group')
     request
       .post('/api/group/delete')
       .type('json')
       .accept('json')
       .send({
-        group_id: this.state.group.group_id,
-        _csrf
+        group_id: this.state.group.group_id
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -181,7 +176,6 @@ export default class GroupStore extends Reflux.Store {
 
   setGroupImage(
     data: Record<string, any>,
-    _csrf: string,
     cb: (...args: Array<any>) => any
   ): void {
     debug.log('set group image')
@@ -194,8 +188,7 @@ export default class GroupStore extends Reflux.Store {
       .accept('json')
       .send({
         group_id: this.state.group.group_id,
-        image: data,
-        _csrf
+        image: data
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -216,7 +209,6 @@ export default class GroupStore extends Reflux.Store {
   addMember(
     display_name: string,
     asAdmin: boolean,
-    _csrf: string,
     cb: (...args: Array<any>) => any
   ): void {
     debug.log('add member')
@@ -230,19 +222,17 @@ export default class GroupStore extends Reflux.Store {
       .send({
         group_id: this.state.group.group_id,
         display_name,
-        asAdmin,
-        _csrf
+        asAdmin
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
-          _this.reloadMembers(_csrf, cb)
+          _this.reloadMembers(cb)
         })
       })
   }
 
   removeMember(
     user_id: number,
-    _csrf: string,
     cb: (...args: Array<any>) => any
   ): void {
     debug.log('remove member')
@@ -255,19 +245,17 @@ export default class GroupStore extends Reflux.Store {
       .accept('json')
       .send({
         group_id: this.state.group.group_id,
-        user_id,
-        _csrf
+        user_id
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
-          _this.reloadMembers(_csrf, cb)
+          _this.reloadMembers(cb)
         })
       })
   }
 
   setMemberAdmin(
     user_id: number,
-    _csrf: string,
     cb: (...args: Array<any>) => any
   ): void {
     debug.log('set member admin')
@@ -281,19 +269,17 @@ export default class GroupStore extends Reflux.Store {
       .send({
         group_id: this.state.group.group_id,
         user_id,
-        role: 'Administrator',
-        _csrf
+        role: 'Administrator'
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
-          _this.reloadMembers(_csrf, cb)
+          _this.reloadMembers(cb)
         })
       })
   }
 
   removeMemberAdmin(
     user_id: number,
-    _csrf: string,
     cb: (...args: Array<any>) => any
   ): void {
     debug.log('remove member admin')
@@ -307,17 +293,16 @@ export default class GroupStore extends Reflux.Store {
       .send({
         group_id: this.state.group.group_id,
         user_id,
-        role: 'Member',
-        _csrf
+        role: 'Member'
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
-          _this.reloadMembers(_csrf, cb)
+          _this.reloadMembers(cb)
         })
       })
   }
 
-  reloadMembers(_csrf: string, cb: (...args: Array<any>) => any): void {
+  reloadMembers(cb: (...args: Array<any>) => any): void {
     debug.log('reload members')
 
     const { state, loadMembers } = this
@@ -328,7 +313,6 @@ export default class GroupStore extends Reflux.Store {
       .type('json')
       .accept('json')
       .send({
-        _csrf
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {

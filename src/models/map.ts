@@ -144,14 +144,6 @@ export default {
       .limit(number)
   },
 
-  getPopularMaps(number = 10): Knex.QueryBuilder {
-    const query = this.getMapsBaseQuery()
-    return query
-      .whereNotNull('omh.maps.views')
-      .orderBy('omh.maps.views', 'desc')
-      .limit(number)
-  },
-
   getRecentMaps(number = 10): Knex.QueryBuilder {
     const query = this.getMapsBaseQuery()
     return query.orderBy('omh.maps.updated_at', 'desc').limit(number)

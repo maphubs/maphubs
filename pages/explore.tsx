@@ -1,6 +1,5 @@
-import React from 'react'
-import Header from '../src/components/header'
-import Footer from '../src/components/footer'
+import React, { useState } from 'react'
+import Layout from '../src/components/Layout'
 import SearchBox from '../src/components/SearchBox'
 import CardCarousel from '../src/components/CardCarousel/CardCarousel'
 import _shuffle from 'lodash.shuffle'
@@ -10,198 +9,154 @@ import ErrorBoundary from '../src/components/ErrorBoundary'
 import getConfig from 'next/config'
 import { Row, Col, Button, Divider, Typography } from 'antd'
 import { Layer } from '../src/types/layer'
+import useT from '../src/hooks/useT'
+import useSWR from 'swr'
+import useStickyResult from '../src/hooks/useStickyResult'
+import { Story } from '../src/types/story'
+import { Map } from '../src/types/map'
+import { Group } from '../src/types/group'
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
 
-type Props = {
-  featuredLayers: Layer[]
-  featuredGroups: Array<Record<string, any>>
-  featuredMaps: Array<Record<string, any>>
-  featuredStories: Array<Record<string, any>>
-  popularLayers: Layer[]
-  popularGroups: Array<Record<string, any>>
-  popularMaps: Array<Record<string, any>>
-  popularStories: Array<Record<string, any>>
-  recentLayers: Layer[]
-  recentGroups: Array<Record<string, any>>
-  recentMaps: Array<Record<string, any>>
-  recentStories: Array<Record<string, any>>
-  locale: string
-  _csrf: string
-  footerConfig: Record<string, any>
-  headerConfig: Record<string, any>
-  user: Record<string, any>
-}
-type State = {
-  storyMode: string
-  mapMode: string
-  groupMode: string
-  layerMode: string
-}
-export default class Home extends React.Component<Props, State> {
-  static async getInitialProps({
-    req,
-    query
-  }: {
-    req: any
-    query: Record<string, any>
-  }): Promise<any> {
-    const isServer = !!req
+const Explore = (): JSX.Element => {
+  const { t } = useT()
 
-    if (isServer) {
-      return query.props
-    } else {
-      console.error('getInitialProps called on client')
+  const { data } = useSWR(`
+  {
+    featuredLayers(limit: 25) {
+      layer_id
+      shortid
+      name
+      description
+      source
+    }
+    recentLayers(limit: 25) {
+      layer_id
+      shortid
+      name
+      description
+      source
+    }
+    popularLayers(limit: 25) {
+      layer_id
+      shortid
+      name
+      description
+      source
+    }
+    recentStories(limit: 25) {
+      story_id
+      title
+      firstimage
+      summary
+      author
+      owned_by_group_id
+      groupname
+      published
+      published_at
+    }
+    featuredStories(limit: 25) {
+      story_id
+      title
+      firstimage
+      summary
+      author
+      owned_by_group_id
+      groupname
+      published
+      published_at
+    }
+    featuredMaps(limit: 25) {
+      map_id
+      title
+      share_id
+      owned_by_group_id
+    }
+    recentMaps(limit: 25) {
+      map_id
+      title
+      share_id
+      owned_by_group_id
+    }
+    featuredGroups(limit: 25) {
+      group_id
+      name
+      description
+    }
+    recentGroups(limit: 25) {
+      group_id
+      name
+      description
+    }
+  }
+  `)
+  const stickyData: {
+    featuredStories: Story[]
+    recentStories: Story[]
+    featuredMaps: Map[]
+    recentMaps: Map[]
+    featuredLayers: Layer[]
+    recentLayers: Layer[]
+    popularLayers: Layer[]
+    featuredGroups: Group[]
+    recentGroups: Group[]
+  } = useStickyResult(data) || {}
+  const {
+    featuredStories,
+    recentStories,
+    featuredMaps,
+    recentMaps,
+    featuredLayers,
+    recentLayers,
+    popularLayers,
+    featuredGroups,
+    recentGroups
+  } = stickyData
+
+  const defaultMode = 'recent'
+  const [storyMode, setStoryMode] = useState(defaultMode)
+  const [mapMode, setMapMode] = useState(defaultMode)
+  const [groupMode, setGroupMode] = useState(defaultMode)
+  const [layerMode, setLayerMode] = useState(defaultMode)
+
+  const dataMap = {
+    stories: {
+      featured: featuredStories,
+      recent: recentStories
+    },
+    maps: {
+      featured: featuredMaps,
+      recent: recentMaps
+    },
+    groups: {
+      featured: featuredGroups,
+      recent: recentGroups
+    },
+    layers: {
+      featured: featuredLayers,
+      popular: popularLayers,
+      recent: recentLayers
     }
   }
 
-  constructor(props: Props) {
-    super(props)
+  const storyCards = _shuffle(
+    dataMap.stories[storyMode].map((s) => cardUtil.getStoryCard(s, t))
+  )
+  const mapCards = _shuffle(
+    dataMap.maps[mapMode].map((m) => cardUtil.getMapCard(m))
+  )
+  const groupCards = _shuffle(
+    dataMap.groups[groupMode].map((g) => cardUtil.getGroupCard(g))
+  )
+  const layerCards = _shuffle(
+    dataMap.layers[layerMode].map((l) => cardUtil.getLayerCard(l))
+  )
 
-    this.state = {
-      storyMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
-      mapMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
-      groupMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured',
-      layerMode: MAPHUBS_CONFIG.mapHubsPro ? 'popular' : 'featured'
-    }
-  }
-
-  handleSearch = (input: string): void => {
-    window.location.assign('/search?q=' + input)
-  }
-
-  render(): JSX.Element {
-    const { t, props, state, handleSearch, setState } = this
-
-    const {
-      headerConfig,
-      featuredStories,
-      popularStories,
-      recentMaps,
-      featuredMaps,
-      popularMaps,
-      featuredGroups,
-      popularGroups,
-      recentGroups,
-      featuredLayers,
-      popularLayers,
-      recentLayers,
-      footerConfig
-    } = props
-    const { storyMode, mapMode, groupMode, layerMode } = state
-    let storyCards = []
-
-    switch (storyMode) {
-      case 'featured': {
-        storyCards = _shuffle(
-          featuredStories.map((s) => cardUtil.getStoryCard(s, t))
-        )
-
-        break
-      }
-      case 'popular': {
-        storyCards = _shuffle(
-          popularStories.map((s) => cardUtil.getStoryCard(s, t))
-        )
-
-        break
-      }
-      case 'recent': {
-        storyCards = _shuffle(
-          recentMaps.map((element) => cardUtil.getMapCard(element))
-        )
-
-        break
-      }
-      // No default
-    }
-
-    let mapCards = []
-
-    switch (mapMode) {
-      case 'featured': {
-        mapCards = _shuffle(
-          featuredMaps.map((element) => cardUtil.getMapCard(element))
-        )
-
-        break
-      }
-      case 'popular': {
-        mapCards = _shuffle(
-          popularMaps.map((element) => cardUtil.getMapCard(element))
-        )
-
-        break
-      }
-      case 'recent': {
-        mapCards = _shuffle(
-          recentMaps.map((element) => cardUtil.getMapCard(element))
-        )
-
-        break
-      }
-      // No default
-    }
-
-    let groupCards = []
-
-    switch (groupMode) {
-      case 'featured': {
-        groupCards = _shuffle(
-          featuredGroups.map((element) => cardUtil.getGroupCard(element))
-        )
-
-        break
-      }
-      case 'popular': {
-        groupCards = _shuffle(
-          popularGroups.map((element) => cardUtil.getGroupCard(element))
-        )
-
-        break
-      }
-      case 'recent': {
-        groupCards = _shuffle(
-          recentGroups.map((element) => cardUtil.getGroupCard(element))
-        )
-
-        break
-      }
-      // No default
-    }
-
-    let layerCards = []
-
-    switch (layerMode) {
-      case 'featured': {
-        layerCards = _shuffle(
-          featuredLayers.map((element) => cardUtil.getLayerCard(element))
-        )
-
-        break
-      }
-      case 'popular': {
-        layerCards = _shuffle(
-          popularLayers.map((element) => cardUtil.getLayerCard(element))
-        )
-
-        break
-      }
-      case 'recent': {
-        layerCards = _shuffle(
-          recentLayers.map((element) => cardUtil.getLayerCard(element))
-        )
-
-        break
-      }
-      // No default
-    }
-
-    return (
-      <ErrorBoundary t={t}>
-        <Header activePage='explore' {...headerConfig} />
-        <main
+  return (
+    <ErrorBoundary t={t}>
+      <Layout title={t('Explore')} activePage='explore'>
+        <div
           style={{
             margin: 0,
             padding: '10px'
@@ -216,7 +171,9 @@ export default class Home extends React.Component<Props, State> {
             <Col sm={24} md={6}>
               <SearchBox
                 label={t('Search') + ' ' + MAPHUBS_CONFIG.productName}
-                onSearch={handleSearch}
+                onSearch={(input: string) => {
+                  window.location.assign('/search?q=' + input)
+                }}
               />
             </Col>
           </Row>
@@ -243,9 +200,7 @@ export default class Home extends React.Component<Props, State> {
                 <CardFilter
                   value={storyMode}
                   onChange={(value) => {
-                    setState({
-                      storyMode: value
-                    })
+                    setStoryMode(value)
                   }}
                 />
               </div>
@@ -259,7 +214,7 @@ export default class Home extends React.Component<Props, State> {
                 marginBottom: '20px'
               }}
             >
-              <CardCarousel cards={storyCards} t={t} />
+              <CardCarousel cards={storyCards} />
             </Row>
             <Row
               justify='center'
@@ -298,9 +253,7 @@ export default class Home extends React.Component<Props, State> {
                 <CardFilter
                   value={mapMode}
                   onChange={(value) => {
-                    setState({
-                      mapMode: value
-                    })
+                    setMapMode(value)
                   }}
                 />
               </div>
@@ -314,7 +267,7 @@ export default class Home extends React.Component<Props, State> {
                 marginBottom: '20px'
               }}
             >
-              <CardCarousel cards={mapCards} t={t} />
+              <CardCarousel cards={mapCards} />
             </Row>
             <Row
               justify='center'
@@ -353,9 +306,7 @@ export default class Home extends React.Component<Props, State> {
                 <CardFilter
                   value={groupMode}
                   onChange={(value) => {
-                    setState({
-                      groupMode: value
-                    })
+                    setGroupMode(value)
                   }}
                 />
               </div>
@@ -369,7 +320,7 @@ export default class Home extends React.Component<Props, State> {
                 marginBottom: '20px'
               }}
             >
-              <CardCarousel cards={groupCards} t={t} />
+              <CardCarousel cards={groupCards} />
             </Row>
             <Row
               justify='center'
@@ -408,10 +359,9 @@ export default class Home extends React.Component<Props, State> {
                 <CardFilter
                   value={layerMode}
                   onChange={(value) => {
-                    setState({
-                      layerMode: value
-                    })
+                    setLayerMode(value)
                   }}
+                  showPopular
                 />
               </div>
               <a href='/layers'>
@@ -424,7 +374,7 @@ export default class Home extends React.Component<Props, State> {
                 marginBottom: '20px'
               }}
             >
-              <CardCarousel cards={layerCards} t={t} />
+              <CardCarousel cards={layerCards} />
             </Row>
             <Row
               justify='center'
@@ -439,9 +389,9 @@ export default class Home extends React.Component<Props, State> {
               </Button>
             </Row>
           </Row>
-        </main>
-        <Footer t={t} {...footerConfig} />
-      </ErrorBoundary>
-    )
-  }
+        </div>
+      </Layout>
+    </ErrorBoundary>
+  )
 }
+export default Explore

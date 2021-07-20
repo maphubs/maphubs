@@ -6,14 +6,10 @@ import TextInput from '../forms/textInput'
 import Radio from '../forms/radio'
 import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 
 const AGOLSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
   const { t } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
+
   const [canSubmit, setCanSubmit] = useState(false)
   const [selectedOption, setSelectedOption] = useState('mapserverquery')
 
@@ -44,7 +40,7 @@ const AGOLSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
       }
     }
 
-    LayerActions.saveDataSettings(dataSettings, _csrf, (err) => {
+    LayerActions.saveDataSettings(dataSettings, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),

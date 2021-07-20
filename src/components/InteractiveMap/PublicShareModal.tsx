@@ -7,15 +7,20 @@ import useT from '../../hooks/useT'
 const { confirm } = Modal
 type Props = {
   share_id?: string
-  map_id: string
-  _csrf?: string
+  map_id: number
+  visible?: boolean
+  onClose: () => void
 }
 
-const PublicShareModal = ({ map_id, _csrf, share_id }: Props): JSX.Element => {
+const PublicShareModal = ({
+  map_id,
+  visible,
+  onClose,
+  share_id
+}: Props): JSX.Element => {
   const { t } = useT()
   const [sharing, setSharing] = useState(!!share_id)
   const [shareID, setShareID] = useState(share_id)
-  const [visible, setVisible] = useState(false)
 
   const setPublic = async (isPublic: boolean): Promise<void> => {
     try {
@@ -25,8 +30,7 @@ const PublicShareModal = ({ map_id, _csrf, share_id }: Props): JSX.Element => {
         .accept('json')
         .send({
           map_id,
-          isPublic,
-          _csrf
+          isPublic
         })
 
       if (!res.body.success) {
@@ -94,20 +98,11 @@ const PublicShareModal = ({ map_id, _csrf, share_id }: Props): JSX.Element => {
     <Modal
       title={t('Share Map')}
       visible={visible}
-      onOk={() => {
-        setVisible(false)
-      }}
+      onOk={onClose}
       centered
-      onCancel={() => {
-        setVisible(false)
-      }}
+      onCancel={onClose}
       footer={[
-        <Button
-          key='back'
-          onClick={() => {
-            setVisible(false)
-          }}
-        >
+        <Button key='back' onClick={onClose}>
           {t('Close')}
         </Button>,
         <Button
@@ -116,7 +111,7 @@ const PublicShareModal = ({ map_id, _csrf, share_id }: Props): JSX.Element => {
           disabled={!shareID}
           onClick={() => {
             writeToClipboard()
-            setVisible(false)
+            onClose()
           }}
         >
           {t('Copy Link')}

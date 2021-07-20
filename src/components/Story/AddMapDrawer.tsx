@@ -8,13 +8,14 @@ import SearchBox from '../SearchBox'
 import { checkClientError } from '../../services/client-error-response'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import useT from '../../hooks/useT'
+import { Map } from '../../types/map'
 const debug = DebugService('AddMapToStory')
 type Props = {
   visible?: boolean
-  onClose: (...args: Array<any>) => void
+  onClose: () => void
   onAdd: (...args: Array<any>) => void
-  myMaps: Array<Record<string, any>>
-  popularMaps: Array<Record<string, any>>
+  myMaps: Map[]
+  recentMaps: Map[]
 }
 type State = {
   searchActive: boolean
@@ -25,7 +26,7 @@ const AddMapDrawer = ({
   onClose,
   onAdd,
   myMaps,
-  popularMaps
+  recentMaps
 }: Props): JSX.Element => {
   const { t } = useT()
   const [searchState, setSearchState] = useState<State>({
@@ -80,7 +81,7 @@ const AddMapDrawer = ({
   const myCards = myMaps
     ? myMaps.map((map, i) => cardUtil.getMapCard(map, onAdd))
     : []
-  const popularCards = popularMaps.map((map, i) =>
+  const recentCards = recentMaps.map((map, i) =>
     cardUtil.getMapCard(map, onAdd)
   )
   const searchCards = searchResults.map((map, i) =>
@@ -143,9 +144,7 @@ const AddMapDrawer = ({
               {t('Search Results')}
             </h5>
             <Divider />
-            {searchResults.length > 0 && (
-              <CardCarousel cards={searchCards} t={t} />
-            )}
+            {searchResults.length > 0 && <CardCarousel cards={searchCards} />}
             {searchResults.length === 0 && (
               <p>
                 <b>{t('No Results Found')}</b>
@@ -169,7 +168,7 @@ const AddMapDrawer = ({
               {t('My Maps')}
             </h5>
             <div className='divider' />
-            <CardCarousel cards={myCards} t={t} />
+            <CardCarousel cards={myCards} />
           </Row>
         )}
         <Row>
@@ -179,10 +178,10 @@ const AddMapDrawer = ({
               margin: '5px'
             }}
           >
-            {t('Popular Maps')}
+            {t('Recent Maps')}
           </h5>
           <Divider />
-          <CardCarousel cards={popularCards} t={t} />
+          <CardCarousel cards={recentCards} />
         </Row>
       </Row>
     </Drawer>

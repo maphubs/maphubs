@@ -17,47 +17,7 @@ const csrfProtection = csurf({
 
 export default function (app: any) {
   // Views
-  app.get('/layers', csrfProtection, async (req, res, next) => {
-    try {
-      return app.next.render(
-        req,
-        res,
-        '/layers',
-        await pageOptions(req, {
-          title: req.__('Layers') + ' - ' + local.productName,
-          props: {
-            featuredLayers: await Layer.getFeaturedLayers(),
-            recentLayers: await Layer.getRecentLayers(),
-            popularLayers: await Layer.getPopularLayers()
-          }
-        })
-      )
-    } catch (err) {
-      nextError(next)(err)
-    }
-  })
-  app.get('/layers/all', csrfProtection, async (req, res, next) => {
-    try {
-      const locale = req.locale ? req.locale : 'en'
-      const groups = await Group.getAllGroups().orderByRaw(
-        `lower((omh.groups.name -> '${locale}')::text)`
-      )
-      return app.next.render(
-        req,
-        res,
-        '/alllayers',
-        await pageOptions(req, {
-          title: req.__('Layers') + ' - ' + local.productName,
-          props: {
-            layers: await Layer.getAllLayers(false),
-            groups
-          }
-        })
-      )
-    } catch (err) {
-      nextError(next)(err)
-    }
-  })
+
   app.get(
     '/createlayer',
     csrfProtection,
@@ -93,19 +53,6 @@ export default function (app: any) {
         user_id = req.session.user.maphubsUser.id
       }
 
-      if (!req.session.layerviews) {
-        req.session.layerviews = {}
-      }
-
-      if (!req.session.layerviews[layer_id]) {
-        req.session.layerviews[layer_id] = 1
-        await Stats.addLayerView(layer_id, user_id).catch(nextError(next))
-      } else {
-        const views = req.session.layerviews[layer_id]
-        req.session.layerviews[layer_id] = views + 1
-      }
-
-      req.session.views = (req.session.views || 0) + 1
       const layer = await Layer.getLayerByID(layer_id)
 
       if (layer) {
@@ -131,7 +78,6 @@ export default function (app: any) {
             props: {
               layer,
               notes,
-              stats: await Stats.getLayerStats(layer_id),
               canEdit: await Layer.allowedToModify(layer_id, user_id)
             },
             talkComments: true,
@@ -183,19 +129,6 @@ export default function (app: any) {
         user_id = req.session.user.maphubsUser.id
       }
 
-      if (!req.session.layerviews) {
-        req.session.layerviews = {}
-      }
-
-      if (!req.session.layerviews[layer_id]) {
-        req.session.layerviews[layer_id] = 1
-        await Stats.addLayerView(layer_id, user_id)
-      } else {
-        const views = req.session.layerviews[layer_id]
-        req.session.layerviews[layer_id] = views + 1
-      }
-
-      req.session.views = (req.session.views || 0) + 1
       const layer = await Layer.getLayerByID(layer_id)
 
       if (layer) {

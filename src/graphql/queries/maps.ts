@@ -1,11 +1,14 @@
 import MapModel from '../../models/map'
+import LayerModel from '../../models/layer'
 import { Map } from '../../types/map'
 import { Context } from '../../types/graphqlContext'
 import { Layer } from '../../types/layer'
 
 export default {
-  maps(): Promise<Map[]> {
-    return MapModel.getAllMaps()
+  maps(_: unknown, args: { locale: string }): Promise<Map[]> {
+    return MapModel.getAllMaps().orderByRaw(
+      `lower((omh.maps.title -> '${args.locale || 'en'}')::text)`
+    )
   },
 
   map(_: unknown, args: { id: number }): Promise<Map | void> {
@@ -20,12 +23,22 @@ export default {
     return MapModel.getRecentMaps(args.limits)
   },
 
-  popularMaps(_: unknown, args: { limits: number }): Promise<Map[]> {
-    return MapModel.getPopularMaps(args.limits)
+  myMaps(_: unknown, __: unknown, context: Context): Promise<boolean> {
+    const { user } = context
+    return MapModel.getUserMaps(user.sub)
   },
 
-  mapLayers(_: unknown, args: { id: number }): Promise<Layer[]> {
-    return MapModel.getMapLayers(args.id)
+  async mapLayers(
+    _: unknown,
+    args: { id: number; attachPermissions?: boolean },
+    context: Context
+  ): Promise<Layer[]> {
+    const { user } = context
+    let layers = await MapModel.getMapLayers(args.id)
+    if (args.attachPermissions) {
+      layers = await LayerModel.attachPermissionsToLayers(layers, user.sub)
+    }
+    return layers
   },
 
   allowedToModifyMap(

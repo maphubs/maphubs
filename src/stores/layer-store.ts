@@ -301,19 +301,16 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
    * Create a layer
    * Note: not called in regular createLayer page since creation happens on the server
    * Used by create layer panel in Map Maker
-   * @param {*} _csrf
    * @param {*} cb
    */
-  createLayer(_csrf: string, cb: (...args: Array<any>) => any) {
+  createLayer(cb: (...args: Array<any>) => any) {
     const _this = this
 
     request
       .post('/api/layer/admin/createLayer')
       .type('json')
       .accept('json')
-      .send({
-        _csrf
-      })
+      .send({})
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
           const layer_id = res.body.layer_id
@@ -330,7 +327,6 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
 
   saveSettings(
     data: Record<string, any>,
-    _csrf: string,
     initLayer: boolean,
     cb: (...args: Array<any>) => any
   ) {
@@ -351,8 +347,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
         private: data.private,
         source: data.source,
         license: data.license,
-        disable_feature_indexing: data.disable_feature_indexing,
-        _csrf
+        disable_feature_indexing: data.disable_feature_indexing
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -377,7 +372,6 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       disableExport: boolean
       allowPublicSubmit: boolean
     },
-    _csrf: string,
     cb: (...args: Array<any>) => any
   ) {
     // treat as immutable and clone
@@ -393,8 +387,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
         layer_id: _this.state.layer_id,
         group_id: data.group,
         disable_export: data.disableExport,
-        allow_public_submit: data.allowPublicSubmit,
-        _csrf
+        allow_public_submit: data.allowPublicSubmit
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -409,11 +402,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       })
   }
 
-  saveExternalLayerConfig(
-    config: string,
-    _csrf: string,
-    cb: (...args: Array<any>) => any
-  ) {
+  saveExternalLayerConfig(config: string, cb: (...args: Array<any>) => any) {
     const _this = this
 
     request
@@ -422,8 +411,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       .accept('json')
       .send({
         layer_id: _this.state.layer_id,
-        external_layer_config: config,
-        _csrf
+        external_layer_config: config
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -438,7 +426,6 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
 
   saveDataSettings(
     data: Record<string, any>,
-    _csrf: string,
     cb: (...args: Array<any>) => any
   ) {
     debug.log('saveDataSettings')
@@ -457,8 +444,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
         empty_data_type: data.empty_data_type,
         is_external: data.is_external,
         external_layer_type: data.external_layer_type,
-        external_layer_config: data.external_layer_config,
-        _csrf
+        external_layer_config: data.external_layer_config
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -519,7 +505,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
     })
   }
 
-  setComplete(_csrf: string, cb: (...args: Array<any>) => any) {
+  setComplete(cb: (...args: Array<any>) => any) {
     const _this = this
 
     const complete = true
@@ -528,8 +514,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       .type('json')
       .accept('json')
       .send({
-        layer_id: _this.state.layer_id,
-        _csrf
+        layer_id: _this.state.layer_id
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -544,11 +529,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       })
   }
 
-  saveStyle(
-    data: Record<string, any>,
-    _csrf: string,
-    cb: (...args: Array<any>) => any
-  ) {
+  saveStyle(data: Record<string, any>, cb: (...args: Array<any>) => any) {
     // treat as immutable and clone
     data = JSON.parse(JSON.stringify(data))
 
@@ -563,8 +544,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
         style: data.style,
         labels: data.labels,
         legend_html: data.legend_html,
-        preview_position: data.preview_position,
-        _csrf
+        preview_position: data.preview_position
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -579,7 +559,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       })
   }
 
-  loadData(_csrf: string, cb: (...args: Array<any>) => any) {
+  loadData(cb: (...args: Array<any>) => any) {
     debug.log('loadData')
 
     if (this.state.layer_id) {
@@ -590,7 +570,6 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
         .type('json')
         .accept('json')
         .timeout(1200000)
-        .set('csrf-token', _csrf)
         .end((err, res) => {
           checkClientError(res, err, cb, (cb) => {
             _this.trigger(_this.state)
@@ -602,7 +581,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
     }
   }
 
-  replaceData(_csrf: string, cb: (...args: Array<any>) => any) {
+  replaceData(cb: (...args: Array<any>) => any) {
     debug.log('replaceData')
 
     if (this.state.layer_id) {
@@ -613,7 +592,6 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
         .type('json')
         .accept('json')
         .timeout(1200000)
-        .set('csrf-token', _csrf)
         .end((err, res) => {
           checkClientError(res, err, cb, (cb) => {
             _this.trigger(_this.state)
@@ -624,7 +602,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
     }
   }
 
-  initEmptyLayer(_csrf: string, cb: (...args: Array<any>) => any) {
+  initEmptyLayer(cb: (...args: Array<any>) => any) {
     debug.log('initEmptyLayer')
 
     if (this.state.layer_id) {
@@ -634,7 +612,6 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
         .post('/api/layer/create/empty/' + this.state.layer_id)
         .type('json')
         .accept('json')
-        .set('csrf-token', _csrf)
         .end((err, res) => {
           checkClientError(res, err, cb, (cb) => {
             _this.trigger(_this.state)
@@ -646,11 +623,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
     }
   }
 
-  finishUpload(
-    requestedShapefile: string,
-    _csrf: string,
-    cb: (...args: Array<any>) => any
-  ) {
+  finishUpload(requestedShapefile: string, cb: (...args: Array<any>) => any) {
     const _this = this
 
     request
@@ -659,8 +632,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       .accept('json')
       .send({
         layer_id: _this.state.layer_id,
-        requestedShapefile,
-        _csrf
+        requestedShapefile
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -669,13 +641,12 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       })
   }
 
-  deleteData(_csrf: string, cb: (...args: Array<any>) => any) {
+  deleteData(cb: (...args: Array<any>) => any) {
     if (this.state.layer_id) {
       request
         .post('/api/layer/deletedata/' + this.state.layer_id)
         .type('json')
         .accept('json')
-        .set('csrf-token', _csrf)
         .end((err, res) => {
           checkClientError(res, err, cb, (cb) => {
             cb()
@@ -684,7 +655,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
     }
   }
 
-  deleteLayer(_csrf: string, cb: (...args: Array<any>) => any) {
+  deleteLayer(cb: (...args: Array<any>) => any) {
     const _this = this
 
     request
@@ -692,8 +663,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       .type('json')
       .accept('json')
       .send({
-        layer_id: _this.state.layer_id,
-        _csrf
+        layer_id: _this.state.layer_id
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -702,7 +672,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       })
   }
 
-  cancelLayer(_csrf: string, cb: (...args: Array<any>) => any) {
+  cancelLayer(cb: (...args: Array<any>) => any) {
     const _this = this
 
     request
@@ -710,8 +680,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
       .type('json')
       .accept('json')
       .send({
-        layer_id: _this.state.layer_id,
-        _csrf
+        layer_id: _this.state.layer_id
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -845,11 +814,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
     }
   }
 
-  submitPresets(
-    create: boolean,
-    _csrf: string,
-    cb: (...args: Array<any>) => any
-  ) {
+  submitPresets(create: boolean, cb: (...args: Array<any>) => any) {
     debug.log('submitPresets')
 
     const _this = this
@@ -892,8 +857,7 @@ export default class LayerStore extends Reflux.Store<LayerStoreState> {
           presets,
           style: _this.state.style,
           // presets also stored in style
-          create,
-          _csrf
+          create
         })
         .end((err, res) => {
           checkClientError(res, err, cb, (cb) => {

@@ -20,14 +20,11 @@ export default async function (
     featuredLayers?: LayerType[]
     popularLayers?: LayerType[]
     recentLayers?: LayerType[]
-    popularStories?: StoryType[]
     featuredStories?: StoryType[]
     recentStories?: StoryType[]
     featuredGroups?: GroupType[]
-    popularGroups?: GroupType[]
     recentGroups?: GroupType[]
     featuredMaps?: any[]
-    popularMaps?: any[]
     recentMaps?: any[]
   } = {}
 
@@ -54,14 +51,6 @@ export default async function (
                   const number = max || 6
 
                   switch (type) {
-                    case 'trending':
-                    case 'popular': {
-                      results.popularStories = await Story.getPopularStories(
-                        number
-                      )
-
-                      break
-                    }
                     case 'featured': {
                       results.featuredStories = await Story.getFeaturedStories(
                         number
@@ -82,7 +71,6 @@ export default async function (
                 })
               )
             } else {
-              results.popularStories = await Story.getPopularStories(5)
               results.featuredStories = await Story.getFeaturedStories(5)
             }
 
@@ -135,13 +123,6 @@ export default async function (
 
                           break
                         }
-                        case 'popular': {
-                          results.popularGroups = await Group.getPopularGroups(
-                            number
-                          )
-
-                          break
-                        }
                         case 'recent': {
                           results.recentGroups = await Group.getRecentGroups(
                             number
@@ -163,11 +144,6 @@ export default async function (
 
                           break
                         }
-                        case 'popular': {
-                          results.popularMaps = await Map.getPopularMaps(number)
-
-                          break
-                        }
                         case 'recent': {
                           results.recentMaps = await Map.getRecentMaps(number)
 
@@ -183,12 +159,6 @@ export default async function (
                         case 'featured': {
                           results.featuredStories =
                             await Story.getFeaturedStories(number)
-
-                          break
-                        }
-                        case 'popular': {
-                          results.popularStories =
-                            await Story.getPopularStories(number)
 
                           break
                         }
@@ -219,7 +189,7 @@ export default async function (
     )
   }
 
-  const props = { ...results, pageConfig: config, _csrf: req.csrfToken() }
+  const props = { ...results, pageConfig: config }
   let title = local.productName
   let description = local.productName
 

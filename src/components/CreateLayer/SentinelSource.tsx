@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import { message, notification, Row } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 
 const getAPIUrl = (selected: string): void => {
   // const selectedArr = selected.split(':')
@@ -19,9 +17,6 @@ const SentinelSource = ({
 }): JSX.Element => {
   const [canSubmit, setCanSubmit] = useState(false)
   const { t } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
 
   const submit = (model: Record<string, any>): void => {
     const layers = []
@@ -44,7 +39,6 @@ const SentinelSource = ({
           layers
         }
       },
-      _csrf,
       (err) => {
         if (err) {
           notification.error({

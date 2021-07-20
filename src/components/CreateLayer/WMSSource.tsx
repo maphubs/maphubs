@@ -7,15 +7,11 @@ import LinkIcon from '@material-ui/icons/Link'
 import HeightIcon from '@material-ui/icons/Height'
 import AspectRatioIcon from '@material-ui/icons/AspectRatio'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 
 const WMSSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
   const [canSubmit, setCanSubmit] = useState(false)
   const { t } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
+
   addValidationRule('isHttps', (values, value: string) => {
     return value ? value.startsWith('https://') : false
   })
@@ -69,7 +65,6 @@ const WMSSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
             tiles: [url]
           }
         },
-        _csrf,
         (err) => {
           if (err) {
             notification.error({

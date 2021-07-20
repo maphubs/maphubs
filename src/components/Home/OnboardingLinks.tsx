@@ -7,10 +7,12 @@ import {
   SearchOutlined
 } from '@ant-design/icons'
 import getConfig from 'next/config'
+import useT from '../../hooks/useT'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
 
-const OnboardingLinks = ({ t }: { t: (v: string) => string }): JSX.Element => {
+const OnboardingLinks = (): JSX.Element => {
+  const { t } = useT()
   return (
     <Row
       style={{

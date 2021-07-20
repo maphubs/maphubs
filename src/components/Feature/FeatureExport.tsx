@@ -1,6 +1,7 @@
 import React from 'react'
 import slugify from 'slugify'
 import { Typography } from 'antd'
+import useT from '../../hooks/useT'
 const { Title } = Typography
 type Props = {
   mhid: string
@@ -8,16 +9,15 @@ type Props = {
   name: string
   disable_export: boolean
   data_type: string
-  t: any
 }
 const FeatureExport = ({
   mhid,
   layer_id,
   name,
   disable_export,
-  data_type,
-  t
+  data_type
 }: Props): JSX.Element => {
+  const { t } = useT()
   const geoJSONURL = `/api/feature/json/${layer_id}/${mhid}/${slugify(
     t(name)
   )}.geojson`

@@ -1,9 +1,7 @@
-import Locales from '../../services/locales'
 import Layer from '../../models/layer'
 import csurf from 'csurf'
 import {
   apiError,
-  nextError,
   apiDataError,
   notAllowedError
 } from '../../services/error-response'
@@ -17,7 +15,6 @@ import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import Importers from '@bit/kriscarle.maphubs-utils.maphubs-utils.importers'
 import isAuthenticated from '../../services/auth-check'
-import pageOptions from '../../services/page-options-helper'
 
 const debug = DebugService('routes/layers-replace')
 
@@ -26,47 +23,6 @@ const csrfProtection = csurf({
 })
 
 export default function (app: any): void {
-  app.get(
-    '/layer/replace/:id/*',
-    csrfProtection,
-    login.ensureLoggedIn(),
-    async (req, res, next) => {
-      const user_id = req.session.user.maphubsUser.id
-      const layer_id = Number.parseInt(req.params.id || '', 10)
-
-      // confirm that this user is allowed to administer this layeradmin
-      try {
-        const allowed = await Layer.allowedToModify(layer_id, user_id)
-
-        if (allowed) {
-          const layer = await Layer.getLayerByID(layer_id)
-
-          if (layer) {
-            app.next.render(
-              req,
-              res,
-              '/layerreplace',
-              await pageOptions(req, {
-                title:
-                  Locales.getLocaleStringObject(req.locale, layer.name) +
-                  ' - ' +
-                  local.productName,
-                props: {
-                  layer
-                }
-              })
-            )
-          } else {
-            nextError(next)(new Error('Layer not found'))
-          }
-        } else {
-          return res.redirect('/unauthorized')
-        }
-      } catch (err) {
-        nextError(next)(err)
-      }
-    }
-  )
   app.post(
     '/api/layer/:id/replace',
     isAuthenticated,

@@ -51,16 +51,14 @@ export default class UserStore extends Reflux.Store {
     })
   }
 
-  getUser(_csrf: string, cb: (...args: Array<any>) => any): void {
+  getUser(cb: (...args: Array<any>) => any): void {
     const { login } = this
 
     request
       .post('/api/user/details/json')
       .type('json')
       .accept('json')
-      .send({
-        _csrf
-      })
+      .send({})
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
           if (err) {

@@ -29,7 +29,6 @@ type Props = {
     mapState: any
   }
   t: (v: string | LocalizedString) => string
-  _csrf: string
 }
 type Column = {
   title: string
@@ -342,12 +341,12 @@ class DataGrid extends React.Component<Props, State> {
     }
   }
   onSave = () => {
-    const { containers, _csrf, t } = this.props
+    const { containers, t } = this.props
     const { dataEditorState } = containers
     const sourceID = Object.keys(
       dataEditorState.state.editingLayer.style.sources
     )[0]
-    dataEditorState.saveEdits(_csrf, (err) => {
+    dataEditorState.saveEdits((err) => {
       if (err) {
         notification.error({
           message: t('Error'),

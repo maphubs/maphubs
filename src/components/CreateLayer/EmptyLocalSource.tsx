@@ -2,8 +2,6 @@ import React from 'react'
 import { Row, Col, message, notification, Button } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 
 type Props = {
   onSubmit: () => void
@@ -11,9 +9,6 @@ type Props = {
 }
 const EmptyLocalSource = ({ type, onSubmit }: Props): JSX.Element => {
   const { t } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
 
   return (
     <Row
@@ -43,7 +38,6 @@ const EmptyLocalSource = ({ type, onSubmit }: Props): JSX.Element => {
                 is_empty: true,
                 empty_data_type: type
               },
-              _csrf,
               (err) => {
                 if (err) {
                   notification.error({

@@ -4,8 +4,6 @@ import TextArea from '../forms/textArea'
 import { message, notification, Row, Button } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -25,9 +23,7 @@ const PlanetLabsSource = ({
   onSubmit: () => void
 }): JSX.Element => {
   const { t } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
+
   const [canSubmit, setCanSubmit] = useState(false)
 
   const submit = (model: Record<string, any>): void => {
@@ -51,7 +47,6 @@ const PlanetLabsSource = ({
           layers
         }
       },
-      _csrf,
       (err) => {
         if (err) {
           notification.error({

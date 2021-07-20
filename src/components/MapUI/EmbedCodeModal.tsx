@@ -12,7 +12,6 @@ type Props = {
   onClose: (...args: Array<any>) => any
   share_id?: string
   map_id: number
-  t: (v: string | LocalizedString) => string
 }
 type State = {
   interactive?: boolean

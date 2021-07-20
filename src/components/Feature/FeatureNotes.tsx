@@ -12,18 +12,13 @@ type Props = {
   canEdit: boolean
   layer_id: number
   mhid: string
-  _csrf: string
 }
-type State = {
-  editing: boolean
-  notes: string
-}
+
 const FeatureNotes = ({
   initialNotes,
   canEdit,
   mhid,
-  layer_id,
-  _csrf
+  layer_id
 }: Props): JSX.Element => {
   const { t } = useT()
   const [editing, setEditing] = useState(false)
@@ -49,8 +44,7 @@ const FeatureNotes = ({
         .send({
           layer_id,
           mhid,
-          notes,
-          _csrf
+          notes
         })
       closeSavingMessage()
       setEditing(false)

@@ -4,8 +4,6 @@ import { Row, message, notification, Button } from 'antd'
 import TextInput from '../forms/textInput'
 import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 
 const EarthEngineSource = ({
   onSubmit
@@ -14,9 +12,6 @@ const EarthEngineSource = ({
 }): JSX.Element => {
   const [canSubmit, setCanSubmit] = useState(false)
   const { t } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
 
   const submit = (model: Record<string, any>): void => {
     LayerActions.saveDataSettings(
@@ -30,7 +25,6 @@ const EarthEngineSource = ({
           image_id: model.image_id
         }
       },
-      _csrf,
       (err) => {
         if (err) {
           notification.error({

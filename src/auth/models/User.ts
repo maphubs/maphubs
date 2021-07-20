@@ -3,7 +3,8 @@ export default class User {
     name: string,
     email: string,
     image: string,
-    emailVerified: boolean
+    emailVerified: boolean,
+    admin: boolean
   ) {
     if (name) {
       this.name = name
@@ -21,11 +22,15 @@ export default class User {
       const currentDate = new Date()
       this.emailVerified = currentDate
     }
+    if (admin) {
+      this.admin = admin
+    }
   }
   name: string
   email: string
   image: string
   emailVerified: Date
+  admin: boolean
 }
 export const UserSchema = {
   name: 'User',
@@ -72,6 +77,10 @@ export const UserSchema = {
     },
     role: {
       type: 'text',
+      nullable: true
+    },
+    admin: {
+      type: 'boolean',
       nullable: true
     }
   }

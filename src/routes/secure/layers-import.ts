@@ -1,5 +1,4 @@
 import Layer from '../../models/layer'
-import login from 'connect-ensure-login'
 import Group from '../../models/group'
 import Map from '../../models/map'
 import multer from 'multer'
@@ -22,38 +21,10 @@ import DataLoadUtils from '../../services/data-load-utils'
 import layerViews from '../../services/layer-views'
 import pageOptions from '../../services/page-options-helper'
 import Bluebird from 'bluebird'
-import csurf from 'csurf'
-
-const csrfProtection = csurf({
-  cookie: false
-})
 
 const debug = DebugService('routes/layers-import')
 
 export default function (app: any) {
-  app.get(
-    '/import',
-    login.ensureLoggedIn(),
-    csrfProtection,
-    async (req, res, next) => {
-      try {
-        const user_id = req.session.user.maphubsUser.id
-        return app.next.render(
-          req,
-          res,
-          '/importlayer',
-          await pageOptions(req, {
-            title: req.__('Import') + ' - ' + local.productName,
-            props: {
-              groups: await Group.getGroupsForUser(user_id)
-            }
-          })
-        )
-      } catch (err) {
-        nextError(next)(err)
-      }
-    }
-  )
   app.post(
     '/api/import/:group_id/upload',
     isAuthenticated,

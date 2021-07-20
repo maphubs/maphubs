@@ -1,19 +1,14 @@
 import React from 'react'
 import { Row, Col } from 'antd'
-import { LocalizedString } from '../../types/LocalizedString'
+import useT from '../../hooks/useT'
 type Props = {
-  views: number
   stats: {
     maps: number
     stories: number
   }
-  t: (v: string | LocalizedString) => string
 }
-export default function LayerInfoStats({
-  views,
-  stats,
-  t
-}: Props): JSX.Element {
+export default function LayerInfoStats({ stats }: Props): JSX.Element {
+  const { t } = useT()
   return (
     <Row
       justify='center'
@@ -24,16 +19,6 @@ export default function LayerInfoStats({
         backgroundColor: '#FFF'
       }}
     >
-      <Col
-        sm={16}
-        md={8}
-        style={{
-          textAlign: 'center'
-        }}
-      >
-        <b>{t('Views')}</b>
-        <p>{views}</p>
-      </Col>
       <Col
         sm={16}
         md={8}

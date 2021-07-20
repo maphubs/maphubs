@@ -13,7 +13,7 @@ const Step3 = ({ mapConfig, onSubmit }: Props): JSX.Element => {
       waitForTileInit
       mapConfig={mapConfig}
       onSubmit={(layer_id: number, name: string) => {
-        LayerActions.setComplete(this.state._csrf, () => {
+        LayerActions.setComplete(() => {
           if (onSubmit) onSubmit(layer_id, name)
         })
       }}

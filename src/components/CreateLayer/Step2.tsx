@@ -26,7 +26,7 @@ const Step2 = ({
   const initEmptyLayer = (): void => {
     // save presets
     LayerActions.loadDefaultPresets()
-    LayerActions.submitPresets(true, _csrf, (err) => {
+    LayerActions.submitPresets(true, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),
@@ -34,7 +34,7 @@ const Step2 = ({
           duration: 0
         })
       } else {
-        LayerActions.initEmptyLayer(_csrf, (err) => {
+        LayerActions.initEmptyLayer((err) => {
           if (err) {
             notification.error({
               message: t('Server Error'),
@@ -53,7 +53,7 @@ const Step2 = ({
   const saveDataLoad = (): void => {
     const closeMessage = message.loading(t('Saving'), 0)
     // save presets
-    LayerActions.submitPresets(false, _csrf, (err) => {
+    LayerActions.submitPresets(false, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),
@@ -62,7 +62,7 @@ const Step2 = ({
         })
         closeMessage()
       } else {
-        LayerActions.loadData(_csrf, (err) => {
+        LayerActions.loadData((err) => {
           closeMessage()
 
           if (err) {

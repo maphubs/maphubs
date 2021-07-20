@@ -17,14 +17,12 @@ type Props = {
   initialNotes?: string
   layer_id: number
   canEdit: boolean
-  _csrf?: string
 }
 
 const LayerNotes = ({
   initialNotes,
   layer_id,
-  canEdit,
-  _csrf
+  canEdit
 }: Props): JSX.Element => {
   const { t } = useT()
   const [editing, setEditing] = useState(false)
@@ -50,8 +48,7 @@ const LayerNotes = ({
         .accept('json')
         .send({
           layer_id,
-          notes,
-          _csrf
+          notes
         })
 
       if (!res.body.success) {

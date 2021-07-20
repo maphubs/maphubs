@@ -34,7 +34,7 @@ export default class FeaturePhotoStore extends Reflux.Store {
     debug.log('store updated')
   }
 
-  addPhoto(data, info, _csrf, cb): void {
+  addPhoto(data, info, cb): void {
     debug.log('add feature photo')
 
     const _this = this
@@ -47,8 +47,7 @@ export default class FeaturePhotoStore extends Reflux.Store {
         layer_id: this.state.feature.layer_id,
         mhid: this.state.feature.mhid,
         image: data,
-        info,
-        _csrf
+        info
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -69,7 +68,7 @@ export default class FeaturePhotoStore extends Reflux.Store {
       })
   }
 
-  removePhoto(_csrf, cb): void {
+  removePhoto(cb): void {
     debug.log('remove photo')
 
     const _this = this
@@ -80,8 +79,7 @@ export default class FeaturePhotoStore extends Reflux.Store {
       .accept('json')
       .send({
         layer_id: this.state.feature.layer_id,
-        mhid: this.state.feature.mhid,
-        _csrf
+        mhid: this.state.feature.mhid
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {

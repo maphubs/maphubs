@@ -14,10 +14,9 @@ type Props = {
 const FeaturePhoto = ({ photo, canEdit, t }: Props): JSX.Element => {
   const [showImageCrop, setShowImageCrop] = useState(false)
   const onCrop = (data: string, info: Record<string, any>) => {
-    const { _csrf } = this.state
     setShowImageCrop(false)
     // send data to server
-    FeaturePhotoActions.addPhoto(data, info, _csrf, (err) => {
+    FeaturePhotoActions.addPhoto(data, info, (err) => {
       if (err) {
         notification.error({
           message: t('Error'),
@@ -32,7 +31,6 @@ const FeaturePhoto = ({ photo, canEdit, t }: Props): JSX.Element => {
     })
   }
   const deletePhoto = () => {
-    const { _csrf } = this.state
     confirm({
       title: t('Confirm Removal'),
       content: t('Are you sure you want to remove this photo?'),
@@ -40,7 +38,7 @@ const FeaturePhoto = ({ photo, canEdit, t }: Props): JSX.Element => {
       okType: 'danger',
 
       onOk() {
-        FeaturePhotoActions.removePhoto(_csrf, (err) => {
+        FeaturePhotoActions.removePhoto((err) => {
           if (err) {
             notification.error({
               message: t('Error'),

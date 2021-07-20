@@ -25,33 +25,6 @@ export default {
       )
   },
 
-  getPopularGroups(number = 15): Knex.QueryBuilder {
-    return knex
-      .select(
-        'omh.groups.*',
-        knex.raw(
-          '(select sum(views) from omh.layers where owned_by_group_id=omh.groups.group_id) as layer_views'
-        ),
-        knex.raw(
-          'CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage'
-        )
-      )
-      .table('omh.groups')
-      .leftJoin(
-        'omh.group_images',
-        'omh.groups.group_id',
-        'omh.group_images.group_id'
-      )
-      .where({
-        published: true
-      })
-      .whereRaw(
-        '(select sum(views) from omh.layers where owned_by_group_id=omh.groups.group_id) > 0'
-      )
-      .orderBy('layer_views', 'desc')
-      .limit(number)
-  },
-
   getRecentGroups(number = 15): Knex.QueryBuilder {
     return knex
       .select(

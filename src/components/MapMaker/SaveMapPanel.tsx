@@ -14,14 +14,12 @@ type Props = {
   editing?: boolean
   owned_by_group_id?: string
   title: LocalizedString
-  _csrf: string
 }
 
 const SaveMapPanel = ({
   title,
   editing,
   owned_by_group_id,
-  _csrf,
   onSave
 }: Props): JSX.Element => {
   const { t } = useT()
@@ -35,7 +33,7 @@ const SaveMapPanel = ({
   }
 
   const recheckLogin = (): void => {
-    UserActions.getUser(_csrf, (err) => {
+    UserActions.getUser((err) => {
       if (err) {
         message.error(t('Not Logged In - Please Login Again'))
       }

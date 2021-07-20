@@ -4,14 +4,10 @@ import { Row, message, notification, Button } from 'antd'
 import TextInput from '../forms/textInput'
 import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 
 const DGWMSSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
   const { t } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
+
   const [canSubmit, setCanSubmit] = useState(false)
   addValidationRule('isHttps', (values, value: string) => {
     return value ? value.startsWith('https://') : false
@@ -39,7 +35,6 @@ const DGWMSSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
           // authToken: window.btoa(`${model.username}:${model.password}`)
         }
       },
-      _csrf,
       (err) => {
         if (err) {
           notification.error({

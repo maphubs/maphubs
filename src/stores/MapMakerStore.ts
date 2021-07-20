@@ -218,7 +218,6 @@ export default class MapMakerStore extends Reflux.Store {
     title: LocalizedString,
     position: Record<string, any>,
     basemap: string,
-    _csrf: string,
     cb: (...args: Array<any>) => any
   ): void {
     // treat as immutable and clone
@@ -242,8 +241,7 @@ export default class MapMakerStore extends Reflux.Store {
         settings: this.state.settings,
         title,
         position,
-        basemap,
-        _csrf
+        basemap
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -264,7 +262,6 @@ export default class MapMakerStore extends Reflux.Store {
     basemap: string,
     group_id: string,
     isPrivate: boolean,
-    _csrf: string,
     cb: (...args: Array<any>) => any
   ): void {
     // treat as immutable and clone
@@ -288,8 +285,7 @@ export default class MapMakerStore extends Reflux.Store {
         group_id,
         position,
         basemap,
-        private: isPrivate,
-        _csrf
+        private: isPrivate
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -340,18 +336,13 @@ export default class MapMakerStore extends Reflux.Store {
     })
   }
 
-  deleteMap(
-    map_id: number,
-    _csrf: string,
-    cb: (...args: Array<any>) => any
-  ): void {
+  deleteMap(map_id: number, cb: (...args: Array<any>) => any): void {
     request
       .post('/api/map/delete')
       .type('json')
       .accept('json')
       .send({
-        map_id,
-        _csrf
+        map_id
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {

@@ -3,14 +3,15 @@ import { List, Avatar } from 'antd'
 import InfoIcon from '@material-ui/icons/Info'
 import { LocalizedString } from '../../types/LocalizedString'
 import { Group } from '../../types/group'
+import useT from '../../hooks/useT'
 
 type Props = {
   groups: Group[]
   showTitle: boolean
-  t: (v: string | LocalizedString) => string
 }
 
-const GroupList = ({ t, showTitle, groups }: Props): JSX.Element => {
+const GroupList = ({ showTitle, groups }: Props): JSX.Element => {
+  const { t } = useT()
   return (
     <List
       header={showTitle && <b>{t('Groups')}</b>}

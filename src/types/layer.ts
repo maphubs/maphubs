@@ -3,8 +3,8 @@ import { Labels } from '../components/LayerDesigner/LabelSettings'
 import { LocalizedString } from './LocalizedString'
 
 export type Layer = {
-  layer_id?: number
-  shortid?: string
+  layer_id: number
+  shortid: string
   name?: LocalizedString
   description?: LocalizedString
   source?: LocalizedString
@@ -47,7 +47,8 @@ export type Layer = {
   complete?: boolean
   canEdit?: boolean
   presets?: any
-  last_updated?: string
+  last_updated: string
+  creation_time: string
   created_by_user_id?: number
   updated_by_user_id?: number
 }

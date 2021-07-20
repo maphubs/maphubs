@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Modal, message, notification } from 'antd'
 import superagent from 'superagent'
 import SaveMapPanel from '../MapMaker/SaveMapPanel'
@@ -6,13 +6,18 @@ import { LocalizedString } from '../../types/LocalizedString'
 import useT from '../../hooks/useT'
 type Props = {
   title: LocalizedString
-  map_id: string
-  _csrf?: string
+  map_id: number
+  visible: boolean
+  onClose: () => void
 }
 
-const CopyMapModal = ({ title, map_id, _csrf }: Props): JSX.Element => {
+const CopyMapModal = ({
+  title,
+  map_id,
+  visible,
+  onClose
+}: Props): JSX.Element => {
   const { t } = useT()
-  const [visible, setVisible] = useState(false)
 
   const onCopyMap = async (formData: {
     title: LocalizedString
@@ -21,8 +26,7 @@ const CopyMapModal = ({ title, map_id, _csrf }: Props): JSX.Element => {
     const data = {
       map_id,
       title: formData.title,
-      group_id: formData.group,
-      _csrf
+      group_id: formData.group
     }
 
     try {
@@ -57,16 +61,12 @@ const CopyMapModal = ({ title, map_id, _csrf }: Props): JSX.Element => {
     <Modal
       title={t('Copy Map')}
       visible={visible}
-      onOk={() => {
-        setVisible(false)
-      }}
+      onOk={onClose}
       centered
-      onCancel={() => {
-        setVisible(false)
-      }}
+      onCancel={onClose}
       footer={[]}
     >
-      <SaveMapPanel title={title} onSave={onCopyMap} _csrf={_csrf} />
+      <SaveMapPanel title={title} onSave={onCopyMap} />
     </Modal>
   )
 }

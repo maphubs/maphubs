@@ -7,8 +7,6 @@ import AspectRatioIcon from '@material-ui/icons/AspectRatio'
 import { Row, message, notification, Button } from 'antd'
 import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 
 type Props = {
   onSubmit: (...args: Array<any>) => any
@@ -20,9 +18,7 @@ type State = {
 const RasterTileSource = ({ onSubmit }: Props): JSX.Element => {
   const [canSubmit, setCanSubmit] = useState(false)
   const { t } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
+
   addValidationRule('isHttps', (values, value: string) => {
     return value ? value.startsWith('https://') : false
   })
@@ -49,7 +45,6 @@ const RasterTileSource = ({ onSubmit }: Props): JSX.Element => {
           tiles: [model.rasterTileUrl]
         }
       },
-      _csrf,
       (err) => {
         if (err) {
           notification.error({

@@ -14,7 +14,6 @@ type Props = {
   editingLayer?: boolean
   owned_by_group_id: string
   initialTitle?: LocalizedString
-  _csrf: string
 }
 
 const SaveMapModal = ({
@@ -22,8 +21,7 @@ const SaveMapModal = ({
   editing,
   editingLayer,
   initialTitle,
-  onSave,
-  _csrf
+  onSave
 }: Props): JSX.Element => {
   const { t } = useT()
   const [session, loading] = useSession()
@@ -37,7 +35,7 @@ const SaveMapModal = ({
   }
 
   const recheckLogin = (): void => {
-    UserActions.getUser(_csrf, (err) => {
+    UserActions.getUser((err) => {
       if (err) {
         message.error(t('Not Logged In - Please Login Again'))
       }

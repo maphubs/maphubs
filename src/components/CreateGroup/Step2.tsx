@@ -26,14 +26,11 @@ const CreateGroupStep2 = ({
 
   const group_id = useSelector((state: { group: any }) => state.group.group_id)
   const hasImage = useSelector((state: { group: any }) => state.group.hasImage)
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
 
   const onCrop = (data: string): void => {
     // send data to server
     setShowImageCrop(false)
-    GroupActions.setGroupImage(data, _csrf, (err) => {
+    GroupActions.setGroupImage(data, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),

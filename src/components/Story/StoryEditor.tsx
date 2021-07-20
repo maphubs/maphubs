@@ -24,13 +24,15 @@ import $ from 'jquery'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import useT from '../../hooks/useT'
 import useUnload from '../../hooks/useUnload'
+import { Map } from '../../types/map'
+import { Group } from '../../types/group'
 const StoryCKEditor = dynamic(() => import('./StoryCKEditor'), {
   ssr: false
 })
 type Props = {
-  myMaps: Array<Record<string, any>>
-  popularMaps: Array<Record<string, any>>
-  groups: Array<Record<string, any>>
+  myMaps: Map[]
+  recentMaps: Map[]
+  groups: Group[]
 }
 
 type ImageCropState = {
@@ -38,7 +40,7 @@ type ImageCropState = {
   imageCropCallback: (imageData: string) => void
 }
 
-const StoryEditor = ({ myMaps, popularMaps, groups }: Props): JSX.Element => {
+const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
   const { t, locale } = useT()
   const [showAddMap, setShowAddMap] = useState(false)
   const [showImageCrop, setShowImageCrop] = useState(false)
@@ -397,7 +399,7 @@ const StoryEditor = ({ myMaps, popularMaps, groups }: Props): JSX.Element => {
           setShowAddMap(false)
         }}
         myMaps={myMaps}
-        popularMaps={popularMaps}
+        recentMaps={recentMaps}
       />
       <ImageCrop
         visible={showImageCrop}

@@ -211,7 +211,7 @@ class MapMaker extends React.Component<Props, State> {
   }
   onSave = (model: Record<string, any>, cb: (...args: Array<any>) => any) => {
     const { t, props, state, onCreate } = this
-    const { map_id, _csrf } = state
+    const { map_id } = state
     const { containers } = props
 
     const { mapState, baseMapState } = containers
@@ -236,7 +236,6 @@ class MapMaker extends React.Component<Props, State> {
           basemap,
           model.group,
           model.private,
-          _csrf,
           (err) => {
             cb()
 
@@ -256,7 +255,7 @@ class MapMaker extends React.Component<Props, State> {
           }
         )
       } else {
-        Actions.saveMap(model.title, position, basemap, _csrf, (err) => {
+        Actions.saveMap(model.title, position, basemap, (err) => {
           cb()
 
           if (err) {
@@ -277,7 +276,6 @@ class MapMaker extends React.Component<Props, State> {
   }
   onDelete = (): void => {
     const { t, props, state } = this
-    const { _csrf } = state
     const { title, map_id } = props
 
     confirm({
@@ -287,7 +285,7 @@ class MapMaker extends React.Component<Props, State> {
       okType: 'danger',
 
       onOk() {
-        Actions.deleteMap(map_id, _csrf, (err) => {
+        Actions.deleteMap(map_id, (err) => {
           if (err) {
             notification.error({
               message: t('Error'),
@@ -468,7 +466,6 @@ class MapMaker extends React.Component<Props, State> {
       showAddLayer,
       activeTab,
       settings,
-      _csrf,
       locale
     } = state
     const { mapState } = containers
@@ -720,7 +717,6 @@ class MapMaker extends React.Component<Props, State> {
                 initialTitle={state.title}
                 editing={edit}
                 onSave={onSave}
-                _csrf={_csrf}
               />
             </Col>
           </Row>

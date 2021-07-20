@@ -9,27 +9,6 @@ import {
 } from '../../services/error-response'
 
 export default function (app: any): void {
-  const recordMapView = function (
-    session: Record<string, any>,
-    map_id: number,
-    user_id: number,
-    next: any
-  ) {
-    if (!session.mapviews) {
-      session.mapviews = {}
-    }
-
-    if (!session.mapviews[map_id]) {
-      session.mapviews[map_id] = 1
-      Stats.addMapView(map_id, user_id).catch(nextError(next))
-    } else {
-      const views = session.mapviews[map_id]
-      session.mapviews[map_id] = views + 1
-    }
-
-    session.views = (session.views || 0) + 1
-  }
-
   app.get('/map/share/:share_id', async (req, res, next) => {
     const share_id = req.params.share_id
     let user_id = -1
@@ -43,7 +22,6 @@ export default function (app: any): void {
 
       if (map) {
         const map_id = map.map_id
-        recordMapView(req.session, map_id, user_id, next)
 
         if (
           !req.isAuthenticated ||
@@ -113,7 +91,6 @@ export default function (app: any): void {
 
       if (map) {
         const map_id = map.map_id
-        recordMapView(req.session, map_id, user_id, next)
 
         if (
           !req.isAuthenticated ||
@@ -171,7 +148,6 @@ export default function (app: any): void {
 
       if (map) {
         const map_id = map.map_id
-        recordMapView(req.session, map_id, user_id, next)
 
         if (
           !req.isAuthenticated ||
@@ -229,7 +205,6 @@ export default function (app: any): void {
 
       if (map) {
         const map_id = map.map_id
-        recordMapView(req.session, map_id, user_id, next)
 
         if (
           !req.isAuthenticated ||

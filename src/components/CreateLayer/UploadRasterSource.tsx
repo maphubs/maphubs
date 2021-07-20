@@ -7,7 +7,6 @@ import superagent from 'superagent'
 import { Row, message, notification, Button } from 'antd'
 import useT from '../../hooks/useT'
 import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
@@ -18,9 +17,7 @@ const UploadRasterSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
   const [canSubmit, setCanSubmit] = useState(false)
   const [bbox, setBBOX] = useState()
   const { t, locale } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
+
   const layer = useSelector((state: { layer: any }) => state.layer)
   const { layer_id, style } = layer
 
@@ -66,7 +63,6 @@ const UploadRasterSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
                 scheme: result.scheme
               }
             },
-            _csrf,
             (err) => {
               if (err) {
                 notification.error({

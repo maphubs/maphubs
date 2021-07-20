@@ -3,10 +3,11 @@ import useT from '../../hooks/useT'
 
 type Props = {
   value: string
+  showPopular?: boolean
   onChange: (value: string) => void
 }
 
-const CardFilter = ({ value, onChange }: Props): JSX.Element => {
+const CardFilter = ({ value, showPopular, onChange }: Props): JSX.Element => {
   const { t } = useT()
   return (
     <div
@@ -27,18 +28,19 @@ const CardFilter = ({ value, onChange }: Props): JSX.Element => {
         {t('Featured')}
       </span>{' '}
       |&nbsp;
-      <span
-        className={value === 'popular' ? 'omh-accent-text' : ''}
-        onClick={() => {
-          onChange('popular')
-        }}
-        style={{
-          cursor: 'pointer'
-        }}
-      >
-        {t('Popular')}
-      </span>{' '}
-      |&nbsp;
+      {showPopular && (
+        <span
+          className={value === 'popular' ? 'omh-accent-text' : ''}
+          onClick={() => {
+            onChange('popular')
+          }}
+          style={{
+            cursor: 'pointer'
+          }}
+        >
+          {t('Popular')}
+        </span>
+      )}
       <span
         className={value === 'recent' ? 'omh-accent-text' : ''}
         onClick={() => {

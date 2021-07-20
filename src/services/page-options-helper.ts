@@ -23,10 +23,6 @@ export default async (req, options) => {
       // use local from i18n parsing of http accept-language
       locale = req.locale
     }
-
-    if (req.csrfToken) {
-      options.props._csrf = req.csrfToken()
-    }
   } else {
     console.error('req object not found when rendering view')
   }

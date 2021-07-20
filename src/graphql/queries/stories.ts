@@ -12,8 +12,8 @@ export default {
     return StoryModel.getStoryById(args.id)
   },
 
-  popularStories(_: unknown, args: { limits: number }): Promise<Story[]> {
-    return StoryModel.getPopularStories(args.limits)
+  featuredStories(_: unknown, args: { limits: number }): Promise<Story[]> {
+    return StoryModel.getFeaturedStories(args.limits)
   },
 
   recentStories(

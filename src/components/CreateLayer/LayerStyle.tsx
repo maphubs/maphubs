@@ -44,9 +44,6 @@ const LayerStyle = ({
   const { t } = useT()
   const [rasterOpacity, setRasterOpacity] = useState(100) // FIXME: opacity slider always starts at 100
   const layerState = useSelector((state: { layer: any }) => state.layer)
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
 
   const submit = (MapState: Record<string, any>): void => {
     const { layer_id, name, style, labels, legend_html } = layerState
@@ -62,7 +59,6 @@ const LayerStyle = ({
         legend_html,
         preview_position
       },
-      _csrf,
       (err) => {
         closeSavingMessage()
 

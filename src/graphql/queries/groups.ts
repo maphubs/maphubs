@@ -3,14 +3,9 @@ import { Group } from '../../types/group'
 import { Context } from '../../types/graphqlContext'
 
 export default {
-  groups(
-    _: unknown,
-    args: { locale?: string },
-    context: Context
-  ): Promise<Group[]> {
-    //const { user } = context
+  groups(_: unknown, args: { locale?: string }): Promise<Group[]> {
     return GroupModel.getAllGroups().orderByRaw(
-      `lower((omh.groups.name -> '${args.locale || 'end'}')::text)`
+      `lower((omh.groups.name -> '${args.locale || 'en'}')::text)`
     )
   },
 
@@ -24,10 +19,6 @@ export default {
 
   recentGroups(_: unknown, args: { limits: number }): Promise<Group[]> {
     return GroupModel.getRecentGroups(args.limits)
-  },
-
-  popularGroups(_: unknown, args: { limits: number }): Promise<Group[]> {
-    return GroupModel.getPopularGroups(args.limits)
   },
 
   allowedToModifyGroup(

@@ -6,11 +6,13 @@ import {
   UsergroupAddOutlined,
   ReadOutlined
 } from '@ant-design/icons'
+import useT from '../../hooks/useT'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
 
-const MapHubsProLinks = ({ t }: { t: (v: string) => string }): JSX.Element => {
+const MapHubsProLinks = (): JSX.Element => {
+  const { t } = useT()
   return (
     <Row
       style={{

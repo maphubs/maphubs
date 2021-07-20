@@ -9,7 +9,6 @@ import Toggle from '../forms/toggle'
 import type { LayerStoreState } from '../../stores/layer-store'
 import dynamic from 'next/dynamic'
 import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 import { Group } from '../../types/group'
 const CodeEditor = dynamic(() => import('../LayerDesigner/CodeEditor'), {
   ssr: false
@@ -37,9 +36,6 @@ const LayerAdminSettings = ({
   const [pendingChanges, setPendingChanges] = useState(false)
 
   const layerState = useSelector((state: { layer: any }) => state.layer)
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
 
   useUnload((e) => {
     e.preventDefault()
@@ -58,7 +54,7 @@ const LayerAdminSettings = ({
       model.group = owned_by_group_id
     }
 
-    LayerActions.saveAdminSettings(model, _csrf, (err) => {
+    LayerActions.saveAdminSettings(model, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),
@@ -72,7 +68,7 @@ const LayerAdminSettings = ({
     })
   }
   const saveExternalLayerConfig = (config: string): void => {
-    LayerActions.saveExternalLayerConfig(config, _csrf, (err) => {
+    LayerActions.saveExternalLayerConfig(config, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),

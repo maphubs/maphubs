@@ -9,7 +9,6 @@ const debug = DebugService('stores/local-store')
 // var _assignIn = require('lodash.assignin');
 export type LocaleStoreState = {
   locale?: string
-  _csrf?: string
 }
 
 export default class LocaleStore extends Reflux.Store {
@@ -17,16 +16,14 @@ export default class LocaleStore extends Reflux.Store {
   constructor() {
     super()
     this.state = {
-      locale: 'en',
-      _csrf: null
+      locale: 'en'
     }
     this.listenables = Actions
   }
 
   reset(): void {
     this.setState({
-      locale: 'en',
-      _csrf: null
+      locale: 'en'
     })
   }
 

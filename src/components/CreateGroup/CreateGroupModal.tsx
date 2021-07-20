@@ -98,7 +98,6 @@ const CreateGroupModal = ({ onCreate }: Props): JSX.Element => {
       model.description,
       model.location,
       model.published,
-      _csrf,
       (err) => {
         if (err) {
           notification.error({

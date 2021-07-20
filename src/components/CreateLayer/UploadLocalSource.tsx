@@ -7,7 +7,6 @@ import { Element, scroller } from 'react-scroll'
 import superagent from 'superagent'
 import useT from '../../hooks/useT'
 import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -20,9 +19,7 @@ const UploadLocalSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
   const [canSubmit, setCanSubmit] = useState(false)
   const [bbox, setBBOX] = useState()
   const { t, locale } = useT()
-  const _csrf = useSelector(
-    (state: { locale: LocaleState }) => state.locale._csrf
-  )
+
   const layer = useSelector((state: { layer: any }) => state.layer)
   const { layer_id, style } = layer
 
@@ -36,7 +33,7 @@ const UploadLocalSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
       external_layer_type: '',
       external_layer_config: {}
     }
-    LayerActions.saveDataSettings(data, _csrf, (err) => {
+    LayerActions.saveDataSettings(data, (err) => {
       if (err) {
         notification.error({
           message: t('Server Error'),

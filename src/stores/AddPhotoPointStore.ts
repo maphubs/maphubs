@@ -126,7 +126,7 @@ export default class AddPhotoPointStore extends Reflux.Store {
     }
   }
 
-  submit(fields: any, _csrf: any, cb: any) {
+  submit(fields: any, cb: any) {
     debug.log('submit photo point')
 
     const { state, setState, trigger } = this
@@ -155,8 +155,7 @@ export default class AddPhotoPointStore extends Reflux.Store {
         layer_id: layer.layer_id,
         geoJSON: geoJSON,
         image,
-        imageInfo,
-        _csrf
+        imageInfo
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
