@@ -1,12 +1,15 @@
 import React from 'react'
 import getConfig from 'next/config'
 import { Row } from 'antd'
-import InteractiveMap from '../Map/InteractiveMap'
 import useT from '../../hooks/useT'
 import { Map } from '../../types/map'
 import { Layer } from '../../types/layer'
 import useSWR from 'swr'
 import useStickyResult from '../../hooks/useStickyResult'
+import dynamic from 'next/dynamic'
+const InteractiveMap = dynamic(() => import('../Map/InteractiveMap'), {
+  ssr: false
+})
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -39,7 +42,7 @@ const HomePageMap = ({
       shortid
       name
       description
-      sourxe
+      source
       data_type
       style
       legend_html

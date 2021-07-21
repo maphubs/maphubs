@@ -16,7 +16,7 @@ const FloatingAddButton = (props: Props): JSX.Element => {
 
   let user
   if (!loading) {
-    user = session.user
+    user = session?.user
   }
 
   // only render on the client side

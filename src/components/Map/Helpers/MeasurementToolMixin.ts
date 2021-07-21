@@ -1,19 +1,13 @@
 import _area from '@turf/area'
 import turf_length from '@turf/length'
 import { message } from 'antd'
+import MapboxDraw from '@mapbox/mapbox-gl-draw'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'Map/MeasureArea'
-)
-
-let MapboxDraw = {}
-
-if (typeof window !== 'undefined') {
-  MapboxDraw = require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js')
-}
+const debug = DebugService('Map/MeasureArea')
 
 export default {
-  toggleMeasurementTools(enable: boolean) {
+  toggleMeasurementTools(enable: boolean): void {
     if (enable && !this.state.enableMeasurementTools) {
       // start
       this.startMeasurementTool()
@@ -23,7 +17,7 @@ export default {
     }
   },
 
-  measureFeatureClick() {
+  measureFeatureClick(): void {
     const map = this.map
 
     const _this = this
@@ -66,7 +60,7 @@ export default {
     map.on('click', this.onMeasureFeatureClick)
   },
 
-  startMeasurementTool() {
+  startMeasurementTool(): void {
     const { t } = this.props
     const containers: Array<Record<string, any>> = this.props.containers
     const { dataEditorState } = containers
@@ -115,7 +109,7 @@ export default {
     })
   },
 
-  stopMeasurementTool() {
+  stopMeasurementTool(): void {
     this.map.removeControl(this.draw)
     this.setState({
       enableMeasurementTools: false,
@@ -135,28 +129,27 @@ export default {
         type: 'FeatureCollection',
         features: []
       }
-      features.forEach((feature) => {
+      for (const feature of features) {
         if (feature.geometry.type === 'Polygon') {
           polygons.features.push(feature)
         } else if (feature.geometry.type === 'LineString') {
           lines.features.push(feature)
         }
-      })
+      }
 
       if (polygons.features.length > 0) {
         const area = _area(polygons)
 
         // restrict to area to 2 decimal points
         const areaM2 = Math.round(area * 100) / 100
-        const areaKM2 = area * 0.000001
-        const areaHA = areaM2 / 10000
+        const areaKM2 = area * 0.000_001
+        const areaHA = areaM2 / 10_000
         let areaMessage = t('Total area: ')
 
-        if (areaM2 < 1000) {
-          areaMessage = areaMessage + areaM2.toLocaleString() + 'm2 '
-        } else {
-          areaMessage = areaMessage + areaKM2.toLocaleString() + 'km2 '
-        }
+        areaMessage =
+          areaM2 < 1000
+            ? areaMessage + areaM2.toLocaleString() + 'm2 '
+            : areaMessage + areaKM2.toLocaleString() + 'km2 '
 
         areaMessage = areaMessage + areaHA.toLocaleString() + 'ha'
         this.setState({
@@ -164,12 +157,12 @@ export default {
         })
       } else if (lines.features.length > 0) {
         let distanceKm = 0
-        lines.features.forEach((linestring) => {
+        for (const linestring of lines.features) {
           distanceKm += turf_length(linestring, {
             units: 'kilometers'
           })
-        })
-        const distanceMiles = distanceKm * 0.621371
+        }
+        const distanceMiles = distanceKm * 0.621_371
         const distanceMessage =
           'Total distance: ' +
           distanceKm.toLocaleString() +

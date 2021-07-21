@@ -72,63 +72,48 @@ type PageConfig {
   mapConfig: JSON
 }
 
-type FeatureInfo  {
-  feature:  {
-    name: String
-    type: String
-    features: JSON
-    layer_id: Int
-    bbox: JSON
-    mhid: String
-  }
+type LayerNotes {
   notes: String
-  photo: JSON
-  layer: Layer
-  canEdit: boolean
 }
-
 
 type Query {
   # Groups
   groups(locale: String): [Group] #locale is used to pre-sort alphabetically
-  group(id: String!): Group
-  featuredGroups(limits: Int): [Group]
-  recentGroups(limits: Int): [Group]
-  groupLayers(id: String!, includeMapInfo: Boolean): [Layer]
-  groupMaps(id: String!): [Map]
-  groupStories(id: String!): [Story]
+  group(id: String): Group
+  featuredGroups(limit: Int): [Group]
+  recentGroups(limit: Int): [Group]
+  groupLayers(id: String, includeMapInfo: Boolean): [Layer]
+  groupMaps(id: String): [Map]
+  groupStories(id: String): [Story]
   allowedToModifyGroup(id: String): Boolean
-  groupMembers(id: String!): [User]
+  groupMembers(id: String): [User]
 
   # Layers
-  layer(id: Int!): Layer
+  layer(id: Int): Layer
   layers: [Layer]
-  featuredLayers(limits: Int): [Layer]
-  recentLayers(limits: Int): [Layer]
-  popularLayers(limits: Int, attachPermissions: Boolean): [Layer]
+  featuredLayers(limit: Int): [Layer]
+  recentLayers(limit: Int): [Layer]
+  popularLayers(limit: Int, attachPermissions: Boolean): [Layer]
   layerStats: LayerStats
-  allowedToModifyLayer(id: Int!): Boolean
-  myLayers(limits: Int): [Layer]
-  layerNotes: {notes: String}
+  allowedToModifyLayer(id: Int): Boolean
+  myLayers(limit: Int): [Layer]
+  layerNotes(id: Int): LayerNotes
 
   # Stories
   stories: [Story]
-  story(id: Int!): Story
-  featuredStories(limits: Int): [Story]
-  recentStories(limits: Int, tags: [String]): [Story]
-  allowedToModifyStory(id: Int!): Boolean
+  story(id: Int): Story
+  featuredStories(limit: Int): [Story]
+  recentStories(limit: Int, tags: JSON): [Story]
+  allowedToModifyStory(id: Int): Boolean
 
   # Maps
   maps(locale: String): [Map]
-  map(id: Int!): Map
-  featuredMaps(limits: Int): [Map]
-  recentMaps(limits: Int): [Map]
-  mapLayers(id: Int!, attachPermissions: Boolean): [Layer]
-  allowedToModifyMap(id: Int!): Boolean
+  map(id: Int): Map
+  featuredMaps(limit: Int): [Map]
+  recentMaps(limit: Int): [Map]
+  mapLayers(id: Int, attachPermissions: Boolean): [Layer]
+  allowedToModifyMap(id: Int): Boolean
   myMaps: [Map]
-
-  # Feature
-  featureInfo(layer_Id: Int!, mhid: String!) FeatureInfo
 
   # Users
   #account: User

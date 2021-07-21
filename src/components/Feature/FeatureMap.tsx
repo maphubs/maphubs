@@ -1,10 +1,13 @@
 /* eslint-disable unicorn/numeric-separators-style */
 import React, { useRef } from 'react'
 import { Subscribe } from 'unstated'
-import InteractiveMap from '../Map/InteractiveMap'
 import FRContainer from './containers/FRContainer'
 import getConfig from 'next/config'
 import useT from '../../hooks/useT'
+import dynamic from 'next/dynamic'
+const InteractiveMap = dynamic(() => import('../Map/InteractiveMap'), {
+  ssr: false
+})
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {

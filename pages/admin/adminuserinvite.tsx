@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { getSession } from 'next-auth/client'
+import { GetServerSideProps } from 'next'
 import Formsy from 'formsy-react'
 import TextInput from '../../src/components/forms/textInput'
 import Layout from '../../src/components/Layout'
@@ -26,6 +28,8 @@ import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import { checkClientError } from '../../src/services/client-error-response'
 import useT from '../../src/hooks/useT'
 
+import AdminModel from '../../src/models/admin'
+
 const { confirm } = Modal
 const { Title } = Typography
 
@@ -39,7 +43,30 @@ type User = {
   admin?: boolean
 }
 
-const AdminUserInvite = (): JSX.Element => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context)
+
+  if (!session.user.admin) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
+
+  return {
+    props: {
+      siteMembers: await AdminModel.getMembers()
+    }
+  }
+}
+
+const AdminUserInvite = ({
+  siteMembers
+}: {
+  siteMembers: User[]
+}): JSX.Element => {
   const { t } = useT()
   const [canSubmit, setCanSubmit] = useState(false)
   const [members, setMembers] = useState<User[]>(siteMembers)
@@ -349,7 +376,7 @@ const AdminUserInvite = (): JSX.Element => {
   ]
   return (
     <ErrorBoundary t={t}>
-      <Layout title={t('User Management')} hideFooter>
+      <Layout title={t('Manage Users')} hideFooter>
         <div className='container'>
           <Title>{t('Manage Users')}</Title>
           <Row

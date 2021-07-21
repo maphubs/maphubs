@@ -232,7 +232,6 @@ export default class MyDocument extends Document {
                 content={options.twitterCard.imageHeight}
               />
             )}
-          <link rel='stylesheet' type='text/css' href='/css/maphubs.css' />
 
           {options.talkComments && (
             <script

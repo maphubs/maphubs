@@ -1,4 +1,3 @@
-import passport from 'passport'
 import User from '../../models/user'
 import Admin from '../../models/admin'
 import Group from '../../models/group'
@@ -13,92 +12,6 @@ const csrfProtection = csurf({
 })
 
 export default function (app: any): void {
-  app.get('/signup/invite/:key', csrfProtection, async (req, res, next) => {
-    try {
-      const inviteKey = req.params.key
-
-      if (inviteKey) {
-        if (await Admin.checkInviteKey(inviteKey)) {
-          const email = await Admin.useInvite(inviteKey)
-          // check if auth0 already
-          let existingAccount = false
-          const accessToken = await Auth0Helper.getManagementToken()
-          const auth0Accounts = await Auth0Helper.findUserByEmail(
-            email,
-            accessToken
-          )
-
-          if (
-            auth0Accounts &&
-            Array.isArray(auth0Accounts) &&
-            auth0Accounts.length > 0
-          ) {
-            log.info(`Found User: ${JSON.stringify(auth0Accounts)}`)
-            existingAccount = true
-          }
-
-          const middleware = passport.authenticate('auth0', {
-            clientID: local.AUTH0_CLIENT_ID,
-            domain: local.AUTH0_DOMAIN,
-            redirectUri: local.AUTH0_CALLBACK_URL,
-            audience: 'https://users.maphubs.com',
-            responseType: 'code',
-            scope: 'openid profile email',
-            allowlogin: existingAccount ? 'true' : 'false',
-            allowsignup: existingAccount ? 'false' : 'true',
-            login_hint: email,
-            screen_hint: !existingAccount ? 'signup' : undefined
-          })
-          return middleware(req, res, next)
-        } else {
-          return app.next.render(
-            req,
-            res,
-            '/error',
-            await pageOptions(req, {
-              title: req.__('Invalid Key'),
-              props: {
-                title: req.__('Invite Key Invalid'),
-                error: req.__(
-                  'The key used was invalid or has already been used. Please contact an administrator.'
-                ),
-                url: req.url
-              }
-            })
-          )
-        }
-      } else {
-        return res.redirect('/login')
-      }
-    } catch (err) {
-      nextError(next)(err)
-    }
-  })
-  app.get(
-    '/signup',
-    passport.authenticate('auth0', {
-      clientID: local.AUTH0_CLIENT_ID,
-      domain: local.AUTH0_DOMAIN,
-      redirectUri: local.AUTH0_CALLBACK_URL,
-      audience: 'https://users.maphubs.com',
-      responseType: 'code',
-      scope: 'openid profile email',
-      allowlogin: 'false',
-      screen_hint: 'signup'
-    })
-  )
-  app.post('/api/user/setlocale', (req, res) => {
-    const data = req.body
-
-    if (data.locale) {
-      req.session.locale = data.locale
-      req.setLocale(data.locale)
-    }
-
-    res.status(200).send({
-      success: true
-    })
-  })
   // can be used to dynamically check for login status, so should be public
   app.all('/api/user/details/json', csrfProtection, async (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {

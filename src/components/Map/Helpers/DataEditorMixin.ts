@@ -1,16 +1,10 @@
 import type { Layer } from '../../../types/layer'
 import theme from '@mapbox/mapbox-gl-draw/src/lib/theme'
-import 'jquery'
+import MapboxDraw from '@mapbox/mapbox-gl-draw'
+//import 'jquery'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 
-const debug = require('@bit/kriscarle.maphubs-utils.maphubs-utils.debug')(
-  'Map/DataEditorMixin'
-)
-
-let MapboxDraw
-
-if (typeof window !== 'undefined') {
-  MapboxDraw = require('@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.js')
-}
+const debug = DebugService('Map/DataEditorMixin')
 
 export default {
   getFirstDrawLayerID(): any {

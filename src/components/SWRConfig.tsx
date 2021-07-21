@@ -20,17 +20,21 @@ export default function POKSSWRConfig({
 
           console.log('SWR Error')
           console.log(error.message)
+          /*
           dispatch({
             type: 'UPDATE_DATA_STATUS',
             status: 'error',
             error: error.message
           })
+          */
         },
         onSuccess: () => {
+          /*
           dispatch({
             type: 'UPDATE_DATA_STATUS',
             status: 'success'
           })
+          */
         }
       }}
     >

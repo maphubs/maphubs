@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/client'
-import InteractiveMap from '../../../src/components/Map/InteractiveMap'
 import Layout from '../../../src/components/Layout'
 import { message } from 'antd'
 import PublicShareModal from '../../../src/components/InteractiveMap/PublicShareModal'
@@ -23,6 +22,13 @@ import { Map } from '../../../src/types/map'
 import { Layer } from '../../../src/types/layer'
 import useSWR from 'swr'
 import useStickyResult from '../../../src/hooks/useStickyResult'
+import dynamic from 'next/dynamic'
+const InteractiveMap = dynamic(
+  () => import('../../../src/components/Map/InteractiveMap'),
+  {
+    ssr: false
+  }
+)
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -63,7 +69,7 @@ const UserMap = (): JSX.Element => {
       shortid
       name
       description
-      sourxe
+      source
       data_type
       style
       legend_html

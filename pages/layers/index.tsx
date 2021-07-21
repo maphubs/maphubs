@@ -47,63 +47,71 @@ const Layers = (): JSX.Element => {
   } = useStickyResult(data) || {}
   const { featuredLayers, recentLayers, popularLayers } = stickyData
 
-  const featuredCards = featuredLayers.map((layer) =>
-    cardUtil.getLayerCard(layer)
-  )
-  const recentCards = recentLayers.map((layer) => cardUtil.getLayerCard(layer))
-  const popularCards = popularLayers.map((layer) =>
-    cardUtil.getLayerCard(layer)
-  )
+  const featuredCards = featuredLayers
+    ? featuredLayers.map((layer) => cardUtil.getLayerCard(layer))
+    : []
+  const recentCards = recentLayers
+    ? recentLayers.map((layer) => cardUtil.getLayerCard(layer))
+    : []
+  const popularCards = popularLayers
+    ? popularLayers.map((layer) => cardUtil.getLayerCard(layer))
+    : []
   return (
     <ErrorBoundary t={t}>
       <Layout title={t('Layers')} activePage='layers'>
-        <Row
+        <div
           style={{
-            marginTop: '20px',
-            marginBottom: '10px'
+            margin: '10px'
           }}
         >
-          <Title level={2}>{t('Layers')}</Title>
-        </Row>
-        <CardSearch cardType='layer' t={t} />
-        {featuredCards.length > 0 && (
+          <Row
+            style={{
+              marginTop: '20px',
+              marginBottom: '10px'
+            }}
+          >
+            <Title level={2}>{t('Layers')}</Title>
+          </Row>
+          <CardSearch cardType='layer' t={t} />
+          {featuredCards.length > 0 && (
+            <CardCollection
+              title={t('Featured')}
+              cards={featuredCards}
+              viewAllLink='/layers/all'
+              t={t}
+            />
+          )}
           <CardCollection
-            title={t('Featured')}
-            cards={featuredCards}
+            title={t('Popular')}
+            cards={popularCards}
             viewAllLink='/layers/all'
             t={t}
           />
-        )}
-        <CardCollection
-          title={t('Popular')}
-          cards={popularCards}
-          viewAllLink='/layers/all'
-          t={t}
-        />
-        <CardCollection
-          title={t('Recent')}
-          cards={recentCards}
-          viewAllLink='/layers/all'
-          t={t}
-        />
+          <CardCollection
+            title={t('Recent')}
+            cards={recentCards}
+            viewAllLink='/layers/all'
+            t={t}
+          />
 
-        <FloatingAddButton
-          onClick={() => {
-            window.location.assign('/createlayer')
-          }}
-          tooltip={t('Create New Layer')}
-        />
-        <Row
-          justify='center'
-          style={{
-            paddingBottom: '20px',
-            textAlign: 'center'
-          }}
-        >
-          <Button type='primary' href='/layers/all'>
-            {t('View All Layers')}
-          </Button>
-        </Row>
+          <FloatingAddButton
+            onClick={() => {
+              window.location.assign('/createlayer')
+            }}
+            tooltip={t('Create New Layer')}
+          />
+          <Row
+            justify='center'
+            style={{
+              paddingBottom: '20px',
+              textAlign: 'center'
+            }}
+          >
+            <Button type='primary' href='/layers/all'>
+              {t('View All Layers')}
+            </Button>
+          </Row>
+        </div>
       </Layout>
     </ErrorBoundary>
   )

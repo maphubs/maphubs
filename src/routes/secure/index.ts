@@ -1,10 +1,8 @@
 import admin from './admin'
 import groupViews from './groups-views'
-import layerMetricApi from './layer-metric-api'
 import layersReplace from './layers-replace'
 import pages from './pages'
 import storiesViews from './stories-views'
-import auth from './auth'
 import home from './home'
 import layerUpload from './layer-upload'
 import layersViews from './layers-views'
@@ -22,7 +20,6 @@ import features from './features'
 import isochroneService from './isochrone-service'
 import layersImport from './layers-import'
 import mapViews from './map-views'
-//import search from './search'
 import groupsApi from './groups-api'
 import layerData from './layer-data'
 import layersRemote from './layers-remote'
@@ -32,11 +29,9 @@ import storiesApi from './stories-api'
 export default function (app: any): void {
   admin(app)
   groupViews(app)
-  layerMetricApi(app)
   layersReplace(app)
   pages(app)
   storiesViews(app)
-  auth(app)
   home(app)
   layerUpload(app)
   layersViews(app)
@@ -54,7 +49,6 @@ export default function (app: any): void {
   isochroneService(app)
   layersImport(app)
   mapViews(app)
-  //search(app)
   groupsApi(app)
   layerData(app)
   layersRemote(app)

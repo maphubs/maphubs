@@ -1,7 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import Layout from '../../../src/components/Layout'
-import MapMaker from '../../../src/components/MapMaker/MapMaker'
 import slugify from 'slugify'
 import ErrorBoundary from '../../../src/components/ErrorBoundary'
 import type { Layer } from '../../../src/types/layer'
@@ -11,6 +10,14 @@ import useT from '../../../src/hooks/useT'
 import useSWR from 'swr'
 import useStickyResult from '../../../src/hooks/useStickyResult'
 import { Map } from '../../../src/types/map'
+
+import dynamic from 'next/dynamic'
+const MapMaker = dynamic(
+  () => import('../../../src/components/MapMaker/MapMaker'),
+  {
+    ssr: false
+  }
+)
 
 const MapEdit = (): JSX.Element => {
   const router = useRouter()
@@ -39,7 +46,7 @@ const MapEdit = (): JSX.Element => {
       shortid
       name
       description
-      sourxe
+      source
       data_type
       style
       legend_html
@@ -49,7 +56,7 @@ const MapEdit = (): JSX.Element => {
       shortid
       name
       description
-      sourxe
+      source
       data_type
       style
       legend_html
@@ -59,7 +66,7 @@ const MapEdit = (): JSX.Element => {
       shortid
       name
       description
-      sourxe
+      source
       data_type
       style
       legend_html

@@ -47,7 +47,7 @@ const Footer = ({
                       style={{
                         marginTop: '10px'
                       }}
-                      src='https://hpvhe47439ygwrt.belugacdn.link/maphubs/assets/maphubs-logo-small.png'
+                      src='https://cdn-maphubs.b-cdn.net/maphubs/assets/maphubs-logo-small.png'
                       alt='MapHubs.com'
                     />
                   </a>

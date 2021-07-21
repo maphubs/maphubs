@@ -1,34 +1,34 @@
 import React, { useState, useEffect } from 'react'
-import Layout from '../src/components/Layout'
+import Layout from '../../src/components/Layout'
 import { GetServerSideProps } from 'next'
 import { Row, Col, Divider, Typography, Card } from 'antd'
 import TrendingUpIcon from '@material-ui/icons/TrendingUp'
-import CardCarousel from '../src/components/CardCarousel/CardCarousel'
-import StorySummary from '../src/components/Story/StorySummary'
-import Slides from '../src/components/Home/Slides'
-import OnboardingLinks from '../src/components/Home/OnboardingLinks'
-import MapHubsProLinks from '../src/components/Home/MapHubsProLinks'
+import CardCarousel from '../../src/components/CardCarousel/CardCarousel'
+import StorySummary from '../../src/components/Story/StorySummary'
+import Slides from '../../src/components/Home/Slides'
+import OnboardingLinks from '../../src/components/Home/OnboardingLinks'
+import MapHubsProLinks from '../../src/components/Home/MapHubsProLinks'
 import _shuffle from 'lodash.shuffle'
-import cardUtil from '../src/services/card-util'
+import cardUtil from '../../src/services/card-util'
 
-import type { Layer } from '../src/types/layer'
-import type { Group } from '../src/stores/GroupStore'
-import ErrorBoundary from '../src/components/ErrorBoundary'
-import XComponentReact from '../src/components/XComponentReact'
+import type { Layer } from '../../src/types/layer'
+import type { Group } from '../../src/stores/GroupStore'
+import ErrorBoundary from '../../src/components/ErrorBoundary'
+import XComponentReact from '../../src/components/XComponentReact'
 import getConfig from 'next/config'
-import { Story } from '../src/types/story'
-import useT from '../src/hooks/useT'
-import HomePageMap from '../src/components/Home/HomePageMap'
-import HomePageButton from '../src/components/Home/HomePageButton'
-import { Map } from '../src/types/map'
-import { LocalizedString } from '../src/types/LocalizedString'
+import { Story } from '../../src/types/story'
+import useT from '../../src/hooks/useT'
+import HomePageMap from '../../src/components/Home/HomePageMap'
+import HomePageButton from '../../src/components/Home/HomePageButton'
+import { Map } from '../../src/types/map'
+import { LocalizedString } from '../../src/types/LocalizedString'
 
 // SSR only
-import PageModel from '../src/models/page'
-import StoryModel from '../src/models/story'
-import GroupModel from '../src/models/group'
-import LayerModel from '../src/models/layer'
-import MapModel from '../src/models/map'
+import PageModel from '../../src/models/page'
+import StoryModel from '../../src/models/story'
+import GroupModel from '../../src/models/group'
+import LayerModel from '../../src/models/layer'
+import MapModel from '../../src/models/map'
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
@@ -57,16 +57,26 @@ type PageConfig = {
 
 // use SSR for SEO
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let pageConfig = { components: [] }
-  const result = await PageModel.getPageConfigs(['home'])
-  if (result.length > 0) {
-    pageConfig = result[0]
+  let pageConfig
+  if (context.params.custom) {
+    const page = context.params.custom as string
+    console.log(`looking for page ${page}`)
+    const result = await PageModel.getPageConfigs([page])
+    if (result.length > 0) {
+      pageConfig = result[0]
+    } else {
+      console.log(`no page found for ${page}`)
+    }
   }
 
+  if (!pageConfig) {
+    return {
+      notFound: true
+    }
+  }
   const results: Props = {}
 
   if (
-    pageConfig &&
     pageConfig.components &&
     Array.isArray(pageConfig.components) &&
     pageConfig.components.length > 0

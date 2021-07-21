@@ -36,6 +36,7 @@ import ScalePositionControl from 'mapbox-gl-dual-scale-control'
 import MapboxLanguage from '@mapbox/mapbox-gl-language'
 import lunr from 'lunr'
 import { LocalizedString } from '../../types/LocalizedString'
+
 const debug = DebugService('map')
 type Props = {
   className: string
@@ -117,7 +118,7 @@ class Map extends React.Component<Props, State> {
     showMapTools: true,
     showSearch: true,
     showPlayButton: true,
-    navPosition: 'top-right',
+    navPosition: 'top-right' as Props['navPosition'],
     showLogo: true,
     insetMap: true,
     showScale: true,
@@ -1158,4 +1159,4 @@ export default subscribe(Map, {
   baseMapState: BaseMapContainer,
   dataEditorState: DataEditorContainer,
   mapState: MapContainer
-}) as Map
+}) as unknown as typeof Map

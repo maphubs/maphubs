@@ -1,5 +1,7 @@
 import React from 'react'
 import { useRouter } from 'next/router'
+import { GetServerSideProps } from 'next'
+import { getSession } from 'next-auth/client'
 import { Row, Col } from 'antd'
 import Head from 'next/head'
 import Layout from '../../src/components/Layout'
@@ -13,20 +15,45 @@ import Edit from '@material-ui/icons/Edit'
 import getConfig from 'next/config'
 import { Story } from '../../src/types/story'
 import useT from '../../src/hooks/useT'
-import useSWR from 'swr'
-import useStickyResult from '../../src/hooks/useStickyResult'
+
+//SSR only
+import StoryModel from '../../src/models/story'
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
   story: Story
-  username: string
-  canEdit: boolean
+  allowedToModifyStory: boolean
 }
-const StoryPage = (): JSX.Element => {
+
+// use SSR for stories for SEO
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const story_id = Number.parseInt(context.params.story[0])
+  const story = await StoryModel.getStoryById(story_id)
+  const session = await getSession(context)
+  let allowedToModifyStory
+  if (session?.user) {
+    allowedToModifyStory = await StoryModel.allowedToModify(
+      story_id,
+      session.user.id || session.user.sub
+    )
+  }
+  if (!story) {
+    return {
+      notFound: true
+    }
+  }
+  return {
+    props: {
+      story,
+      allowedToModifyStory
+    }
+  }
+}
+
+const StoryPage = ({ story, allowedToModifyStory }: Props): JSX.Element => {
   const router = useRouter()
   const { t } = useT()
-  const slug = router.query.story || []
-  const id = slug[0]
+
   // FIXME: Embeddly support
   /*
     for (const element of document.querySelectorAll('oembed[url]')) {
@@ -38,28 +65,6 @@ const StoryPage = (): JSX.Element => {
       element.append(anchor)
     }
     */
-  const { data } = useSWR([
-    `
-    {
-      story(id: "{id}") {
-        story_id
-        title
-        body
-        author
-        owned_by_group_id
-        groupname
-        published_at
-      }
-      allowedToModifyStory(id: "{id}")
-    }
-    `,
-    id
-  ])
-  const stickyData: {
-    story: Story
-    allowedToModifyStory: boolean
-  } = useStickyResult(data) || {}
-  const { story, allowedToModifyStory } = stickyData
 
   let shareAndDiscuss = <></>
 

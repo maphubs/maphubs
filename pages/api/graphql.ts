@@ -8,7 +8,13 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import local from '../../src/config'
 
 const signingKey = process.env.JWT_SIGNING_PRIVATE_KEY
-const schema = importSchema('./src/graphql/schema.graphql')
+let schema = ''
+try {
+  schema = importSchema('./src/graphql/schema.graphql')
+} catch (err) {
+  console.error('failed to init schema')
+  console.error(err.message)
+}
 const typeDefs = gql`
   ${schema}
 `
@@ -39,16 +45,26 @@ const apolloServer = new ApolloServer({
     return err
   }
 })
-export const config = {
-  api: {
-    bodyParser: false,
-    externalResolver: true
+const startServer = apolloServer.start()
+
+export default async function handler(req, res) {
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    'https://studio.apollographql.com'
+  )
+
+  res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT')
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  )
+  res.setHeader('Access-Control-Allow-Credentials', 'true')
+
+  if (req.method === 'OPTIONS') {
+    res.end()
+    return false
   }
-}
-export default async (
-  req: NextApiRequest,
-  res: NextApiResponse
-): Promise<void> => {
+
   const token = await jwt.getToken({
     req,
     signingKey
@@ -57,6 +73,7 @@ export default async (
   if (token) {
     // Signed in
     if (await isMember(token)) {
+      await startServer
       return apolloServer.createHandler({
         path: '/api/graphql'
       })(req, res)
@@ -64,11 +81,18 @@ export default async (
       res.status(401).send('unauthorized')
     }
   } else if (!local.requireLogin) {
+    await startServer
     return apolloServer.createHandler({
       path: '/api/graphql'
     })(req, res)
   } else {
     // Not Signed in
     res.status(401).send('unauthorized')
+  }
+}
+
+export const config = {
+  api: {
+    bodyParser: false
   }
 }

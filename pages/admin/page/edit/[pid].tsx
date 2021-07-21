@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { getSession } from 'next-auth/client'
+import { GetServerSideProps } from 'next'
 import Layout from '../../../../src/components/Layout'
 import { Row, Col, List, Button, Empty, message, notification } from 'antd'
 import LocalizedCodeEditor from '../../../../src/components/forms/LocalizedCodeEditor'
@@ -10,6 +12,9 @@ import dynamic from 'next/dynamic'
 import { checkClientError } from '../../../../src/services/client-error-response'
 import useT from '../../../../src/hooks/useT'
 
+// ssr only
+import PageModel from '../../../../src/models/page'
+
 const CodeEditor = dynamic(
   () => import('../../../../src/components/LayerDesigner/CodeEditor'),
   {
@@ -17,7 +22,34 @@ const CodeEditor = dynamic(
   }
 )
 
-const PageEdit = (): JSX.Element => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const cid = context.query.cid as string
+  const pageConfig = await PageModel.getPageConfigs([cid])[0]
+
+  const session = await getSession(context)
+
+  if (!session.user.admin) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false
+      }
+    }
+  }
+
+  if (!pageConfig) {
+    return {
+      notFound: true
+    }
+  }
+  return {
+    props: {
+      pageConfig
+    }
+  }
+}
+
+const PageEdit = ({ pageConfig }: { pageConfig: any }): JSX.Element => {
   const router = useRouter()
   const { pid } = router.query
   const { t } = useT()

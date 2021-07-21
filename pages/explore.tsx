@@ -140,18 +140,20 @@ const Explore = (): JSX.Element => {
     }
   }
 
-  const storyCards = _shuffle(
-    dataMap.stories[storyMode].map((s) => cardUtil.getStoryCard(s, t))
-  )
-  const mapCards = _shuffle(
-    dataMap.maps[mapMode].map((m) => cardUtil.getMapCard(m))
-  )
-  const groupCards = _shuffle(
-    dataMap.groups[groupMode].map((g) => cardUtil.getGroupCard(g))
-  )
-  const layerCards = _shuffle(
-    dataMap.layers[layerMode].map((l) => cardUtil.getLayerCard(l))
-  )
+  const storyCards = dataMap.stories[storyMode]
+    ? _shuffle(
+        dataMap.stories[storyMode].map((s) => cardUtil.getStoryCard(s, t))
+      )
+    : []
+  const mapCards = dataMap.maps[mapMode]
+    ? _shuffle(dataMap.maps[mapMode].map((m) => cardUtil.getMapCard(m)))
+    : []
+  const groupCards = dataMap.groups[groupMode]
+    ? _shuffle(dataMap.groups[groupMode].map((g) => cardUtil.getGroupCard(g)))
+    : []
+  const layerCards = dataMap.layers[layerMode]
+    ? _shuffle(dataMap.layers[layerMode].map((l) => cardUtil.getLayerCard(l)))
+    : []
 
   return (
     <ErrorBoundary t={t}>

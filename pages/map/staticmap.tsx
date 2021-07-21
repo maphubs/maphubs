@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import MiniLegend from '../../src/components/Map/MiniLegend'
-import Map from '../../src/components/Map'
 import { Row, Col, Switch, Modal, message } from 'antd'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import getConfig from 'next/config'
@@ -11,6 +10,10 @@ import useT from '../../src/hooks/useT'
 import useSWR from 'swr'
 import useStickyResult from '../../src/hooks/useStickyResult'
 import { Map as MapType } from '../../src/types/map'
+import dynamic from 'next/dynamic'
+const MapHubsMap = dynamic(() => import('../../src/components/Map'), {
+  ssr: false
+})
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
@@ -69,7 +72,7 @@ const StaticMap = (): JSX.Element => {
       shortid
       name
       description
-      sourxe
+      source
       data_type
       style
       legend_html
@@ -274,7 +277,7 @@ const StaticMap = (): JSX.Element => {
       )}
       <Row>
         <div className='embed-map'>
-          <Map
+          <MapHubsMap
             id='static-map'
             interactive={false}
             showPlayButton={false}

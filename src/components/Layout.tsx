@@ -53,9 +53,9 @@ const Layout = ({
     )
   }
 
-  const { pageConfig } = stickyData
+  const { pageConfig } = stickyData || {}
 
-  const { headerConfig, footerConfig } = pageConfig
+  const { headerConfig, footerConfig } = pageConfig || {}
 
   return (
     <>

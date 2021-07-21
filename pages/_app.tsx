@@ -10,6 +10,8 @@ import { useStore } from '../src/redux/store'
 //SWR
 import SWRConfig from '../src/components/SWRConfig'
 
+import { QueryParamProvider } from '../src/components/QueryParamProvider'
+
 import '../src/maphubs.scss'
 
 const MapHubs = ({ Component, pageProps, err }: any): JSX.Element => {
@@ -29,7 +31,9 @@ const MapHubs = ({ Component, pageProps, err }: any): JSX.Element => {
       >
         <Provider store={store}>
           <SWRConfig>
-            <Component {...pageProps} err={err} />
+            <QueryParamProvider>
+              <Component {...pageProps} err={err} />
+            </QueryParamProvider>
           </SWRConfig>
         </Provider>
       </NextAuthProvider>

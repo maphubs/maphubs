@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import InteractiveMap from '../../../src/components/Map/InteractiveMap'
+import { GetServerSideProps } from 'next'
+import { getSession } from 'next-auth/client'
 import ExternalLink from '../../../src/components/LayerInfo/ExternalLink'
 import Layout from '../../../src/components/Layout'
 import _find from 'lodash.find'
@@ -45,8 +46,6 @@ import {
 } from 'react-intl'
 import request from 'superagent'
 
-import fireResizeEvent from '../../../src/services/fire-resize-event'
-
 import ErrorBoundary from '../../../src/components/ErrorBoundary'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import moment from 'moment-timezone'
@@ -55,8 +54,18 @@ import getConfig from 'next/config'
 import { Layer } from '../../../src/types/layer'
 import useT from '../../../src/hooks/useT'
 import { FeatureCollection } from 'geojson'
-import useSWR from 'swr'
-import useStickyResult from '../../../src/hooks/useStickyResult'
+
+//SSR Only
+import LayerModel from '../../../src/models/layer'
+import PageModel from '../../../src/models/page'
+
+import dynamic from 'next/dynamic'
+const InteractiveMap = dynamic(
+  () => import('../../../src/components/Map/InteractiveMap'),
+  {
+    ssr: false
+  }
+)
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const TabPane = Tabs.TabPane
@@ -71,51 +80,56 @@ type GeoJSONState = {
   area?: number
 }
 
-const LayerInfo = (): JSX.Element => {
+type Props = {
+  layer: Layer
+  layerNotes: { notes: string }
+  allowedToModifyLayer: boolean
+  mapConfig: Record<string, unknown>
+  layerStats: { stats: { maps: number; stories: number } }
+}
+
+// use SSR for SEO
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const layer_id = Number.parseInt(context.params.layerinfo[0])
+  const layer = await LayerModel.getLayerByID(layer_id)
+  const session = await getSession(context)
+  let allowedToModifyLayer
+  if (session?.user) {
+    allowedToModifyLayer = await LayerModel.allowedToModify(
+      layer_id,
+      session.user.id || session.user.sub
+    )
+  }
+  if (!layer) {
+    return {
+      notFound: true
+    }
+  }
+
+  const mapConfig = await PageModel.getPageConfigs(['map'])[0]
+  return {
+    props: {
+      layer,
+      layerNotes: await LayerModel.getLayerNotes(layer_id),
+      mapConfig,
+      allowedToModifyLayer
+    }
+  }
+}
+
+const LayerInfo = ({
+  layer,
+  layerNotes,
+  allowedToModifyLayer,
+  mapConfig,
+  layerStats
+}: Props): JSX.Element => {
   const router = useRouter()
   const { t, locale } = useT()
   const [dataMsg, setDataMsg] = useState(t('Data Loading'))
   const [geoJSONState, setGeoJSONState] = useState<GeoJSONState>({
     length: 0
   })
-
-  const slug = router.query.layerinfo || []
-  const layer_id = slug[0]
-
-  const { data } = useSWR([
-    `
-  {
-    layer(id: "{id}") {
-      layer_id
-      name
-      description
-      source
-      style
-      owned_by_group_id
-      remote
-      creation_time
-    }
-    layerNotes(id: "{id}") {
-      notes
-    }
-    layerStats(id: "{id}") {
-      stats
-    }
-    allowedToModifyLayer(id: "{id}")
-    mapConfig
-  }
-  `,
-    layer_id
-  ])
-  const stickyData: {
-    layer: Layer
-    layerNotes: { notes: string }
-    allowedToModifyLayer: boolean
-    mapConfig: Record<string, unknown>
-    layerStats: { stats: { maps: number; stories: number } }
-  } = useStickyResult(data) || {}
-  const { layer, layerNotes, allowedToModifyLayer, mapConfig, layerStats } =
-    stickyData
 
   /*
     const baseMapContainerInit: {
@@ -134,112 +148,116 @@ const LayerInfo = (): JSX.Element => {
   useEffect(() => {
     const elc = layer.external_layer_config
 
-    try {
-      if (layer.is_external) {
-        let geoJSON
+    const getGeoJSON = async (): Promise<void> => {
+      let baseUrl, dataUrl
 
-        // retreive geoJSON data for layers
-        switch (elc.type) {
-          case 'ags-mapserver-query': {
-            geoJSON = await TerraformerGL.getArcGISGeoJSON(elc.url)
-            break
-          }
-          case 'ags-featureserver-query': {
-            geoJSON = await TerraformerGL.getArcGISFeatureServiceGeoJSON(
-              elc.url
-            )
-            break
-          }
-          case 'geojson': {
-            const res = await request.get(elc.data).type('json').accept('json')
-            geoJSON = res.body
-            break
-          }
-          default: {
-            setDataMsg(t('Data table not support for this layer.'))
-          }
-        }
-
-        if (geoJSON)
-          setGeoJSONState({
-            geoJSON,
-            count: geoJSONState.count,
-            area: geoJSONState.area,
-            length: geoJSONState.length
-          })
+      if (layer.remote) {
+        baseUrl = 'https://' + layer.remote_host
+        dataUrl = `${baseUrl}/api/layer/${layer.remote_layer_id}/export/geobuf/data.pbf`
       } else {
-        getGeoJSON()
-        setDataMsg(t('Data Loading'))
+        baseUrl = urlUtil.getBaseUrl()
+        dataUrl = `${baseUrl}/api/layer/${layer.layer_id}/export/geobuf/data.pbf`
       }
-    } catch (err) {
-      debug.error(err)
-      notification.error({
-        message: t('Error'),
-        description: err.message || err.toString() || err,
-        duration: 0
-      })
-    }
-  }, [])
 
-  const getGeoJSON = async (): Promise<void> => {
-    let baseUrl, dataUrl
+      try {
+        const res = await request
+          .get(dataUrl)
+          .responseType('blob')
+          .parse(request.parse.image)
+        const arrayBuffer = await new Response(res.body).arrayBuffer()
+        const geoJSON = geobuf.decode(new Pbf(arrayBuffer))
+        const count = geoJSON.features.length
+        let area
+        let length = 0
 
-    if (layer.remote) {
-      baseUrl = 'https://' + layer.remote_host
-      dataUrl = `${baseUrl}/api/layer/${layer.remote_layer_id}/export/geobuf/data.pbf`
-    } else {
-      baseUrl = urlUtil.getBaseUrl()
-      dataUrl = `${baseUrl}/api/layer/${layer.layer_id}/export/geobuf/data.pbf`
-    }
+        if (layer.data_type === 'polygon') {
+          const areaM2 = turf_area(geoJSON)
 
-    try {
-      const res = await request
-        .get(dataUrl)
-        .responseType('blob')
-        .parse(request.parse.image)
-      const arrayBuffer = await new Response(res.body).arrayBuffer()
-      const geoJSON = geobuf.decode(new Pbf(arrayBuffer))
-      const count = geoJSON.features.length
-      let area
-      let length = 0
-
-      if (layer.data_type === 'polygon') {
-        const areaM2 = turf_area(geoJSON)
-
-        if (areaM2 && areaM2 > 0) {
-          area = areaM2 / 10000
-        }
-      } else if (layer.data_type === 'line') {
-        for (const feature of geoJSON.features) {
-          if (
-            feature.geometry.type === 'LineString' ||
-            feature.geometry.type === 'MultiLineString'
-          ) {
-            length += turf_length(feature.geometry, {
-              units: 'kilometers'
-            })
+          if (areaM2 && areaM2 > 0) {
+            area = areaM2 / 10000
+          }
+        } else if (layer.data_type === 'line') {
+          for (const feature of geoJSON.features) {
+            if (
+              feature.geometry.type === 'LineString' ||
+              feature.geometry.type === 'MultiLineString'
+            ) {
+              length += turf_length(feature.geometry, {
+                units: 'kilometers'
+              })
+            }
           }
         }
-      }
 
-      setGeoJSONState({
-        geoJSON,
-        count,
-        area,
-        length
-      })
-    } catch (err) {
-      debug.error(err)
+        setGeoJSONState({
+          geoJSON,
+          count,
+          area,
+          length
+        })
+      } catch (err) {
+        debug.error(err)
+      }
     }
-  }
+
+    const loadGeoJSON = async () => {
+      try {
+        if (layer.is_external) {
+          let geoJSON
+
+          // retreive geoJSON data for layers
+          switch (elc.type) {
+            case 'ags-mapserver-query': {
+              geoJSON = await TerraformerGL.getArcGISGeoJSON(elc.url)
+              break
+            }
+            case 'ags-featureserver-query': {
+              geoJSON = await TerraformerGL.getArcGISFeatureServiceGeoJSON(
+                elc.url
+              )
+              break
+            }
+            case 'geojson': {
+              const res = await request
+                .get(elc.data)
+                .type('json')
+                .accept('json')
+              geoJSON = res.body
+              break
+            }
+            default: {
+              setDataMsg(t('Data table not support for this layer.'))
+            }
+          }
+
+          if (geoJSON)
+            setGeoJSONState({
+              geoJSON,
+              count: geoJSONState.count,
+              area: geoJSONState.area,
+              length: geoJSONState.length
+            })
+        } else {
+          getGeoJSON()
+          setDataMsg(t('Data Loading'))
+        }
+      } catch (err) {
+        debug.error(err)
+        notification.error({
+          message: t('Error'),
+          description: err.message || err.toString() || err,
+          duration: 0
+        })
+      }
+    }
+    loadGeoJSON()
+  }, [geoJSONState, layer, t])
+
   const openEditor = (): void => {
     const baseUrl = urlUtil.getBaseUrl()
     window.location.assign(
       `${baseUrl}/map/new?editlayer=${layer.layer_id}${window.location.hash}`
     )
-  }
-  const copyToClipboard = (val: string): void => {
-    navigator.clipboard.writeText(val)
   }
 
   const { geoJSON, count, area } = geoJSONState
@@ -654,7 +672,6 @@ const LayerInfo = (): JSX.Element => {
               }}
             >
               <InteractiveMap
-                ref='interactiveMap'
                 height='100vh - 50px'
                 fitBounds={layer.preview_position.bbox}
                 style={glStyle}

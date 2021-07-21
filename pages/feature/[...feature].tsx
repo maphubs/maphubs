@@ -1,13 +1,13 @@
 /* eslint-disable unicorn/numeric-separators-style */
 import React, { useState, useRef } from 'react'
 import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/client'
+import { getSession, useSession } from 'next-auth/client'
+import { GetServerSideProps } from 'next'
 import Layout from '../../src/components/Layout'
 import slugify from 'slugify'
 import Comments from '../../src/components/Comments'
 import FeatureProps from '../../src/components/Feature/FeatureProps'
 import FeatureNotes from '../../src/components/Feature/FeatureNotes'
-import InteractiveMap from '../../src/components/Map/InteractiveMap'
 import { Tabs, Row, Col } from 'antd'
 import useT from '../../src/hooks/useT'
 
@@ -27,8 +27,88 @@ import useSWR from 'swr'
 import useStickyResult from '../../src/hooks/useStickyResult'
 import { FeatureInfo } from '../../src/types/feature'
 
+// SSR Only
+import LayerModel from '../../src/models/layer'
+import FeatureModel from '../../src/models/feature'
+import PhotoAttachmentModel from '../../src/models/photo-attachment'
+import PageModel from '../../src/models/page'
+
+import dynamic from 'next/dynamic'
+const InteractiveMap = dynamic(
+  () => import('../../src/components/Map/InteractiveMap'),
+  {
+    ssr: false
+  }
+)
+
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const TabPane = Tabs.TabPane
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const [layerIdStr, mhid] = context.params.feature as string[]
+  const layer_id = Number.parseInt(layerIdStr)
+
+  const layer = await LayerModel.getLayerByID(layer_id)
+  const session = await getSession(context)
+  let canEdit
+  if (session?.user) {
+    canEdit = await LayerModel.allowedToModify(
+      layer_id,
+      session.user.id || session.user.sub
+    )
+  }
+
+  if (!layer) {
+    return {
+      notFound: true
+    }
+  }
+
+  const geoJSON = await FeatureModel.getGeoJSON(mhid, layer.layer_id)
+  const notes = await FeatureModel.getFeatureNotes(mhid, layer.layer_id)
+  if (geoJSON) {
+    const photos = await PhotoAttachmentModel.getPhotosForFeature(
+      layer.layer_id,
+      mhid
+    )
+    let photo
+
+    if (photos && Array.isArray(photos)) {
+      photo = photos[0]
+    }
+
+    let featureName = 'Feature'
+
+    if (geoJSON.features.length > 0 && geoJSON.features[0].properties) {
+      const geoJSONProps = geoJSON.features[0].properties
+
+      if (geoJSONProps.name) {
+        featureName = geoJSONProps.name
+      }
+
+      geoJSONProps.layer_id = layer.layer_id
+      geoJSONProps.mhid = mhid
+    }
+    const mapConfig = await PageModel.getPageConfigs(['map'])[0]
+    return {
+      props: {
+        feature: {
+          name: featureName,
+          type: geoJSON.type,
+          features: geoJSON.features,
+          layer_id: layer.layer_id,
+          bbox: geoJSON.bbox,
+          mhid
+        },
+        notes,
+        photo,
+        layer,
+        canEdit,
+        mapConfig
+      }
+    }
+  }
+}
 
 const FeaturePage = (): JSX.Element => {
   const router = useRouter()

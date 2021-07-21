@@ -9,7 +9,6 @@ import {
   Typography
 } from 'antd'
 import MapStyles from '../Map/Styles'
-import Map from '../Map'
 import MiniLegend from '../Map/MiniLegend'
 import LayerActions from '../../actions/LayerActions'
 import OpacityChooser from '../LayerDesigner/OpacityChooser'
@@ -22,7 +21,11 @@ import getConfig from 'next/config'
 import mapboxgl from 'mapbox-gl'
 import useT from '../../hooks/useT'
 import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
+
+import dynamic from 'next/dynamic'
+const MapHubsMap = dynamic(() => import('../Map'), {
+  ssr: false
+})
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { confirm } = Modal
@@ -204,7 +207,7 @@ const LayerStyle = ({
                 padding: '20px'
               }}
             >
-              <Map
+              <MapHubsMap
                 id='layer-style-map'
                 className='z-depth-2'
                 style={{

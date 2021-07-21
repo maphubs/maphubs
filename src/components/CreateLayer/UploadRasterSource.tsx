@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import UppyFileUpload from '../forms/UppyFileUpload'
-import Map from '../Map'
 import { Element, scroller } from 'react-scroll'
 import LayerActions from '../../actions/LayerActions'
 import superagent from 'superagent'
@@ -8,6 +7,11 @@ import { Row, message, notification, Button } from 'antd'
 import useT from '../../hooks/useT'
 import { useSelector } from 'react-redux'
 import getConfig from 'next/config'
+import dynamic from 'next/dynamic'
+const MapHubsMap = dynamic(() => import('../Map'), {
+  ssr: false
+})
+
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
   onSubmit: () => void
@@ -147,7 +151,7 @@ const UploadRasterSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
                   'Please review the data on the map to confirm the upload was successful.'
                 )}
               </p>
-              <Map
+              <MapHubsMap
                 style={{
                   width: '100%',
                   height: '400px'

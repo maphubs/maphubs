@@ -33,9 +33,11 @@ export type Layer = {
       | 'ags-mapserver-query'
       | 'earthengine'
       | 'ags-mapserver-tiles'
+      | 'geojson'
     url?: string
     layers?: Array<Record<string, any>>
     tiles?: Array<string>
+    data?: any
   }
   is_empty?: boolean
   disable_export?: boolean
@@ -51,4 +53,5 @@ export type Layer = {
   creation_time: string
   created_by_user_id?: number
   updated_by_user_id?: number
+  active?: boolean // only used on client-side to toggle certain layers
 }

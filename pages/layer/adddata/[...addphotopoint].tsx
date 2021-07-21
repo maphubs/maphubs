@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import Layout from '../../../src/components/Layout'
-import Map from '../../../src/components/Map'
 import DataCollectionForm from '../../../src/components/DataCollection/DataCollectionForm'
 import ImageCrop from '../../../src/components/ImageCrop'
 import Actions from '../../../src/actions/AddPhotoPointActions'
@@ -15,6 +14,10 @@ import useUnload from '../../../src/hooks/useUnload'
 import useSWR from 'swr'
 import useStickyResult from '../../../src/hooks/useStickyResult'
 import { Layer } from '../../../src/types/layer'
+import dynamic from 'next/dynamic'
+const MapHubsMap = dynamic(() => import('../../../src/components/Map'), {
+  ssr: false
+})
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { confirm } = Modal
@@ -196,7 +199,7 @@ const AddPhotoPoint = (): JSX.Element => {
                 width: '400px'
               }}
             >
-              <Map
+              <MapHubsMap
                 id='add-photo-point-map'
                 style={{
                   width: '100%',

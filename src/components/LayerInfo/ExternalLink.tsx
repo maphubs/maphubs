@@ -3,30 +3,27 @@ import { Tooltip } from 'antd'
 import slugify from 'slugify'
 import type { Layer } from '../../types/layer'
 import LaunchIcon from '@material-ui/icons/Launch'
-import { LocalizedString } from '../../types/LocalizedString'
-import ustT from '../../hooks/useT'
+import useT from '../../hooks/useT'
 type Props = {
-  layer: Layerng
+  layer: Layer
 }
 
-export default function LayerInfoExternalLink({
-  layer,
-  t
-}: Props): JSX.Element {
+export default function LayerInfoExternalLink({ layer }: Props): JSX.Element {
   const { t } = useT()
   const {
     is_external,
     external_layer_type,
     external_layer_config,
     remote,
-    remote_layer_id
+    remote_layer_id,
+    remote_host
   } = layer
   const elc = external_layer_config
 
   if (!is_external && !remote) {
     return <div />
   } else if (remote) {
-    const remoteURL = `https://${layer.remote_host || ''}/layer/info/${
+    const remoteURL = `https://${remote_host || ''}/layer/info/${
       remote_layer_id || ''
     }/${slugify(t(layer.name))}`
     return (

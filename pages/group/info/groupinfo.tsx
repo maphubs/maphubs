@@ -1,5 +1,7 @@
-import React from 'react'
-import Header from '../../../src/components/header'
+import React, { useState } from 'react'
+import { GetServerSideProps } from 'next'
+import { useSession, getSession } from 'next-auth/client'
+import Layout from '../../../src/components/Layout'
 import CardCarousel from '../../../src/components/CardCarousel/CardCarousel'
 import cardUtil from '../../../src/services/card-util'
 import type { Group } from '../../../src/stores/GroupStore'
@@ -16,83 +18,90 @@ import {
   Divider
 } from 'antd'
 import SupervisorAccount from '@material-ui/icons/SupervisorAccount'
+import useT from '../../../src/hooks/useT'
+
+// SSR only
+import GroupModel from '../../../src/models/group'
+import LayerModel from '../../../src/models/layer'
+import MapModel from '../../../src/models/map'
+import StoryModel from '../../../src/models/story'
+import { Map } from '../../../src/types/map'
+import { Story } from '../../../src/types/story'
+import { Layer } from '../../../src/types/layer'
+
 const { Title } = Typography
 type Props = {
   group: Group
-  maps: Array<Record<string, any>>
-  layers: Array<Record<string, any>>
-  stories: Array<Record<string, any>>
+  maps: Map[]
+  layers: Layer[]
+  stories: Story[]
   members: Array<Record<string, any>>
-  canEdit: boolean
-  headerConfig: Record<string, any>
-  locale: string
-  user: Record<string, any>
+  allowedToModifyGroup?: boolean
 }
 type State = {
   imageFailed?: boolean
 }
-export default class GroupInfo extends React.Component<Props, State> {
-  static async getInitialProps({
-    req,
-    query
-  }: {
-    req: any
-    query: Record<string, any>
-  }): Promise<any> {
-    const isServer = !!req
 
-    if (isServer) {
-      return query.props
-    } else {
-      console.error('getInitialProps called on client')
+// use SSR for SEO
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const group_id = context.params.group[0]
+  const group = await GroupModel.getGroupByID(group_id)
+  const session = await getSession(context)
+  let allowedToModifyGroup
+  if (session?.user) {
+    allowedToModifyGroup = await GroupModel.allowedToModify(
+      group.group_id,
+      session.user.id || session.user.sub
+    )
+  }
+  if (!group) {
+    return {
+      notFound: true
     }
   }
 
-  static defaultProps:
-    | any
-    | {
-        canEdit: boolean
-        layers: Array<any>
-        maps: Array<any>
-        members: Array<any>
-        stories: Array<any>
-      } = {
-    maps: [],
-    layers: [],
-    stories: [],
-    members: [],
-    canEdit: false
-  }
-
-  constructor(props: Props) {
-    super(props)
-    this.state = {}
-  }
-
-  render(): JSX.Element {
-    const { t } = this
-    const { group, maps, layers, stories, canEdit, members } = this.props
-    const { imageFailed } = this.state
-    const groupId = group.group_id ? group.group_id : ''
-    const mapCards = maps.map(cardUtil.getMapCard)
-    const layerCards = layers.map(cardUtil.getLayerCard)
-    const storyCards = stories.map((s) => cardUtil.getStoryCard(s, this.t))
-    const allCards = cardUtil.combineCards([mapCards, layerCards, storyCards])
-    let descriptionWithLinks = ''
-
-    if (group.description) {
-      const localizedDescription = this.t(group.description)
-      // regex for detecting links
-      const regex = /(https?:\/\/([\w.-]+)+(:\d+)?(\/([\w./]*(\?\S+)?)?)?)/gi
-      descriptionWithLinks = localizedDescription.replace(
-        regex,
-        "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>"
-      )
+  return {
+    props: {
+      group,
+      maps: await MapModel.getGroupMaps(group_id, allowedToModifyGroup),
+      layers: await LayerModel.getGroupLayers(group_id, allowedToModifyGroup),
+      stories: await StoryModel.getGroupStories(group_id, allowedToModifyGroup),
+      members: await GroupModel.getGroupMembers(group_id),
+      allowedToModifyGroup
     }
+  }
+}
+const GroupInfo = ({
+  group,
+  maps,
+  layers,
+  stories,
+  members,
+  allowedToModifyGroup
+}: Props): JSX.Element => {
+  const { t } = useT()
+  const [session] = useSession()
+  const [imageFailed, setImageFailed] = useState(false)
 
-    return (
-      <ErrorBoundary t={t}>
-        <Header {...this.props.headerConfig} />
+  const mapCards = maps.map((map) => cardUtil.getMapCard(map))
+  const layerCards = layers.map((layer, i) => cardUtil.getLayerCard(layer, i))
+  const storyCards = stories.map((s) => cardUtil.getStoryCard(s, t))
+  const allCards = cardUtil.combineCards([mapCards, layerCards, storyCards])
+  let descriptionWithLinks = ''
+
+  if (group.description) {
+    const localizedDescription = t(group.description)
+    // regex for detecting links
+    const regex = /(https?:\/\/([\w.-]+)+(:\d+)?(\/([\w./]*(\?\S+)?)?)?)/gi
+    descriptionWithLinks = localizedDescription.replace(
+      regex,
+      "<a href='$1' target='_blank' rel='noopener noreferrer'>$1</a>"
+    )
+  }
+
+  return (
+    <ErrorBoundary t={t}>
+      <Layout title={t(group.name)} hideFooter>
         <div
           style={{
             marginLeft: '10px',
@@ -123,13 +132,12 @@ export default class GroupInfo extends React.Component<Props, State> {
                     size={256}
                     src={
                       '/img/resize/600?quality=80&progressive=true&url=/group/' +
-                      groupId +
+                      group.group_id +
                       '/image.png'
                     }
                     onError={() => {
-                      this.setState({
-                        imageFailed: true
-                      })
+                      setImageFailed(true)
+                      return true
                     }}
                   />
                 )}
@@ -141,7 +149,7 @@ export default class GroupInfo extends React.Component<Props, State> {
                       color: '#FFF'
                     }}
                   >
-                    {groupId.charAt(0).toUpperCase()}
+                    {group.group_id.charAt(0).toUpperCase()}
                   </Avatar>
                 )}
               </Row>
@@ -161,7 +169,7 @@ export default class GroupInfo extends React.Component<Props, State> {
                   }}
                 />
               </Row>
-              {this.props.group.unofficial && (
+              {group.unofficial && (
                 <Row>
                   <p>
                     <b>{t('Unofficial Group')}</b> -{' '}
@@ -173,7 +181,7 @@ export default class GroupInfo extends React.Component<Props, State> {
               )}
             </Col>
             <Col sm={24} md={10}>
-              {canEdit && (
+              {allowedToModifyGroup && (
                 <Row
                   justify='end'
                   align='middle'
@@ -192,7 +200,7 @@ export default class GroupInfo extends React.Component<Props, State> {
                       style={{
                         margin: 'auto'
                       }}
-                      href={'/map/new?group_id=' + groupId}
+                      href={'/map/new?group_id=' + group.group_id}
                     >
                       <PlusOutlined />
                       {t('Map')}
@@ -209,7 +217,7 @@ export default class GroupInfo extends React.Component<Props, State> {
                       style={{
                         margin: 'auto'
                       }}
-                      href={'/createlayer?group_id=' + groupId}
+                      href={'/createlayer?group_id=' + group.group_id}
                     >
                       <PlusOutlined />
                       {t('Layer')}
@@ -226,7 +234,7 @@ export default class GroupInfo extends React.Component<Props, State> {
                       style={{
                         margin: 'auto'
                       }}
-                      href={'/createstory?group_id=' + groupId}
+                      href={'/createstory?group_id=' + group.group_id}
                     >
                       <PlusOutlined />
                       {t('Story')}
@@ -243,7 +251,7 @@ export default class GroupInfo extends React.Component<Props, State> {
                       style={{
                         margin: 'auto'
                       }}
-                      href={`/group/${groupId}/admin`}
+                      href={`/group/${group.group_id}/admin`}
                     >
                       <SettingOutlined />
                       {t('Manage')}
@@ -269,7 +277,7 @@ export default class GroupInfo extends React.Component<Props, State> {
                       return <span />
                     }
 
-                    let adminIcon = ''
+                    let adminIcon = <></>
 
                     if (user.role === 'Administrator') {
                       adminIcon = (
@@ -306,10 +314,11 @@ export default class GroupInfo extends React.Component<Props, State> {
           </Row>
           <Divider />
           <Row>
-            <CardCarousel cards={allCards} t={this.t} />
+            <CardCarousel cards={allCards} />
           </Row>
         </div>
-      </ErrorBoundary>
-    )
-  }
+      </Layout>
+    </ErrorBoundary>
+  )
 }
+export default GroupInfo

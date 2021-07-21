@@ -1,6 +1,5 @@
 import React from 'react'
 import Layout from '../../../src/components/Layout'
-import MapMaker from '../../../src/components/MapMaker/MapMaker'
 import slugify from 'slugify'
 import '../services/locales'
 
@@ -10,6 +9,15 @@ import type { Group } from '../../../src/stores/GroupStore'
 import getConfig from 'next/config'
 import { LocalizedString } from '../../../src/types/LocalizedString'
 import useT from '../../../src/hooks/useT'
+
+import dynamic from 'next/dynamic'
+const MapMaker = dynamic(
+  () => import('../../../src/components/MapMaker/MapMaker'),
+  {
+    ssr: false
+  }
+)
+
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
   popularLayers: Array<Layer>

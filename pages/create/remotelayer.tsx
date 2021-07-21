@@ -5,7 +5,7 @@ import slugify from 'slugify'
 import Layout from '../../src/components/Layout'
 import TextInput from '../../src/components/forms/textInput'
 import SelectGroup from '../../src/components/Groups/SelectGroup'
-import Map from '../../src/components/Map'
+
 import MiniLegend from '../../src/components/Map/MiniLegend'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import type { Layer } from '../../src/types/layer'
@@ -19,6 +19,10 @@ import useSWR from 'swr'
 import useStickyResult from '../../src/hooks/useStickyResult'
 import { Group } from '../../src/types/group'
 import useUnload from '../../src/hooks/useUnload'
+import dynamic from 'next/dynamic'
+const MapHubsMap = dynamic(() => import('../../src/components/Map'), {
+  ssr: false
+})
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
@@ -192,7 +196,7 @@ const CreateRemoteLayer = (): JSX.Element => {
             marginBottom: '20px'
           }}
         >
-          <Map
+          <MapHubsMap
             style={{
               width: '100%',
               height: '400px'

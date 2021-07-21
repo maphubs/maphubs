@@ -12,6 +12,7 @@ import getConfig from 'next/config'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import useT from '../src/hooks/useT'
 import { useQueryParam, StringParam } from 'use-query-params'
+
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const debug = DebugService('home')

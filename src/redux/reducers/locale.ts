@@ -8,10 +8,10 @@ const initialLocaleState = {
 
 const locale = (
   state: LocaleState = initialLocaleState,
-  action: { type: 'SET_LOCALE'; locale: string }
+  action: { type: string; locale: string }
 ): any => {
   switch (action.type) {
-    case 'SET_LOCALE':
+    case 'locale/set':
       return action.locale
         ? {
             ...state,

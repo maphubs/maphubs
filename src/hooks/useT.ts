@@ -21,7 +21,7 @@ export default function useT(): {
       : Locales.getLocaleStringObject(locale, val)
   }
   const setLocale = (v: string) => {
-    dispatch({ type: 'SET_LOCALE', locale: v })
+    dispatch({ type: 'locale/set', locale: v })
   }
   return { t, locale, setLocale }
 }
