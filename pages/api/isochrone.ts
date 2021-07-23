@@ -1,13 +1,10 @@
 import request from 'superagent'
-import { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiHandler } from 'next'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import { apiDataError, apiError } from '../../src/services/error-response'
 import local from '../../src/local'
 
-export default async (
-  req: NextApiRequest,
-  res: NextApiResponse
-): Promise<void> => {
+const isochroneHandler: NextApiHandler = async (req, res) => {
   const data = req.body
   if (data && data.point) {
     try {
@@ -22,3 +19,4 @@ export default async (
     apiDataError(res)
   }
 }
+export default isochroneHandler

@@ -4,20 +4,32 @@ import { Row, Col, message, notification, Button } from 'antd'
 import LinkIcon from '@material-ui/icons/Link'
 import TextInput from '../forms/textInput'
 import Radio from '../forms/radio'
-import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
+
+import { useDispatch, useSelector } from '../../redux/hooks'
+import LayerAPI from '../../redux/reducers/layer-api'
+import {
+  saveDataSettings,
+  resetStyle,
+  tileServiceInitialized,
+  LayerState
+} from '../../redux/reducers/layerSlice'
 
 const AGOLSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
   const { t } = useT()
-
+  const dispatch = useDispatch()
   const [canSubmit, setCanSubmit] = useState(false)
   const [selectedOption, setSelectedOption] = useState('mapserverquery')
+
+  const layer_id = useSelector(
+    (state: { layer: LayerState }) => state.layer.layer_id
+  )
 
   addValidationRule('isHttps', (values, value: string) => {
     return value ? value.startsWith('https://') : false
   })
 
-  const submit = (model: Record<string, any>): void => {
+  const submit = async (model: Record<string, any>): Promise<void> => {
     let dataSettings
 
     if (model.mapServiceUrl) {
@@ -39,25 +51,25 @@ const AGOLSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
         }
       }
     }
+    try {
+      await LayerAPI.saveDataSettings(layer_id, dataSettings)
+      message.success(t('Layer Saved'), 1, () => {
+        // save in store
+        dispatch(saveDataSettings(dataSettings))
+        // reset style to load correct source
+        dispatch(resetStyle())
+        // tell the map that the data is initialized
+        dispatch(tileServiceInitialized())
 
-    LayerActions.saveDataSettings(dataSettings, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Server Error'),
-          description: err.message || err.toString(),
-          duration: 0
-        })
-      } else {
-        message.success(t('Layer Saved'), 1, () => {
-          // reset style to load correct source
-          LayerActions.resetStyle()
-          // tell the map that the data is initialized
-          LayerActions.tileServiceInitialized()
-
-          onSubmit()
-        })
-      }
-    })
+        onSubmit()
+      })
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString(),
+        duration: 0
+      })
+    }
   }
 
   const agolOptions = [

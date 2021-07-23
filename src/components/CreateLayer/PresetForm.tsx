@@ -4,7 +4,6 @@ import TextArea from '../forms/textArea'
 import MultiTextInput from '../forms/MultiTextInput'
 import Toggle from '../forms/toggle'
 import Select from '../forms/select'
-import Actions from '../../actions/LayerActions'
 import _debounce from 'lodash.debounce'
 import Locales from '../../services/locales'
 import { Modal, Row, Col, Button } from 'antd'
@@ -15,6 +14,15 @@ import {
 } from '@ant-design/icons'
 import useT from '../../hooks/useT'
 import { LocalizedString } from '../../types/LocalizedString'
+
+import { useDispatch } from '../../redux/hooks'
+import {
+  updatePreset,
+  deletePreset,
+  movePresetUp,
+  movePresetDown
+} from '../../redux/reducers/layerSlice'
+import { MapHubsField } from '../../types/maphubs-field'
 
 const { confirm } = Modal
 type Props = {
@@ -48,13 +56,14 @@ const PresetForm = ({
   onInvalid
 }: Props): JSX.Element => {
   const { t } = useT()
+  const dispatch = useDispatch()
   const [valid, setValid] = useState(!!tag)
 
-  const onFormChange = (values: Record<string, any>) => {
+  const onFormChange = (values: MapHubsField) => {
     values.id = id
     values.label = Locales.formModelToLocalizedString(values, 'label')
     values.tag = tag
-    Actions.updatePreset(id, values)
+    dispatch(updatePreset({ id, preset: values }))
   }
 
   const onRemove = () => {
@@ -69,15 +78,15 @@ const PresetForm = ({
       okType: 'danger',
 
       onOk() {
-        Actions.deletePreset(id)
+        dispatch(deletePreset(id))
       }
     })
   }
   const onMoveUp = () => {
-    Actions.movePresetUp(id)
+    dispatch(movePresetUp(id))
   }
   const onMoveDown = () => {
-    Actions.movePresetDown(id)
+    dispatch(movePresetDown(id))
   }
 
   const presetOptions = [

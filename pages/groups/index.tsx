@@ -35,10 +35,12 @@ const Groups = (): JSX.Element => {
   } = useStickyResult(data) || {}
   const { featuredGroups, recentGroups } = stickyData
 
-  const featuredCards = featuredGroups.map((group) =>
-    cardUtil.getGroupCard(group)
-  )
-  const recentCards = recentGroups.map((group) => cardUtil.getGroupCard(group))
+  const featuredCards = featuredGroups
+    ? featuredGroups.map((group) => cardUtil.getGroupCard(group))
+    : []
+  const recentCards = recentGroups
+    ? recentGroups.map((group) => cardUtil.getGroupCard(group))
+    : []
   return (
     <ErrorBoundary t={t}>
       <Layout title={t('Groups')} activePage='groups'>

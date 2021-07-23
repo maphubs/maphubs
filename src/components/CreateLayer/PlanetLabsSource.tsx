@@ -2,9 +2,19 @@ import React, { useState } from 'react'
 import Formsy from 'formsy-react'
 import TextArea from '../forms/textArea'
 import { message, notification, Row, Button } from 'antd'
-import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
 import getConfig from 'next/config'
+
+import { useDispatch, useSelector } from '../../redux/hooks'
+import LayerAPI from '../../redux/reducers/layer-api'
+import {
+  saveDataSettings,
+  resetStyle,
+  tileServiceInitialized,
+  LayerState
+} from '../../redux/reducers/layerSlice'
+import { Layer } from '../../types/layer'
+
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const getAPIUrl = (selected: string): string => {
@@ -23,10 +33,14 @@ const PlanetLabsSource = ({
   onSubmit: () => void
 }): JSX.Element => {
   const { t } = useT()
+  const dispatch = useDispatch()
+  const layer_id = useSelector(
+    (state: { layer: LayerState }) => state.layer.layer_id
+  )
 
   const [canSubmit, setCanSubmit] = useState(false)
 
-  const submit = (model: Record<string, any>): void => {
+  const submit = async (model: Record<string, any>): Promise<void> => {
     const layers = []
     const selectedIDs = model.selectedIDs
     const selectedIDArr = selectedIDs.split(',')
@@ -38,34 +52,34 @@ const PlanetLabsSource = ({
         tiles: [url]
       })
     }
-    LayerActions.saveDataSettings(
-      {
-        is_external: true,
-        external_layer_type: 'Planet',
-        external_layer_config: {
-          type: 'multiraster',
-          layers
-        }
-      },
-      (err) => {
-        if (err) {
-          notification.error({
-            message: t('Server Error'),
-            description: err.message || err.toString() || err,
-            duration: 0
-          })
-        } else {
-          message.success(t('Layer Saved'), 1, () => {
-            // reset style to load correct source
-            LayerActions.resetStyle()
-            // tell the map that the data is initialized
-            LayerActions.tileServiceInitialized()
-
-            onSubmit()
-          })
-        }
+    const dataSettings = {
+      is_external: true,
+      external_layer_type: 'Planet',
+      external_layer_config: {
+        type: 'multiraster' as Layer['external_layer_config']['type'],
+        layers
       }
-    )
+    }
+
+    try {
+      await LayerAPI.saveDataSettings(layer_id, dataSettings)
+      message.success(t('Layer Saved'), 1, () => {
+        // save in store
+        dispatch(saveDataSettings(dataSettings))
+        // reset style to load correct source
+        dispatch(resetStyle())
+        // tell the map that the data is initialized
+        dispatch(tileServiceInitialized())
+
+        onSubmit()
+      })
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
 
   return (

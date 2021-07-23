@@ -1,6 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import Layout from '../../..//src/components/Layout'
+import Layout from '../../../src/components/Layout'
 import StoryEditor from '../../../src/components/Story/StoryEditor'
 import ErrorBoundary from '../../../src/components/ErrorBoundary'
 import useT from '../../../src/hooks/useT'

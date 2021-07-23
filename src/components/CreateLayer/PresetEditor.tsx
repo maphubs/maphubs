@@ -1,11 +1,12 @@
 import React from 'react'
 import { Row, Button, List } from 'antd'
 import PresetForm from './PresetForm'
-import Actions from '../../actions/LayerActions'
 import { PlusOutlined } from '@ant-design/icons'
 import useT from '../../hooks/useT'
 import useUnload from '../../hooks/useUnload'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from '../../redux/hooks'
+import { addPreset, LayerState } from '../../redux/reducers/layerSlice'
+
 type Props = {
   onValid: () => void
   onInvalid: () => void
@@ -13,10 +14,13 @@ type Props = {
 
 const PresetEditor = ({ onValid, onInvalid }: Props): JSX.Element => {
   const { t } = useT()
+  const dispatch = useDispatch()
   const pendingPresetChanges = useSelector(
     (state: { layer: any }) => state.layer.pendingPresetChanges
   )
-  const presets = useSelector((state: { layer: any }) => state.layer.presets)
+  const presets = useSelector(
+    (state: { layer: LayerState }) => state.layer.presets
+  )
 
   useUnload((e) => {
     e.preventDefault()
@@ -38,7 +42,7 @@ const PresetEditor = ({ onValid, onInvalid }: Props): JSX.Element => {
           type='primary'
           icon={<PlusOutlined />}
           onClick={(): void => {
-            Actions.addPreset()
+            dispatch(addPreset())
           }}
         >
           {t('Add Field')}
@@ -59,7 +63,7 @@ const PresetEditor = ({ onValid, onInvalid }: Props): JSX.Element => {
           renderItem={(preset) => (
             <List.Item>
               <PresetForm
-                {...presets.toArray()}
+                {...presets}
                 onValid={() => {
                   if (onValid) onValid()
                 }}

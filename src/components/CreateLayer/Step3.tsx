@@ -1,6 +1,7 @@
 import React from 'react'
 import LayerStyle from './LayerStyle'
-import LayerActions from '../../actions/LayerActions'
+import { useDispatch } from '../../redux/hooks'
+import { setComplete } from '../../redux/reducers/layerSlice'
 
 type Props = {
   onSubmit: (layer_id: number, name: string) => void
@@ -8,14 +9,14 @@ type Props = {
 }
 
 const Step3 = ({ mapConfig, onSubmit }: Props): JSX.Element => {
+  const dispatch = useDispatch()
   return (
     <LayerStyle
       waitForTileInit
       mapConfig={mapConfig}
-      onSubmit={(layer_id: number, name: string) => {
-        LayerActions.setComplete(() => {
-          if (onSubmit) onSubmit(layer_id, name)
-        })
+      onSubmit={async (layer_id: number, name: string) => {
+        await dispatch(setComplete())
+        if (onSubmit) onSubmit(layer_id, name)
       }}
     />
   )

@@ -15,7 +15,7 @@ import $ from 'jquery'
 import classNames from 'classnames'
 import useT from '../../hooks/useT'
 import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
+import { LocaleState } from '../../redux/reducers/localeSlice'
 
 type Props = {
   onSubmit: () => void

@@ -1,9 +1,17 @@
 import React from 'react'
 import LayerSettings from './LayerSettings'
-import LayerActions from '../../actions/LayerActions'
 import { notification, message, Row } from 'antd'
 import { Group } from '../../types/group'
 import useT from '../../hooks/useT'
+import LayerAPI from '../../redux/reducers/layer-api'
+
+import { useDispatch, useSelector } from '../../redux/hooks'
+import {
+  tileServiceInitialized,
+  loadDefaultPresets,
+  submitPresets,
+  LayerState
+} from '../../redux/reducers/layerSlice'
 
 const Step2 = ({
   groups,
@@ -13,78 +21,76 @@ const Step2 = ({
   onSubmit: () => void
 }): JSX.Element => {
   const { t } = useT()
+  const dispatch = useDispatch()
+  const layer_id = useSelector(
+    (state: { layer: LayerState }) => state.layer.layer_id
+  )
+  const style = useSelector((state: { layer: LayerState }) => state.layer.style)
+  const presets = useSelector(
+    (state: { layer: LayerState }) => state.layer.presets
+  )
+  const is_external = useSelector(
+    (state: { layer: LayerState }) => state.layer.is_external
+  )
+  const is_empty = useSelector(
+    (state: { layer: LayerState }) => state.layer.is_empty
+  )
 
   const submit = () => {
-    if (!this.state.is_external && !this.state.is_empty) {
+    if (!is_external && !is_empty) {
       return saveDataLoad()
-    } else if (this.state.is_empty) {
-      return initEmptyLayer()
+    } else if (is_empty) {
+      return saveEmptyLayer()
     } else {
-      return saveExternal()
+      dispatch(tileServiceInitialized())
+      if (onSubmit) onSubmit()
     }
   }
-  const initEmptyLayer = (): void => {
+  const saveEmptyLayer = async () => {
     // save presets
-    LayerActions.loadDefaultPresets()
-    LayerActions.submitPresets(true, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Server Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-      } else {
-        LayerActions.initEmptyLayer((err) => {
-          if (err) {
-            notification.error({
-              message: t('Server Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            LayerActions.tileServiceInitialized()
+    dispatch(loadDefaultPresets())
 
-            if (onSubmit) onSubmit()
-          }
-        })
-      }
-    })
+    try {
+      const presetsUpdate = await LayerAPI.submitPresets(
+        presets,
+        style,
+        layer_id,
+        true
+      )
+      dispatch(submitPresets(presetsUpdate))
+      await LayerAPI.initEmptyLayer(layer_id)
+      dispatch(tileServiceInitialized())
+      if (onSubmit) onSubmit()
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
-  const saveDataLoad = (): void => {
+  const saveDataLoad = async () => {
     const closeMessage = message.loading(t('Saving'), 0)
     // save presets
-    LayerActions.submitPresets(false, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Server Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-        closeMessage()
-      } else {
-        LayerActions.loadData((err) => {
-          closeMessage()
-
-          if (err) {
-            notification.error({
-              message: t('Server Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            LayerActions.tileServiceInitialized()
-
-            if (onSubmit) onSubmit()
-          }
-        })
-      }
-    })
-  }
-  const saveExternal = (): void => {
-    LayerActions.tileServiceInitialized()
-
-    if (onSubmit) {
-      onSubmit()
+    try {
+      const presetsUpdate = await LayerAPI.submitPresets(
+        presets,
+        style,
+        layer_id,
+        false
+      )
+      dispatch(submitPresets(presetsUpdate))
+      await LayerAPI.loadData(layer_id)
+      dispatch(tileServiceInitialized())
+      if (onSubmit) onSubmit()
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    } finally {
+      closeMessage()
     }
   }
 

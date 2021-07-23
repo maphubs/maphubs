@@ -1,6 +1,7 @@
 import mapboxgl from 'mapbox-gl'
 import { Labels } from '../components/LayerDesigner/LabelSettings'
 import { LocalizedString } from './LocalizedString'
+import { MapHubsField } from './maphubs-field'
 
 export type Layer = {
   layer_id: number
@@ -14,6 +15,9 @@ export type Layer = {
     active: boolean
   }
   preview_position?: {
+    zoom: number
+    lat: number
+    lng: number
     bbox: any
   }
   data_type?: string
@@ -24,34 +28,34 @@ export type Layer = {
   is_external?: boolean
   external_layer_type?: string
   external_layer_config?: {
+    data?: mapboxgl.GeoJSONSourceOptions['data']
     type?:
-      | 'multiraster'
-      | 'raster'
-      | 'mapbox-style'
-      | 'vector'
-      | 'ags-featureserver-query'
+      | mapboxgl.Source['type']
       | 'ags-mapserver-query'
-      | 'earthengine'
       | 'ags-mapserver-tiles'
-      | 'geojson'
+      | 'ags-featureserver-query'
+      | 'earthengine'
+      | 'mapbox-style'
+      | 'multiraster'
     url?: string
-    layers?: Array<Record<string, any>>
+    layers?: mapboxgl.AnyLayer[]
     tiles?: Array<string>
-    data?: any
+    mapboxid?: string
+    data_type?: string
   }
   is_empty?: boolean
   disable_export?: boolean
   allow_public_submit?: boolean
-  disable_feature_indexing?: boolean
   remote?: boolean
   remote_host?: string
   remote_layer_id?: string
   complete?: boolean
   canEdit?: boolean
-  presets?: any
+  presets?: MapHubsField[]
   last_updated: string
   creation_time: string
   created_by_user_id?: number
   updated_by_user_id?: number
   active?: boolean // only used on client-side to toggle certain layers
+  published?: boolean
 }

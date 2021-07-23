@@ -328,7 +328,11 @@ const FeaturePage = (): JSX.Element => {
                           border: '1px solid #ddd'
                         }}
                       >
-                        <FeaturePhoto photo={photo} canEdit={canEdit} t={t} />
+                        <FeaturePhoto
+                          feature={feature}
+                          photo={photo}
+                          canEdit={canEdit}
+                        />
                         <div
                           style={{
                             marginLeft: '5px',

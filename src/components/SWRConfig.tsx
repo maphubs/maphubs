@@ -1,13 +1,13 @@
 import React from 'react'
 import { SWRConfig } from 'swr'
-import { useDispatch } from 'react-redux'
+// import { useDispatch } from 'react-redux'
 import fetcher from '../graphql/graphql-fetcher'
 export default function POKSSWRConfig({
   children
 }: {
   children?: JSX.Element | JSX.Element[]
 }): JSX.Element {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
   return (
     <SWRConfig
       value={{

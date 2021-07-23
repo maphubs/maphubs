@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import { useSession } from 'next-auth/client'
+import React, { useState, useEffect } from 'react'
+import { GetServerSideProps } from 'next'
+import { useSession, getSession } from 'next-auth/client'
 import { useRouter } from 'next/router'
 import Layout from '../../../src/components/Layout'
 import {
@@ -20,20 +21,26 @@ import LayerStyle from '../../../src/components/CreateLayer/LayerStyle'
 import request from 'superagent'
 import _uniq from 'lodash.uniq'
 import _mapvalues from 'lodash.mapvalues'
-import LayerActions from '../../../src/actions/LayerActions'
+import LayerAPI from '../../../src/redux/reducers/layer-api'
 import slugify from 'slugify'
 import ErrorBoundary from '../../../src/components/ErrorBoundary'
 
 import type { Layer } from '../../../src/types/layer'
 import type { Group } from '../../../src/types/group'
-import getConfig from 'next/config'
 import { checkClientError } from '../../../src/services/client-error-response'
 import useT from '../../../src/hooks/useT'
 import { MapHubsUserSession } from '../../../src/types/user-session'
-import useSWR from 'swr'
-import useStickyResult from '../../../src/hooks/useStickyResult'
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+import { useDispatch, useSelector } from '../../../src/redux/hooks'
+import {
+  selectMapStyle,
+  loadLayer
+} from '../../../src/redux/reducers/layerSlice'
+
+//SSR Only
+import LayerModel from '../../../src/models/layer'
+import PageModel from '../../../src/models/page'
+import GroupModel from '../../../src/models/group'
 
 const { confirm } = Modal
 const { Title } = Typography
@@ -41,57 +48,72 @@ const TabPane = Tabs.TabPane
 
 type Props = {
   layer: Layer
-  groups: Array<Group>
+  userGroups: Group[]
   mapConfig: Record<string, any>
+  allowedToModifyLayer?: boolean
 }
 
-const LayerAdmin = (): JSX.Element => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const layer_id = Number.parseInt(context.params.layeradmin[0])
+  const layer = await LayerModel.getLayerByID(layer_id)
+
+  if (!layer) {
+    return {
+      notFound: true
+    }
+  }
+
+  layer.last_updated = layer.last_updated.toISOString()
+  layer.creation_time = layer.creation_time.toISOString()
+
+  const session = await getSession(context)
+  let allowedToModifyLayer = null
+  if (session?.user) {
+    allowedToModifyLayer = await LayerModel.allowedToModify(
+      layer_id,
+      session.user.id || session.user.sub
+    )
+  }
+
+  const mapConfig = (await PageModel.getPageConfigs(['map'])[0]) || null
+  return {
+    props: {
+      layer,
+      userGroups: await GroupModel.getGroupsForUser(
+        session?.user.id || session?.user.sub
+      ),
+      mapConfig,
+      allowedToModifyLayer
+    }
+  }
+}
+
+const LayerAdmin = ({
+  layer,
+  userGroups,
+  mapConfig,
+  allowedToModifyLayer
+}: Props): JSX.Element => {
   const [session] = useSession()
   const router = useRouter()
   const { t } = useT()
+  const dispatch = useDispatch()
   const [tab, setTab] = useState('settings')
   const [canSavePresets, setCanSavePresets] = useState(false)
 
-  const slug = router.query.layeradmin || []
-  const layer_id = slug[0]
+  const { style, labels, legend_html, preview_position, presets } =
+    useSelector(selectMapStyle)
 
   const user = session.user as MapHubsUserSession
 
-  const { data } = useSWR([
-    `
-  {
-    layer(id: "{id}") {
-      layer_id
-      name
-      description
-      source
-      style
-      owned_by_group_id
-      remote
-    }
-    userGroups {
-      group_id
-      name
-    }
-    allowedToModifyLayer(id: "{id}")
-  }
-  `,
-    layer_id
-  ])
-  const stickyData: {
-    layer: Layer
-    userGroups: Group[]
-    allowedToModifyLayer: boolean
-  } = useStickyResult(data) || {}
-  const { layer, userGroups, allowedToModifyLayer } = stickyData
+  useEffect(() => {
+    dispatch(loadLayer(layer))
+  }, [layer, dispatch])
 
-  //TODO: init redux layer state
   /*
   constructor(props: Props) {
     super(props)
-    this.stores = [LayerStore, UserStore]
 
-    Reflux.rehydrate(LayerStore, props.layer)
     const baseMapContainerInit: {
       baseMap?: string
       bingKey: string
@@ -110,28 +132,31 @@ const LayerAdmin = (): JSX.Element => {
 
     this.BaseMapState = new BaseMapContainer(baseMapContainerInit)
     this.MapState = new MapContainer()
-    LayerActions.loadLayer()
   }
   */
 
-  const saveStyle = () => {
-    LayerActions.saveStyle(state, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-      } else {
-        message.success(t('Layer Saved'))
-      }
-    })
+  const saveStyle = async () => {
+    try {
+      await LayerAPI.saveStyle(layer.layer_id, {
+        style,
+        labels,
+        legend_html,
+        preview_position
+      })
+      message.success(t('Layer Saved'))
+    } catch (err) {
+      notification.error({
+        message: t('Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
   const onSave = (): void => {
     message.success(t('Layer Saved'))
   }
 
-  const savePresets = (): void => {
+  const savePresets = async () => {
     // check for duplicate presets
     if (presets) {
       const tags = _mapvalues(presets.toArray(), 'tag')
@@ -148,17 +173,16 @@ const LayerAdmin = (): JSX.Element => {
         })
       } else {
         // save presets
-        LayerActions.submitPresets(false, (err) => {
-          if (err) {
-            notification.error({
-              message: t('Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            saveStyle()
-          }
-        })
+        try {
+          await LayerAPI.submitPresets(presets, style, layer.layer_id, false)
+          saveStyle()
+        } catch (err) {
+          notification.error({
+            message: t('Error'),
+            description: err.message || err.toString() || err,
+            duration: 0
+          })
+        }
       }
     }
   }
@@ -177,23 +201,22 @@ const LayerAdmin = (): JSX.Element => {
       okText: t('Delete'),
       okType: 'danger',
 
-      onOk() {
+      async onOk() {
         const closeMessage = message.loading(t('Deleting'), 0)
-        LayerActions.deleteLayer((err) => {
+        try {
+          await LayerAPI.deleteLayer(layer.layer_id)
+          message.success(t('Layer Deleted'), 1, () => {
+            window.location.assign('/')
+          })
+        } catch (err) {
+          notification.error({
+            message: t('Error'),
+            description: err.message || err.toString() || err,
+            duration: 0
+          })
+        } finally {
           closeMessage()
-
-          if (err) {
-            notification.error({
-              message: t('Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            message.success(t('Layer Deleted'), 1, () => {
-              window.location.assign('/')
-            })
-          }
-        })
+        }
       }
     })
   }
@@ -206,11 +229,10 @@ const LayerAdmin = (): JSX.Element => {
         layer_id: layer.layer_id
       })
       .end((err, res) => {
-        checkClientError(
+        checkClientError({
           res,
           err,
-          () => {},
-          (cb) => {
+          onSuccess: () => {
             if (err) {
               notification.error({
                 message: t('Error'),
@@ -220,10 +242,8 @@ const LayerAdmin = (): JSX.Element => {
             } else {
               message.success(t('Layer Updated'))
             }
-
-            cb()
           }
-        )
+        })
       })
   }
 
@@ -340,7 +360,7 @@ const LayerAdmin = (): JSX.Element => {
                 }}
               >
                 <LayerSettings
-                  groups={groups}
+                  groups={userGroups}
                   showGroup={false}
                   warnIfUnsaved
                   onSubmit={onSave}

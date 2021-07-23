@@ -38,8 +38,13 @@ const Maps = (): JSX.Element => {
     recentMaps: Map[]
   } = useStickyResult(data) || {}
   const { featuredMaps, recentMaps } = stickyData
-  const featuredCards = featuredMaps.map((map) => cardUtil.getMapCard(map))
-  const recentCards = recentMaps.map((map) => cardUtil.getMapCard(map))
+  const featuredCards = featuredMaps
+    ? featuredMaps.map((map) => cardUtil.getMapCard(map))
+    : []
+  const recentCards = recentMaps
+    ? recentMaps.map((map) => cardUtil.getMapCard(map))
+    : []
+
   return (
     <ErrorBoundary t={t}>
       <Layout title={t('Maps')} activePage='maps'>

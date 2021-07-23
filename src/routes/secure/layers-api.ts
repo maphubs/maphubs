@@ -85,7 +85,6 @@ export default function (app: any): void {
               data.private,
               data.source,
               data.license,
-              data.disable_feature_indexing,
               req.user_id
             ]
             break

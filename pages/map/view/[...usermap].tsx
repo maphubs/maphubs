@@ -89,7 +89,7 @@ const UserMap = (): JSX.Element => {
   const { map, mapLayers, allowedToModifyMap, mapConfig } = stickyData
 
   const onEdit = (): void => {
-    window.location.assign('/map/edit/' + map.map_id) // CreateMapActions.showMapDesigner();
+    window.location.assign('/map/edit/' + map.map_id)
   }
   const onFullScreen = (): void => {
     let fullScreenLink = `/api/map/${map.map_id}/static/render?showToolbar=1`

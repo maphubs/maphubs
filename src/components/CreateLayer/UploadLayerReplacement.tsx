@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import FileUpload from '../forms/FileUpload'
 import { message, notification, Row, Button } from 'antd'
-import LayerActions from '../../actions/LayerActions'
 import { Element, scroller } from 'react-scroll'
 import type { FeatureCollection } from 'geojson'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
 import getConfig from 'next/config'
 import dynamic from 'next/dynamic'
+
+import { useDispatch, useSelector } from '../../redux/hooks'
+import LayerAPI from '../../redux/reducers/layer-api'
+import {
+  mergeNewPresetTags,
+  submitPresets,
+  LayerState
+} from '../../redux/reducers/layerSlice'
 
 const MapHubsMap = dynamic(() => import('../Map'), {
   ssr: false
@@ -27,52 +33,46 @@ const UploadLayerReplacement = ({
   const [canSubmit, setCanSubmit] = useState(false)
   const [geoJSON, setGeoJSON] = useState<FeatureCollection>()
   const { t, locale } = useT()
-
-  const layer_id = useSelector((state: { layer: any }) => state.layer.layer_id)
+  const dispatch = useDispatch()
+  const layer_id = useSelector(
+    (state: { layer: LayerState }) => state.layer.layer_id
+  )
+  const presets = useSelector(
+    (state: { layer: LayerState }) => state.layer.presets
+  )
+  const style = useSelector((state: { layer: LayerState }) => state.layer.style)
 
   useEffect(() => {
     scroller.scrollTo('scrollToMap')
   }, [])
 
-  const submit = (): void => {
-    LayerActions.submitPresets(false, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Server Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-      } else {
-        LayerActions.replaceData((err) => {
-          if (err) {
-            notification.error({
-              message: t('Server Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            message.success(t('Layer Saved'), 1, onSubmit)
-          }
-        })
-      }
-    })
+  const submit = async () => {
+    try {
+      const presetsUpdate = await LayerAPI.submitPresets(
+        presets,
+        style,
+        layer_id,
+        false
+      )
+      dispatch(submitPresets(presetsUpdate))
+      await LayerAPI.replaceData(layer_id)
+      message.success(t('Layer Saved'), 1, onSubmit)
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
   const onUpload = (result: Record<string, any>): void => {
     if (result.success) {
       setGeoJSON(result.geoJSON)
       setCanSubmit(true)
-      // LayerActions.setDataType(result.data_type);
-      LayerActions.mergeNewPresetTags(result.uniqueProps) // LayerActions.setImportedTags(result.uniqueProps,  true);
+      dispatch(mergeNewPresetTags(result.uniqueProps))
     }
 
     message.destroy('processing')
-  }
-  const onProcessingStart = (): void => {
-    message.loading({
-      constent: t('Processing'),
-      duration: 0,
-      key: 'processing'
-    })
   }
 
   const url = `/api/layer/${layer_id || 0}/replace`
@@ -94,7 +94,7 @@ const UploadLayerReplacement = ({
             marginBottom: '20px'
           }}
         >
-          <FileUpload onUpload={onUpload} action={url} t={t} />
+          <FileUpload onUpload={onUpload} action={url} />
         </Row>
         <Row
           style={{

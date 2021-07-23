@@ -502,7 +502,6 @@ export default {
         'disable_export',
         'is_empty',
         'allow_public_submit',
-        'disable_feature_indexing',
         'owned_by_group_id',
         knex.raw("timezone('UTC', last_updated) as last_updated"),
         knex.raw("timezone('UTC', creation_time) as creation_time"),
@@ -562,7 +561,6 @@ export default {
         'disable_export',
         'is_empty',
         'allow_public_submit',
-        'disable_feature_indexing',
         'owned_by_group_id',
         knex.raw("timezone('UTC', last_updated) as last_updated"),
         knex.raw("timezone('UTC', creation_time) as creation_time"),
@@ -1025,7 +1023,6 @@ export default {
     isPrivate: boolean,
     source: any,
     license: any,
-    disable_feature_indexing: boolean,
     user_id: number
   ): Promise<any> {
     return knex.transaction(async (trx) => {
@@ -1055,7 +1052,6 @@ export default {
           private: isPrivate,
           source,
           license,
-          disable_feature_indexing,
           owned_by_group_id,
           updated_by_user_id: user_id,
           last_updated: knex.raw('now()')

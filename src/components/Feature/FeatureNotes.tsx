@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { Row, Button, message, notification } from 'antd'
 import request from 'superagent'
-import useT from '../../hooks/useT.js'
-import useUnload from '../../hooks/useUnload.js'
-const NoteCKEditor = dynamic(() => import('../forms/NoteCKEditor.js'), {
+import useT from '../../hooks/useT'
+import useUnload from '../../hooks/useUnload'
+const NoteCKEditor = dynamic(() => import('../forms/NoteCKEditor'), {
   ssr: false
 })
 type Props = {

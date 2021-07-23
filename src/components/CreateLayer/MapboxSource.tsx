@@ -3,12 +3,23 @@ import Formsy, { addValidationRule } from 'formsy-react'
 import { message, notification, Row, Col, Button } from 'antd'
 import TextInput from '../forms/textInput'
 import Radio from '../forms/radio'
-import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
+
+import { useDispatch, useSelector } from '../../redux/hooks'
+import LayerAPI from '../../redux/reducers/layer-api'
+import {
+  saveDataSettings,
+  resetStyle,
+  tileServiceInitialized,
+  LayerState
+} from '../../redux/reducers/layerSlice'
 
 const MapboxSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
   const { t } = useT()
+  const dispatch = useDispatch()
+  const layer_id = useSelector(
+    (state: { layer: LayerState }) => state.layer.layer_id
+  )
 
   const [canSubmit, setCanSubmit] = useState(false)
   const [selectedOption, setSelectedOption] = useState('style')
@@ -25,7 +36,7 @@ const MapboxSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
     }
   })
 
-  const submit = (model: Record<string, any>): void => {
+  const submit = async (model: Record<string, any>): Promise<void> => {
     let dataSettings
 
     if (model.mapboxStyleID) {
@@ -54,24 +65,25 @@ const MapboxSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
       }
     }
 
-    LayerActions.saveDataSettings(dataSettings, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Server Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-      } else {
-        message.success(t('Layer Saved'), 1, () => {
-          // reset style to load correct source
-          LayerActions.resetStyle()
-          // tell the map that the data is initialized
-          LayerActions.tileServiceInitialized()
+    try {
+      await LayerAPI.saveDataSettings(layer_id, dataSettings)
+      message.success(t('Layer Saved'), 1, () => {
+        // save in store
+        dispatch(saveDataSettings(dataSettings))
+        // reset style to load correct source
+        dispatch(resetStyle())
+        // tell the map that the data is initialized
+        dispatch(tileServiceInitialized())
 
-          onSubmit()
-        })
-      }
-    })
+        onSubmit()
+      })
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
 
   const mapboxOptions = [

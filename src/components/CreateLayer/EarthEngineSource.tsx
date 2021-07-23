@@ -2,8 +2,17 @@ import React, { useState } from 'react'
 import Formsy from 'formsy-react'
 import { Row, message, notification, Button } from 'antd'
 import TextInput from '../forms/textInput'
-import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
+
+import { useDispatch, useSelector } from '../../redux/hooks'
+import LayerAPI from '../../redux/reducers/layer-api'
+import {
+  saveDataSettings,
+  resetStyle,
+  tileServiceInitialized,
+  LayerState
+} from '../../redux/reducers/layerSlice'
+import { Layer } from '../../types/layer'
 
 const EarthEngineSource = ({
   onSubmit
@@ -12,37 +21,41 @@ const EarthEngineSource = ({
 }): JSX.Element => {
   const [canSubmit, setCanSubmit] = useState(false)
   const { t } = useT()
+  const dispatch = useDispatch()
+  const layer_id = useSelector(
+    (state: { layer: LayerState }) => state.layer.layer_id
+  )
 
-  const submit = (model: Record<string, any>): void => {
-    LayerActions.saveDataSettings(
-      {
+  const submit = async (model: Record<string, any>): Promise<void> => {
+    try {
+      const dataSettings = {
         is_external: true,
         external_layer_type: 'Earth Engine',
         external_layer_config: {
-          type: 'earthengine',
+          type: 'earthengine' as Layer['external_layer_config']['type'],
           min: Number.parseInt(model.min, 10),
           max: Number.parseInt(model.max, 10),
           image_id: model.image_id
         }
-      },
-      (err) => {
-        if (err) {
-          notification.error({
-            message: t('Server Error'),
-            description: err.message || err.toString() || err,
-            duration: 0
-          })
-        } else {
-          message.success(t('Layer Saved'), 1, () => {
-            LayerActions.resetStyle()
-            // tell the map that the data is initialized
-            LayerActions.tileServiceInitialized()
-
-            onSubmit()
-          })
-        }
       }
-    )
+      await LayerAPI.saveDataSettings(layer_id, dataSettings)
+      message.success(t('Layer Saved'), 1, () => {
+        // save in store
+        dispatch(saveDataSettings(dataSettings))
+        // reset style to load correct source
+        dispatch(resetStyle())
+        // tell the map that the data is initialized
+        dispatch(tileServiceInitialized())
+
+        onSubmit()
+      })
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
 
   return (

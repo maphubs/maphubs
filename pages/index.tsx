@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import Layout from '../src/components/Layout'
+import Layout from '../src/components/Layout/LayoutSSR'
+import { getSession } from 'next-auth/client'
 import { GetServerSideProps } from 'next'
 import { Row, Col, Divider, Typography, Card } from 'antd'
 import TrendingUpIcon from '@material-ui/icons/TrendingUp'
@@ -29,6 +30,8 @@ import StoryModel from '../src/models/story'
 import GroupModel from '../src/models/group'
 import LayerModel from '../src/models/layer'
 import MapModel from '../src/models/map'
+import { HeaderConfig } from '../src/components/header'
+import { FooterConfig } from '../src/components/footer'
 
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
@@ -44,6 +47,8 @@ type Props = {
   featuredMaps?: Map[]
   recentMaps?: Map[]
   pageConfig?: PageConfig
+  headerConfig?: HeaderConfig
+  footerConfig?: FooterConfig
 }
 type State = {
   loaded: boolean
@@ -58,9 +63,13 @@ type PageConfig = {
 // use SSR for SEO
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let pageConfig = { components: [] }
-  const result = await PageModel.getPageConfigs(['home'])
+  let headerConfig = {}
+  let footerConfig = {}
+  const result = await PageModel.getPageConfigs(['home', 'header', 'footer'])
   if (result.length > 0) {
     pageConfig = result[0]
+    headerConfig = result[1]
+    footerConfig = result[2]
   }
 
   const results: Props = {}
@@ -206,6 +215,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       pageConfig,
+      headerConfig,
+      footerConfig,
+      session: await getSession(context),
       ...results
     }
   }
@@ -221,7 +233,9 @@ const Home = ({
   featuredGroups,
   recentGroups,
   featuredMaps,
-  recentMaps
+  recentMaps,
+  headerConfig,
+  footerConfig
 }: Props): JSX.Element => {
   const { t } = useT()
   const [loaded, setLoaded] = useState(false)
@@ -483,6 +497,8 @@ const Home = ({
       >
         <Layout
           title={t(pageConfig.title || 'Home')}
+          headerConfig={headerConfig}
+          footerConfig={footerConfig}
           hideFooter={pageConfig.disableFooter}
         >
           <div

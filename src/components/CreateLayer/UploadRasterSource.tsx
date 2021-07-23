@@ -1,13 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import UppyFileUpload from '../forms/UppyFileUpload'
 import { Element, scroller } from 'react-scroll'
-import LayerActions from '../../actions/LayerActions'
 import superagent from 'superagent'
 import { Row, message, notification, Button } from 'antd'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
 import getConfig from 'next/config'
 import dynamic from 'next/dynamic'
+
+import { useDispatch, useSelector } from '../../redux/hooks'
+import LayerAPI from '../../redux/reducers/layer-api'
+import {
+  saveDataSettings,
+  resetStyle,
+  tileServiceInitialized,
+  LayerState
+} from '../../redux/reducers/layerSlice'
+import { Layer } from '../../types/layer'
+
 const MapHubsMap = dynamic(() => import('../Map'), {
   ssr: false
 })
@@ -21,9 +30,11 @@ const UploadRasterSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
   const [canSubmit, setCanSubmit] = useState(false)
   const [bbox, setBBOX] = useState()
   const { t, locale } = useT()
-
-  const layer = useSelector((state: { layer: any }) => state.layer)
-  const { layer_id, style } = layer
+  const dispatch = useDispatch()
+  const layer_id = useSelector(
+    (state: { layer: LayerState }) => state.layer.layer_id
+  )
+  const style = useSelector((state: { layer: LayerState }) => state.layer.style)
 
   useEffect(() => {
     scroller.scrollTo('scrollToMap')
@@ -47,44 +58,43 @@ const UploadRasterSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
         uploadUrl: file.uploadURL,
         originalName: file.data.name
       })
-      .end((err, res) => {
+      .end(async (err, res) => {
         closeMessage()
 
         if (err) {
           onUploadError(err)
         } else {
           const result = res.body
-          LayerActions.saveDataSettings(
-            {
-              is_external: true,
-              external_layer_type: 'Raster Tile Service',
-              external_layer_config: {
-                type: 'raster',
-                minzoom: Number.parseInt(result.minzoom, 10),
-                maxzoom: Number.parseInt(result.maxzoom, 10),
-                bounds: result.bounds,
-                tiles: result.tiles,
-                scheme: result.scheme
-              }
-            },
-            (err) => {
-              if (err) {
-                notification.error({
-                  message: t('Error'),
-                  description: err.message || err.toString() || err,
-                  duration: 0
-                })
-              } else {
-                // reset style to load correct source
-                LayerActions.resetStyle()
-                // tell the map that the data is initialized
-                LayerActions.tileServiceInitialized()
-                // set local state
-                setBBOX(result.bounds)
-                setCanSubmit(true)
-              }
+          const dataSettings = {
+            is_external: true,
+            external_layer_type: 'Raster Tile Service',
+            external_layer_config: {
+              type: 'raster' as Layer['external_layer_config']['type'],
+              minzoom: Number.parseInt(result.minzoom, 10),
+              maxzoom: Number.parseInt(result.maxzoom, 10),
+              bounds: result.bounds,
+              tiles: result.tiles,
+              scheme: result.scheme
             }
-          )
+          }
+          try {
+            await LayerAPI.saveDataSettings(layer_id, dataSettings)
+            // save in store
+            dispatch(saveDataSettings(dataSettings))
+            // reset style to load correct source
+            dispatch(resetStyle())
+            // tell the map that the data is initialized
+            dispatch(tileServiceInitialized())
+            // set local state
+            setBBOX(result.bounds)
+            setCanSubmit(true)
+          } catch (err) {
+            notification.error({
+              message: t('Error'),
+              description: err.message || err.toString() || err,
+              duration: 0
+            })
+          }
         }
       })
   }
@@ -176,7 +186,7 @@ const UploadRasterSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
         )}
       </Row>
       <Row justify='end'>
-        <Button type='primary' disabled={!canSubmit} onClick={onSubmit}>
+        <Button type='primary' disabled={!canSubmit} onClick={submit}>
           {t('Save and Continue')}
         </Button>
       </Row>

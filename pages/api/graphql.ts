@@ -4,7 +4,8 @@ import resolvers from '../../src/graphql/resolvers'
 import { importSchema } from 'graphql-import'
 import jwt from 'next-auth/jwt'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
-import { NextApiRequest, NextApiResponse } from 'next'
+
+import type { NextApiHandler } from 'next'
 import local from '../../src/config'
 
 const signingKey = process.env.JWT_SIGNING_PRIVATE_KEY
@@ -46,8 +47,7 @@ const apolloServer = new ApolloServer({
   }
 })
 const startServer = apolloServer.start()
-
-export default async function handler(req, res) {
+const graphQLHandler: NextApiHandler = async (req, res) => {
   res.setHeader(
     'Access-Control-Allow-Origin',
     'https://studio.apollographql.com'
@@ -62,7 +62,7 @@ export default async function handler(req, res) {
 
   if (req.method === 'OPTIONS') {
     res.end()
-    return false
+    return
   }
 
   const token = await jwt.getToken({
@@ -96,3 +96,4 @@ export const config = {
     bodyParser: false
   }
 }
+export default graphQLHandler

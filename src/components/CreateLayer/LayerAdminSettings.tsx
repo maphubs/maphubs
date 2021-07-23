@@ -2,14 +2,20 @@ import React, { useState } from 'react'
 import Formsy from 'formsy-react'
 import { Row, Col, notification, Button } from 'antd'
 import SelectGroup from '../Groups/SelectGroup'
-import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
 import useUnload from '../../hooks/useUnload'
 import Toggle from '../forms/toggle'
-import type { LayerStoreState } from '../../stores/layer-store'
 import dynamic from 'next/dynamic'
-import { useSelector } from 'react-redux'
 import { Group } from '../../types/group'
+
+import { useDispatch, useSelector } from '../../redux/hooks'
+import LayerAPI from '../../redux/reducers/layer-api'
+import {
+  saveAdminSettings,
+  saveExternalLayerConfig,
+  LayerState
+} from '../../redux/reducers/layerSlice'
+
 const CodeEditor = dynamic(() => import('../LayerDesigner/CodeEditor'), {
   ssr: false
 })
@@ -23,7 +29,7 @@ type Props = {
 type State = {
   canSubmit: boolean
   pendingChanges: boolean
-} & LayerStoreState
+}
 
 const LayerAdminSettings = ({
   groups,
@@ -32,10 +38,11 @@ const LayerAdminSettings = ({
   onSubmit
 }: Props): JSX.Element => {
   const { t } = useT()
+  const dispatch = useDispatch()
   const [canSubmit, setCanSubmit] = useState(false)
   const [pendingChanges, setPendingChanges] = useState(false)
 
-  const layerState = useSelector((state: { layer: any }) => state.layer)
+  const layerState = useSelector((state: { layer: LayerState }) => state.layer)
 
   useUnload((e) => {
     e.preventDefault()
@@ -46,40 +53,44 @@ const LayerAdminSettings = ({
     window.close()
   })
 
-  const submit = (model: Record<string, any>): void => {
-    const { owned_by_group_id } = layerState
+  const submit = async (model: {
+    group: string
+    disableExport: boolean
+    allowPublicSubmit: boolean
+  }): Promise<void> => {
+    const { layer_id, owned_by_group_id } = layerState
 
     if (!model.group && owned_by_group_id) {
       // editing settings on an existing layer
       model.group = owned_by_group_id
     }
 
-    LayerActions.saveAdminSettings(model, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Server Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-      } else {
-        setPendingChanges(false)
-        onSubmit()
-      }
-    })
+    try {
+      await LayerAPI.saveAdminSettings(layer_id, model)
+      dispatch(saveAdminSettings(model))
+      setPendingChanges(false)
+      onSubmit()
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
-  const saveExternalLayerConfig = (config: string): void => {
-    LayerActions.saveExternalLayerConfig(config, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Server Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-      } else {
-        setPendingChanges(false)
-        onSubmit()
-      }
-    })
+  const saveELC = async (config: string): Promise<void> => {
+    try {
+      await LayerAPI.saveExternalLayerConfig(layerState.layer_id, config)
+      dispatch(saveExternalLayerConfig(config))
+      setPendingChanges(false)
+      onSubmit()
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
 
   const {
@@ -104,7 +115,7 @@ const LayerAdminSettings = ({
           mode='json'
           initialCode={JSON.stringify(external_layer_config, undefined, 2)}
           title={t('External Layer Config')}
-          onSave={saveExternalLayerConfig}
+          onSave={saveELC}
           visible
           modal={false}
         />

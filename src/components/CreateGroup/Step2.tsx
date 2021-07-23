@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import GroupIcon from '@material-ui/icons/Group'
 import useT from '../../hooks/useT'
 import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/locale'
+
 type Props = {
   onSubmit: (group_id: string) => void
   active?: boolean

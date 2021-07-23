@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import UppyFileUpload from '../forms/UppyFileUpload'
 import { Row, notification, message, Button } from 'antd'
-import LayerActions from '../../actions/LayerActions'
 import { Element, scroller } from 'react-scroll'
 import superagent from 'superagent'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
 import getConfig from 'next/config'
 import dynamic from 'next/dynamic'
+
+import { useDispatch, useSelector } from '../../redux/hooks'
+import LayerAPI from '../../redux/reducers/layer-api'
+import {
+  saveDataSettings,
+  setDataType,
+  LayerState,
+  setImportedTags
+} from '../../redux/reducers/layerSlice'
+
 const MapHubsMap = dynamic(() => import('../Map'), {
   ssr: false
 })
@@ -23,30 +31,33 @@ const UploadLocalSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
   const [bbox, setBBOX] = useState()
   const { t, locale } = useT()
 
-  const layer = useSelector((state: { layer: any }) => state.layer)
-  const { layer_id, style } = layer
+  const dispatch = useDispatch()
+  const layer_id = useSelector(
+    (state: { layer: LayerState }) => state.layer.layer_id
+  )
+  const style = useSelector((state: { layer: LayerState }) => state.layer.style)
 
   useEffect(() => {
     scroller.scrollTo('scrollToMap')
   }, [])
 
-  const submit = (): void => {
+  const submit = async (): Promise<void> => {
     const data = {
       is_external: false,
       external_layer_type: '',
       external_layer_config: {}
     }
-    LayerActions.saveDataSettings(data, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Server Error'),
-          description: err.message || err.toString(),
-          duration: 0
-        })
-      } else {
-        message.success(t('Layer Saved'), 1, onSubmit)
-      }
-    })
+    try {
+      await LayerAPI.saveDataSettings(layer_id, data)
+      dispatch(saveDataSettings(data))
+      message.success(t('Layer Saved'), 1, onSubmit)
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString(),
+        duration: 0
+      })
+    }
   }
   const onUpload = (file: Record<string, any>): void => {
     const closeMessage = message.loading(t('Processing'), 0)
@@ -68,8 +79,10 @@ const UploadLocalSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
           const result = res.body
 
           if (result.success) {
-            LayerActions.setDataType(result.data_type)
-            LayerActions.setImportedTags(result.uniqueProps, true)
+            dispatch(setDataType(result.data_type))
+            dispatch(
+              setImportedTags({ data: result.uniqueProps, initLayer: true })
+            )
             setBBOX(result.bbox)
             setCanSubmit(true)
           } else {

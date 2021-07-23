@@ -3,14 +3,14 @@ import dynamic from 'next/dynamic'
 import { Row, Button, notification, message } from 'antd'
 import request from 'superagent'
 import getConfig from 'next/config'
-import useT from '../../hooks/useT.js'
-import useUnload from '../../hooks/useUnload.js'
+import useT from '../../hooks/useT'
+import useUnload from '../../hooks/useUnload'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const debug = DebugService('stores/layer-notes')
 
-const NoteCKEditor = dynamic(() => import('../forms/NoteCKEditor.js'), {
+const NoteCKEditor = dynamic(() => import('../forms/NoteCKEditor'), {
   ssr: false
 })
 type Props = {

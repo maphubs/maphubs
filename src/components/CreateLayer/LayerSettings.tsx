@@ -6,12 +6,14 @@ import MultiTextInput from '../forms/MultiTextInput'
 import SelectGroup from '../Groups/SelectGroup'
 import Select from '../forms/select'
 import Licenses from './licenses'
-import LayerActions from '../../actions/LayerActions'
+import LayerAPI from '../../redux/reducers/layer-api'
+import { saveSettings, selectSettings } from '../../redux/reducers/layerSlice'
 import Locales from '../../services/locales'
 import useT from '../../hooks/useT'
 import useUnload from '../../hooks/useUnload'
-import { useSelector } from 'react-redux'
 import { Group } from '../../types/group'
+import { LocalizedString } from '../../types/LocalizedString'
+import { useDispatch, useSelector } from '../../redux/hooks'
 type Props = {
   onSubmit: () => void
   onValid?: () => void
@@ -32,10 +34,19 @@ const LayerSettings = ({
   onSubmit
 }: Props): JSX.Element => {
   const { t } = useT()
+  const dispatch = useDispatch()
   const [canSubmit, setCanSubmit] = useState(false)
   const [pendingChanges, setPendingChanges] = useState(false)
 
-  const layerState = useSelector((state: { layer: any }) => state.layer)
+  const {
+    layer_id,
+    owned_by_group_id,
+    status,
+    license,
+    name,
+    description,
+    source
+  } = useSelector(selectSettings)
 
   useUnload((e) => {
     e.preventDefault()
@@ -46,8 +57,14 @@ const LayerSettings = ({
     window.close()
   })
 
-  const submit = (model: Record<string, any>): void => {
-    const { owned_by_group_id } = layerState
+  const submit = (model: {
+    name: LocalizedString
+    description: LocalizedString
+    source: LocalizedString
+    group: string
+    private: boolean
+    license: string
+  }): void => {
     model.name = Locales.formModelToLocalizedString(model, 'name')
     model.description = Locales.formModelToLocalizedString(model, 'description')
     model.source = Locales.formModelToLocalizedString(model, 'source')
@@ -69,21 +86,20 @@ const LayerSettings = ({
       model.private = false
     }
 
-    LayerActions.saveSettings(model, initLayer, (err) => {
-      if (err) {
+    LayerAPI.saveSettings(layer_id, model, initLayer)
+      .then(() => {
+        dispatch(saveSettings(model))
+        setPendingChanges(false)
+        onSubmit()
+      })
+      .catch((err) => {
         notification.error({
           message: t('Server Error'),
           description: err.message || err.toString() || err,
           duration: 0
         })
-      } else {
-        setPendingChanges(false)
-        onSubmit()
-      }
-    })
+      })
   }
-
-  const { status, license, name, description, source } = layerState
 
   if (showGroup && (!groups || groups.length === 0)) {
     return (

@@ -2,18 +2,33 @@ import React, { useState } from 'react'
 import Formsy, { addValidationRule } from 'formsy-react'
 import { Row, message, notification, Button } from 'antd'
 import TextInput from '../forms/textInput'
-import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
+
+import { useDispatch, useSelector } from '../../redux/hooks'
+import LayerAPI from '../../redux/reducers/layer-api'
+import {
+  saveDataSettings,
+  resetStyle,
+  tileServiceInitialized,
+  LayerState
+} from '../../redux/reducers/layerSlice'
+import { Layer } from '../../types/layer'
 
 const DGWMSSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
   const { t } = useT()
+  const dispatch = useDispatch()
 
   const [canSubmit, setCanSubmit] = useState(false)
+
+  const layer_id = useSelector(
+    (state: { layer: LayerState }) => state.layer.layer_id
+  )
+
   addValidationRule('isHttps', (values, value: string) => {
     return value ? value.startsWith('https://') : false
   })
 
-  const submit = (model: Record<string, any>): void => {
+  const submit = async (model: Record<string, any>): Promise<void> => {
     const layers = 'DigitalGlobe:Imagery'
     let url = `https://services.digitalglobe.com/mapservice/wmsaccess?bbox={bbox-epsg-3857}&format=image/png&transparent=true&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&width=512&height=512&layers=${layers}&connectid={DG_WMS_CONNECT_ID}&COVERAGE_CQL_FILTER=legacyId='${model.featureid.trim()}'`
 
@@ -21,12 +36,12 @@ const DGWMSSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
       url += `&username=${model.username}&password=${model.password}`
     }
 
-    LayerActions.saveDataSettings(
-      {
+    try {
+      const dataSettings = {
         is_external: true,
         external_layer_type: 'DGWMS',
         external_layer_config: {
-          type: 'raster',
+          type: 'raster' as Layer['external_layer_config']['type'],
           minzoom: model.minzoom,
           maxzoom: model.maxzoom,
           bounds: undefined,
@@ -34,26 +49,25 @@ const DGWMSSource = ({ onSubmit }: { onSubmit: () => void }): JSX.Element => {
           tiles: [url] // authUrl: 'https://services.digitalglobe.com',
           // authToken: window.btoa(`${model.username}:${model.password}`)
         }
-      },
-      (err) => {
-        if (err) {
-          notification.error({
-            message: t('Server Error'),
-            description: err.message || err.toString() || err,
-            duration: 0
-          })
-        } else {
-          message.success(t('Layer Saved'), 1, () => {
-            // reset style to load correct source
-            LayerActions.resetStyle()
-            // tell the map that the data is initialized
-            LayerActions.tileServiceInitialized()
-
-            onSubmit()
-          })
-        }
       }
-    )
+      await LayerAPI.saveDataSettings(layer_id, dataSettings)
+      message.success(t('Layer Saved'), 1, () => {
+        // save in store
+        dispatch(saveDataSettings(dataSettings))
+        // reset style to load correct source
+        dispatch(resetStyle())
+        // tell the map that the data is initialized
+        dispatch(tileServiceInitialized())
+
+        onSubmit()
+      })
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
   return (
     <Row

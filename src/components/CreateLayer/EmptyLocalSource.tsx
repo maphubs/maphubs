@@ -1,7 +1,10 @@
 import React from 'react'
 import { Row, Col, message, notification, Button } from 'antd'
-import LayerActions from '../../actions/LayerActions'
 import useT from '../../hooks/useT'
+
+import { useDispatch, useSelector } from '../../redux/hooks'
+import LayerAPI from '../../redux/reducers/layer-api'
+import { saveDataSettings, LayerState } from '../../redux/reducers/layerSlice'
 
 type Props = {
   onSubmit: () => void
@@ -9,6 +12,11 @@ type Props = {
 }
 const EmptyLocalSource = ({ type, onSubmit }: Props): JSX.Element => {
   const { t } = useT()
+  const dispatch = useDispatch()
+
+  const layer_id = useSelector(
+    (state: { layer: LayerState }) => state.layer.layer_id
+  )
 
   return (
     <Row
@@ -29,27 +37,25 @@ const EmptyLocalSource = ({ type, onSubmit }: Props): JSX.Element => {
       >
         <Button
           type='primary'
-          onClick={() => {
-            LayerActions.saveDataSettings(
-              {
-                is_external: false,
-                external_layer_type: '',
-                external_layer_config: {},
-                is_empty: true,
-                empty_data_type: type
-              },
-              (err) => {
-                if (err) {
-                  notification.error({
-                    message: t('Server Error'),
-                    description: err.message || err.toString() || err,
-                    duration: 0
-                  })
-                } else {
-                  message.success(t('Layer Saved'), 1, onSubmit)
-                }
-              }
-            )
+          onClick={async () => {
+            const dataSettings = {
+              is_external: false,
+              external_layer_type: '',
+              external_layer_config: {},
+              is_empty: true,
+              empty_data_type: type
+            }
+            try {
+              await LayerAPI.saveDataSettings(layer_id, dataSettings)
+              dispatch(saveDataSettings(dataSettings))
+              message.success(t('Layer Saved'), 1, onSubmit)
+            } catch (err) {
+              notification.error({
+                message: t('Server Error'),
+                description: err.message || err.toString() || err,
+                duration: 0
+              })
+            }
           }}
         >
           {t('Save and Continue')}

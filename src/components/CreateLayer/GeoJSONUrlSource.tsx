@@ -3,9 +3,18 @@ import Formsy, { addValidationRule } from 'formsy-react'
 import { Row, message, notification, Button } from 'antd'
 import LinkIcon from '@material-ui/icons/Link'
 import TextInput from '../forms/textInput'
-import LayerActions from '../../actions/LayerActions'
 import Radio from '../forms/radio'
 import useT from '../../hooks/useT'
+
+import { useDispatch, useSelector } from '../../redux/hooks'
+import LayerAPI from '../../redux/reducers/layer-api'
+import {
+  saveDataSettings,
+  resetStyle,
+  tileServiceInitialized,
+  LayerState
+} from '../../redux/reducers/layerSlice'
+import { Layer } from '../../types/layer'
 
 type Props = {
   onSubmit: (...args: Array<any>) => any
@@ -22,42 +31,45 @@ const GeoJSONUrlSource = ({
 }): JSX.Element => {
   const [canSubmit, setCanSubmit] = useState(false)
   const { t } = useT()
+  const dispatch = useDispatch()
+  const layer_id = useSelector(
+    (state: { layer: LayerState }) => state.layer.layer_id
+  )
 
-  addValidationRule('isHttps', (values, value) => {
+  addValidationRule('isHttps', (values, value: string) => {
     return value ? value.startsWith('https://') : false
   })
 
-  const submit = (model: Record<string, any>): void => {
-    LayerActions.saveDataSettings(
-      {
+  const submit = async (model: Record<string, any>): Promise<void> => {
+    try {
+      const dataSettings = {
         is_external: true,
         external_layer_type: 'GeoJSON',
         external_layer_config: {
-          type: 'geojson',
+          type: 'geojson' as Layer['external_layer_config']['type'],
           id: model.id,
           data_type: model.data_type,
           data: model.geojsonUrl
         }
-      },
-      (err) => {
-        if (err) {
-          notification.error({
-            message: t('Server Error'),
-            description: err.message || err.toString() || err,
-            duration: 0
-          })
-        } else {
-          message.success(t('Layer Saved'), 1, () => {
-            // reset style to load correct source
-            LayerActions.resetStyle()
-            // tell the map that the data is initialized
-            LayerActions.tileServiceInitialized()
-
-            onSubmit()
-          })
-        }
       }
-    )
+      await LayerAPI.saveDataSettings(layer_id, dataSettings)
+      message.success(t('Layer Saved'), 1, () => {
+        // save in store
+        dispatch(saveDataSettings(dataSettings))
+        // reset style to load correct source
+        dispatch(resetStyle())
+        // tell the map that the data is initialized
+        dispatch(tileServiceInitialized())
+
+        onSubmit()
+      })
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
 
   const dataTypeOptions = [

@@ -10,19 +10,22 @@ const debug = DebugService('MapStyles/style')
 
 type MapHubsSource = {
   data?: mapboxgl.GeoJSONSourceOptions['data']
-  type:
+  type?:
     | mapboxgl.Source['type']
     | 'ags-mapserver-query'
     | 'ags-mapserver-tiles'
     | 'ags-featureserver-query'
-  url: string
+    | 'earthengine'
+    | 'mapbox-style'
+    | 'multiraster'
+  url?: string
   tiles?: string[]
 }
 export default {
   defaultStyle(
     layer_id: number,
     shortid: string,
-    source: string,
+    source: MapHubsSource,
     dataType: string
   ): mapboxgl.Style {
     const settings = Settings.defaultLayerSettings()

@@ -51,6 +51,15 @@ const withTM = require('next-transpile-modules')([
 
 module.exports = withTM(
   withAntdLess({
+    async redirects() {
+      return [
+        {
+          source: '/lyr/:layer_id',
+          destination: '/layer/info/:layer_id',
+          permanent: false
+        }
+      ]
+    },
     typescript: {
       ignoreBuildErrors: false
     },

@@ -2,11 +2,20 @@ import React, { useState } from 'react'
 import Formsy, { addValidationRule } from 'formsy-react'
 import TextInput from '../forms/textInput'
 import { message, notification, Row, Button } from 'antd'
-import LayerActions from '../../actions/LayerActions'
 import LinkIcon from '@material-ui/icons/Link'
 import HeightIcon from '@material-ui/icons/Height'
 import AspectRatioIcon from '@material-ui/icons/AspectRatio'
 import useT from '../../hooks/useT'
+
+import { useDispatch, useSelector } from '../../redux/hooks'
+import LayerAPI from '../../redux/reducers/layer-api'
+import {
+  saveDataSettings,
+  resetStyle,
+  tileServiceInitialized,
+  LayerState
+} from '../../redux/reducers/layerSlice'
+import { Layer } from '../../types/layer'
 
 const RasterTileSource = ({
   onSubmit
@@ -15,12 +24,16 @@ const RasterTileSource = ({
 }): JSX.Element => {
   const [canSubmit, setCanSubmit] = useState(false)
   const { t } = useT()
+  const dispatch = useDispatch()
+  const layer_id = useSelector(
+    (state: { layer: LayerState }) => state.layer.layer_id
+  )
 
   addValidationRule('isHttps', (values, value: string) => {
     return value ? value.startsWith('https://') : false
   })
 
-  const submit = (model: Record<string, any>): void => {
+  const submit = async (model: Record<string, any>): Promise<void> => {
     let boundsArr = []
 
     if (model.bounds) {
@@ -30,37 +43,36 @@ const RasterTileSource = ({
       })
     }
 
-    LayerActions.saveDataSettings(
-      {
-        is_external: true,
-        external_layer_type: 'Vector Tile Service',
-        external_layer_config: {
-          type: 'vector',
-          minzoom: model.minzoom,
-          maxzoom: model.maxzoom,
-          bounds: boundsArr,
-          tiles: [model.vectorTileUrl]
-        }
-      },
-      (err) => {
-        if (err) {
-          notification.error({
-            message: t('Error'),
-            description: err.message || err.toString() || err,
-            duration: 0
-          })
-        } else {
-          message.success(t('Layer Saved'), 1, () => {
-            // reset style to load correct source
-            LayerActions.resetStyle()
-            // tell the map that the data is initialized
-            LayerActions.tileServiceInitialized()
-
-            onSubmit()
-          })
-        }
+    const dataSettings = {
+      is_external: true,
+      external_layer_type: 'Vector Tile Service',
+      external_layer_config: {
+        type: 'vector' as Layer['external_layer_config']['type'],
+        minzoom: model.minzoom,
+        maxzoom: model.maxzoom,
+        bounds: boundsArr,
+        tiles: [model.vectorTileUrl]
       }
-    )
+    }
+    try {
+      await LayerAPI.saveDataSettings(layer_id, dataSettings)
+      message.success(t('Layer Saved'), 1, () => {
+        // save in store
+        dispatch(saveDataSettings(dataSettings))
+        // reset style to load correct source
+        dispatch(resetStyle())
+        // tell the map that the data is initialized
+        dispatch(tileServiceInitialized())
+
+        onSubmit()
+      })
+    } catch (err) {
+      notification.error({
+        message: t('Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
 
   return (

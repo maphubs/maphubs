@@ -1,9 +1,7 @@
 import knex from '../../connection'
 import multer from 'multer'
-import ogr2ogr from 'ogr2ogr'
 import fs from 'fs'
 import Layer from '../../models/layer'
-import Bluebird from 'bluebird'
 import tus from 'tus-node-server'
 import { EVENTS } from 'tus-node-server'
 import express from 'express'
@@ -235,62 +233,6 @@ export default function (app: any): void {
         log.error(err.message)
         // in this case allow error message to be sent to user
         apiError(res, 200, err.message)(err)
-      }
-    }
-  )
-  app.post(
-    '/api/layer/finishupload',
-    csrfProtection,
-    isAuthenticated,
-    async (req, res) => {
-      if (req.body.layer_id && req.body.requestedShapefile) {
-        debug.log(
-          'finish upload for layer: ' +
-            req.body.layer_id +
-            ' requesting shapefile: ' +
-            req.body.requestedShapefile
-        )
-
-        try {
-          const layer = await Layer.getLayerByID(req.body.layer_id)
-          const shortid = layer.shortid
-
-          if (layer.created_by_user_id === req.user_id) {
-            debug.log('allowed')
-            // get file path
-            const path = await DataLoadUtils.getTempShapeUpload(
-              req.body.layer_id
-            )
-            debug.log('finishing upload with file: ' + path)
-            const shpFilePath =
-              path + '_zip' + '/' + req.body.requestedShapefile
-            const ogr = ogr2ogr(shpFilePath)
-              .format('GeoJSON')
-              .skipfailures()
-              .options(['-t_srs', 'EPSG:4326'])
-              .timeout(60_000)
-            const geoJSON = await Bluebird.promisify(ogr.exec, {
-              context: ogr
-            })()
-            const result = await DataLoadUtils.storeTempGeoJSON(
-              geoJSON,
-              path,
-              req.body.layer_id,
-              shortid,
-              true,
-              true
-            )
-            return res.status(200).send(result)
-          } else {
-            return notAllowedError(res, 'layer')
-          }
-        } catch (err) {
-          log.error(err.message)
-          apiError(res, 200)(err)
-        }
-      } else {
-        debug.log('missing required data')
-        apiDataError(res)
       }
     }
   )

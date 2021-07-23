@@ -1,11 +1,9 @@
 import React from 'react'
-import Header, { HeaderConfig } from './header'
-import Footer, { FooterConfig } from './footer'
+import Header, { HeaderConfig } from '../header'
+import Footer, { FooterConfig } from '../footer'
 import Head from 'next/head'
-import useSWR from 'swr'
 import { useSession } from 'next-auth/client'
 import { signin } from 'next-auth/client'
-import useStickyResult from '../hooks/useStickyResult'
 
 import getConfig from 'next/config'
 const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
@@ -15,6 +13,8 @@ type Props = {
   activePage?: string
   hideFooter?: boolean
   publicShare?: boolean
+  headerConfig?: HeaderConfig
+  footerConfig?: FooterConfig
   children: JSX.Element | JSX.Element[]
 }
 const Layout = ({
@@ -22,23 +22,11 @@ const Layout = ({
   activePage,
   hideFooter,
   publicShare,
+  headerConfig,
+  footerConfig,
   children
 }: Props): JSX.Element => {
   const [session, loading] = useSession()
-
-  const { data } = useSWR([
-    `{
-       pageConfig {
-         headerConfig
-         footerConfig
-       }
-      }
-  `
-  ])
-  const stickyData: {
-    pageConfig: { headerConfig: HeaderConfig; footerConfig: FooterConfig }
-  } = useStickyResult(data) || { pageConfig: null }
-  if (loading) return <></>
 
   // redirect to login if not signed in, prevents displaying an error when data fails to load
   // for public shared maps we need to by-pass this check
@@ -52,10 +40,6 @@ const Layout = ({
       </div>
     )
   }
-
-  const { pageConfig } = stickyData || {}
-
-  const { headerConfig, footerConfig } = pageConfig || {}
 
   return (
     <>

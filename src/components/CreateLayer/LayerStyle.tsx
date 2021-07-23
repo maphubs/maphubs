@@ -10,17 +10,22 @@ import {
 } from 'antd'
 import MapStyles from '../Map/Styles'
 import MiniLegend from '../Map/MiniLegend'
-import LayerActions from '../../actions/LayerActions'
 import OpacityChooser from '../LayerDesigner/OpacityChooser'
 import LayerDesigner from '../LayerDesigner/LayerDesigner'
 
 import { Subscribe } from 'unstated'
 import MapContainer from '../Map/containers/MapContainer'
-import type { LayerStoreState } from '../../stores/layer-store'
 import getConfig from 'next/config'
 import mapboxgl from 'mapbox-gl'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from '../../redux/hooks'
+import LayerAPI from '../../redux/reducers/layer-api'
+import {
+  setStyle,
+  resetStyle,
+  LayerState
+} from '../../redux/reducers/layerSlice'
+import { Layer } from '../../types/layer'
 
 import dynamic from 'next/dynamic'
 const MapHubsMap = dynamic(() => import('../Map'), {
@@ -37,45 +42,42 @@ type Props = {
 }
 type State = {
   rasterOpacity: number
-} & LayerStoreState
+}
 
 const LayerStyle = ({
   waitForTileInit,
   mapConfig,
   onSubmit
 }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t, locale } = useT()
+  const dispatch = useDispatch()
   const [rasterOpacity, setRasterOpacity] = useState(100) // FIXME: opacity slider always starts at 100
-  const layerState = useSelector((state: { layer: any }) => state.layer)
+  const layerState = useSelector((state: { layer: LayerState }) => state.layer)
 
-  const submit = (MapState: Record<string, any>): void => {
+  const submit = async (MapState: Record<string, any>): Promise<void> => {
     const { layer_id, name, style, labels, legend_html } = layerState
 
     const closeSavingMessage = message.loading(t('Saving'), 0)
     const preview_position = MapState.state.map.getPosition()
     preview_position.bbox = MapState.state.map.getBounds()
-    LayerActions.saveStyle(
-      {
-        layer_id,
-        style,
-        labels,
-        legend_html,
-        preview_position
-      },
-      (err) => {
-        closeSavingMessage()
-
-        if (err) {
-          notification.error({
-            message: t('Server Error'),
-            description: err.message || err.toString() || err,
-            duration: 0
-          })
-        } else {
-          onSubmit(layer_id, name)
-        }
-      }
-    )
+    const data = {
+      style,
+      labels,
+      legend_html,
+      preview_position
+    }
+    try {
+      await LayerAPI.saveStyle(layer_id, data)
+      onSubmit(layer_id, name)
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    } finally {
+      closeSavingMessage()
+    }
   }
 
   const changeOpacity = (opacity: number): void => {
@@ -99,54 +101,24 @@ const LayerStyle = ({
           )
 
     const legend_html = MapStyles.legend.rasterLegend()
-    LayerActions.setStyle({
-      style,
-      legend_html
-    })
+    dispatch(setStyle({ style, legend_html }))
     setRasterOpacity(opacity)
   }
   const onColorChange = (style: mapboxgl.Style, legend_html: string): void => {
-    LayerActions.setStyle({
-      style,
-      legend_html
-    })
+    dispatch(setStyle({ style, legend_html }))
   }
-  const setStyle = (style: mapboxgl.Style): void => {
-    LayerActions.setStyle({
-      style
-    })
-  }
+
   const setLabels = (
     style: mapboxgl.Style,
     labels: Record<string, any>
   ): void => {
-    LayerActions.setStyle({
-      style,
-      labels
-    })
+    dispatch(setStyle({ style, labels }))
   }
   const setLegend = (legend_html: string): void => {
-    LayerActions.setStyle({
-      legend_html
-    })
+    dispatch(setStyle({ legend_html }))
   }
   const reloadMap = (MapState: Record<string, any>): void => {
     MapState.state.map.reloadStyle()
-  }
-  const resetStyle = (): void => {
-    confirm({
-      title: t('Confirm Reset'),
-      content: t(
-        'Warning! This will permanently delete all custom style settings from this layer.'
-      ),
-      okText: t('Reset'),
-      okType: 'danger',
-      cancelText: t('Cancel'),
-
-      onOk() {
-        LayerActions.resetStyle()
-      }
-    })
   }
 
   const {
@@ -157,7 +129,6 @@ const LayerStyle = ({
     external_layer_config,
     legend_html,
     is_external,
-    locale,
     labels
   } = layerState
   const showMap = waitForTileInit ? tileServiceInitialized : true
@@ -243,7 +214,7 @@ const LayerStyle = ({
                   showLayersButton={false}
                   layers={[layerState]}
                 />
-              </Map>
+              </MapHubsMap>
             </Row>
           )}
         </Col>
@@ -350,7 +321,21 @@ const LayerStyle = ({
                 <Col span={6}>
                   <Button
                     type='primary'
-                    onClick={resetStyle}
+                    onClick={(): void => {
+                      confirm({
+                        title: t('Confirm Reset'),
+                        content: t(
+                          'Warning! This will permanently delete all custom style settings from this layer.'
+                        ),
+                        okText: t('Reset'),
+                        okType: 'danger',
+                        cancelText: t('Cancel'),
+
+                        onOk() {
+                          dispatch(resetStyle())
+                        }
+                      })
+                    }}
                     style={{
                       marginRight: '10px'
                     }}

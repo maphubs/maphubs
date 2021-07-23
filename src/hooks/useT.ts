@@ -1,7 +1,7 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from '../redux/hooks'
 import { LocalizedString } from '../types/LocalizedString'
 import Locales from '../services/locales'
-import { LocaleState } from '../redux/reducers/locale'
+import { changeLocale, selectLocale } from '../redux/reducers/localeSlice'
 
 type TranslateFunction = (v: string | LocalizedString) => string
 
@@ -11,9 +11,7 @@ export default function useT(): {
   setLocale: (v: string) => void
 } {
   const dispatch = useDispatch()
-  const locale = useSelector(
-    (state: { locale: LocaleState }) => state.locale.locale
-  )
+  const locale = useSelector(selectLocale)
 
   const t = (val: LocalizedString | string) => {
     return typeof val === 'string'
@@ -21,7 +19,7 @@ export default function useT(): {
       : Locales.getLocaleStringObject(locale, val)
   }
   const setLocale = (v: string) => {
-    dispatch({ type: 'locale/set', locale: v })
+    dispatch(changeLocale(v))
   }
   return { t, locale, setLocale }
 }

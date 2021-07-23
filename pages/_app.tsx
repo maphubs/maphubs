@@ -1,11 +1,12 @@
 import Head from 'next/head'
 import React from 'react'
+import type { AppProps } from 'next/app'
 
 import { Provider as NextAuthProvider } from 'next-auth/client'
 
 // redux
 import { Provider } from 'react-redux'
-import { useStore } from '../src/redux/store'
+import store from '../src/redux/store'
 
 //SWR
 import SWRConfig from '../src/components/SWRConfig'
@@ -14,9 +15,8 @@ import { QueryParamProvider } from '../src/components/QueryParamProvider'
 
 import '../src/maphubs.scss'
 
-const MapHubs = ({ Component, pageProps, err }: any): JSX.Element => {
-  const { session, initialReduxState } = pageProps
-  const store = useStore(initialReduxState)
+const MapHubs = ({ Component, pageProps }: AppProps): JSX.Element => {
+  const { session } = pageProps
   return (
     <>
       <Head>
@@ -32,7 +32,7 @@ const MapHubs = ({ Component, pageProps, err }: any): JSX.Element => {
         <Provider store={store}>
           <SWRConfig>
             <QueryParamProvider>
-              <Component {...pageProps} err={err} />
+              <Component {...pageProps} />
             </QueryParamProvider>
           </SWRConfig>
         </Provider>

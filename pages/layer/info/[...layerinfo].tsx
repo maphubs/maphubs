@@ -58,6 +58,7 @@ import { FeatureCollection } from 'geojson'
 //SSR Only
 import LayerModel from '../../../src/models/layer'
 import PageModel from '../../../src/models/page'
+import LayerStatsModel from '../../../src/models/stats'
 
 import dynamic from 'next/dynamic'
 const InteractiveMap = dynamic(
@@ -92,8 +93,11 @@ type Props = {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const layer_id = Number.parseInt(context.params.layerinfo[0])
   const layer = await LayerModel.getLayerByID(layer_id)
+  layer.last_updated = layer.last_updated.toISOString()
+  layer.creation_time = layer.creation_time.toISOString()
+
   const session = await getSession(context)
-  let allowedToModifyLayer
+  let allowedToModifyLayer = null
   if (session?.user) {
     allowedToModifyLayer = await LayerModel.allowedToModify(
       layer_id,
@@ -106,11 +110,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  const mapConfig = await PageModel.getPageConfigs(['map'])[0]
+  const mapConfig = (await PageModel.getPageConfigs(['map'])[0]) || null
   return {
     props: {
       layer,
       layerNotes: await LayerModel.getLayerNotes(layer_id),
+      layerStats: await LayerStatsModel.getLayerStats(layer_id),
       mapConfig,
       allowedToModifyLayer
     }
@@ -624,12 +629,12 @@ const LayerInfo = ({
                       </Card>
                     </Col>
                   </Row>
-                  <Stats stats={layerStats.stats} />
+                  <Stats stats={layerStats?.stats} />
                 </TabPane>
                 <TabPane tab={t('Notes')} key='notes'>
                   <LayerNotes
                     canEdit={allowedToModifyLayer}
-                    initialNotes={layerNotes.notes}
+                    initialNotes={layerNotes?.notes}
                     layer_id={layer.layer_id}
                   />
                 </TabPane>

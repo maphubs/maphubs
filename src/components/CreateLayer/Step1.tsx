@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { message, notification, Row } from 'antd'
-import LayerActions from '../../actions/LayerActions'
 import CreateLayer from './CreateLayer'
 import useT from '../../hooks/useT'
+import LayerAPI from '../../redux/reducers/layer-api'
+import { useSelector } from '../../redux/hooks'
+import { LayerState } from '../../redux/reducers/layerSlice'
 
 type Props = {
   onSubmit: () => void
@@ -11,25 +13,27 @@ type Props = {
 
 const Step1 = ({ onSubmit, mapConfig }: Props): JSX.Element => {
   const { t } = useT()
+  const layer_id = useSelector(
+    (state: { layer: LayerState }) => state.layer.layer_id
+  )
 
   const [warnIfUnsaved, setWarnIfUnsaved] = useState(false)
 
-  const onCancel = (): void => {
+  const onCancel = async () => {
     // delete the layer
-    LayerActions.cancelLayer((err) => {
-      if (err) {
-        notification.error({
-          message: t('Server Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-      } else {
-        setWarnIfUnsaved(false)
-        message.info(t('Layer Cancelled'), 1, () => {
-          window.location.assign('/layers')
-        })
-      }
-    })
+    try {
+      await LayerAPI.deleteLayer(layer_id)
+      setWarnIfUnsaved(false)
+      message.info(t('Layer Cancelled'), 1, () => {
+        window.location.assign('/layers')
+      })
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
 
   return (
