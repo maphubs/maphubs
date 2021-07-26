@@ -1,5 +1,5 @@
 import request from 'superagent'
-import getConfig from 'next/config'
+
 const config = getConfig()
 const MAPHUBS_CONFIG = config ? config.publicRuntimeConfig : {}
 
@@ -7,19 +7,19 @@ export default async (
   mhid: string,
   imageData: string
 ): Promise<{ webpcheckURL: string }> => {
-  const host = MAPHUBS_CONFIG.host
-    ? MAPHUBS_CONFIG.host.replace(/\./g, '')
+  const host = process.env.NEXT_PUBLIC_EXTERNAL_HOST
+    ? process.env.NEXT_PUBLIC_EXTERNAL_HOST.replace(/\./g, '')
     : 'unknownhost'
 
   if (
-    !MAPHUBS_CONFIG.ASSET_UPLOAD_API ||
-    !MAPHUBS_CONFIG.ASSET_UPLOAD_API_KEY
+    !process.env.NEXT_PUBLIC_ASSET_UPLOAD_API ||
+    !process.env.NEXT_PUBLIC_ASSET_UPLOAD_API_KEY
   ) {
     throw new Error('Missing ASSET API config')
   }
 
-  const apiUrl = `${MAPHUBS_CONFIG.ASSET_UPLOAD_API}/image/upload`
-  const token = MAPHUBS_CONFIG.ASSET_UPLOAD_API_KEY
+  const apiUrl = `${process.env.NEXT_PUBLIC_ASSET_UPLOAD_API}/image/upload`
+  const token = process.env.NEXT_PUBLIC_ASSET_UPLOAD_API_KEY
   const res = await request
     .post(apiUrl)
     .set('authorization', token ? `Bearer ${token}` : null)

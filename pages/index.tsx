@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import Layout from '../src/components/Layout/LayoutSSR'
 import { getSession } from 'next-auth/client'
 import { GetServerSideProps } from 'next'
@@ -16,7 +17,6 @@ import type { Layer } from '../src/types/layer'
 import type { Group } from '../src/stores/GroupStore'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import XComponentReact from '../src/components/XComponentReact'
-import getConfig from 'next/config'
 import { Story } from '../src/types/story'
 import useT from '../src/hooks/useT'
 import HomePageMap from '../src/components/Home/HomePageMap'
@@ -33,7 +33,6 @@ import MapModel from '../src/models/map'
 import { HeaderConfig } from '../src/components/header'
 import { FooterConfig } from '../src/components/footer'
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
 
 type Props = {
@@ -238,6 +237,7 @@ const Home = ({
   footerConfig
 }: Props): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
   const [loaded, setLoaded] = useState(false)
   useEffect(() => {
     setLoaded(true)
@@ -263,7 +263,7 @@ const Home = ({
             }}
             dimensions={dimensions}
             onComplete={() => {
-              window.location.assign(config.onCompleteUrl || '/')
+              router.push(config.onCompleteUrl || '/')
             }}
           />
         </Row>
@@ -393,7 +393,7 @@ const Home = ({
               <TrendingUpIcon
                 style={{
                   fontWeight: 'bold',
-                  color: MAPHUBS_CONFIG.primaryColor,
+                  color: process.env.NEXT_PUBLIC_PRIMARY_COLOR,
                   fontSize: '40px',
                   verticalAlign: '-25%',
                   marginLeft: '5px'

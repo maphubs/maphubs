@@ -32,7 +32,10 @@ export default function (app: any) {
             res,
             '/createlayer',
             await pageOptions(req, {
-              title: req.__('Create Layer') + ' - ' + local.productName,
+              title:
+                req.__('Create Layer') +
+                ' - ' +
+                process.env.NEXT_PUBLIC_PRODUCT_NAME,
               props: {
                 groups: await Group.getGroupsForUser(user_id, trx),
                 layer: await Layer.getLayerByID(layer_id, trx)
@@ -73,7 +76,7 @@ export default function (app: any) {
           res,
           '/layerinfo',
           await pageOptions(req, {
-            title: name + ' - ' + local.productName,
+            title: name + ' - ' + process.env.NEXT_PUBLIC_PRODUCT_NAME,
             description,
             props: {
               layer,
@@ -142,7 +145,7 @@ export default function (app: any) {
           res,
           '/layermap',
           await pageOptions(req, {
-            title: name + ' - ' + local.productName,
+            title: name + ' - ' + process.env.NEXT_PUBLIC_PRODUCT_NAME,
             description,
             props: {
               layer,

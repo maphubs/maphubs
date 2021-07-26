@@ -15,7 +15,7 @@ import LayerDesigner from '../LayerDesigner/LayerDesigner'
 
 import { Subscribe } from 'unstated'
 import MapContainer from '../Map/containers/MapContainer'
-import getConfig from 'next/config'
+
 import mapboxgl from 'mapbox-gl'
 import useT from '../../hooks/useT'
 import { useDispatch, useSelector } from '../../redux/hooks'
@@ -32,7 +32,6 @@ const MapHubsMap = dynamic(() => import('../Map'), {
   ssr: false
 })
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { confirm } = Modal
 const { Title } = Typography
 type Props = {
@@ -190,15 +189,14 @@ const LayerStyle = ({
                 showLogo
                 mapConfig={mapConfig}
                 fitBounds={mapExtent}
-                primaryColor={MAPHUBS_CONFIG.primaryColor}
-                logoSmall={MAPHUBS_CONFIG.logoSmall}
-                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+                primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
                 t={t}
                 locale={locale}
-                mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-                DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-                earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+                mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+                DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+                earthEngineClientID={
+                  process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
+                }
               >
                 <MiniLegend
                   style={{

@@ -16,7 +16,7 @@ import EditIcon from '@material-ui/icons/Edit'
 import ShareIcon from '@material-ui/icons/Share'
 import { Fab, Action } from 'react-tiny-fab'
 import 'react-tiny-fab/dist/styles.css'
-import getConfig from 'next/config'
+
 import useT from '../../../src/hooks/useT'
 import { Map } from '../../../src/types/map'
 import { Layer } from '../../../src/types/layer'
@@ -29,8 +29,6 @@ const InteractiveMap = dynamic(
     ssr: false
   }
 )
-
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type UserMapState = {
   share_id?: string
@@ -89,7 +87,7 @@ const UserMap = (): JSX.Element => {
   const { map, mapLayers, allowedToModifyMap, mapConfig } = stickyData
 
   const onEdit = (): void => {
-    window.location.assign('/map/edit/' + map.map_id)
+    router.push('/map/edit/' + map.map_id)
   }
   const onFullScreen = (): void => {
     let fullScreenLink = `/api/map/${map.map_id}/static/render?showToolbar=1`
@@ -98,7 +96,7 @@ const UserMap = (): JSX.Element => {
       fullScreenLink = fullScreenLink += window.location.hash
     }
 
-    window.location.assign(fullScreenLink)
+    router.push(fullScreenLink)
   }
 
   const download = (): void => {
@@ -129,13 +127,10 @@ const UserMap = (): JSX.Element => {
             layers={mapLayers}
             mapConfig={mapConfig}
             disableScrollZoom={false}
-            primaryColor={MAPHUBS_CONFIG.primaryColor}
-            logoSmall={MAPHUBS_CONFIG.logoSmall}
-            logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-            logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-            mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-            DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-            earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+            primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
+            mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+            DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+            earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
             {...map.settings}
             t={t}
           />
@@ -149,7 +144,7 @@ const UserMap = (): JSX.Element => {
           {!publicShare && (
             <Fab
               mainButtonStyles={{
-                backgroundColor: MAPHUBS_CONFIG.primaryColor
+                backgroundColor: process.env.NEXT_PUBLIC_PRIMARY_COLOR
               }}
               position={{
                 bottom: 75,
@@ -184,7 +179,9 @@ const UserMap = (): JSX.Element => {
                   backgroundColor: 'green'
                 }}
                 onClick={download}
-                download={`${t(map.title)} - ${MAPHUBS_CONFIG.productName}.png`}
+                download={`${t(map.title)} - ${
+                  process.env.NEXT_PUBLIC_PRODUCT_NAME
+                }.png`}
                 href={`/api/screenshot/map/${map.map_id}.png`}
               >
                 <PhotoIcon />
@@ -213,31 +210,35 @@ const UserMap = (): JSX.Element => {
                   <EditIcon />
                 </Action>
               )}
-              {allowedToModifyMap && MAPHUBS_CONFIG.mapHubsPro && !publicShare && (
-                <Action
-                  text={t('Share')}
-                  style={{
-                    backgroundColor: 'red'
-                  }}
-                  onClick={() => {
-                    setShowPublicShare(true)
-                  }}
-                >
-                  <ShareIcon />
-                </Action>
-              )}
+              {allowedToModifyMap &&
+                process.env.NEXT_PUBLIC_MAPHUBS_PRO &&
+                !publicShare && (
+                  <Action
+                    text={t('Share')}
+                    style={{
+                      backgroundColor: 'red'
+                    }}
+                    onClick={() => {
+                      setShowPublicShare(true)
+                    }}
+                  >
+                    <ShareIcon />
+                  </Action>
+                )}
             </Fab>
           )}
-          {allowedToModifyMap && MAPHUBS_CONFIG.mapHubsPro && !publicShare && (
-            <PublicShareModal
-              visible={showPublicShare}
-              map_id={map.map_id}
-              share_id={map.share_id}
-              onClose={() => {
-                setShowPublicShare(false)
-              }}
-            />
-          )}
+          {allowedToModifyMap &&
+            process.env.NEXT_PUBLIC_MAPHUBS_PRO &&
+            !publicShare && (
+              <PublicShareModal
+                visible={showPublicShare}
+                map_id={map.map_id}
+                share_id={map.share_id}
+                onClose={() => {
+                  setShowPublicShare(false)
+                }}
+              />
+            )}
           {session?.user && !publicShare && (
             <CopyMapModal
               visible={showCopyMap}

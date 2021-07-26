@@ -29,7 +29,7 @@ export default function (app: any) {
     '/api/import/:group_id/upload',
     isAuthenticated,
     multer({
-      dest: local.tempFilePath + '/uploads/'
+      dest: process.env.TEMP_FILE_PATH + '/uploads/'
     }).single('file'),
     async (req, res) => {
       try {

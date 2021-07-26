@@ -62,7 +62,7 @@ const sendVerificationRequest = ({ identifier: email, url, provider }) => {
   return new Promise((resolve, reject) => {
     const { server, from } = provider
     // Strip protocol from URL and use domain as site name
-    const site = MAPHUBS_CONFIG.productName
+    const site = process.env.NEXT_PUBLIC_PRODUCT_NAME
     url = url.replace('/api/auth/callback/email', '/verify-email')
     nodemailer.createTransport(server).sendMail(
       {

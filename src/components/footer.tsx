@@ -1,8 +1,7 @@
 import React from 'react'
-import getConfig from 'next/config'
 import { Row, Col } from 'antd'
 import useT from '../hooks/useT'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 export type FooterConfig = {
   copyrightText?: string
   showPoweredByMapHubs?: boolean
@@ -79,17 +78,19 @@ const Footer = ({
                 <li>
                   <a
                     className='page-footer no-padding center'
-                    href={`mailto:${MAPHUBS_CONFIG.contactEmail}`}
+                    href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL}`}
                   >
-                    {MAPHUBS_CONFIG.contactEmail}
+                    {process.env.NEXT_PUBLIC_CONTACT_EMAIL}
                   </a>
                 </li>
                 <li>
                   <a
                     className='page-footer no-padding center'
-                    href={'http://twitter.com/' + MAPHUBS_CONFIG.twitter}
+                    href={
+                      'http://twitter.com/' + process.env.NEXT_PUBLIC_TWITTER
+                    }
                   >
-                    @{MAPHUBS_CONFIG.twitter}
+                    @{process.env.NEXT_PUBLIC_TWITTER}
                   </a>
                 </li>
               </ul>
@@ -120,7 +121,7 @@ const Footer = ({
         <div className='container center'>
           {copyrightText && <small>&copy; {copyrightText}</small>}
           {!copyrightText && (
-            <small>&copy; 2021 {MAPHUBS_CONFIG.productName}</small>
+            <small>&copy; 2021 {process.env.NEXT_PUBLIC_PRODUCT_NAME}</small>
           )}
         </div>
       </div>

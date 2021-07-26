@@ -8,7 +8,7 @@ export default function (app: any): void {
   app.get('/robots.txt', (req, res) => {
     res.type('text/plain')
 
-    if (local.requireLogin) {
+    if (process.env.NEXT_PUBLIC_REQUIRE_LOGIN) {
       // disallow everything
       res.send('User-agent: *\nDisallow: /')
     } else {
@@ -29,7 +29,7 @@ Disallow: /xml/map/*
   app.get('/sitemapindex.xml', async (req, res, next) => {
     try {
       // not support on private sites
-      if (local.requireLogin) return res.status(404).send()
+      if (process.env.NEXT_PUBLIC_REQUIRE_LOGIN) return res.status(404).send()
       const baseUrl = urlUtil.getBaseUrl()
       const layerUrls = await siteMapUtil.getSiteMapIndexFeatureURLs()
       const smis = new SitemapIndexStream()
@@ -50,7 +50,7 @@ Disallow: /xml/map/*
   app.get('/sitemap.:layer_id.xml', async (req, res, next) => {
     try {
       // not support on private sites
-      if (local.requireLogin) return res.status(404).send()
+      if (process.env.NEXT_PUBLIC_REQUIRE_LOGIN) return res.status(404).send()
       const layer_id = Number.parseInt(req.params.layer_id || '', 10)
       const baseUrl = urlUtil.getBaseUrl()
       const smStream = new SitemapStream({
@@ -71,7 +71,7 @@ Disallow: /xml/map/*
   app.get('/sitemap.xml', async (req, res, next) => {
     try {
       // not support on private sites
-      if (local.requireLogin) return res.status(404).send()
+      if (process.env.NEXT_PUBLIC_REQUIRE_LOGIN) return res.status(404).send()
       const baseUrl = urlUtil.getBaseUrl()
       const smStream = new SitemapStream({
         hostname: baseUrl

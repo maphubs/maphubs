@@ -1,4 +1,5 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import Layout from '../../src/components/Layout'
 import { Row, Col, Button, Typography } from 'antd'
 import LayerList from '../../src/components/Lists/LayerList'
@@ -13,6 +14,7 @@ const { Title } = Typography
 
 const AllLayers = (): JSX.Element => {
   const { t, locale } = useT()
+  const router = useRouter()
   const { data } = useSWR(`
   {
     layers(locale: "${locale}") {
@@ -57,7 +59,7 @@ const AllLayers = (): JSX.Element => {
             >
               <Button
                 onClick={() => {
-                  window.location.assign('/createlayer')
+                  router.push('/createlayer')
                 }}
               >
                 {t('Create New Layer')}

@@ -280,14 +280,16 @@ export default function (app: any): void {
                 await Group.addGroupMember(data.group_id, user.id, role)
                 debug.log('Added ' + data.display_name + ' to ' + data.group_id)
                 Email.send({
-                  from: local.productName + ' <info@maphubs.com>',
+                  from:
+                    process.env.NEXT_PUBLIC_PRODUCT_NAME +
+                    ' <info@maphubs.com>',
                   to: user.email,
                   subject:
                     req.__('Welcome to Group:') +
                     ' ' +
                     data.group_id +
                     ' - ' +
-                    local.productName,
+                    process.env.NEXT_PUBLIC_PRODUCT_NAME,
                   text:
                     user.display_name +
                     ',\n' +
@@ -399,14 +401,18 @@ export default function (app: any): void {
                 'Removed ' + data.display_name + ' from ' + data.group_id
               )
               Email.send({
-                from: local.productName + ' <' + local.fromEmail + '>',
+                from:
+                  process.env.NEXT_PUBLIC_PRODUCT_NAME +
+                  ' <' +
+                  process.env.FROM_EMAIL +
+                  '>',
                 to: user.email,
                 subject:
                   req.__('Removed from Group:') +
                   ' ' +
                   data.group_id +
                   ' - ' +
-                  local.productName,
+                  process.env.NEXT_PUBLIC_PRODUCT_NAME,
                 text:
                   user.display_name +
                   ',\n' +

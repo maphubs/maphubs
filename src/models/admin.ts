@@ -3,7 +3,6 @@ import knex from '../connection'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import Email from '@bit/kriscarle.maphubs-utils.maphubs-utils.email-util'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import local from '../local'
 import { Knex } from 'knex'
 
 const debug = DebugService('models/user')
@@ -49,7 +48,7 @@ export default {
     const text =
       __('You have been invited to') +
       ' ' +
-      local.productName +
+      process.env.NEXT_PUBLIC_PRODUCT_NAME +
       '!\n\n' +
       __('Please go to this link in your browser to sign up:') +
       url +
@@ -66,7 +65,7 @@ export default {
       '<br />' +
       __('You have been invited to') +
       ' ' +
-      local.productName +
+      process.env.NEXT_PUBLIC_PRODUCT_NAME +
       '!' +
       '<br />' +
       '<br />' +
@@ -83,9 +82,14 @@ export default {
       )
 
     await Email.send({
-      from: local.productName + ' <' + local.fromEmail + '>',
+      from:
+        process.env.NEXT_PUBLIC_PRODUCT_NAME +
+        ' <' +
+        process.env.FROM_EMAIL +
+        '>',
       to: email,
-      subject: __('Account Invite') + ' - ' + local.productName,
+      subject:
+        __('Account Invite') + ' - ' + process.env.NEXT_PUBLIC_PRODUCT_NAME,
       text,
       html
     })
@@ -205,12 +209,12 @@ export default {
   ): Promise<void> {
     const admins = await this.getAdmins()
     admins.push({
-      email: local.adminEmail
+      email: process.env.adminEmail
     })
     admins.forEach(async (admin) => {
       const text =
         'New user signup for ' +
-        local.productName +
+        process.env.NEXT_PUBLIC_PRODUCT_NAME +
         '\n\n' +
         'Username:' +
         ' ' +
@@ -223,7 +227,7 @@ export default {
       const html =
         '<br />' +
         'New user signup for ' +
-        local.productName +
+        process.env.NEXT_PUBLIC_PRODUCT_NAME +
         '<br />' +
         '<br />' +
         'Username:' +
@@ -235,9 +239,14 @@ export default {
         user_email +
         '<br />'
       await Email.send({
-        from: local.productName + ' <' + local.fromEmail + '>',
+        from:
+          process.env.NEXT_PUBLIC_PRODUCT_NAME +
+          ' <' +
+          process.env.FROM_EMAIL +
+          '>',
         to: admin.email,
-        subject: 'New User Signup' + ' - ' + local.productName,
+        subject:
+          'New User Signup' + ' - ' + process.env.NEXT_PUBLIC_PRODUCT_NAME,
         text,
         html
       })

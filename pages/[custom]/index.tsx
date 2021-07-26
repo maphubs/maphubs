@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Layout from '../../src/components/Layout'
+import { useRouter } from 'next/router'
 import { GetServerSideProps } from 'next'
 import { Row, Col, Divider, Typography, Card } from 'antd'
 import TrendingUpIcon from '@material-ui/icons/TrendingUp'
@@ -15,7 +16,6 @@ import type { Layer } from '../../src/types/layer'
 import type { Group } from '../../src/stores/GroupStore'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import XComponentReact from '../../src/components/XComponentReact'
-import getConfig from 'next/config'
 import { Story } from '../../src/types/story'
 import useT from '../../src/hooks/useT'
 import HomePageMap from '../../src/components/Home/HomePageMap'
@@ -30,7 +30,6 @@ import GroupModel from '../../src/models/group'
 import LayerModel from '../../src/models/layer'
 import MapModel from '../../src/models/map'
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
 
 type Props = {
@@ -221,7 +220,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
-const Home = ({
+const CustomPage = ({
   pageConfig,
   featuredLayers,
   popularLayers,
@@ -234,6 +233,7 @@ const Home = ({
   recentMaps
 }: Props): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
   const [loaded, setLoaded] = useState(false)
   useEffect(() => {
     setLoaded(true)
@@ -259,7 +259,7 @@ const Home = ({
             }}
             dimensions={dimensions}
             onComplete={() => {
-              window.location.assign(config.onCompleteUrl || '/')
+              router.push(config.onCompleteUrl || '/')
             }}
           />
         </Row>
@@ -389,7 +389,7 @@ const Home = ({
               <TrendingUpIcon
                 style={{
                   fontWeight: 'bold',
-                  color: MAPHUBS_CONFIG.primaryColor,
+                  color: process.env.NEXT_PUBLIC_PRIMARY_COLOR,
                   fontSize: '40px',
                   verticalAlign: '-25%',
                   marginLeft: '5px'
@@ -606,4 +606,4 @@ const Home = ({
     </ErrorBoundary>
   )
 }
-export default Home
+export default CustomPage

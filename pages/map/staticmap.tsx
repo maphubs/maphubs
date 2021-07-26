@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import MiniLegend from '../../src/components/Map/MiniLegend'
 import { Row, Col, Switch, Modal, message } from 'antd'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
-import getConfig from 'next/config'
+
 import { LocalizedString } from '../../src/types/LocalizedString'
 import { Layer } from '../../src/types/layer'
 import useT from '../../src/hooks/useT'
@@ -15,7 +15,7 @@ const MapHubsMap = dynamic(() => import('../../src/components/Map'), {
   ssr: false
 })
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 
 const confirm = Modal.confirm
 type Props = {
@@ -294,13 +294,10 @@ const StaticMap = (): JSX.Element => {
             mapConfig={mapConfig}
             preserveDrawingBuffer
             navPosition='top-right'
-            primaryColor={MAPHUBS_CONFIG.primaryColor}
-            logoSmall={MAPHUBS_CONFIG.logoSmall}
-            logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-            logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-            mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-            DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-            earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+            primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
+            mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+            DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+            earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
             t={t}
           >
             {legend}

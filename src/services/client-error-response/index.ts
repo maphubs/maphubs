@@ -11,7 +11,7 @@ const checkClientError = ({
   res: { body?: { error?: string } }
   err: Error
   onError?: (error?: Error | string) => void
-  onSuccess: () => void
+  onSuccess?: () => void
 }): void => {
   if (err) {
     if (res) {
@@ -33,7 +33,7 @@ const checkClientError = ({
     if (onError) onError(res.body.error)
   } else {
     // assume success if no error code and no success flag is provided
-    onSuccess()
+    if (onSuccess) onSuccess()
   }
 }
 export { checkClientError }

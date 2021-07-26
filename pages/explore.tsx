@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 import Layout from '../src/components/Layout'
 import SearchBox from '../src/components/SearchBox'
 import CardCarousel from '../src/components/CardCarousel/CardCarousel'
@@ -6,7 +7,6 @@ import _shuffle from 'lodash.shuffle'
 import CardFilter from '../src/components/Home/CardFilter'
 import cardUtil from '../src/services/card-util'
 import ErrorBoundary from '../src/components/ErrorBoundary'
-import getConfig from 'next/config'
 import { Row, Col, Button, Divider, Typography } from 'antd'
 import { Layer } from '../src/types/layer'
 import useT from '../src/hooks/useT'
@@ -16,11 +16,11 @@ import { Story } from '../src/types/story'
 import { Map } from '../src/types/map'
 import { Group } from '../src/types/group'
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
 
 const Explore = (): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
 
   const { data } = useSWR(`
   {
@@ -172,9 +172,9 @@ const Explore = (): JSX.Element => {
           >
             <Col sm={24} md={6}>
               <SearchBox
-                label={t('Search') + ' ' + MAPHUBS_CONFIG.productName}
+                label={t('Search') + ' ' + process.env.NEXT_PUBLIC_PRODUCT_NAME}
                 onSearch={(input: string) => {
-                  window.location.assign('/search?q=' + input)
+                  router.push('/search?q=' + input)
                 }}
               />
             </Col>

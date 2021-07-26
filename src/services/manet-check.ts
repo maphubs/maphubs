@@ -22,7 +22,8 @@ const manetCheck = function (req: any): boolean {
 }
 
 const manetMiddleware = (req: any, res: any, next: any): any => {
-  return !local.requireLogin || (req.isAuthenticated && req.isAuthenticated())
+  return !process.env.NEXT_PUBLIC_REQUIRE_LOGIN ||
+    (req.isAuthenticated && req.isAuthenticated())
     ? next()
     : manetCheck(req)
     ? next()

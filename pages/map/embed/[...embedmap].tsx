@@ -8,7 +8,7 @@ import type { Layer } from '../../../src/types/layer'
 import ErrorBoundary from '../../../src/components/ErrorBoundary'
 import { Tooltip } from 'antd'
 import StyleHelper from '../../../src/components/Map/Styles/style'
-import getConfig from 'next/config'
+
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite'
 import { LocalizedString } from '../../../src/types/LocalizedString'
 import mapboxgl from 'mapbox-gl'
@@ -29,8 +29,6 @@ const InteractiveMap = dynamic(
     ssr: false
   }
 )
-
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type GeoJSONOverlayState = {
   loaded?: boolean
@@ -220,11 +218,10 @@ const EmbedMap = (): JSX.Element => {
         .type('json')
         .accept('json')
         .end((err, res) => {
-          checkClientError(
+          checkClientError({
             res,
             err,
-            () => {},
-            () => {
+            onSuccess: () => {
               const geoJSON = res.body
 
               const bounds = _bbox(geoJSON)
@@ -240,10 +237,9 @@ const EmbedMap = (): JSX.Element => {
                 glStyle,
                 layers: newLayers
               })
-
               // MapState.state.map.fitBounds(bounds, 12, 50, false)
             }
-          )
+          })
         })
     }
     if (geoJSONUrl) {
@@ -256,12 +252,12 @@ const EmbedMap = (): JSX.Element => {
 
   // redirect to login if not signed in, prevents displaying an error when data fails to load
   // for public shared maps we need to by-pass this check
-  if (!session?.user && !publicShare && MAPHUBS_CONFIG.requireLogin) {
+  if (!session?.user && !publicShare && process.env.NEXT_PUBLIC_REQUIRE_LOGIN) {
     signin()
     return (
       <div>
         <Head>
-          <title>{`${map.title} - ${MAPHUBS_CONFIG.productName}`}</title>
+          <title>{`${map.title} - ${process.env.NEXT_PUBLIC_PRODUCT_NAME}`}</title>
         </Head>
       </div>
     )
@@ -291,7 +287,7 @@ const EmbedMap = (): JSX.Element => {
             height: '100%',
             objectFit: 'contain'
           }}
-          alt={MAPHUBS_CONFIG.productName + ' Map'}
+          alt={process.env.NEXT_PUBLIC_PRODUCT_NAME + ' Map'}
         />
         <Tooltip title={t('Start Interactive Map')} placement='right'>
           <a
@@ -359,14 +355,11 @@ const EmbedMap = (): JSX.Element => {
         showLogo={!hideLogo}
         showScale={!hideScale}
         preserveDrawingBuffer
-        primaryColor={MAPHUBS_CONFIG.primaryColor}
-        logoSmall={MAPHUBS_CONFIG.logoSmall}
-        logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-        logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+        primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
         t={t}
-        mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-        DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-        earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+        DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+        earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
         onLoad={() => {
           // TODO: test if we need to wait for the map before loading the geoJSON?
         }}

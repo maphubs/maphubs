@@ -33,12 +33,7 @@
     "es6": true
   },
 
-  "globals": {
-    "L": true,
-    "HS": true,
-    "M": true,
-    "MAPHUBS_CONFIG": true
-  },
+  "globals": {},
   "plugins": [
     "@typescript-eslint",
     "security",

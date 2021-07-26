@@ -1,10 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { PlusOutlined } from '@ant-design/icons'
 import { Tag, Input, Tooltip } from 'antd'
-import getConfig from 'next/config'
-import useT from '../../../hooks/useT'
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+import useT from '../../../hooks/useT'
 
 type Props = {
   initialTags?: string[]
@@ -53,7 +51,7 @@ const Tags = ({ initialTags, onChange }: Props): JSX.Element => {
         const tagElem = (
           <Tag
             key={tag}
-            color={MAPHUBS_CONFIG.primaryColor}
+            color={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
             closable
             onClose={() => handleClose(tag)}
           >

@@ -7,7 +7,6 @@ import GetNameField from '../../../src/components/Map/Styles/get-name-field'
 import ErrorBoundary from '../../../src/components/ErrorBoundary'
 import { Modal, message, notification, Row, Col, Button } from 'antd'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import getConfig from 'next/config'
 import useT from '../../../src/hooks/useT'
 import useUnload from '../../../src/hooks/useUnload'
 import useSWR from 'swr'
@@ -25,7 +24,6 @@ const MapHubsMap = dynamic(() => import('../../../src/components/Map'), {
   ssr: false
 })
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { confirm } = Modal
 
 const debug = DebugService('addphotopoint')
@@ -84,9 +82,8 @@ const AddPhotoPoint = (): JSX.Element => {
       mapboxAccessToken: string
       baseMapOptions?: Record<string, any>
     } = {
-      bingKey: MAPHUBS_CONFIG.BING_KEY,
-      tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY,
-      mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
+      bingKey: process.env.NEXT_PUBLIC_BING_KEY,
+      mapboxAccessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
     }
 
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
@@ -213,11 +210,10 @@ const AddPhotoPoint = (): JSX.Element => {
         imageInfo
       })
       .end((err, res) => {
-        checkClientError(
+        checkClientError({
           res,
           err,
-          () => {},
-          (cb) => {
+          onSuccess: () => {
             const { mhid, image_id, image_url } = res.body
 
             setSubmitted(true)
@@ -264,7 +260,7 @@ const AddPhotoPoint = (): JSX.Element => {
                     const featureId = mhid.split(':')[1]
 
                     const featurePageUrl = `/feature/${layerId}/${featureId}/${featureName}`
-                    window.location.assign(featurePageUrl)
+                    router.push(featurePageUrl)
                   } else {
                     debug.log('mhid not found')
                   }
@@ -272,7 +268,7 @@ const AddPhotoPoint = (): JSX.Element => {
               })
             }
           }
-        )
+        })
       })
   }
 
@@ -336,10 +332,7 @@ const AddPhotoPoint = (): JSX.Element => {
                 mapConfig={mapConfig}
                 data={geoJSON}
                 t={t}
-                primaryColor={MAPHUBS_CONFIG.primaryColor}
-                logoSmall={MAPHUBS_CONFIG.logoSmall}
-                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+                primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
               />
             </div>
           </Col>

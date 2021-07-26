@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react'
 import { useSession } from 'next-auth/client'
-import getConfig from 'next/config'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const Comments = (): JSX.Element => {
   const [session, loading] = useSession()
@@ -19,7 +17,7 @@ const Comments = (): JSX.Element => {
         accessToken: user.coral_jwt,
         id: 'coral-comments',
         autoRender: true,
-        rootURL: MAPHUBS_CONFIG.CORAL_TALK_HOST // Uncomment these lines and replace with the ID of the
+        rootURL: process.env.NEXT_PUBLIC_CORAL_TALK_HOST // Uncomment these lines and replace with the ID of the
         // story's ID and URL from your CMS to provide the
         // tightest integration. Refer to our documentation at
         // https://docs.coralproject.net for all the configuration

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import { Modal, message, notification } from 'antd'
 import superagent from 'superagent'
 import SaveMapPanel from '../MapMaker/SaveMapPanel'
@@ -18,6 +19,7 @@ const CopyMapModal = ({
   onClose
 }: Props): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
 
   const onCopyMap = async (formData: {
     title: LocalizedString
@@ -39,7 +41,7 @@ const CopyMapModal = ({
 
       if (mapId) {
         message.info(t('Map Copied'), 3, () => {
-          window.location.assign(`/map/edit/${mapId}`)
+          router.push(`/map/edit/${mapId}`)
         })
       } else {
         notification.error({

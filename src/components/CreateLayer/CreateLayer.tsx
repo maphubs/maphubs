@@ -10,8 +10,7 @@ import LayerSourceHelper from './LayerSourceHelper'
 import SourceSelectionBox from './SourceSelectionBox'
 import useT from '../../hooks/useT'
 import { Element, scroller } from 'react-scroll'
-import getConfig from 'next/config'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 type Props = {
   onSubmit: () => void
   showPrev?: boolean
@@ -53,7 +52,7 @@ const CreateLayer = ({
           }
           .source-icon {
             font-size: 48px !important;
-            color: ${MAPHUBS_CONFIG.primaryColor};
+            color: ${process.env.NEXT_PUBLIC_PRIMARY_COLOR};
           }
         `}
       </style>
@@ -125,7 +124,7 @@ const CreateLayer = ({
                   onSelect={setSource}
                 />
               </Col>
-              {MAPHUBS_CONFIG.PLANET_LABS_API_KEY && (
+              {process.env.NEXT_PUBLIC_PLANET_LABS_API_KEY && (
                 <Col
                   span={12}
                   style={{

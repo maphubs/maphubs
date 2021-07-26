@@ -1,5 +1,6 @@
 import React from 'react'
 import Layout from '../../src/components/Layout'
+import { useRouter } from 'next/router'
 import { Row, Button, Typography } from 'antd'
 import CardCollection from '../../src/components/CardCarousel/CardCollection'
 import CardSearch from '../../src/components/CardCarousel/CardSearch'
@@ -14,6 +15,7 @@ const { Title } = Typography
 
 const Layers = (): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
 
   const { data } = useSWR(`
   {
@@ -72,31 +74,28 @@ const Layers = (): JSX.Element => {
           >
             <Title level={2}>{t('Layers')}</Title>
           </Row>
-          <CardSearch cardType='layer' t={t} />
+          <CardSearch cardType='layer' />
           {featuredCards.length > 0 && (
             <CardCollection
               title={t('Featured')}
               cards={featuredCards}
               viewAllLink='/layers/all'
-              t={t}
             />
           )}
           <CardCollection
             title={t('Popular')}
             cards={popularCards}
             viewAllLink='/layers/all'
-            t={t}
           />
           <CardCollection
             title={t('Recent')}
             cards={recentCards}
             viewAllLink='/layers/all'
-            t={t}
           />
 
           <FloatingAddButton
             onClick={() => {
-              window.location.assign('/createlayer')
+              router.push('/createlayer')
             }}
             tooltip={t('Create New Layer')}
           />

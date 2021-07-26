@@ -1,4 +1,5 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import Layout from '../../src/components/Layout'
 import { Row, Typography } from 'antd'
 import CardSearch from '../../src/components/CardCarousel/CardSearch'
@@ -17,6 +18,7 @@ type Props = {
 
 const AllGroups = (): JSX.Element => {
   const { t, locale } = useT()
+  const router = useRouter()
   const { data } = useSWR(`
   {
     groups(locale: "${locale}") {
@@ -57,7 +59,7 @@ const AllGroups = (): JSX.Element => {
           </Row>
           <FloatingAddButton
             onClick={() => {
-              window.location.assign('/creategroup')
+              router.push('/creategroup')
             }}
             tooltip={t('Create New Group')}
           />

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Row, Col } from 'antd'
-import getConfig from 'next/config'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 type Props = {
   onSelect: (source: string) => void
   name: string
@@ -16,8 +15,8 @@ const SourceSelectionBox = ({
   selected,
   icon
 }: Props): JSX.Element => {
-  let border = `2px solid ${MAPHUBS_CONFIG.primaryColor}`
-  if (selected) border = `5px solid ${MAPHUBS_CONFIG.primaryColor}`
+  let border = `2px solid ${process.env.NEXT_PUBLIC_PRIMARY_COLOR}`
+  if (selected) border = `5px solid ${process.env.NEXT_PUBLIC_PRIMARY_COLOR}`
   return (
     <div
       className=''

@@ -108,11 +108,7 @@ export default function (app: any) {
       const centerZoom = Math.floor((maxzoom - minzoom) / 2)
       const centerX = Math.floor((bounds[2] - bounds[0]) / 2)
       const centerY = Math.floor((bounds[3] - bounds[1]) / 2)
-      const uri =
-        local.tileServiceUrl +
-        '/tiles/lyr/' +
-        layer.shortid +
-        '/{z}/{x}/{y}.pbf'
+      const uri = `/api/tiles/lyr/${layer.shortid}/{z}/{x}/{y}.pbf`
       const tileJSON = {
         attribution: source,
         bounds,
@@ -159,7 +155,7 @@ export default function (app: any) {
 
       if (layer) {
         if (
-          !local.requireLogin || // login not required
+          !process.env.NEXT_PUBLIC_REQUIRE_LOGIN || // login not required
           manetCheck(req) || // or is screenshot service
           user_id > 0 // or is logged in
         ) {
@@ -188,7 +184,7 @@ export default function (app: any) {
 
       if (layer) {
         if (
-          !local.requireLogin || // login not required
+          !process.env.NEXT_PUBLIC_REQUIRE_LOGIN || // login not required
           isShared || // in public shared map
           manetCheck(req) || // screenshot service
           user_id > 0 // logged in

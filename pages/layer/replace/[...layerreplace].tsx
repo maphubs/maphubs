@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { GetServerSideProps } from 'next'
-import { useSession, getSession } from 'next-auth/client'
+import { getSession } from 'next-auth/client'
 import { Row, Button } from 'antd'
 import { useRouter } from 'next/router'
 import Layout from '../../../src/components/Layout'
@@ -11,11 +11,8 @@ import ErrorBoundary from '../../../src/components/ErrorBoundary'
 import useT from '../../../src/hooks/useT'
 import useUnload from '../../../src/hooks/useUnload'
 
-import { useDispatch, useSelector } from '../../../src/redux/hooks'
-import {
-  selectMapStyle,
-  loadLayer
-} from '../../../src/redux/reducers/layerSlice'
+import { useDispatch } from '../../../src/redux/hooks'
+import { loadLayer } from '../../../src/redux/reducers/layerSlice'
 import type { Layer } from '../../../src/types/layer'
 import type { Group } from '../../../src/types/group'
 
@@ -97,9 +94,7 @@ const LayerReplace = ({
   const onDataSubmit = (): void => {
     setSubmitted(true)
 
-    window.location.assign(
-      '/layer/info/' + layer.layer_id + '/' + slugify(t(layer.name))
-    )
+    router.push('/layer/info/' + layer.layer_id + '/' + slugify(t(layer.name)))
   }
 
   const maphubsFileURL = `/api/layer/${layer.layer_id}/export/maphubs/${slugify(

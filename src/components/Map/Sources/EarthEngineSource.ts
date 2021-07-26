@@ -1,7 +1,6 @@
 import ee from '@google/earthengine'
 import mapboxgl from 'mapbox-gl'
-import getConfig from 'next/config'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 const EarthEngineSource = {
   async load(
     key: string,
@@ -44,8 +43,8 @@ const EarthEngineSource = {
       }
 
       const clientID =
-        MAPHUBS_CONFIG && MAPHUBS_CONFIG.EARTHENGINE_CLIENTID
-          ? MAPHUBS_CONFIG.EARTHENGINE_CLIENTID
+        MAPHUBS_CONFIG && process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
+          ? process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
           : mapComponent.props.earthEngineClientID
 
       ee.data.authenticate(clientID, getEEMap, undefined, undefined, () => {

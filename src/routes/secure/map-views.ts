@@ -170,7 +170,7 @@ export default function (app: any) {
             res,
             '/mapedit',
             await pageOptions(req, {
-              title: title + ' - ' + local.productName,
+              title: title + ' - ' + process.env.NEXT_PUBLIC_PRODUCT_NAME,
               props: {
                 map,
                 layers,

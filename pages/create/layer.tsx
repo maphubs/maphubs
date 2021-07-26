@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 import slugify from 'slugify'
 import { Steps, Row } from 'antd'
 import Step1 from '../../src/components/CreateLayer/Step1'
@@ -8,15 +9,13 @@ import debugFactory from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import Layout from '../../src/components/Layout'
 import type { Group } from '../../src/stores/GroupStore'
 import type { Layer } from '../../src/types/layer'
-import type { LayerStoreState } from '../../src/stores/layer-store'
 
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import $ from 'jquery'
-import getConfig from 'next/config'
 import { LocalizedString } from '../../src/types/LocalizedString'
 import useUnload from '../../src/hooks/useUnload'
 import useT from '../../src/hooks/useT'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 const debug = debugFactory('CreateLayer')
 const Step = Steps.Step
 type Props = {
@@ -29,6 +28,7 @@ type State = {
 
 const CreateLayer = (): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
   const [step, setStep] = useState(1)
 
   /*
@@ -39,9 +39,8 @@ const CreateLayer = (): JSX.Element => {
       mapboxAccessToken: string
       baseMapOptions?: Record<string, any>
     } = {
-      bingKey: MAPHUBS_CONFIG.BING_KEY,
-      tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY,
-      mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
+      bingKey: process.env.NEXT_PUBLIC_BING_KEY,
+      mapboxAccessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
     }
     */
 
@@ -79,7 +78,7 @@ const CreateLayer = (): JSX.Element => {
   })
 
   const submit = (layerId: number, name: LocalizedString) => {
-    window.location.assign('/layer/info/' + layerId + '/' + slugify(t(name)))
+    router.push('/layer/info/' + layerId + '/' + slugify(t(name)))
   }
 
   const nextStep = () => {

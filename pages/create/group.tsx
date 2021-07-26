@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 import { Steps } from 'antd'
 import Layout from '../../src/components/Layout'
 import Step1 from '../../src/components/CreateGroup/Step1'
@@ -11,6 +12,7 @@ type State = {
 }
 const CreateGroup = (): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
   const [step, setStep] = useState(1)
 
   return (
@@ -36,7 +38,7 @@ const CreateGroup = (): JSX.Element => {
               setStep(step - 1)
             }}
             onSubmit={(groupId: string) => {
-              window.location.assign('/group/' + groupId)
+              router.push('/group/' + groupId)
             }}
           />
         </div>

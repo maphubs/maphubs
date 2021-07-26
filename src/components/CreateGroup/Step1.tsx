@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 import Formsy, { addValidationRule } from 'formsy-react'
 import { Row, Col, message, notification, Button } from 'antd'
 import MultiTextArea from '../forms/MultiTextArea'
@@ -24,6 +25,7 @@ type Props = {
 
 const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
   const [canSubmit, setCanSubmit] = useState(false)
   const [groupIdValue, setGroupIdValue] = useState<string>()
   const [groupIdAvailable, setGroupIdAvailable] = useState(false)
@@ -69,9 +71,7 @@ const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
             description: msg.message || msg.toString(),
             duration: 0
           })
-        },
-
-        complete() {}
+        }
       })
     }
 
@@ -136,13 +136,13 @@ const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
           })
         } else {
           message.success(t('Group Cancelled'), 3, () => {
-            window.location.assign('/groups')
+            router.push('/groups')
           })
         }
       })
     } else {
       message.success(t('Group Cancelled'), 3, () => {
-        window.location.assign('/groups')
+        router.push('/groups')
       })
     }
   }

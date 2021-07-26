@@ -190,8 +190,8 @@ export default async function (
   }
 
   const props = { ...results, pageConfig: config }
-  let title = local.productName
-  let description = local.productName
+  let title = process.env.NEXT_PUBLIC_PRODUCT_NAME
+  let description = process.env.NEXT_PUBLIC_PRODUCT_NAME
 
   if (config.title && config.title[req.locale]) {
     title = config.title[req.locale]

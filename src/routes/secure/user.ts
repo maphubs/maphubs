@@ -24,7 +24,8 @@ export default function (app: any): void {
       res,
       '/auth0profile',
       await pageOptions(req, {
-        title: req.__('User Profile') + ' - ' + local.productName,
+        title:
+          req.__('User Profile') + ' - ' + process.env.NEXT_PUBLIC_PRODUCT_NAME,
         props: {
           user
         }

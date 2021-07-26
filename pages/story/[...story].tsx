@@ -12,14 +12,13 @@ import ShareButtons from '../../src/components/ShareButtons'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import FloatingButton from '../../src/components/FloatingButton'
 import Edit from '@material-ui/icons/Edit'
-import getConfig from 'next/config'
+
 import { Story } from '../../src/types/story'
 import useT from '../../src/hooks/useT'
 
 //SSR only
 import StoryModel from '../../src/models/story'
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
   story: Story
   allowedToModifyStory: boolean
@@ -68,7 +67,7 @@ const StoryPage = ({ story, allowedToModifyStory }: Props): JSX.Element => {
 
   let shareAndDiscuss = <></>
 
-  if (MAPHUBS_CONFIG.enableComments) {
+  if (process.env.NEXT_PUBLIC_ENABLE_COMMENTS) {
     shareAndDiscuss = (
       <div className='story-share-comments'>
         <Row
@@ -144,7 +143,7 @@ const StoryPage = ({ story, allowedToModifyStory }: Props): JSX.Element => {
           {allowedToModifyStory && (
             <FloatingButton
               onClick={() => {
-                window.location.assign(
+                router.push(
                   `/story/edit/${story.story_id}/${slugify(t(story.title))}`
                 )
               }}
@@ -180,7 +179,7 @@ const StoryPage = ({ story, allowedToModifyStory }: Props): JSX.Element => {
                 font-size: 20px;
               }
               .story-content a {
-                color: ${MAPHUBS_CONFIG.primaryColor};
+                color: ${process.env.NEXT_PUBLIC_PRIMARY_COLOR};
                 text-decoration: underline;
               }
               .story-content table {

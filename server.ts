@@ -56,7 +56,7 @@ nextApp
     PublicRoutes(server)
 
     // option to require require login for everything after this point
-    if (local.requireLogin) {
+    if (process.env.NEXT_PUBLIC_REQUIRE_LOGIN) {
       server.use((req, res, next) => {
         if (
           req.path.startsWith('/_next') ||

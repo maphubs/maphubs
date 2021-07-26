@@ -2,11 +2,10 @@ import React, { useState } from 'react'
 import dynamic from 'next/dynamic'
 import { Row, Button, notification, message } from 'antd'
 import request from 'superagent'
-import getConfig from 'next/config'
+
 import useT from '../../hooks/useT'
 import useUnload from '../../hooks/useUnload'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const debug = DebugService('stores/layer-notes')
 
@@ -92,7 +91,7 @@ const LayerNotes = ({
             font-size: 20px;
           }
           .notes-content a {
-            color: ${MAPHUBS_CONFIG.primaryColor};
+            color: ${process.env.NEXT_PUBLIC_PRIMARY_COLOR};
             text-decoration: underline;
           }
           .notes-content table {

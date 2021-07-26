@@ -4,14 +4,13 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import CKEditor from '@ckeditor/ckeditor5-react'
 import MapHubsEditor from '@maphubs/maphubs-story-editor'
 import localeUtil from '../../locales/util'
-import getConfig from 'next/config'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 const supportedLangs = localeUtil.getSupported()
 let languagesFromConfig
 const langs = []
 
-if (MAPHUBS_CONFIG.LANGUAGES) {
-  languagesFromConfig = MAPHUBS_CONFIG.LANGUAGES.split(',')
+if (process.env.NEXT_PUBLIC_LANGUAGES) {
+  languagesFromConfig = process.env.NEXT_PUBLIC_LANGUAGES.split(',')
   languagesFromConfig = languagesFromConfig.map((lang) => lang.trim())
   supportedLangs.map((lang) => {
     if (languagesFromConfig.includes(lang.value)) {
@@ -39,8 +38,8 @@ const StoryCKEditor = ({
   story_id,
   onChange
 }: Props): JSX.Element => {
-  const host = MAPHUBS_CONFIG.host
-    ? MAPHUBS_CONFIG.host.replace('.', '')
+  const host = process.env.NEXT_PUBLIC_EXTERNAL_HOST
+    ? process.env.NEXT_PUBLIC_EXTERNAL_HOST.replace('.', '')
     : 'unknownhost'
   const editorConfiguration = {
     language: language || 'en',
@@ -48,9 +47,9 @@ const StoryCKEditor = ({
       getMap
     },
     maphubsUpload: {
-      assetUploadAPI: `${MAPHUBS_CONFIG.ASSET_UPLOAD_API}/image/upload`,
+      assetUploadAPI: `${process.env.NEXT_PUBLIC_ASSET_UPLOAD_API}/image/upload`,
       // maphubs asset upload service
-      assetUploadAPIKey: MAPHUBS_CONFIG.ASSET_UPLOAD_API_KEY,
+      assetUploadAPIKey: process.env.NEXT_PUBLIC_ASSET_UPLOAD_API_KEY,
       //
       subfolder: `${host}-stories`,
       // can be used to group content by host and or type
@@ -88,7 +87,7 @@ const StoryCKEditor = ({
                 font-size: 20px;
               }
               .ck-content a {
-                color: ${MAPHUBS_CONFIG.primaryColor};
+                color: ${process.env.NEXT_PUBLIC_PRIMARY_COLOR};
                 text-decoration: underline;
               }
             `}

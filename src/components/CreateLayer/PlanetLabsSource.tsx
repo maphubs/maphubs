@@ -3,7 +3,6 @@ import Formsy from 'formsy-react'
 import TextArea from '../forms/textArea'
 import { message, notification, Row, Button } from 'antd'
 import useT from '../../hooks/useT'
-import getConfig from 'next/config'
 
 import { useDispatch, useSelector } from '../../redux/hooks'
 import LayerAPI from '../../redux/reducers/layer-api'
@@ -15,15 +14,13 @@ import {
 } from '../../redux/reducers/layerSlice'
 import { Layer } from '../../types/layer'
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
-
 const getAPIUrl = (selected: string): string => {
   const selectedArr = selected.split(':')
   const selectedType = selectedArr[0].trim()
   const selectedScene = selectedArr[1].trim()
   // build planet labs API URL
   // v1 https://tiles.planet.com/data/v1/PSScene3Band/20161221_024131_0e19/14/12915/8124.png?api_key=your-api-key
-  const url = `https://tiles.planet.com/data/v1/${selectedType}/${selectedScene}/{z}/{x}/{y}.png?api_key=${MAPHUBS_CONFIG.PLANET_LABS_API_KEY}`
+  const url = `https://tiles.planet.com/data/v1/${selectedType}/${selectedScene}/{z}/{x}/{y}.png?api_key=${process.env.NEXT_PUBLIC_PLANET_LABS_API_KEY}`
   return url
 }
 

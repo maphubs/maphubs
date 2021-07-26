@@ -45,10 +45,10 @@ const AddLayerPanel = ({
       .type('json')
       .accept('json')
       .end((err, res) => {
-        checkClientError(
+        checkClientError({
           res,
           err,
-          (err) => {
+          onError: (err) => {
             if (err) {
               notification.error({
                 message: t('Error'),
@@ -67,11 +67,8 @@ const AddLayerPanel = ({
                 message.info(t('No Results Found'), 5)
               }
             }
-          },
-          (cb) => {
-            cb()
           }
-        )
+        })
       })
   }
   const handleGroupSearch = (group_id: string): void => {
@@ -86,10 +83,10 @@ const AddLayerPanel = ({
       .type('json')
       .accept('json')
       .end((err, res) => {
-        checkClientError(
+        checkClientError({
           res,
           err,
-          (err) => {
+          onError: (err) => {
             if (err) {
               notification.error({
                 message: t('Error'),
@@ -109,11 +106,8 @@ const AddLayerPanel = ({
                 message.info(t('No Results Found'), 5)
               }
             }
-          },
-          (cb) => {
-            cb()
           }
-        )
+        })
       })
   }
   const resetSearch = (): void => {
@@ -155,7 +149,7 @@ const AddLayerPanel = ({
         </h5>
         <Divider />
         {searchCards.length > 0 && (
-          <CardCarousel cards={searchCards} showAddButton t={t} />
+          <CardCarousel cards={searchCards} showAddButton />
         )}
         {searchCards.length === 0 && (
           <p>
@@ -252,7 +246,7 @@ const AddLayerPanel = ({
               {t('My Layers')}
             </h5>
             <Divider />
-            <CardCarousel cards={myCards} showAddButton t={t} />
+            <CardCarousel cards={myCards} showAddButton />
           </Row>
         )}
         <Row
@@ -269,7 +263,7 @@ const AddLayerPanel = ({
             {t('Popular Layers')}
           </h5>
           <Divider />
-          <CardCarousel cards={popularCards} showAddButton t={t} />
+          <CardCarousel cards={popularCards} showAddButton />
         </Row>
       </Row>
     </Row>

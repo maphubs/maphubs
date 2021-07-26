@@ -22,7 +22,7 @@ const screenshotOptions = {
     {
       name: 'manet',
       value: local.manetAPIKey,
-      domain: local.host,
+      domain: process.env.NEXT_PUBLIC_EXTERNAL_HOST,
       path: '/'
     }
   ]
@@ -70,7 +70,6 @@ export default {
     const height = 300
     const maphubsUrl =
       urlUtil.getBaseUrl() + '/api/layer/' + layer_id + '/static/render/'
-    const manetUrl = local.manetUrl
     const options = Object.assign(screenshotOptions, {
       url: maphubsUrl,
       width,
@@ -79,7 +78,10 @@ export default {
       quality: 0.8
     })
     debug.log(JSON.stringify(options))
-    const image = await this.base64Download(manetUrl, options)
+    const image = await this.base64Download(
+      process.env.SCREENSHOT_SERVICE_URL,
+      options
+    )
     await knex('omh.layers')
       .update({
         thumbnail: image
@@ -143,7 +145,6 @@ export default {
     const baseUrl = urlUtil.getBaseUrl() // use internal route
 
     const maphubsUrl = baseUrl + '/api/layer/' + layer_id + '/static/render/'
-    const manetUrl = local.manetUrl
     const options = Object.assign(screenshotOptions, {
       url: maphubsUrl,
       width,
@@ -153,7 +154,10 @@ export default {
     })
     debug.log(JSON.stringify(options))
     // replace image in database
-    const image = await this.base64Download(manetUrl, options)
+    const image = await this.base64Download(
+      process.env.SCREENSHOT_SERVICE_URL,
+      options
+    )
     await knex('omh.layers')
       .update({
         screenshot: image
@@ -211,7 +215,6 @@ export default {
     const height = 630
     const maphubsUrl =
       urlUtil.getBaseUrl() + '/api/map/' + map_id + '/static/render/'
-    const manetUrl = local.manetUrl
     const options = Object.assign(screenshotOptions, {
       url: maphubsUrl,
       width,
@@ -221,7 +224,10 @@ export default {
     })
     debug.log(JSON.stringify(options))
     // replace image in database
-    const image = await this.base64Download(manetUrl, options)
+    const image = await this.base64Download(
+      process.env.SCREENSHOT_SERVICE_URL,
+      options
+    )
     await knex('omh.maps')
       .update({
         screenshot: image
@@ -253,7 +259,7 @@ export default {
     const height = 300
     const maphubsUrl =
       urlUtil.getBaseUrl() + '/api/map/' + map_id + '/static/render/thumbnail'
-    const manetUrl = local.manetUrl
+
     const options = Object.assign(screenshotOptions, {
       url: maphubsUrl,
       width,
@@ -263,8 +269,11 @@ export default {
     })
     debug.log(JSON.stringify(options))
     // replace image in database
-    debug.log(manetUrl)
-    const image = await this.base64Download(manetUrl, options)
+    debug.log(process.env.SCREENSHOT_SERVICE_URL)
+    const image = await this.base64Download(
+      process.env.SCREENSHOT_SERVICE_URL,
+      options
+    )
     await knex('omh.maps')
       .update({
         thumbnail: image

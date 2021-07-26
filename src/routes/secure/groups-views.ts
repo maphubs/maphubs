@@ -47,7 +47,7 @@ export default function (app: any): void {
         res,
         '/groupinfo',
         await pageOptions(req, {
-          title: `${name} - ${local.productName}`,
+          title: `${name} - ${process.env.NEXT_PUBLIC_PRODUCT_NAME}`,
           description,
           props: {
             group,
@@ -94,7 +94,11 @@ export default function (app: any): void {
               '/groupadmin',
               await pageOptions(req, {
                 title:
-                  name + ' ' + req.__('Settings') + ' - ' + local.productName,
+                  name +
+                  ' ' +
+                  req.__('Settings') +
+                  ' - ' +
+                  process.env.NEXT_PUBLIC_PRODUCT_NAME,
                 props: {
                   group,
                   maps: await Map.getGroupMaps(group_id, true),

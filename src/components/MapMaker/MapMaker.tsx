@@ -37,9 +37,9 @@ import BaseMapContainer from '../Map/containers/BaseMapContainer'
 import { subscribe } from '../Map/containers/unstated-props'
 import BaseMapSelection from '../Map/ToolPanels/BaseMapSelection'
 import slugify from 'slugify'
-import getConfig from 'next/config'
+
 import { LocalizedString } from '../../types/LocalizedString'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 const { confirm } = Modal
 const TabPane = Tabs.TabPane
 type Props = {
@@ -293,7 +293,7 @@ class MapMaker extends React.Component<Props, State> {
               duration: 0
             })
           } else {
-            window.location.assign('/maps')
+            router.push('/maps')
           }
         })
       }
@@ -754,15 +754,14 @@ class MapMaker extends React.Component<Props, State> {
                 mapConfig={mapConfig}
                 onLoad={initEditLayer}
                 hash
-                primaryColor={MAPHUBS_CONFIG.primaryColor}
-                logoSmall={MAPHUBS_CONFIG.logoSmall}
-                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+                primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
                 t={t}
                 locale={locale}
-                mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-                DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-                earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+                mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+                DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+                earthEngineClientID={
+                  process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
+                }
               >
                 {editingLayer && (
                   <EditorToolButtons

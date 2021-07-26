@@ -4,15 +4,15 @@ import debugFactory from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import localeUtil from '../locales/util'
 import { DownOutlined } from '@ant-design/icons'
 import { Menu, Dropdown } from 'antd'
-import getConfig from 'next/config'
+
 const debug = debugFactory('LocaleChooser')
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 const supportedLangs = localeUtil.getSupported()
 let languagesFromConfig
 const langs = []
 
-if (MAPHUBS_CONFIG.LANGUAGES) {
-  languagesFromConfig = MAPHUBS_CONFIG.LANGUAGES.split(',')
+if (process.env.NEXT_PUBLIC_LANGUAGES) {
+  languagesFromConfig = process.env.NEXT_PUBLIC_LANGUAGES.split(',')
   languagesFromConfig = languagesFromConfig.map((lang) => lang.trim())
   supportedLangs.map((lang) => {
     if (languagesFromConfig.includes(lang.value)) {

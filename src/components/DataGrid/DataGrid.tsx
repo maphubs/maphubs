@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useRef} from 'react'
 import { Row, Button, notification, message, Modal, Input } from 'antd'
 import {
   UndoOutlined,
@@ -8,19 +8,17 @@ import {
   SearchOutlined
 } from '@ant-design/icons'
 import EditableTable from './Editable/EditableTable'
-import MapContainer from '../Map/containers/MapContainer'
-import DataEditorContainer from '../Map/containers/DataEditorContainer'
-import { subscribe } from '../Map/containers/unstated-props'
 import slugify from 'slugify'
 import Highlighter from 'react-highlight-words'
 import turf_bbox from '@turf/bbox'
 import GetNameField from '../Map/Styles/get-name-field'
 import type { MapHubsField } from '../../types/maphubs-field'
-import { LocalizedString } from '../../types/LocalizedString'
+import useT from '../../hooks/useT'
+import useUnload from '../../hooks/useUnload'
+
 const { confirm } = Modal
 type Props = {
   geoJSON: Record<string, any>
-  presets: Record<string, any>
   layer: Record<string, any>
   canEdit: boolean
   presets: Array<MapHubsField>
@@ -28,7 +26,6 @@ type Props = {
     dataEditorState: any
     mapState: any
   }
-  t: (v: string | LocalizedString) => string
 }
 type Column = {
   title: string
@@ -36,14 +33,13 @@ type Column = {
   width?: number
   editable: boolean
 }
-type State = {
-  editing: boolean
-  columns: Array<Column>
-  rows: Array<Record<string, any>>
-  rowKey: string
-  // the data index of the unique ID attribute, usually the 'mhid'
+
+type SearchState = {
   activeSearchTag?: string
   searchText?: string
+}
+
+type SelectedRowState = {
   selectedRowKeys: Array<string>
   selectedFeature?: Record<string, any>
 }
@@ -64,64 +60,48 @@ const getRowKey = (exampleRow: Record<string, any>) => {
   return rowKey
 }
 
-class DataGrid extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    const rows = props.geoJSON.features.map((f) => f.properties)
-    const rowKey = getRowKey(rows[0])
-    this.state = {
-      editing: false,
-      columns: this.getColumns(rows, props.presets, rowKey, props.t),
-      rows,
-      rowKey,
-      selectedRowKeys: []
+const DataGrid = ({layer, presets, geoJSON, canEdit}: Props) => {
+  const {t} = useT()
+  const tableRef = useRef()
+
+  const rows = geoJSON.features.map((f) => f.properties)
+  const rowKey = getRowKey(rows[0])
+  const [editing, setEditing] = useState(false)
+  const [searchState, setSearchState] = useState<SearchState>({searchText: '', activeSearchTag: null})
+  const [selectedRowState, setSelectedRowState] = useState<SelectedRowState>({
+    selectedRowKeys: []
+  })
+
+
+  useUnload((e) => {
+    e.preventDefault()
+    if (editing &&
+      containers.dataEditorState.state?.edits?.length > 0) {
+      const exit = confirm(t('Any pending changes will be lost'))
+      if (exit) window.close()
     }
-    this.searchInputs = {}
-  }
+    window.close()
+  })
 
-  tableRef: any
-  searchInputs: any
-  unloadHandler: any
-
-  componentDidMount() {
-    const _this = this
-
-    this.unloadHandler = (e) => {
-      if (
-        _this.state.editing &&
-        _this.props.containers.dataEditorState.state?.edits?.length > 0
-      ) {
-        e.preventDefault()
-        e.returnValue = ''
-      }
-    }
-
-    window.addEventListener('beforeunload', this.unloadHandler)
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('beforeunload', this.unloadHandler)
-  }
-
-  handleReset = (clearFilters: (...args: Array<any>) => any) => {
+  const handleReset = (clearFilters: (...args: Array<any>) => any) => {
     clearFilters()
-    this.setState({
+    setSearchState({
       activeSearchTag: undefined,
       searchText: ''
     })
   }
-  handleSearch = (
+  const handleSearch = (
     tag: string,
     selectedKeys: Array<string>,
     confirm: (...args: Array<any>) => any
   ) => {
     confirm()
-    this.setState({
+    setSearchState({
       activeSearchTag: tag,
       searchText: selectedKeys[0]
     })
   }
-  getColumns = (rows, presets, rowKey, t) => {
+  const getColumns = (rows, presets, rowKey) => {
     const firstRow = rows[0]
     const columns: Array<Column> = []
     columns.push({
@@ -186,19 +166,19 @@ class DataGrid extends React.Component<Props, State> {
             >
               <Input
                 ref={(node) => {
-                  this.searchInputs[preset.tag] = node
+                  searchInputsRef.current[preset.tag] = node
                 }}
                 placeholder={t('Search')}
                 value={selectedKeys[0]}
                 disabled={
-                  this.state.activeSearchTag &&
-                  this.state.activeSearchTag !== preset.tag
+                  searchState.activeSearchTag &&
+                  searchState.activeSearchTag !== preset.tag
                 }
                 onChange={(e) =>
                   setSelectedKeys(e.target.value ? [e.target.value] : [])
                 }
                 onPressEnter={() =>
-                  this.handleSearch(preset.tag, selectedKeys, confirm)
+                  handleSearch(preset.tag, selectedKeys, confirm)
                 }
                 style={{
                   width: 188,
@@ -209,13 +189,13 @@ class DataGrid extends React.Component<Props, State> {
               <Button
                 type='primary'
                 onClick={() =>
-                  this.handleSearch(preset.tag, selectedKeys, confirm)
+                  handleSearch(preset.tag, selectedKeys, confirm)
                 }
                 icon={<SearchOutlined />}
                 size='small'
                 disabled={
-                  this.state.activeSearchTag &&
-                  this.state.activeSearchTag !== preset.tag
+                  searchState.activeSearchTag &&
+                  searchState.activeSearchTag !== preset.tag
                 }
                 style={{
                   width: 90,
@@ -225,7 +205,7 @@ class DataGrid extends React.Component<Props, State> {
                 Search
               </Button>
               <Button
-                onClick={() => this.handleReset(clearFilters)}
+                onClick={() => handleReset(clearFilters)}
                 size='small'
                 style={{
                   width: 90
@@ -236,8 +216,8 @@ class DataGrid extends React.Component<Props, State> {
             </div>
           ),
           filterIcon: (filtered) => {
-            return !this.state.activeSearchTag ||
-              this.state.activeSearchTag === preset.tag ? (
+            return !searchState.activeSearchTag ||
+            searchState.activeSearchTag === preset.tag ? (
               <SearchOutlined
                 style={{
                   color: filtered ? '#1890ff' : undefined
@@ -256,7 +236,7 @@ class DataGrid extends React.Component<Props, State> {
           },
           onFilterDropdownVisibleChange: (visible) => {
             if (visible) {
-              setTimeout(() => this.searchInputs[[preset.tag]].select())
+              setTimeout(() => searchInputsRef.current[[preset.tag]].select())
             }
           },
           render: (text) => {
@@ -296,12 +276,14 @@ class DataGrid extends React.Component<Props, State> {
 
     return columns
   }
-  onDataChange = async (rowToUpdate: Record<string, any>) => {
-    const { dataEditorState, mapState } = this.props.containers
+
+  const columns = getColumns(rows, presets, rowKey)
+  const onDataChange = async (rowToUpdate: Record<string, any>) => {
+    const { dataEditorState, mapState } = containers
     const mapComponent = mapState.state.map
     console.log('data changed')
     console.log(rowToUpdate)
-    const mhid = rowToUpdate[this.state.rowKey]
+    const mhid = rowToUpdate[selectedRowState.rowKey]
     const featureData = await dataEditorState.selectFeature(mhid)
     // update data
     const data = featureData.properties
@@ -309,16 +291,12 @@ class DataGrid extends React.Component<Props, State> {
     const edit = await dataEditorState.updateSelectedFeatureTags(data)
     mapComponent.onFeatureUpdate(edit.status, edit)
   }
-  onStartEditing = async () => {
-    const { containers, layer } = this.props
+  const onStartEditing = async () => {
     const { dataEditorState } = containers
     await dataEditorState.startEditing(layer)
-    this.setState({
-      editing: true
-    })
+    setEditing(true)
   }
-  onCancel = () => {
-    const { containers, t } = this.props
+  const onCancel = () => {
     const { dataEditorState } = containers
 
     if (dataEditorState.state.edits?.length > 0) {
@@ -329,19 +307,14 @@ class DataGrid extends React.Component<Props, State> {
         okType: 'danger',
         onOk: async () => {
           await dataEditorState.stopEditing()
-          this.setState({
-            editing: false
-          })
+          setEditing(false)
         }
       })
     } else {
-      this.setState({
-        editing: false
-      })
+      setEditing(false)
     }
   }
-  onSave = () => {
-    const { containers, t } = this.props
+  const onSave = () => {
     const { dataEditorState } = containers
     const sourceID = Object.keys(
       dataEditorState.state.editingLayer.style.sources
@@ -354,20 +327,18 @@ class DataGrid extends React.Component<Props, State> {
           duration: 0
         })
       } else {
-        this.setState({
-          editing: false
-        })
+        setEditing(false)
         dataEditorState.stopEditing()
         message.success(t('Data Saved'), 1, () => {
           // location.reload()
-          this.reloadEditingSourceCache(sourceID)
+          reloadEditingSourceCache(sourceID)
         })
       }
     })
   }
 
-  reloadEditingSourceCache(sourceID: string) {
-    const { mapState } = this.props.containers
+  const reloadEditingSourceCache(sourceID: string) {
+    const { mapState } = containers
     const mapComponent = mapState.state.map
     const sourceCache = mapComponent.map.style.sourceCaches[sourceID]
 
@@ -382,31 +353,31 @@ class DataGrid extends React.Component<Props, State> {
     }
   }
 
-  onUndo = () => {
-    const { dataEditorState, mapState } = this.props.containers
+ const onUndo = () => {
+    const { dataEditorState, mapState } = containers
     const mapComponent = mapState.state.map
     dataEditorState.undoEdit((type, edit) => {
       const rowToUndo = edit.geojson.properties
       console.log('undo')
       console.log(rowToUndo)
-      this.tableRef.handleSave(rowToUndo, true)
+      tableRef.current.handleSave(rowToUndo, true)
       mapComponent.onFeatureUpdate(type, edit)
     })
   }
-  onRedo = () => {
-    const { dataEditorState, mapState } = this.props.containers
+  const onRedo = () => {
+    const { dataEditorState, mapState } = containers
     const mapComponent = mapState.state.map
     dataEditorState.redoEdit((type, edit) => {
       const rowToRedo = edit.geojson.properties
       console.log('undo')
       console.log(rowToRedo)
-      this.tableRef.handleSave(rowToRedo, true)
+      tableRef.current.handleSave(rowToRedo, true)
       mapComponent.onFeatureUpdate(type, edit)
     })
   }
-  onViewSelectedFeature = () => {
-    const { layer, presets } = this.props
-    const { selectedFeature, rowKey } = this.state
+  const onViewSelectedFeature = () => {
+
+    const { selectedFeature } = selectedRowState
 
     if (!selectedFeature) {
       return
@@ -425,18 +396,16 @@ class DataGrid extends React.Component<Props, State> {
     }
 
     const url = `/feature/${layer.layer_id}/${idVal}/${slugify(featureName)}`
-    window.location.assign(url)
+    router.push(url)
   }
-  onClearSelection = () => {
-    this.setState({
+  const onClearSelection = () => {
+    setSearchState({
       selectedFeature: undefined,
       selectedRowKeys: []
     })
   }
 
-  render() {
-    const { layer, containers, canEdit, t } = this.props
-    const { editing, columns, rows, rowKey, selectedFeature } = this.state
+
     const { dataEditorState } = containers
     const name = slugify(t(layer.name))
     const layerId = layer.layer_id
@@ -445,12 +414,10 @@ class DataGrid extends React.Component<Props, State> {
       type: 'radio',
       // selectedRowKeys,
       onChange: (selectedRowKeys, selectedRows) => {
-        const { rowKey } = this.state
-        const { geoJSON, containers } = this.props
         const { mapState } = containers
         const selected = selectedRows[0]
         const idVal = selected[rowKey]
-        this.setState({
+        setSearchState({
           selectedFeature: selected,
           selectedRowKeys
         })
@@ -467,7 +434,7 @@ class DataGrid extends React.Component<Props, State> {
         }
       },
       getCheckboxProps: (record) => ({
-        name: record[this.state.rowKey]
+        name: record[selectedRowState.rowKey]
       })
     }
     return (
@@ -486,7 +453,7 @@ class DataGrid extends React.Component<Props, State> {
                 style={{
                   marginRight: '10px'
                 }}
-                onClick={this.onClearSelection}
+                onClick={onClearSelection}
               >
                 {t('Clear Selection')}
               </Button>
@@ -512,12 +479,12 @@ class DataGrid extends React.Component<Props, State> {
             </Button>
           )}
           {!editing && canEdit && (
-            <Button onClick={this.onStartEditing}>{t('Edit')}</Button>
+            <Button onClick={onStartEditing}>{t('Edit')}</Button>
           )}
           {editing && (
             <>
               <Button
-                onClick={this.onUndo}
+                onClick={onUndo}
                 disabled={dataEditorState.state?.edits.length === 0}
                 style={{
                   marginRight: '10px'
@@ -527,7 +494,7 @@ class DataGrid extends React.Component<Props, State> {
                 {t('Undo')}
               </Button>
               <Button
-                onClick={this.onRedo}
+                onClick={onRedo}
                 disabled={dataEditorState.state?.redo.length === 0}
                 style={{
                   marginRight: '10px'
@@ -537,7 +504,7 @@ class DataGrid extends React.Component<Props, State> {
                 {t('Redo')}
               </Button>
               <Button
-                onClick={this.onSave}
+                onClick={onSave}
                 disabled={dataEditorState.state?.edits.length === 0}
                 type='primary'
                 style={{
@@ -547,7 +514,7 @@ class DataGrid extends React.Component<Props, State> {
               >
                 {t('Save')}
               </Button>
-              <Button onClick={this.onCancel} danger>
+              <Button onClick={onCancel} danger>
                 {t('Cancel')}
               </Button>
             </>
@@ -559,23 +526,17 @@ class DataGrid extends React.Component<Props, State> {
           }}
         >
           <EditableTable
-            ref={(el) => {
-              this.tableRef = el
-            }}
+            ref={tableRef}
             columns={columns}
             rowKey={rowKey}
             initialDataSource={rows}
             editing={editing}
-            onChange={this.onDataChange}
+            onChange={onDataChange}
             rowSelection={rowSelection}
           />
         </Row>
       </Row>
     )
   }
-}
 
-export default subscribe(DataGrid, {
-  dataEditorState: DataEditorContainer,
-  mapState: MapContainer
-}) as any
+export default DataGrid

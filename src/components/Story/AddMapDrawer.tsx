@@ -41,10 +41,10 @@ const AddMapDrawer = ({
       .type('json')
       .accept('json')
       .end((err, res) => {
-        checkClientError(
+        checkClientError({
           res,
           err,
-          (err) => {
+          onError: (err) => {
             if (err) {
               notification.error({
                 message: t('Error'),
@@ -63,11 +63,8 @@ const AddMapDrawer = ({
                 message.info(t('No Results Found'), 5)
               }
             }
-          },
-          (cb) => {
-            cb()
           }
-        )
+        })
       })
   }
   const resetSearch = (): void => {

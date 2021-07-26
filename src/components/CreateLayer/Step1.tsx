@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 import { message, notification, Row } from 'antd'
 import CreateLayer from './CreateLayer'
 import useT from '../../hooks/useT'
@@ -13,6 +14,7 @@ type Props = {
 
 const Step1 = ({ onSubmit, mapConfig }: Props): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
   const layer_id = useSelector(
     (state: { layer: LayerState }) => state.layer.layer_id
   )
@@ -25,7 +27,7 @@ const Step1 = ({ onSubmit, mapConfig }: Props): JSX.Element => {
       await LayerAPI.deleteLayer(layer_id)
       setWarnIfUnsaved(false)
       message.info(t('Layer Cancelled'), 1, () => {
-        window.location.assign('/layers')
+        router.push('/layers')
       })
     } catch (err) {
       notification.error({

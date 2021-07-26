@@ -4,7 +4,7 @@ import { Row, notification, message, Button } from 'antd'
 import { Element, scroller } from 'react-scroll'
 import superagent from 'superagent'
 import useT from '../../hooks/useT'
-import getConfig from 'next/config'
+
 import dynamic from 'next/dynamic'
 
 import { useDispatch, useSelector } from '../../redux/hooks'
@@ -19,7 +19,6 @@ import {
 const MapHubsMap = dynamic(() => import('../Map'), {
   ssr: false
 })
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 type Props = {
   onSubmit: () => void
@@ -134,15 +133,12 @@ const UploadLocalSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
           mapConfig={mapConfig}
           glStyle={style}
           fitBounds={bbox}
-          primaryColor={MAPHUBS_CONFIG.primaryColor}
-          logoSmall={MAPHUBS_CONFIG.logoSmall}
-          logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-          logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+          primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
           t={t}
           locale={locale}
-          mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-          DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-          earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+          mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+          DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+          earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
         />
       </div>
     )

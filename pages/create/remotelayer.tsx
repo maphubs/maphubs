@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 import Formsy, { addValidationRule } from 'formsy-react'
 import { Row, Button, Typography } from 'antd'
 import slugify from 'slugify'
@@ -14,7 +15,6 @@ import $ from 'jquery'
 import { checkClientError } from '../../src/services/client-error-response'
 import LinkIcon from '@material-ui/icons/Link'
 import useT from '../../src/hooks/useT'
-import getConfig from 'next/config'
 import useSWR from 'swr'
 import useStickyResult from '../../src/hooks/useStickyResult'
 import { Group } from '../../src/types/group'
@@ -24,7 +24,6 @@ const MapHubsMap = dynamic(() => import('../../src/components/Map'), {
   ssr: false
 })
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
 
 type LayerState = {
@@ -34,6 +33,7 @@ type LayerState = {
 }
 const CreateRemoteLayer = (): JSX.Element => {
   const { t, locale } = useT()
+  const router = useRouter()
   const [canSubmit, setCanSubmit] = useState(false)
   const [complete, setComplete] = useState(false)
 
@@ -111,19 +111,17 @@ const CreateRemoteLayer = (): JSX.Element => {
         .accept('json')
         .timeout(1_200_000)
         .end((err, res) => {
-          checkClientError(
+          checkClientError({
             res,
             err,
-            () => {},
-            (cb) => {
+            onSuccess: () => {
               setLayerState({
                 remote_host,
                 group_id,
                 layer: res.body.layer
               })
-
-              cb()
             }
+          }
           )
         })
     }
@@ -141,19 +139,18 @@ const CreateRemoteLayer = (): JSX.Element => {
           host: remote_host
         })
         .end((err, res) => {
-          checkClientError(
+          checkClientError({
             res,
             err,
-            () => {},
-            (cb) => {
+            onSuccess: () => {
               const layer_id = res.body.layer_id
               setComplete(true)
 
-              window.location.assign(
+              router.push(
                 '/layer/info/' + layer_id + '/' + slugify(t(name))
               )
-              cb()
             }
+          }
           )
         })
     }
@@ -206,15 +203,12 @@ const CreateRemoteLayer = (): JSX.Element => {
             mapConfig={mapConfig}
             glStyle={layer.style}
             fitBounds={layer.preview_position?.bbox}
-            primaryColor={MAPHUBS_CONFIG.primaryColor}
-            logoSmall={MAPHUBS_CONFIG.logoSmall}
-            logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-            logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+            primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
             t={t}
             locale={locale}
-            mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-            DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-            earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+            mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+            DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+            earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
           >
             <MiniLegend
               style={{

@@ -2,14 +2,13 @@
 import React, { useRef } from 'react'
 import { Subscribe } from 'unstated'
 import FRContainer from './containers/FRContainer'
-import getConfig from 'next/config'
+
 import useT from '../../hooks/useT'
 import dynamic from 'next/dynamic'
 const InteractiveMap = dynamic(() => import('../Map/InteractiveMap'), {
   ssr: false
 })
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
   mapConfig: Record<string, any>
   gpxLink: Record<string, any>
@@ -68,13 +67,10 @@ const FeatureMap = ({ mapConfig, gpxLink }: Props): JSX.Element => {
             gpxLink={gpxLink}
             t={t}
             locale={locale}
-            primaryColor={MAPHUBS_CONFIG.primaryColor}
-            logoSmall={MAPHUBS_CONFIG.logoSmall}
-            logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-            logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-            mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-            DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-            earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+            primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
+            mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+            DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+            earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
           />
         )
       }}

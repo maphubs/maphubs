@@ -6,9 +6,9 @@ import {
   ReadOutlined,
   SearchOutlined
 } from '@ant-design/icons'
-import getConfig from 'next/config'
+
 import useT from '../../hooks/useT'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 const { Title } = Typography
 
 const OnboardingLinks = (): JSX.Element => {
@@ -142,7 +142,7 @@ const OnboardingLinks = (): JSX.Element => {
           }
 
           .home-onboarding-icon-wrapper .anticon {
-            color: ${MAPHUBS_CONFIG.primaryColor};
+            color: ${process.env.NEXT_PUBLIC_PRIMARY_COLOR};
             font-size: 80px;
             margin: auto;
           }
@@ -153,7 +153,7 @@ const OnboardingLinks = (): JSX.Element => {
 
           .home-onboarding-icon-wrapper:hover {
             color: #fff;
-            background-color: ${MAPHUBS_CONFIG.primaryColor};
+            background-color: ${process.env.NEXT_PUBLIC_PRIMARY_COLOR};
 
             -o-transition: 0.5s;
             -ms-transition: 0.5s;

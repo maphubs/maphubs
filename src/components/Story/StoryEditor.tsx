@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 import Formsy from 'formsy-react'
 import slugify from 'slugify'
 import dynamic from 'next/dynamic'
@@ -42,6 +43,7 @@ type ImageCropState = {
 
 const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
   const { t, locale } = useT()
+  const router = useRouter()
   const [showAddMap, setShowAddMap] = useState(false)
   const [showImageCrop, setShowImageCrop] = useState(false)
   const [imageCropState, setImageCropState] = useState<ImageCropState>({
@@ -125,7 +127,7 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
     try {
       await story.delete()
       message.info(t('Story Deleted'), 1, () => {
-        window.location.assign('/')
+        router.push('/')
       })
     } catch (err) {
       notification.error({
@@ -256,9 +258,7 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
                 ghost
                 disabled={modified}
                 onClick={() => {
-                  window.location.assign(
-                    `/story/${slugify(title[locale])}/${story_id}`
-                  )
+                  router.push(`/story/${slugify(title[locale])}/${story_id}`)
                 }}
               >
                 {t('View Story')}

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import Layout from '../../src/components/Layout'
 import { Row, Col, Button, Typography, Card } from 'antd'
 import StorySummary from '../../src/components/Story/StorySummary'
@@ -13,6 +14,7 @@ const { Title } = Typography
 
 const Stories = (): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
   const { data } = useSWR(`
   {
     recentStories(limit: 25) {
@@ -104,7 +106,7 @@ const Stories = (): JSX.Element => {
         </Row>
         <FloatingAddButton
           onClick={() => {
-            window.location.assign('/createstory')
+            router.push('/createstory')
           }}
           tooltip={t('Create New Story')}
         />

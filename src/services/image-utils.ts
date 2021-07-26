@@ -78,9 +78,9 @@ export default {
     const origFile = uuidv4() + '.png'
     const resizedFile = uuidv4() + '.png'
     const convertedFile = uuidv4() + '.jpg'
-    const origfilePath = local.tempFilePath + '/' + origFile
-    const resizedFilePath = local.tempFilePath + '/' + resizedFile
-    const convertedFilePath = local.tempFilePath + '/' + convertedFile
+    const origfilePath = process.env.TEMP_FILE_PATH + '/' + origFile
+    const resizedFilePath = process.env.TEMP_FILE_PATH + '/' + resizedFile
+    const convertedFilePath = process.env.TEMP_FILE_PATH + '/' + convertedFile
 
     try {
       // decode base64

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import Layout from '../../../src/components/Layout'
 import slugify from 'slugify'
 import '../services/locales'
@@ -6,7 +7,7 @@ import '../services/locales'
 import ErrorBoundary from '../../../src/components/ErrorBoundary'
 import type { Layer } from '../../../src/types/layer'
 import type { Group } from '../../../src/stores/GroupStore'
-import getConfig from 'next/config'
+
 import { LocalizedString } from '../../../src/types/LocalizedString'
 import useT from '../../../src/hooks/useT'
 
@@ -18,7 +19,6 @@ const MapMaker = dynamic(
   }
 )
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
   popularLayers: Array<Layer>
   myLayers: Array<Layer>
@@ -28,6 +28,7 @@ type Props = {
 }
 const NewMap = (): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
   /*
   constructor(props: Props) {
     super(props)
@@ -39,9 +40,8 @@ const NewMap = (): JSX.Element => {
       mapboxAccessToken: string
       baseMapOptions?: Record<string, any>
     } = {
-      bingKey: MAPHUBS_CONFIG.BING_KEY,
-      tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY,
-      mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
+      bingKey: process.env.NEXT_PUBLIC_BING_KEY,
+      mapboxAccessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
     }
 
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
@@ -54,7 +54,7 @@ const NewMap = (): JSX.Element => {
   */
 
   const mapCreated = (mapId: number, title: LocalizedString): void => {
-    window.location.assign('/map/view/' + mapId + '/' + slugify(this.t(title)))
+    router.push('/map/view/' + mapId + '/' + slugify(t(title)))
   }
 
   return (

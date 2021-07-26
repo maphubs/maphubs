@@ -2,8 +2,7 @@ import * as React from 'react'
 import { Fab } from 'react-tiny-fab'
 import Add from '@material-ui/icons/Add'
 import 'react-tiny-fab/dist/styles.css'
-import getConfig from 'next/config'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 type Props = {
   tooltip?: string
   icon?: React.ReactNode
@@ -38,7 +37,7 @@ const FloatingButton = ({
 }
 FloatingButton.defaultProps = {
   style: {
-    backgroundColor: MAPHUBS_CONFIG.primaryColor,
+    backgroundColor: process.env.NEXT_PUBLIC_PRIMARY_COLOR,
     zIndex: 999
   },
   actionButtonStyles: {},

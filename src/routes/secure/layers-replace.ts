@@ -27,7 +27,7 @@ export default function (app: any): void {
     '/api/layer/:id/replace',
     isAuthenticated,
     multer({
-      dest: local.tempFilePath + '/uploads/'
+      dest: process.env.TEMP_FILE_PATH + '/uploads/'
     }).single('file'),
     async (req, res) => {
       const layer_id = Number.parseInt(req.params.id || '', 10)

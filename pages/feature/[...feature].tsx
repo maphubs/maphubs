@@ -21,7 +21,7 @@ import {
 
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import { getLayer } from '../../src/components/Feature/Map/layer-feature'
-import getConfig from 'next/config'
+
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import useSWR from 'swr'
 import useStickyResult from '../../src/hooks/useStickyResult'
@@ -41,7 +41,6 @@ const InteractiveMap = dynamic(
   }
 )
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const TabPane = Tabs.TabPane
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -380,7 +379,7 @@ const FeaturePage = (): JSX.Element => {
                       </Col>
                     </Row>
                   </TabPane>
-                  {MAPHUBS_CONFIG.FR_ENABLE && session?.user && (
+                  {process.env.NEXT_PUBLIC_FR_ENABLE && session?.user && (
                     <TabPane
                       tab={t('Forest Report')}
                       key='forestreport'
@@ -395,7 +394,7 @@ const FeaturePage = (): JSX.Element => {
                       )}
                     </TabPane>
                   )}
-                  {MAPHUBS_CONFIG.enableComments && (
+                  {process.env.NEXT_PUBLIC_ENABLE_COMMENTS && (
                     <TabPane tab={t('Discussion')} key='discussion'>
                       <ErrorBoundary t={t}>
                         <Comments />
@@ -459,13 +458,12 @@ const FeaturePage = (): JSX.Element => {
                 gpxLink={gpxLink}
                 t={t}
                 locale={locale}
-                primaryColor={MAPHUBS_CONFIG.primaryColor}
-                logoSmall={MAPHUBS_CONFIG.logoSmall}
-                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-                mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-                DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-                earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+                primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
+                mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+                DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+                earthEngineClientID={
+                  process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
+                }
               />
             </Col>
           </Row>

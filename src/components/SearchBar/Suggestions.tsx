@@ -4,8 +4,7 @@ License: MIT
 Modified to support antd and other customizations
 */
 import React from 'react'
-import getConfig from 'next/config'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 type Props = {
   suggestions: Array<{
     key: string
@@ -52,7 +51,7 @@ const Suggestions = ({ suggestions, onSelection }: Props): JSX.Element => {
 
           .dropdown-content-item a:hover {
             color: #fff;
-            background-color: ${MAPHUBS_CONFIG.primaryColor};
+            background-color: ${process.env.NEXT_PUBLIC_PRIMARY_COLOR};
           }
         `}
       </style>

@@ -63,7 +63,7 @@ export default {
           title = Locales.getLocaleStringObject(req.locale, map.title)
         }
 
-        title += ' - ' + local.productName
+        title += ' - ' + process.env.NEXT_PUBLIC_PRODUCT_NAME
         const baseUrl = urlUtil.getBaseUrl()
         const imageUrl =
           shared && map.share_id
@@ -96,7 +96,8 @@ export default {
             twitterCard: {
               title,
               description:
-                req.__('View interactive map on ') + local.productName,
+                req.__('View interactive map on ') +
+                process.env.NEXT_PUBLIC_PRODUCT_NAME,
               image: imageUrl,
               imageWidth: 1200,
               imageHeight: 630,
@@ -135,7 +136,7 @@ export default {
           title = Locales.getLocaleStringObject(req.locale, map.title)
         }
 
-        title += ' - ' + local.productName
+        title += ' - ' + process.env.NEXT_PUBLIC_PRODUCT_NAME
         const baseUrl = urlUtil.getBaseUrl()
 
         const imageUrl =
@@ -145,7 +146,7 @@ export default {
 
         let showShareButtons = true
 
-        if (local.requireLogin) {
+        if (process.env.NEXT_PUBLIC_REQUIRE_LOGIN) {
           showShareButtons = false
         }
 
@@ -156,7 +157,7 @@ export default {
           res,
           '/usermap',
           await pageOptions(req, {
-            title: `${title} - ${local.productName}`,
+            title: `${title} - ${process.env.NEXT_PUBLIC_PRODUCT_NAME}`,
             props: {
               map,
               layers,
@@ -167,7 +168,8 @@ export default {
             twitterCard: {
               title,
               description:
-                req.__('View interactive map on ') + local.productName,
+                req.__('View interactive map on ') +
+                process.env.NEXT_PUBLIC_PRODUCT_NAME,
               image: imageUrl,
               imageWidth: 1200,
               imageHeight: 630,

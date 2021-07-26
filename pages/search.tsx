@@ -8,12 +8,9 @@ import _shuffle from 'lodash.shuffle'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import type { CardConfig } from '../src/components/CardCarousel/Card'
 import cardUtil from '../src/services/card-util'
-import getConfig from 'next/config'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import useT from '../src/hooks/useT'
 import { useQueryParam, StringParam } from 'use-query-params'
-
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const debug = DebugService('home')
 
@@ -119,7 +116,7 @@ const Search = (): JSX.Element => {
               }}
             >
               <SearchBox
-                label={t('Search') + ' ' + MAPHUBS_CONFIG.productName}
+                label={t('Search') + ' ' + process.env.NEXT_PUBLIC_PRODUCT_NAME}
                 onSearch={handleSearch}
                 onReset={() => {
                   setSearchCards([])

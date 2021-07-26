@@ -18,7 +18,7 @@ export default (app: any) => {
       const layer = await Layer.getLayerByShortID(shortid)
 
       if (
-        !local.requireLogin || // login not required
+        !process.env.NEXT_PUBLIC_REQUIRE_LOGIN || // login not required
         isShared || // in public shared map
         manetCheck(req) || // screenshot service
         user_id > 0 // logged in
@@ -44,7 +44,7 @@ export default (app: any) => {
       const isShared = await Layer.isSharedInPublicMap(shortid)
       const layer = await Layer.getLayerByShortID(shortid)
 
-      return !local.requireLogin || // login not required
+      return !process.env.NEXT_PUBLIC_REQUIRE_LOGIN || // login not required
         isShared || // in public shared map
         manetCheck(req) || // screenshot service
         user_id > 0

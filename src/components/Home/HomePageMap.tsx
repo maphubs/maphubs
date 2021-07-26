@@ -1,5 +1,5 @@
 import React from 'react'
-import getConfig from 'next/config'
+
 import { Row } from 'antd'
 import useT from '../../hooks/useT'
 import { Map } from '../../types/map'
@@ -10,8 +10,6 @@ import dynamic from 'next/dynamic'
 const InteractiveMap = dynamic(() => import('../Map/InteractiveMap'), {
   ssr: false
 })
-
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const HomePageMap = ({
   map_id,
@@ -70,13 +68,10 @@ const HomePageMap = ({
           mapConfig={mapConfig}
           layers={mapLayers}
           showTitle={false}
-          primaryColor={MAPHUBS_CONFIG.primaryColor}
-          logoSmall={MAPHUBS_CONFIG.logoSmall}
-          logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-          logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-          mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-          DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-          earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+          primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
+          mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+          DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+          earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
           {...map.settings}
           t={t}
         />

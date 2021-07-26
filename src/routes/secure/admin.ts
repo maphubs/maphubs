@@ -27,7 +27,10 @@ export default function (app: any) {
             res,
             '/adminuserinvite',
             await pageOptions(req, {
-              title: req.__('Manage Users') + ' - ' + local.productName,
+              title:
+                req.__('Manage Users') +
+                ' - ' +
+                process.env.NEXT_PUBLIC_PRODUCT_NAME,
               props: {
                 members: await Admin.getMembers()
               }
@@ -113,40 +116,5 @@ export default function (app: any) {
     } catch (err) {
       apiError(res, 200)(err)
     }
-  })
-  app.get('/admin/export/users', csrfProtection, (req, res, next) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      return res.redirect('/login')
-    }
-
-    const user_id = req.session.user.maphubsUser.id
-    Admin.checkAdmin(user_id)
-      .then((allowed) => {
-        return allowed && local.enableUserExport
-          ? knex('users')
-              .select('id', 'email', 'email_valid', 'display_name')
-              .then((users) => {
-                const userExport = []
-                for (const user of users) {
-                  userExport.push({
-                    username: user.display_name,
-                    email: user.email,
-                    email_verified: user.email_valid,
-                    app_metadata: {
-                      hosts: [
-                        {
-                          host: local.host,
-                          user_id: user.id
-                        }
-                      ],
-                      signedUp: true
-                    }
-                  })
-                }
-                return res.status(200).send(userExport)
-              })
-          : res.redirect('/login')
-      })
-      .catch(nextError(next))
   })
 }

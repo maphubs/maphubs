@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Modal, Switch, Row, message, Alert, Tooltip } from 'antd'
 import { htmlEncode } from 'js-htmlencode'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import getConfig from 'next/config'
+
 import { LocalizedString } from '../../types/LocalizedString'
 import useT from '../../hooks/useT'
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
   show?: boolean
   onClose: (...args: Array<any>) => any
@@ -87,7 +86,7 @@ const EmbedCodeModal = ({
           />
         </pre>
       </Row>
-      {!share_id && MAPHUBS_CONFIG.requireLogin && (
+      {!share_id && process.env.NEXT_PUBLIC_REQUIRE_LOGIN && (
         <Row
           style={{
             marginBottom: '20px'

@@ -1,7 +1,6 @@
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import mapboxgl from 'mapbox-gl'
-import getConfig from 'next/config'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 const RasterSource = {
   async load(
     key: string,
@@ -15,8 +14,8 @@ const RasterSource = {
     let connectID
 
     connectID =
-      MAPHUBS_CONFIG && MAPHUBS_CONFIG.DG_WMS_CONNECT_ID
-        ? MAPHUBS_CONFIG.DG_WMS_CONNECT_ID
+      MAPHUBS_CONFIG && process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID
+        ? process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID
         : mapComponent.props.DGWMSConnectID
 
     if (source.tiles && source.tiles.length > 0) {

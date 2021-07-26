@@ -121,9 +121,8 @@ const LayerAdmin = ({
       mapboxAccessToken: string
       baseMapOptions?: Record<string, any>
     } = {
-      bingKey: MAPHUBS_CONFIG.BING_KEY,
-      tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY,
-      mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
+      bingKey: process.env.NEXT_PUBLIC_BING_KEY,
+      mapboxAccessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
     }
 
     if (props.mapConfig && props.mapConfig.baseMapOptions) {
@@ -159,7 +158,7 @@ const LayerAdmin = ({
   const savePresets = async () => {
     // check for duplicate presets
     if (presets) {
-      const tags = _mapvalues(presets.toArray(), 'tag')
+      const tags = _mapvalues(presets, 'tag')
 
       const uniqTags = _uniq(tags)
 
@@ -206,7 +205,7 @@ const LayerAdmin = ({
         try {
           await LayerAPI.deleteLayer(layer.layer_id)
           message.success(t('Layer Deleted'), 1, () => {
-            window.location.assign('/')
+            router.push('/')
           })
         } catch (err) {
           notification.error({
@@ -259,7 +258,7 @@ const LayerAdmin = ({
             <Row>
               <PageHeader
                 onBack={() => {
-                  window.location.assign(layerInfoUrl)
+                  router.push(layerInfoUrl)
                 }}
                 style={{
                   padding: '5px'
@@ -310,7 +309,7 @@ const LayerAdmin = ({
           <Row>
             <PageHeader
               onBack={() => {
-                window.location.assign(layerInfoUrl)
+                router.push(layerInfoUrl)
               }}
               style={{
                 padding: '5px'

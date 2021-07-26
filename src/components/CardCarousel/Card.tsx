@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 import GroupTag from '../Groups/GroupTag'
 import AddCircle from '@material-ui/icons/AddCircle'
 import LockOpen from '@material-ui/icons/LockOpenTwoTone'
@@ -48,6 +49,7 @@ const MapHubsCard = ({
   isPublic
 }: Props): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
   const [imageFailed, setImageFailed] = useState(false)
 
   let icon = <></>
@@ -246,7 +248,7 @@ const MapHubsCard = ({
         if (onClick) {
           onClick(data)
         } else if (link && typeof window !== 'undefined') {
-          window.location.assign(link)
+          router.push(link)
         }
       }}
       bodyStyle={{

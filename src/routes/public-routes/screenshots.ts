@@ -28,7 +28,7 @@ export default function (app: any) {
         .then(async (layer) => {
           if (layer) {
             const name = Locales.getLocaleStringObject(req.locale, layer.name)
-            const title = name + ' - ' + local.productName
+            const title = name + ' - ' + process.env.NEXT_PUBLIC_PRODUCT_NAME
             return app.next.render(
               req,
               res,
@@ -107,7 +107,7 @@ export default function (app: any) {
           res,
           '/staticmap',
           await pageOptions(req, {
-            title: title + ' - ' + local.productName,
+            title: title + ' - ' + process.env.NEXT_PUBLIC_PRODUCT_NAME,
             hideFeedback: true,
             disableGoogleAnalytics: true,
             props: {
@@ -172,7 +172,7 @@ export default function (app: any) {
             res,
             '/staticmap',
             await pageOptions(req, {
-              title: title + ' - ' + local.productName,
+              title: title + ' - ' + process.env.NEXT_PUBLIC_PRODUCT_NAME,
               disableGoogleAnalytics: true,
               props: {
                 name: title,

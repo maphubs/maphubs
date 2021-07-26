@@ -48,9 +48,6 @@ type Props = {
   preserveDrawingBuffer?: boolean
   t: (v: string | LocalizedString) => string
   primaryColor: string
-  logoSmall?: string
-  logoSmallWidth?: number
-  logoSmallHeight?: number
   locale: string
   mapboxAccessToken: string
   DGWMSConnectID?: string
@@ -284,9 +281,6 @@ export default class InteractiveMap extends React.Component<Props, State> {
       showShareButtons,
       t,
       primaryColor,
-      logoSmall,
-      logoSmallHeight,
-      logoSmallWidth,
       hash,
       showLayerVisibility,
       showLayerInfo,
@@ -426,9 +420,6 @@ export default class InteractiveMap extends React.Component<Props, State> {
           disableScrollZoom={disableScrollZoom}
           gpxLink={gpxLink}
           preserveDrawingBuffer={preserveDrawingBuffer}
-          logoSmall={logoSmall}
-          logoSmallHeight={logoSmallHeight}
-          logoSmallWidth={logoSmallWidth}
           hash={hash}
           t={t}
           locale={locale}

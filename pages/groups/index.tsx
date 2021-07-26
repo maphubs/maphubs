@@ -1,4 +1,5 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import Layout from '../../src/components/Layout'
 import { Row, Button, Typography } from 'antd'
 import CardCollection from '../../src/components/CardCarousel/CardCollection'
@@ -15,6 +16,7 @@ const { Title } = Typography
 
 const Groups = (): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
   const { data } = useSWR(`
   {
     featuredGroups(limit: 25) {
@@ -76,7 +78,7 @@ const Groups = (): JSX.Element => {
 
             <FloatingAddButton
               onClick={() => {
-                window.location.assign('/creategroup')
+                router.push('/creategroup')
               }}
               tooltip={t('Create New Group')}
             />

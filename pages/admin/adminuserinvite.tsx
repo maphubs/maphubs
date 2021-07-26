@@ -100,10 +100,10 @@ const AdminUserInvite = ({
         email
       })
       .end((err, res) => {
-        checkClientError(
+        checkClientError({
           res,
           err,
-          (err) => {
+          onError: (err) => {
             const key = res.body.key
             closeMessage()
 
@@ -125,11 +125,8 @@ const AdminUserInvite = ({
                 setMembers(membersUpdate)
               })
             }
-          },
-          (cb) => {
-            cb()
           }
-        )
+        })
       })
   }
   const resendInvite = (user: User) => {
@@ -143,10 +140,10 @@ const AdminUserInvite = ({
         key
       })
       .end((err, res) => {
-        checkClientError(
+        checkClientError({
           res,
           err,
-          (err) => {
+          onError: (err) => {
             closeMessage()
 
             if (err) {
@@ -158,11 +155,8 @@ const AdminUserInvite = ({
             } else {
               message.info(t('Resent Invite'), 3)
             }
-          },
-          (cb) => {
-            cb()
           }
-        )
+        })
       })
   }
   const handleResendInvite = (user: User) => {
@@ -204,10 +198,10 @@ const AdminUserInvite = ({
         key: user.key
       })
       .end((err, res) => {
-        checkClientError(
+        checkClientError({
           res,
           err,
-          (err) => {
+          onError: (err) => {
             closeMessage()
 
             if (err) {
@@ -227,11 +221,8 @@ const AdminUserInvite = ({
               }
               setMembers(membersUpdate)
             }
-          },
-          (cb) => {
-            cb()
           }
-        )
+        })
       })
   }
 

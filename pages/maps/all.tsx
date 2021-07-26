@@ -1,4 +1,5 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import Layout from '../../src/components/Layout'
 import { Row, Col, Button, Typography } from 'antd'
 import MapList from '../../src/components/Lists/MapList'
@@ -13,6 +14,7 @@ const { Title } = Typography
 
 const AllMaps = (): JSX.Element => {
   const { t, locale } = useT()
+  const router = useRouter()
   const { data } = useSWR(`
   {
     maps(locale: "${locale}") {
@@ -58,7 +60,7 @@ const AllMaps = (): JSX.Element => {
             >
               <Button
                 onClick={() => {
-                  window.location.assign('/map/new')
+                  router.push('/map/new')
                 }}
               >
                 {t('Create New Map')}

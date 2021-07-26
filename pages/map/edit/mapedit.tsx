@@ -102,7 +102,7 @@ const MapEdit = (): JSX.Element => {
   } = stickyData
 
   const mapCreated = (mapId: string, title: LocalizedString): void => {
-    window.location.assign('/map/view/' + mapId + '/' + slugify(t(title)))
+    router.push('/map/view/' + mapId + '/' + slugify(t(title)))
   }
 
   return (

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import Layout from '../../src/components/Layout'
 import { Row, Button, Typography } from 'antd'
 import CardCollection from '../../src/components/CardCarousel/CardCollection'
@@ -6,17 +7,17 @@ import CardSearch from '../../src/components/CardCarousel/CardSearch'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import FloatingAddButton from '../../src/components/FloatingAddButton'
 import cardUtil from '../../src/services/card-util'
-import getConfig from 'next/config'
+
 import useT from '../../src/hooks/useT'
 import { Map } from '../../src/types/map'
 import useSWR from 'swr'
 import useStickyResult from '../../src/hooks/useStickyResult'
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
 
 const Maps = (): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
   const { data } = useSWR(`
   {
     featuredMaps(limit: 25) {
@@ -64,7 +65,7 @@ const Maps = (): JSX.Element => {
             </Row>
           </div>
           <CardSearch cardType='map' />
-          {!MAPHUBS_CONFIG.mapHubsPro &&
+          {!process.env.NEXT_PUBLIC_MAPHUBS_PRO &&
             featuredCards &&
             featuredCards.length > 0 && (
               <CardCollection
@@ -80,7 +81,7 @@ const Maps = (): JSX.Element => {
           />
           <FloatingAddButton
             onClick={() => {
-              window.location.assign('/map/new')
+              router.push('/map/new')
             }}
             tooltip={t('Create New Map')}
           />

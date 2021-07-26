@@ -87,7 +87,10 @@ export default function (app: any): void {
                   res,
                   '/featureinfo',
                   await pageOptions(req, {
-                    title: featureName + ' - ' + local.productName,
+                    title:
+                      featureName +
+                      ' - ' +
+                      process.env.NEXT_PUBLIC_PRODUCT_NAME,
                     talkComments: true,
                     props: {
                       feature,
@@ -108,7 +111,10 @@ export default function (app: any): void {
                       res,
                       '/featureinfo',
                       await pageOptions(req, {
-                        title: featureName + ' - ' + local.productName,
+                        title:
+                          featureName +
+                          ' - ' +
+                          process.env.NEXT_PUBLIC_PRODUCT_NAME,
                         talkComments: true,
                         props: {
                           feature,
@@ -124,7 +130,10 @@ export default function (app: any): void {
                       res,
                       '/featureinfo',
                       await pageOptions(req, {
-                        title: featureName + ' - ' + local.productName,
+                        title:
+                          featureName +
+                          ' - ' +
+                          process.env.NEXT_PUBLIC_PRODUCT_NAME,
                         talkComments: true,
                         props: {
                           feature,

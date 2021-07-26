@@ -50,7 +50,6 @@ import ErrorBoundary from '../../../src/components/ErrorBoundary'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import moment from 'moment-timezone'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import getConfig from 'next/config'
 import { Layer } from '../../../src/types/layer'
 import useT from '../../../src/hooks/useT'
 import { FeatureCollection } from 'geojson'
@@ -68,7 +67,6 @@ const InteractiveMap = dynamic(
   }
 )
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const TabPane = Tabs.TabPane
 const { Title } = Typography
 
@@ -93,6 +91,12 @@ type Props = {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const layer_id = Number.parseInt(context.params.layerinfo[0])
   const layer = await LayerModel.getLayerByID(layer_id)
+  if (!layer) {
+    return {
+      notFound: true
+    }
+  }
+
   layer.last_updated = layer.last_updated.toISOString()
   layer.creation_time = layer.creation_time.toISOString()
 
@@ -103,11 +107,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       layer_id,
       session.user.id || session.user.sub
     )
-  }
-  if (!layer) {
-    return {
-      notFound: true
-    }
   }
 
   const mapConfig = (await PageModel.getPageConfigs(['map'])[0]) || null
@@ -144,9 +143,8 @@ const LayerInfo = ({
       mapboxAccessToken: string
       baseMapOptions?: Record<string, any>
     } = {
-      bingKey: MAPHUBS_CONFIG.BING_KEY,
-      tileHostingKey: MAPHUBS_CONFIG.TILEHOSTING_MAPS_API_KEY,
-      mapboxAccessToken: MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN
+      bingKey: process.env.NEXT_PUBLIC_BING_KEY,
+      mapboxAccessToken: process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
     }
     */
 
@@ -179,7 +177,7 @@ const LayerInfo = ({
           const areaM2 = turf_area(geoJSON)
 
           if (areaM2 && areaM2 > 0) {
-            area = areaM2 / 10000
+            area = areaM2 / 10_000
           }
         } else if (layer.data_type === 'line') {
           for (const feature of geoJSON.features) {
@@ -260,7 +258,7 @@ const LayerInfo = ({
 
   const openEditor = (): void => {
     const baseUrl = urlUtil.getBaseUrl()
-    window.location.assign(
+    router.push(
       `${baseUrl}/map/new?editlayer=${layer.layer_id}${window.location.hash}`
     )
   }
@@ -276,7 +274,7 @@ const LayerInfo = ({
     <Fab
       icon={<MoreVertIcon />}
       mainButtonStyles={{
-        backgroundColor: MAPHUBS_CONFIG.primaryColor
+        backgroundColor: process.env.NEXT_PUBLIC_PRIMARY_COLOR
       }}
       position={{
         bottom: 65,
@@ -286,7 +284,7 @@ const LayerInfo = ({
       <Action
         text={t('Manage Layer')}
         onClick={() => {
-          window.location.assign(
+          router.push(
             `/layer/admin/${layer.layer_id}/${slugify(t(layer.name))}`
           )
         }}
@@ -311,7 +309,7 @@ const LayerInfo = ({
             backgroundColor: '#2196F3'
           }}
           onClick={() => {
-            window.location.assign(`/layer/adddata/${layer.layer_id}`)
+            router.push(`/layer/adddata/${layer.layer_id}`)
           }}
         >
           <PhotoIcon />
@@ -324,13 +322,11 @@ const LayerInfo = ({
         icon={<MapIcon />}
         text={t('View Map')}
         mainButtonStyles={{
-          backgroundColor: MAPHUBS_CONFIG.primaryColor
+          backgroundColor: process.env.NEXT_PUBLIC_PRIMARY_COLOR
         }}
         event='click'
         onClick={() => {
-          window.location.assign(
-            `/layer/map/${layer.layer_id}/${slugify(t(layer.name))}`
-          )
+          router.push(`/layer/map/${layer.layer_id}/${slugify(t(layer.name))}`)
         }}
       />
     </div>
@@ -638,7 +634,7 @@ const LayerInfo = ({
                     layer_id={layer.layer_id}
                   />
                 </TabPane>
-                {MAPHUBS_CONFIG.enableComments && (
+                {process.env.NEXT_PUBLIC_ENABLE_COMMENTS && (
                   <TabPane tab={t('Discuss')} key='discuss'>
                     <ErrorBoundary t={t}>
                       <Comments />
@@ -687,13 +683,12 @@ const LayerInfo = ({
                 showTitle={false}
                 hideInactive={false}
                 disableScrollZoom={false}
-                primaryColor={MAPHUBS_CONFIG.primaryColor}
-                logoSmall={MAPHUBS_CONFIG.logoSmall}
-                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-                mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-                DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-                earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+                primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
+                mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+                DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+                earthEngineClientID={
+                  process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
+                }
                 t={t}
                 locale={locale}
               />

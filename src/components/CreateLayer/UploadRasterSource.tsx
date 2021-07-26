@@ -4,7 +4,7 @@ import { Element, scroller } from 'react-scroll'
 import superagent from 'superagent'
 import { Row, message, notification, Button } from 'antd'
 import useT from '../../hooks/useT'
-import getConfig from 'next/config'
+
 import dynamic from 'next/dynamic'
 
 import { useDispatch, useSelector } from '../../redux/hooks'
@@ -21,7 +21,6 @@ const MapHubsMap = dynamic(() => import('../Map'), {
   ssr: false
 })
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 type Props = {
   onSubmit: () => void
   mapConfig: Record<string, any>
@@ -48,10 +47,10 @@ const UploadRasterSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
   const onUpload = (file: Record<string, any>): void => {
     const closeMessage = message.loading(t('Processing'), 0)
     superagent
-      .post(`${MAPHUBS_CONFIG.RASTER_UPLOAD_API}/upload/complete`)
+      .post(`${process.env.NEXT_PUBLIC_RASTER_UPLOAD_API}/upload/complete`)
       .set({
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + MAPHUBS_CONFIG.RASTER_UPLOAD_API_KEY
+        Authorization: 'Bearer ' + process.env.NEXT_PUBLIC_RASTER_UPLOAD_API_KEY
       })
       .accept('json')
       .send({
@@ -127,13 +126,14 @@ const UploadRasterSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
           }}
         >
           <UppyFileUpload
-            endpoint={`${MAPHUBS_CONFIG.RASTER_UPLOAD_API}/upload/save`}
+            endpoint={`${process.env.NEXT_PUBLIC_RASTER_UPLOAD_API}/upload/save`}
             headers={{
-              authorization: `Bearer ${MAPHUBS_CONFIG.RASTER_UPLOAD_API_KEY}`
+              authorization: `Bearer ${process.env.NEXT_PUBLIC_RASTER_UPLOAD_API_KEY}`
             }}
             note='Supports: GeoTiffs and MBTiles, GeoTiffs must have RGB visual bands'
             maxFileSize={
-              MAPHUBS_CONFIG.RASTER_UPLOAD_FILE_SIZE_LIMIT || 157_286_400
+              process.env.NEXT_PUBLIC_RASTER_UPLOAD_FILE_SIZE_LIMIT ||
+              157_286_400
             }
             allowedFileTypes={['.tif', '.tiff', '.mbtiles']}
             meta={{
@@ -171,15 +171,14 @@ const UploadRasterSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
                 mapConfig={mapConfig}
                 glStyle={style}
                 fitBounds={bbox}
-                primaryColor={MAPHUBS_CONFIG.primaryColor}
-                logoSmall={MAPHUBS_CONFIG.logoSmall}
-                logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-                logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
+                primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
                 t={t}
                 locale={locale}
-                mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-                DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-                earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+                mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+                DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+                earthEngineClientID={
+                  process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
+                }
               />
             </div>
           </Element>

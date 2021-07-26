@@ -1,4 +1,5 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import { Row, Result, Button, Typography } from 'antd'
 import GroupIcon from '@material-ui/icons/Group'
 import Layout from '../../src/components/Layout'
@@ -8,12 +9,11 @@ import cardUtil from '../../src/services/card-util'
 import type { Group } from '../../src/types/group'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import FloatingButton from '../../src/components/FloatingButton'
-import getConfig from 'next/config'
+
 import useT from '../../src/hooks/useT'
 import useSWR from 'swr'
 import useStickyResult from '../../src/hooks/useStickyResult'
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Title } = Typography
 type Props = {
   groups: Array<Group>
@@ -22,7 +22,7 @@ type Props = {
 
 const MyGroups = (): JSX.Element => {
   const { t } = useT()
-
+  const router = useRouter()
   const { data } = useSWR(
     `
  {
@@ -75,7 +75,7 @@ const MyGroups = (): JSX.Element => {
                 icon={
                   <GroupIcon
                     style={{
-                      color: MAPHUBS_CONFIG.primaryColor,
+                      color: process.env.NEXT_PUBLIC_PRIMARY_COLOR,
                       fontSize: '72px'
                     }}
                   />
@@ -92,7 +92,7 @@ const MyGroups = (): JSX.Element => {
 
           <FloatingButton
             onClick={() => {
-              window.location.assign('/create/group')
+              router.push('/create/group')
             }}
             tooltip={t('Create New Group')}
           />

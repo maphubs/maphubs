@@ -35,7 +35,7 @@ const metadataStringToObject = (stringValue) => {
   return metadata
 }
 
-const UPLOAD_PATH = `${local.tempFilePath}/uploads`
+const UPLOAD_PATH = `${process.env.TEMP_FILE_PATH}/uploads`
 
 const getExt = (fileName: string) => {
   if (fileName.endsWith('.zip')) return 'zip'
@@ -184,7 +184,7 @@ export default function (app: any): void {
     '/api/layer/:id/upload',
     isAuthenticated,
     multer({
-      dest: local.tempFilePath + '/uploads/'
+      dest: process.env.TEMP_FILE_PATH + '/uploads/'
     }).single('file'),
     async (req, res) => {
       const layer_id = Number.parseInt(req.params.id || '', 10)

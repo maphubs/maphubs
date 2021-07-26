@@ -5,8 +5,7 @@ import Slider from 'rc-slider'
 import { Subscribe } from 'unstated'
 import FRContainer from './containers/FRContainer'
 import MapContainer from '../Map/containers/MapContainer'
-import getConfig from 'next/config'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 type Props = {
   onModuleToggle: (...args: Array<any>) => void
 }
@@ -17,7 +16,7 @@ const ForestReportEmbed = ({ onModuleToggle }: Props): JSX.Element => {
     if (!loaded) setLoaded(true)
   }, [loaded])
 
-  if (!MAPHUBS_CONFIG.FR_API_KEY) {
+  if (!process.env.NEXT_PUBLIC_FR_API_KEY) {
     return <p>API Key Required!</p>
   }
 
@@ -86,7 +85,7 @@ const ForestReportEmbed = ({ onModuleToggle }: Props): JSX.Element => {
             <div style={dimensions}>
               <XComponentReact
                 tag='forest-report-feature-profile'
-                url={`${MAPHUBS_CONFIG.FR_API}/xembed?apiKey=${MAPHUBS_CONFIG.FR_API_KEY}`}
+                url={`${process.env.NEXT_PUBLIC_FR_API}/xembed?apiKey=${process.env.NEXT_PUBLIC_FR_API_KEY}`}
                 containerProps={{
                   style: {
                     width: '100%',

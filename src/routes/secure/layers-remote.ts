@@ -24,7 +24,10 @@ export default function (app: any): void {
           res,
           '/createremotelayer',
           await pageOptions(req, {
-            title: req.__('Remote Layer') + ' - ' + local.productName,
+            title:
+              req.__('Remote Layer') +
+              ' - ' +
+              process.env.NEXT_PUBLIC_PRODUCT_NAME,
             props: {
               groups: await Group.getGroupsForUser(user_id)
             }

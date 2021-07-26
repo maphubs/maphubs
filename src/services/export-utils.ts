@@ -3,7 +3,6 @@ import Map from '../models/map'
 import geobuf from 'geobuf'
 import Pbf from 'pbf'
 import { apiError } from '../services/error-response'
-import local from '../local'
 import moment from 'moment'
 import Bluebird from 'bluebird'
 import Crypto from 'crypto'
@@ -58,7 +57,7 @@ export default {
         type: 'layer',
         systemVersion: version,
         exportTime: moment().format(),
-        host: local.host,
+        host: process.env.NEXT_PUBLIC_EXTERNAL_HOST,
         layer
       }
       const resultStr = JSON.stringify(geoJSON)
@@ -117,7 +116,7 @@ export default {
           type: 'map',
           systemVersion: version,
           exportTime: moment().format(),
-          host: local.host,
+          host: process.env.NEXT_PUBLIC_EXTERNAL_HOST,
           layers: mapLayers,
           map: {
             title: map.title,

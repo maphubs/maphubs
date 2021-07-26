@@ -84,9 +84,6 @@ type Props = {
   onLoad: (...args: Array<any>) => void
   t: (v: string | LocalizedString) => string
   locale: string
-  logoSmall?: string
-  logoSmallWidth?: number
-  logoSmallHeight?: number
   mapboxAccessToken: string
   DGWMSConnectID?: string
   earthEngineClientID?: string
@@ -621,9 +618,6 @@ class Map extends React.Component<Props, State> {
       t,
       insetMap,
       showLogo,
-      logoSmall,
-      logoSmallHeight,
-      logoSmallWidth,
       mapLayers,
       toggleVisibility,
       showMapTools,
@@ -928,10 +922,10 @@ class Map extends React.Component<Props, State> {
                 bottom: '2px',
                 zIndex: 1
               }}
-              width={logoSmallWidth}
-              height={logoSmallHeight}
-              src={logoSmall}
-              alt='Logo'
+              width={70}
+              height={19}
+              src='https://cdn-maphubs.b-cdn.net/maphubs/assets/maphubs-logo-small.png'
+              alt='MapHubs Logo'
             />
           )}
           {showSearch && (

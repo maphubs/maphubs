@@ -1,7 +1,7 @@
 import React from 'react'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import local from '../src/local'
-import version from '../version.json'
+
 export default class MyDocument extends Document {
   render(): JSX.Element {
     const data = this.props.__NEXT_DATA__
@@ -122,7 +122,10 @@ export default class MyDocument extends Document {
             href={`${themeUrl}/favicon-128.png`}
             sizes='128x128'
           />
-          <meta name='application-name' content={local.productName} />
+          <meta
+            name='application-name'
+            content={process.env.NEXT_PUBLIC_PRODUCT_NAME}
+          />
           <meta name='msapplication-TileColor' content='#FFFFFF' />
           <meta
             name='msapplication-TileImage'
@@ -181,8 +184,8 @@ export default class MyDocument extends Document {
           {options.twitterCard && options.twitterCard.image && (
             <meta name='twitter:image' content={options.twitterCard.image} />
           )}
-          {local.FACEBOOK_APP_ID && (
-            <meta property='fb:app_id' content={local.FACEBOOK_APP_ID} />
+          {process.env.FACEBOOK_APP_ID && (
+            <meta property='fb:app_id' content={process.env.FACEBOOK_APP_ID} />
           )}
           {options.twitterCard && options.twitterCard.title && (
             <meta property='og:title' content={options.twitterCard.title} />
@@ -239,7 +242,7 @@ export default class MyDocument extends Document {
               src='https://talk.maphubs.com/assets/js/embed.js'
             />
           )}
-          {!options.hideFeedback && !local.HIDE_FEEDBACK && (
+          {!options.hideFeedback && !process.env.HIDE_FEEDBACK && (
             <script
               type='text/javascript'
               dangerouslySetInnerHTML={{
@@ -255,9 +258,9 @@ export default class MyDocument extends Document {
               Userback.widget_settings = {
                 language: '${options.locale}',
                 autohide: true,
-                main_button_background_colour : '${local.primaryColor}', 
+                main_button_background_colour : '${process.env.NEXT_PUBLIC_PRIMARY_COLOR}', 
                 main_button_text_colour       : '#FFFFFF', 
-                send_button_background_colour : '${local.primaryColor}', 
+                send_button_background_colour : '${process.env.NEXT_PUBLIC_PRIMARY_COLOR}', 
                 send_button_text_colour       : '#FFFFFF'  
               };
               Userback.after_send = function() {
@@ -278,7 +281,7 @@ export default class MyDocument extends Document {
           <NextScript />
 
           {process.env.NODE_ENV === 'production' &&
-            !local.disableTracking &&
+            process.env.GOOGLE_ANALYTICS_ID &&
             !options.disableGoogleAnalytics && (
               <script
                 dangerouslySetInnerHTML={{
@@ -288,7 +291,7 @@ export default class MyDocument extends Document {
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
               })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-              ga('create', '${local.GOOGLE_ANALYTICS_ID}', 'auto');
+              ga('create', '${process.env.GOOGLE_ANALYTICS_ID}', 'auto');
               ga('send', 'pageview');
               `
                 }}

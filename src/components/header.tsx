@@ -8,9 +8,9 @@ import HelpDropdown from './Header/HelpDropdown'
 import SearchButton from './Header/SearchButton'
 import LocaleChooser from './LocaleChooser'
 import UserMenu from './Header/UserMenu'
-import getConfig from 'next/config'
+
 import { LocalizedString } from '../types/LocalizedString'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 const { Header } = Layout
 type Link = {
   href: string
@@ -177,25 +177,14 @@ const MapHubsHeader = ({
         <a className='valign-wrapper' href={logoLinkUrl}>
           <img
             className='valign'
-            width={MAPHUBS_CONFIG.logoWidth}
-            height={MAPHUBS_CONFIG.logoHeight}
+            width={process.env.NEXT_PUBLIC_LOGO_WIDTH}
+            height={process.env.NEXT_PUBLIC_LOGO_HEIGHT}
             style={{
               margin: '5px'
             }}
-            src={MAPHUBS_CONFIG.logo}
-            alt={MAPHUBS_CONFIG.productName + ' ' + t('Logo')}
+            src={process.env.NEXT_PUBLIC_LOGO}
+            alt={process.env.NEXT_PUBLIC_PRODUCT_NAME + ' ' + t('Logo')}
           />
-          <small
-            id='beta-text'
-            style={{
-              position: 'absolute',
-              top: '12px',
-              left: MAPHUBS_CONFIG.logoWidth + 5 + 'px',
-              fontSize: '12px'
-            }}
-          >
-            {MAPHUBS_CONFIG.betaText}
-          </small>
         </a>
       </div>
       <style jsx global>

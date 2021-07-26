@@ -4,16 +4,16 @@ import TextInput from './textInput'
 import _isequal from 'lodash.isequal'
 import { Tabs, Tooltip } from 'antd'
 import localeUtil from '../../locales/util'
-import getConfig from 'next/config'
+
 import { LocalizedString } from '../../types/LocalizedString'
 import useT from '../../hooks/useT'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
+
 const supportedLangs = localeUtil.getSupported()
 let languagesFromConfig
 const langs = []
 
-if (MAPHUBS_CONFIG.LANGUAGES) {
-  languagesFromConfig = MAPHUBS_CONFIG.LANGUAGES.split(',')
+if (process.env.NEXT_PUBLIC_LANGUAGES) {
+  languagesFromConfig = process.env.NEXT_PUBLIC_LANGUAGES.split(',')
   languagesFromConfig = languagesFromConfig.map((lang) => lang.trim())
   supportedLangs.map((lang) => {
     if (languagesFromConfig.includes(lang.value)) {

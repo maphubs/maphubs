@@ -33,7 +33,10 @@ export default function (app): void {
             res,
             '/pageedit',
             await pageOptions(req, {
-              title: req.__('Edit Page') + ' - ' + local.productName,
+              title:
+                req.__('Edit Page') +
+                ' - ' +
+                process.env.NEXT_PUBLIC_PRODUCT_NAME,
               props: {
                 page_id,
                 pageConfig
@@ -64,7 +67,10 @@ export default function (app): void {
             res,
             '/configedit',
             await pageOptions(req, {
-              title: req.__('Edit Config') + ' - ' + local.productName,
+              title:
+                req.__('Edit Config') +
+                ' - ' +
+                process.env.NEXT_PUBLIC_PRODUCT_NAME,
               props: {
                 page_id: 'config',
                 pageConfig
@@ -95,7 +101,10 @@ export default function (app): void {
             res,
             '/configedit',
             await pageOptions(req, {
-              title: req.__('Edit Map Config') + ' - ' + local.productName,
+              title:
+                req.__('Edit Map Config') +
+                ' - ' +
+                process.env.NEXT_PUBLIC_PRODUCT_NAME,
               props: {
                 page_id: 'map',
                 pageConfig

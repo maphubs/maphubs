@@ -70,11 +70,11 @@ const ConfigEdit = ({ pageConfig }: { pageConfig: any }): JSX.Element => {
         pageConfig: configUpdate
       })
       .end((err, res) => {
-        checkClientError(
+        checkClientError({
           res,
           err,
-          () => {},
-          (cb) => {
+
+          onSuccess: () => {
             setConfig(configUpdate)
 
             if (err) {
@@ -86,10 +86,8 @@ const ConfigEdit = ({ pageConfig }: { pageConfig: any }): JSX.Element => {
             } else {
               message.success(t('Page Saved'), 3)
             }
-
-            cb()
           }
-        )
+        })
       })
   }
 

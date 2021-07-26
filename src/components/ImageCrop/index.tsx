@@ -7,7 +7,7 @@ import ImageCropToolbar from './ImageCropToolbar'
 import EXIF from 'exif-js'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate'
-import getConfig from 'next/config'
+
 import useT from '../../hooks/useT'
 import Cropper, { ReactCropperElement } from 'react-cropper'
 import Pica from 'pica'
@@ -22,7 +22,6 @@ const Pica = dynamic(
 )
 */
 
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 const { Dragger } = Upload
 const debug = DebugService('ImageCrop')
 
@@ -487,7 +486,7 @@ const ImageCrop = ({
               <p className='ant-upload-drag-icon'>
                 <AddPhotoAlternateIcon
                   style={{
-                    color: MAPHUBS_CONFIG.primaryColor,
+                    color: process.env.NEXT_PUBLIC_PRIMARY_COLOR,
                     fontSize: 64
                   }}
                 />

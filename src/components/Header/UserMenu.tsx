@@ -1,16 +1,16 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import useT from '../../hooks/useT'
 import { Menu, Dropdown, Divider, Button } from 'antd'
 import UserIcon from '../user/UserIcon'
 import urlencode from 'urlencode'
 import { signin, signout } from 'next-auth/client'
-import getConfig from 'next/config'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const UserMenu = ({ sidenav }: { sidenav?: boolean }): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
   const loginClick = (): void => {
-    window.location.assign('/login?returnTo=' + urlencode(window.location.href))
+    router.push('/login?returnTo=' + urlencode(window.location.href))
   }
 
   // only render on the client side, avoids caching a username in SSR
@@ -86,7 +86,7 @@ const UserMenu = ({ sidenav }: { sidenav?: boolean }): JSX.Element => {
       </div>
     )
   } else {
-    userMenu = !MAPHUBS_CONFIG.mapHubsPro ? (
+    userMenu = !process.env.NEXT_PUBLIC_MAPHUBS_PRO ? (
       <div className='login-with-signup'>
         <a
           className='login-with-signup-link'

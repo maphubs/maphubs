@@ -245,19 +245,21 @@ export default class DataEditorContainer extends Container<DataEditorState> {
           edits: editsToSave
         })
         .end((err, res) => {
-          checkClientError(res, err, cb, (cb) => {
-            if (err) {
-              cb(err)
-            } else {
-              // after saving clear all edit history
-              setState({
-                originals: [],
-                edits: [],
-                redo: [],
-                selectedEditFeature: undefined
-              })
-
-              cb()
+          checkClientError({
+            res,
+            err,
+            onSuccess: () => {
+              if (err) {
+                cb(err)
+              } else {
+                // after saving clear all edit history
+                setState({
+                  originals: [],
+                  edits: [],
+                  redo: [],
+                  selectedEditFeature: undefined
+                })
+              }
             }
           })
         })

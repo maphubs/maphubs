@@ -7,9 +7,6 @@ import { useSession } from 'next-auth/client'
 import { signin } from 'next-auth/client'
 import useStickyResult from '../../hooks/useStickyResult'
 
-import getConfig from 'next/config'
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
-
 type Props = {
   title?: string
   activePage?: string
@@ -42,12 +39,12 @@ const Layout = ({
 
   // redirect to login if not signed in, prevents displaying an error when data fails to load
   // for public shared maps we need to by-pass this check
-  if (!session?.user && !publicShare && MAPHUBS_CONFIG.requireLogin) {
+  if (!session?.user && !publicShare && process.env.NEXT_PUBLIC_REQUIRE_LOGIN) {
     signin()
     return (
       <div>
         <Head>
-          <title>{`${title} - ${MAPHUBS_CONFIG.productName}`}</title>
+          <title>{`${title} - ${process.env.NEXT_PUBLIC_PRODUCT_NAME}`}</title>
         </Head>
       </div>
     )

@@ -2,7 +2,7 @@ import React from 'react'
 import { useRouter } from 'next/router'
 import Layout from '../../../src/components/Layout'
 import ErrorBoundary from '../../../src/components/ErrorBoundary'
-import getConfig from 'next/config'
+
 import useSWR from 'swr'
 import useStickyResult from '../../../src/hooks/useStickyResult'
 import useT from '../../../src/hooks/useT'
@@ -14,8 +14,6 @@ const InteractiveMap = dynamic(
     ssr: false
   }
 )
-
-const MAPHUBS_CONFIG = getConfig().publicRuntimeConfig
 
 const LayerMap = (): JSX.Element => {
   const router = useRouter()
@@ -70,13 +68,10 @@ const LayerMap = (): JSX.Element => {
             title={layer.name}
             hideInactive={false}
             showTitle={false}
-            primaryColor={MAPHUBS_CONFIG.primaryColor}
-            logoSmall={MAPHUBS_CONFIG.logoSmall}
-            logoSmallHeight={MAPHUBS_CONFIG.logoSmallHeight}
-            logoSmallWidth={MAPHUBS_CONFIG.logoSmallWidth}
-            mapboxAccessToken={MAPHUBS_CONFIG.MAPBOX_ACCESS_TOKEN}
-            DGWMSConnectID={MAPHUBS_CONFIG.DG_WMS_CONNECT_ID}
-            earthEngineClientID={MAPHUBS_CONFIG.EARTHENGINE_CLIENTID}
+            primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
+            mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+            DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+            earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
             t={t}
             locale={locale}
           />

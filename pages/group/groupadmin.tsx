@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 import Formsy from 'formsy-react'
 import {
   message,
@@ -12,7 +13,7 @@ import {
   Divider
 } from 'antd'
 import EditList from '../../src/components/EditList'
-import Header from '../../src/components/header'
+import Layout from '../../src/components/Layout'
 import MultiTextArea from '../../src/components/forms/MultiTextArea'
 import TextInput from '../../src/components/forms/textInput'
 import MultiTextInput from '../../src/components/forms/MultiTextInput'
@@ -45,6 +46,7 @@ type Props = {
 
 const GroupAdmin = (): JSX.Element => {
   const { t } = useT()
+  const router = useRouter()
   const [canSubmit, setCanSubmit] = useState(false)
   const [showImageCrop, setShowImageCrop] = useState(false)
 
@@ -75,7 +77,7 @@ const GroupAdmin = (): JSX.Element => {
           })
         } else {
           message.info(t('Group Saved'), 3, () => {
-            window.location.assign(`/group/${group_id || ''}`)
+            router.push(`/group/${group_id || ''}`)
           })
         }
       }
@@ -124,7 +126,7 @@ const GroupAdmin = (): JSX.Element => {
             })
           } else {
             message.info(t('Group Deleted'), 3, () => {
-              window.location.assign('/groups')
+              router.push('/groups')
             })
           }
         })
@@ -229,8 +231,8 @@ const GroupAdmin = (): JSX.Element => {
   const groupUrl = `/group/${groupId}`
   return (
     <ErrorBoundary t={t}>
-      <Header {...headerConfig} />
-      <main>
+      <Layout title={t(group.title)} hideFooter> 
+      <siv>
         <div className='container'>
           <Row
             style={{
@@ -239,7 +241,7 @@ const GroupAdmin = (): JSX.Element => {
           >
             <PageHeader
               onBack={() => {
-                window.location.assign(groupUrl)
+                router.push(groupUrl)
               }}
               style={{
                 padding: '5px'
@@ -482,7 +484,8 @@ const GroupAdmin = (): JSX.Element => {
           resize_height={600}
           onCrop={onCrop}
         />
-      </main>
+      </div>
+      </Layout>
     </ErrorBoundary>
   )
 }
