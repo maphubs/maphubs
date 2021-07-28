@@ -1,6 +1,5 @@
 import Layer from '../../models/layer'
 import LayerData from '../../models/layer-data'
-import csurf from 'csurf'
 import knex from '../../connection'
 import Bluebird from 'bluebird'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
@@ -12,10 +11,6 @@ import {
 import isAuthenticated from '../../services/auth-check'
 
 const debug = DebugService('routes/layer-data')
-
-const csrfProtection = csurf({
-  cookie: false
-})
 
 export default function (app: any): void {
   /**
@@ -45,57 +40,52 @@ export default function (app: any): void {
       apiError(res, 500)(err)
     }
   })
-  app.post(
-    '/api/edits/save',
-    csrfProtection,
-    isAuthenticated,
-    async (req, res) => {
-      try {
-        const data = req.body
+  app.post('/api/edits/save', isAuthenticated, async (req, res) => {
+    try {
+      const data = req.body
 
-        if (data && data.layer_id && data.edits) {
-          return (await Layer.allowedToModify(data.layer_id, req.user_id))
-            ? knex.transaction(async (trx) => {
-                await Bluebird.map(data.edits, (edit) => {
-                  switch (edit.status) {
-                    case 'create': {
-                      return LayerData.createFeature(
-                        data.layer_id,
-                        edit.geojson,
-                        trx
-                      )
-                    }
-                    case 'modify': {
-                      return LayerData.updateFeature(
-                        data.layer_id,
-                        edit.geojson.id,
-                        edit.geojson,
-                        trx
-                      )
-                    }
-                    case 'delete': {
-                      return LayerData.deleteFeature(
-                        data.layer_id,
-                        edit.geojson.id,
-                        trx
-                      )
-                    }
-                    // No default
+      if (data && data.layer_id && data.edits) {
+        return (await Layer.allowedToModify(data.layer_id, req.user_id))
+          ? knex.transaction(async (trx) => {
+              await Bluebird.map(data.edits, (edit) => {
+                switch (edit.status) {
+                  case 'create': {
+                    return LayerData.createFeature(
+                      data.layer_id,
+                      edit.geojson,
+                      trx
+                    )
                   }
-                })
-                await Layer.setUpdated(data.layer_id, req.user_id, trx)
-                debug.log('save edits complete')
-                return res.status(200).send({
-                  success: true
-                })
+                  case 'modify': {
+                    return LayerData.updateFeature(
+                      data.layer_id,
+                      edit.geojson.id,
+                      edit.geojson,
+                      trx
+                    )
+                  }
+                  case 'delete': {
+                    return LayerData.deleteFeature(
+                      data.layer_id,
+                      edit.geojson.id,
+                      trx
+                    )
+                  }
+                  // No default
+                }
               })
-            : notAllowedError(res, 'layer')
-        } else {
-          apiDataError(res)
-        }
-      } catch (err) {
-        apiError(res, 500)(err)
+              await Layer.setUpdated(data.layer_id, req.user_id, trx)
+              debug.log('save edits complete')
+              return res.status(200).send({
+                success: true
+              })
+            })
+          : notAllowedError(res, 'layer')
+      } else {
+        apiDataError(res)
       }
+    } catch (err) {
+      apiError(res, 500)(err)
     }
-  )
+  })
 }

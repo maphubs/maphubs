@@ -36,7 +36,7 @@ const GroupList = ({ showTitle, groups }: Props): JSX.Element => {
                   alt={t(group.name)}
                   shape='square'
                   size={64}
-                  src={`/group/${group.group_id}/image.png`}
+                  src={`/api/group/${group.group_id}/image.png`}
                 />
               </a>
             }

@@ -1,15 +1,9 @@
 import Page from '../models/page'
-
 import { nextError } from './error-response'
-import csurf from 'csurf'
 
 import renderCMSPage from './render-cms-page'
 
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
-
-const csrfProtection = csurf({
-  cookie: false
-})
 
 export default async function (app: any): Promise<any> {
   const pageConfigs = await Page.getPageConfigs(['config'])
@@ -23,7 +17,7 @@ export default async function (app: any): Promise<any> {
     return Promise.all(
       pageConfigs.config.map(async (page) => {
         log.info(`creating: ${page.path}`)
-        app.get(page.path, csrfProtection, async (req, res, next) => {
+        app.get(page.path, async (req, res, next) => {
           let pageConfig = page
 
           if (page.config) {

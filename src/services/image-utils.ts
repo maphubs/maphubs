@@ -5,20 +5,16 @@ import Bluebird from 'bluebird'
 import fsNode from 'fs'
 const fs = Bluebird.promisifyAll(fsNode)
 
-import local from '../local'
-
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
-
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-
 import easyimg from 'easyimage'
-
 import Crypto from 'crypto'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 const debug = DebugService('image-utils')
 
 export default {
-  processImage(image: string, req: any, res: any): void {
+  processImage(image: string, req: NextApiRequest, res: NextApiResponse): void {
     if (!image) {
       res.writeHead(200, {
         'Content-Type': 'image/png',
@@ -36,11 +32,11 @@ export default {
 
     const hash = Crypto.createHash('md5').update(img).digest('hex')
 
-    const match = req.get('If-None-Match')
+    const match = req.headers['If-None-Match']
 
     /* eslint-disable security/detect-possible-timing-attacks */
     if (hash === match) {
-      res.status(304).send()
+      res.status(304).send('')
     } else {
       res.writeHead(200, {
         'Content-Type': dataType,

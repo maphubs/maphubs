@@ -8,7 +8,7 @@ import express from 'express'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import DataLoadUtils from '../../services/data-load-utils'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import local from '../../local'
+
 import {
   apiError,
   apiDataError,
@@ -17,11 +17,6 @@ import {
 import Importers from '@bit/kriscarle.maphubs-utils.maphubs-utils.importers'
 import isAuthenticated from '../../services/auth-check'
 import layerViews from '../../services/layer-views'
-import csurf from 'csurf'
-
-const csrfProtection = csurf({
-  cookie: false
-})
 
 const debug = DebugService('routes/layers-upload')
 
@@ -143,7 +138,7 @@ export default function (app: any): void {
   })
   app.post(
     '/api/layer/create/savedata/:id',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {

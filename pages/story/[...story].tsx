@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { GetServerSideProps } from 'next'
 import { getSession } from 'next-auth/client'
@@ -12,9 +12,11 @@ import ShareButtons from '../../src/components/ShareButtons'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import FloatingButton from '../../src/components/FloatingButton'
 import Edit from '@material-ui/icons/Edit'
+import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 
 import { Story } from '../../src/types/story'
 import useT from '../../src/hooks/useT'
+import { NextSeo } from 'next-seo'
 
 //SSR only
 import StoryModel from '../../src/models/story'
@@ -26,7 +28,7 @@ type Props = {
 
 // use SSR for stories for SEO
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const story_id = Number.parseInt(context.params.story[0])
+  const story_id = Number.parseInt(context.params.story[1])
   const story = await StoryModel.getStoryById(story_id)
   const session = await getSession(context)
   let allowedToModifyStory
@@ -53,8 +55,7 @@ const StoryPage = ({ story, allowedToModifyStory }: Props): JSX.Element => {
   const router = useRouter()
   const { t } = useT()
 
-  // FIXME: Embeddly support
-  /*
+  useEffect(() => {
     for (const element of document.querySelectorAll('oembed[url]')) {
       // Create the <a href="..." class="embedly-card"></a> element that Embedly uses
       // to discover the media.
@@ -63,7 +64,7 @@ const StoryPage = ({ story, allowedToModifyStory }: Props): JSX.Element => {
       anchor.className = 'embedly-card'
       element.append(anchor)
     }
-    */
+  }, [])
 
   let shareAndDiscuss = <></>
 
@@ -94,6 +95,15 @@ const StoryPage = ({ story, allowedToModifyStory }: Props): JSX.Element => {
     )
   }
 
+  const baseUrl = urlUtil.getBaseUrl()
+  const canonical = `${baseUrl}/story/${t(story.title)}/${t(story.story_id)}`
+
+  let imageUrl = ''
+
+  if (story.firstimage) {
+    imageUrl = urlUtil.getBaseUrl() + story.firstimage
+  }
+
   /* eslint-disable react/no-danger */
   return (
     <>
@@ -104,6 +114,28 @@ const StoryPage = ({ story, allowedToModifyStory }: Props): JSX.Element => {
           src='//cdn.embedly.com/widgets/platform.js'
         />
       </Head>
+      <NextSeo
+        title={t(story.title)}
+        description={story.summary ? t(story.summary) : t(story.title)}
+        canonical={canonical}
+        openGraph={{
+          url: canonical,
+          title: t(story.title),
+          description: story.summary ? t(story.summary) : t(story.title),
+          images: [
+            {
+              url: imageUrl,
+              alt: t(story.title)
+            }
+          ],
+          site_name: process.env.NEXT_PUBLIC_PRODUCT_NAME
+        }}
+        twitter={{
+          handle: process.env.NEXT_PUBLIC_TWITTER,
+          site: process.env.NEXT_PUBLIC_TWITTER,
+          cardType: 'summary'
+        }}
+      />
       <ErrorBoundary t={t}>
         <Layout title={t('')}>
           <div className='container'>

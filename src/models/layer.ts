@@ -740,7 +740,7 @@ export default {
     user_id: number,
     trx?: Knex.Transaction
   ): Promise<boolean> {
-    if (!layer_id || user_id <= 0) {
+    if (!layer_id || !user_id) {
       return false
     }
 

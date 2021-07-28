@@ -2,7 +2,6 @@ import exportUtils from '../../services/export-utils'
 import Layer from '../../models/layer'
 import { apiError } from '../../services/error-response'
 import { manetCheck } from '../../services/manet-check'
-import local from '../../local'
 
 export default (app: any) => {
   app.get('/api/lyr/:shortid/export/json/*', async (req, res) => {

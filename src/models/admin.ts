@@ -133,7 +133,7 @@ export default {
       used: true
     })
 
-    return results && Array.isArray(results) && results.length >= 1
+    return results && Array.isArray(results) && results.length > 0
       ? true
       : false
   },
@@ -209,8 +209,9 @@ export default {
   ): Promise<void> {
     const admins = await this.getAdmins()
     admins.push({
-      email: process.env.adminEmail
+      email: process.env.ADMIN_EMAIL
     })
+    // eslint-disable-next-line unicorn/no-array-for-each
     admins.forEach(async (admin) => {
       const text =
         'New user signup for ' +

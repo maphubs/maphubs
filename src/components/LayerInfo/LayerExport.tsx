@@ -9,7 +9,7 @@ type State = {
   aggFields?: Array<string>
 }
 const LayerExport = ({ layer }: { layer: Layer }): JSX.Element => {
-  const { t } = useT()
+  const { t, locale } = useT()
   const [aggFields, setAggFields] = useState<string[]>()
 
   const name = slugify(t(layer.name))
@@ -17,7 +17,7 @@ const LayerExport = ({ layer }: { layer: Layer }): JSX.Element => {
   const maphubsFileURL = `/api/layer/${layerId}/export/maphubs/${name}.maphubs`
   const geoJSONURL = `/api/layer/${layerId}/export/json/${name}.geojson`
   const shpURL = `/api/layer/${layerId}/export/shp/${name}.zip`
-  const kmlURL = `/api/layer/${layerId}/export/kml/${name}.kml`
+  const kmlURL = `/api/layer/${layerId}/export/kml/${name}.kml?locale=${locale}`
   const csvURL = `/api/layer/${layerId}/export/csv/${name}.csv`
   const gpxURL = `/api/layer/${layerId}/export/gpx/${name}.gpx`
   const svgURL = `/api/layer/${layerId}/export/svg/${name}.svg`

@@ -82,7 +82,7 @@ export default {
               }}
             >
               <Col sm={24} md={12}>
-                <Button type='primary' href='/createremotelayer'>
+                <Button type='primary' href='/create/remotelayer'>
                   {t('Link a Remote Layer')}
                 </Button>
               </Col>

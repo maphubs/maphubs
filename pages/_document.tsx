@@ -1,28 +1,20 @@
 import React from 'react'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
-import local from '../src/local'
 
 export default class MyDocument extends Document {
   render(): JSX.Element {
-    const data = this.props.__NEXT_DATA__
-    const options = data.query
-    const props = options.props || {}
-    let iconFolder = local.theme
+    const assetHost =
+      process.env.NODE_ENV === 'production' && process.env.ASSET_CDN_PREFIX
+        ? process.env.ASSET_CDN_PREFIX
+        : ''
 
-    if (local.theme === 'maphubs-pro') {
-      iconFolder = 'maphubs'
-    }
-
-    let assetHost = ''
-
-    if (process.env.NODE_ENV === 'production' && !local.useLocalAssets) {
-      assetHost = local.ASSET_CDN_PREFIX
-    }
-
-    const themeUrl = local.themeUrl
-      ? local.themeUrl + iconFolder
+    const iconFolder = process.env.THEME || 'maphubs'
+    const themeUrl = process.env.THEME_URL
+      ? process.env.THEME_URL + iconFolder
       : `${assetHost}/assets/themes/${iconFolder}`
 
+    // TODO: fix ombed support
+    /*
     let oembedTitle = ''
     let oembedUrl = ''
 
@@ -38,19 +30,26 @@ export default class MyDocument extends Document {
       }
     }
 
-    //TODO: init Sentry
-    let email = ''
-    let user_id = ''
-    let display_name = ''
-
-    if (props.user) {
-      email = props.user.email
-      user_id = props.user.id
-      display_name = props.user.display_name
-    }
+             {options.oembed && (
+            <link
+              rel='alternate'
+              type='application/json+oembed'
+              href={`${oembedUrl}&format=json`}
+              title={oembedTitle}
+            />
+          )}
+          {options.oembed && (
+            <link
+              rel='alternate'
+              type='text/xml+oembed'
+              href={`${oembedUrl}&format=xml`}
+              title={oembedTitle}
+            />
+          )}
+    */
 
     return (
-      <Html lang={options.locale}>
+      <Html>
         <Head>
           <link
             rel='apple-touch-icon-precomposed'
@@ -147,125 +146,27 @@ export default class MyDocument extends Document {
             name='msapplication-square310x310logo'
             content={`${themeUrl}/mstile-310x310.png`}
           />
-          {options.oembed && (
-            <link
-              rel='alternate'
-              type='application/json+oembed'
-              href={`${oembedUrl}&format=json`}
-              title={oembedTitle}
-            />
-          )}
-          {options.oembed && (
-            <link
-              rel='alternate'
-              type='text/xml+oembed'
-              href={`${oembedUrl}&format=xml`}
-              title={oembedTitle}
-            />
-          )}
-          {options.twitterCard && options.twitterCard.card && (
-            <meta name='twitter:card' content={options.twitterCard.card} />
-          )}
-          {options.twitterCard && !options.twitterCard.card && (
-            <meta name='twitter:card' content='summary_large_image' />
-          )}
-          {options.twitterCard && (
-            <meta name='twitter:site' content={`@${local.twitter}`} />
-          )}
-          {options.twitterCard && (
-            <meta name='twitter:title' content={options.twitterCard.title} />
-          )}
-          {options.twitterCard && options.twitterCard.description && (
-            <meta
-              name='twitter:description'
-              content={options.twitterCard.description}
-            />
-          )}
-          {options.twitterCard && options.twitterCard.image && (
-            <meta name='twitter:image' content={options.twitterCard.image} />
-          )}
+
           {process.env.FACEBOOK_APP_ID && (
             <meta property='fb:app_id' content={process.env.FACEBOOK_APP_ID} />
           )}
-          {options.twitterCard && options.twitterCard.title && (
-            <meta property='og:title' content={options.twitterCard.title} />
-          )}
-          {options.twitterCard && options.twitterCard.description && (
-            <meta
-              property='og:description'
-              content={options.twitterCard.description}
-            />
-          )}
-          {options.twitterCard && <meta property='og:type' content='website' />}
-          {options.twitterCard && (
-            <meta
-              property='og:url'
-              content={options.baseUrl + options.reqUrl}
-            />
-          )}
-          {options.twitterCard && options.twitterCard.image && (
-            <meta property='og:image' content={options.twitterCard.image} />
-          )}
-          {options.twitterCard &&
-            options.twitterCard.image &&
-            options.twitterCard.imageType && (
-              <meta
-                property='og:image:type'
-                content={options.twitterCard.imageType}
-              />
-            )}
-          {options.twitterCard &&
-            options.twitterCard.image &&
-            !options.twitterCard.imageType && (
-              <meta property='og:image:type' content='image/png' />
-            )}
-          {options.twitterCard &&
-            options.twitterCard.image &&
-            options.twitterCard.imageWidth && (
-              <meta
-                property='og:image:width'
-                content={options.twitterCard.imageWidth}
-              />
-            )}
-          {options.twitterCard &&
-            options.twitterCard.image &&
-            options.twitterCard.imageHeight && (
-              <meta
-                property='og:image:height'
-                content={options.twitterCard.imageHeight}
-              />
-            )}
-
-          {options.talkComments && (
+          {process.env.NEXT_PUBLIC_ENABLE_COMMENTS && (
             <script
               type='text/javascript'
               src='https://talk.maphubs.com/assets/js/embed.js'
             />
           )}
-          {!options.hideFeedback && !process.env.HIDE_FEEDBACK && (
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+          {!process.env.NEXT_PUBLIC_DISABLE_FEEDBACK && (
             <script
               type='text/javascript'
               dangerouslySetInnerHTML={{
                 __html: `
               Userback = window.Userback || {};
               Userback.access_token = '4787|6504|RgiVFuqtlpoFGgSIaXOnXXCwp21uxY9nDFXK8dnA6eNxb4jfph';
-
-              Userback.email = '${email}';
-              Userback.custom_data = {
-                account_id: '${user_id}',
-                name: '${display_name}'
-              };
-              Userback.widget_settings = {
-                language: '${options.locale}',
-                autohide: true,
-                main_button_background_colour : '${process.env.NEXT_PUBLIC_PRIMARY_COLOR}', 
-                main_button_text_colour       : '#FFFFFF', 
-                send_button_background_colour : '${process.env.NEXT_PUBLIC_PRIMARY_COLOR}', 
-                send_button_text_colour       : '#FFFFFF'  
-              };
-              Userback.after_send = function() {
-                  // alert('after send');
-              };
               (function(id) {
                   var s = document.createElement('script');
                   s.async = 1;s.src = 'https://static.userback.io/widget/v1.js';
@@ -275,14 +176,8 @@ export default class MyDocument extends Document {
               }}
             />
           )}
-        </Head>
-        <body>
-          <Main />
-          <NextScript />
-
           {process.env.NODE_ENV === 'production' &&
-            process.env.GOOGLE_ANALYTICS_ID &&
-            !options.disableGoogleAnalytics && (
+            process.env.GOOGLE_ANALYTICS_ID && (
               <script
                 dangerouslySetInnerHTML={{
                   __html: `

@@ -53,6 +53,7 @@ import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import { Layer } from '../../../src/types/layer'
 import useT from '../../../src/hooks/useT'
 import { FeatureCollection } from 'geojson'
+import { NextSeo } from 'next-seo'
 
 //SSR Only
 import LayerModel from '../../../src/models/layer'
@@ -361,343 +362,381 @@ const LayerInfo = ({
     firstSource,
     'presets'
   )
+
+  const baseUrl = urlUtil.getBaseUrl()
+  const canonical = `${baseUrl}/layer/${layer.layer_id}/${slugify(
+    t(layer.name)
+  )}`
+  const imageUrl = `${baseUrl}/api/screenshot/layer/image/${layer.layer_id}.png`
+
   return (
-    <ErrorBoundary t={t}>
-      <Layout>
-        <div
-          style={{
-            height: 'calc(100% - 51px)',
-            marginTop: 0
-          }}
-        >
-          <Row
+    <>
+      <NextSeo
+        title={t(layer.name)}
+        description={t(layer.description)}
+        canonical={canonical}
+        openGraph={{
+          url: canonical,
+          title: t(layer.name),
+          description: t(layer.description),
+          images: [
+            {
+              url: imageUrl,
+              width: 1200,
+              height: 630,
+              alt: t(layer.name)
+            }
+          ],
+          site_name: process.env.NEXT_PUBLIC_PRODUCT_NAME
+        }}
+        twitter={{
+          handle: process.env.NEXT_PUBLIC_TWITTER,
+          site: process.env.NEXT_PUBLIC_TWITTER,
+          cardType: 'summary'
+        }}
+      />
+      <ErrorBoundary t={t}>
+        <Layout>
+          <div
             style={{
-              height: '100%',
-              margin: 0
+              height: 'calc(100% - 51px)',
+              marginTop: 0
             }}
           >
-            <Col
-              sm={24}
-              md={12}
+            <Row
               style={{
-                height: '100%'
+                height: '100%',
+                margin: 0
               }}
             >
-              {layer.private && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '15px',
-                    right: '10px'
-                  }}
-                >
-                  <Tooltip title={t('Private')} placement='left'>
-                    <LockIcon />
-                  </Tooltip>
-                </div>
-              )}
-
-              <style jsx global>
-                {`
-                  .ant-tabs-content {
-                    height: calc(100% - 44px);
-                  }
-                  .ant-tabs-tabpane {
-                    height: 100%;
-                  }
-
-                  .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
-                    display: none;
-                  }
-
-                  .ant-tabs-nav-container {
-                    margin-left: 5px;
-                  }
-                `}
-              </style>
-              <Tabs
-                defaultActiveKey='info'
+              <Col
+                sm={24}
+                md={12}
                 style={{
                   height: '100%'
                 }}
-                tabBarStyle={{
-                  marginBottom: 0
-                }}
-                animated={false}
               >
-                <TabPane
-                  tab={t('Info')}
-                  key='info'
-                  style={{
-                    position: 'relative'
-                  }}
-                >
-                  <Row
+                {layer.private && (
+                  <div
                     style={{
-                      height: '50%',
-                      overflowY: 'auto',
-                      overflowX: 'hidden'
+                      position: 'absolute',
+                      top: '15px',
+                      right: '10px'
                     }}
                   >
-                    <Col
-                      sm={24}
-                      md={12}
+                    <Tooltip title={t('Private')} placement='left'>
+                      <LockIcon />
+                    </Tooltip>
+                  </div>
+                )}
+
+                <style jsx global>
+                  {`
+                    .ant-tabs-content {
+                      height: calc(100% - 44px);
+                    }
+                    .ant-tabs-tabpane {
+                      height: 100%;
+                    }
+
+                    .ant-tabs > .ant-tabs-content > .ant-tabs-tabpane-inactive {
+                      display: none;
+                    }
+
+                    .ant-tabs-nav-container {
+                      margin-left: 5px;
+                    }
+                  `}
+                </style>
+                <Tabs
+                  defaultActiveKey='info'
+                  style={{
+                    height: '100%'
+                  }}
+                  tabBarStyle={{
+                    marginBottom: 0
+                  }}
+                  animated={false}
+                >
+                  <TabPane
+                    tab={t('Info')}
+                    key='info'
+                    style={{
+                      position: 'relative'
+                    }}
+                  >
+                    <Row
                       style={{
-                        height: '100%',
-                        padding: '5px',
-                        border: '1px solid #ddd',
-                        minHeight: '200px',
-                        overflowY: 'auto'
+                        height: '50%',
+                        overflowY: 'auto',
+                        overflowX: 'hidden'
                       }}
                     >
-                      <Row>
-                        <Title
-                          level={2}
-                          style={{
-                            marginTop: 0
-                          }}
-                        >
-                          {t(layer.name)}
-                        </Title>
-                      </Row>
-                      <Row>
-                        <Col span={4}>
-                          <GroupTag group={layer.owned_by_group_id} size={32} />
-                        </Col>
-                        <Col span={20}>
-                          <span
+                      <Col
+                        sm={24}
+                        md={12}
+                        style={{
+                          height: '100%',
+                          padding: '5px',
+                          border: '1px solid #ddd',
+                          minHeight: '200px',
+                          overflowY: 'auto'
+                        }}
+                      >
+                        <Row>
+                          <Title
+                            level={2}
                             style={{
-                              lineHeight: '32px'
+                              marginTop: 0
                             }}
                           >
-                            <b>{t('Group: ')}</b>
-                            {layer.owned_by_group_id}
-                          </span>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <p
+                            {t(layer.name)}
+                          </Title>
+                        </Row>
+                        <Row>
+                          <Col span={4}>
+                            <GroupTag
+                              group={layer.owned_by_group_id}
+                              size={32}
+                            />
+                          </Col>
+                          <Col span={20}>
+                            <span
+                              style={{
+                                lineHeight: '32px'
+                              }}
+                            >
+                              <b>{t('Group: ')}</b>
+                              {layer.owned_by_group_id}
+                            </span>
+                          </Col>
+                        </Row>
+                        <Row>
+                          <p
+                            style={{
+                              maxHeight: '55px',
+                              overflow: 'auto'
+                            }}
+                          >
+                            <b>{t('Data Source:')}</b> {t(layer.source)}
+                          </p>
+                        </Row>
+                        <Row>
+                          <p>
+                            <b>{t('License:')}</b> {license.label}
+                          </p>
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: license.note
+                            }}
+                          />
+                        </Row>
+                        <Row>
+                          <ExternalLink layer={layer} />
+                        </Row>
+                      </Col>
+                      <Col
+                        sm={24}
+                        md={12}
+                        style={{
+                          height: '100%',
+                          minHeight: '200px',
+                          overflow: 'auto',
+                          border: '1px solid #ddd'
+                        }}
+                      >
+                        <Card
+                          size='small'
+                          bordered={false}
+                          title={t('Description')}
                           style={{
-                            maxHeight: '55px',
-                            overflow: 'auto'
+                            width: '100%',
+                            height: '100%'
                           }}
                         >
-                          <b>{t('Data Source:')}</b> {t(layer.source)}
-                        </p>
-                      </Row>
-                      <Row>
-                        <p>
-                          <b>{t('License:')}</b> {license.label}
-                        </p>
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: license.note
-                          }}
-                        />
-                      </Row>
-                      <Row>
-                        <ExternalLink layer={layer} />
-                      </Row>
-                    </Col>
-                    <Col
-                      sm={24}
-                      md={12}
-                      style={{
-                        height: '100%',
-                        minHeight: '200px',
-                        overflow: 'auto',
-                        border: '1px solid #ddd'
-                      }}
-                    >
-                      <Card
-                        size='small'
-                        bordered={false}
-                        title={t('Description')}
-                        style={{
-                          width: '100%',
-                          height: '100%'
-                        }}
-                      >
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: descriptionWithLinks
-                          }}
-                        />
-                      </Card>
-                    </Col>
-                  </Row>
-                  <Row
-                    style={{
-                      height: 'calc(50% - 58px)'
-                    }}
-                  >
-                    <Col
-                      sm={24}
-                      md={12}
-                      style={{
-                        height: '100%',
-                        padding: '5px',
-                        border: '1px solid #ddd'
-                      }}
-                    >
-                      <p
-                        style={{
-                          fontSize: '16px'
-                        }}
-                      >
-                        <b>{t('Created:')} </b>
-                        <IntlProvider locale={locale}>
-                          <FormattedDate value={creationTime} />
-                        </IntlProvider>
-                        &nbsp;
-                        <IntlProvider locale={locale}>
-                          <FormattedTime value={creationTime} />
-                        </IntlProvider>
-                        &nbsp; (
-                        <IntlProvider locale={locale}>
-                          <FormattedRelativeTime
-                            value={daysSinceCreated}
-                            numeric='auto'
-                            unit='day'
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: descriptionWithLinks
+                            }}
                           />
-                        </IntlProvider>
-                        )
-                      </p>
-                      {updatedTime > creationTime && (
+                        </Card>
+                      </Col>
+                    </Row>
+                    <Row
+                      style={{
+                        height: 'calc(50% - 58px)'
+                      }}
+                    >
+                      <Col
+                        sm={24}
+                        md={12}
+                        style={{
+                          height: '100%',
+                          padding: '5px',
+                          border: '1px solid #ddd'
+                        }}
+                      >
                         <p
                           style={{
                             fontSize: '16px'
                           }}
                         >
-                          <b>{t('Last Update:')} </b>
+                          <b>{t('Created:')} </b>
                           <IntlProvider locale={locale}>
-                            <FormattedDate value={updatedTime} />
+                            <FormattedDate value={creationTime} />
                           </IntlProvider>
                           &nbsp;
                           <IntlProvider locale={locale}>
-                            <FormattedTime value={updatedTime} />
+                            <FormattedTime value={creationTime} />
                           </IntlProvider>
                           &nbsp; (
                           <IntlProvider locale={locale}>
                             <FormattedRelativeTime
-                              value={daysSinceUpdated}
+                              value={daysSinceCreated}
                               numeric='auto'
                               unit='day'
                             />
                           </IntlProvider>
                           )
                         </p>
-                      )}
-                    </Col>
-                    <Col
-                      sm={24}
-                      md={12}
-                      style={{
-                        height: '100%',
-                        border: '1px solid #ddd'
-                      }}
-                    >
-                      <Card
-                        size='small'
-                        bordered={false}
-                        title={t('Info')}
+                        {updatedTime > creationTime && (
+                          <p
+                            style={{
+                              fontSize: '16px'
+                            }}
+                          >
+                            <b>{t('Last Update:')} </b>
+                            <IntlProvider locale={locale}>
+                              <FormattedDate value={updatedTime} />
+                            </IntlProvider>
+                            &nbsp;
+                            <IntlProvider locale={locale}>
+                              <FormattedTime value={updatedTime} />
+                            </IntlProvider>
+                            &nbsp; (
+                            <IntlProvider locale={locale}>
+                              <FormattedRelativeTime
+                                value={daysSinceUpdated}
+                                numeric='auto'
+                                unit='day'
+                              />
+                            </IntlProvider>
+                            )
+                          </p>
+                        )}
+                      </Col>
+                      <Col
+                        sm={24}
+                        md={12}
                         style={{
-                          width: '100%',
-                          height: '100%'
+                          height: '100%',
+                          border: '1px solid #ddd'
                         }}
                       >
-                        <p>
-                          <b>{t('Feature Count:')} </b>
-                          {numeral(count).format('0,0')}
-                        </p>
-                        {area && (
+                        <Card
+                          size='small'
+                          bordered={false}
+                          title={t('Info')}
+                          style={{
+                            width: '100%',
+                            height: '100%'
+                          }}
+                        >
                           <p>
-                            <b>{t('Area')} </b>
-                            {numeral(area).format('0,0.00')} ha
+                            <b>{t('Feature Count:')} </b>
+                            {numeral(count).format('0,0')}
                           </p>
-                        )}
-                        {geoJSONState.length > 0 && (
-                          <p>
-                            <b>{t('Length')} </b>
-                            {numeral(geoJSONState.length).format('0,0.00')} km
-                          </p>
-                        )}
-                      </Card>
-                    </Col>
-                  </Row>
-                  <Stats stats={layerStats?.stats} />
-                </TabPane>
-                <TabPane tab={t('Notes')} key='notes'>
-                  <LayerNotes
-                    canEdit={allowedToModifyLayer}
-                    initialNotes={layerNotes?.notes}
-                    layer_id={layer.layer_id}
-                  />
-                </TabPane>
-                {process.env.NEXT_PUBLIC_ENABLE_COMMENTS && (
-                  <TabPane tab={t('Discuss')} key='discuss'>
-                    <ErrorBoundary t={t}>
-                      <Comments />
-                    </ErrorBoundary>
+                          {area && (
+                            <p>
+                              <b>{t('Area')} </b>
+                              {numeral(area).format('0,0.00')} ha
+                            </p>
+                          )}
+                          {geoJSONState.length > 0 && (
+                            <p>
+                              <b>{t('Length')} </b>
+                              {numeral(geoJSONState.length).format('0,0.00')} km
+                            </p>
+                          )}
+                        </Card>
+                      </Col>
+                    </Row>
+                    <Stats stats={layerStats?.stats} />
                   </TabPane>
-                )}
-                <TabPane tab={t('Data')} key='data'>
-                  <Row
-                    style={{
-                      height: '100%'
-                    }}
-                  >
-                    {geoJSON && (
-                      <DataGrid
-                        layer={layer}
-                        geoJSON={geoJSON}
-                        presets={presets}
-                        canEdit={allowedToModifyLayer}
-                        t={t}
-                      />
-                    )}
-                    {!geoJSON && <Result title={dataMsg} />}
-                  </Row>
-                </TabPane>
-                <TabPane tab={t('Download')} key='export'>
-                  <LayerExport layer={layer} />
-                </TabPane>
-              </Tabs>
-            </Col>
-            <Col
-              sm={24}
-              md={12}
-              className='hide-on-small-only'
-              style={{
-                height: '100%'
-              }}
-            >
-              <InteractiveMap
-                height='100vh - 50px'
-                fitBounds={layer.preview_position.bbox}
-                style={glStyle}
-                layers={[layer]}
-                map_id={layer.layer_id}
-                mapConfig={mapConfig}
-                title={layer.name}
-                showTitle={false}
-                hideInactive={false}
-                disableScrollZoom={false}
-                primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
-                mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-                DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
-                earthEngineClientID={
-                  process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
-                }
-                t={t}
-                locale={locale}
-              />
-            </Col>
-          </Row>
-          {editButton}
-        </div>
-      </Layout>
-    </ErrorBoundary>
+                  <TabPane tab={t('Notes')} key='notes'>
+                    <LayerNotes
+                      canEdit={allowedToModifyLayer}
+                      initialNotes={layerNotes?.notes}
+                      layer_id={layer.layer_id}
+                    />
+                  </TabPane>
+                  {process.env.NEXT_PUBLIC_ENABLE_COMMENTS && (
+                    <TabPane tab={t('Discuss')} key='discuss'>
+                      <ErrorBoundary t={t}>
+                        <Comments />
+                      </ErrorBoundary>
+                    </TabPane>
+                  )}
+                  <TabPane tab={t('Data')} key='data'>
+                    <Row
+                      style={{
+                        height: '100%'
+                      }}
+                    >
+                      {geoJSON && (
+                        <DataGrid
+                          layer={layer}
+                          geoJSON={geoJSON}
+                          presets={presets}
+                          canEdit={allowedToModifyLayer}
+                          t={t}
+                        />
+                      )}
+                      {!geoJSON && <Result title={dataMsg} />}
+                    </Row>
+                  </TabPane>
+                  <TabPane tab={t('Download')} key='export'>
+                    <LayerExport layer={layer} />
+                  </TabPane>
+                </Tabs>
+              </Col>
+              <Col
+                sm={24}
+                md={12}
+                className='hide-on-small-only'
+                style={{
+                  height: '100%'
+                }}
+              >
+                <InteractiveMap
+                  height='100vh - 50px'
+                  fitBounds={layer.preview_position.bbox}
+                  style={glStyle}
+                  layers={[layer]}
+                  map_id={layer.layer_id}
+                  mapConfig={mapConfig}
+                  title={layer.name}
+                  showTitle={false}
+                  hideInactive={false}
+                  disableScrollZoom={false}
+                  primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
+                  mapboxAccessToken={
+                    process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+                  }
+                  DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+                  earthEngineClientID={
+                    process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
+                  }
+                  t={t}
+                  locale={locale}
+                />
+              </Col>
+            </Row>
+            {editButton}
+          </div>
+        </Layout>
+      </ErrorBoundary>
+    </>
   )
 }
 export default LayerInfo

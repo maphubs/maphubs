@@ -5,18 +5,12 @@ import Group from '../../models/group'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import MapUtils from '../../services/map-utils'
 import { nextError, apiDataError } from '../../services/error-response'
-import csurf from 'csurf'
 import pageOptions from '../../services/page-options-helper'
-import local from '../../local'
-
-const csrfProtection = csurf({
-  cookie: false
-})
 
 const debug = DebugService('routes/map')
 
 export default function (app: any) {
-  app.get('/map/new', csrfProtection, async (req, res, next) => {
+  app.get('/map/new', async (req, res, next) => {
     try {
       if (
         !req.isAuthenticated ||
@@ -80,7 +74,7 @@ export default function (app: any) {
     }
   })
 
-  app.get('/map/view/:map_id/*', csrfProtection, (req, res, next) => {
+  app.get('/map/view/:map_id/*', (req, res, next) => {
     const map_id = req.params.map_id
 
     if (!map_id) {
@@ -118,7 +112,7 @@ export default function (app: any) {
     }
   })
 
-  app.get('/map/edit/:map_id', csrfProtection, async (req, res, next) => {
+  app.get('/map/edit/:map_id', async (req, res, next) => {
     try {
       const map_id = req.params.map_id
 

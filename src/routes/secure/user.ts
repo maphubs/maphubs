@@ -1,15 +1,9 @@
 import User from '../../models/user'
 import { apiError, apiDataError } from '../../services/error-response'
-import csurf from 'csurf'
 import pageOptions from '../../services/page-options-helper'
-import local from '../../local'
-
-const csrfProtection = csurf({
-  cookie: false
-})
 
 export default function (app: any): void {
-  app.get('/user/profile', csrfProtection, async (req, res) => {
+  app.get('/user/profile', async (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       return res.redirect('/login')
     }

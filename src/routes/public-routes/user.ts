@@ -5,15 +5,11 @@ import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import { apiError, nextError } from '../../services/error-response'
 import Auth0Helper from '../../services/auth0-helper'
 import local from '../../local'
-import csurf from 'csurf'
 import pageOptions from '../../services/page-options-helper'
-const csrfProtection = csurf({
-  cookie: false
-})
 
 export default function (app: any): void {
   // can be used to dynamically check for login status, so should be public
-  app.all('/api/user/details/json', csrfProtection, async (req, res) => {
+  app.all('/api/user/details/json', async (req, res) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       res.status(200).send({
         user: null

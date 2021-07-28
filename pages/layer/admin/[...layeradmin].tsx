@@ -221,7 +221,7 @@ const LayerAdmin = ({
   }
   const refreshRemoteLayer = (): void => {
     request
-      .post('/api/layer/refresh/remote')
+      .post('/api/layer/remote/refresh')
       .type('json')
       .accept('json')
       .send({

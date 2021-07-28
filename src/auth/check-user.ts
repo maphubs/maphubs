@@ -11,7 +11,7 @@ const isMember = async (user: {
 }): Promise<string | void> => {
   let sub: number
 
-  if (user.sub && typeof user.sub === 'string') {
+  if (user?.sub && typeof user.sub === 'string') {
     sub = Number.parseInt(user.sub)
   }
 

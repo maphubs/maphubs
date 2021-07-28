@@ -14,22 +14,22 @@ const AddDropdown = ({ t, sidenav }: Props): JSX.Element => {
         </a>
       </Menu.Item>
       <Menu.Item>
-        <a href='/createlayer' className='nav-hover-menu-item'>
+        <a href='/create/layer' className='nav-hover-menu-item'>
           {t('New Layer')}
         </a>
       </Menu.Item>
       <Menu.Item>
-        <a href='/creategroup' className='nav-hover-menu-item'>
+        <a href='/create/group' className='nav-hover-menu-item'>
           {t('New Group')}
         </a>
       </Menu.Item>
       <Menu.Item>
-        <a href='/createstory' className='nav-hover-menu-item'>
+        <a href='/create/story' className='nav-hover-menu-item'>
           {t('New Story')}
         </a>
       </Menu.Item>
       <Menu.Item>
-        <a href='/createremotelayer' className='nav-hover-menu-item'>
+        <a href='/create/remotelayer' className='nav-hover-menu-item'>
           {t('Remote Layer')}
         </a>
       </Menu.Item>

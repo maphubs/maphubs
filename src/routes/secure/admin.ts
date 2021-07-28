@@ -1,5 +1,4 @@
 import Admin from '../../models/admin'
-import csurf from 'csurf'
 import {
   apiError,
   nextError,
@@ -7,15 +6,10 @@ import {
 } from '../../services/error-response'
 import knex from '../../connection'
 import pageOptions from '../../services/page-options-helper'
-import local from '../../local'
-
-const csrfProtection = csurf({
-  cookie: false
-})
 
 // var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log');
 export default function (app: any) {
-  app.get('/admin/manage', csrfProtection, async (req, res, next) => {
+  app.get('/admin/manage', async (req, res, next) => {
     try {
       if (!req.isAuthenticated || !req.isAuthenticated()) {
         return res.redirect('/login')
@@ -41,7 +35,7 @@ export default function (app: any) {
       nextError(next)(err)
     }
   })
-  app.post('/admin/invite/send', csrfProtection, async (req, res) => {
+  app.post('/admin/invite/send', async (req, res) => {
     try {
       const data = req.body
 
@@ -67,7 +61,7 @@ export default function (app: any) {
       apiError(res, 200)(err)
     }
   })
-  app.post('/admin/invite/resend', csrfProtection, async (req, res) => {
+  app.post('/admin/invite/resend', async (req, res) => {
     try {
       const data = req.body
 
@@ -93,7 +87,7 @@ export default function (app: any) {
       apiError(res, 200)(err)
     }
   })
-  app.post('/admin/invite/deauthorize', csrfProtection, async (req, res) => {
+  app.post('/admin/invite/deauthorize', async (req, res) => {
     try {
       const data = req.body
 

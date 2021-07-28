@@ -1,12 +1,15 @@
 import React from 'react'
+import { useSession } from 'next-auth/client'
 import { Menu, Dropdown, message } from 'antd'
 import HelpOutline from '@material-ui/icons/HelpOutline'
+import useT from '../../hooks/useT'
 type Props = {
-  t: any
   sidenav?: boolean
   customHelpLink?: string
 }
-const HelpDropdown = ({ t, sidenav, customHelpLink }: Props): JSX.Element => {
+const HelpDropdown = ({ sidenav, customHelpLink }: Props): JSX.Element => {
+  const { t } = useT()
+  const [session] = useSession()
   const menu = (
     <Menu>
       <Menu.Item>
@@ -25,6 +28,9 @@ const HelpDropdown = ({ t, sidenav, customHelpLink }: Props): JSX.Element => {
             const UserbackInstance = Userback
 
             if (UserbackInstance) {
+              if (session?.user?.email)
+                UserbackInstance.email = session.user.email
+              if (session?.user?.name) UserbackInstance.name = session.user.name
               UserbackInstance.open()
             } else {
               message.info(

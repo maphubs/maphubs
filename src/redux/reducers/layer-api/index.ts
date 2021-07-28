@@ -1,4 +1,3 @@
-import { deleteData } from './deleteData'
 import { deleteLayer } from './deleteLayer'
 import { initEmptyLayer } from './initEmptyLayer'
 import { loadData } from './loadData'
@@ -12,7 +11,6 @@ import { setComplete } from './setComplete'
 import { submitPresets } from './submitPresets'
 
 export default {
-  deleteData,
   deleteLayer,
   initEmptyLayer,
   loadData,

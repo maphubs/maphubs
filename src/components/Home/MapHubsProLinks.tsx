@@ -107,7 +107,7 @@ const MapHubsProLinks = (): JSX.Element => {
           }}
         >
           <a
-            href='/createstory'
+            href='/create/story'
             style={{
               margin: 'auto'
             }}

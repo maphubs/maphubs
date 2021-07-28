@@ -130,7 +130,7 @@ const CreateRemoteLayer = (): JSX.Element => {
     if (layer) {
       const name = layer.name || {}
       request
-        .post('/api/layer/create/remote')
+        .post('/api/layer/remote/create')
         .type('json')
         .accept('json')
         .send({

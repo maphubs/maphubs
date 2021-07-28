@@ -7,13 +7,8 @@ import Account from '../../models/account'
 import Email from '@bit/kriscarle.maphubs-utils.maphubs-utils.email-util'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import { apiError, apiDataError } from '../../services/error-response'
-import local from '../../local'
-import csurf from 'csurf'
 import isAuthenticated from '../../services/auth-check'
 
-const csrfProtection = csurf({
-  cookie: false
-})
 const debug = DebugService('routes/groups')
 
 export default function (app: any): void {
@@ -68,7 +63,7 @@ export default function (app: any): void {
   })
   app.post(
     '/api/group/create',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {
@@ -102,7 +97,7 @@ export default function (app: any): void {
   )
   app.post(
     '/api/group/account/status',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {
@@ -124,7 +119,7 @@ export default function (app: any): void {
   )
   app.post(
     '/api/group/save',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {
@@ -161,7 +156,7 @@ export default function (app: any): void {
   )
   app.post(
     '/api/group/delete',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {
@@ -202,7 +197,7 @@ export default function (app: any): void {
   )
   app.post(
     '/api/group/setphoto',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {
@@ -227,7 +222,7 @@ export default function (app: any): void {
   )
   app.post(
     '/api/group/:id/members',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {
@@ -246,7 +241,7 @@ export default function (app: any): void {
   )
   app.post(
     '/api/group/addmember',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {
@@ -333,7 +328,7 @@ export default function (app: any): void {
   )
   app.post(
     '/api/group/updatememberrole',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {
@@ -363,7 +358,7 @@ export default function (app: any): void {
   )
   app.post(
     '/api/group/removemember',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {

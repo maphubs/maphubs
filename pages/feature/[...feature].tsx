@@ -25,7 +25,7 @@ import { getLayer } from '../../src/components/Feature/Map/layer-feature'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import useSWR from 'swr'
 import useStickyResult from '../../src/hooks/useStickyResult'
-import { FeatureInfo } from '../../src/types/feature'
+import { Feature, FeatureInfo } from '../../src/types/feature'
 
 // SSR Only
 import LayerModel from '../../src/models/layer'
@@ -34,6 +34,7 @@ import PhotoAttachmentModel from '../../src/models/photo-attachment'
 import PageModel from '../../src/models/page'
 
 import dynamic from 'next/dynamic'
+import { Layer } from '../../src/types/layer'
 const InteractiveMap = dynamic(
   () => import('../../src/components/Map/InteractiveMap'),
   {
@@ -42,6 +43,14 @@ const InteractiveMap = dynamic(
 )
 
 const TabPane = Tabs.TabPane
+
+type Props = {
+  feature: Feature
+  notes: string
+  photo: Record<string, any>
+  layer: Layer
+  canEdit: boolean
+}
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const [layerIdStr, mhid] = context.params.feature as string[]
@@ -80,11 +89,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     if (geoJSON.features.length > 0 && geoJSON.features[0].properties) {
       const geoJSONProps = geoJSON.features[0].properties
-
+      //get the feature name
       if (geoJSONProps.name) {
         featureName = geoJSONProps.name
       }
-
+      // add id to props to support the map popups
       geoJSONProps.layer_id = layer.layer_id
       geoJSONProps.mhid = mhid
     }
@@ -109,7 +118,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 }
 
-const FeaturePage = (): JSX.Element => {
+const FeaturePage = ({
+  feature,
+  notes,
+  photo,
+  layer,
+  canEdit
+}: Props): JSX.Element => {
   const router = useRouter()
   const [session] = useSession()
   const { t, locale } = useT()
@@ -118,32 +133,6 @@ const FeaturePage = (): JSX.Element => {
   const [frActive, setFrActive] = useState(false)
 
   const [layer_id, mhid] = router.query.feature as string[]
-
-  const { data } = useSWR(`
-  {
-    featureInfo(layer_id: "${layer_id}", mhid: "${mhid}") {
-      feature:  {
-        name
-        type
-        features
-        layer_id
-        bbox
-        mhid
-      }
-      notes
-      photo
-      layer
-      canEdit
-    }
-    mapConfig
-  }
-  `)
-  const stickyData: {
-    featureInfo: FeatureInfo
-    mapConfig: Record<string, unknown>
-  } = useStickyResult(data) || { featureInfo: {} }
-  const { featureInfo, mapConfig } = stickyData
-  const { feature, notes, photo, layer, canEdit } = featureInfo
 
   const maplayer = getLayer(layer, feature)
 

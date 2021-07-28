@@ -43,7 +43,7 @@ const StoryHeader = ({ story }: { story: Story }): JSX.Element => {
               <Avatar
                 alt={story.owned_by_group_id}
                 size={36}
-                src={`/img/resize/64?quality=80&progressive=true&url=/group/${story.owned_by_group_id}/thumbnail`}
+                src={`/api/group/${story.owned_by_group_id}/thumbnail`}
                 onError={() => {
                   console.error('Group Logo Failed')
                   setGroupLogoFailed(true)

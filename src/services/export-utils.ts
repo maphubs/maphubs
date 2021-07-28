@@ -6,40 +6,46 @@ import { apiError } from '../services/error-response'
 import moment from 'moment'
 import Bluebird from 'bluebird'
 import Crypto from 'crypto'
-
-const version = require('../../version.json').version
+import { version } from '../../version.json'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 export default {
-  completeGeoBufExport(req: any, res: any, layer_id: number) {
-    Layer.getGeoJSON(layer_id)
-      .then((geoJSON) => {
-        const resultStr = JSON.stringify(geoJSON)
+  async completeGeoBufExport(
+    req: NextApiRequest,
+    res: NextApiResponse,
+    layer_id: number
+  ): Promise<void> {
+    try {
+      const geoJSON = await Layer.getGeoJSON(layer_id)
 
-        const hash = Crypto.createHash('md5').update(resultStr).digest('hex')
+      const resultStr = JSON.stringify(geoJSON)
 
-        const match = req.get('If-None-Match')
+      const hash = Crypto.createHash('md5').update(resultStr).digest('hex')
 
-        /* eslint-disable security/detect-possible-timing-attacks */
-        if (hash === match) {
-          return res.status(304).send()
-        } else {
-          res.writeHead(200, {
-            'Content-Type': 'application/octet-stream',
-            ETag: hash
-          })
-          const data = geobuf.encode(geoJSON, new Pbf())
-          const buf = Buffer.from(data, 'binary')
-          return res.end(buf, 'binary')
-        }
-      })
-      .catch(apiError(res, 200))
+      const match = req.headers['If-None-Match']
+
+      /* eslint-disable security/detect-possible-timing-attacks */
+      if (hash === match) {
+        return res.status(304).send('')
+      } else {
+        res.writeHead(200, {
+          'Content-Type': 'application/octet-stream',
+          ETag: hash
+        })
+        const data = geobuf.encode(geoJSON, new Pbf())
+        const buf = Buffer.from(data, 'binary')
+        return res.end(buf, 'binary')
+      }
+    } catch (err) {
+      apiError(res, 200)(err)
+    }
   },
 
   async completeMapHubsExport(
-    req: any,
-    res: any,
+    req: NextApiRequest,
+    res: NextApiResponse,
     layer_id: number
-  ): Promise<any> {
+  ): Promise<void> {
     try {
       const layer = await Layer.getLayerByID(layer_id)
       let geoJSON = {
@@ -64,11 +70,11 @@ export default {
 
       const hash = Crypto.createHash('md5').update(resultStr).digest('hex')
 
-      const match = req.get('If-None-Match')
+      const match = req.headers['If-None-Match']
 
       /* eslint-disable security/detect-possible-timing-attacks */
       if (hash === match) {
-        return res.status(304).send()
+        return res.status(304).send('')
       } else {
         res.writeHead(200, {
           'Content-Type': 'application/octet-stream',
@@ -84,13 +90,13 @@ export default {
   },
 
   async completeMapHubsMapExport(
-    req: any,
-    res: any,
+    req: NextApiRequest,
+    res: NextApiResponse,
     map_id: number
-  ): Promise<any> {
+  ): Promise<void> {
     try {
       const map = await Map.getMap(map_id)
-      const mapLayers = await Map.getMapLayers(map_id, true)
+      const mapLayers = await Map.getMapLayers(map_id)
 
       if (map && mapLayers) {
         const geoJSON = {
@@ -130,11 +136,11 @@ export default {
 
         const hash = Crypto.createHash('md5').update(resultStr).digest('hex')
 
-        const match = req.get('If-None-Match')
+        const match = req.headers['If-None-Match']
 
         /* eslint-disable security/detect-possible-timing-attacks */
         if (hash === match) {
-          return res.status(304).send()
+          return res.status(304).send('')
         } else {
           res.writeHead(200, {
             'Content-Type': 'application/octet-stream',

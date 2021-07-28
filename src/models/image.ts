@@ -39,8 +39,6 @@ export default {
   async getGroupImage(group_id: string): Promise<any> {
     debug.log('get image for group: ' + group_id)
 
-    const _this = this
-
     const result = await knex('omh.group_images')
       .select('image_id')
       .whereRaw('lower(group_id) = ?', group_id.toLowerCase())
@@ -48,9 +46,7 @@ export default {
     if (result.length === 1) {
       const id = result[0].image_id
       debug.log('image found: ' + id)
-      return _this.getImageByID(Number.parseInt(id, 10))
-    } else {
-      // throw new Error('No Image Found for Group: '+ group_id);
+      return this.getImageByID(Number.parseInt(id, 10))
     }
 
     return null
@@ -95,8 +91,6 @@ export default {
   },
 
   async setGroupImage(group_id: string, image: any, info: any): Promise<any> {
-    const _this = this
-
     return knex.transaction(async (trx) => {
       const result = await trx('omh.group_images')
         .select('image_id')
@@ -116,7 +110,7 @@ export default {
           .del()
       }
 
-      return _this.insertGroupImage(group_id, image, info, trx)
+      return this.insertGroupImage(group_id, image, info, trx)
     })
   },
 
@@ -138,59 +132,12 @@ export default {
     }
   },
 
-  async getStoryThumbnail(story_id: number, image_id: number): Promise<any> {
-    debug.log('get image for story: ' + story_id)
-    const result = await knex('omh.story_images').select('image_id').where({
-      story_id,
-      image_id
-    })
-
-    if (result.length === 1) {
-      debug.log('image found: ' + image_id)
-      return this.getThumbnailImageByID(image_id)
-    } else {
-      throw new Error('No Image Found for Story: ' + story_id)
-    }
-  },
-
-  async addStoryImage(story_id: number, image: any, info: any): Promise<any> {
-    return knex.transaction(async (trx) => {
-      const thumbnail = await ImageUtils.resizeBase64(image, 800, 240, true)
-      const image_id: string = await trx('omh.images')
-        .insert({
-          image,
-          thumbnail,
-          info
-        })
-        .returning('image_id')
-      await trx('omh.story_images').insert({
-        story_id,
-        image_id: Number.parseInt(image_id, 10)
-      })
-      return image_id
-    })
-  },
-
-  async removeStoryImage(story_id: number, image_id: number): Promise<any> {
-    return knex.transaction(async (trx) => {
-      await trx('omh.story_images')
-        .where({
-          story_id,
-          image_id
-        })
-        .del()
-      return trx('omh.images')
-        .where({
-          image_id
-        })
-        .del()
-    })
-  },
-
+  // keep to support deleting legacy stories
   async removeAllStoryImages(story_id: number, trx: any): Promise<any> {
     const results = await trx('omh.story_images').select('image_id').where({
       story_id
     })
+    // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
     return Bluebird.map(results, async (result) => {
       await trx('omh.story_images')
         .where({

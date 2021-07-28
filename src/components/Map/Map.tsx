@@ -330,7 +330,6 @@ class Map extends React.Component<Props, State> {
       attributionControl: false,
       transformRequest: (url: string, resourceType) => {
         if (map.authUrlStartsWith && url.startsWith(map.authUrlStartsWith)) {
-          // TODO: //add CSRF support for vector tiles
           return {
             url: url,
             headers: {

@@ -7,18 +7,13 @@ import {
   apiDataError,
   notAllowedError
 } from '../../services/error-response'
-import csurf from 'csurf'
 import isAuthenticated from '../../services/auth-check'
 import knex from '../../connection'
-
-const csrfProtection = csurf({
-  cookie: false
-})
 
 export default function (app: any): void {
   app.post(
     '/api/map/create',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {
@@ -68,59 +63,28 @@ export default function (app: any): void {
   )
   app.post(
     '/api/map/copy',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {
         const data = req.body
 
-        if (data && data.map_id) {
-          if (await Map.isPrivate(data.map_id)) {
-            if (await Map.allowedToModify(data.map_id, req.user_id)) {
-              if (data.group_id) {
-                // copy to a group
-                if (await Group.allowedToModify(data.group_id, req.user_id)) {
-                  const map_id = await Map.copyMapToGroup(
-                    data.map_id,
-                    data.group_id,
-                    req.user_id,
-                    data.title
-                  )
-                  // don't wait for screenshot
-                  ScreenshotUtil.reloadMapThumbnail(map_id)
-                  ScreenshotUtil.reloadMapImage(map_id)
-                  return res.status(200).send({
-                    success: true,
-                    map_id
-                  })
-                } else {
-                  return notAllowedError(res, 'group')
-                }
-              }
-            } else {
-              return notAllowedError(res, 'map')
-            }
-          } else {
-            if (data.group_id) {
-              // copy to a group
-              if (await Group.allowedToModify(data.group_id, req.user_id)) {
-                const map_id = await Map.copyMapToGroup(
-                  data.map_id,
-                  data.group_id,
-                  req.user_id,
-                  data.title
-                )
-                // don't wait for screenshot
-                ScreenshotUtil.reloadMapThumbnail(map_id)
-                ScreenshotUtil.reloadMapImage(map_id)
-                return res.status(200).send({
-                  success: true,
-                  map_id
-                })
-              } else {
-                return notAllowedError(res, 'group')
-              }
-            }
+        if (data && data.map_id && data.group_id) {
+          // copy to a group
+          if (await Group.allowedToModify(data.group_id, req.user_id)) {
+            const map_id = await Map.copyMapToGroup(
+              data.map_id,
+              data.group_id,
+              req.user_id,
+              data.title
+            )
+            // don't wait for screenshot
+            ScreenshotUtil.reloadMapThumbnail(map_id)
+            ScreenshotUtil.reloadMapImage(map_id)
+            return res.status(200).send({
+              success: true,
+              map_id
+            })
           }
         } else {
           apiDataError(res)
@@ -131,34 +95,9 @@ export default function (app: any): void {
     }
   )
 
-  /* not used?
-   app.post('/api/map/privacy', csrfProtection, (req, res) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      res.status(401).send("Unauthorized, user not logged in");
-      return;
-    }
-    var user_id = req.session.user.maphubsUser.id;
-    var data = req.body;
-    if(data && data.map_id && typeof data.isPrivate !== 'undefined'){
-      Map.allowedToModify(data.map_id, user_id)
-      .then((allowed) => {
-        if(allowed){
-          return Map.setPrivate(data.map_id, data.isPrivate, data.user_id)
-          .then(() => {
-            return res.status(200).send({success: true});
-          });
-        }else{
-          return notAllowedError(res, 'map');
-        }
-      }).catch(apiError(res, 200));
-    }else{
-      apiDataError(res);
-    }
-  });
-  */
   app.post(
     '/api/map/public',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {
@@ -190,7 +129,7 @@ export default function (app: any): void {
   )
   app.post(
     '/api/map/save',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {
@@ -236,7 +175,7 @@ export default function (app: any): void {
   )
   app.post(
     '/api/map/delete',
-    csrfProtection,
+
     isAuthenticated,
     async (req, res) => {
       try {

@@ -70,7 +70,7 @@ export default {
     let image_url
 
     if (group.hasimage) {
-      image_url = `/group/${group.group_id}/image.png`
+      image_url = `/api/group/${group.group_id}/image.png`
     }
 
     return {

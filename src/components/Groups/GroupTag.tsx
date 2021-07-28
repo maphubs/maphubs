@@ -30,7 +30,7 @@ const GroupTag = ({ group, size }: Props): JSX.Element => {
             <Avatar
               alt={group}
               size={size}
-              src={`/group/${group}/image.png`}
+              src={`/api/group/${group}/image.png`}
               onError={() => {
                 setFailed(true)
               }}

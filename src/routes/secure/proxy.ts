@@ -20,7 +20,7 @@ export default function (app: any): void {
   )
   app.use(
     '/screenshots/*',
-    proxy(local.manetUrl, {
+    proxy(process.env.SCREENSHOT_SERVICE_URL, {
       proxyReqPathResolver(req) {
         const url = new URL(req.url)
         const path = url.pathname

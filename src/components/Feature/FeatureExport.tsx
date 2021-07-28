@@ -17,13 +17,13 @@ const FeatureExport = ({
   disable_export,
   data_type
 }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t, locale } = useT()
   const geoJSONURL = `/api/feature/json/${layer_id}/${mhid}/${slugify(
     t(name)
   )}.geojson`
-  const kmlURL = `/api/feature/${layer_id}/${mhid}/export/kml/${slugify(
+  const kmlURL = `/api/feature/kml/${layer_id}/${mhid}/${slugify(
     t(name)
-  )}.kml`
+  )}.kml?locale=${locale}`
 
   if (!disable_export) {
     let gpxExport
