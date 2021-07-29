@@ -47,15 +47,15 @@ const handler: NextApiHandler = async (req, res) => {
           )
 
           return result
-            ? res.send({
+            ? res.status(200).json({
                 success: true
               })
-            : res.send({
+            : res.status(200).json({
                 success: false,
                 error: 'Failed to Update Layer'
               })
         } else {
-          return res.send({
+          return res.status(200).json({
             success: false,
             error: 'Failed to Update Layer'
           })

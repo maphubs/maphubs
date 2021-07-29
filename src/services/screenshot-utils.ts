@@ -1,10 +1,10 @@
 import request from 'superagent'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import local from '../local'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import knex from '../connection'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import Crypto from 'crypto'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 const debug = DebugService('screenshot-utils')
 
@@ -21,7 +21,7 @@ const screenshotOptions = {
   cookies: [
     {
       name: 'manet',
-      value: local.manetAPIKey,
+      value: process.env.SCREENSHOT_API_KEY,
       domain: process.env.NEXT_PUBLIC_EXTERNAL_HOST,
       path: '/'
     }
@@ -183,29 +183,24 @@ export default {
   },
 
   // Map Image
-  getMapImage(map_id: number): any {
-    const _this = this
-
+  async getMapImage(map_id: number): Promise<string> {
     debug.log('get screenshot image for map: ' + map_id)
-    return knex('omh.maps')
-      .select('screenshot')
-      .where({
-        map_id
-      })
-      .then((result) => {
-        if (
-          result &&
-          result.length === 1 &&
-          result[0].screenshot !== null &&
-          result[0].screenshot.length > 0
-        ) {
-          debug.log('found image in database for map: ' + map_id)
-          return result[0].screenshot
-        } else {
-          debug.log('no image in database for map: ' + map_id)
-          return _this.updateMapImage(map_id)
-        }
-      })
+    const result = await knex('omh.maps').select('screenshot').where({
+      map_id
+    })
+
+    if (
+      result &&
+      result.length === 1 &&
+      result[0].screenshot !== null &&
+      result[0].screenshot.length > 0
+    ) {
+      debug.log('found image in database for map: ' + map_id)
+      return result[0].screenshot
+    } else {
+      debug.log('no image in database for map: ' + map_id)
+      return this.updateMapImage(map_id)
+    }
   },
 
   async updateMapImage(map_id: number): Promise<any> {
@@ -285,29 +280,25 @@ export default {
     return image
   },
 
-  getMapThumbnail(map_id: number): any {
-    const _this = this
-
+  async getMapThumbnail(map_id: number): any {
     debug.log('get thumbnail image for map: ' + map_id)
-    return knex('omh.maps')
-      .select('thumbnail')
-      .where({
-        map_id
-      })
-      .then((result) => {
-        if (
-          result &&
-          result.length === 1 &&
-          result[0].thumbnail !== null &&
-          result[0].thumbnail.length > 0
-        ) {
-          debug.log('found image in database for map: ' + map_id)
-          return result[0].thumbnail
-        } else {
-          debug.log('no image in database for map: ' + map_id)
-          return _this.updateMapThumbnail(map_id)
-        }
-      })
+
+    const result = await knex('omh.maps').select('thumbnail').where({
+      map_id
+    })
+
+    if (
+      result &&
+      result.length === 1 &&
+      result[0].thumbnail !== null &&
+      result[0].thumbnail.length > 0
+    ) {
+      debug.log('found image in database for map: ' + map_id)
+      return result[0].thumbnail
+    } else {
+      debug.log('no image in database for map: ' + map_id)
+      return this.updateMapThumbnail(map_id)
+    }
   },
 
   async reloadMapThumbnail(map_id: number): Promise<boolean> {
@@ -323,16 +314,21 @@ export default {
     return true
   },
 
-  returnImage(image: any, type: string, req: any, res: any) {
+  returnImage(
+    image: string,
+    type: string,
+    req: NextApiRequest,
+    res: NextApiResponse
+  ): void {
     const img = Buffer.from(image, 'base64')
 
     const hash = Crypto.createHash('md5').update(img).digest('hex')
 
-    const match = req.get('If-None-Match')
+    const match = req.headers['If-None-Match']
 
     /* eslint-disable security/detect-possible-timing-attacks */
     if (hash === match) {
-      res.status(304).send()
+      res.status(304).send('')
     } else {
       res.writeHead(200, {
         'Content-Type': 'image/png',

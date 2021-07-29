@@ -86,10 +86,39 @@ const UserMenu = ({ sidenav }: { sidenav?: boolean }): JSX.Element => {
       </div>
     )
   } else {
-    userMenu = !process.env.NEXT_PUBLIC_MAPHUBS_PRO ? (
-      <div className='login-with-signup'>
+    userMenu =
+      !process.env.NEXT_PUBLIC_MAPHUBS_PRO === 'true' ? (
+        <div className='login-with-signup'>
+          <a
+            className='login-with-signup-link'
+            style={{
+              float: !sidenav ? 'left' : 'inherit'
+            }}
+            href='#'
+            onClick={loginClick}
+          >
+            {t('Login')}
+          </a>
+          <Button
+            type='primary'
+            style={{
+              marginLeft: '5px',
+              marginRight: '5px',
+              color: '#FFF'
+            }}
+            href='/signup'
+          >
+            <span
+              style={{
+                color: '#FFF'
+              }}
+            >
+              {t('Sign Up')}
+            </span>
+          </Button>
+        </div>
+      ) : (
         <a
-          className='login-with-signup-link'
           style={{
             float: !sidenav ? 'left' : 'inherit'
           }}
@@ -98,35 +127,7 @@ const UserMenu = ({ sidenav }: { sidenav?: boolean }): JSX.Element => {
         >
           {t('Login')}
         </a>
-        <Button
-          type='primary'
-          style={{
-            marginLeft: '5px',
-            marginRight: '5px',
-            color: '#FFF'
-          }}
-          href='/signup'
-        >
-          <span
-            style={{
-              color: '#FFF'
-            }}
-          >
-            {t('Sign Up')}
-          </span>
-        </Button>
-      </div>
-    ) : (
-      <a
-        style={{
-          float: !sidenav ? 'left' : 'inherit'
-        }}
-        href='#'
-        onClick={loginClick}
-      >
-        {t('Login')}
-      </a>
-    )
+      )
   }
 
   return (

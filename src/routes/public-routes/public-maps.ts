@@ -1,5 +1,4 @@
 import Map from '../../models/map'
-import Stats from '../../models/stats'
 import MapUtils from '../../services/map-utils'
 import ScreenshotUtils from '../../services/screenshot-utils'
 import {

@@ -2,21 +2,6 @@ import { Knex } from 'knex'
 import knex from '../connection'
 
 export default {
-  async setGroupTier(
-    groupId: string,
-    tierId: string,
-    trx?: Knex.Transaction
-  ): Promise<any> {
-    const db = trx || knex
-    return db('omh.groups')
-      .udpdate({
-        tier_id: tierId
-      })
-      .where({
-        group_id: groupId
-      })
-  },
-
   /**
    * Get tiers current offer to end-users
    * otherwise tiers are hidden to support grandfathered and custom accounts

@@ -3,7 +3,6 @@ import Map from '../models/map'
 import { nextError } from './error-response'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import local from '../local'
 import pageOptions from './page-options-helper'
 
 const debug = DebugService('map-utils')
@@ -146,7 +145,7 @@ export default {
 
         let showShareButtons = true
 
-        if (process.env.NEXT_PUBLIC_REQUIRE_LOGIN) {
+        if (process.env.NEXT_PUBLIC_REQUIRE_LOGIN === 'true') {
           showShareButtons = false
         }
 

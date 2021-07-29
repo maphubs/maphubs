@@ -3,9 +3,14 @@ import knex from '../connection'
 import Presets from './presets'
 import assetUpload from '../services/asset-upload'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import { Knex } from 'knex'
 
 export default {
-  getPhotosForFeature(layer_id: number, mhid: string, trx: any = null): any {
+  getPhotosForFeature(
+    layer_id: number,
+    mhid: string,
+    trx?: Knex.Transaction
+  ): any {
     const db = trx || knex
     return db('omh.feature_photo_attachments').select('photo_url').where({
       layer_id,
@@ -19,8 +24,8 @@ export default {
     data: string,
     info: Record<string, any>,
     user_id: number,
-    trx: any = null
-  ): Promise<any> {
+    trx?: Knex.Transaction
+  ): Promise<string> {
     const db = trx || knex
     const results = await db('omh.feature_photo_attachments').where({
       mhid
@@ -50,8 +55,8 @@ export default {
   async deletePhotoAttachment(
     layer_id: number,
     mhid: string,
-    trx: any = null
-  ): Promise<any> {
+    trx?: Knex.Transaction
+  ): Promise<boolean> {
     const db = trx || knex
     return db('omh.feature_photo_attachments')
       .where({
@@ -63,8 +68,8 @@ export default {
   // need to call this before deleting a layer
   async removeAllLayerAttachments(
     layer_id: number,
-    trx: any = null
-  ): Promise<any> {
+    trx?: Knex.Transaction
+  ): Promise<boolean> {
     const db = trx || knex
     return db('omh.feature_photo_attachments')
       .where({
@@ -76,8 +81,8 @@ export default {
   async addPhotoUrlPreset(
     layer: Record<string, any>,
     user_id: number,
-    trx: any
-  ): Promise<any> {
+    trx: Knex.Transaction
+  ): Promise<Record<string, unknown>[]> {
     const style = layer.style
 
     if (style) {

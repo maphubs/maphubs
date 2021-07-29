@@ -65,7 +65,7 @@ const Maps = (): JSX.Element => {
             </Row>
           </div>
           <CardSearch cardType='map' />
-          {!process.env.NEXT_PUBLIC_MAPHUBS_PRO &&
+          {!process.env.NEXT_PUBLIC_MAPHUBS_PRO === 'true' &&
             featuredCards &&
             featuredCards.length > 0 && (
               <CardCollection

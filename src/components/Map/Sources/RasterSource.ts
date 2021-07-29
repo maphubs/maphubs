@@ -4,19 +4,16 @@ import mapboxgl from 'mapbox-gl'
 const RasterSource = {
   async load(
     key: string,
-    source: mapboxgl.Source,
+    source: mapboxgl.RasterSource & { metadata: Record<string, unknown> },
     mapComponent: any
   ): Promise<any> {
     if (source.url) {
       source.url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
     }
 
-    let connectID
-
-    connectID =
-      MAPHUBS_CONFIG && process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID
-        ? process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID
-        : mapComponent.props.DGWMSConnectID
+    const connectID =
+      process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID ||
+      mapComponent.props.DGWMSConnectID
 
     if (source.tiles && source.tiles.length > 0) {
       source.tiles = source.tiles.map((tile) => {

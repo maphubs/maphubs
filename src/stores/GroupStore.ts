@@ -225,9 +225,7 @@ export default class GroupStore extends Reflux.Store {
         asAdmin
       })
       .end((err, res) => {
-        checkClientError(res, err, cb, (cb) => {
-          _this.reloadMembers(cb)
-        })
+        checkClientError({res, err})
       })
   }
 
@@ -248,9 +246,7 @@ export default class GroupStore extends Reflux.Store {
         user_id
       })
       .end((err, res) => {
-        checkClientError(res, err, cb, (cb) => {
-          _this.reloadMembers(cb)
-        })
+        checkClientError({res, err})
       })
   }
 
@@ -272,9 +268,7 @@ export default class GroupStore extends Reflux.Store {
         role: 'Administrator'
       })
       .end((err, res) => {
-        checkClientError(res, err, cb, (cb) => {
-          _this.reloadMembers(cb)
-        })
+        checkClientError({res, err})
       })
   }
 
@@ -296,30 +290,7 @@ export default class GroupStore extends Reflux.Store {
         role: 'Member'
       })
       .end((err, res) => {
-        checkClientError(res, err, cb, (cb) => {
-          _this.reloadMembers(cb)
-        })
-      })
-  }
-
-  reloadMembers(cb: (...args: Array<any>) => any): void {
-    debug.log('reload members')
-
-    const { state, loadMembers } = this
-
-    const group_id = state.group.group_id || ''
-    request
-      .post('/api/group/' + group_id + '/members')
-      .type('json')
-      .accept('json')
-      .send({
-      })
-      .end((err, res) => {
-        checkClientError(res, err, cb, (cb) => {
-          loadMembers(res.body.members)
-
-          cb()
-        })
+        checkClientError({res, err})
       })
   }
 }

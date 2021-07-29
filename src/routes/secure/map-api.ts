@@ -1,4 +1,3 @@
-import Locales from '../../services/locales'
 import Map from '../../models/map'
 import Group from '../../models/group'
 import ScreenshotUtil from '../../services/screenshot-utils'
@@ -198,41 +197,4 @@ export default function (app: any): void {
       }
     }
   )
-  app.get('/api/maps/search/suggestions', (req, res) => {
-    if (!req.query.q) {
-      res.status(400).send('Bad Request: Expected query param. Ex. q=abc')
-      return
-    }
-
-    const q = req.query.q
-    Map.getSearchSuggestions(q)
-      .then((result) => {
-        const suggestions = []
-        for (const map of result) {
-          const title = Locales.getLocaleStringObject(req.locale, map.title)
-          suggestions.push({
-            key: map.map_id,
-            value: title
-          })
-        }
-        return res.send({
-          suggestions
-        })
-      })
-      .catch(apiError(res, 500))
-  })
-  app.get('/api/maps/search', (req, res) => {
-    if (!req.query.q) {
-      res.status(400).send('Bad Request: Expected query param. Ex. q=abc')
-      return
-    }
-
-    Map.getSearchResults(req.query.q)
-      .then((result) => {
-        return res.status(200).send({
-          maps: result
-        })
-      })
-      .catch(apiError(res, 500))
-  })
 }

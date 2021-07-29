@@ -39,7 +39,11 @@ const Layout = ({
 
   // redirect to login if not signed in, prevents displaying an error when data fails to load
   // for public shared maps we need to by-pass this check
-  if (!session?.user && !publicShare && process.env.NEXT_PUBLIC_REQUIRE_LOGIN) {
+  if (
+    !session?.user &&
+    !publicShare &&
+    process.env.NEXT_PUBLIC_REQUIRE_LOGIN === 'true'
+  ) {
     signin()
     return (
       <div>

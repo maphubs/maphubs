@@ -39,11 +39,11 @@ const createEmpty: NextApiHandler = async (req, res) => {
           await DataLoadUtils.createEmptyDataTable(layer.layer_id, trx)
           await layerViews.createLayerViews(layer_id, layer.presets, trx)
           debug.log('init empty transaction complete')
-          return res.status(200).send({
+          return res.status(200).json({
             success: true
           })
         } else {
-          return res.status(200).send({
+          return res.status(200).json({
             success: false,
             error: 'layer not found'
           })

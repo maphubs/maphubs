@@ -1,21 +1,21 @@
-var connection = process.env.DATABASE_URL || require('./local').connection.url
-var log = require('@bit/kriscarle.maphubs-utils.maphubs-utils.log')
-var knex = require('knex')({
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import knex from 'knex'
+const connection = knex({
   client: 'pg',
-  connection: connection,
+  connection: process.env.DB_CONNECTION,
   debug: false,
   pool: {
     min: 2,
     max: 25,
-    afterCreate (conn, done) {
-      conn.on('error', connectionError => {
+    afterCreate(conn, done) {
+      conn.on('error', (connectionError) => {
         if (connectionError) {
           log.error(connectionError.message)
         }
       })
-      done(null, connection)
+      done(null, conn)
     }
   },
-  acquireConnectionTimeout: 60000
+  acquireConnectionTimeout: 60_000
 })
-module.exports = knex
+export default connection

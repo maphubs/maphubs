@@ -31,7 +31,7 @@ const featureSaveNotes: NextApiHandler = async (req, res) => {
               data.notes,
               trx
             )
-            return res.send({
+            return res.status(200).json({
               success: true
             })
           })

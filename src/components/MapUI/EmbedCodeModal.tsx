@@ -86,7 +86,7 @@ const EmbedCodeModal = ({
           />
         </pre>
       </Row>
-      {!share_id && process.env.NEXT_PUBLIC_REQUIRE_LOGIN && (
+      {!share_id && process.env.NEXT_PUBLIC_REQUIRE_LOGIN === 'true' && (
         <Row
           style={{
             marginBottom: '20px'

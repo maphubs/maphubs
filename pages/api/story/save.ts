@@ -61,11 +61,11 @@ const saveStory: NextApiHandler = async (req, res) => {
         const result = await StoryModel.updateStory(story_id, data)
 
         return result
-          ? res.send({
+          ? res.status(200).json({
               success: true,
               story_id
             })
-          : res.send({
+          : res.status(200).json({
               success: false,
               error: 'Failed to Save Story',
               story_id

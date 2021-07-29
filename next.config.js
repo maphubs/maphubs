@@ -10,7 +10,6 @@ const withTM = require('next-transpile-modules')([
 const withAntdLess = require('next-plugin-antd-less')
 const { getThemeVariables } = require('antd/dist/theme')
 const lessToJS = require('less-vars-to-js')
-const config = require('./src/local')
 const fs = require('fs')
 // const { styles } = require('@ckeditor/ckeditor5-dev-utils')
 
@@ -64,25 +63,6 @@ module.exports = withTM(
       ignoreBuildErrors: false
     },
     productionBrowserSourceMaps: true,
-    publicRuntimeConfig: {
-      host: config.host,
-      port: config.port,
-      https: config.https,
-      logo: config.logo,
-      logoWidth: config.logoWidth,
-      logoHeight: config.logoHeight,
-      mapHubsPro: config.mapHubsPro,
-      CORAL_TALK_HOST: config.CORAL_TALK_HOST,
-      FR_ENABLE: config.FR_ENABLE,
-      FR_API: config.FR_API,
-      FR_API_KEY: config.FR_API_KEY,
-      tileServiceUrl: config.tileServiceUrl,
-      PLANET_LABS_API_KEY: config.PLANET_LABS_API_KEY,
-      theme: config.theme,
-      themeUrl: config.themeUrl,
-      enableUserExport: config.enableUserExport,
-      OPENROUTESERVICE_API_KEY: config.OPENROUTESERVICE_API_KEY
-    },
     // postcssLoaderOptions: postCSSConfig,
     assetPrefix,
     poweredByHeader: false,

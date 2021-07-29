@@ -1,8 +1,5 @@
 import request from 'superagent'
 
-const config = getConfig()
-const MAPHUBS_CONFIG = config ? config.publicRuntimeConfig : {}
-
 export default async (
   mhid: string,
   imageData: string
@@ -22,7 +19,7 @@ export default async (
   const token = process.env.NEXT_PUBLIC_ASSET_UPLOAD_API_KEY
   const res = await request
     .post(apiUrl)
-    .set('authorization', token ? `Bearer ${token}` : null)
+    .set('authorization', `Bearer ${token}`)
     .type('json')
     .accept('json')
     .send({

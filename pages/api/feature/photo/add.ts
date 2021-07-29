@@ -54,12 +54,12 @@ const featureAddPhoto: NextApiHandler = async (req, res) => {
               )
               await layerViews.replaceViews(data.layer_id, presets, trx)
               await LayerModel.setUpdated(data.layer_id, user_id, trx)
-              return res.send({
+              return res.status(200).json({
                 success: true,
                 photo_url
               })
             } else {
-              return res.send({
+              return res.status(200).json({
                 success: false,
                 error: 'layer not found'
               })

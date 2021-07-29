@@ -27,7 +27,7 @@ export default {
       })
 
     if (result && result.length === 1) {
-      return result[0]
+      return result[0] as Map
     }
 
     return null
@@ -316,7 +316,7 @@ export default {
     title: LocalizedString,
     settings: Record<string, unknown>,
     user_id: number
-  ): Promise<boolean> {
+  ): Promise<number[]> {
     return knex.transaction(async (trx) => {
       await trx('omh.maps')
         .update({
@@ -359,7 +359,7 @@ export default {
     })
   },
 
-  async deleteMap(map_id: number): Promise<boolean> {
+  async deleteMap(map_id: number): Promise<void> {
     return knex.transaction(async (trx) => {
       await trx('omh.map_views')
         .where({
@@ -467,7 +467,7 @@ export default {
   async removePublicShareID(
     map_id: number,
     trx?: Knex.Transaction
-  ): Promise<boolean> {
+  ): Promise<number> {
     const db = trx || knex
     return db('omh.maps')
       .update({

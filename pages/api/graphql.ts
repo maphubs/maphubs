@@ -80,7 +80,7 @@ const graphQLHandler: NextApiHandler = async (req, res) => {
     } else {
       res.status(401).send('unauthorized')
     }
-  } else if (!process.env.NEXT_PUBLIC_REQUIRE_LOGIN) {
+  } else if (process.env.NEXT_PUBLIC_REQUIRE_LOGIN !== 'true') {
     await startServer
     return apolloServer.createHandler({
       path: '/api/graphql'

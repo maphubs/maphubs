@@ -51,11 +51,11 @@ const featureDeletePhoto: NextApiHandler = async (req, res) => {
                     trx
                   )
                   await LayerModel.setUpdated(data.layer_id, user_id, trx)
-                  return res.send({
+                  return res.status(200).json({
                     success: true
                   })
                 } else {
-                  return res.send({
+                  return res.status(200).json({
                     success: false,
                     error: 'layer not found'
                   })

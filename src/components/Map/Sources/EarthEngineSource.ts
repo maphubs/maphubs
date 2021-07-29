@@ -42,10 +42,9 @@ const EarthEngineSource = {
         }
       }
 
-      const clientID =
-        MAPHUBS_CONFIG && process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
-          ? process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
-          : mapComponent.props.earthEngineClientID
+      const clientID = process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
+        ? process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
+        : mapComponent.props.earthEngineClientID
 
       ee.data.authenticate(clientID, getEEMap, undefined, undefined, () => {
         ee.data.authenticateViaPopup(() => {

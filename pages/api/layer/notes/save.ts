@@ -16,7 +16,7 @@ const saveLayerNotes: NextApiHandler = async (req, res) => {
     try {
       if (await LayerModel.allowedToModify(data.layer_id, user_id)) {
         await LayerModel.saveLayerNote(data.layer_id, user_id, data.notes)
-        return res.send({
+        return res.status(200).json({
           success: true
         })
       } else {

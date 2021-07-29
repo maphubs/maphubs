@@ -18,9 +18,6 @@ import { Knex } from 'knex'
 const debug = DebugService('model/layers')
 
 export default {
-  /**
-   * Can include private?: No
-   */
   async getAllLayers(
     includeMapInfo: boolean,
     trx?: Knex.Transaction
@@ -66,7 +63,7 @@ export default {
             private: false,
             status: 'published'
           })
-          .orderBy(db.raw("name -> 'en'"))
+          .orderByRaw("name -> 'en'")
       : db
           .select(
             'layer_id',
@@ -94,12 +91,9 @@ export default {
             private: false,
             status: 'published'
           })
-          .orderBy(db.raw("name -> 'en'"))
+          .orderByRaw("name -> 'en'")
   },
 
-  /**
-   * Can include private?: No
-   */
   async getRecentLayers(number = 15): Promise<Layer[]> {
     return knex
       .select(
@@ -132,9 +126,6 @@ export default {
       .limit(number)
   },
 
-  /**
-   * Can include private?: No
-   */
   async getPopularLayers(number = 15): Promise<Layer[]> {
     // TODO switch to a count of map usage since we are removing view tracking
     /*
@@ -180,9 +171,6 @@ export default {
       .limit(number)
   },
 
-  /**
-   * Can include private?: No
-   */
   async getFeaturedLayers(number = 15): Promise<Layer[]> {
     return knex
       .select(
@@ -211,13 +199,10 @@ export default {
         status: 'published',
         featured: true
       })
-      .orderBy(knex.raw("name -> 'en'"))
+      .orderByRaw("name -> 'en'")
       .limit(number)
   },
 
-  /**
-   * Can include private?: If Requested
-   */
   async getLayerInfo(layer_id: number): Promise<Layer> {
     const result = await knex('omh.layers')
       .select(
@@ -239,21 +224,15 @@ export default {
     return null
   },
 
-  /**
-   * Can include private?: If Requested
-   */
   async getLayerFeatureCount(layer_id: number): Promise<number> {
     const result = await knex(`layers.data_${layer_id}`).count('mhid')
 
     return result && Array.isArray(result) && result.length === 1
-      ? result[0].count
+      ? Number.parseInt(result[0].count as string)
       : 0
   },
 
-  /**
-   * Can include private?: No
-   */
-  getSearchSuggestions(input: string): any {
+  getSearchSuggestions(input: string): Knex.QueryBuilder {
     input = input.toLowerCase()
     const query = knex
       .select('name', 'layer_id')
@@ -289,10 +268,7 @@ export default {
     return query
   },
 
-  /**
-   * Can include private?: No
-   */
-  getSearchResults(input: string): any {
+  getSearchResults(input: string): Knex.QueryBuilder {
     input = input.toLowerCase()
     const query = knex('omh.layers')
       .select(
@@ -351,9 +327,6 @@ export default {
     return query
   },
 
-  /**
-   * Can include private?: If Requested
-   */
   getGroupLayers(group_id: string, includeMapInfo = false): Promise<Layer[]> {
     const query = includeMapInfo
       ? knex
@@ -410,7 +383,7 @@ export default {
             'views'
           )
           .table('omh.layers')
-          .orderBy(knex.raw("name -> 'en'"))
+          .orderByRaw("name -> 'en'")
 
     query.where({
       status: 'published',
@@ -419,9 +392,6 @@ export default {
     return query
   },
 
-  /**
-   * Can include private?: If Requested
-   */
   getUserLayers(user_id: number, number: number): Promise<Layer[]> {
     const subquery = knex
       .select()
@@ -470,10 +440,10 @@ export default {
     return query
   },
 
-  /**
-   * Can include private?: If Requested
-   */
-  async getLayerByID(layer_id: number, trx: any = null): Promise<Layer | null> {
+  async getLayerByID(
+    layer_id: number,
+    trx?: Knex.Transaction
+  ): Promise<Layer | null> {
     debug.log('getting layer: ' + layer_id)
     let db = knex
 
@@ -526,19 +496,12 @@ export default {
     return null
   },
 
-  /**
-   * Can include private?: If Requested
-   */
   async getLayerByShortID(
     shortid: string,
-    trx: any = null
+    trx?: Knex.Transaction
   ): Promise<Layer | null> {
     debug.log('getting layer shortid: ' + shortid)
-    let db = knex
-
-    if (trx) {
-      db = trx
-    }
+    const db = trx || knex
 
     const result = await db
       .select(
@@ -605,9 +568,6 @@ export default {
     return false
   },
 
-  /**
-   * Can include private?: If Requested
-   */
   async getLayerNotes(layer_id: number): Promise<{ notes: string } | null> {
     const result = await knex('omh.layer_notes').select('notes').where({
       layer_id
@@ -646,6 +606,7 @@ export default {
           if (error) {
             log.error(error)
             reject(error)
+            return
           }
 
           if (result.features) {
@@ -732,9 +693,6 @@ export default {
     )
   },
 
-  /**
-   * Can include private?: Yes
-   */
   async allowedToModify(
     layer_id: number,
     user_id: number,
@@ -772,12 +730,8 @@ export default {
   },
 
   // Layer creation/modification
-
-  /**
-   * Can include private?: Yes
-   */
-  async createLayer(user_id: number, trx: any): Promise<number> {
-    const layer_id_result = await trx('omh.layers')
+  async createLayer(user_id: number, trx: Knex.Transaction): Promise<number> {
+    const layer_id_result: string = await trx('omh.layers')
       .insert({
         status: 'incomplete',
         created_by_user_id: user_id,
@@ -788,7 +742,7 @@ export default {
         last_updated: knex.raw('now()')
       })
       .returning('layer_id')
-    const layer_id = Number.parseInt(layer_id_result, 10)
+    const layer_id = Number.parseInt(layer_id_result)
     await trx('omh.layers')
       .update({
         shortid: shortid.generate()
@@ -799,10 +753,6 @@ export default {
     return layer_id
   },
 
-  /**
-   * Can include private?:Yes, however the remote layer must be public
-   */
-  // TODO: implement private remote layers
   createRemoteLayer(
     group_id: string,
     layer: any,
@@ -857,16 +807,13 @@ export default {
     return knex('omh.layers').returning('layer_id').insert(layer)
   },
 
-  /**
-   * Can include private?:Yes, however the remote layer must be public
-   */
   async updateRemoteLayer(
     layer_id: number,
     group_id: string,
-    layer: Record<string, any>,
+    layer: any,
     host: string,
     user_id: number
-  ): Promise<any> {
+  ): Promise<number> {
     layer.remote = true
     layer.remote_host = host
     layer.remote_layer_id = layer.layer_id
@@ -923,7 +870,10 @@ export default {
   /*
     Used by delete
     */
-  async removeLayerFromMaps(layer_id: number, trx: any): Promise<any> {
+  async removeLayerFromMaps(
+    layer_id: number,
+    trx: Knex.Transaction
+  ): Promise<boolean[]> {
     // get maps that use this layer
     const db = trx || knex
     // get a list of maps that contain the layer
@@ -957,7 +907,7 @@ export default {
     })
   },
 
-  async setComplete(layer_id: number, trx: any): Promise<any> {
+  async setComplete(layer_id: number, trx: Knex.Transaction): Promise<number> {
     const db = trx || knex
     return db('omh.layers')
       .update({
@@ -972,7 +922,7 @@ export default {
     layer_id: number,
     group_id: string,
     user_id: number
-  ): Promise<boolean> {
+  ): Promise<number> {
     return knex('omh.layers')
       .update({
         owned_by_group_id: group_id,
@@ -1024,7 +974,7 @@ export default {
     source: any,
     license: any,
     user_id: number
-  ): Promise<any> {
+  ): Promise<number> {
     return knex.transaction(async (trx) => {
       const layer = await this.getLayerByID(layer_id, trx)
 
@@ -1076,7 +1026,7 @@ export default {
     disable_export: boolean,
     allow_public_submit: boolean,
     user_id: number
-  ): Promise<boolean> {
+  ): Promise<number> {
     return knex.transaction(async (trx) => {
       const update = trx('omh.layers')
         .update({
@@ -1097,7 +1047,7 @@ export default {
     layer_id: number,
     external_layer_config: Layer['external_layer_config'],
     user_id: number
-  ): Promise<boolean> {
+  ): Promise<number> {
     return knex.transaction(async (trx) => {
       const update = trx('omh.layers')
         .update({
@@ -1116,7 +1066,7 @@ export default {
     layer_id: number,
     user_id: number,
     trx?: Knex.Transaction
-  ): Promise<boolean> {
+  ): Promise<number> {
     let db = knex
 
     if (trx) {
@@ -1141,7 +1091,7 @@ export default {
     external_layer_type: string,
     external_layer_config: Layer['external_layer_config'],
     user_id: number
-  ): any {
+  ): Knex.QueryBuilder {
     return is_external
       ? knex('omh.layers')
           .where({
@@ -1203,7 +1153,7 @@ export default {
     user_id: number,
     create: boolean,
     trx?: Knex.Transaction
-  ): Promise<any> {
+  ): Promise<number> {
     return Presets.savePresets(layer_id, presets, style, user_id, create, trx)
   },
 

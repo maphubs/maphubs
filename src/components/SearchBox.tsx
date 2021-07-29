@@ -3,6 +3,7 @@ import { notification } from 'antd'
 import request from 'superagent'
 import SearchBar from './SearchBar/SearchBar'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import useT from '../hooks/useT'
 const debug = DebugService('SearchBox')
 type Props = {
   label: string
@@ -16,6 +17,7 @@ const SearchBox = ({
   onSearch,
   onReset
 }: Props): JSX.Element => {
+  const { locale } = useT()
   const onChange = async (
     input: string,
     resolve: (...args: Array<any>) => any
@@ -23,7 +25,7 @@ const SearchBox = ({
     if (suggestionUrl) {
       try {
         const res = await request
-          .get(suggestionUrl + '?q=' + input)
+          .get(`${suggestionUrl}?locale=${locale}q=${input}`)
           .type('json')
           .accept('json')
 

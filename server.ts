@@ -1,4 +1,3 @@
-import local from './src/local'
 const next = require('next')
 const express = require('express')
 
@@ -56,7 +55,7 @@ nextApp
     PublicRoutes(server)
 
     // option to require require login for everything after this point
-    if (process.env.NEXT_PUBLIC_REQUIRE_LOGIN) {
+    if (process.env.NEXT_PUBLIC_REQUIRE_LOGIN === 'true') {
       server.use((req, res, next) => {
         if (
           req.path.startsWith('/_next') ||

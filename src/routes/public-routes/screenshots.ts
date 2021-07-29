@@ -10,8 +10,6 @@ import { manetMiddleware } from '../../services/manet-check'
 
 import pageOptions from '../../services/page-options-helper'
 
-import local from '../../local'
-
 export default function (app: any) {
   // create a map view that we will use to screenshot the layer
   app.get(

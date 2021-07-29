@@ -1,29 +1,24 @@
 import MapStyles from '../components/Map/Styles'
 import _buffer from '@turf/buffer'
 import _bbox from '@turf/bbox'
-
 import knex from '../connection'
-
 import GJV from 'geojson-validation'
-
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
-
-import local from '../local'
-
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-
 import fs from 'fs'
-
 import LayerViews from './layer-views'
-
 import Bluebird from 'bluebird'
-
 import ogr2ogr from 'ogr2ogr'
+import { Knex } from 'knex'
+import { BBox, FeatureCollection } from 'geojson'
 
 const debug = DebugService('data-load-utils')
 
 export default {
-  async removeLayerData(layer_id: number, trx: any = null): Promise<any> {
+  async removeLayerData(
+    layer_id: number,
+    trx?: Knex.Transaction
+  ): Promise<boolean> {
     debug.log('removeLayerData')
     let db = knex
 
@@ -47,18 +42,18 @@ export default {
         debug.log('dropping layer sequence')
         return db.raw(`DROP SEQUENCE layers.mhid_seq_${layer_id};`)
       } else {
-        return null
+        return false
       }
     } else {
-      return null
+      return false
     }
   },
 
   async storeTempShapeUpload(
     uploadtmppath: string,
     layer_id: number,
-    trx: any = null
-  ): Promise<any> {
+    trx?: Knex.Transaction
+  ): Promise<boolean> {
     debug.log('storeTempShapeUpload')
     let db = knex
 
@@ -77,7 +72,10 @@ export default {
     })
   },
 
-  async getTempShapeUpload(layer_id: number, trx: any = null): Promise<any> {
+  async getTempShapeUpload(
+    layer_id: number,
+    trx?: Knex.Transaction
+  ): Promise<string> {
     debug.log('getTempShapeUpload')
     let db = knex
 
@@ -91,7 +89,7 @@ export default {
     return result[0].uploadtmppath
   },
 
-  async getBBox(layer_id: number): Promise<any> {
+  async getBBox(layer_id: number): Promise<BBox> {
     const layerTable = `layers.data_${layer_id}`
     const bbox = await knex.raw(
       "select '[' || ST_XMin(bbox)::float || ',' || ST_YMin(bbox)::float || ',' || ST_XMax(bbox)::float || ',' || ST_YMax(bbox)::float || ']' as bbox from (select ST_Extent(wkb_geometry) as bbox from :layerTable:) a",
@@ -105,7 +103,7 @@ export default {
   cleanProps(props: Record<string, any>, uniqueProps: Record<string, any>): {} {
     // get unique list of properties
     const cleanedFeatureProps = {}
-    Object.keys(props).forEach((key) => {
+    for (let key of Object.keys(props)) {
       // ignore MapHubs ID fields
       if (key !== 'mhid' && key !== 'layer_id' && key !== 'osm_id') {
         let val = props[key]
@@ -128,19 +126,22 @@ export default {
 
         cleanedFeatureProps[key] = val
       }
-    })
+    }
     return cleanedFeatureProps
   },
 
-  async insertTempGeoJSONIntoDB(geoJSON: any, layer_id: number): Promise<any> {
+  async insertTempGeoJSONIntoDB(
+    geoJSON: FeatureCollection,
+    layer_id: number
+  ): Promise<boolean | void> {
     const ogr = ogr2ogr(geoJSON)
       .format('PostgreSQL')
       .skipfailures()
       .options(['-t_srs', 'EPSG:4326', '-nln', `layers.temp_${layer_id}`])
       .destination(
-        `PG:host=${local.database.host} user=${local.database.user} dbname=${local.database.database} password=${local.database.password}`
+        `PG:host=${process.env.DB_HOST} user=${process.env.DB_USER} dbname=${process.env.DB_NAME} password=${process.env.DB_PASS}`
       )
-      .timeout(1200000)
+      .timeout(1_200_000)
     await Bluebird.promisify(ogr.exec, {
       context: ogr
     })()
@@ -171,22 +172,20 @@ export default {
   },
 
   async storeTempGeoJSON(
-    geoJSON: any,
+    geoJSON: FeatureCollection,
     uploadtmppath: string,
     layer_id: number,
     shortid: string,
     update: boolean,
     setStyle: boolean,
-    trx: any = null
+    trx?: Knex.Transaction
   ): Promise<{
-    bbox: any
+    bbox: BBox
     data_type: string
     error: null
     success: boolean
     uniqueProps: Array<unknown>
   }> {
-    const _this = this
-
     debug.log('storeTempGeoJSON')
     const db = trx || knex
     const uniqueProps = []
@@ -241,7 +240,7 @@ export default {
       // loop through features
       geoJSON.features.map((feature, i) => {
         // get unique list of properties
-        const cleanedFeatureProps = _this.cleanProps(
+        const cleanedFeatureProps = this.cleanProps(
           feature.properties,
           uniqueProps
         )
@@ -276,7 +275,7 @@ export default {
         updateData.style = style
       }
 
-      if (local.writeDebugData) {
+      if (process.env.WRITE_DEBUG_DATA === 'true') {
         /* eslint-disable security/detect-non-literal-fs-filename */
         // temp file path is build using env var + GUID, not user input
         fs.writeFile(
@@ -290,7 +289,7 @@ export default {
       }
 
       try {
-        await _this.insertTempGeoJSONIntoDB(geoJSON, layer_id)
+        await this.insertTempGeoJSONIntoDB(geoJSON, layer_id)
       } catch (err) {
         log.error(err)
         throw new Error('Failed to Insert Data into Temp POSTGIS Table')
@@ -309,7 +308,7 @@ export default {
 
         bbox = _bbox(buffered)
       } else {
-        bbox = await _this.getBBox(layer_id)
+        bbox = await this.getBBox(layer_id)
       }
 
       debug.log(bbox)
@@ -359,7 +358,10 @@ export default {
     }
   },
 
-  async createEmptyDataTable(layer_id: number, trx: any): Promise<any> {
+  async createEmptyDataTable(
+    layer_id: number,
+    trx: Knex.Transaction
+  ): Promise<boolean> {
     await trx.raw(`CREATE TABLE layers.data_${layer_id}
      (
        mhid text, 
@@ -374,7 +376,7 @@ export default {
     return trx.raw(`CREATE SEQUENCE layers.mhid_seq_${layer_id} START 1`)
   },
 
-  async loadTempData(layer_id: number, trx: any): Promise<any> {
+  async loadTempData(layer_id: number, trx: Knex.Transaction): Promise<number> {
     return trx('omh.layers')
       .update({
         status: 'loaded'

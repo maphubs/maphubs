@@ -3,7 +3,7 @@ import Layer from '../models/layer'
 import Story from '../models/story'
 import Map from '../models/map'
 import Group from '../models/group'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from './url-util'
 import Bluebird from 'bluebird'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import knex from '../connection'
@@ -13,7 +13,6 @@ export default {
   async getSiteMapIndexFeatureURLs(): Promise<Array<any | string>> {
     const baseUrl = urlUtil.getBaseUrl()
     const layers = await knex('omh.layers').select('layer_id').whereNot({
-      private: true,
       is_external: true,
       remote: true
     })
@@ -26,7 +25,7 @@ export default {
 
           // ignore if layer feature length > 5,000
           if (count > 0 && count < 5000) {
-            urls.push(`${baseUrl}/sitemap.${layer.layer_id}.xml`)
+            urls.push(`${baseUrl}/sitemap/sitemap.${layer.layer_id}.xml`)
           }
 
           return

@@ -16,7 +16,7 @@ const featureGPXExport: NextApiHandler = async (req, res) => {
   })) as { sub: string }
 
   if (
-    process.env.NEXT_PUBLIC_REQUIRE_LOGIN &&
+    process.env.NEXT_PUBLIC_REQUIRE_LOGIN === 'true' &&
     (!user?.sub || !isMember(user))
   ) {
     return res.status(401).json({

@@ -211,7 +211,7 @@ const UserMap = (): JSX.Element => {
                 </Action>
               )}
               {allowedToModifyMap &&
-                process.env.NEXT_PUBLIC_MAPHUBS_PRO &&
+                process.env.NEXT_PUBLIC_MAPHUBS_PRO === 'true' &&
                 !publicShare && (
                   <Action
                     text={t('Share')}
@@ -228,7 +228,7 @@ const UserMap = (): JSX.Element => {
             </Fab>
           )}
           {allowedToModifyMap &&
-            process.env.NEXT_PUBLIC_MAPHUBS_PRO &&
+            process.env.NEXT_PUBLIC_MAPHUBS_PRO === 'true' &&
             !publicShare && (
               <PublicShareModal
                 visible={showPublicShare}

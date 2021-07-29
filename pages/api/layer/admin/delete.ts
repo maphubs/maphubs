@@ -23,12 +23,12 @@ const deleteLayer: NextApiHandler = async (req, res) => {
       if (await LayerModel.allowedToModify(data.layer_id, user_id)) {
         const result = await LayerModel.delete(data.layer_id)
         if (result) {
-          res.status(200).send({
+          res.status(200).json({
             success: true,
             action: 'delete'
           })
         } else {
-          res.send({
+          res.status(200).json({
             success: false,
             error: 'Failed to Update Layer'
           })

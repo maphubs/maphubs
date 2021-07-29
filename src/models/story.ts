@@ -5,10 +5,11 @@ import Tags from './tags'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import { Knex } from 'knex'
 import { Story } from '../types/story'
+import { LocalizedString } from '../types/LocalizedString'
 const debug = DebugService('model/story')
 
 export default {
-  getStoriesBaseQuery(trx: any): any {
+  getStoriesBaseQuery(trx: Knex.Transaction): Knex.QueryBuilder {
     const db = trx || knex
     return db
       .select(
@@ -89,7 +90,7 @@ export default {
       .limit(number)
   },
 
-  getSearchSuggestions(input: string): any {
+  getSearchSuggestions(input: string): Knex.QueryBuilder {
     input = input.toLowerCase()
     return knex
       .select('title')
@@ -114,18 +115,18 @@ export default {
   updateStory(
     story_id: number,
     data: {
-      title: Record<string, any>
-      body: Record<string, any>
-      author: Record<string, any>
-      summary: Record<string, any>
-      firstimage: any
+      title: LocalizedString
+      body: LocalizedString
+      author: LocalizedString
+      summary: LocalizedString
+      firstimage: string
       published: boolean
       published_at: string
       updated_by: number
       owned_by_group_id: string
       tags?: Array<string>
     }
-  ): Promise<boolean> {
+  ): Promise<boolean | void> {
     return knex.transaction(async (trx) => {
       if (data.tags) {
         await Tags.updateStoryTags(data.tags, story_id, trx)

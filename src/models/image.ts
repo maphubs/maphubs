@@ -2,11 +2,13 @@ import knex from '../connection'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import ImageUtils from '../services/image-utils'
 import Bluebird from 'bluebird'
+import { Knex } from 'knex'
+import { StringDecoder } from 'node:string_decoder'
 
 const debug = DebugService('model/image')
 
 export default {
-  async getImageByID(image_id: number): Promise<any> {
+  async getImageByID(image_id: number): Promise<string | void> {
     const result = await knex('omh.images').select('image_id', 'image').where({
       image_id
     })
@@ -18,7 +20,7 @@ export default {
     return null
   },
 
-  async getThumbnailImageByID(image_id: number): Promise<any> {
+  async getThumbnailImageByID(image_id: number): Promise<string | void> {
     const result = await knex('omh.images')
       .select('image_id', 'thumbnail')
       .where({
@@ -36,7 +38,7 @@ export default {
   /// //////////
   // Groups
   /// /////////
-  async getGroupImage(group_id: string): Promise<any> {
+  async getGroupImage(group_id: string): Promise<string | void> {
     debug.log('get image for group: ' + group_id)
 
     const result = await knex('omh.group_images')
@@ -52,7 +54,7 @@ export default {
     return null
   },
 
-  async getGroupThumbnail(group_id: string): Promise<any> {
+  async getGroupThumbnail(group_id: string): Promise<string | void> {
     debug.log('get image for group: ' + group_id)
     const result = await knex('omh.group_images')
       .select('image_id')
@@ -71,26 +73,29 @@ export default {
 
   async insertGroupImage(
     group_id: string,
-    image: any,
-    info: any,
-    trx: any
-  ): Promise<any> {
+    image: string,
+    info: Record<string, unknown>,
+    trx: Knex.Transaction
+  ): Promise<boolean> {
     const thumbnail = await ImageUtils.resizeBase64(image, 40, 40)
-    let image_id = await trx('omh.images')
+    const image_id: string = await trx('omh.images')
       .insert({
         image,
         thumbnail,
         info
       })
       .returning('image_id')
-    image_id = Number.parseInt(image_id, 10)
     return trx('omh.group_images').insert({
       group_id,
-      image_id
+      image_id: Number.parseInt(image_id)
     })
   },
 
-  async setGroupImage(group_id: string, image: any, info: any): Promise<any> {
+  async setGroupImage(
+    group_id: string,
+    image: string,
+    info: Record<string, unknown>
+  ): Promise<boolean> {
     return knex.transaction(async (trx) => {
       const result = await trx('omh.group_images')
         .select('image_id')
@@ -117,7 +122,10 @@ export default {
   /// //////////
   // Stories
   /// /////////
-  async getStoryImage(story_id: number, image_id: number): Promise<any> {
+  async getStoryImage(
+    story_id: number,
+    image_id: number
+  ): Promise<StringDecoder> {
     debug.log('get image for story: ' + story_id)
     const result = await knex('omh.story_images').select('image_id').where({
       story_id,
@@ -133,7 +141,10 @@ export default {
   },
 
   // keep to support deleting legacy stories
-  async removeAllStoryImages(story_id: number, trx: any): Promise<any> {
+  async removeAllStoryImages(
+    story_id: number,
+    trx: Knex.Transaction
+  ): Promise<boolean> {
     const results = await trx('omh.story_images').select('image_id').where({
       story_id
     })

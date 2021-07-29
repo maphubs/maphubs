@@ -1,7 +1,5 @@
 import knex from '../connection'
 import _find from 'lodash.find'
-import Account from './account'
-import Bluebird from 'bluebird'
 import { Knex } from 'knex'
 import { Group } from '../types/group'
 import { LocalizedString } from '../types/LocalizedString'
@@ -184,11 +182,7 @@ export default {
       )
       .where('omh.group_memberships.user_id', userId)
     // eslint-disable-next-line unicorn/no-array-callback-reference
-    return Bluebird.map(groups, async (group) => {
-      const status = await Account.getStatus(group.group_id, trx)
-      group.account = status
-      return group
-    })
+    return groups
   },
 
   async getGroupRole(userId: number, groupId: string): Promise<string | null> {
@@ -326,10 +320,8 @@ export default {
 
   async createGroup(
     groupId: string,
-    name: string,
-    description: string,
-    location: string,
-    published: boolean,
+    name: LocalizedString,
+    description: LocalizedString,
     userId: number
   ): Promise<any> {
     return knex.transaction(async (trx) => {
@@ -337,9 +329,7 @@ export default {
         group_id: groupId,
         name,
         description,
-        location,
-        published,
-        tier_id: 'public'
+        published: true
       })
       // insert creating user as first admin
       return trx('omh.group_memberships').insert({
@@ -352,16 +342,12 @@ export default {
 
   updateGroup(
     groupId: string,
-    name: string,
-    description: string,
-    location: string,
-    published: boolean
+    name: LocalizedString,
+    description: LocalizedString
   ): Knex.QueryBuilder {
     return knex('omh.groups').where('group_id', groupId).update({
       name,
-      description,
-      location,
-      published
+      description
     })
   },
 

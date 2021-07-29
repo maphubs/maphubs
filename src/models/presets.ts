@@ -1,6 +1,7 @@
 import MapStyles from '../components/Map/Styles'
 import knex from '../connection'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import { Knex } from 'knex'
 
 export default {
   savePresets(
@@ -9,8 +10,8 @@ export default {
     style: Record<string, any>,
     user_id: number,
     create: boolean,
-    trx: any
-  ): any {
+    trx?: Knex.Transaction
+  ): Promise<number> {
     let db = knex
 
     if (trx) {

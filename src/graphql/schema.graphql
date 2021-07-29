@@ -124,4 +124,18 @@ type Query {
   homeConfig: JSON
 }
 
-#type Mutation
+type Mutation = {
+  # groups
+  createGroup(group_id: String!, name: JSON, description: JSON): Boolean
+  saveGroup(group_id: String!, name: JSON, description: JSON): Boolean
+  deleteGroup(group_id: String!): Boolean
+  addGroupMember(group_id: String!, user_id: Int!, asAdmin: Boolean!): Boolean
+  setGroupMemberRole(group_id: String!, user_id: Int!, admin: Boolean!): Boolean
+  removeGroupMember(group_id: String!, user_id: Int!): Boolean
+  setGroupImage(group_id: String!, image: String!, info: JSON): Boolean
+
+  # Maps
+
+}
+
+

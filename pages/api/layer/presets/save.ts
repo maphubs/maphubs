@@ -39,7 +39,7 @@ const saveLayerPresets: NextApiHandler = async (req, res) => {
           )
 
           if (data.create) {
-            return res.status(200).send({
+            return res.status(200).json({
               success: true
             })
           } else {
@@ -58,7 +58,7 @@ const saveLayerPresets: NextApiHandler = async (req, res) => {
                   .where({
                     layer_id: data.layer_id
                   })
-                return res.status(200).send({
+                return res.status(200).json({
                   success: true
                 })
               } else {
@@ -71,12 +71,12 @@ const saveLayerPresets: NextApiHandler = async (req, res) => {
                   .where({
                     layer_id: data.layer_id
                   })
-                return res.status(200).send({
+                return res.status(200).json({
                   success: true
                 })
               }
             } else {
-              return res.status(200).send({
+              return res.status(200).json({
                 success: false,
                 error: 'layer not found'
               })

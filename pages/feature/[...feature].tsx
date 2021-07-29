@@ -368,21 +368,22 @@ const FeaturePage = ({
                       </Col>
                     </Row>
                   </TabPane>
-                  {process.env.NEXT_PUBLIC_FR_ENABLE && session?.user && (
-                    <TabPane
-                      tab={t('Forest Report')}
-                      key='forestreport'
-                      style={{
-                        height: '100%',
-                        overflow: 'hidden',
-                        padding: 0
-                      }}
-                    >
-                      {frActive && (
-                        <ForestReportEmbed onModuleToggle={frToggle} />
-                      )}
-                    </TabPane>
-                  )}
+                  {process.env.NEXT_PUBLIC_FR_ENABLE === 'true' &&
+                    session?.user && (
+                      <TabPane
+                        tab={t('Forest Report')}
+                        key='forestreport'
+                        style={{
+                          height: '100%',
+                          overflow: 'hidden',
+                          padding: 0
+                        }}
+                      >
+                        {frActive && (
+                          <ForestReportEmbed onModuleToggle={frToggle} />
+                        )}
+                      </TabPane>
+                    )}
                   {process.env.NEXT_PUBLIC_ENABLE_COMMENTS && (
                     <TabPane tab={t('Discussion')} key='discussion'>
                       <ErrorBoundary t={t}>

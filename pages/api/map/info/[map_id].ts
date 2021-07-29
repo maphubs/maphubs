@@ -14,7 +14,7 @@ const handler: NextApiHandler = async (req, res) => {
   })) as { sub: string }
 
   if (
-    process.env.NEXT_PUBLIC_REQUIRE_LOGIN &&
+    process.env.NEXT_PUBLIC_REQUIRE_LOGIN === 'true' &&
     (!user?.sub || !isMember(user))
   ) {
     return res.status(401).json({
@@ -23,7 +23,7 @@ const handler: NextApiHandler = async (req, res) => {
   }
   const map = await MapModel.getMap(map_id)
   const layers = await MapModel.getMapLayers(map_id)
-  return res.status(200).send({
+  return res.status(200).json({
     success: true,
     map,
     layers

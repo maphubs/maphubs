@@ -160,7 +160,7 @@ export default class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
-          {!process.env.NEXT_PUBLIC_DISABLE_FEEDBACK && (
+          {process.env.NEXT_PUBLIC_DISABLE_FEEDBACK !== 'true' && (
             <script
               type='text/javascript'
               dangerouslySetInnerHTML={{

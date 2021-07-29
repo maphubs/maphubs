@@ -33,11 +33,11 @@ const handler: NextApiHandler = async (req, res) => {
         )
 
         return result
-          ? res.send({
+          ? res.status(200).json({
               success: true,
               layer_id: result[0]
             })
-          : res.send({
+          : res.status(200).json({
               success: false,
               error: 'Failed to Create Layer'
             })

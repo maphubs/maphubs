@@ -81,19 +81,19 @@ const addPhotoPoint: NextApiHandler = async (req, res) => {
                 trx
               )
               await layerViews.replaceViews(data.layer_id, presets, trx)
-              return res.send({
+              return res.status(200).json({
                 success: true,
                 photo_url,
                 mhid
               })
             } else {
-              return res.send({
+              return res.status(200).json({
                 success: false,
                 error: 'error creating feature'
               })
             }
           } else {
-            return res.send({
+            return res.status(200).json({
               success: false,
               error: 'layer not found'
             })
@@ -110,3 +110,11 @@ const addPhotoPoint: NextApiHandler = async (req, res) => {
   }
 }
 export default addPhotoPoint
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '25mb'
+    }
+  }
+}

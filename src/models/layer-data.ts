@@ -97,8 +97,8 @@ export default {
     mhid: string,
     tag: string,
     val: string | null | undefined,
-    trx: any
-  ): Promise<Record<string, any>> {
+    trx: Knex.Transaction
+  ): Promise<number> {
     debug.log('updating tag: ' + mhid)
 
     const valStr = val ? `"${val}"` : 'null'
@@ -131,8 +131,8 @@ export default {
     mhid: string,
     tag: string,
     val: number,
-    trx: any
-  ): Promise<Record<string, any>> {
+    trx: Knex.Transaction
+  ): Promise<number> {
     debug.log('updating tag: ' + mhid)
 
     const valStr = val ? `${val}` : 'null'
@@ -161,8 +161,8 @@ export default {
   async deleteFeature(
     layer_id: number,
     mhid: string,
-    trx: any
-  ): Promise<Record<string, any>> {
+    trx: Knex.Transaction
+  ): Promise<boolean> {
     debug.log('deleting feature: ' + mhid)
     return trx(`layers.data_${layer_id}`)
       .where({

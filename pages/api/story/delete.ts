@@ -27,7 +27,7 @@ const deleteStory: NextApiHandler = async (req, res) => {
             await ImageModel.removeAllStoryImages(data.story_id, trx)
             await StoryModel.delete(data.story_id, trx)
             // TODO: delete assets folder from S3
-            return res.send({
+            return res.status(200).json({
               success: true
             })
           })

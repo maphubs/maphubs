@@ -32,12 +32,12 @@ const saveSettings: NextApiHandler = async (req, res) => {
           user_id
         )
         if (result) {
-          res.status(200).send({
+          res.status(200).json({
             success: true,
             action: 'saveSettings'
           })
         } else {
-          res.send({
+          res.status(200).json({
             success: false,
             error: 'Failed to Update Layer'
           })
