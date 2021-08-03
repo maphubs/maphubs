@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { MenuOutlined } from '@ant-design/icons'
-import { Layout, Menu, Drawer } from 'antd'
+import { Layout, Menu, Drawer, Row } from 'antd'
 import useT from '../hooks/useT'
 import ExploreDropdown from './Header/ExploreDropdown'
 import AddDropdown from './Header/AddDropdown'
@@ -101,7 +101,6 @@ const MapHubsHeader = ({
         <Menu.Item
           key='locale'
           style={{
-            padding: '0 20px',
             height: '50px'
           }}
         >
@@ -112,10 +111,14 @@ const MapHubsHeader = ({
             key='add'
             style={{
               padding: mode === 'vertical' ? '0 20px' : '0 5px',
-              height: '50px'
+              height: '50px',
+              margin: '0 2px',
+              borderBottom: 'none'
             }}
           >
-            <AddDropdown t={t} sidenav={mode === 'vertical'} />
+            <Row align='middle'>
+              <AddDropdown t={t} sidenav={mode === 'vertical'} />
+            </Row>
           </Menu.Item>
         )}
         {showSearch && (
@@ -123,15 +126,22 @@ const MapHubsHeader = ({
             key='search'
             style={{
               padding: mode === 'vertical' ? '0 20px' : '0 5px',
-              height: '50px'
+              height: '50px',
+              margin: '0 2px',
+              borderBottom: 'none'
             }}
           >
-            {mode === 'vertical' && (
-              <a href={customSearchLink || '/search'}>{t('Search')}</a>
-            )}
-            {mode !== 'vertical' && (
-              <SearchButton t={t} searchLink={customSearchLink || '/search'} />
-            )}
+            <Row align='middle'>
+              {mode === 'vertical' && (
+                <a href={customSearchLink || '/search'}>{t('Search')}</a>
+              )}
+              {mode !== 'vertical' && (
+                <SearchButton
+                  t={t}
+                  searchLink={customSearchLink || '/search'}
+                />
+              )}
+            </Row>
           </Menu.Item>
         )}
         {showHelp && (
@@ -139,20 +149,28 @@ const MapHubsHeader = ({
             key='help'
             style={{
               padding: mode === 'vertical' ? '0 20px' : '0 5px',
-              height: '50px'
+              height: '50px',
+              margin: '0 2px',
+              borderBottom: 'none'
             }}
           >
-            <HelpDropdown t={t} customHelpLink={customHelpLink} />
+            <Row align='middle'>
+              <HelpDropdown customHelpLink={customHelpLink} />
+            </Row>
           </Menu.Item>
         )}
         <Menu.Item
           key='user'
           style={{
             height: '50px',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            margin: '0px 10px 0px 5px',
+            borderBottom: 'none'
           }}
         >
-          <UserMenu sidenav={mode === 'vertical'} />
+          <Row align='middle'>
+            <UserMenu sidenav={mode === 'vertical'} />
+          </Row>
         </Menu.Item>
       </Menu>
     )
