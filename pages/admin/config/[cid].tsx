@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const session = await getSession(context)
 
-  if (!session.user.admin) {
+  if (session.role !== 'admin') {
     return {
       redirect: {
         destination: '/',
@@ -62,7 +62,7 @@ const ConfigEdit = ({ pageConfig }: { pageConfig: any }): JSX.Element => {
 
   const savePageConfig = (configUpdate: string): void => {
     request
-      .post('/api/page/save')
+      .post('/api/admin/page/save')
       .type('json')
       .accept('json')
       .send({

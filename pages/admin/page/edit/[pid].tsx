@@ -23,18 +23,27 @@ const CodeEditor = dynamic(
 )
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const cid = context.query.cid as string
-  const pageConfig = await PageModel.getPageConfigs([cid])[0]
+  const pid = context.params.pid as string
 
   const session = await getSession(context)
-
-  if (!session.user.admin) {
+  if (session.role !== 'admin') {
     return {
       redirect: {
         destination: '/',
         permanent: false
       }
     }
+  }
+  let pageConfig = {
+    components: []
+  }
+  try {
+    const results = await PageModel.getPageConfigs([pid])
+    if (results) {
+      pageConfig = results[pid]
+    }
+  } catch (err) {
+    console.error(err)
   }
 
   if (!pageConfig) {
@@ -53,22 +62,22 @@ const PageEdit = ({ pageConfig }: { pageConfig: any }): JSX.Element => {
   const router = useRouter()
   const { pid } = router.query
   const { t } = useT()
-  const [config, setConfig] = useState(null)
+  const [config, setConfig] = useState(pageConfig)
   const [editingComponent, setEditingComponent] = useState(null)
 
   useEffect(() => {
-    if (!config && pageConfig) {
-      if (!pageConfig.components) pageConfig.components = []
-      pageConfig.components.map((c) => {
+    if (config) {
+      if (!config.components) config.components = []
+      config.components.map((c) => {
         if (!c.id) c.id = shortid()
       })
-      setConfig(pageConfig)
+      setConfig(config)
     }
-  }, [pageConfig, config])
+  }, [config])
 
   const savePageConfig = (configUpdate: string): void => {
     request
-      .post('/api/page/save')
+      .post('/api/admin/page/save')
       .type('json')
       .accept('json')
       .send({
@@ -81,7 +90,7 @@ const PageEdit = ({ pageConfig }: { pageConfig: any }): JSX.Element => {
           err,
 
           onSuccess: () => {
-            setConfig(configUpdate)
+            setConfig(JSON.parse(configUpdate))
 
             if (err) {
               notification.error({
@@ -174,12 +183,13 @@ const PageEdit = ({ pageConfig }: { pageConfig: any }): JSX.Element => {
                 <CodeEditor
                   id='layer-style-editor'
                   mode='json'
-                  initialCode={JSON.stringify(config, undefined, 2)}
+                  initialCode={JSON.stringify(config)}
                   title={t('Editing Page Config: ') + pid}
                   onSave={savePageConfig}
                   modal={false}
                   visible
                 />
+                {JSON.stringify(config)}
               </Row>
             </Col>
             <Col
@@ -189,44 +199,38 @@ const PageEdit = ({ pageConfig }: { pageConfig: any }): JSX.Element => {
                 padding: '20px'
               }}
             >
-              <ErrorBoundary t={t}>
-                <Row
-                  style={{
-                    height: '100%'
-                  }}
-                >
-                  {editingComponent && editingComponent.type === 'html' && (
-                    <LocalizedCodeEditor
-                      id='component-html-editor'
-                      mode='html'
-                      initialLocalizedCode={editingComponent.html}
-                      title={`Editing ${editingComponent.id}`}
-                      onSave={(html) => {
-                        editingComponent.html = html
-                        updateComponent(editingComponent)
-                      }}
-                    />
-                  )}
-                  {editingComponent && editingComponent.type !== 'html' && (
-                    <CodeEditor
-                      visible
-                      id='component-config-editor'
-                      mode='json'
-                      initialCode={JSON.stringify(
-                        editingComponent,
-                        undefined,
-                        2
-                      )}
-                      title={`Editing ${editingComponent.id}`}
-                      onSave={(json) => {
-                        updateComponent(editingComponent)
-                      }}
-                      modal={false}
-                    />
-                  )}
-                  {!editingComponent && <Empty />}
-                </Row>
-              </ErrorBoundary>
+              <Row
+                style={{
+                  height: '100%'
+                }}
+              >
+                {editingComponent && editingComponent.type === 'html' && (
+                  <LocalizedCodeEditor
+                    id='component-html-editor'
+                    mode='html'
+                    initialLocalizedCode={editingComponent.html}
+                    title={`Editing ${editingComponent.id}`}
+                    onSave={(html) => {
+                      editingComponent.html = html
+                      updateComponent(editingComponent)
+                    }}
+                  />
+                )}
+                {editingComponent && editingComponent.type !== 'html' && (
+                  <CodeEditor
+                    visible
+                    id='component-config-editor'
+                    mode='json'
+                    initialCode={JSON.stringify(editingComponent, undefined, 2)}
+                    title={`Editing ${editingComponent.id}`}
+                    onSave={(json) => {
+                      updateComponent(JSON.parse(json))
+                    }}
+                    modal={false}
+                  />
+                )}
+                {!editingComponent && <Empty />}
+              </Row>
             </Col>
           </Row>
         </div>

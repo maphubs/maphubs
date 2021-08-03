@@ -93,7 +93,6 @@ const CodeEditor = ({
   return modal ? (
     <>
       <style jsx global>
-        {' '}
         {`
           .ant-modal-content {
             height: 100%;
