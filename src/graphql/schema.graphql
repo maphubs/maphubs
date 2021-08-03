@@ -124,7 +124,7 @@ type Query {
   homeConfig: JSON
 }
 
-type Mutation = {
+type Mutation {
   # groups
   createGroup(group_id: String!, name: JSON, description: JSON): Boolean
   saveGroup(group_id: String!, name: JSON, description: JSON): Boolean
@@ -135,7 +135,4 @@ type Mutation = {
   setGroupImage(group_id: String!, image: String!, info: JSON): Boolean
 
   # Maps
-
 }
-
-

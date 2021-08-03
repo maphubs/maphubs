@@ -1,3 +1,4 @@
+import { User } from 'next-auth'
 import UserModel from '../models/user'
 import { Context } from '../types/graphqlContext'
 
@@ -5,10 +6,7 @@ const isAdmin = (user: Context['user']): boolean => {
   return user?.role === 'admin'
 }
 
-const isMember = async (user: {
-  sub?: number | string
-  id?: number
-}): Promise<string | void> => {
+const isMember = async (user: User): Promise<boolean> => {
   let sub: number
 
   if (user?.sub && typeof user.sub === 'string') {
@@ -16,17 +14,10 @@ const isMember = async (user: {
   }
 
   // get the user
-  const dbUser = await UserModel.getUser(sub || user.id) // object passed in may be the session or the jwt, the jwt uses "sub" for the id
+  const dbUser = await UserModel.byID(sub || (user.id as number)) // *object passed in may be the session or the jwt, the jwt uses "sub" for the id
 
-  if (dbUser) {
-    // is their account active
-    const isActive = dbUser.account?.active
-
-    if (isActive) {
-      // account is active, now get their pricing tier
-      const tier = dbUser.account?.pricing?.tier
-      return tier
-    }
+  if (dbUser && (dbUser.role === 'member' || dbUser.role === 'admin')) {
+    return true
   }
 
   return
@@ -34,13 +25,11 @@ const isMember = async (user: {
 
 const isMemberEmail = async (email: string): Promise<boolean> => {
   // get the user
-  const dbUser = await UserModel.getUserByEmail(email) // object passed in may be the session or the jwt, the jwt uses "sub" for the id
+  const dbUser = await UserModel.byEmail(email)
 
   if (dbUser) {
-    // is their account active
-    return dbUser.account?.active
+    return true
   }
-
   return false
 }
 

@@ -29,7 +29,6 @@ import type { Layer } from '../../../src/types/layer'
 import type { Group } from '../../../src/types/group'
 import { checkClientError } from '../../../src/services/client-error-response'
 import useT from '../../../src/hooks/useT'
-import { MapHubsUserSession } from '../../../src/types/user-session'
 
 import { useDispatch, useSelector } from '../../../src/redux/hooks'
 import {
@@ -104,7 +103,7 @@ const LayerAdmin = ({
   const { style, labels, legend_html, preview_position, presets } =
     useSelector(selectMapStyle)
 
-  const user = session.user as MapHubsUserSession
+  const user = session.user
 
   useEffect(() => {
     dispatch(loadLayer(layer))
@@ -464,7 +463,7 @@ const LayerAdmin = ({
                   <LayerStyle onSubmit={onSave} mapConfig={mapConfig} />
                 </Row>
               </TabPane>
-              {user?.admin && (
+              {user.role === 'admin' && (
                 <TabPane
                   tab={t('Admin Only')}
                   key='admin'

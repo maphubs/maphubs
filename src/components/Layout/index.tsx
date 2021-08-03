@@ -1,11 +1,10 @@
 import React from 'react'
-import Header, { HeaderConfig } from '../header'
-import Footer, { FooterConfig } from '../footer'
-import Head from 'next/head'
 import useSWR from 'swr'
 import { useSession } from 'next-auth/client'
-import { signin } from 'next-auth/client'
 import useStickyResult from '../../hooks/useStickyResult'
+import LayoutSSR from './LayoutSSR'
+import { HeaderConfig } from '../header'
+import { FooterConfig } from '../footer'
 
 type Props = {
   title?: string
@@ -37,41 +36,22 @@ const Layout = ({
   } = useStickyResult(data) || { pageConfig: null }
   if (loading) return <></>
 
-  // redirect to login if not signed in, prevents displaying an error when data fails to load
-  // for public shared maps we need to by-pass this check
-  if (
-    !session?.user &&
-    !publicShare &&
-    process.env.NEXT_PUBLIC_REQUIRE_LOGIN === 'true'
-  ) {
-    signin()
-    return (
-      <div>
-        <Head>
-          <title>{`${title} - ${process.env.NEXT_PUBLIC_PRODUCT_NAME}`}</title>
-        </Head>
-      </div>
-    )
-  }
-
   const { pageConfig } = stickyData || {}
 
   const { headerConfig, footerConfig } = pageConfig || {}
 
   return (
     <>
-      <header>
-        <Head>
-          <title>{title}</title>
-        </Head>
-        <Header activePage={activePage} {...headerConfig} />
-      </header>
-      <main>{children}</main>
-      {!hideFooter && (
-        <footer>
-          <Footer {...footerConfig} />
-        </footer>
-      )}
+      <LayoutSSR
+        headerConfig={headerConfig}
+        footerConfig={footerConfig}
+        title={title}
+        activePage={activePage}
+        publicShare={publicShare}
+        hideFooter={hideFooter}
+      >
+        {children}
+      </LayoutSSR>
     </>
   )
 }

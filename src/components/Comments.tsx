@@ -1,20 +1,15 @@
 import React, { useEffect } from 'react'
 import { useSession } from 'next-auth/client'
 
-const Comments = (): JSX.Element => {
+const Comments = ({ coral_jwt }: { coral_jwt?: string }): JSX.Element => {
   const [session, loading] = useSession()
-
-  let user
-  if (!loading) {
-    user = session.user
-  }
 
   useEffect(() => {
     // eslint-disable-next-line no-undef
-    if (Coral && user) {
+    if (Coral) {
       // eslint-disable-next-line no-undef
       Coral.createStreamEmbed({
-        accessToken: user.coral_jwt,
+        accessToken: coral_jwt,
         id: 'coral-comments',
         autoRender: true,
         rootURL: process.env.NEXT_PUBLIC_CORAL_TALK_HOST // Uncomment these lines and replace with the ID of the
@@ -26,7 +21,7 @@ const Comments = (): JSX.Element => {
         // storyURL: '${storyURL}',
       })
     }
-  }, [user])
+  }, [coral_jwt])
 
   return (
     <div

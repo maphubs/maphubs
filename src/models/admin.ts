@@ -175,21 +175,6 @@ export default {
       .orderBy('users.id')
   },
 
-  getAdmins(trx?: Knex.Transaction): any {
-    const db = trx || knex
-    return db('omh.admins')
-      .leftJoin('users', 'omh.admins.user_id', 'users.id')
-      .select('users.id', 'users.email', 'users.display_name')
-  },
-
-  deauthorize(email: string, key: string, trx?: Knex.Transaction): any {
-    const db = trx || knex
-    return db('omh.account_invites').del().where({
-      email,
-      key
-    })
-  },
-
   async checkAdmin(userId: number, trx?: Knex.Transaction): Promise<boolean> {
     const db = trx || knex
     const result = await db('omh.admins').select('user_id').where({

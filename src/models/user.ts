@@ -1,129 +1,127 @@
 import knex from '../connection'
+import { User } from '../types/user'
 
+import nextAuthInvite from '../auth/invite-user'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import SlackNotify from 'slack-notify'
+import { Knex } from 'knex'
 
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-const debug = DebugService('models/user')
+const usersSelect = (db: Knex) => {
+  return db<User>('nextauth_users').select(
+    'nextauth_users.id',
+    'nextauth_users.email',
+    'nextauth_users.role',
+    'nextauth_users.terms_accepted',
+    'nextauth_users.config'
+  )
+}
 
 export default {
-  /**
-   * Get data about the current user
-   * @param id
-   * @returns {Promise.<T>}
-   */
-  async getUser(id: number, secure = false): Promise<any> {
-    debug.log('getting for id: ' + id)
-    let user: {
-      creation_ip?: string
-      new_email?: string
-      pass_crypt?: string
-      pass_reset?: string
-    } = {}
-    const result = await knex('users').where('id', id)
+  async all(): Promise<User[]> {
+    return usersSelect(knex).orderBy('nextauth_users.email')
+  },
 
-    if (!result || result.length !== 1) {
-      throw new Error('User not found')
-    } else {
-      user = result[0]
+  async byID(id: number): Promise<User | void> {
+    const result = await usersSelect(knex).where('nextauth_users.id', id)
 
-      if (!secure) {
-        // exclude sensitive info
-        delete user.creation_ip
-        delete user.new_email
-        delete user.pass_crypt
-        delete user.pass_reset
-      }
-
-      return user
+    if (result && result.length > 0) {
+      return result[0]
     }
   },
 
-  async getUserByName(display_name: string, secure = false): Promise<any> {
-    debug.log('getting user with name: ' + display_name)
-    display_name = display_name.toLowerCase()
-    const result = await knex('users').where(
-      knex.raw('lower(display_name)'),
-      '=',
-      display_name
+  async byEmail(email: string): Promise<User | void> {
+    const emailLower = email.toLowerCase()
+    const result = await usersSelect(knex).where(
+      'nextauth_users.email',
+      emailLower
     )
 
-    if (result && result.length === 1) {
-      const user = result[0]
-
-      if (!secure) {
-        // exclude sensitive info
-        delete user.creation_ip
-        delete user.new_email
-        delete user.pass_crypt
-        delete user.pass_reset
-      }
-
-      return user
-    } else {
-      log.warn('user not found: ' + display_name)
-      return null
+    if (result && result.length > 0) {
+      return result[0]
     }
   },
 
-  async getUserByEmail(email: string, secure = false): Promise<any> {
-    debug.log('getting user with email: ' + email)
-    email = email.toLowerCase()
-    const result = await knex('users').where(
-      knex.raw('lower(email)'),
-      '=',
-      email
-    )
-
-    if (result && result.length === 1) {
-      const user = result[0]
-
-      if (!secure) {
-        // exclude sensitive info
-        delete user.creation_ip
-        delete user.new_email
-        delete user.pass_crypt
-        delete user.pass_reset
-      }
-
-      return user
-    } else if (result && result.length > 1) {
-      const msg = 'found multiple users with email: ' + email
-      log.error(msg)
-      throw new Error(msg)
-    } else {
-      const msg = 'email not found: ' + email
-      log.error(msg)
-      return null
-    }
+  async byOrganization(organization_id: string): Promise<User[]> {
+    return usersSelect(knex)
+      .join(
+        'organization_members',
+        'nextauth_users.id',
+        'organization_members.user_id'
+      )
+      .where('organization_members.organization_id', organization_id)
+      .orderBy('nextauth_users.email')
   },
 
-  async createUser(
-    email: string,
-    name: string,
-    display_name: string,
-    creation_ip: string
-  ): Promise<number> {
+  async inviteUser(email: string): Promise<User | void> {
+    // force email to lower case
     email = email.toLowerCase()
-    display_name = display_name.toLowerCase()
-    const user_id: string = await knex('users')
-      .returning('id')
-      .insert({
-        email,
-        display_name,
-        name,
-        pass_crypt: '1234',
-        // note, this is immediately replaced, value here is just due to not null constraint
-        creation_ip,
-        creation_time: knex.raw('now()')
+    log.info(`inviting user ${email}`)
+    // check if we have a local user
+    let localUser = await this.byEmail(email)
+    if (localUser) throw new Error('A user with this email already exists')
+    log.info('Not an existing user')
+    // send invite with next-auth (which creates the user)
+    try {
+      await nextAuthInvite(email, name)
+    } catch (err) {
+      log.error(err)
+      throw new Error('failed to send user invite')
+    }
+
+    localUser = await this.byEmail(email)
+    if (!localUser) throw new Error('User not found in DB after email sent')
+    log.info('Invite email sent')
+
+    log.info('Basic user invite complete!')
+    return this.byID(localUser.id)
+  },
+
+  async saveTermsAccepted(id: number): Promise<boolean> {
+    await usersSelect(knex)
+      .update({
+        terms_accepted: true
       })
-    return Number.parseInt(user_id, 10)
+      .where('nextauth_users.id', id)
+    const user = await this.byID(id)
+    if (process.env.SLACK_WEBHOOK) {
+      const slack = SlackNotify(process.env.SLACK_WEBHOOK)
+      await new Promise((resolve, reject) => {
+        const alert = {
+          text: `New User Login ${process.env.NEXT_PUBLIC_PRODUCT_NAME}`,
+          icon_emoji: ':earth_asia:',
+          attachments: [
+            {
+              fallback: 'Unknown Error',
+              color: '#1dcb1d',
+              fields: [
+                {
+                  title: 'ID',
+                  value: user.id
+                },
+                {
+                  title: 'Email',
+                  value: user.email
+                }
+              ]
+            }
+          ]
+        }
+
+        slack.alert(alert, function (err) {
+          if (err) {
+            console.error('failed to send Slack notication on error')
+            reject(err)
+          } else {
+            resolve(true)
+          }
+        })
+      })
+    }
+    return true
   },
 
-  getSearchSuggestions(input: string): any {
-    input = input.toLowerCase()
-    return knex
-      .select('display_name', 'id')
-      .table('users')
-      .where(knex.raw('lower(display_name)'), 'like', '%' + input + '%')
+  async delete(id: number): Promise<boolean> {
+    await knex('nextauth_users').where('nextauth_users.id', id).del()
+    return true
   }
 }

@@ -6,7 +6,6 @@ import jwt from 'next-auth/jwt'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
 import type { NextApiHandler } from 'next'
-import local from '../../src/config'
 
 const signingKey = process.env.JWT_SIGNING_PRIVATE_KEY
 let schema = ''

@@ -67,19 +67,11 @@ export const UserSchema = {
       updateDate: true
     },
     // our custom properties
-    portfolioId: {
-      type: 'text',
-      nullable: true
-    },
-    accountId: {
-      type: 'text',
-      nullable: true
-    },
     role: {
       type: 'text',
       nullable: true
     },
-    admin: {
+    termsAccepted: {
       type: 'boolean',
       nullable: true
     }

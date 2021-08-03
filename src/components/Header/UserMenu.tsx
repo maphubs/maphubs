@@ -4,7 +4,7 @@ import useT from '../../hooks/useT'
 import { Menu, Dropdown, Divider, Button } from 'antd'
 import UserIcon from '../user/UserIcon'
 import urlencode from 'urlencode'
-import { signin, signout } from 'next-auth/client'
+import { signout } from 'next-auth/client'
 
 const UserMenu = ({ sidenav }: { sidenav?: boolean }): JSX.Element => {
   const { t } = useT()
@@ -60,7 +60,14 @@ const UserMenu = ({ sidenav }: { sidenav?: boolean }): JSX.Element => {
           }}
         />
         <Menu.Item>
-          <a href='/logout'>{t('Logout')}</a>
+          <a
+            onClick={(e) => {
+              e.preventDefault()
+              signout()
+            }}
+          >
+            {t('Logout')}
+          </a>
         </Menu.Item>
       </Menu>
     )
@@ -74,20 +81,19 @@ const UserMenu = ({ sidenav }: { sidenav?: boolean }): JSX.Element => {
         <Dropdown overlay={menu} trigger={['click']}>
           <a
             style={{
-              paddingTop: '7px',
               height: '50px',
               textAlign: sidenav ? 'left' : 'center'
             }}
             href='#'
           >
-            <UserIcon src={picture} t={t} />
+            <UserIcon src={picture} />
           </a>
         </Dropdown>
       </div>
     )
   } else {
     userMenu =
-      !process.env.NEXT_PUBLIC_MAPHUBS_PRO === 'true' ? (
+      process.env.NEXT_PUBLIC_MAPHUBS_PRO !== 'true' ? (
         <div className='login-with-signup'>
           <a
             className='login-with-signup-link'

@@ -9,12 +9,12 @@ const html = ({ url, email }) => {
   // like they are supposed to click on their email address to sign in.
   const escapedEmail = `${email.replace(/\./g, '&#8203;.')}`
   // Some simple styling options
-  const backgroundColor = '#1f1f1f'
-  const textColor = '#ffffff'
-  const mainBackgroundColor = '#4c4c4c'
-  const buttonBackgroundColor = '#d521d5'
-  const buttonBorderColor = '#ffffff'
-  const buttonTextColor = '#ffffff'
+  const backgroundColor = '#fff'
+  const textColor = '#212121'
+  const mainBackgroundColor = '#fff'
+  const buttonBackgroundColor = '#212121'
+  const buttonBorderColor = '#212121'
+  const buttonTextColor = '#fff'
   // Uses tables for layout and inline CSS due to email client limitations
   return `
 <body style="background: ${backgroundColor};">
@@ -58,7 +58,11 @@ const html = ({ url, email }) => {
 // Email text body – fallback for email clients that don't render HTML
 const text = ({ url }) => `Login to MapHubs\n${url}\n\n`
 
-const sendVerificationRequest = ({ identifier: email, url, provider }) => {
+const sendVerificationRequest = ({
+  identifier: email,
+  url,
+  provider
+}): Promise<void> => {
   return new Promise((resolve, reject) => {
     const { server, from } = provider
     // Strip protocol from URL and use domain as site name

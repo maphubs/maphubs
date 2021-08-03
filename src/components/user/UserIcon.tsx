@@ -1,25 +1,27 @@
 import React from 'react'
 import { Avatar } from 'antd'
 import PersonIcon from '@material-ui/icons/Person'
+import useT from '../../hooks/useT'
 type Props = {
   src?: string
-  size?: number
-  t: (v: string) => string
 }
-const UserIcon = ({ size, src, t }: Props): JSX.Element => {
+const UserIcon = ({ src }: Props): JSX.Element => {
+  const { t } = useT()
+  const size = 24
+  const alt = t('User Profile Photo')
   return src ? (
-    <Avatar size={size || 32} src={src} alt={t('User Profile Photo')} />
+    <Avatar size={size} src={src} alt={alt} />
   ) : (
     <Avatar
       size={size}
       icon={
         <PersonIcon
           style={{
-            fontSize: `${size || 32}px`
+            fontSize: `${size}px`
           }}
         />
       }
-      alt={t('User Profile Photo')}
+      alt={alt}
     />
   )
 }

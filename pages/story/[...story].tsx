@@ -20,10 +20,13 @@ import { NextSeo } from 'next-seo'
 
 //SSR only
 import StoryModel from '../../src/models/story'
+import jwt from 'jsonwebtoken'
+import { v4 as uuidv4 } from 'uuid'
 
 type Props = {
   story: Story
   allowedToModifyStory: boolean
+  coral_jwt?: string
 }
 
 // use SSR for stories for SEO
@@ -43,15 +46,41 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       notFound: true
     }
   }
+
+  // add Coral Talk jwt
+  let coral_jwt
+  if (process.env.CORAL_TALK_SECRET) {
+    const token = jwt.sign(
+      {
+        user: {
+          id: session.user.id,
+          email: session.user.email,
+          username: undefined
+        }
+      },
+      process.env.CORAL_TALK_SECRET,
+      {
+        jwtid: uuidv4(),
+        expiresIn: '24h'
+      }
+    )
+    coral_jwt = token
+  }
+
   return {
     props: {
       story,
-      allowedToModifyStory
+      allowedToModifyStory,
+      coral_jwt
     }
   }
 }
 
-const StoryPage = ({ story, allowedToModifyStory }: Props): JSX.Element => {
+const StoryPage = ({
+  story,
+  allowedToModifyStory,
+  coral_jwt
+}: Props): JSX.Element => {
   const router = useRouter()
   const { t } = useT()
 
@@ -88,7 +117,7 @@ const StoryPage = ({ story, allowedToModifyStory }: Props): JSX.Element => {
         </Row>
         <Row>
           <ErrorBoundary t={t}>
-            <Comments />
+            <Comments coral_jwt={coral_jwt} />
           </ErrorBoundary>
         </Row>
       </div>

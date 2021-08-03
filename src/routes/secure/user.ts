@@ -1,31 +1,7 @@
 import User from '../../models/user'
 import { apiError, apiDataError } from '../../services/error-response'
-import pageOptions from '../../services/page-options-helper'
 
 export default function (app: any): void {
-  app.get('/user/profile', async (req, res) => {
-    if (!req.isAuthenticated || !req.isAuthenticated()) {
-      return res.redirect('/login')
-    }
-
-    const user = {
-      username: req.session.user._json.username,
-      email: req.session.user._json.email,
-      picture: req.session.user._json.picture
-    }
-    app.next.render(
-      req,
-      res,
-      '/auth0profile',
-      await pageOptions(req, {
-        title:
-          req.__('User Profile') + ' - ' + process.env.NEXT_PUBLIC_PRODUCT_NAME,
-        props: {
-          user
-        }
-      })
-    )
-  })
   app.get('/api/user/search/suggestions', (req, res) => {
     if (!req.query.q) {
       apiDataError(res)

@@ -4,7 +4,7 @@ import { randomBytes } from 'crypto'
 import parseUrl from '../../node_modules/next-auth/dist/lib/parse-url.js'
 import Providers from 'next-auth/providers'
 import nodemailer from 'nodemailer'
-import log from '../../lib/log'
+import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 
 // Email HTML body
 const html = ({ url, email }) => {

@@ -16,37 +16,21 @@ import {
   Table
 } from 'antd'
 import { MailFilled } from '@ant-design/icons'
-import request from 'superagent'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
-import WarningIcon from '@material-ui/icons/Warning'
-import DoneIcon from '@material-ui/icons/Done'
-import EmailIcon from '@material-ui/icons/Email'
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
-import LinkIcon from '@material-ui/icons/Link'
 import DeleteIcon from '@material-ui/icons/Delete'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import { checkClientError } from '../../src/services/client-error-response'
 import useT from '../../src/hooks/useT'
 
 import AdminModel from '../../src/models/admin'
+import { User } from '../../src/types/user'
 
 const { confirm } = Modal
 const { Title } = Typography
 
-type User = {
-  email: string
-  key: string
-  used: boolean
-  invite_email: string
-  display_name?: string
-  id?: number
-  admin?: boolean
-}
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context)
 
-  if (!session.user.admin) {
+  if (session.role !== 'admin') {
     return {
       redirect: {
         destination: '/',
@@ -83,52 +67,44 @@ const AdminUserInvite = ({
       }
     })
   }
-  const copyInviteLink = (user: User) => {
-    const baseUrl = urlUtil.getBaseUrl()
-    const url = `${baseUrl}/signup/invite/${user.key}`
-    navigator.clipboard.writeText(url)
-    message.info(t('Copied'))
-  }
-  const submitInvite = (user: User) => {
-    const email = user.email || user.invite_email
-    const closeMessage = message.loading(t('Sending'), 0)
-    request
-      .post('/admin/invite/send')
-      .type('json')
-      .accept('json')
-      .send({
-        email
-      })
-      .end((err, res) => {
-        checkClientError({
-          res,
-          err,
-          onError: (err) => {
-            const key = res.body.key
-            closeMessage()
 
-            if (err) {
-              notification.error({
-                message: t('Failed to Send Invite'),
-                description: err,
-                duration: 0
-              })
-            } else {
-              message.info(t('Invite Sent'), 3, () => {
-                const membersUpdate = [...members]
-                membersUpdate.push({
-                  email: user.email,
-                  invite_email: user.email,
-                  key,
-                  used: false
-                })
-                setMembers(membersUpdate)
-              })
-            }
-          }
+  const submitInvite = async (user: User) => {
+    const email = user.email
+    const closeMessage = message.loading(t('Sending'), 0)
+    try {
+      const response = await fetch('/admin/invite/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email
         })
       })
+      const result = await response.json()
+      message.info(t('Invite Sent'), 3, () => {
+        const membersUpdate = [...members]
+        membersUpdate.push({
+          id: result.id,
+          email: user.email,
+          role: 'member'
+        })
+        setMembers(membersUpdate)
+      })
+    } catch (err) {
+      notification.error({
+        message: t('Failed to Send Invite'),
+        description: err,
+        duration: 0
+      })
+    } finally {
+      closeMessage()
+    }
   }
+
+  /*
+  ! not currently supported
+  ? not sure if this possible in Next Auth without a hack
   const resendInvite = (user: User) => {
     const key = user.key
     const closeMessage = message.loading(t('Sending'), 0)
@@ -159,11 +135,12 @@ const AdminUserInvite = ({
         })
       })
   }
+ 
   const handleResendInvite = (user: User) => {
     confirm({
       title: t('Confirm Resend Email'),
       content: t(
-        `Are you sure you want to resend the invite email for ${user.invite_email}?`
+        `Are you sure you want to resend the invite email for ${user.email}?`
       ),
       okText: t('Send Invite'),
       okType: 'primary',
@@ -173,6 +150,7 @@ const AdminUserInvite = ({
       }
     })
   }
+  */
   const handleDeauthorize = (user: User) => {
     confirm({
       title: t('Confirm Deauthorize'),
@@ -187,106 +165,51 @@ const AdminUserInvite = ({
       }
     })
   }
-  const submitDeauthorize = (user: User) => {
+  const submitDeauthorize = async (user: User) => {
     const closeMessage = message.loading(t('Sending'), 0)
-    request
-      .post('/admin/invite/deauthorize')
-      .type('json')
-      .accept('json')
-      .send({
-        email: user.email,
-        key: user.key
-      })
-      .end((err, res) => {
-        checkClientError({
-          res,
-          err,
-          onError: (err) => {
-            closeMessage()
-
-            if (err) {
-              notification.error({
-                message: t('Failed to Deauthorize'),
-                description: err,
-                duration: 0
-              })
-            } else {
-              message.info(t('User Removed'), 3)
-              const membersUpdate = []
-
-              for (const member of members) {
-                if (member.key !== user.key) {
-                  members.push(member)
-                }
-              }
-              setMembers(membersUpdate)
-            }
-          }
+    try {
+      const response = await fetch('/admin/invite/deauthorize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email
         })
       })
+      const result = await response.json()
+      message.info(t('User Removed'), 3)
+      setMembers(members.filter((member) => member.id !== user.id))
+    } catch (err) {
+      notification.error({
+        message: t('Failed to Deauthorize'),
+        description: err,
+        duration: 0
+      })
+    } finally {
+      closeMessage()
+    }
   }
 
   const columns = [
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (text, record) => {
-        let status = 'Disabled'
-        let icon = (
-          <WarningIcon
-            style={{
-              color: 'red'
-            }}
-          />
-        )
-
-        if (record.key) {
-          if (record.used) {
-            status = 'Active'
-            icon = (
-              <DoneIcon
-                style={{
-                  color: 'green'
-                }}
-              />
-            )
-          } else {
-            status = 'Invite Sent'
-            icon = (
-              <EmailIcon
-                style={{
-                  color: 'orange'
-                }}
-              />
-            )
-          }
-        }
-
-        if (record.admin) {
-          status = 'Admin'
-          icon = (
-            <SupervisorAccountIcon
-              style={{
-                color: 'purple'
-              }}
-            />
-          )
-        }
-
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
+      render: (text) => {
         return (
           <span>
-            <Tooltip title={status} placement='bottom'>
-              {icon}
-            </Tooltip>
+            {text === 'admin' && (
+              <SupervisorAccountIcon
+                style={{
+                  color: 'purple'
+                }}
+              />
+            )}
+            {text}
           </span>
         )
       }
-    },
-    {
-      title: 'Username',
-      dataIndex: 'display_name',
-      key: 'username'
     },
     {
       title: 'Email',
@@ -295,11 +218,6 @@ const AdminUserInvite = ({
       render: (text, record) => (
         <span>{record.email || record.invite_email}</span>
       )
-    },
-    {
-      title: 'Invite Key',
-      key: 'key',
-      dataIndex: 'key'
     },
     {
       title: 'Action',
@@ -319,32 +237,6 @@ const AdminUserInvite = ({
           <span>
             {status !== 'Disabled' && status !== 'Admin' && (
               <>
-                <Tooltip title={t('Resend Invite')} placement='bottom'>
-                  <a
-                    onClick={() => {
-                      handleResendInvite(record)
-                    }}
-                  >
-                    <EmailIcon
-                      style={{
-                        cursor: 'pointer'
-                      }}
-                    />
-                  </a>
-                </Tooltip>
-                <Tooltip title={t('Copy Invite Link')} placement='bottom'>
-                  <a
-                    onClick={() => {
-                      copyInviteLink(record)
-                    }}
-                  >
-                    <LinkIcon
-                      style={{
-                        cursor: 'pointer'
-                      }}
-                    />
-                  </a>
-                </Tooltip>
                 <Tooltip title={t('Remove User')} placement='bottom'>
                   <a
                     onClick={() => {
