@@ -4,11 +4,12 @@ import useT from '../../hooks/useT'
 import { Menu, Dropdown, Divider, Button } from 'antd'
 import UserIcon from '../user/UserIcon'
 import urlencode from 'urlencode'
-import { signout } from 'next-auth/client'
+import { signout, useSession } from 'next-auth/client'
 
 const UserMenu = ({ sidenav }: { sidenav?: boolean }): JSX.Element => {
   const { t } = useT()
   const router = useRouter()
+  const [session] = useSession()
   const loginClick = (): void => {
     router.push('/login?returnTo=' + urlencode(window.location.href))
   }
@@ -18,27 +19,22 @@ const UserMenu = ({ sidenav }: { sidenav?: boolean }): JSX.Element => {
     return <></>
   }
 
-  const user = {
-    admin: true,
-    picture: null,
-    display_name: 'TEST USER'
-  }
   let userMenu
 
-  if (user) {
-    const { admin, picture, display_name } = user
+  if (session) {
+    const { role, image } = session
     const menu = (
       <Menu>
         <Menu.Item>
-          <a href={`/user/${display_name}/maps`}>{t('My Maps')}</a>
+          <a href={`/user/maps`}>{t('My Maps')}</a>
         </Menu.Item>
         <Menu.Item>
-          <a href={`/user/${display_name}/groups`}>{t('My Groups')}</a>
+          <a href={`/user/groups`}>{t('My Groups')}</a>
         </Menu.Item>
         <Menu.Item>
           <a href='/user/profile'>{t('Settings')}</a>
         </Menu.Item>
-        {admin && (
+        {role === 'admin' && (
           <>
             <Divider
               style={{
@@ -86,7 +82,7 @@ const UserMenu = ({ sidenav }: { sidenav?: boolean }): JSX.Element => {
             }}
             href='#'
           >
-            <UserIcon src={picture} />
+            <UserIcon src={image} />
           </a>
         </Dropdown>
       </div>

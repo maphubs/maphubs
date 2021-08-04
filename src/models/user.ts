@@ -62,7 +62,8 @@ export default {
     log.info('Not an existing user')
     // send invite with next-auth (which creates the user)
     try {
-      await nextAuthInvite(email, name)
+      await nextAuthInvite(email, email)
+      await this.setRole(email, 'member')
     } catch (err) {
       log.error(err)
       throw new Error('failed to send user invite')
@@ -117,6 +118,13 @@ export default {
         })
       })
     }
+    return true
+  },
+
+  async setRole(email: string, role: string): Promise<boolean> {
+    await knex('nextauth_users')
+      .where('nextauth_users.email', email)
+      .update({ role })
     return true
   },
 

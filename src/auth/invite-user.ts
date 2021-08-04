@@ -1,10 +1,11 @@
 import Adapters from 'next-auth/adapters'
 import Models from './models'
 import { randomBytes } from 'crypto'
-import parseUrl from '../../node_modules/next-auth/dist/lib/parse-url.js'
+import parseUrl from '../../node_modules/next-auth/dist/lib/parse-url'
 import Providers from 'next-auth/providers'
 import nodemailer from 'nodemailer'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
+import config from './config'
 
 // Email HTML body
 const html = ({ url, email }) => {
@@ -14,12 +15,12 @@ const html = ({ url, email }) => {
   // like they are supposed to click on their email address to sign in.
   const escapedEmail = `${email.replace(/\./g, '&#8203;.')}`
   // Some simple styling options
-  const backgroundColor = '#1f1f1f'
-  const textColor = '#ffffff'
-  const mainBackgroundColor = '#4c4c4c'
-  const buttonBackgroundColor = '#d521d5'
-  const buttonBorderColor = '#ffffff'
-  const buttonTextColor = '#ffffff'
+  const backgroundColor = '#fff'
+  const textColor = '#212121'
+  const mainBackgroundColor = '#fff'
+  const buttonBackgroundColor = '#212121'
+  const buttonBorderColor = '#212121'
+  const buttonTextColor = '#fff'
   // Uses tables for layout and inline CSS due to email client limitations
   return `
 <body style="background: ${backgroundColor};">
@@ -46,8 +47,8 @@ const html = ({ url, email }) => {
       </td>
     </tr>
     <tr>
-      <td align="center" style="padding: 0px 0px 10px 0px; font-size: 16px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-        Or copy this link into your browser: <a target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; color: ${buttonTextColor}; ">${url}</a> 
+      <td align="center" style="padding: 0px 0px 10px 0px; font-size: 16px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: #212121;">
+        Or copy this link into your browser: <a target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; color: #212121; ">${url}</a> 
       </td>
     </tr>
      <tr>
@@ -75,7 +76,7 @@ const provider = Providers.Email({
     }
   },
   from: 'MapHubs <info@maphubs.com>',
-  maxAge: 24 * 60 * 60 * 60,
+  ...config,
   // 24 hours/day * 60 minutes/hour * 60 seconds/minute * 60 days =  60 days in seconds
   sendVerificationRequest: ({
     identifier: email,
@@ -96,12 +97,10 @@ const provider = Providers.Email({
           subject: `Welcome to ${site}`,
           text: text({
             url,
-            site,
-            email
+            site
           }),
           html: html({
             url,
-            site,
             email
           })
         },
@@ -126,28 +125,33 @@ const adapter = Adapters.TypeORM.Adapter(
   }
 )
 
-const inviteUser = async (email, name) => {
-  const adapterInstance = await adapter.getAdapter({
-    logger: {
-      debug: (val) => {
-        log.debug(val)
-      },
-      error: (val) => {
-        log.error(val)
-      },
-      warn: (val) => {
-        log.warn(val)
-      }
-    }
-  })
+const inviteUser = async (email: string, name: string) => {
+  log.info('auth invite user')
+  let adapterInstance
+  try {
+    adapterInstance = await adapter.getAdapter(config)
+  } catch (err) {
+    log.error(err)
+    console.log(adapter)
+    console.log(err)
+    log.error('failed to get nextauth adapter')
+  }
   const { createUser, getUserByEmail, createVerificationRequest } =
     adapterInstance
-  // check if the user already exists
-  const userByEmail = email ? await getUserByEmail(email) : null
 
+  // check if the user already exists
+  log.info('check if user exists')
+  let userByEmail
+  try {
+    userByEmail = email ? await getUserByEmail(email) : null
+  } catch (err) {
+    log.error(err)
+  }
   if (userByEmail) {
     throw new Error('A user with this email already exists')
   } else {
+    log.info('creating new user')
+    console.log('creating new user')
     // create the user
     const currentDate = new Date()
     const user = await createUser({
@@ -170,6 +174,10 @@ const inviteUser = async (email, name) => {
     )}?email=${encodeURIComponent(email)}&token=${encodeURIComponent(
       token
     )}&callbackUrl=${encodeURIComponent(`${baseUrl}`)}`
+    console.log(email)
+    console.log(url)
+    console.log(secret)
+    console.log(provider)
     return createVerificationRequest(email, url, token, secret, provider)
   }
 }

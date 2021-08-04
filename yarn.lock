@@ -2122,6 +2122,15 @@
     require_optional "^1.0.1"
     typeorm "^0.2.30"
 
+"@next-auth/typeorm-legacy-adapter@^0.0.2-canary.218":
+  version "0.0.2-canary.218"
+  resolved "https://registry.yarnpkg.com/@next-auth/typeorm-legacy-adapter/-/typeorm-legacy-adapter-0.0.2-canary.218.tgz#32686992d245f5e5dfbe4283ee3e17e82b0fb8ae"
+  integrity sha512-NuuN72WV05E6wATvz294MDOtLhHLUKIltyCnT++eGOUJUae9jSsaZTvWCvNOTDLGDXgPcCWs8W9f/N06EJr1/Q==
+  dependencies:
+    "@babel/runtime" "^7.14.0"
+    require_optional "^1.0.1"
+    typeorm "^0.2.30"
+
 "@next/env@11.0.1":
   version "11.0.1"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-11.0.1.tgz#6dc96ac76f1663ab747340e907e8933f190cc8fd"

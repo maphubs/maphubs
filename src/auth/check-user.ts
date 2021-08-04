@@ -1,8 +1,7 @@
 import { User } from 'next-auth'
 import UserModel from '../models/user'
-import { Context } from '../types/graphqlContext'
 
-const isAdmin = (user: Context['user']): boolean => {
+const isAdmin = (user: User): boolean => {
   return user?.role === 'admin'
 }
 

@@ -1,8 +1,8 @@
 import type { NextApiHandler } from 'next'
 import jwt from 'next-auth/jwt'
-import { isAdmin } from '../../../../src/auth/check-user'
-import PageModel from '../../../../src/models/page'
 import { apiDataError, apiError } from '../../../../src/services/error-response'
+import { isAdmin } from '../../../../src/auth/check-user'
+import UserModel from '../../../../src/models/user'
 
 const signingKey = process.env.JWT_SIGNING_PRIVATE_KEY
 
@@ -14,21 +14,12 @@ const handler: NextApiHandler = async (req, res) => {
   try {
     const data = req.body
 
-    if (data && data.page_id && data.pageConfig) {
+    if (data?.email) {
       if (isAdmin(user)) {
-        const result = await PageModel.savePageConfig(
-          data.page_id,
-          data.pageConfig
-        )
-
-        return result
-          ? res.status(200).json({
-              success: true
-            })
-          : res.status(200).json({
-              success: false,
-              error: 'Failed to Save Page'
-            })
+        res.status(200).send({
+          success: true,
+          key: await UserModel.setRole(data.email, 'disabled')
+        })
       } else {
         return res.status(401).send('')
       }

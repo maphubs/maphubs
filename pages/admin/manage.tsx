@@ -4,6 +4,7 @@ import { GetServerSideProps } from 'next'
 import Formsy from 'formsy-react'
 import TextInput from '../../src/components/forms/textInput'
 import Layout from '../../src/components/Layout'
+import AutoSizer from 'react-virtualized-auto-sizer'
 import {
   Modal,
   Tooltip,
@@ -18,10 +19,12 @@ import {
 import { MailFilled } from '@ant-design/icons'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
+import AccountIcon from '@material-ui/icons/AccountCircle'
 import DeleteIcon from '@material-ui/icons/Delete'
+import BlockIcon from '@material-ui/icons/Block'
 import useT from '../../src/hooks/useT'
 
-import AdminModel from '../../src/models/admin'
+import UserModel from '../../src/models/user'
 import { User } from '../../src/types/user'
 
 const { confirm } = Modal
@@ -41,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      siteMembers: await AdminModel.getMembers()
+      siteMembers: await UserModel.all()
     }
   }
 }
@@ -72,7 +75,7 @@ const AdminUserInvite = ({
     const email = user.email
     const closeMessage = message.loading(t('Sending'), 0)
     try {
-      const response = await fetch('/admin/invite/send', {
+      const response = await fetch('/api/admin/invite/send', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -85,7 +88,7 @@ const AdminUserInvite = ({
       message.info(t('Invite Sent'), 3, () => {
         const membersUpdate = [...members]
         membersUpdate.push({
-          id: result.id,
+          id: result.user.id,
           email: user.email,
           role: 'member'
         })
@@ -94,7 +97,7 @@ const AdminUserInvite = ({
     } catch (err) {
       notification.error({
         message: t('Failed to Send Invite'),
-        description: err,
+        description: err.message,
         duration: 0
       })
     } finally {
@@ -168,18 +171,25 @@ const AdminUserInvite = ({
   const submitDeauthorize = async (user: User) => {
     const closeMessage = message.loading(t('Sending'), 0)
     try {
-      const response = await fetch('/admin/invite/deauthorize', {
+      const response = await fetch('/api/admin/invite/deauthorize', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          email
+          id: user.id
         })
       })
       const result = await response.json()
       message.info(t('User Removed'), 3)
-      setMembers(members.filter((member) => member.id !== user.id))
+      setMembers(
+        members.map((member) => {
+          if (member.id === user.id) {
+            member.role = 'disabled'
+          }
+          return member
+        })
+      )
     } catch (err) {
       notification.error({
         message: t('Failed to Deauthorize'),
@@ -193,7 +203,14 @@ const AdminUserInvite = ({
 
   const columns = [
     {
+      title: 'ID',
+      width: 50,
+      dataIndex: 'id',
+      key: 'id'
+    },
+    {
       title: 'Role',
+      width: 50,
       dataIndex: 'role',
       key: 'role',
       render: (text) => {
@@ -206,13 +223,27 @@ const AdminUserInvite = ({
                 }}
               />
             )}
-            {text}
+            {text === 'member' && (
+              <AccountIcon
+                style={{
+                  color: 'green'
+                }}
+              />
+            )}
+            {(!text || text === 'disabled') && (
+              <BlockIcon
+                style={{
+                  color: 'red'
+                }}
+              />
+            )}
           </span>
         )
       }
     },
     {
       title: 'Email',
+      width: 250,
       dataIndex: 'email',
       key: 'email',
       render: (text, record) => (
@@ -221,21 +252,12 @@ const AdminUserInvite = ({
     },
     {
       title: 'Action',
+      width: 100,
       key: 'action',
       render: (text, record) => {
-        let status = 'Disabled'
-
-        if (record.key) {
-          status = record.used ? 'Active' : 'Invite Sent'
-        }
-
-        if (record.admin) {
-          status = 'Admin'
-        }
-
         return (
           <span>
-            {status !== 'Disabled' && status !== 'Admin' && (
+            {record.role !== 'disabled' && record.role !== 'admin' && (
               <>
                 <Tooltip title={t('Remove User')} placement='bottom'>
                   <a
@@ -260,7 +282,7 @@ const AdminUserInvite = ({
   return (
     <ErrorBoundary t={t}>
       <Layout title={t('Manage Users')} hideFooter>
-        <div className='container'>
+        <div className='container' style={{ height: '100%' }}>
           <Title>{t('Manage Users')}</Title>
           <Row
             style={{
@@ -326,8 +348,28 @@ const AdminUserInvite = ({
               </Row>
             </Formsy>
           </Row>
-          <Row>
-            <Table columns={columns} dataSource={members} />
+          <Row style={{ height: 'calc(100% - 100px)' }}>
+            <AutoSizer>
+              {({ height, width }) => (
+                <div
+                  style={{
+                    height: `${height}px`,
+                    width: `${width}px`
+                  }}
+                >
+                  <Table
+                    columns={columns}
+                    dataSource={members}
+                    bordered
+                    size='small'
+                    scroll={{
+                      y: height - 100,
+                      x: width
+                    }}
+                  />
+                </div>
+              )}
+            </AutoSizer>
           </Row>
           <Row>
             <p>

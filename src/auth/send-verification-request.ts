@@ -41,8 +41,8 @@ const html = ({ url, email }) => {
       </td>
     </tr>
      <tr>
-      <td align="center" style="padding: 0px 0px 10px 0px; font-size: 16px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: ${textColor};">
-        Or copy this link into your browser: <a target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; color: ${buttonTextColor}; ">${url}</a> 
+      <td align="center" style="padding: 0px 0px 10px 0px; font-size: 16px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: #212121;">
+        Or copy this link into your browser: <a target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; color: #212121; ">${url}</a> 
       </td>
     </tr>
      <tr>
@@ -78,7 +78,6 @@ const sendVerificationRequest = ({
         }),
         html: html({
           url,
-          site,
           email
         })
       },
