@@ -396,7 +396,7 @@ export default {
     style: mapboxgl.Style,
     basemap: string,
     position: MapPosition,
-    title: string,
+    title: LocalizedString,
     settings: Record<string, unknown>,
     user_id: number,
     group_id: string,

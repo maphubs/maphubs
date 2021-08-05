@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
-import SearchBox from '../SearchBox'
+import SearchBox from '../../SearchBox'
 import { Row, Col, Divider, Select, message, notification } from 'antd'
-import CardCarousel from '../CardCarousel/CardCarousel'
+import CardCarousel from '../../CardCarousel/CardCarousel'
 import request from 'superagent'
-import { checkClientError } from '../../services/client-error-response'
-import cardUtil from '../../services/card-util'
+import { checkClientError } from '../../../services/client-error-response'
+import cardUtil from '../../../services/card-util'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import type { Layer } from '../../types/layer'
-import type { Group } from '../../stores/GroupStore'
-import { LocalizedString } from '../../types/LocalizedString'
+import { Layer } from '../../../types/layer'
+import { Group } from '../../../types/group'
+import useT from '../../../hooks/useT'
+
 const debug = DebugService('mapmaker/addlayerpanel')
 const { Option } = Select
 type Props = {
@@ -17,7 +18,6 @@ type Props = {
   popularLayers: Array<Layer>
   groups: Array<Group>
   onAdd: (...args: Array<any>) => any
-  t: (v: string | LocalizedString) => string
 }
 type State = {
   searchResults: Array<Layer>
@@ -26,12 +26,12 @@ type State = {
 }
 
 const AddLayerPanel = ({
-  t,
   myLayers,
   popularLayers,
   onAdd,
   groups
 }: Props): JSX.Element => {
+  const { t } = useT()
   const [searchState, setSearchState] = useState<State>({
     searchResults: [],
     searchActive: false,

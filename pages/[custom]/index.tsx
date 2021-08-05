@@ -13,7 +13,7 @@ import _shuffle from 'lodash.shuffle'
 import cardUtil from '../../src/services/card-util'
 
 import type { Layer } from '../../src/types/layer'
-import type { Group } from '../../src/stores/GroupStore'
+import type { Group } from '../../src/types/group'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import XComponentReact from '../../src/components/XComponentReact'
 import { Story } from '../../src/types/story'

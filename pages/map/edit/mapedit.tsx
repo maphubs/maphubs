@@ -13,7 +13,7 @@ import { Map } from '../../../src/types/map'
 
 import dynamic from 'next/dynamic'
 const MapMaker = dynamic(
-  () => import('../../../src/components/MapMaker/MapMaker'),
+  () => import('../../../src/components/Maps/MapMaker/MapMaker'),
   {
     ssr: false
   }

@@ -1,27 +1,31 @@
 import React, { useState } from 'react'
-import MapMakerActions from '../../actions/MapMakerActions'
 
-import type { MapMakerStoreState } from '../../stores/MapMakerStore'
 import { SettingOutlined } from '@ant-design/icons'
 import { Tooltip, Button } from 'antd'
 import dynamic from 'next/dynamic'
-import useT from '../../hooks/useT'
-const CodeEditor = dynamic(() => import('../LayerDesigner/CodeEditor'), {
+import useT from '../../../hooks/useT'
+
+import { useDispatch, useSelector } from '../redux/hooks'
+import { setSettings, MapMakerState } from '../redux/reducers/mapMakerSlice'
+
+const CodeEditor = dynamic(() => import('../../LayerDesigner/CodeEditor'), {
   ssr: false
 })
-type State = {
-  showSettingsEditor?: boolean
-} & MapMakerStoreState
 
 const MapSettingsPanel = (): JSX.Element => {
   const { t } = useT()
+  const dispatch = useDispatch()
   const [showSettingsEditor, setShowSettingsEditor] = useState(false)
+
+  const settings = useSelector(
+    (state: { mapMaker: MapMakerState }) => state.mapMaker.settings
+  )
 
   // TODO: MapMaker Redux State
 
-  const onSave = (settings: string): void => {
-    settings = JSON.parse(settings)
-    MapMakerActions.setSettings(settings)
+  const onSave = (settingsUpdate: string): void => {
+    const settingsUpdateJSON = JSON.parse(settingsUpdate)
+    dispatch(setSettings({ settings: settingsUpdateJSON }))
     setShowSettingsEditor(false)
   }
 

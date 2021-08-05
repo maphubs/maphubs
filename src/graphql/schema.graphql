@@ -135,4 +135,25 @@ type Mutation {
   setGroupImage(group_id: String!, image: String!, info: JSON): Boolean
 
   # Maps
+  createMap(
+    group_id: String!
+    layers: [Layer]
+    style: JSON
+    position: JSON
+    settings: JSON
+    basemap: String
+    title: JSON
+  ): Map
+  saveMap(
+    map_id: Int!
+    layers: [Layer]
+    style: JSON
+    position: JSON
+    settings: JSON
+    basemap: String
+    title: JSON
+  ): Boolean
+  deleteMap(map_id: Int!): Boolean
+  copyMap(map_id: Int!, group_id: String!, title: JSON): Map
+  setMapPublic(map_id: Int!, isPublic: Boolean): String
 }

@@ -1,11 +1,11 @@
 import React from 'react'
 import LayerListItem from './LayerListItem'
-import _isEqual from 'lodash.isequal'
 import { List, Empty } from 'antd'
 import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import update from 'react-addons-update'
-import { LocalizedString } from '../../types/LocalizedString'
+import useT from '../../../hooks/useT'
+
 type Props = {
   layers: Array<Record<string, any>>
   showVisibility?: boolean
@@ -19,7 +19,6 @@ type Props = {
   updateLayers: (...args: Array<any>) => void
   editLayer?: (...args: Array<any>) => void
   openAddLayer?: (...args: Array<any>) => void
-  t: (v: string | LocalizedString) => string
 }
 
 const LayerList = ({
@@ -34,9 +33,10 @@ const LayerList = ({
   removeFromMap,
   showLayerDesigner,
   editLayer,
-  t,
   openAddLayer
 }: Props): JSX.Element => {
+  const { t } = useT()
+
   const moveLayer = (dragIndex: any, hoverIndex: any) => {
     const dragLayer = layers[dragIndex]
     const updatedLayers = update(layers, {
@@ -93,7 +93,6 @@ const LayerList = ({
                   removeFromMap={removeFromMap}
                   showLayerDesigner={showLayerDesigner}
                   editLayer={editLayer}
-                  t={t}
                 />
               </List.Item>
             )}

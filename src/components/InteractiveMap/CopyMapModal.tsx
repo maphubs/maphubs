@@ -2,7 +2,7 @@ import React from 'react'
 import { useRouter } from 'next/router'
 import { Modal, message, notification } from 'antd'
 import superagent from 'superagent'
-import SaveMapPanel from '../MapMaker/SaveMapPanel'
+import SaveMapPanel from '../Maps/MapMaker/SaveMapPanel'
 import { LocalizedString } from '../../types/LocalizedString'
 import useT from '../../hooks/useT'
 type Props = {

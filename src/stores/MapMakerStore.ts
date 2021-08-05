@@ -1,4 +1,4 @@
-import MapStyles from '../components/Map/Styles'
+import MapStyles from '../Map/Styles'
 import Reflux from 'reflux'
 import Actions from '../actions/MapMakerActions'
 import type { Layer } from '../types/layer'
@@ -19,7 +19,6 @@ export type MapMakerStoreState = {
   mapStyle?: Record<string, any>
   position?: Record<string, any>
   settings?: Record<string, any>
-  isPrivate?: boolean
   owned_by_group_id?: string
   basemap?: string
   editingLayer?: boolean
@@ -35,184 +34,7 @@ export default class MapMakerStore extends Reflux.Store {
     this.listenables = Actions
   }
 
-  getDefaultState(): MapMakerStoreState {
-    return {
-      map_id: -1,
-      mapLayers: [],
-      settings: {},
-      mapStyle: {},
-      position: {},
-      isPrivate: false,
-      basemap: 'default',
-      editingLayer: false
-    }
-  }
-
-  reset(): void {
-    this.setState(this.getDefaultState())
-
-    if (this.state.mapLayers) {
-      this.updateMap(this.state.mapLayers)
-    }
-  }
-
-  storeDidUpdate(): void {
-    debug.log('store updated')
-  }
-
   // listeners
-  setMapLayers(mapLayers: Array<Layer>, update = true): void {
-    if (update) {
-      this.updateMap(mapLayers)
-    } else {
-      // treat as immutable and clone
-      mapLayers = JSON.parse(JSON.stringify(mapLayers))
-      this.setState({
-        mapLayers
-      })
-    }
-  }
-
-  setMapId(map_id: number): void {
-    this.setState({
-      map_id
-    })
-  }
-
-  setMapTitle(title: LocalizedString): void {
-    for (const key of Object.keys(title)) {
-      if (title[key]) {
-        title[key] = title[key].trim()
-      }
-    }
-    this.setState({
-      title
-    })
-  }
-
-  setPrivate(isPrivate: boolean): void {
-    this.setState({
-      isPrivate
-    })
-  }
-
-  setOwnedByGroupId(group_id: string): void {
-    this.setState({
-      owned_by_group_id: group_id
-    })
-  }
-
-  setMapPosition(position: Record<string, any>): void {
-    // treat as immutable and clone
-    position = JSON.parse(JSON.stringify(position))
-    this.setState({
-      position
-    })
-  }
-
-  setMapBasemap(basemap: string): void {
-    this.setState({
-      basemap
-    })
-  }
-
-  setSettings(settings: Record<string, any>): void {
-    // treat as immutable and clone
-    settings = JSON.parse(JSON.stringify(settings))
-    this.setState({
-      settings
-    })
-  }
-
-  addToMap(layer: Layer): boolean {
-    // check if the map already has this layer
-    if (
-      _find(this.state.mapLayers, {
-        layer_id: layer.layer_id
-      })
-    ) {
-      return false
-    } else {
-      // tell the map to make this layer visible
-      layer.style = MapStyles.settings.set(layer.style, 'active', true)
-      const layers = this.state.mapLayers
-
-      if (layers) {
-        layers.unshift(layer)
-        this.updateMap(layers)
-      }
-
-      return true
-    }
-  }
-
-  removeFromMap(layer: Layer): void {
-    const layers = _reject(this.state.mapLayers, {
-      layer_id: layer.layer_id
-    })
-
-    this.updateMap(layers)
-  }
-
-  toggleVisibility(layer_id: number, cb: (...args: Array<any>) => any): void {
-    const mapLayers = this.state.mapLayers
-
-    const index = _findIndex(mapLayers, {
-      layer_id
-    })
-
-    if (mapLayers) {
-      const layer = mapLayers[index]
-      let active = MapStyles.settings.get(layer.style, 'active')
-
-      if (active) {
-        layer.style = MapStyles.settings.set(layer.style, 'active', false)
-        active = false
-      } else {
-        layer.style = MapStyles.settings.set(layer.style, 'active', true)
-        active = true
-      }
-
-      if (layer.style?.layers) {
-        for (const styleLayer of layer.style.layers) {
-          if (!styleLayer.layout) {
-            styleLayer.layout = {}
-          }
-
-          styleLayer.layout.visibility = active ? 'visible' : 'none'
-        }
-      }
-
-      this.updateMap(mapLayers)
-    }
-
-    cb()
-  }
-
-  updateLayerStyle(
-    layer_id: number,
-    style: Record<string, any>,
-    labels: Record<string, any>,
-    legend: string,
-    cb: (...args: Array<any>) => any
-  ): void {
-    // treat as immutable and clone
-    style = JSON.parse(JSON.stringify(style))
-    labels = JSON.parse(JSON.stringify(labels))
-    const layers = JSON.parse(JSON.stringify(this.state.mapLayers))
-
-    const index = _findIndex(this.state.mapLayers, {
-      layer_id
-    })
-
-    if (layers) {
-      layers[index].style = style
-      layers[index].labels = labels
-      layers[index].legend_html = legend
-      this.updateMap(layers)
-      cb(layers[index])
-    }
-  }
 
   saveMap(
     title: LocalizedString,
@@ -261,7 +83,6 @@ export default class MapMakerStore extends Reflux.Store {
     position: Record<string, any>,
     basemap: string,
     group_id: string,
-    isPrivate: boolean,
     cb: (...args: Array<any>) => any
   ): void {
     // treat as immutable and clone
@@ -284,8 +105,7 @@ export default class MapMakerStore extends Reflux.Store {
         title,
         group_id,
         position,
-        basemap,
-        private: isPrivate
+        basemap
       })
       .end((err, res) => {
         checkClientError(res, err, cb, (cb) => {
@@ -296,44 +116,12 @@ export default class MapMakerStore extends Reflux.Store {
             map_id,
             position,
             basemap,
-            owned_by_group_id: group_id,
-            isPrivate
+            owned_by_group_id: group_id
           })
 
           cb()
         })
       })
-  }
-
-  // helpers
-  updateMap(mapLayers: Array<Layer>, rebuild = true): void {
-    // treat as immutable and clone
-    mapLayers = JSON.parse(JSON.stringify(mapLayers))
-
-    const mapStyle = rebuild
-      ? this.buildMapStyle(mapLayers)
-      : this.state.mapStyle
-
-    this.setState({
-      mapLayers,
-      mapStyle
-    })
-  }
-
-  buildMapStyle(layers: Array<Layer>): void {
-    return MapStyles.style.buildMapStyle(layers)
-  }
-
-  startEditing(): void {
-    this.setState({
-      editingLayer: true
-    })
-  }
-
-  stopEditing(): void {
-    this.setState({
-      editingLayer: false
-    })
   }
 
   deleteMap(map_id: number, cb: (...args: Array<any>) => any): void {

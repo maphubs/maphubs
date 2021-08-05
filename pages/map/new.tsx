@@ -1,19 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/router'
-import Layout from '../../../src/components/Layout'
+import Layout from '../../src/components/Layout'
 import slugify from 'slugify'
-import '../services/locales'
+import { message, notification } from 'antd'
 
-import ErrorBoundary from '../../../src/components/ErrorBoundary'
-import type { Layer } from '../../../src/types/layer'
-import type { Group } from '../../../src/stores/GroupStore'
+import ErrorBoundary from '../../src/components/ErrorBoundary'
+import type { Layer } from '../../src/types/layer'
+import type { Group } from '../../src/types/group'
 
-import { LocalizedString } from '../../../src/types/LocalizedString'
-import useT from '../../../src/hooks/useT'
+import { LocalizedString } from '../../src/types/LocalizedString'
+import useT from '../../src/hooks/useT'
 
 import dynamic from 'next/dynamic'
+import { MapMakerState } from '../../src/components/Maps/redux/reducers/mapMakerSlice'
 const MapMaker = dynamic(
-  () => import('../../../src/components/MapMaker/MapMaker'),
+  () => import('../../src/components/Maps/MapMaker/MapMaker'),
   {
     ssr: false
   }
@@ -29,6 +30,8 @@ type Props = {
 const NewMap = (): JSX.Element => {
   const { t } = useT()
   const router = useRouter()
+  const [saved, setSaved] = useState(false)
+
   /*
   constructor(props: Props) {
     super(props)
@@ -69,7 +72,27 @@ const NewMap = (): JSX.Element => {
         >
           <MapMaker
             mapConfig={mapConfig}
-            onCreate={mapCreated}
+            onSave={(mapMakerState: MapMakerState) => {
+              // TODO: call mutation to save map
+              setSaved(true)
+            }}
+            onCreate={(mapMakerState: MapMakerState) => {
+              // TODO: call mutation to create map
+            }}
+            onDelete={(map_id: number) => {
+              // TODO: call mutation to delete map
+              Actions.deleteMap(map_id, (err) => {
+                if (err) {
+                  notification.error({
+                    message: t('Error'),
+                    description: err.message || err.toString() || err,
+                    duration: 0
+                  })
+                } else {
+                  router.push('/maps')
+                }
+              })
+            }}
             popularLayers={popularLayers}
             myLayers={myLayers}
             editLayer={editLayer}
