@@ -1,9 +1,14 @@
 import React from 'react'
-import { Subscribe } from 'unstated'
 import { Modal, message, notification } from 'antd'
-import DataEditorContainer from '../Map/containers/DataEditorContainer'
 import MapToolButton from '../Map/MapToolButton'
-import useT from '../../hooks/useT'
+import useT from '../../../hooks/useT'
+import { useSelector, useDispatch } from '../redux/hooks'
+import {
+  undoEdit,
+  redoEdit,
+  stopEditing,
+  saveEdits
+} from '../redux/reducers/dataEditorSlice'
 
 const { confirm } = Modal
 type Props = {
@@ -16,25 +21,30 @@ const EditorToolButtons = ({
   onFeatureUpdate
 }: Props): JSX.Element => {
   const { t } = useT()
+  const dispatch = useDispatch()
 
-  const saveEdits = async (DataEditor: Record<string, any>): Promise<void> => {
+  const edits = useSelector((state) => state.dataEditor.edits)
+
+  const redo = useSelector((state) => state.dataEditor.redo)
+
+  const onSaveEdits = async () => {
     const closeMessage = message.loading(t('Saving'), 0)
-    await DataEditor.saveEdits((err) => {
+    try {
+      await dispatch(saveEdits(true)).unwrap()
+      message.success(t('Edits Saved'))
+    } catch (err) {
+      notification.error({
+        message: t('Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    } finally {
       closeMessage()
-
-      if (err) {
-        notification.error({
-          message: t('Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-      } else {
-        message.success(t('Edits Saved'))
-      }
-    })
+    }
   }
-  const stopEditing = (DataEditor: Record<string, any>): void => {
-    if (DataEditor.state.edits.length > 0) {
+
+  const onStopEditing = (): void => {
+    if (edits.length > 0) {
       confirm({
         title: t('Unsaved Edits'),
         content: t('Do you want to save your edits before exiting?'),
@@ -42,90 +52,73 @@ const EditorToolButtons = ({
         okType: 'primary',
         cancelText: t('Discard Edits'),
 
-        onOk() {
-          saveEdits(DataEditor)
-          DataEditor.stopEditing()
+        async onOk() {
+          await onSaveEdits()
+          dispatch(stopEditing())
           stopEditingLayer()
         },
 
         onCancel() {
-          DataEditor.stopEditing()
+          dispatch(stopEditing())
           stopEditingLayer()
         }
       })
     } else {
-      DataEditor.stopEditing()
+      dispatch(stopEditing())
       stopEditingLayer()
     }
   }
-  const undoEdit = (DataEditor: Record<string, any>) => {
-    DataEditor.undoEdit(onFeatureUpdate)
-  }
-  const redoEdit = (DataEditor: Record<string, any>) => {
-    DataEditor.redoEdit(onFeatureUpdate)
-  }
 
   return (
-    <Subscribe to={[DataEditorContainer]}>
-      {(DataEditor) => {
-        const { edits, redo } = DataEditor.state
-        return (
-          <div>
-            <MapToolButton
-              top='10px'
-              right='125px'
-              icon='undo'
-              show
-              color='#000'
-              disabled={edits.length === 0}
-              onClick={() => {
-                undoEdit(DataEditor)
-              }}
-              tooltipText={t('Undo')}
-              tooltipPosition='left'
-            />
-            <MapToolButton
-              top='10px'
-              right='90px'
-              icon='redo'
-              show
-              color='#000'
-              disabled={redo.length === 0}
-              onClick={() => {
-                redoEdit(DataEditor)
-              }}
-              tooltipText={t('Redo')}
-              tooltipPosition='left'
-            />
-            <MapToolButton
-              top='230px'
-              right='10px'
-              icon='save'
-              show
-              color='#000'
-              disabled={edits.length === 0}
-              onClick={() => {
-                saveEdits(DataEditor)
-              }}
-              tooltipText={t('Save Edits')}
-              tooltipPosition='left'
-            />
-            <MapToolButton
-              top='265px'
-              right='10px'
-              icon='close'
-              show
-              color='#000'
-              onClick={() => {
-                stopEditing(DataEditor)
-              }}
-              tooltipText={t('Stop Editing')}
-              tooltipPosition='left'
-            />
-          </div>
-        )
-      }}
-    </Subscribe>
+    <div>
+      <MapToolButton
+        top='10px'
+        right='125px'
+        icon='undo'
+        show
+        color='#000'
+        disabled={edits.length === 0}
+        onClick={() => {
+          dispatch(undoEdit({ onFeatureUpdate }))
+        }}
+        tooltipText={t('Undo')}
+        tooltipPosition='left'
+      />
+      <MapToolButton
+        top='10px'
+        right='90px'
+        icon='redo'
+        show
+        color='#000'
+        disabled={redo.length === 0}
+        onClick={() => {
+          dispatch(redoEdit({ onFeatureUpdate }))
+        }}
+        tooltipText={t('Redo')}
+        tooltipPosition='left'
+      />
+      <MapToolButton
+        top='230px'
+        right='10px'
+        icon='save'
+        show
+        color='#000'
+        disabled={edits.length === 0}
+        onClick={onSaveEdits}
+        tooltipText={t('Save Edits')}
+        tooltipPosition='left'
+      />
+      <MapToolButton
+        top='265px'
+        right='10px'
+        icon='close'
+        show
+        color='#000'
+        onClick={onStopEditing}
+        tooltipText={t('Stop Editing')}
+        tooltipPosition='left'
+      />
+    </div>
   )
 }
 export default EditorToolButtons

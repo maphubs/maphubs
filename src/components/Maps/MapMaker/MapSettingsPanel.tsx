@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import useT from '../../../hooks/useT'
 
 import { useDispatch, useSelector } from '../redux/hooks'
-import { setSettings, MapMakerState } from '../redux/reducers/mapMakerSlice'
+import { setSettings } from '../redux/reducers/mapMakerSlice'
 
 const CodeEditor = dynamic(() => import('../../LayerDesigner/CodeEditor'), {
   ssr: false
@@ -17,9 +17,7 @@ const MapSettingsPanel = (): JSX.Element => {
   const dispatch = useDispatch()
   const [showSettingsEditor, setShowSettingsEditor] = useState(false)
 
-  const settings = useSelector(
-    (state: { mapMaker: MapMakerState }) => state.mapMaker.settings
-  )
+  const settings = useSelector((state) => state.mapMaker.settings)
 
   // TODO: MapMaker Redux State
 

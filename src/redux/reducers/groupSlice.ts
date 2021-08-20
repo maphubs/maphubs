@@ -1,15 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Group } from '../../types/group'
 
-import type { AppState } from '../store'
-
+// used by the create group wizard to support returning to a previous step
 export interface GroupState {
-  group: Group
-  members: Array<Record<string, any>>
-  layers?: Array<Record<string, any>>
+  group_id?: string
+  created?: boolean
+  hasImage?: boolean
 }
 
-const initialState = {}
+const initialState: GroupState = {}
 
 export const groupSlice = createSlice({
   name: 'group',
@@ -17,8 +15,19 @@ export const groupSlice = createSlice({
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
-    changeGroup: (state, action: PayloadAction<string>) => {
-      state.value = action.payload
+    setGroupID: (state, action: PayloadAction<string>) => {
+      state.group_id = action.payload
+    },
+    setGroupCreated: (state, action: PayloadAction<boolean>) => {
+      state.created = action.payload
+    },
+    setGroupHasImage: (state, action: PayloadAction<boolean>) => {
+      state.hasImage = action.payload
+    },
+    resetGroup: (state) => {
+      state.hasImage = false
+      state.created = false
+      state.group_id = undefined
     }
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -28,14 +37,7 @@ export const groupSlice = createSlice({
   }
 })
 
-export const { changeGroup } = groupSlice.actions
-
-// The function below is called a selector and allows us to select a value from
-// the state. Selectors can also be defined inline where they're used instead of
-// in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-export const selectGroup = (state: AppState): string => state.group.value
-
-// We can also write thunks by hand, which may contain both sync and async logic.
-// Here's an example of conditionally dispatching actions based on current state.
+export const { setGroupID, setGroupCreated, setGroupHasImage, resetGroup } =
+  groupSlice.actions
 
 export default groupSlice.reducer

@@ -58,4 +58,5 @@ export type Layer = {
   updated_by_user_id?: number
   active?: boolean // only used on client-side to toggle certain layers
   published?: boolean
+  extent_bbox?: [number, number, number, number]
 }

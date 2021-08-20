@@ -1,23 +1,23 @@
 /* eslint-disable unicorn/numeric-separators-style */
-import React, { useRef } from 'react'
+import React from 'react'
 import { Subscribe } from 'unstated'
 import FRContainer from './containers/FRContainer'
 
 import useT from '../../hooks/useT'
 import dynamic from 'next/dynamic'
-const InteractiveMap = dynamic(() => import('../Map/InteractiveMap'), {
+const InteractiveMap = dynamic(() => import('../Maps/Map/InteractiveMap'), {
   ssr: false
 })
 
 type Props = {
-  mapConfig: Record<string, any>
-  gpxLink: Record<string, any>
+  mapConfig: Record<string, unknown>
+  gpxLink: string
 }
 
 const FeatureMap = ({ mapConfig, gpxLink }: Props): JSX.Element => {
-  const map = useRef<InteractiveMap>()
   const { t, locale } = useT()
   const frToggle = (id: string): void => {
+    let map
     if (map.current) {
       switch (id) {
         case 'remaining': {
@@ -52,7 +52,6 @@ const FeatureMap = ({ mapConfig, gpxLink }: Props): JSX.Element => {
         const bbox = geoJSON ? geoJSON.bbox : undefined
         return (
           <InteractiveMap
-            ref={map}
             height='100%'
             fitBounds={bbox}
             layers={mapLayers}
@@ -65,7 +64,6 @@ const FeatureMap = ({ mapConfig, gpxLink }: Props): JSX.Element => {
             showTitle={false}
             showLegendLayersButton={false}
             gpxLink={gpxLink}
-            t={t}
             locale={locale}
             primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
             mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}

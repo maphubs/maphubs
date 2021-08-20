@@ -1,7 +1,8 @@
 import React from 'react'
 import Marker from './Marker'
-import { Layer } from '../../types/layer'
-import { LocalizedString } from '../../types/LocalizedString'
+import { Layer } from '../../../types/layer'
+import { LocalizedString } from '../../../types/LocalizedString'
+import mapboxgl from 'mapbox-gl'
 
 const htmlEncode = (str: string): string => {
   return String(str)
@@ -62,7 +63,10 @@ const LegendItem = ({ t, layer, style }: Props): JSX.Element => {
     Array.isArray(mapStyle.layers) &&
     mapStyle.layers.length > 0
   ) {
-    for (const layer of mapStyle.layers) {
+    const layers = mapStyle.layers as Array<
+      mapboxgl.AnyLayer & { metadata: Record<string, unknown> }
+    >
+    for (const layer of layers) {
       if (
         layer.id.startsWith('omh-data-point') &&
         layer.metadata &&

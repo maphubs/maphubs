@@ -1,17 +1,13 @@
-import {
-  configureStore,
-  ThunkAction,
-  Action,
-  EnhancedStore
-} from '@reduxjs/toolkit'
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 
 import mapMaker from './reducers/mapMakerSlice'
 import map from './reducers/mapSlice'
 import baseMap from './reducers/baseMapSlice'
+import dataEditor from './reducers/dataEditorSlice'
 
-export function makeStore(): EnhancedStore {
+export function makeStore() {
   return configureStore({
-    reducer: { map, baseMap, mapMaker }
+    reducer: { map, baseMap, mapMaker, dataEditor }
   })
 }
 

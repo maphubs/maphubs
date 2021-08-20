@@ -12,8 +12,7 @@ import { useDispatch, useSelector } from '../../redux/hooks'
 import LayerAPI from '../../redux/reducers/layer-api'
 import {
   saveAdminSettings,
-  saveExternalLayerConfig,
-  LayerState
+  saveExternalLayerConfig
 } from '../../redux/reducers/layerSlice'
 
 const CodeEditor = dynamic(() => import('../LayerDesigner/CodeEditor'), {
@@ -42,7 +41,7 @@ const LayerAdminSettings = ({
   const [canSubmit, setCanSubmit] = useState(false)
   const [pendingChanges, setPendingChanges] = useState(false)
 
-  const layerState = useSelector((state: { layer: LayerState }) => state.layer)
+  const layerState = useSelector((state) => state.layer)
 
   useUnload((e) => {
     e.preventDefault()

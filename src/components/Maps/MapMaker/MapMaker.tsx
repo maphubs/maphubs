@@ -1,17 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import LayerList from '../Map/LayerList'
 import _find from 'lodash.find'
-import {
-  Drawer,
-  Button,
-  Row,
-  Col,
-  Tabs,
-  Modal,
-  message,
-  notification,
-  Tooltip
-} from 'antd'
+import { Drawer, Button, Row, Col, Tabs, Modal, message, Tooltip } from 'antd'
 import { DeleteOutlined, DownloadOutlined } from '@ant-design/icons'
 import Map from '../Map'
 import MiniLegend from '../Map/MiniLegend'
@@ -21,7 +11,6 @@ import MapSettingsPanel from './MapSettingsPanel'
 import EditLayerPanel from './EditLayerPanel'
 import MapLayerDesigner from '../../LayerDesigner/MapLayerDesigner'
 import EditorToolButtons from './EditorToolButtons'
-import IsochroneLegendHelper from '../Map/IsochroneLegendHelper'
 
 import type { Layer } from '../../../types/layer'
 import BaseMapSelection from '../Map/ToolPanels/BaseMapSelection'
@@ -40,11 +29,33 @@ import {
   toggleVisibility,
   updateLayerStyle,
   addToMap,
-  setMapPosition,
-  MapMakerState
+  setMapPosition
 } from '../redux/reducers/mapMakerSlice'
+import {
+  selectMapboxMap,
+  setEnableMeasurementTools
+} from '../redux/reducers/mapSlice'
+import {
+  startEditing,
+  stopEditing,
+  updateFeatures,
+  createFeature,
+  deleteFeature,
+  selectFeatureThunk
+} from '../redux/reducers/dataEditorSlice'
+import { setBaseMapThunk } from '../redux/reducers/baseMapSlice'
+import { reloadStyleThunk } from '../redux/reducers/map/reloadStyleThunk'
+import { setBaseMapStyleThunk } from '../redux/reducers/map/setBaseMapStyleThunk'
+
 import { MapPosition } from '../../../types/map'
 import mapboxgl from 'mapbox-gl'
+import drawTheme from '@mapbox/mapbox-gl-draw/src/lib/theme'
+import MapboxDraw from '@mapbox/mapbox-gl-draw'
+//import 'jquery'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { Group } from '../../../types/group'
+
+const debug = DebugService('MapMaker')
 
 const { confirm } = Modal
 const TabPane = Tabs.TabPane
@@ -85,22 +96,26 @@ type Props = {
   editLayer?: Layer
   mapConfig: Record<string, any>
   settings: Record<string, any>
-  groups: Array<Record<string, any>>
+  groups: Group[]
   containers: {
     dataEditorState: Record<string, any>
     mapState: Record<string, any>
     baseMapState: Record<string, any>
   }
+  locale: string
 }
 
 const MapMaker = (props: Props): JSX.Element => {
-  const { t } = useT()
+  const { t, locale } = useT()
   const dispatch = useDispatch()
   const [layerDesignerLayer, setLayerDesignerLayer] = useState<Layer>(null)
   const [canSave, setCanSave] = useState(false)
-  const [editLayerLoaded, setEditLayerLoaded] = useState(false)
   const [activeTab, setActiveTab] = useState('overlays')
   const [showAddLayer, setShowAddLayer] = useState(false)
+
+  //editing
+  const drawRef = useRef<MapboxDraw>()
+  const [editLayerLoaded, setEditLayerLoaded] = useState(false)
 
   /*
   constructor(props: Props) {
@@ -141,41 +156,130 @@ const MapMaker = (props: Props): JSX.Element => {
     props.basemap
   ])
 
-  //? selecting these seperately optimizes re-rendering
-  const map_id = useSelector(
-    (state: { mapMaker: MapMakerState }) => state.mapMaker.map_id
-  )
+  //* map maker state
+  const map_id = useSelector((state) => state.mapMaker.map_id)
   const owned_by_group_id = useSelector(
-    (state: { mapMaker: MapMakerState }) => state.mapMaker.owned_by_group_id
+    (state) => state.mapMaker.owned_by_group_id
   )
-  const mapStyle = useSelector(
-    (state: { mapMaker: MapMakerState }) => state.mapMaker.mapStyle
+  const mapStyle = useSelector((state) => state.mapMaker.mapStyle)
+  const mapLayers = useSelector((state) => state.mapMaker.mapLayers)
+  const title = useSelector((state) => state.mapMaker.title)
+  const position = useSelector((state) => state.mapMaker.position)
+  const settings = useSelector((state) => state.mapMaker.settings)
+
+  //* map state
+  const mapboxMap = useSelector(selectMapboxMap)
+  const basemap = useSelector((state) => state.baseMap.baseMap)
+  const enableMeasurementTools = useSelector(
+    (state) => state.map.enableMeasurementTools
   )
-  const mapLayers = useSelector(
-    (state: { mapMaker: MapMakerState }) => state.mapMaker.mapLayers
-  )
-  const title = useSelector(
-    (state: { mapMaker: MapMakerState }) => state.mapMaker.title
-  )
-  const position = useSelector(
-    (state: { mapMaker: MapMakerState }) => state.mapMaker.position
-  )
-  const settings = useSelector(
-    (state: { mapMaker: MapMakerState }) => state.mapMaker.settings
-  )
-  const editingLayer = useSelector(
-    (state: { mapMaker: MapMakerState }) => state.mapMaker.editingLayer
-  )
+
+  const overlayMapStyle = useSelector((state) => state.map.overlayMapStyle)
+  const glStyle = useSelector((state) => state.map.glStyle)
 
   useEffect(() => {
     //? Update position from props, is this needed?
     // Actions.setMapPosition(nextProps.position)
   }, [position])
 
+  const editingLayer = useSelector((state) => state.dataEditor.editingLayer)
+  const edits = useSelector((state) => state.dataEditor.edits)
+  const originals = useSelector((state) => state.dataEditor.originals)
+  const clickedFeature = useSelector((state) => state.dataEditor.clickedFeature)
+
+  //* Enable editing for a feature */
+
+  useEffect(() => {
+    /**
+     * Add filter to hide vector tile versions of features active in the drawing tool
+     *
+     */
+    const updateMapLayerFilters = () => {
+      const layerId = editingLayer.layer_id
+      const shortid = editingLayer.shortid
+      // build a new filter
+      const uniqueIds = []
+
+      if (edits) {
+        for (const edit of edits) {
+          const mhid = edit.geojson.id
+
+          if (mhid && !uniqueIds.includes(mhid)) {
+            uniqueIds.push(mhid)
+          }
+        }
+      }
+
+      if (originals) {
+        for (const orig of originals) {
+          const mhid = orig.geojson.id
+
+          if (mhid && !uniqueIds.includes(mhid)) {
+            uniqueIds.push(mhid)
+          }
+        }
+      }
+
+      const hideEditingFilter = ['!in', 'mhid', ...uniqueIds]
+
+      if (overlayMapStyle) {
+        const layers = overlayMapStyle.layers as Array<
+          mapboxgl.Layer & { metadata: Record<string, unknown> }
+        >
+        for (const layer of layers) {
+          // check if the layer_id matches
+          let foundMatch
+
+          if (layer.metadata && layer.metadata['maphubs:layer_id']) {
+            if (layer.metadata['maphubs:layer_id'] === layerId) {
+              foundMatch = true
+            }
+          } else if (layer.id.endsWith(shortid)) {
+            foundMatch = true
+          }
+
+          if (foundMatch) {
+            // get current filter
+            let filter = layer.filter
+
+            if (!filter || !Array.isArray(filter) || filter.length === 0) {
+              // create a new filter
+              filter = hideEditingFilter
+            } else if (filter[0] === 'all') {
+              // add our condition to the end
+              filter = [...layer.filter, ...hideEditingFilter]
+            } else {
+              filter = ['all', filter, hideEditingFilter]
+            }
+
+            mapboxMap.setFilter(layer.id, filter)
+          }
+        }
+      }
+    }
+    if (
+      clickedFeature &&
+      drawRef.current &&
+      !drawRef.current.get(clickedFeature.id)
+    ) {
+      // if not already editing this feature
+      debug('adding feature to mapbox-gl-draw')
+      drawRef.current.add(clickedFeature)
+      updateMapLayerFilters()
+    }
+  }, [
+    clickedFeature,
+    editingLayer,
+    mapboxMap,
+    edits,
+    originals,
+    overlayMapStyle
+  ])
+
   const initEditLayer = (): void => {
-    if (!editLayerLoaded && editLayer) {
-      addLayer(editLayer)
-      editLayer(editLayer)
+    if (!editLayerLoaded && props.editLayer) {
+      addLayer(props.editLayer)
+      editLayer(props.editLayer)
       setEditLayerLoaded(true)
     }
   }
@@ -185,10 +289,13 @@ const MapMaker = (props: Props): JSX.Element => {
     cb: (...args: Array<any>) => any
   ) => {
     // get position from the map
-    const position = mapState.state.map.getPosition()
-    position.bbox = mapState.state.map.getBounds()
-    // get basemap from basemap store
-    const basemap = baseMapState.state.baseMap
+    const center = mapboxMap.getCenter()
+    const position = {
+      zoom: mapboxMap.getZoom(),
+      lng: center.lng,
+      lat: center.lat,
+      bbox: mapboxMap.getBounds().toArray()
+    }
 
     if (!map_id || map_id === -1) {
       // callback to the page so it can save to the db
@@ -275,13 +382,24 @@ const MapMaker = (props: Props): JSX.Element => {
     // clone the layer object so we don't mutate the data in the search results
     layer = JSON.parse(JSON.stringify(layer))
 
-    if (mapState.state.map) {
+    if (mapboxMap) {
       if (mapLayers && mapLayers.length === 0 && layer.extent_bbox) {
-        mapState.state.map.fitBounds(layer.extent_bbox, 16, 25, false)
+        mapboxMap.fitBounds(layer.extent_bbox, {
+          padding: 25,
+          curve: 1,
+          speed: 0.6,
+          maxZoom: 16,
+          animate: false
+        })
       }
 
-      const position = mapState.state.map.getPosition()
-      position.bounds = mapState.state.map.getBounds()
+      const center = mapboxMap.getCenter()
+      const position = {
+        zoom: mapboxMap.getZoom(),
+        lng: center.lng,
+        lat: center.lat,
+        bbox: mapboxMap.getBounds().toArray()
+      }
       dispatch(setMapPosition({ position }))
     }
 
@@ -297,54 +415,148 @@ const MapMaker = (props: Props): JSX.Element => {
       setShowAddLayer(false)
     }
   }
+
+  const updateEdits = (e: any) => {
+    if (e.features.length > 0) {
+      dispatch(updateFeatures(e.features))
+    }
+  }
+
   const editLayer = (layer: Layer) => {
-    Actions.startEditing()
-    dataEditorState.startEditing(layer)
-    mapState.state.map.startEditingTool(layer)
+    dispatch(startEditing({ layer }))
     setActiveTab('editing')
-  }
-  const stopEditingLayer = () => {
-    Actions.stopEditing()
-    mapState.state.map.stopEditingTool()
-    setActiveTab('overlays')
-  }
-  const changeBaseMap = async (mapName: string) => {
-    const baseMapStyle = await baseMapState.setBaseMap(mapName)
 
-    mapState.state.map.setBaseMapStyle(baseMapStyle, true)
-
-    if (mapState.state.insetMap) {
-      mapState.state.insetMap.reloadInset(baseMapStyle)
-      mapState.state.insetMap.sync(mapState.state.map)
+    if (enableMeasurementTools) {
+      dispatch(setEnableMeasurementTools(false)) // close measurement tool if open
     }
 
-    Actions.setMapBasemap(mapName)
-  }
-  const onToggleIsochroneLayer = (enabled: boolean) => {
-    let mapLayers = mapState.mapLayers || []
-    const layers = IsochroneLegendHelper.getLegendLayers()
+    const draw = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: {
+        point: layer.data_type === 'point',
+        polygon: layer.data_type === 'polygon',
+        line_string: layer.data_type === 'line',
+        trash: true
+      },
+      styles: drawTheme
+    })
+    drawRef.current = draw
+    mapboxMap.addControl(draw, 'top-right')
+    mapboxMap.on('draw.create', (e) => {
+      debug.log('draw create')
+      const features = e.features
 
-    if (enabled) {
-      // add layers to legend
-      mapLayers = [...mapLayers, ...layers]
-    } else {
-      const updatedLayers = []
-      // remove layers from legend
-      for (const mapLayer of mapLayers) {
-        let foundInLayers
-        for (const layer of layers) {
-          if (mapLayer.layer_id === layer.layer_id) {
-            foundInLayers = true
-          }
-        }
-
-        if (!foundInLayers) {
-          updatedLayers.push(mapLayer)
+      if (features && features.length > 0) {
+        for (const feature of features) {
+          dispatch(createFeature(feature))
         }
       }
-      mapLayers = updatedLayers
+    })
+    mapboxMap.on('draw.update', (e) => {
+      debug.log('draw update')
+      updateEdits(e)
+    })
+    mapboxMap.on('draw.delete', (e) => {
+      debug.log('draw delete')
+      const features = e.features
+
+      if (features && features.length > 0) {
+        for (const feature of features) {
+          dispatch(deleteFeature(feature))
+        }
+      }
+    })
+    mapboxMap.on('draw.selectionchange', async (e) => {
+      debug.log('draw selection')
+      // if in simple mode (e.g. not selecting vertices) then check if selected feature changed
+      const mode = drawRef.current.getMode()
+
+      if (mode === 'simple_select') {
+        const features = e.features
+
+        if (features && features.length > 0) {
+          await Promise.all(
+            features.map((feature) => {
+              dispatch(selectFeatureThunk(feature.id))
+            })
+          )
+        }
+      }
+    })
+  }
+
+  const removeMapLayerFilters = () => {
+    if (!editingLayer || !editingLayer.layer_id) {
+      debug.error('unable to find editing layer')
+      return
     }
-    dispatch(setMapLayers({ mapLayers, skipUpdate: true }))
+
+    const layerId = editingLayer.layer_id
+
+    if (glStyle?.layers) {
+      const layers = glStyle.layers as Array<
+        mapboxgl.Layer & { metadata: Record<string, unknown> }
+      >
+      for (const layer of layers) {
+        // check if the layer_id matches
+        let foundMatch
+
+        if (layer.metadata && layer.metadata['maphubs:layer_id']) {
+          if (layer.metadata['maphubs:layer_id'] === layerId) {
+            foundMatch = true
+          }
+        } else if (layer.id.endsWith(layerId.toString())) {
+          foundMatch = true
+        }
+
+        if (foundMatch) {
+          // get current filter
+          let filter = layer.filter
+
+          if (!filter || !Array.isArray(filter) || filter.length === 0) {
+            // do nothing
+          } else if (filter[0] === 'all') {
+            // remove our filter from the end
+            filter = layer.filter.pop()
+          } else {
+            filter = undefined
+          }
+
+          mapboxMap.setFilter(layer.id, filter)
+        }
+      }
+    }
+  }
+
+  const stopEditingLayer = () => {
+    dispatch(stopEditing())
+    setActiveTab('overlays')
+    mapboxMap.removeControl(drawRef.current)
+    removeMapLayerFilters()
+
+    //reload mapbox-gl source cache
+    const sourceID = Object.keys(editingLayer.style.sources)[0]
+    const sourceCache = mapboxMap.style.sourceCaches[sourceID]
+
+    if (sourceCache) {
+      // From: https://github.com/mapbox/mapbox-gl-js/issues/2941#issuecomment-518631078
+      // Remove the tiles for a particular source
+      sourceCache.clearTiles()
+      // Load the new tiles for the current viewport (map.transform -> viewport)
+      sourceCache.update(mapboxMap.transform)
+      // Force a repaint, so that the map will be repainted without you having to touch the map
+      mapboxMap.triggerRepaint()
+    }
+    // force a full reload of the style
+    dispatch(reloadStyleThunk(true))
+  }
+
+  const changeBaseMap = async (mapName: string) => {
+    debug.log(`(changing basemap from map maker: ${mapName}`)
+    const result = await dispatch(setBaseMapThunk(mapName)).unwrap()
+    await dispatch(
+      setBaseMapStyleThunk({ style: result.baseMapStyle, skipUpdate: false })
+    )
   }
 
   if (!Array.isArray(mapLayers)) return <></>
@@ -392,10 +604,8 @@ const MapMaker = (props: Props): JSX.Element => {
               }}
             >
               <MapLayerDesigner
-                ref='LayerDesigner'
                 layer={layerDesignerLayer}
                 onStyleChange={onLayerStyleChange}
-                onClose={closeLayerDesigner}
               />
             </Row>
             <Row
@@ -452,7 +662,7 @@ const MapMaker = (props: Props): JSX.Element => {
               height: '100%'
             }}
           >
-            <BaseMapSelection onChange={changeBaseMap} t={t} />
+            <BaseMapSelection onChange={changeBaseMap} />
           </TabPane>
           <TabPane
             tab={t('Layers')}
@@ -469,7 +679,7 @@ const MapMaker = (props: Props): JSX.Element => {
             >
               <LayerList
                 layers={mapLayers}
-                showVisibility={showVisibility}
+                showVisibility={props.showVisibility}
                 showRemove
                 showDesign
                 showInfo
@@ -488,7 +698,6 @@ const MapMaker = (props: Props): JSX.Element => {
                 openAddLayer={() => {
                   setShowAddLayer(true)
                 }}
-                t={t}
               />
             </Row>
             <Row
@@ -519,7 +728,7 @@ const MapMaker = (props: Props): JSX.Element => {
                 height: '100%'
               }}
             >
-              <EditLayerPanel t={t} />
+              <EditLayerPanel />
             </TabPane>
           )}
         </Tabs>
@@ -603,9 +812,9 @@ const MapMaker = (props: Props): JSX.Element => {
           >
             <SaveMapModal
               owned_by_group_id={owned_by_group_id}
-              editingLayer={editingLayer}
+              editingLayer={!!editingLayer}
               initialTitle={title}
-              editing={edit}
+              editing={props.edit}
               onSave={onSave}
             />
           </Col>
@@ -635,19 +844,16 @@ const MapMaker = (props: Props): JSX.Element => {
                 width: '100%',
                 margin: 'auto'
               }}
-              glStyle={mapStyle}
+              initialGLStyle={mapStyle}
               insetMap
               insetConfig={settings ? settings.insetConfig : undefined}
               onChangeBaseMap={(basemap) => {
-                dispatch(setMapBasemap({ basemap }))
+                changeBaseMap(basemap)
               }}
-              onToggleIsochroneLayer={onToggleIsochroneLayer}
               fitBounds={mapExtent}
-              mapConfig={mapConfig}
+              mapConfig={props.mapConfig}
               onLoad={initEditLayer}
               hash
-              primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
-              t={t}
               locale={locale}
               mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
               DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
@@ -656,7 +862,18 @@ const MapMaker = (props: Props): JSX.Element => {
               {editingLayer && (
                 <EditorToolButtons
                   stopEditingLayer={stopEditingLayer}
-                  onFeatureUpdate={mapState.state.map.onFeatureUpdate}
+                  onFeatureUpdate={(
+                    type: string,
+                    feature: Record<string, any>
+                  ) => {
+                    if (drawRef.current) {
+                      if (type === 'update' || type === 'create') {
+                        drawRef.current.add(feature.geojson)
+                      } else if (type === 'delete') {
+                        drawRef.current.delete(feature.geojson.id)
+                      }
+                    }
+                  }}
                 />
               )}
             </Map>
@@ -693,11 +910,10 @@ const MapMaker = (props: Props): JSX.Element => {
         visible={showAddLayer}
       >
         <AddLayerPanel
-          myLayers={myLayers}
-          popularLayers={popularLayers}
-          groups={groups}
+          myLayers={props.myLayers}
+          popularLayers={props.popularLayers}
+          groups={props.groups}
           onAdd={addLayer}
-          t={t}
         />
       </Drawer>
     </Row>

@@ -7,6 +7,13 @@ import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import GJV from 'geojson-validation'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import mapboxgl from 'mapbox-gl'
+import drawTheme from '@mapbox/mapbox-gl-draw/src/lib/theme'
+import Bluebird from 'bluebird'
+import GenericSource from './GenericSource'
+
+import { SourceState } from './types/SourceState'
+import { SourceWithUrl } from './types/SourceWithUrl'
+
 const debug = DebugService('MapHubsSource')
 GJV.define('Position', (position: Array<number>) => {
   // the postion must be valid point on the earth, x between -180 and 180
@@ -29,14 +36,12 @@ if (typeof window !== 'undefined') {
   mapboxgl = require('mapbox-gl')
 }
 */
-const MapHubsSource = {
+class MapHubsSource extends GenericSource {
   async load(
     key: string,
-    source: mapboxgl.Source,
-    mapComponent: any
+    source: SourceWithUrl,
+    state: SourceState
   ): Promise<any> {
-    const map = mapComponent.map
-
     if (source.type === 'geojson' && source.data) {
       if (typeof source.data === 'string') {
         return superagent.get(source.data).then(
@@ -57,20 +62,20 @@ const MapHubsSource = {
               geoJSON.metadata = {}
             }
 
-            return mapComponent.addSource(key, {
+            return state.addSource(key, {
               type: 'geojson',
               data: geoJSON,
-              cluster: source.cluster ? source.cluster : false,
+              cluster: source.cluster || false,
               clusterMaxZoom: source.clusterMaxZoom || 14,
               clusterRadius: source.clusterRadius || 50
             })
           },
           (err) => {
-            debug.log('(' + mapComponent.state.id + ') ' + err)
+            debug.log(err)
           }
         )
       } else if (typeof source.data === 'object') {
-        return mapComponent.addSource(key, {
+        return state.addSource(key, {
           type: 'geojson',
           data: source.data
         })
@@ -82,13 +87,10 @@ const MapHubsSource = {
         (res) => {
           const tileJSON = res.body
           tileJSON.type = 'vector'
-          map.on('source.load', (e) => {
-            if (
-              e.source.id === key &&
-              mapComponent.state.allowLayersToMoveMap
-            ) {
+          state.mapboxMap.on('source.load', (e) => {
+            if (e.source.id === key && state.allowLayersToMoveMap) {
               debug.log('Zooming map extent of source: ' + e.source.id)
-              map.fitBounds([
+              state.mapboxMap.fitBounds([
                 [tileJSON.bounds[0], tileJSON.bounds[1]],
                 [tileJSON.bounds[2], tileJSON.bounds[3]]
               ])
@@ -99,31 +101,31 @@ const MapHubsSource = {
             tileJSON.metadata = source.metadata
           }
 
-          return mapComponent.addSource(key, tileJSON)
+          return state.addSource(key, tileJSON)
         },
         (err) => {
-          debug.log('(' + mapComponent.state.id + ') ' + err)
+          debug.log(err)
         }
       )
     } else {
       // pass through the source as-is
-      return mapComponent.addSource(key, source)
+      return state.addSource(key, source)
     }
-  },
+  }
 
   async addLayer(
     layer: mapboxgl.Layer,
     source: mapboxgl.Source,
     position: number,
-    mapComponent: any
-  ) {
-    const map = mapComponent.map
+    state: SourceState
+  ): Promise<void> {
     const customImages = layer.metadata
       ? layer.metadata['maphubs:images']
       : undefined
 
     if (customImages) {
-      await Promise.map(customImages, async (customImage) => {
+      // eslint-disable-next-line unicorn/no-array-method-this-argument
+      await Bluebird.map(customImages, async (customImage) => {
         return new Promise((resolve, reject) => {
           const width = customImage.width || 16
           const height = customImage.height || 16
@@ -137,17 +139,17 @@ const MapHubsSource = {
           // eslint-disable-next-line unicorn/prefer-add-event-listener
           img.onload = () => {
             try {
-              if (map.hasImage(customImage.name)) {
-                map.removeImage(customImage.name)
+              if (state.mapboxMap.hasImage(customImage.name)) {
+                state.mapboxMap.removeImage(customImage.name)
               }
 
-              map.addImage(customImage.name, img)
+              state.mapboxMap.addImage(customImage.name, img)
               debug.info('loaded image' + customImage.name)
             } catch (err) {
               debug.error(err)
             }
 
-            resolve()
+            resolve(true)
           }
 
           img.setAttribute('crossOrigin', '')
@@ -220,30 +222,27 @@ const MapHubsSource = {
         // eslint-disable-next-line unicorn/prefer-add-event-listener
         img.onload = () => {
           try {
-            if (map.hasImage(imageName)) {
-              map.removeImage(imageName)
+            if (state.mapboxMap.hasImage(imageName)) {
+              state.mapboxMap.removeImage(imageName)
             }
 
-            map.addImage(imageName, img)
+            state.mapboxMap.addImage(imageName, img)
             debug.info('loaded image ' + imageName)
 
             if (
               layer.metadata &&
               layer.metadata['maphubs:showBehindBaseMapLabels']
             ) {
-              mapComponent.addLayerBefore(layer, 'water')
+              state.addLayerBefore(layer, 'water')
             } else {
-              if (mapComponent.state.editing) {
-                mapComponent.addLayerBefore(
-                  layer,
-                  mapComponent.getFirstDrawLayerID()
-                )
+              if (state.editing) {
+                state.addLayerBefore(layer, drawTheme[0].id + '.cold')
               } else {
-                mapComponent.addLayer(layer, position)
+                state.addLayer(layer, position)
               }
             }
 
-            resolve()
+            resolve(true)
           } catch (err) {
             debug.error(err)
             reject(err)
@@ -256,22 +255,14 @@ const MapHubsSource = {
       layer.metadata &&
       layer.metadata['maphubs:showBehindBaseMapLabels']
     ) {
-      mapComponent.addLayerBefore(layer, 'water')
+      state.addLayerBefore(layer, 'water')
     } else {
-      if (mapComponent.state.editing) {
-        mapComponent.addLayerBefore(layer, mapComponent.getFirstDrawLayerID())
+      if (state.editing) {
+        state.addLayerBefore(layer, drawTheme[0].id + '.cold')
       } else {
-        mapComponent.addLayer(layer, position)
+        state.addLayer(layer, position)
       }
     }
-  },
-
-  removeLayer(layer: mapboxgl.Layer, mapComponent: any): void {
-    mapComponent.removeLayer(layer.id)
-  },
-
-  remove(key: string, mapComponent: any): void {
-    mapComponent.removeSource(key)
   }
 }
 export default MapHubsSource

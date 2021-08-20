@@ -8,6 +8,7 @@ import Save from '@material-ui/icons/Save'
 import Search from '@material-ui/icons/Search'
 import Info from '@material-ui/icons/Info'
 import Build from '@material-ui/icons/Build'
+import { TooltipPlacement } from 'antd/lib/tooltip'
 
 type Props = {
   icon: string
@@ -16,7 +17,7 @@ type Props = {
   bottom: string
   left: string
   tooltipText?: string
-  tooltipPosition: string
+  tooltipPosition: TooltipPlacement
   color: string
   onClick?: (e: React.MouseEvent<HTMLElement>) => void
   onMouseDown?: (e: React.MouseEvent<HTMLElement>) => void
@@ -44,11 +45,7 @@ const MapToolButton = ({
       verticalAlign: 'middle'
     }
     return (
-      <Tooltip
-        disabled={!tooltipText}
-        title={tooltipText}
-        placement={tooltipPosition}
-      >
+      <Tooltip title={tooltipText} placement={tooltipPosition}>
         <a
           onClick={(e) => {
             if (disabled || !onClick) return

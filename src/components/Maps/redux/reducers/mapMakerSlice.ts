@@ -18,7 +18,6 @@ export interface MapMakerState {
   position?: MapPosition
   settings?: Record<string, unknown>
   owned_by_group_id?: string
-  editingLayer?: boolean
 }
 
 const initialState: MapMakerState = {
@@ -26,8 +25,7 @@ const initialState: MapMakerState = {
   mapLayers: [],
   settings: {},
   mapStyle: null,
-  position: null,
-  editingLayer: false
+  position: null
 }
 
 export const mapMakerSlice = createSlice({
@@ -113,14 +111,6 @@ export const mapMakerSlice = createSlice({
         JSON.parse(JSON.stringify(layers))
       )
       state.mapLayers = layers
-    },
-
-    startEditing: (state, action: PayloadAction) => {
-      state.editingLayer = true
-    },
-
-    stopEditing: (state, action: PayloadAction) => {
-      state.editingLayer = false
     },
 
     toggleVisibility: (state, action: PayloadAction<{ layer_id: number }>) => {
@@ -228,8 +218,6 @@ export const {
   setSettings,
   addToMap,
   removeFromMap,
-  startEditing,
-  stopEditing,
   toggleVisibility,
   updateLayerStyle,
   createMap,

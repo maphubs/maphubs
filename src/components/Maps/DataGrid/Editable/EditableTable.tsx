@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Table } from 'antd'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import _isequal from 'lodash.isequal'
 import { EditableRow, EditableCell } from './EditableRow'
 import { TableRowSelection } from 'antd/lib/table/interface'
 type Props = {
@@ -12,46 +11,22 @@ type Props = {
     editable: boolean
     dataType?: string
   }>
-  initialDataSource: Array<Record<string, any>>
   editing?: boolean
   rowKey: string
   rowSelection: TableRowSelection<string>
-  onChange: (...args: Array<any>) => void // called each time a cell is changed
+  dataSource: Record<string, unknown>[]
+  handleSave: (row: Record<string, unknown>, isUndoRedo: boolean) => void
 }
 
 const EditableTable = ({
-  initialDataSource,
   editing,
   columns,
   rowKey,
   rowSelection,
-  onChange
+  dataSource,
+  handleSave
 }: Props): JSX.Element => {
-  const [dataSource, setDateSource] = useState(initialDataSource)
-
-  const handleSave = (row, isUndoRedo): void => {
-    const newData = [...dataSource]
-    const index = newData.findIndex((item) => row[rowKey] === item[rowKey])
-    const prevRow = newData[index]
-    newData[index] = row
-    setDateSource(newData)
-
-    // if something in the row actualy changed
-    if (!_isequal(prevRow, row)) {
-      console.log('prevRow')
-      console.log(prevRow)
-      console.log('newRow')
-      console.log(row)
-      console.log('newData')
-      console.log(newData)
-      if (!isUndoRedo) onChange(row) // don't fire a change if this is being called externally as an undo/redo
-    } else {
-      console.info('table edit stopped without changes')
-    }
-  }
-
   console.log('table render')
-  console.log(dataSource)
   const components = {
     body: {
       row: EditableRow,

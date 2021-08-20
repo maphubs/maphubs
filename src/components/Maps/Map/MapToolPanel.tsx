@@ -7,37 +7,23 @@ import CoordinatePanel from './ToolPanels/CoordinatePanel'
 // import AreaComparisonPanel from './ToolPanels/AreaComparisonPanel'
 import MapToolButton from './MapToolButton'
 import { Drawer, Collapse } from 'antd'
-import { LocalizedString } from '../../types/LocalizedString'
+import useT from '../../../hooks/useT'
+
 const Panel = Collapse.Panel
 type Props = {
   show?: boolean
   gpxLink?: string
   onChangeBaseMap: (...args: Array<any>) => any
-  toggleMeasurementTools: (...args: Array<any>) => any
-  enableMeasurementTools?: boolean
-  getIsochronePoint: (...args: Array<any>) => any
-  clearIsochroneLayers: (...args: Array<any>) => any
-  measureFeatureClick: (...args: Array<any>) => any
-  zoomToCoordinates: (...args: Array<any>) => any
-  isochroneResult?: Record<string, any>
-  t: (v: string | LocalizedString) => string
 }
 type State = {
   open?: boolean
 }
 const MapToolPanel = ({
-  t,
   show,
   gpxLink,
-  onChangeBaseMap,
-  enableMeasurementTools,
-  toggleMeasurementTools,
-  measureFeatureClick,
-  zoomToCoordinates,
-  getIsochronePoint,
-  clearIsochroneLayers,
-  isochroneResult
+  onChangeBaseMap
 }: Props): JSX.Element => {
+  const { t } = useT()
   const [open, setOpen] = useState(false)
   const drawerContainer = useRef(null)
 
@@ -78,30 +64,20 @@ const MapToolPanel = ({
                   setOpen(false)
                   onChangeBaseMap(val)
                 }}
-                t={t}
               />
             </Panel>
             <Panel header={t('Measurement Tools')} key='measurement'>
               <MeasurementToolPanel
-                enableMeasurementTools={enableMeasurementTools}
-                toggleMeasurementTools={toggleMeasurementTools}
-                measureFeatureClick={measureFeatureClick}
                 closePanel={() => {
                   setOpen(false)
                 }}
-                t={t}
               />
             </Panel>
             <Panel header={t('Find Coordinates')} key='coordinate'>
-              <CoordinatePanel zoomToCoordinates={zoomToCoordinates} t={t} />
+              <CoordinatePanel />
             </Panel>
             <Panel header={t('Travel Time')} key='traveltime'>
-              <IsochronePanel
-                getIsochronePoint={getIsochronePoint}
-                clearIsochroneLayers={clearIsochroneLayers}
-                isochroneResult={isochroneResult}
-                t={t}
-              />
+              <IsochronePanel />
             </Panel>
             <Panel header={t('Edit OpenStreetMap')} key='osm'>
               <EditBaseMapBox gpxLink={gpxLink} t={t} />

@@ -1,17 +1,11 @@
 import React from 'react'
 import LayerListItemStatic from './LayerListItemStatic'
-import type { Layer } from '../../types/layer'
-import { LocalizedString } from '../../types/LocalizedString'
+import type { Layer } from '../../../types/layer'
 type Props = {
   layers: Layer[]
   toggleVisibility: (...args: Array<any>) => void
-  t: (v: string | LocalizedString) => string
 }
-const LayerListStatic = ({
-  layers,
-  toggleVisibility,
-  t
-}: Props): JSX.Element => {
+const LayerListStatic = ({ layers, toggleVisibility }: Props): JSX.Element => {
   return (
     <div
       style={{
@@ -35,7 +29,6 @@ const LayerListStatic = ({
                 <LayerListItemStatic
                   item={layer}
                   toggleVisibility={toggleVisibility}
-                  t={t}
                 />
               </li>
             )

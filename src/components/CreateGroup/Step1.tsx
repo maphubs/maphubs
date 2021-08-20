@@ -6,7 +6,6 @@ import MultiTextArea from '../forms/MultiTextArea'
 import TextInput from '../forms/textInput'
 import MultiTextInput from '../forms/MultiTextInput'
 import Toggle from '../forms/toggle'
-import GroupActions from '../../actions/GroupActions'
 import Locales from '../../services/locales'
 import NavigationIcon from '@material-ui/icons/Navigation'
 import GroupWorkIcon from '@material-ui/icons/GroupWork'
@@ -15,8 +14,13 @@ import DescriptionIcon from '@material-ui/icons/Description'
 import $ from 'jquery'
 import classNames from 'classnames'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
-import { LocaleState } from '../../redux/reducers/localeSlice'
+import { useSelector, useDispatch } from '../../redux/hooks'
+import mutation from '../../graphql/graphql-mutation'
+import {
+  setGroupID,
+  setGroupCreated,
+  resetGroup
+} from '../../redux/reducers/groupSlice'
 
 type Props = {
   onSubmit: () => void
@@ -25,12 +29,14 @@ type Props = {
 
 const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
   const { t } = useT()
+  const dispatch = useDispatch()
   const router = useRouter()
   const [canSubmit, setCanSubmit] = useState(false)
   const [groupIdValue, setGroupIdValue] = useState<string>()
   const [groupIdAvailable, setGroupIdAvailable] = useState(false)
 
-  const created = useSelector((state: { group: any }) => state.group.created)
+  const created = useSelector((state) => state.group.created)
+  const savedGroupID = useSelector((state) => state.group.group_id)
 
   addValidationRule('isAvailable', (values: string[], value: string) => {
     if (created) return true
@@ -81,65 +87,43 @@ const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
   const submit = (model: Record<string, any>): void => {
     saveGroup(model)
   }
-  const saveGroup = (model: Record<string, any>) => {
+  const saveGroup = async (model: Record<string, any>) => {
     model.name = Locales.formModelToLocalizedString(model, 'name')
     model.description = Locales.formModelToLocalizedString(model, 'description')
+    const method = created ? 'saveGroup' : 'createGroup'
 
-    if (created) {
-      GroupActions.updateGroup(
-        model.group_id,
-        model.name,
-        model.description,
-        model.location,
-        model.published,
-        (err) => {
-          if (err) {
-            notification.error({
-              message: t('Server Error'),
-              description: err.message || err.toString(),
-              duration: 0
-            })
-          } else {
-            message.success(t('Group Saved'), 3, onSubmit)
-          }
-        }
-      )
-    } else {
-      GroupActions.createGroup(
-        model.group_id,
-        model.name,
-        model.description,
-        model.location,
-        model.published,
-        (err) => {
-          if (err) {
-            notification.error({
-              message: t('Server Error'),
-              description: err.message || err.toString(),
-              duration: 0
-            })
-          } else {
-            message.success(t('Group Created'), 3, onSubmit)
-          }
-        }
-      )
+    try {
+      await mutation(`
+          ${method}(group_id: "${model.group_id}", name: "${model.name}", description: "${model.description}")
+        `)
+      dispatch(setGroupID(model.group_id))
+      dispatch(setGroupCreated(true))
+      message.success(t(created ? 'Group Saved' : 'Group Created'), 3, onSubmit)
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString(),
+        duration: 0
+      })
     }
   }
-  const handleCancel = (): void => {
+  const handleCancel = async (): void => {
     if (created) {
-      GroupActions.deleteGroup((err) => {
-        if (err) {
-          notification.error({
-            message: t('Server Error'),
-            description: err.message || err.toString(),
-            duration: 0
-          })
-        } else {
-          message.success(t('Group Cancelled'), 3, () => {
-            router.push('/groups')
-          })
-        }
-      })
+      try {
+        await mutation(`
+          deleteGroup(group_id: "${savedGroupID}")
+        `)
+        dispatch(resetGroup())
+        message.success(t('Group Cancelled'), 3, () => {
+          router.push('/groups')
+        })
+      } catch (err) {
+        notification.error({
+          message: t('Server Error'),
+          description: err.message || err.toString(),
+          duration: 0
+        })
+      }
     } else {
       message.success(t('Group Cancelled'), 3, () => {
         router.push('/groups')

@@ -1,23 +1,21 @@
 import React from 'react'
 import _find from 'lodash.find'
 import LayerListDropDown from './LayerListDropDown'
-import { LocalizedString } from '../../types/LocalizedString'
-import { Layer } from '../../types/layer'
+import { Layer } from '../../../types/layer'
+
 type Props = {
   categories: Array<Record<string, any>>
   layers: Array<Layer>
   backgroundColor?: string
   textColor?: string
   toggleVisibility: (layer_id: number) => void
-  t: (v: string | LocalizedString) => string
 }
 const MapLayerMenu = ({
   categories,
   layers,
   toggleVisibility,
   backgroundColor,
-  textColor,
-  t
+  textColor
 }: Props): JSX.Element => {
   return (
     <>
@@ -54,7 +52,6 @@ const MapLayerMenu = ({
                 name={category.name}
                 layers={categoriesLayers}
                 toggleVisibility={toggleVisibility}
-                t={t}
               />
             </span>
           )

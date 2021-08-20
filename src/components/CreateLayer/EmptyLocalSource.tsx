@@ -4,7 +4,7 @@ import useT from '../../hooks/useT'
 
 import { useDispatch, useSelector } from '../../redux/hooks'
 import LayerAPI from '../../redux/reducers/layer-api'
-import { saveDataSettings, LayerState } from '../../redux/reducers/layerSlice'
+import { saveDataSettings } from '../../redux/reducers/layerSlice'
 
 type Props = {
   onSubmit: () => void
@@ -14,9 +14,7 @@ const EmptyLocalSource = ({ type, onSubmit }: Props): JSX.Element => {
   const { t } = useT()
   const dispatch = useDispatch()
 
-  const layer_id = useSelector(
-    (state: { layer: LayerState }) => state.layer.layer_id
-  )
+  const layer_id = useSelector((state) => state.layer.layer_id)
 
   return (
     <Row

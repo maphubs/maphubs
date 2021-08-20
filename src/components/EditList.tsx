@@ -3,6 +3,7 @@ import { Tooltip, List, Avatar } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 import DeleteIcon from '@material-ui/icons/Delete'
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
+import useT from '../hooks/useT'
 type Item = {
   image?: string
   type: string
@@ -14,16 +15,10 @@ type Props = {
   // Array of objects with key, label, optional type, optional icon or avatar, and optional action button [{key,label, icon, image, actionIcon, actionLabel}]
   onDelete: (item: Item) => void
   onAction: (item: Item) => void
-  t: (val: string) => string
 }
 
-const EditList = ({
-  t,
-  title,
-  items,
-  onDelete,
-  onAction
-}: Props): JSX.Element => {
+const EditList = ({ title, items, onDelete, onAction }: Props): JSX.Element => {
+  const { t } = useT()
   return (
     <List
       header={<b>{title}</b>}

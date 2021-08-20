@@ -1,14 +1,23 @@
 import React, { useState } from 'react'
 import { Button, Input, Row } from 'antd'
-import { LocalizedString } from '../../../types/LocalizedString'
-type Props = {
-  zoomToCoordinates: (...args: Array<any>) => any
-  t: (v: string | LocalizedString) => string
-}
+import useT from '../../../../hooks/useT'
+import { useSelector } from '../../redux/hooks'
+import { selectMapboxMap } from '../../redux/reducers/mapSlice'
 
-const CoordinatePanel = ({ t, zoomToCoordinates }: Props): JSX.Element => {
-  const [lat, setLat] = useState()
-  const [lon, setLon] = useState()
+const CoordinatePanel = (): JSX.Element => {
+  const { t } = useT()
+  const [lat, setLat] = useState<string>()
+  const [lon, setLon] = useState<string>()
+
+  const mapboxMap = useSelector(selectMapboxMap)
+
+  const zoomToCoordinates = (lat: number, lon: number) => {
+    mapboxMap.flyTo({
+      center: [lon, lat],
+      zoom: mapboxMap.getZoom()
+    })
+  }
+
   return (
     <Row
       justify='center'

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import Layout from '../../../src/components/Layout'
-import DataCollectionForm from '../../../src/components/DataCollection/DataCollectionForm'
+import DataCollectionForm from '../../../src/components/Maps/DataCollection/DataCollectionForm'
 import ImageCrop from '../../../src/components/ImageCrop'
 import GetNameField from '../../../src/components/Map/Styles/get-name-field'
 import ErrorBoundary from '../../../src/components/ErrorBoundary'
@@ -350,7 +350,9 @@ const AddPhotoPoint = (): JSX.Element => {
         </Row>
       </>
     )
-    dataForm = <DataCollectionForm presets={layer.presets} onSubmit={submit} />
+    dataForm = (
+      <DataCollectionForm presets={layer.presets} onSubmit={submit} t={t} />
+    )
   } else {
     addPhotoButton = (
       <Row>

@@ -1,15 +1,12 @@
-import {
-  configureStore,
-  ThunkAction,
-  Action,
-  EnhancedStore
-} from '@reduxjs/toolkit'
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 
 import locale from './reducers/localeSlice'
+import group from './reducers/groupSlice'
+import layer from './reducers/layerSlice'
 
-export function makeStore(): EnhancedStore {
+export function makeStore() {
   return configureStore({
-    reducer: { locale }
+    reducer: { locale, group, layer }
   })
 }
 

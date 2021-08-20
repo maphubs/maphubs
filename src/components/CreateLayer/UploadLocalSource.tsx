@@ -12,7 +12,6 @@ import LayerAPI from '../../redux/reducers/layer-api'
 import {
   saveDataSettings,
   setDataType,
-  LayerState,
   setImportedTags
 } from '../../redux/reducers/layerSlice'
 
@@ -31,10 +30,8 @@ const UploadLocalSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
   const { t, locale } = useT()
 
   const dispatch = useDispatch()
-  const layer_id = useSelector(
-    (state: { layer: LayerState }) => state.layer.layer_id
-  )
-  const style = useSelector((state: { layer: LayerState }) => state.layer.style)
+  const layer_id = useSelector((state) => state.layer.layer_id)
+  const style = useSelector((state) => state.layer.style)
 
   useEffect(() => {
     scroller.scrollTo('scrollToMap')

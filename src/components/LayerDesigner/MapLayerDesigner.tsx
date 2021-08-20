@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import LayerDesigner from './LayerDesigner'
 import OpacityChooser from './OpacityChooser'
-import MapStyles from '../Map/Styles'
+import MapStyles from '../Maps/Map/Styles'
 import useT from '../../hooks/useT'
 import type { Layer } from '../../types/layer'
 import mapboxgl from 'mapbox-gl'

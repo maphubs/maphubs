@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import { Row, message, Button } from 'antd'
-import UserActions from '../../actions/UserActions'
 import Formsy from 'formsy-react'
-import MultiTextInput from '../forms/MultiTextInput'
-import SelectGroup from '../Groups/SelectGroup'
-import useT from '../../hooks/useT'
-import Locales from '../../services/locales'
-import { LocalizedString } from '../../types/LocalizedString'
+import MultiTextInput from '../../forms/MultiTextInput'
+import SelectGroup from '../../Groups/SelectGroup'
+import useT from '../../../hooks/useT'
+import Locales from '../../../services/locales'
+import { LocalizedString } from '../../../types/LocalizedString'
 import { useSession } from 'next-auth/client'
 
 type Props = {
@@ -33,11 +32,12 @@ const SaveMapPanel = ({
   }
 
   const recheckLogin = (): void => {
-    UserActions.getUser((err) => {
+    // TODO: trigger next-auth to recheck login
+    /*
       if (err) {
         message.error(t('Not Logged In - Please Login Again'))
       }
-    })
+    */
   }
   const save = (model: Record<string, any>): void => {
     model.title = Locales.formModelToLocalizedString(model, 'title')

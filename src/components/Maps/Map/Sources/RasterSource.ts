@@ -1,19 +1,20 @@
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import mapboxgl from 'mapbox-gl'
+import drawTheme from '@mapbox/mapbox-gl-draw/src/lib/theme'
+import GenericSource from './GenericSource'
+import { SourceState } from './types/SourceState'
 
-const RasterSource = {
+class RasterSource extends GenericSource {
   async load(
     key: string,
     source: mapboxgl.RasterSource & { metadata: Record<string, unknown> },
-    mapComponent: any
+    state: SourceState
   ): Promise<any> {
     if (source.url) {
       source.url = source.url.replace('{MAPHUBS_DOMAIN}', urlUtil.getBaseUrl())
     }
 
-    const connectID =
-      process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID ||
-      mapComponent.props.DGWMSConnectID
+    const connectID = process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID
 
     if (source.tiles && source.tiles.length > 0) {
       source.tiles = source.tiles.map((tile) => {
@@ -28,36 +29,28 @@ const RasterSource = {
       source.metadata.authUrl &&
       source.metadata.authToken
     ) {
-      mapComponent.map.authUrlStartsWith = source.metadata.authUrl
-      mapComponent.map.authToken = source.metadata.authToken
+      state.mapboxMap.authUrlStartsWith = source.metadata.authUrl as string
+      state.mapboxMap.authToken = source.metadata.authToken as string
     }
 
-    return mapComponent.addSource(key, source)
-  },
+    return state.addSource(key, source)
+  }
 
   addLayer(
     layer: mapboxgl.Layer,
     source: mapboxgl.Source,
     position: number,
-    mapComponent: any
+    state: SourceState
   ): void {
     if (layer.metadata && layer.metadata['maphubs:showBehindBaseMapLabels']) {
-      mapComponent.addLayerBefore(layer, 'water')
+      state.addLayerBefore(layer, 'water')
     } else {
-      if (mapComponent.state.editing) {
-        mapComponent.addLayerBefore(layer, mapComponent.getFirstDrawLayerID())
+      if (state.editing) {
+        state.addLayerBefore(layer, drawTheme[0].id + '.cold')
       } else {
-        mapComponent.addLayer(layer, position)
+        state.addLayer(layer, position)
       }
     }
-  },
-
-  removeLayer(layer: mapboxgl.Layer, mapComponent: any): any {
-    return mapComponent.removeLayer(layer.id)
-  },
-
-  remove(key: string, mapComponent: any): any {
-    return mapComponent.removeSource(key)
   }
 }
 export default RasterSource

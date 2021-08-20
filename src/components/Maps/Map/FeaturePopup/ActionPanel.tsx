@@ -4,7 +4,7 @@ import Info from '@material-ui/icons/Info'
 import InsertPhoto from '@material-ui/icons/InsertPhoto'
 import Launch from '@material-ui/icons/Launch'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import { LocalizedString } from '../../../types/LocalizedString'
+import { LocalizedString } from '../../../../types/LocalizedString'
 type Props = {
   layer?: Record<string, any>
   selectedFeature: Record<string, any>
@@ -24,43 +24,32 @@ const getFeatureLink = (
   const host = feature.properties.maphubs_host
   const mhid = feature.properties.mhid
   const source_layer_id = feature.properties.layer_id
-  let featureID
 
-  if (typeof mhid === 'string' && mhid.includes(':')) {
-    featureID = mhid.split(':')[1]
-  } else {
-    featureID = mhid
-  }
+  const featureID =
+    typeof mhid === 'string' && mhid.includes(':') ? mhid.split(':')[1] : mhid
 
-  let featureLink
-
-  if (host === window.location.hostname) {
-    featureLink = `/feature/${source_layer_id}/${featureID}/${featureName}`
-  } else {
-    featureLink = `https://${host}/feature/${source_layer_id}/${featureID}/${featureName}`
-  }
+  const featureLink =
+    host === window.location.hostname
+      ? `/feature/${source_layer_id}/${featureID}/${featureName}`
+      : `https://${host}/feature/${source_layer_id}/${featureID}/${featureName}`
 
   return featureLink
 }
 
 const getLayerLink = (feature, layer) => {
   const host = feature.properties.maphubs_host
-  let baseUrl
 
-  if (host && host !== 'dev.docker' && host !== window.location.hostname) {
-    baseUrl = 'https://' + host
-  } else {
-    baseUrl = urlUtil.getBaseUrl()
-  }
+  const baseUrl =
+    host && host !== 'dev.docker' && host !== window.location.hostname
+      ? 'https://' + host
+      : urlUtil.getBaseUrl()
 
   const local_layer_id: string = layer.layer_id.toString() || '0'
-  let layerLink
 
-  if (host === window.location.hostname || host === 'dev.docker') {
-    layerLink = `${baseUrl}/lyr/${local_layer_id}`
-  } else {
-    layerLink = `https://${host}/lyr/${local_layer_id}`
-  }
+  const layerLink =
+    host === window.location.hostname || host === 'dev.docker'
+      ? `${baseUrl}/lyr/${local_layer_id}`
+      : `https://${host}/lyr/${local_layer_id}`
 
   return layerLink
 }
@@ -89,35 +78,31 @@ export default function ActionPanel({
   let dataToggle
 
   if (enableToggle) {
-    if (toggled) {
-      dataToggle = (
-        <Tooltip title={t('Back to Summary')} placement='bottom'>
-          <a
-            href='#'
-            onClick={toggleData}
-            style={{
-              margin: 0
-            }}
-          >
-            <InsertPhoto />
-          </a>
-        </Tooltip>
-      )
-    } else {
-      dataToggle = (
-        <Tooltip title={t('View Details')} placement='bottom'>
-          <a
-            href='#'
-            onClick={toggleData}
-            style={{
-              margin: 0
-            }}
-          >
-            <Info />
-          </a>
-        </Tooltip>
-      )
-    }
+    dataToggle = toggled ? (
+      <Tooltip title={t('Back to Summary')} placement='bottom'>
+        <a
+          href='#'
+          onClick={toggleData}
+          style={{
+            margin: 0
+          }}
+        >
+          <InsertPhoto />
+        </a>
+      </Tooltip>
+    ) : (
+      <Tooltip title={t('View Details')} placement='bottom'>
+        <a
+          href='#'
+          onClick={toggleData}
+          style={{
+            margin: 0
+          }}
+        >
+          <Info />
+        </a>
+      </Tooltip>
+    )
   }
 
   return (

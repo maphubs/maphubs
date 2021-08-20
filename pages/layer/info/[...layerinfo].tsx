@@ -20,8 +20,8 @@ import TerraformerGL from '../../../src/services/terraformerGL'
 import GroupTag from '../../../src/components/Groups/GroupTag'
 import Licenses from '../../../src/components/CreateLayer/licenses'
 import LayerNotes from '../../../src/components/CreateLayer/LayerNotes'
-import DataGrid from '../../../src/components/DataGrid/DataGrid'
-import MapStyles from '../../../src/components/Map/Styles'
+import DataGrid from '../../../src/components/Maps/DataGrid/DataGrid'
+import MapStyles from '../../../src/components/Maps/Map/Styles'
 import geobuf from 'geobuf'
 import Pbf from 'pbf'
 import turf_area from '@turf/area'
@@ -62,7 +62,7 @@ import LayerStatsModel from '../../../src/models/stats'
 
 import dynamic from 'next/dynamic'
 const InteractiveMap = dynamic(
-  () => import('../../../src/components/Map/InteractiveMap'),
+  () => import('../../../src/components/Maps/Map/InteractiveMap'),
   {
     ssr: false
   }
@@ -689,7 +689,6 @@ const LayerInfo = ({
                           geoJSON={geoJSON}
                           presets={presets}
                           canEdit={allowedToModifyLayer}
-                          t={t}
                         />
                       )}
                       {!geoJSON && <Result title={dataMsg} />}
@@ -727,7 +726,6 @@ const LayerInfo = ({
                   earthEngineClientID={
                     process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
                   }
-                  t={t}
                   locale={locale}
                 />
               </Col>

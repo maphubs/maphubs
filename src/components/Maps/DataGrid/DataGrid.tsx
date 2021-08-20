@@ -1,4 +1,5 @@
-import React, {useState, useRef} from 'react'
+import React, { useState, useRef } from 'react'
+import { useRouter } from 'next/router'
 import { Row, Button, notification, message, Modal, Input } from 'antd'
 import {
   UndoOutlined,
@@ -7,31 +8,52 @@ import {
   DownloadOutlined,
   SearchOutlined
 } from '@ant-design/icons'
+import _isequal from 'lodash.isequal'
 import EditableTable from './Editable/EditableTable'
 import slugify from 'slugify'
 import Highlighter from 'react-highlight-words'
 import turf_bbox from '@turf/bbox'
 import GetNameField from '../Map/Styles/get-name-field'
-import type { MapHubsField } from '../../types/maphubs-field'
-import useT from '../../hooks/useT'
-import useUnload from '../../hooks/useUnload'
+import type { MapHubsField } from '../../../types/maphubs-field'
+import useT from '../../../hooks/useT'
+import useUnload from '../../../hooks/useUnload'
 
-const { confirm } = Modal
+import { useDispatch, useSelector } from '../redux/hooks'
+import { selectMapboxMap } from '../redux/reducers/mapSlice'
+import {
+  startEditing,
+  stopEditing,
+  selectFeatureThunk,
+  updateSelectedFeatureTags,
+  undoEdit,
+  redoEdit,
+  saveEdits,
+  Edit
+} from '../redux/reducers/dataEditorSlice'
+import { Layer } from '../../../types/layer'
+import { FeatureCollection } from 'geojson'
+import { SelectValue } from 'antd/lib/select'
+import { RowSelectionType } from 'antd/lib/table/interface'
+
 type Props = {
-  geoJSON: Record<string, any>
-  layer: Record<string, any>
+  geoJSON: FeatureCollection
+  layer: Layer
   canEdit: boolean
   presets: Array<MapHubsField>
-  containers: {
-    dataEditorState: any
-    mapState: any
-  }
 }
 type Column = {
   title: string
   dataIndex: string
   width?: number
   editable: boolean
+  sorter?: (a: any, b: any) => number | boolean
+  sortable?: boolean
+  dataType?: string
+  filterDropdown?: any
+  filterIcon?: any
+  onFilter?: any
+  onFilterDropdownVisibleChange?: any
+  render?: any
 }
 
 type SearchState = {
@@ -60,23 +82,66 @@ const getRowKey = (exampleRow: Record<string, any>) => {
   return rowKey
 }
 
-const DataGrid = ({layer, presets, geoJSON, canEdit}: Props) => {
-  const {t} = useT()
-  const tableRef = useRef()
+const DataGrid = ({ layer, presets, geoJSON, canEdit }: Props): JSX.Element => {
+  const { t } = useT()
+  const router = useRouter()
+  const dispatch = useDispatch()
+  const tableRef = useRef<any>()
+  const searchInputsRef = useRef<Record<string, any>>()
 
   const rows = geoJSON.features.map((f) => f.properties)
   const rowKey = getRowKey(rows[0])
   const [editing, setEditing] = useState(false)
-  const [searchState, setSearchState] = useState<SearchState>({searchText: '', activeSearchTag: null})
+  const [searchState, setSearchState] = useState<SearchState>({
+    searchText: '',
+    activeSearchTag: null
+  })
   const [selectedRowState, setSelectedRowState] = useState<SelectedRowState>({
     selectedRowKeys: []
   })
 
+  const mapboxMap = useSelector(selectMapboxMap)
+  const edits = useSelector((state) => state.dataEditor.edits)
+  const redos = useSelector((state) => state.dataEditor.redo)
+  const editingLayer = useSelector((state) => state.dataEditor.editingLayer)
+
+  const { selectedFeature } = selectedRowState
+
+  const [dataSource, setDataSource] = useState(rows)
+
+  const handleSave = async (row, isUndoRedo) => {
+    const newData = [...dataSource]
+    const index = newData.findIndex((item) => row[rowKey] === item[rowKey])
+    const prevRow = newData[index]
+    newData[index] = row
+    setDataSource(newData)
+
+    // if something in the row actualy changed
+    if (!_isequal(prevRow, row)) {
+      console.log('prevRow')
+      console.log(prevRow)
+      console.log('newRow')
+      console.log(row)
+      console.log('newData')
+      console.log(newData)
+      if (!isUndoRedo) {
+        // don't fire a change if this is being called externally as an undo/redo
+        console.log('data changed')
+        const mhid = row[rowKey]
+        const featureData = await dispatch(selectFeatureThunk(mhid)).unwrap()
+        // update data
+        const data = featureData.selectedEditFeature.geojson.properties
+        Object.assign(data, row)
+        dispatch(updateSelectedFeatureTags({ data }))
+      }
+    } else {
+      console.info('table edit stopped without changes')
+    }
+  }
 
   useUnload((e) => {
     e.preventDefault()
-    if (editing &&
-      containers.dataEditorState.state?.edits?.length > 0) {
+    if (editing && edits?.length > 0) {
       const exit = confirm(t('Any pending changes will be lost'))
       if (exit) window.close()
     }
@@ -118,7 +183,7 @@ const DataGrid = ({layer, presets, geoJSON, canEdit}: Props) => {
     let setDynamicSizedColumn
 
     if (presets) {
-      presets.forEach((preset) => {
+      for (const preset of presets) {
         let width
 
         if (preset.isName) {
@@ -158,6 +223,11 @@ const DataGrid = ({layer, presets, geoJSON, canEdit}: Props) => {
             selectedKeys,
             confirm,
             clearFilters
+          }: {
+            setSelectedKeys: (v: SelectValue[]) => void
+            selectedKeys: string[]
+            confirm: () => void
+            clearFilters: () => void
           }) => (
             <div
               style={{
@@ -166,7 +236,8 @@ const DataGrid = ({layer, presets, geoJSON, canEdit}: Props) => {
             >
               <Input
                 ref={(node) => {
-                  searchInputsRef.current[preset.tag] = node
+                  if (searchInputsRef.current)
+                    searchInputsRef.current[preset.tag] = node
                 }}
                 placeholder={t('Search')}
                 value={selectedKeys[0]}
@@ -188,9 +259,7 @@ const DataGrid = ({layer, presets, geoJSON, canEdit}: Props) => {
               />
               <Button
                 type='primary'
-                onClick={() =>
-                  handleSearch(preset.tag, selectedKeys, confirm)
-                }
+                onClick={() => handleSearch(preset.tag, selectedKeys, confirm)}
                 icon={<SearchOutlined />}
                 size='small'
                 disabled={
@@ -217,7 +286,7 @@ const DataGrid = ({layer, presets, geoJSON, canEdit}: Props) => {
           ),
           filterIcon: (filtered) => {
             return !searchState.activeSearchTag ||
-            searchState.activeSearchTag === preset.tag ? (
+              searchState.activeSearchTag === preset.tag ? (
               <SearchOutlined
                 style={{
                   color: filtered ? '#1890ff' : undefined
@@ -236,7 +305,7 @@ const DataGrid = ({layer, presets, geoJSON, canEdit}: Props) => {
           },
           onFilterDropdownVisibleChange: (visible) => {
             if (visible) {
-              setTimeout(() => searchInputsRef.current[[preset.tag]].select())
+              setTimeout(() => searchInputsRef.current[preset.tag].select())
             }
           },
           render: (text) => {
@@ -246,7 +315,7 @@ const DataGrid = ({layer, presets, geoJSON, canEdit}: Props) => {
                   backgroundColor: '#ffc069',
                   padding: 0
                 }}
-                searchWords={[this.state.searchText]}
+                searchWords={[searchState.searchText]}
                 autoEscape
                 textToHighlight={text}
               />
@@ -255,7 +324,7 @@ const DataGrid = ({layer, presets, geoJSON, canEdit}: Props) => {
             )
           }
         })
-      })
+      }
     } else {
       console.warn('table missing presets, using defaults')
       for (const key of Object.keys(firstRow)) {
@@ -278,35 +347,20 @@ const DataGrid = ({layer, presets, geoJSON, canEdit}: Props) => {
   }
 
   const columns = getColumns(rows, presets, rowKey)
-  const onDataChange = async (rowToUpdate: Record<string, any>) => {
-    const { dataEditorState, mapState } = containers
-    const mapComponent = mapState.state.map
-    console.log('data changed')
-    console.log(rowToUpdate)
-    const mhid = rowToUpdate[selectedRowState.rowKey]
-    const featureData = await dataEditorState.selectFeature(mhid)
-    // update data
-    const data = featureData.properties
-    Object.assign(data, rowToUpdate)
-    const edit = await dataEditorState.updateSelectedFeatureTags(data)
-    mapComponent.onFeatureUpdate(edit.status, edit)
-  }
+
   const onStartEditing = async () => {
-    const { dataEditorState } = containers
-    await dataEditorState.startEditing(layer)
+    dispatch(startEditing({ layer }))
     setEditing(true)
   }
   const onCancel = () => {
-    const { dataEditorState } = containers
-
-    if (dataEditorState.state.edits?.length > 0) {
-      confirm({
+    if (edits?.length > 0) {
+      Modal.confirm({
         title: t('Stop Editing'),
         content: t('Any pending changes will be lost'),
         okText: t('Stop Editing'),
         okType: 'danger',
         onOk: async () => {
-          await dataEditorState.stopEditing()
+          dispatch(stopEditing())
           setEditing(false)
         }
       })
@@ -314,71 +368,64 @@ const DataGrid = ({layer, presets, geoJSON, canEdit}: Props) => {
       setEditing(false)
     }
   }
-  const onSave = () => {
-    const { dataEditorState } = containers
-    const sourceID = Object.keys(
-      dataEditorState.state.editingLayer.style.sources
-    )[0]
-    dataEditorState.saveEdits((err) => {
-      if (err) {
-        notification.error({
-          message: t('Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-      } else {
-        setEditing(false)
-        dataEditorState.stopEditing()
-        message.success(t('Data Saved'), 1, () => {
-          // location.reload()
-          reloadEditingSourceCache(sourceID)
-        })
-      }
-    })
+  const onSave = async () => {
+    const sourceID = Object.keys(editingLayer.style.sources)[0]
+    try {
+      await dispatch(saveEdits(true))
+      setEditing(false)
+      dispatch(stopEditing())
+      message.success(t('Data Saved'), 1, () => {
+        // location.reload()
+        reloadEditingSourceCache(sourceID)
+      })
+    } catch (err) {
+      notification.error({
+        message: t('Error'),
+        description: err.message || err.toString() || err,
+        duration: 0
+      })
+    }
   }
 
-  const reloadEditingSourceCache(sourceID: string) {
-    const { mapState } = containers
-    const mapComponent = mapState.state.map
-    const sourceCache = mapComponent.map.style.sourceCaches[sourceID]
+  const reloadEditingSourceCache = (sourceID: string) => {
+    const sourceCache = mapboxMap.style.sourceCaches[sourceID]
 
     if (sourceCache) {
       // From: https://github.com/mapbox/mapbox-gl-js/issues/2941#issuecomment-518631078
       // Remove the tiles for a particular source
       sourceCache.clearTiles()
       // Load the new tiles for the current viewport (map.transform -> viewport)
-      sourceCache.update(mapComponent.map.transform)
+      sourceCache.update(mapboxMap.transform)
       // Force a repaint, so that the map will be repainted without you having to touch the map
-      mapComponent.map.triggerRepaint() // mapComponent.reloadStyle()
+      mapboxMap.triggerRepaint() // mapComponent.reloadStyle()
     }
   }
 
- const onUndo = () => {
-    const { dataEditorState, mapState } = containers
-    const mapComponent = mapState.state.map
-    dataEditorState.undoEdit((type, edit) => {
-      const rowToUndo = edit.geojson.properties
-      console.log('undo')
-      console.log(rowToUndo)
-      tableRef.current.handleSave(rowToUndo, true)
-      mapComponent.onFeatureUpdate(type, edit)
-    })
+  const onUndo = () => {
+    dispatch(
+      undoEdit({
+        onFeatureUpdate: (type: string, edit: Edit) => {
+          const rowToUndo = edit.geojson.properties
+          console.log('undo')
+          console.log(rowToUndo)
+          tableRef.current.handleSave(rowToUndo, true)
+        }
+      })
+    )
   }
   const onRedo = () => {
-    const { dataEditorState, mapState } = containers
-    const mapComponent = mapState.state.map
-    dataEditorState.redoEdit((type, edit) => {
-      const rowToRedo = edit.geojson.properties
-      console.log('undo')
-      console.log(rowToRedo)
-      tableRef.current.handleSave(rowToRedo, true)
-      mapComponent.onFeatureUpdate(type, edit)
-    })
+    dispatch(
+      redoEdit({
+        onFeatureUpdate: (type: string, edit: Edit) => {
+          const rowToRedo = edit.geojson.properties
+          console.log('undo')
+          console.log(rowToRedo)
+          tableRef.current.handleSave(rowToRedo, true)
+        }
+      })
+    )
   }
   const onViewSelectedFeature = () => {
-
-    const { selectedFeature } = selectedRowState
-
     if (!selectedFeature) {
       return
     }
@@ -399,144 +446,146 @@ const DataGrid = ({layer, presets, geoJSON, canEdit}: Props) => {
     router.push(url)
   }
   const onClearSelection = () => {
-    setSearchState({
+    setSelectedRowState({
       selectedFeature: undefined,
       selectedRowKeys: []
     })
   }
 
-
-    const { dataEditorState } = containers
-    const name = slugify(t(layer.name))
-    const layerId = layer.layer_id
-    const csvURL = `/api/layer/${layerId}/export/csv/${name}.csv`
-    const rowSelection = {
-      type: 'radio',
-      // selectedRowKeys,
-      onChange: (selectedRowKeys, selectedRows) => {
-        const { mapState } = containers
-        const selected = selectedRows[0]
-        const idVal = selected[rowKey]
-        setSearchState({
-          selectedFeature: selected,
-          selectedRowKeys
-        })
-
-        if (geoJSON) {
-          for (const feature of geoJSON.features) {
-            if (idVal === feature.properties[rowKey]) {
-              const bbox = turf_bbox(feature)
-              mapState.state.map.fitBounds(bbox, 16, 25)
-            }
-          }
-        } else {
-          console.log('GeoJSON not found, unable to update the map')
-        }
-      },
-      getCheckboxProps: (record) => ({
-        name: record[selectedRowState.rowKey]
+  const name = slugify(t(layer.name))
+  const layerId = layer.layer_id
+  const csvURL = `/api/layer/${layerId}/export/csv/${name}.csv`
+  const rowSelection = {
+    type: 'radio' as RowSelectionType,
+    // selectedRowKeys,
+    onChange: (selectedRowKeys, selectedRows) => {
+      const selected = selectedRows[0]
+      const idVal = selected[rowKey]
+      setSelectedRowState({
+        selectedFeature: selected,
+        selectedRowKeys
       })
-    }
-    return (
-      <Row>
-        <Row
-          justify='end'
-          align='middle'
-          style={{
-            height: '50px',
-            padding: '0px 10px'
-          }}
-        >
-          {!editing && selectedFeature && (
-            <>
-              <Button
-                style={{
-                  marginRight: '10px'
-                }}
-                onClick={onClearSelection}
-              >
-                {t('Clear Selection')}
-              </Button>
-              <Button
-                style={{
-                  marginRight: '10px'
-                }}
-                onClick={this.onViewSelectedFeature}
-              >
-                {t('View Selected')}
-              </Button>
-            </>
-          )}
-          {!editing && !layer.disable_export && (
+
+      if (geoJSON) {
+        for (const feature of geoJSON.features) {
+          if (idVal === feature.properties[rowKey]) {
+            const bbox = turf_bbox(feature) as [number, number, number, number]
+            mapboxMap.fitBounds(bbox, {
+              padding: 25,
+              curve: 1,
+              speed: 0.6,
+              maxZoom: 26,
+              animate: true
+            })
+          }
+        }
+      } else {
+        console.log('GeoJSON not found, unable to update the map')
+      }
+    },
+    getCheckboxProps: (record) => ({
+      name: record[rowKey]
+    })
+  }
+  return (
+    <Row>
+      <Row
+        justify='end'
+        align='middle'
+        style={{
+          height: '50px',
+          padding: '0px 10px'
+        }}
+      >
+        {!editing && selectedFeature && (
+          <>
             <Button
-              href={csvURL}
               style={{
                 marginRight: '10px'
               }}
-              icon={<DownloadOutlined />}
+              onClick={onClearSelection}
             >
-              {t('Download CSV')}
+              {t('Clear Selection')}
             </Button>
-          )}
-          {!editing && canEdit && (
-            <Button onClick={onStartEditing}>{t('Edit')}</Button>
-          )}
-          {editing && (
-            <>
-              <Button
-                onClick={onUndo}
-                disabled={dataEditorState.state?.edits.length === 0}
-                style={{
-                  marginRight: '10px'
-                }}
-                icon={<UndoOutlined />}
-              >
-                {t('Undo')}
-              </Button>
-              <Button
-                onClick={onRedo}
-                disabled={dataEditorState.state?.redo.length === 0}
-                style={{
-                  marginRight: '10px'
-                }}
-                icon={<RedoOutlined />}
-              >
-                {t('Redo')}
-              </Button>
-              <Button
-                onClick={onSave}
-                disabled={dataEditorState.state?.edits.length === 0}
-                type='primary'
-                style={{
-                  marginRight: '10px'
-                }}
-                icon={<SaveOutlined />}
-              >
-                {t('Save')}
-              </Button>
-              <Button onClick={onCancel} danger>
-                {t('Cancel')}
-              </Button>
-            </>
-          )}
-        </Row>
-        <Row
-          style={{
-            height: 'calc(100% - 50px)'
-          }}
-        >
-          <EditableTable
-            ref={tableRef}
-            columns={columns}
-            rowKey={rowKey}
-            initialDataSource={rows}
-            editing={editing}
-            onChange={onDataChange}
-            rowSelection={rowSelection}
-          />
-        </Row>
+            <Button
+              style={{
+                marginRight: '10px'
+              }}
+              onClick={onViewSelectedFeature}
+            >
+              {t('View Selected')}
+            </Button>
+          </>
+        )}
+        {!editing && !layer.disable_export && (
+          <Button
+            href={csvURL}
+            style={{
+              marginRight: '10px'
+            }}
+            icon={<DownloadOutlined />}
+          >
+            {t('Download CSV')}
+          </Button>
+        )}
+        {!editing && canEdit && (
+          <Button onClick={onStartEditing}>{t('Edit')}</Button>
+        )}
+        {editing && (
+          <>
+            <Button
+              onClick={onUndo}
+              disabled={edits.length === 0}
+              style={{
+                marginRight: '10px'
+              }}
+              icon={<UndoOutlined />}
+            >
+              {t('Undo')}
+            </Button>
+            <Button
+              onClick={onRedo}
+              disabled={redos.length === 0}
+              style={{
+                marginRight: '10px'
+              }}
+              icon={<RedoOutlined />}
+            >
+              {t('Redo')}
+            </Button>
+            <Button
+              onClick={onSave}
+              disabled={edits.length === 0}
+              type='primary'
+              style={{
+                marginRight: '10px'
+              }}
+              icon={<SaveOutlined />}
+            >
+              {t('Save')}
+            </Button>
+            <Button onClick={onCancel} danger>
+              {t('Cancel')}
+            </Button>
+          </>
+        )}
       </Row>
-    )
-  }
+      <Row
+        style={{
+          height: 'calc(100% - 50px)'
+        }}
+      >
+        <EditableTable
+          columns={columns}
+          rowKey={rowKey}
+          dataSource={dataSource}
+          editing={editing}
+          handleSave={handleSave}
+          rowSelection={rowSelection}
+        />
+      </Row>
+    </Row>
+  )
+}
 
 export default DataGrid

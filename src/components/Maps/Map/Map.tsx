@@ -1,88 +1,86 @@
 /**
  * Note: SSR not supported, needs to be loaded dynamically in NextJS
  */
-import React from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import ReactDOM from 'react-dom'
 import classNames from 'classnames'
 import FeaturePopup from './FeaturePopup'
-import BaseMapContainer from './containers/BaseMapContainer'
-import DataEditorContainer from './containers/DataEditorContainer'
-import MapContainer from './containers/MapContainer'
-import { subscribe } from './containers/unstated-props'
-import _isequal from 'lodash.isequal'
+import _bbox from '@turf/bbox'
+import _debounce from 'lodash.debounce'
 import MapToolButton from './MapToolButton'
 import MapSearchPanel from './Search/MapSearchPanel'
 import MapToolPanel from './MapToolPanel'
 import InsetMap from './InsetMap'
-import MapboxGLHelperMixin from './Helpers/MapboxGLHelperMixin'
-import MapInteractionMixin from './Helpers/MapInteractionMixin'
-import MeasurementToolMixin from './Helpers/MeasurementToolMixin'
-import MapGeoJSONMixin from './Helpers/MapGeoJSONMixin'
-import DataEditorMixin from './Helpers/DataEditorMixin'
-import IsochroneMixin from './Helpers/IsochroneMixin'
-import StyleMixin from './Helpers/StyleMixin'
-import MapSearchMixin from './Search/MapSearchMixin'
 import turfCentroid from '@turf/centroid'
 import PlayArrow from '@material-ui/icons/PlayArrow'
 import MapLayerMenu from './MapLayerMenu'
-import { Layer } from '../../types/layer'
+import { Layer } from '../../../types/layer'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import $ from 'jquery'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import { Feature, FeatureCollection } from 'geojson'
+import { Feature, FeatureCollection, Point } from 'geojson'
 import mapboxgl from 'mapbox-gl'
 import ScalePositionControl from 'mapbox-gl-dual-scale-control'
 import MapboxLanguage from '@mapbox/mapbox-gl-language'
-import lunr from 'lunr'
-import { LocalizedString } from '../../types/LocalizedString'
+import {
+  initMap,
+  setEnableMeasurementTools,
+  setAllowLayersToMoveMap,
+  setInteractiveLayers
+} from '../redux/reducers/mapSlice'
+import {
+  selectBaseMapStyle,
+  setBaseMapThunk,
+  updateMapPosition
+} from '../redux/reducers/baseMapSlice'
+import { setClickedFeature } from '../redux/reducers/dataEditorSlice'
+import { setBaseMapStyleThunk } from '../redux/reducers/map/setBaseMapStyleThunk'
+import { setOverlayStyleThunk } from '../redux/reducers/map/setOverlayStyleThunk'
+import { useDispatch, useSelector } from '../redux/hooks'
+import useT from '../../../hooks/useT'
+import MapStyles from './Styles'
 
 const debug = DebugService('map')
 type Props = {
-  className: string
-  id: string
+  className?: string
+  id?: string
   maxBounds?: Record<string, any>
   maxZoom?: number
   minZoom?: number
   zoom?: number
-  height: string
-  style: Record<string, any>
-  glStyle?: mapboxgl.Style
+  height?: string
+  style?: Record<string, any>
+  initialBaseMap?: string
+  initialGLStyle?: mapboxgl.Style
   features?: Array<Record<string, any>>
   tileJSONType?: string
   tileJSONUrl?: string
   data?: FeatureCollection
-  interactive: boolean
-  showPlayButton: boolean
-  showLogo: boolean
-  showScale: boolean
-  showFeatureInfoEditButtons: boolean
-  fitBounds?: Array<Array<number>>
-  fitBoundsOptions: Record<string, any>
+  interactive?: boolean
+  showPlayButton?: boolean
+  showLogo?: boolean
+  showScale?: boolean
+  showFeatureInfoEditButtons?: boolean
+  fitBounds?:
+    | [[number, number], [number, number]]
+    | [number, number, number, number]
+  fitBoundsOptions?: Record<string, any>
   disableScrollZoom?: boolean
   enableRotation?: boolean
-  navPosition: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
+  navPosition?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
   onChangeBaseMap?: (...args: Array<any>) => any
-  insetMap: boolean
-  hoverInteraction: boolean
-  interactionBufferSize: number
-  hash: boolean
+  insetMap?: boolean
+  interactionBufferSize?: number
+  hash?: boolean
   gpxLink?: string
-  attributionControl: boolean
-  allowLayerOrderOptimization: boolean
+  attributionControl?: boolean
+  allowLayerOrderOptimization?: boolean
   preserveDrawingBuffer?: boolean
   mapConfig: Record<string, any>
-  insetConfig: Record<string, any>
-  onToggleForestLoss?: (...args: Array<any>) => void
-  onToggleIsochroneLayer?: (...args: Array<any>) => void
+  insetConfig?: Record<string, any>
   children?: JSX.Element | JSX.Element[]
-  containers: {
-    baseMapState: Record<string, any>
-    dataEditorState: Record<string, any>
-    mapState: Record<string, any>
-  }
-  onLoad: (...args: Array<any>) => void
-  t: (v: string | LocalizedString) => string
+  onLoad?: (...args: Array<any>) => void
   locale: string
   mapboxAccessToken: string
   DGWMSConnectID?: string
@@ -90,1066 +88,1062 @@ type Props = {
   categories?: Array<Record<string, any>>
   mapLayers?: Layer[]
   toggleVisibility?: (...args: Array<any>) => void
-  showMapTools: boolean
-  showSearch: boolean
-  showFullScreen: boolean
-}
-type State = {
-  id: string
-  selectedFeature?: Feature
-  selected: boolean
-  interactive: boolean
-  interactiveLayers: Array<Record<string, any>>
-  mapLoaded: boolean
-  allowLayersToMoveMap: boolean
-  measurementMessage?: string
-  enableMeasurementTools?: boolean
-  isochroneResult?: Record<string, any>
+  showMapTools?: boolean
+  showSearch?: boolean
+  showFullScreen?: boolean
 }
 
-class Map extends React.Component<Props, State> {
-  static defaultProps = {
-    className: '',
-    interactive: true,
-    showFeatureInfoEditButtons: true,
-    showMapTools: true,
-    showSearch: true,
-    showPlayButton: true,
-    navPosition: 'top-right' as Props['navPosition'],
-    showLogo: true,
-    insetMap: true,
-    showScale: true,
-    showFullScreen: true,
-    hoverInteraction: false,
-    interactionBufferSize: 10,
-    hash: true,
-    attributionControl: false,
-    preserveDrawingBuffer: false,
-    style: {},
-    allowLayerOrderOptimization: true,
-    fitBoundsOptions: {
-      animate: false
+const getInteractiveLayers = (_glStyle: mapboxgl.Style) => {
+  const interactiveLayers = []
+
+  if (_glStyle?.layers) {
+    const layers = _glStyle.layers as Array<
+      mapboxgl.Layer & { metadata: Record<string, unknown> }
+    >
+    for (const layer of layers) {
+      if (
+        layer.metadata &&
+        layer.metadata['maphubs:interactive'] &&
+        (layer.id.startsWith('omh') || layer.id.startsWith('osm'))
+      ) {
+        interactiveLayers.push(layer.id)
+      }
+    }
+  }
+  return interactiveLayers
+}
+
+const MapHubsMap = ({
+  allowLayerOrderOptimization,
+  disableScrollZoom,
+  showScale,
+  showFullScreen,
+  navPosition,
+  id,
+  locale,
+  fitBounds,
+  fitBoundsOptions,
+  hash,
+  data,
+  zoom,
+  minZoom,
+  maxZoom,
+  preserveDrawingBuffer,
+  enableRotation,
+  attributionControl,
+  onLoad,
+  initialGLStyle,
+  initialBaseMap,
+  interactive,
+  insetMap,
+  showLogo,
+  mapLayers,
+  toggleVisibility,
+  showMapTools,
+  showSearch,
+  showFeatureInfoEditButtons,
+  style,
+  categories,
+  gpxLink,
+  showPlayButton,
+  children,
+  mapboxAccessToken,
+  insetConfig,
+  interactionBufferSize,
+  onChangeBaseMap
+}: Props): JSX.Element => {
+  const { t } = useT()
+  const dispatch = useDispatch()
+  const mapRef = useRef<mapboxgl.Map>()
+
+  const mapboxPopupRef = useRef<mapboxgl.Popup>()
+  const languageControlRef = useRef()
+
+  // local state
+  const [interactionActive, setInteractionActive] = useState(interactive)
+  const [selected, setSelected] = useState(false)
+  const [selectedFeature, setSelectedFeature] = useState<Feature>(null)
+  const [mapLoaded, setMapLoaded] = useState(false)
+
+  // map state
+  const baseMap = useSelector((state) => state.baseMap.baseMap)
+
+  //const overlayMapStyle = useSelector((state) => state.map.overlayMapStyle)
+  const allowLayersToMoveMap = useSelector(
+    (state) => state.map.allowLayersToMoveMap
+  )
+  const glStyle = useSelector((state) => state.map.glStyle)
+  const enableMeasurementTools = useSelector(
+    (state) => state.map.enableMeasurementTools
+  )
+  const measurementMessage = useSelector(
+    (state) => state.map.measurementMessage
+  )
+
+  // dataEditor state
+  const editingLayer = useSelector((state) => state.dataEditor.editingLayer)
+  const editing = useSelector((state) => state.dataEditor.editing)
+
+  // do not allow layers to position the map if user is providing the location
+  useEffect(() => {
+    dispatch(setAllowLayersToMoveMap(!fitBounds))
+  }, [fitBounds, dispatch])
+
+  const initGeoJSON = useCallback(
+    async (data: FeatureCollection): Promise<void> => {
+      if (mapRef.current) {
+        if (
+          data &&
+          data.features &&
+          Array.isArray(data.features) &&
+          data.features.length > 0
+        ) {
+          mapRef.current.addSource('omh-geojson', {
+            type: 'geojson',
+            data
+          })
+          const glStyle = MapStyles.style.defaultStyle(
+            9_999_999,
+            'geojson',
+            null,
+            null
+          )
+          // glStyle.sources["omh-geojson"] = {"type": "geojson", data};
+          glStyle.layers.map((layer) => {
+            mapRef.current.addLayer(layer)
+          })
+          const interactiveLayers = getInteractiveLayers(glStyle)
+          dispatch(setInteractiveLayers(interactiveLayers))
+
+          zoomToData(data)
+        } else {
+          // empty data
+          debug.log(`(${id}) Empty/Missing GeoJSON Data`)
+        }
+      } else {
+        debug.log(`(${id}) Map not initialized`)
+      }
     },
-    height: '100%',
-    mapConfig: {},
-    insetConfig: {}
-  }
-  map: mapboxgl.Map
-  overlayMapStyle: mapboxgl.Style
-  mapboxPopup: mapboxgl.Popup
-  glStyle: mapboxgl.Style
-  idx: any
-  searchSourceIds: any
-  languageControl: any
-  lunr: any
+    [dispatch, id]
+  )
 
-  constructor(props: Props) {
-    super(props)
-    this.state = {
-      id: props.id ? props.id : 'map',
-      selected: false,
-      interactive: props.interactive,
-      mapLoaded: false,
-      allowLayersToMoveMap: !props.fitBounds,
-      interactiveLayers: []
+  const clearSelection = useCallback(async (): Promise<void> => {
+    if (mapRef.current && glStyle) {
+      for (const layer of glStyle.layers) {
+        if (
+          layer.id.startsWith('omh-hover') &&
+          mapRef.current.getLayer(layer.id)
+        ) {
+          mapRef.current.setFilter(layer.id, ['==', 'mhid', ''])
+        }
+      }
     }
-  }
+    setSelected(false)
+    setSelectedFeature(null)
+  }, [glStyle])
 
-  componentDidMount() {
-    const { mapState } = this.props.containers
-    mapState.setMap(this)
+  // create the map if on first load or if glStyle props has changed
+  useEffect(() => {
+    const setSelectionFilter = (features: Feature[]) => {
+      if (glStyle?.layers) {
+        for (const layer of glStyle.layers) {
+          const filter = ['in', 'mhid']
+          for (const feature of features) {
+            filter.push(feature.properties.mhid)
+          }
 
-    if (this.props.glStyle) {
-      const interactiveLayers = this.getInteractiveLayers(this.props.glStyle)
-      this.setState({
-        interactiveLayers
+          if (
+            mapRef.current.getLayer(layer.id) &&
+            filter[2] // found a mhid
+          ) {
+            if (layer.id.startsWith('omh-hover-point')) {
+              mapRef.current.setFilter(layer.id, [
+                'all',
+                ['in', '$type', 'Point'],
+                filter
+              ])
+            } else if (layer.id.startsWith('omh-hover-line')) {
+              mapRef.current.setFilter(layer.id, [
+                'all',
+                ['in', '$type', 'LineString'],
+                filter
+              ])
+            } else if (layer.id.startsWith('omh-hover-polygon')) {
+              mapRef.current.setFilter(layer.id, [
+                'all',
+                ['in', '$type', 'Polygon'],
+                filter
+              ])
+            }
+          }
+        }
+      }
+    }
+
+    // fires whenever mouse is moving across the map... use for cursor interaction... hover etc.
+    const mousemoveHandler = (e: mapboxgl.MapMouseEvent) => {
+      if (!mapRef.current) return
+
+      if (!enableMeasurementTools) {
+        const debounced = _debounce(() => {
+          try {
+            const features = mapRef.current.queryRenderedFeatures(
+              [
+                [
+                  e.point.x - interactionBufferSize / 2,
+                  e.point.y - interactionBufferSize / 2
+                ],
+                [
+                  e.point.x + interactionBufferSize / 2,
+                  e.point.y + interactionBufferSize / 2
+                ]
+              ],
+              {
+                layers: interactiveLayers
+              }
+            )
+
+            if (features && features.length > 0) {
+              if (selected) {
+                $(mapRef.current)
+                  .find('.mapboxgl-canvas-container')
+                  .css('cursor', 'crosshair')
+              } else {
+                $(mapRef.current)
+                  .find('.mapboxgl-canvas-container')
+                  .css('cursor', 'pointer')
+              }
+            } else if (!selected && selectedFeature) {
+              clearSelection()
+
+              $(mapRef.current)
+                .find('.mapboxgl-canvas-container')
+                .css('cursor', '')
+            } else {
+              $(mapRef.current)
+                .find('.mapboxgl-canvas-container')
+                .css('cursor', '')
+            }
+          } catch (err) {
+            console.log(err)
+          }
+        }, 300)
+
+        debounced()
+      }
+    }
+
+    const moveendHandler = () => {
+      debug.log(`(${id}) mouse up fired`)
+      const center = mapRef.current.getCenter()
+      const zoom = mapRef.current.getZoom()
+      const bounds = mapRef.current.getBounds().toArray()
+      const position = {
+        zoom,
+        lng: center.lng,
+        lat: center.lat,
+        bbox: bounds
+      }
+      dispatch(updateMapPosition({ position, bbox: bounds }))
+    }
+    const clickHandler = (e: mapboxgl.MapMouseEvent) => {
+      if (!enableMeasurementTools) {
+        // feature selection
+        if (!selected && selectedFeature) {
+          setSelected(true)
+        } else {
+          $(mapRef.current)
+            .find('.mapboxgl-canvas-container')
+            .css('cursor', 'crosshair')
+          const features = mapRef.current.queryRenderedFeatures(
+            [
+              [
+                e.point.x - interactionBufferSize / 2,
+                e.point.y - interactionBufferSize / 2
+              ],
+              [
+                e.point.x + interactionBufferSize / 2,
+                e.point.y + interactionBufferSize / 2
+              ]
+            ],
+            {
+              layers: interactiveLayers
+            }
+          )
+
+          if (features && features.length > 0) {
+            if (selected) {
+              clearSelection()
+            }
+
+            const feature = features[0]
+
+            // find presets and add to props
+            if (feature.layer && feature.layer.source) {
+              let presets = MapStyles.settings.getSourceSetting(
+                glStyle,
+                feature.layer.source as string,
+                'presets'
+              )
+
+              if (!presets) {
+                debug.log(`presets not found in source ${feature.layer.source}`)
+                const source = glStyle.sources[feature.layer.source as string]
+                let data
+
+                if (source) {
+                  data = source.data
+                }
+
+                if (data) {
+                  if (data.metadata) {
+                    presets = data.metadata['maphubs:presets']
+
+                    if (presets) {
+                      debug.log(
+                        `presets FOUND! for source ${feature.layer.source}`
+                      )
+                    } else {
+                      debug.log(
+                        `presets not found in data.metadata for source ${feature.layer.source}`
+                      )
+                    }
+                  } else {
+                    debug.log(
+                      `data.metadata not found in source ${feature.layer.source}`
+                    )
+                  }
+                } else {
+                  debug.log(`data not found in source ${feature.layer.source}`)
+                }
+              }
+
+              if (!feature.properties.maphubs_metadata) {
+                feature.properties.maphubs_metadata = {}
+              }
+
+              if (typeof feature.properties.maphubs_metadata === 'string') {
+                feature.properties.maphubs_metadata = JSON.parse(
+                  feature.properties.maphubs_metadata
+                )
+              }
+
+              if (!feature.properties.maphubs_metadata.presets) {
+                feature.properties.maphubs_metadata.presets = presets
+              }
+            }
+
+            if (editing) {
+              if (
+                feature.properties.layer_id &&
+                editingLayer.layer_id === feature.properties.layer_id
+              ) {
+                dispatch(setClickedFeature({ feature }))
+              }
+
+              return // return here to disable interactation with other layers when editing
+            }
+
+            setSelectionFilter([feature])
+            setSelected(true)
+            setSelectedFeature(feature)
+          } else if (selectedFeature) {
+            clearSelection()
+            $(mapRef.current)
+              .find('.mapboxgl-canvas-container')
+              .css('cursor', '')
+          }
+        }
+      }
+    }
+
+    const createMap = async () => {
+      // create the map
+      debug.log(`(${id}) Creating MapboxGL Map`)
+      mapboxgl.accessToken = mapboxAccessToken
+
+      // initialize the base map
+      const result = await dispatch(setBaseMapThunk(initialBaseMap)).unwrap()
+      await dispatch(
+        setBaseMapStyleThunk({ style: result.baseMapStyle, skipUpdate: true })
+      )
+
+      if (!mapboxgl || !mapboxgl.supported || !mapboxgl.supported()) {
+        alert(
+          t(
+            'Your browser does not support Mapbox GL please see: https://help.maphubs.com/getting-started/troubleshooting-common-issues'
+          )
+        )
+        return
+      }
+
+      const map = new mapboxgl.Map({
+        container: id,
+        style: glStyle,
+        zoom: zoom || 0,
+        minZoom: minZoom || 0,
+        maxZoom: maxZoom || 22,
+        interactive: interactionActive,
+        dragRotate: !!enableRotation,
+        touchZoomRotate: true,
+        touchPitch: false,
+        preserveDrawingBuffer,
+        center: [0, 0],
+        hash,
+        attributionControl: false,
+        transformRequest: (url: string, resourceType) => {
+          if (map.authUrlStartsWith && url.startsWith(map.authUrlStartsWith)) {
+            return {
+              url: url,
+              headers: {
+                Authorization: 'Basic ' + map.authToken
+              },
+              credentials: 'include'
+            }
+          }
+        }
       })
+      // catch generic errors so 404 tile errors etc don't cause unexpected issues
+      map.on('error', (err) => {
+        console.log(err.error)
+        debug.error(err.error)
+      })
+      map.on('load', () => {
+        debug.log(`(${id}) MAP LOADED`)
+        // add selector for screenshot tool
+        setTimeout(() => {
+          $('body').append(
+            '<div id="map-load-complete" style="display: none;"></div>'
+          )
+        }, 5000)
+      })
+      map.on('style.load', () => {
+        debug.log(`(${id}) style.load`)
+
+        // restore map bounds (except for geoJSON maps)
+        if (
+          !data && // use bbox for GeoJSON data
+          !mapLoaded && // only set map position on first style load (not after changing base map etc)
+          fitBounds // bounds are provided in Props
+        ) {
+          let bounds = fitBounds as
+            | [[number, number], [number, number]]
+            | [number, number, number, number]
+
+          if (bounds.length > 2) {
+            // convert from GeoJSON bbox to Mapbox bounds format
+            bounds = [
+              [bounds[0] as number, bounds[1] as number],
+              [bounds[2], bounds[3]]
+            ]
+          }
+
+          debug.log(`(${id}) fitting map to bounds: ${bounds.toString()}`)
+          map.fitBounds(fitBounds, fitBoundsOptions)
+        }
+
+        // add the omh data
+
+        if (data) {
+          initGeoJSON(data)
+        }
+
+        //! previously setOverlayStyle was called here after mapbox loaded
+        setMapLoaded(true)
+        if (onLoad) onLoad()
+      })
+
+      // end style.load
+
+      map.on('mousemove', mousemoveHandler)
+      map.on('moveend', moveendHandler)
+      map.on('click', clickHandler)
+
+      if (interactionActive) {
+        map.addControl(
+          new mapboxgl.NavigationControl({
+            showCompass: false
+          }),
+          navPosition
+        )
+        if (showFullScreen)
+          map.addControl(
+            new mapboxgl.FullscreenControl({
+              container: document.querySelector(`#${id}-fullscreen-wrapper`)
+            })
+          )
+      }
+
+      if (attributionControl) {
+        map.addControl(new mapboxgl.AttributionControl(), 'bottom-left')
+      }
+
+      if (showScale) {
+        map.addControl(
+          new ScalePositionControl({
+            maxWidth: 175
+          }),
+          'bottom-right'
+        )
+      }
+
+      try {
+        const languageControl = new MapboxLanguage()
+        map.addControl(locale)
+        languageControlRef.current = languageControl
+      } catch (err) {
+        console.error('failed to add langauge control')
+        console.error(err)
+      }
+
+      if (disableScrollZoom) {
+        map.scrollZoom.disable()
+      }
+
+      mapRef.current = map
+      dispatch(initMap({ mapboxMap: mapRef.current, interactiveLayers }))
+    }
+    let interactiveLayers: string[] = []
+    if (initialGLStyle) {
+      interactiveLayers = getInteractiveLayers(initialGLStyle)
     }
 
-    this.createMap()
-  }
+    if (!mapLoaded) {
+      createMap()
+    } else {
+      debug.log(`(${id}) glstyle changing from props`)
 
-  shouldComponentUpdate(nextProps: Props, nextState: State) {
-    // only update if something changes
-    if (!_isequal(this.props, nextProps)) {
-      return true
+      dispatch(
+        setOverlayStyleThunk({
+          overlayStyle: initialGLStyle,
+          optimizeLayers: allowLayerOrderOptimization
+        })
+      )
+      dispatch(setInteractiveLayers(interactiveLayers))
     }
+  }, [
+    glStyle,
+    initialGLStyle,
+    allowLayerOrderOptimization,
+    disableScrollZoom,
+    showScale,
+    showFullScreen,
+    navPosition,
+    id,
+    locale,
+    fitBounds,
+    fitBoundsOptions,
+    hash,
+    data,
+    zoom,
+    minZoom,
+    maxZoom,
+    preserveDrawingBuffer,
+    enableRotation,
+    attributionControl,
+    onLoad,
+    interactionActive,
+    mapLoaded,
+    mapboxAccessToken,
+    initialBaseMap,
+    dispatch,
+    enableMeasurementTools,
+    editing,
+    interactionBufferSize,
+    selected,
+    selectedFeature,
+    editingLayer.layer_id,
+    initGeoJSON,
+    clearSelection,
+    t
+  ])
 
-    if (!_isequal(this.state, nextState)) {
-      return true
-    }
-
-    return false
-  }
-
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    const { props, state, map } = this
-    const { id, interactive } = state
-    const { navPosition, showFullScreen, locale, containers } = props
-    // switch to interactive
-    if (interactive && !prevState.interactive) {
-      map.addControl(
+  // handle interactive setting changed
+  useEffect(() => {
+    if (interactionActive && !interactive) {
+      // interactive is enabled but started disabled
+      mapRef.current.addControl(
         new mapboxgl.NavigationControl({
           showCompass: false
         }),
         navPosition
       )
       if (showFullScreen)
-        map.addControl(
+        mapRef.current.addControl(
           new mapboxgl.FullscreenControl({
             container: document.querySelector(`#${id}-fullscreen-wrapper`)
           }),
           navPosition
         )
-      if (map.dragPan) map.dragPan.enable()
-      if (map.scrollZoom) map.scrollZoom.enable()
-      if (map.doubleClickZoom) map.doubleClickZoom.enable()
-      if (map.touchZoomRotate) map.touchZoomRotate.enable()
+      if (mapRef.current.dragPan) mapRef.current.dragPan.enable()
+      if (mapRef.current.scrollZoom) mapRef.current.scrollZoom.enable()
+      if (mapRef.current.doubleClickZoom)
+        mapRef.current.doubleClickZoom.enable()
+      if (mapRef.current.touchZoomRotate)
+        mapRef.current.touchZoomRotate.enable()
     }
+  }, [interactive, interactionActive, navPosition, showFullScreen, id])
 
-    // change locale
-    if (locale && locale !== prevProps.locale) {
-      this.changeLocale(locale, map)
-      const { mapState } = containers
+  // handle locale change
 
-      if (mapState.state.insetMap) {
-        this.changeLocale(locale, mapState.state.insetMap.getInsetMap())
-      }
-    }
-  }
+  useEffect(() => {
+    changeLocale(locale)
+    // TODO: dispatch change to Map Redux
+    // TODO: change inset map locale
+  }, [locale])
 
-  debugLog = (msg: string) => {
-    debug.log(`(${this.state.id}) ${msg}`)
-  }
-  addMapData = (
-    map: any,
-    glStyle?: mapboxgl.Style,
-    geoJSON?: FeatureCollection,
-    cb: (...args: Array<any>) => any
-  ) => {
-    this.debugLog('addMapData')
+  const zoomToData = (data: FeatureCollection) => {
+    const bbox =
+      data.bbox && Array.isArray(data.bbox) && data.bbox.length > 0
+        ? (data.bbox as Array<number>)
+        : _bbox(data)
 
-    const { props, debugLog, overlayMapStyle, setOverlayStyle, initGeoJSON } =
-      this
-    const { allowLayerOrderOptimization } = props
-
-    const style = overlayMapStyle || glStyle
-
-    if (style && style.sources) {
-      return Promise.resolve(
-        setOverlayStyle(style, allowLayerOrderOptimization)
-      )
-        .catch((err) => {
-          console.error('error adding map data')
-          console.error(err)
-          debugLog(err)
-        })
-        .asCallback((err) => {
-          if (err) {
-            console.error('error adding map data')
-            console.error(err)
-            this.debugLog(err)
-          }
-
-          if (geoJSON) {
-            initGeoJSON(geoJSON)
-          }
-
-          cb()
-        })
-    } else if (geoJSON) {
-      initGeoJSON(geoJSON)
-
-      cb()
-    } else {
-      cb()
-    }
-  }
-  createMap = async () => {
-    this.debugLog('Creating MapboxGL Map')
-    mapboxgl.accessToken = this.props.mapboxAccessToken
-    const {
-      debugLog,
-      props,
-      state,
-      glStyle,
-      addMapData,
-      setState,
-      mousemoveHandler,
-      moveendHandler,
-      clickHandler
-    } = this
-    const {
-      preserveDrawingBuffer,
-      enableRotation,
-      hash,
-      fitBounds,
-      fitBoundsOptions,
-      data,
-      attributionControl,
-      zoom,
-      minZoom,
-      maxZoom,
-      t,
-      locale,
-      showFullScreen,
-      disableScrollZoom,
-      showScale,
-      containers,
-      onLoad,
-      navPosition
-    } = props
-    const { id, interactive, mapLoaded } = state
-    const { baseMapState, mapState } = containers
-    await baseMapState.initBaseMap()
-    const baseMapStyle = baseMapState.state.baseMapStyle
-    this.setBaseMapStyle(baseMapStyle, false)
-
-    if (!mapboxgl || !mapboxgl.supported || !mapboxgl.supported()) {
-      alert(
-        t(
-          'Your browser does not support Mapbox GL please see: https://help.maphubs.com/getting-started/troubleshooting-common-issues'
-        )
-      )
-      return
-    }
-
-    const map = new mapboxgl.Map({
-      container: id,
-      style: glStyle,
-      zoom: zoom || 0,
-      minZoom: minZoom || 0,
-      maxZoom: maxZoom || 22,
-      interactive,
-      dragRotate: !!enableRotation,
-      touchZoomRotate: true,
-      touchPitch: false,
-      preserveDrawingBuffer,
-      center: [0, 0],
-      hash,
-      attributionControl: false,
-      transformRequest: (url: string, resourceType) => {
-        if (map.authUrlStartsWith && url.startsWith(map.authUrlStartsWith)) {
-          return {
-            url: url,
-            headers: {
-              Authorization: 'Basic ' + map.authToken
-            },
-            credentials: 'include'
-          }
-        }
-      }
-    })
-    // catch generic errors so 404 tile errors etc don't cause unexpected issues
-    map.on('error', (err) => {
-      console.log(err.error)
-      debug.error(err.error)
-    })
-    map.on('load', () => {
-      debugLog('MAP LOADED')
-      // add selector for screenshot tool
-      setTimeout(() => {
-        $('body').append(
-          '<div id="map-load-complete" style="display: none;"></div>'
-        )
-      }, 5000)
-    })
-    map.on('style.load', () => {
-      debugLog('style.load')
-
-      // restore map bounds (except for geoJSON maps)
-      if (
-        !data && // use bbox for GeoJSON data
-        !mapLoaded && // only set map position on first style load (not after changing base map etc)
-        fitBounds // bounds are provided in Props
-      ) {
-        let bounds = fitBounds
-
-        if (bounds.length > 2) {
-          bounds = [
-            [fitBounds[0], fitBounds[1]],
-            [fitBounds[2], fitBounds[3]]
-          ]
-        }
-
-        debugLog(`fitting map to bounds: ${bounds.toString()}`)
-        map.fitBounds(fitBounds, fitBoundsOptions)
-
-        if (mapState.state.insetMap) {
-          mapState.state.insetMap.sync(map)
-        } else {
-          debugLog('insetMap not found')
-        }
-      }
-
-      // add the omh data
-      addMapData(map, glStyle, data, () => {
-        // do stuff that needs to happen after data loads
-        debugLog('finished adding map data')
-
-        setState({
-          mapLoaded: true
-        })
-
-        if (onLoad) onLoad()
+    if (bbox) {
+      let s = bbox[0]
+      if (s < -175) s = -175
+      let w = bbox[1]
+      if (w < -85) w = -85
+      let n = bbox[2]
+      if (n > 175) n = 175
+      let e = bbox[3]
+      if (e > 85) e = 85
+      const bounds = [
+        [s, w],
+        [n, e]
+      ] as mapboxgl.LngLatBoundsLike
+      mapRef.current.fitBounds(bounds, {
+        padding: 25,
+        curve: 3,
+        speed: 0.6,
+        maxZoom: 12
       })
-    })
-
-    // end style.load
-    // Setup inset map
-    if (mapState.state.insetMap) {
-      if (!mapState.state.insetMap.getInsetMap()) {
-        mapState.initInset(map, baseMapStyle)
-      }
-    } else {
-      debugLog('failed to init inset')
     }
-
-    map.on('mousemove', mousemoveHandler)
-    map.on('moveend', moveendHandler)
-    map.on('click', clickHandler)
-
-    if (interactive) {
-      map.addControl(
-        new mapboxgl.NavigationControl({
-          showCompass: false
-        }),
-        navPosition
-      )
-      if (showFullScreen)
-        map.addControl(
-          new mapboxgl.FullscreenControl({
-            container: document.querySelector(`#${id}-fullscreen-wrapper`)
-          })
-        )
-    }
-
-    if (attributionControl) {
-      map.addControl(new mapboxgl.AttributionControl(), 'bottom-left')
-    }
-
-    if (showScale) {
-      map.addControl(
-        new ScalePositionControl({
-          maxWidth: 175
-        }),
-        'bottom-right'
-      )
-    }
-
-    try {
-      const languageControl = new MapboxLanguage()
-      map.addControl(locale)
-      this.languageControl = languageControl
-    } catch (err) {
-      console.error('failed to add langauge control')
-      console.error(err)
-    }
-
-    if (disableScrollZoom) {
-      map.scrollZoom.disable()
-    }
-
-    this.map = map
-    this.lunr = lunr
   }
 
-  async componentWillReceiveProps(nextProps: Props) {
-    // debug.log('(' + this.state.id + ') ' +'componentWillReceiveProps');
-    const { map, props, state, debugLog } = this
-    const { id, mapLoaded } = state
-    const {
-      data,
-      glStyle,
-      allowLayerOrderOptimization,
-      fitBounds,
-      fitBoundsOptions
-    } = props
-    if (nextProps.data && map) {
-      const geoJSONData = map.getSource('omh-geojson') as mapboxgl.GeoJSONSource
+  // update GeoJSON data from props
+  useEffect(() => {
+    if (data && mapRef.current) {
+      const geoJSONData = mapRef.current.getSource(
+        'omh-geojson'
+      ) as mapboxgl.GeoJSONSource
 
       if (geoJSONData) {
-        debugLog(`(${id}) update geoJSON data`)
+        debug.log(`(${id}) update geoJSON data`)
         // update existing data
-        geoJSONData.setData(nextProps.data)
-        this.zoomToData(nextProps.data)
+        geoJSONData.setData(data)
+        zoomToData(data)
       } else if (geoJSONData === undefined && data) {
         // do nothing, still updating from the last prop change...
       } else {
-        debugLog(`(${id}) init geoJSON data`)
+        debug.log(`(${id}) init geoJSON data`)
 
         if (mapLoaded) {
-          this.initGeoJSON(nextProps.data)
+          initGeoJSON(data)
         } else {
-          debugLog(`(${id}) Skipping GeoJSON init, map not ready yet`)
+          debug.log(`(${id}) Skipping GeoJSON init, map not ready yet`)
         }
       }
     }
+  }, [data, id, mapLoaded, initGeoJSON])
 
-    if (
-      mapLoaded && // only reload if the first load is complete
-      nextProps.glStyle &&
-      !_isequal(glStyle, nextProps.glStyle)
-    ) {
-      const nextGLStyle = nextProps.glStyle
+  // handle fitBounds prop change
 
-      debugLog('glstyle changing from props')
+  useEffect(() => {
+    if (fitBounds && mapRef.current) {
+      //TODO: previously we did a deep compare _isEqual here with prev prop
+      debug.log(`(${id}) FIT BOUNDS CHANGING`)
+      let bounds = fitBounds
 
-      await Promise.resolve(
-        this.setOverlayStyle(nextGLStyle, allowLayerOrderOptimization)
-      )
-        .catch((err) => {
-          console.error('error glstyle changing')
-          console.error(err)
-
-          debugLog(err)
-        })
-        .asCallback((err) => {
-          if (err) {
-            console.error('error glstyle changing')
-            console.error(err)
-
-            debugLog(err)
-          }
-
-          const interactiveLayers = this.getInteractiveLayers(nextGLStyle)
-          this.setState({
-            interactiveLayers
-          }) // wait to change state style until after reloaded
-        })
-    }
-
-    if (
-      nextProps.fitBounds &&
-      !_isequal(fitBounds, nextProps.fitBounds) &&
-      map
-    ) {
-      debugLog('FIT BOUNDS CHANGING')
-
-      let bounds = nextProps.fitBounds
-
-      if (nextProps.fitBounds.length > 2) {
+      if (bounds.length > 2) {
         bounds = [
-          [nextProps.fitBounds[0], nextProps.fitBounds[1]],
-          [nextProps.fitBounds[2], nextProps.fitBounds[3]]
+          [bounds[0] as number, bounds[1] as number],
+          [bounds[2], bounds[3]]
         ]
       }
 
-      debugLog(`bounds: ${bounds.toString()}`)
+      debug.log(`(${id}) bounds: ${bounds.toString()}`)
+      mapRef.current.fitBounds(bounds, fitBoundsOptions)
 
-      if (bounds._ne && bounds._sw) {
-        map.fitBounds(bounds, fitBoundsOptions)
-      } else if (Array.isArray(bounds) && bounds.length > 2) {
-        map.fitBounds(
-          [
-            [bounds[0], bounds[1]],
-            [bounds[2], bounds[3]]
-          ],
-          fitBoundsOptions
-        )
-      } else {
-        map.fitBounds(bounds, fitBoundsOptions)
+      // disable map postion from layers if user is now providing bounds
+      if (allowLayersToMoveMap) {
+        dispatch(setAllowLayersToMoveMap(false))
       }
+    }
+  }, [id, fitBounds, fitBoundsOptions, allowLayersToMoveMap, dispatch])
 
-      this.setState({
-        allowLayersToMoveMap: false
-      })
+  useEffect(() => {
+    return () => {
+      if (mapRef.current) mapRef.current.remove()
+      console.log('*******************MAPBOX GL UNMOUNTED')
+    }
+  }, [])
+
+  const startInteractive = () => {
+    setInteractionActive(true)
+
+    if (!enableRotation) {
+      mapRef.current.dragRotate.disable()
+      mapRef.current.touchZoomRotate.disableRotation()
     }
   }
-
-  componentWillUnmount() {
-    if (this.map) {
-      this.map.remove()
-    }
-  }
-
-  startInteractive = () => {
-    this.setState({
-      interactive: true
-    })
-
-    if (!this.props.enableRotation) {
-      this.map.dragRotate.disable()
-      this.map.touchZoomRotate.disableRotation()
-    }
-  }
-  changeBaseMap = async (mapName: string) => {
-    this.debugLog('changing basemap to: ' + mapName)
-    const { setBaseMapStyle, map, props } = this
-    const { onChangeBaseMap, containers } = props
-    const { baseMapState, mapState } = containers
-    const baseMapStyle = await baseMapState.setBaseMap(mapName)
-    setBaseMapStyle(baseMapStyle, true)
-    this.setState({
-      allowLayersToMoveMap: false
-    })
-
-    if (mapState.state.insetMap) {
-      mapState.state.insetMap.reloadInset(baseMapStyle)
-      mapState.state.insetMap.sync(map)
-    }
+  const changeBaseMap = async (mapName: string) => {
+    debug.log(`(${id}) changing basemap to: ${mapName}`)
+    const result = await dispatch(setBaseMapThunk(mapName)).unwrap()
+    await dispatch(
+      setBaseMapStyleThunk({ style: result.baseMapStyle, skipUpdate: false })
+    )
+    dispatch(setAllowLayersToMoveMap(false))
 
     if (onChangeBaseMap) {
       onChangeBaseMap(mapName)
     }
   }
 
-  render() {
-    const {
-      props,
-      state,
-      map,
-      clearSelection,
-      toggleMeasurementTools,
-      measureFeatureClick,
-      changeBaseMap,
-      getIsochronePoint,
-      clearIsochroneLayers,
-      stopMeasurementTool,
-      startInteractive,
-      onSearch,
-      onSearchResultClick,
-      onSearchReset
-    } = this
-    let { mapboxPopup } = this
-    const className = classNames('mode', 'map', 'active')
-    const {
-      t,
-      insetMap,
-      showLogo,
-      mapLayers,
-      toggleVisibility,
-      showMapTools,
-      showSearch,
-      showFeatureInfoEditButtons,
-      style,
-      categories,
-      gpxLink,
-      showPlayButton,
-      children,
-      height,
-      mapboxAccessToken,
-      insetConfig
-    } = props
-
-    const { id, interactive, selected, selectedFeature, mapLoaded } = state
-
-    if (selectedFeature) {
-      // close any existing popups
-      if (mapboxPopup?.isOpen()) {
-        mapboxPopup.remove()
-        mapboxPopup = undefined
-      }
-
-      let popupFeature = selectedFeature
-
-      if (popupFeature.geometry.type !== 'Point') {
-        popupFeature = turfCentroid(popupFeature)
-      }
-
-      const el = document.createElement('div')
-      el.className = 'maphubs-feature-popup'
-      ReactDOM.render(
-        <FeaturePopup
-          features={[selectedFeature]}
-          selected={selected}
-          showButtons={showFeatureInfoEditButtons}
-          t={t}
-        />,
-        el
-      )
-      mapboxPopup = new mapboxgl.Popup()
-        .setLngLat(popupFeature.geometry.coordinates)
-        .setDOMContent(el)
-        .addTo(map)
-      mapboxPopup.on('close', clearSelection)
-    } else if (mapboxPopup) {
-      mapboxPopup.remove()
+  const changeLocale = (language: string, map: any) => {
+    if (!language || !map) {
+      debug.log('missing required args')
     }
 
-    return (
-      <div
-        id={`${this.state.id}-fullscreen-wrapper`}
-        className={this.props.className}
-        style={style}
-      >
-        <style jsx global>
-          {`
-            .mapboxgl-canvas {
-              left: 0 !important;
-            }
+    debug.log(`(${id}) changing map language to: ${language}`)
 
-            .mapboxgl-ctrl-maphubs {
-              -moz-box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
-              -webkit-box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
-              box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
-            }
+    try {
+      if (
+        (baseMap === 'default' ||
+          baseMap === 'dark' ||
+          baseMap === 'streets' ||
+          baseMap === 'satellite-streets' ||
+          baseMap === 'topo') &&
+        languageControlRef.current
+      ) {
+        const glStyleUpdate = languageControlRef.current.setLanguage(
+          glStyle,
+          language
+        )
+        // TODO: fix change map language, move to an async thunk
+        //mapRef.current.setStyle(glStyle)
+      }
+    } catch (err) {
+      debug.error(err)
+    }
+  }
 
-            .mapboxgl-popup {
-              z-index: 200 !important;
-              height: 200px;
-              width: 150px;
-            }
+  const className = classNames('mode', 'map', 'active')
 
-            .mapboxgl-popup-content {
-              padding: 0 !important;
-            }
+  if (selectedFeature) {
+    // close any existing popups
+    if (mapboxPopupRef.current?.isOpen()) {
+      mapboxPopupRef.current.remove()
+      mapboxPopupRef.current = undefined
+    }
 
-            .mapboxgl-popup-close-button {
-              top: -7px !important;
-              right: -7px !important;
-              z-index: 201 !important;
-              background-color: rgba(255, 255, 255, 0.75) !important;
-              color: black !important;
-              border-radius: 25px !important;
-              border: 1px solid black !important;
-              width: 14px !important;
-              height: 14px !important;
-              line-height: 5px !important;
-              padding-bottom: 1px !important;
-              padding-top: 0px !important;
-              padding-left: 0.5px !important;
-              padding-right: 0px !important;
-            }
+    const popupFeature =
+      selectedFeature.geometry.type !== 'Point'
+        ? (turfCentroid(selectedFeature) as Feature<Point>)
+        : (selectedFeature as Feature<Point>)
 
-            .maphubs-feature-popup {
-              padding: 0;
-            }
+    const el = document.createElement('div')
+    el.className = 'maphubs-feature-popup'
+    ReactDOM.render(
+      <FeaturePopup
+        features={[selectedFeature]}
+        showButtons={showFeatureInfoEditButtons}
+        t={t}
+      />,
+      el
+    )
+    mapboxPopupRef.current = new mapboxgl.Popup()
+      .setLngLat(popupFeature.geometry.coordinates as mapboxgl.LngLatLike)
+      .setDOMContent(el)
+      .addTo(mapRef.current)
+    mapboxPopupRef.current.on('close', clearSelection)
+  } else if (mapboxPopupRef.current) {
+    mapboxPopupRef.current.remove()
+  }
 
-            .mapbox-gl-draw_point,
-            .mapbox-gl-draw_line,
-            .mapbox-gl-draw_polygon {
-              border-bottom: none !important;
-              border-right: 1px #ddd solid !important;
-            }
+  return (
+    <div id={`${id}-fullscreen-wrapper`} className={className} style={style}>
+      <style jsx global>
+        {`
+          .mapboxgl-canvas {
+            left: 0 !important;
+          }
 
-            .mapboxgl-ctrl-logo {
-              position: absolute !important;
-              bottom: -5px !important;
-              left: 80px !important;
-            }
+          .mapboxgl-ctrl-maphubs {
+            -moz-box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+            -webkit-box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+          }
 
-            .maphubs-inset .mapboxgl-ctrl-logo {
+          .mapboxgl-popup {
+            z-index: 200 !important;
+            height: 200px;
+            width: 150px;
+          }
+
+          .mapboxgl-popup-content {
+            padding: 0 !important;
+          }
+
+          .mapboxgl-popup-close-button {
+            top: -7px !important;
+            right: -7px !important;
+            z-index: 201 !important;
+            background-color: rgba(255, 255, 255, 0.75) !important;
+            color: black !important;
+            border-radius: 25px !important;
+            border: 1px solid black !important;
+            width: 14px !important;
+            height: 14px !important;
+            line-height: 5px !important;
+            padding-bottom: 1px !important;
+            padding-top: 0px !important;
+            padding-left: 0.5px !important;
+            padding-right: 0px !important;
+          }
+
+          .maphubs-feature-popup {
+            padding: 0;
+          }
+
+          .mapbox-gl-draw_point,
+          .mapbox-gl-draw_line,
+          .mapbox-gl-draw_polygon {
+            border-bottom: none !important;
+            border-right: 1px #ddd solid !important;
+          }
+
+          .mapboxgl-ctrl-logo {
+            position: absolute !important;
+            bottom: -5px !important;
+            left: 80px !important;
+          }
+
+          .maphubs-inset .mapboxgl-ctrl-logo {
+            display: none;
+          }
+          .mapboxgl-ctrl-top-right {
+            top: 40px;
+          }
+
+          .maphubs-ctrl-scale {
+            border: none !important;
+            padding: 0 !important;
+            background-color: inherit !important;
+            position: relative;
+            height: 22px;
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            height: 34px;
+            margin: 0px !important;
+          }
+
+          .map-position {
+            height: 12px;
+            max-width: 125px;
+            width: 100vw;
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.55);
+            font-size: 10px;
+            line-height: 10px;
+            text-align: center;
+            box-shadow: none !important;
+            color: #333;
+          }
+
+          .metric-scale {
+            height: 12px;
+            font-size: 10px;
+            line-height: 10px;
+            text-align: center;
+            box-shadow: none !important;
+            background-color: rgba(255, 255, 255, 0.55);
+            border-width: medium 2px 2px;
+            border-style: none solid solid;
+            border-color: #333;
+            padding: 0 5px;
+            color: #333;
+            position: absolute;
+            top: 12px;
+            right: 0;
+          }
+
+          .imperial-scale {
+            height: 12px;
+            font-size: 10px;
+            line-height: 10px;
+            text-align: center;
+            box-shadow: none !important;
+            background-color: rgba(255, 255, 255, 0.55);
+            border-width: medium 2px 2px;
+            border-style: solid solid none;
+            border-color: #333;
+            padding: 0 5px;
+            color: #333;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+          }
+
+          @media (max-width: 350px) {
+            .map-position {
               display: none;
             }
-            .mapboxgl-ctrl-top-right {
-              top: 40px;
-            }
-
-            .maphubs-ctrl-scale {
-              border: none !important;
-              padding: 0 !important;
-              background-color: inherit !important;
-              position: relative;
-              height: 22px;
-              position: absolute;
-              bottom: 5px;
-              right: 5px;
-              height: 34px;
-              margin: 0px !important;
-            }
-
-            .map-position {
-              height: 12px;
-              max-width: 125px;
-              width: 100vw;
-              position: absolute;
-              top: 0;
-              right: 0;
-              background-color: rgba(255, 255, 255, 0.55);
-              font-size: 10px;
-              line-height: 10px;
-              text-align: center;
-              box-shadow: none !important;
-              color: #333;
-            }
-
             .metric-scale {
-              height: 12px;
-              font-size: 10px;
-              line-height: 10px;
-              text-align: center;
-              box-shadow: none !important;
-              background-color: rgba(255, 255, 255, 0.55);
-              border-width: medium 2px 2px;
-              border-style: none solid solid;
-              border-color: #333;
-              padding: 0 5px;
-              color: #333;
-              position: absolute;
-              top: 12px;
-              right: 0;
+              max-width: 100px;
             }
-
             .imperial-scale {
-              height: 12px;
-              font-size: 10px;
-              line-height: 10px;
-              text-align: center;
-              box-shadow: none !important;
-              background-color: rgba(255, 255, 255, 0.55);
-              border-width: medium 2px 2px;
-              border-style: solid solid none;
-              border-color: #333;
-              padding: 0 5px;
-              color: #333;
-              position: absolute;
-              bottom: 0;
-              right: 0;
+              max-width: 100px;
             }
+          }
 
-            @media (max-width: 350px) {
-              .map-position {
-                display: none;
-              }
-              .metric-scale {
-                max-width: 100px;
-              }
-              .imperial-scale {
-                max-width: 100px;
-              }
+          @media (max-width: 280px) {
+            .maphubs-inset {
+              display: none;
             }
-
-            @media (max-width: 280px) {
-              .maphubs-inset {
-                display: none;
-              }
-              .map-position {
-                display: none;
-              }
-              .metric-scale {
-                max-width: 75px;
-              }
-              .imperial-scale {
-                max-width: 75px;
-              }
+            .map-position {
+              display: none;
             }
-          `}
-        </style>
-        {categories && (
-          <MapLayerMenu
-            categories={categories}
-            toggleVisibility={toggleVisibility}
-            layers={mapLayers}
-            t={t}
+            .metric-scale {
+              max-width: 75px;
+            }
+            .imperial-scale {
+              max-width: 75px;
+            }
+          }
+        `}
+      </style>
+      {categories && (
+        <MapLayerMenu
+          categories={categories}
+          toggleVisibility={toggleVisibility}
+          layers={mapLayers}
+        />
+      )}
+      <div
+        id={id}
+        className={className}
+        style={{
+          width: '100%',
+          height: '100%'
+        }}
+      >
+        {insetMap && (
+          <InsetMap
+            id={id}
+            bottom={showLogo ? '30px' : '25px'}
+            mapboxAccessToken={mapboxAccessToken}
+            {...insetConfig}
           />
         )}
-        <div
-          id={id}
-          className={className}
-          style={{
-            width: '100%',
-            height: '100%'
-          }}
-        >
-          {insetMap && (
-            <InsetMap
-              id={id}
-              bottom={showLogo ? '30px' : '25px'}
-              mapboxAccessToken={mapboxAccessToken}
-              {...insetConfig}
-            />
-          )}
-          {showMapTools && (
-            <MapToolPanel
-              show={this.state.interactive && this.state.mapLoaded}
-              gpxLink={gpxLink}
-              toggleMeasurementTools={toggleMeasurementTools}
-              enableMeasurementTools={this.state.enableMeasurementTools}
-              measureFeatureClick={measureFeatureClick}
-              onChangeBaseMap={changeBaseMap}
-              getIsochronePoint={getIsochronePoint}
-              clearIsochroneLayers={clearIsochroneLayers}
-              isochroneResult={this.state.isochroneResult}
-              zoomToCoordinates={(lat, lon) => {
-                this.flyTo([lon, lat], this.map.getZoom())
-              }}
-              t={t}
-            />
-          )}
-          {this.state.enableMeasurementTools && (
-            <div>
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '10px',
-                  right: '100px',
-                  backgroundColor: 'rgba(0,0,0,0.6)',
-                  color: '#FFF',
-                  height: '30px',
-                  paddingLeft: '5px',
-                  paddingRight: '5px',
-                  borderRadius: '4px',
-                  zIndex: 100,
-                  lineHeight: '30px'
-                }}
-              >
-                <span>{this.state.measurementMessage}</span>
-              </div>
-              <MapToolButton
-                top='260px'
-                right='10px'
-                icon='close'
-                show
-                color='#000'
-                onClick={stopMeasurementTool}
-                tooltipText={t('Exit Measurement')}
-                tooltipPosition='left'
-              />
-            </div>
-          )}
-          {!interactive && showPlayButton && (
-            <a
-              onClick={startInteractive}
+        {showMapTools && (
+          <MapToolPanel
+            show={interactionActive && mapLoaded}
+            gpxLink={gpxLink}
+            onChangeBaseMap={changeBaseMap}
+          />
+        )}
+        {enableMeasurementTools && (
+          <div>
+            <div
               style={{
                 position: 'absolute',
-                left: '50%',
-                bottom: '50%',
-                backgroundColor: 'rgba(25,25,25,0.1)',
-                zIndex: 999
+                top: '10px',
+                right: '100px',
+                backgroundColor: 'rgba(0,0,0,0.6)',
+                color: '#FFF',
+                height: '30px',
+                paddingLeft: '5px',
+                paddingRight: '5px',
+                borderRadius: '4px',
+                zIndex: 100,
+                lineHeight: '30px'
               }}
             >
-              <PlayArrow />
-            </a>
-          )}
-          {mapLoaded && children}
-          {mapLoaded && showLogo && (
-            <img
-              style={{
-                position: 'absolute',
-                left: '5px',
-                bottom: '2px',
-                zIndex: 1
+              <span>{measurementMessage}</span>
+            </div>
+            <MapToolButton
+              top='260px'
+              right='10px'
+              icon='close'
+              show
+              color='#000'
+              onClick={() => {
+                dispatch(setEnableMeasurementTools(false))
               }}
-              width={70}
-              height={19}
-              src='https://cdn-maphubs.b-cdn.net/maphubs/assets/maphubs-logo-small.png'
-              alt='MapHubs Logo'
+              tooltipText={t('Exit Measurement')}
+              tooltipPosition='left'
             />
-          )}
-          {showSearch && (
-            <MapSearchPanel
-              show={interactive && mapLoaded}
-              height={height}
-              onSearch={onSearch}
-              onSearchResultClick={onSearchResultClick}
-              onSearchReset={onSearchReset}
-              t={t}
-              mapboxAccessToken={mapboxAccessToken}
-            />
-          )}
-        </div>
+          </div>
+        )}
+        {!interactionActive && showPlayButton && (
+          <a
+            onClick={startInteractive}
+            style={{
+              position: 'absolute',
+              left: '50%',
+              bottom: '50%',
+              backgroundColor: 'rgba(25,25,25,0.1)',
+              zIndex: 999
+            }}
+          >
+            <PlayArrow />
+          </a>
+        )}
+        {mapLoaded && children}
+        {mapLoaded && showLogo && (
+          <img
+            style={{
+              position: 'absolute',
+              left: '5px',
+              bottom: '2px',
+              zIndex: 1
+            }}
+            width={70}
+            height={19}
+            src='https://cdn-maphubs.b-cdn.net/maphubs/assets/maphubs-logo-small.png'
+            alt='MapHubs Logo'
+          />
+        )}
+        {showSearch && (
+          <MapSearchPanel
+            show={interactionActive && mapLoaded}
+            mapboxAccessToken={mapboxAccessToken}
+          />
+        )}
       </div>
-    )
-  }
-
-  // GeoJSONMixin
-  initGeoJSON = (data: FeatureCollection) => {
-    return MapGeoJSONMixin.initGeoJSON.bind(this)(data)
-  }
-  resetGeoJSON = () => {
-    return MapGeoJSONMixin.resetGeoJSON.bind(this)()
-  }
-  zoomToData = (data: FeatureCollection) => {
-    return MapGeoJSONMixin.zoomToData.bind(this)(data)
-  }
-  // MapInteractionMixin
-  setSelectionFilter = (features: Array<Record<string, any>>) => {
-    return MapInteractionMixin.setSelectionFilter.bind(this)(features)
-  }
-  clearSelectionFilter = () => {
-    return MapInteractionMixin.clearSelectionFilter.bind(this)()
-  }
-  clearSelection = () => {
-    return MapInteractionMixin.clearSelection.bind(this)()
-  }
-  getInteractiveLayers = (glStyle: mapboxgl.Style) => {
-    return MapInteractionMixin.getInteractiveLayers.bind(this)(glStyle)
-  }
-  clickHandler = (e: any) => {
-    return MapInteractionMixin.clickHandler.bind(this)(e)
-  }
-  moveendHandler = () => {
-    this.debugLog('mouse up fired')
-    const { baseMapState } = this.props.containers
-    baseMapState.updateMapPosition(this.getPosition(), this.getBounds())
-  }
-  mousemoveHandler = (e: any) => {
-    return MapInteractionMixin.mousemoveHandler.bind(this)(e)
-  }
-  // DataEditorMixin
-  getFirstDrawLayerID = () => {
-    return DataEditorMixin.getFirstDrawLayerID.bind(this)()
-  }
-  getEditorStyles = () => {
-    return DataEditorMixin.getEditorStyles.bind(this)()
-  }
-  editFeature = (feature: Feature) => {
-    return DataEditorMixin.editFeature.bind(this)(feature)
-  }
-  startEditingTool = (layer: Layer) => {
-    return DataEditorMixin.startEditingTool.bind(this)(layer)
-  }
-  stopEditingTool = () => {
-    return DataEditorMixin.stopEditingTool.bind(this)()
-  }
-  updateEdits = (e: any) => {
-    return DataEditorMixin.updateEdits.bind(this)(e)
-  }
-  onFeatureUpdate = (type: string, feature: Record<string, any>) => {
-    return DataEditorMixin.onFeatureUpdate.bind(this)(type, feature)
-  }
-  updateMapLayerFilters = () => {
-    return DataEditorMixin.updateMapLayerFilters.bind(this)()
-  }
-  removeMapLayerFilters = () => {
-    return DataEditorMixin.removeMapLayerFilters.bind(this)()
-  }
-  reloadEditingSourceCache = () => {
-    return DataEditorMixin.reloadEditingSourceCache.bind(this)()
-  }
-  // MeasurementToolMixin
-  toggleMeasurementTools = (enable: boolean) => {
-    return MeasurementToolMixin.toggleMeasurementTools.bind(this)(enable)
-  }
-  startMeasurementTool = () => {
-    return MeasurementToolMixin.startMeasurementTool.bind(this)()
-  }
-  stopMeasurementTool = () => {
-    return MeasurementToolMixin.stopMeasurementTool.bind(this)()
-  }
-  updateMeasurement = (features: Array<Record<string, any>>) => {
-    return MeasurementToolMixin.updateMeasurement.bind(this)(features)
-  }
-  measureFeatureClick = () => {
-    return MeasurementToolMixin.measureFeatureClick.bind(this)()
-  }
-  // MapSearchMixin
-  onSearch = (queryText: string) => {
-    return MapSearchMixin.onSearch.bind(this)(queryText)
-  }
-  getFirstLabelLayer = () => {
-    return MapSearchMixin.getFirstLabelLayer.bind(this)()
-  }
-  onSearchResultClick = (result: Record<string, any>) => {
-    return MapSearchMixin.onSearchResultClick.bind(this)(result)
-  }
-  getSearchDisplayLayers = (
-    sourceID: string,
-    source: mapboxgl.Source,
-    mhids: Array<string>
-  ) => {
-    return MapSearchMixin.getSearchDisplayLayers.bind(this)(
-      sourceID,
-      source,
-      mhids
-    )
-  }
-  onSearchReset = () => {
-    return MapSearchMixin.onSearchReset.bind(this)()
-  }
-  getNameFieldForResult = (result: Record<string, any>) => {
-    return MapSearchMixin.getNameFieldForResult.bind(this)(result)
-  }
-  getActiveLayerIds = () => {
-    return MapSearchMixin.getActiveLayerIds.bind(this)()
-  }
-  initIndex = async () => {
-    return MapSearchMixin.initIndex.bind(this)()
-  }
-  // MapboxGLHelperMixin
-  getBounds = () => {
-    return MapboxGLHelperMixin.getBounds.bind(this)()
-  }
-  getPosition = () => {
-    return MapboxGLHelperMixin.getPosition.bind(this)()
-  }
-  updatePosition = () => {
-    return MapboxGLHelperMixin.updatePosition.bind(this)()
-  }
-  flyTo = (center: any, zoom: number) => {
-    return MapboxGLHelperMixin.flyTo.bind(this)(center, zoom)
-  }
-  getBoundsObject = (bbox: Array<number>) => {
-    return MapboxGLHelperMixin.getBoundsObject.bind(this)(bbox)
-  }
-  fitBounds = (bbox: any, maxZoom: number, padding = 0, animate = true) => {
-    return MapboxGLHelperMixin.fitBounds.bind(this)(
-      bbox,
-      maxZoom,
-      padding,
-      animate
-    )
-  }
-  changeLocale = (locale: string, map: mapboxgl.Map) => {
-    return MapboxGLHelperMixin.changeLocale.bind(this)(locale, map)
-  }
-  // StyleMixin
-  setBaseMapStyle = (style: mapboxgl.Style, update?: boolean) => {
-    return StyleMixin.setBaseMapStyle.bind(this)(style, update)
-  }
-  setOverlayStyle = (overlayStyle: mapboxgl.Style, optimizeLayers: boolean) => {
-    return StyleMixin.setOverlayStyle.bind(this)(overlayStyle, optimizeLayers)
-  }
-  reloadStyle = () => {
-    return StyleMixin.reloadStyle.bind(this)()
-  }
-  addLayer = (layer: mapboxgl.Layer, position?: number) => {
-    return StyleMixin.addLayer.bind(this)(layer, position)
-  }
-  addLayerBefore = (layer: mapboxgl.Layer, beforeLayer: string) => {
-    return StyleMixin.addLayerBefore.bind(this)(layer, beforeLayer)
-  }
-  addLayers = (
-    layerIds: Array<{
-      id: number
-      position: number
-    }>,
-    fromStyle: mapboxgl.Style
-  ) => {
-    return StyleMixin.addLayers.bind(this)(layerIds, fromStyle)
-  }
-  removeLayer = (id: string) => {
-    return StyleMixin.removeLayer.bind(this)(id)
-  }
-  removeLayers = (layersIDs: Array<string>, fromStyle: mapboxgl.Style) => {
-    return StyleMixin.removeLayers.bind(this)(layersIDs, fromStyle)
-  }
-  addSource = (key: string, source: mapboxgl.Source) => {
-    return StyleMixin.addSource.bind(this)(key, source)
-  }
-  removeSource = (key: string) => {
-    return StyleMixin.removeSource.bind(this)(key)
-  }
-  removeSources = (sourceKeys: Array<string>, fromStyle: mapboxgl.Style) => {
-    return StyleMixin.removeSources.bind(this)(sourceKeys, fromStyle)
-  }
-  loadSources = async (
-    sourceKeys: Array<string>,
-    fromStyle: mapboxgl.Style
-  ) => {
-    return StyleMixin.loadSources.bind(this)(sourceKeys, fromStyle)
-  }
-  // IsochroneMixin
-  getIsochroneStyle = (data: FeatureCollection) => {
-    return IsochroneMixin.getIsochroneStyle.bind(this)(data)
-  }
-  getIsochronePoint = () => {
-    return IsochroneMixin.getIsochronePoint.bind(this)()
-  }
-  runIsochroneQuery = (point: { lng: number; lat: number }) => {
-    return IsochroneMixin.runIsochroneQuery.bind(this)(point)
-  }
-  clearIsochroneLayers = () => {
-    return IsochroneMixin.clearIsochroneLayers.bind(this)()
-  }
-  saveIsochroneLayer = () => {
-    return IsochroneMixin.saveIsochroneLayer.bind(this)()
-  }
+    </div>
+  )
 }
 
-export default subscribe(Map, {
-  baseMapState: BaseMapContainer,
-  dataEditorState: DataEditorContainer,
-  mapState: MapContainer
-}) as unknown as typeof Map
+MapHubsMap.defaultProps = {
+  id: 'map',
+  initialBaseMap: 'default',
+  className: '',
+  interactive: true,
+  showFeatureInfoEditButtons: true,
+  showMapTools: true,
+  showSearch: true,
+  showPlayButton: true,
+  navPosition: 'top-right' as Props['navPosition'],
+  showLogo: true,
+  insetMap: true,
+  showScale: true,
+  showFullScreen: true,
+  interactionBufferSize: 10,
+  hash: true,
+  attributionControl: false,
+  preserveDrawingBuffer: false,
+  style: {},
+  allowLayerOrderOptimization: true,
+  fitBoundsOptions: {
+    animate: false
+  },
+  height: '100%',
+  mapConfig: {},
+  insetConfig: {}
+}
+
+export default MapHubsMap

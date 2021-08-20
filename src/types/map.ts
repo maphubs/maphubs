@@ -2,7 +2,7 @@ import mapboxgl from 'mapbox-gl'
 import { LocalizedString } from './LocalizedString'
 
 export type MapPosition = {
-  bbox: [number, number, number, number]
+  bbox: number[][] // while we call this bbox it is actually the mapbox-gl bounds format
   lat: number
   lng: number
   zoom: number

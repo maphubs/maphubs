@@ -4,7 +4,6 @@ import 'rc-slider/dist/rc-slider.min.css'
 import Slider from 'rc-slider'
 import { Subscribe } from 'unstated'
 import FRContainer from './containers/FRContainer'
-import MapContainer from '../Map/containers/MapContainer'
 
 type Props = {
   onModuleToggle: (...args: Array<any>) => void
@@ -35,8 +34,8 @@ const ForestReportEmbed = ({ onModuleToggle }: Props): JSX.Element => {
   }
 
   return loaded ? (
-    <Subscribe to={[FRContainer, MapContainer]}>
-      {(FRState, MapState) => {
+    <Subscribe to={[FRContainer]}>
+      {(FRState) => {
         const { geoJSON, bufferFeature, isBuffered, FRRemainingThreshold } =
           FRState.state
         const dimensions = {

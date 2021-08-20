@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { GetServerSideProps } from 'next'
-import { useSession, getSession } from 'next-auth/client'
+import { getSession } from 'next-auth/client'
 import Formsy from 'formsy-react'
 import {
   message,
@@ -17,11 +17,7 @@ import {
 import EditList from '../../../src/components/EditList'
 import Layout from '../../../src/components/Layout'
 import MultiTextArea from '../../../src/components/forms/MultiTextArea'
-import TextInput from '../../../src/components/forms/textInput'
 import MultiTextInput from '../../../src/components/forms/MultiTextInput'
-import Toggle from '../../../src/components/forms/toggle'
-import AddItem from '../../../src/components/AddItem'
-import GroupActions from '../../../src/actions/GroupActions'
 import ImageCrop from '../../../src/components/ImageCrop'
 import Locales from '../../../src/services/locales'
 import LayerList from '../../../src/components/Lists/LayerList'
@@ -31,10 +27,10 @@ import FloatingButton from '../../../src/components/FloatingButton'
 import Delete from '@material-ui/icons/Delete'
 import InfoIcon from '@material-ui/icons/Info'
 import DescriptionIcon from '@material-ui/icons/Description'
-import MyLocationIcon from '@material-ui/icons/MyLocation'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import { Group } from '../../../src/types/group'
 import useT from '../../../src/hooks/useT'
+import mutation from '../../../src/graphql/graphql-mutation'
 
 // SSR only
 import GroupModel from '../../../src/models/group'
@@ -102,38 +98,24 @@ const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
   const [canSubmit, setCanSubmit] = useState(false)
   const [showImageCrop, setShowImageCrop] = useState(false)
 
-  const onError = (msg: string): void => {
-    notification.error({
-      message: 'Error',
-      description: msg,
-      duration: 0
-    })
-  }
-
-  const submit = (model: Record<string, any>) => {
+  const submit = async (model: Record<string, any>) => {
     const group_id = group.group_id
     model.name = Locales.formModelToLocalizedString(model, 'name')
     model.description = Locales.formModelToLocalizedString(model, 'description')
-    GroupActions.updateGroup(
-      group_id,
-      model.name,
-      model.description,
-      model.location,
-      model.published,
-      (err) => {
-        if (err) {
-          notification.error({
-            message: t('Error'),
-            description: err.message || err.toString() || err,
-            duration: 0
-          })
-        } else {
-          message.info(t('Group Saved'), 3, () => {
-            router.push(`/group/${group_id || ''}`)
-          })
-        }
-      }
-    )
+    try {
+      await mutation(`
+          saveGroup(group_id: "${model.group_id}", name: "${model.name}", description: "${model.description}")
+        `)
+      message.info(t('Group Saved'), 3, () => {
+        router.push(`/group/${group_id || ''}`)
+      })
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString(),
+        duration: 0
+      })
+    }
   }
 
   const handleMemberDelete = (user: Record<string, any>) => {
@@ -144,18 +126,19 @@ const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
       okType: 'danger',
       cancelText: t('Cancel'),
 
-      onOk() {
-        GroupActions.removeMember(user.key, (err) => {
-          if (err) {
-            notification.error({
-              message: t('Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            message.info(t('Member Removed'))
-          }
-        })
+      async onOk() {
+        try {
+          await mutation(`
+        removeGroupMember(group_id: "${group.group_id}", user_id: ${user.key})
+        `)
+          message.info(t('Member Removed'), 7)
+        } catch (err) {
+          notification.error({
+            message: t('Server Error'),
+            description: err.message || err.toString(),
+            duration: 0
+          })
+        }
       }
     })
   }
@@ -168,20 +151,21 @@ const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
       okType: 'danger',
       cancelText: t('Cancel'),
 
-      onOk() {
-        GroupActions.deleteGroup((err) => {
-          if (err) {
-            notification.error({
-              message: t('Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            message.info(t('Group Deleted'), 3, () => {
-              router.push('/groups')
-            })
-          }
-        })
+      async onOk() {
+        try {
+          await mutation(`
+            deleteGroup(group_id: "${group.group_id}")
+          `)
+          message.info(t('Group Deleted'), 3, () => {
+            router.push('/groups')
+          })
+        } catch (err) {
+          notification.error({
+            message: t('Server Error'),
+            description: err.message || err.toString(),
+            duration: 0
+          })
+        }
       }
     })
   }
@@ -197,18 +181,19 @@ const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
           ) + user.label,
         okType: 'danger',
 
-        onOk() {
-          GroupActions.setMemberAdmin(user.key, (err) => {
-            if (err) {
-              notification.error({
-                message: t('Error'),
-                description: err.message || err.toString() || err,
-                duration: 0
-              })
-            } else {
-              message.info(t('Member is now an Administrator'), 7)
-            }
-          })
+        async onOk() {
+          try {
+            await mutation(`
+            setGroupMemberRole(group_id: "${group.group_id}", user_id: ${user.key}, admin: true)
+            `)
+            message.info(t('Member is now an Administrator'), 7)
+          } catch (err) {
+            notification.error({
+              message: t('Server Error'),
+              description: err.message || err.toString(),
+              duration: 0
+            })
+          }
         }
       })
     }
@@ -224,50 +209,54 @@ const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
         '.',
       okType: 'danger',
 
-      onOk() {
-        GroupActions.removeMemberAdmin(user.key, (err) => {
-          if (err) {
-            notification.error({
-              message: t('Error'),
-              description: err.message || err.toString() || err,
-              duration: 0
-            })
-          } else {
-            message.info(t('Member is no longer an Administrator'), 7)
-          }
-        })
+      async onOk() {
+        try {
+          await mutation(`
+          setGroupMemberRole(group_id: "${group.group_id}", user_id: ${user.key}, admin: false)
+          `)
+          message.info(t('Member is no longer an Administrator'), 7)
+        } catch (err) {
+          notification.error({
+            message: t('Server Error'),
+            description: err.message || err.toString(),
+            duration: 0
+          })
+        }
       }
     })
   }
-  const handleAddMember = (user: Record<string, any>) => {
-    debug.log(user.value.value + ' as Admin:' + user.option)
-    GroupActions.addMember(user.value.value, user.option, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-      } else {
-        message.info(t('Member Added'), 7)
+  const handleRotateInviteKey = async () => {
+    try {
+      await mutation(`
+      rotateGroupInviteKey(group_id: "${group.group_id}") {
+        key
       }
-    })
+      `)
+      message.info(t('Invite Link Updated'), 7)
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString(),
+        duration: 0
+      })
+    }
   }
 
-  const onCrop = (data: Record<string, any>) => {
+  const onCrop = async (data: string) => {
     // send data to server
     setShowImageCrop(false)
-    GroupActions.setGroupImage(data, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Error'),
-          description: err.message || err.toString() || err,
-          duration: 0
-        })
-      } else {
-        message.info(t('Image Saved'), 3)
-      }
-    }) // this.pasteHtmlAtCaret('<img class="responsive-img" src="' + data + '" />');
+    try {
+      await mutation(`
+      setGroupImage(group_id: "${group.group_id}", image: "${data}")
+      `)
+      message.success(t('Image Saved'), 3)
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString(),
+        duration: 0
+      })
+    }
   }
 
   const groupId = group.group_id || ''
@@ -279,7 +268,7 @@ const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
       image: user.image
     }
   })
-  const isPublished = group.published
+
   const groupUrl = `/group/${groupId}`
   return (
     <ErrorBoundary t={t}>
@@ -402,47 +391,12 @@ const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
                     required
                   />
                 </Row>
-                <Row
-                  style={{
-                    marginBottom: '20px'
-                  }}
-                >
-                  <TextInput
-                    name='location'
-                    label={t('Location')}
-                    validations='maxLength:100'
-                    validationErrors={{
-                      maxLength: t('Location must be 100 characters or less.')
-                    }}
-                    length={100}
-                    icon={<MyLocationIcon />}
-                    tooltipPosition='top'
-                    tooltip={t('Country or City Where the Group is Located')}
-                    value={group.location}
-                    required
-                    t={t}
-                  />
-                </Row>
-                <Row
-                  style={{
-                    marginBottom: '20px'
-                  }}
-                >
-                  <Toggle
-                    name='published'
-                    labelOff={t('Draft')}
-                    labelOn={t('Published')}
-                    tooltipPosition='top'
-                    tooltip={t('Include in Public Group Listings')}
-                    checked={isPublished}
-                  />
-                </Row>
                 <div
                   style={{
                     float: 'right'
                   }}
                 >
-                  <Button htmlType='submit' name='action'>
+                  <Button htmlType='submit' name='action' disabled={!canSubmit}>
                     {t('Update')}
                   </Button>
                 </div>
@@ -466,8 +420,6 @@ const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
                   items={membersList}
                   onDelete={handleMemberDelete}
                   onAction={handleMemberMakeAdmin}
-                  onError={onError}
-                  t={t}
                 />
               </Col>
               <Col
@@ -477,17 +429,20 @@ const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
                   padding: '2px'
                 }}
               >
-                <Card title={<b>{t('Add Group Member')}</b>} size='small'>
-                  <AddItem
-                    placeholder={t('Search for User Name')}
-                    suggestionUrl='/api/user/search/suggestions'
-                    optionLabel={t('Add as Administrator')}
-                    optionLabelOn={t('Administrator')}
-                    optionLabelOff={t('Member')}
-                    addButtonLabel={t('Add and Send Invite')}
-                    onAdd={handleAddMember}
-                    onError={onError}
-                  />
+                <Card
+                  title={<b>{t('Group Member Invite Link')}</b>}
+                  size='small'
+                >
+                  <p>
+                    {t(
+                      'Share this link with people you want to join this group.'
+                    )}
+                  </p>
+                  <p>
+                    {t(
+                      'On password-protected sites, they will first need an account on the site, contact your site administrator for help inviting new users.'
+                    )}
+                  </p>
                 </Card>
               </Col>
             </Row>

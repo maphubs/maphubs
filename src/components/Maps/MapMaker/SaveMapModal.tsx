@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
-import LocalizedInput from '../forms/ant/LocalizedInput'
+import LocalizedInput from '../../forms/ant/LocalizedInput'
 import { Modal, Row, Button, message } from 'antd'
 import Formsy from 'formsy-react'
-import UserActions from '../../actions/UserActions'
-import SelectGroup from '../Groups/SelectGroup'
-import useT from '../../hooks/useT'
+import SelectGroup from '../../Groups/SelectGroup'
+import useT from '../../../hooks/useT'
 import { useSession } from 'next-auth/client'
 
-import { LocalizedString } from '../../types/LocalizedString'
+import { LocalizedString } from '../../../types/LocalizedString'
 type Props = {
   onSave: (...args: Array<any>) => void
   editing?: boolean
@@ -35,28 +34,29 @@ const SaveMapModal = ({
   }
 
   const recheckLogin = (): void => {
-    UserActions.getUser((err) => {
+    // TODO: trigger next-auth to recheck login
+    /*
       if (err) {
         message.error(t('Not Logged In - Please Login Again'))
       }
-    })
+    */
   }
   const save = (): void => {
     if (!title || t(title) === '') {
       message.error(t('Please Add a Title'))
       return
     }
-
+    let selectedGroup = group
     if (!group && user?.groups.length === 1) {
       // creating a new layer when user is only the member of a single group (not showing the group dropdown)
-      group = user.groups[0].group_id
+      selectedGroup = user.groups[0].group_id
     }
 
     const closeSavingMessage = message.loading(t('Saving'), 0)
     onSave(
       {
         title,
-        group
+        group: selectedGroup
       },
       () => {
         closeSavingMessage()

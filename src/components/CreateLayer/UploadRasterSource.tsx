@@ -12,8 +12,7 @@ import LayerAPI from '../../redux/reducers/layer-api'
 import {
   saveDataSettings,
   resetStyle,
-  tileServiceInitialized,
-  LayerState
+  tileServiceInitialized
 } from '../../redux/reducers/layerSlice'
 import { Layer } from '../../types/layer'
 
@@ -30,10 +29,8 @@ const UploadRasterSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
   const [bbox, setBBOX] = useState()
   const { t, locale } = useT()
   const dispatch = useDispatch()
-  const layer_id = useSelector(
-    (state: { layer: LayerState }) => state.layer.layer_id
-  )
-  const style = useSelector((state: { layer: LayerState }) => state.layer.style)
+  const layer_id = useSelector((state) => state.layer.layer_id)
+  const style = useSelector((state) => state.layer.style)
 
   useEffect(() => {
     scroller.scrollTo('scrollToMap')

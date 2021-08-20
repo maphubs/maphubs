@@ -6,14 +6,15 @@ import RasterSource from './RasterSource'
 import GenericSource from './GenericSource'
 import EarthEngineSource from './EarthEngineSource'
 import mapboxgl from 'mapbox-gl'
+import { SourceWithUrl } from './types/SourceWithUrl'
 
 export default {
   getSource(
     key: string,
-    source: mapboxgl.Source
+    source: SourceWithUrl
   ): {
     custom: boolean
-    driver: any
+    driver: GenericSource
     key: string
     source: mapboxgl.Source
   } {
@@ -50,11 +51,11 @@ export default {
     }
   },
 
-  'ags-mapserver-query': AGSMapServerQuery,
-  'ags-featureserver-query': AGSFeatureServerQuery,
-  'mapbox-style': MapboxSource,
-  'maphubs-vector': MapHubsSource,
-  earthengine: EarthEngineSource,
-  raster: RasterSource,
-  generic: GenericSource
+  'ags-mapserver-query': new AGSMapServerQuery(),
+  'ags-featureserver-query': new AGSFeatureServerQuery(),
+  'mapbox-style': new MapboxSource(),
+  'maphubs-vector': new MapHubsSource(),
+  earthengine: new EarthEngineSource(),
+  raster: new RasterSource(),
+  generic: new GenericSource()
 }

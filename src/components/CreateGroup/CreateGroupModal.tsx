@@ -7,12 +7,12 @@ import { Modal, Button, Row, notification, message } from 'antd'
 import TextInput from '../forms/textInput'
 import MultiTextInput from '../forms/MultiTextInput'
 import MultiTextArea from '../forms/MultiTextArea'
-import GroupActions from '../../actions/GroupActions'
 import Locales from '../../services/locales'
 import $ from 'jquery'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
+import { useSelector } from '../../redux/hooks'
 import { LocalizedString } from '../../types/LocalizedString'
+import mutation from '../../graphql/graphql-mutation'
 
 type Props = {
   onCreate?: (...args: Array<any>) => any
@@ -34,7 +34,7 @@ const CreateGroupModal = ({ onCreate }: Props): JSX.Element => {
   const [groupIdValue, setGroupIdValue] = useState<string>()
   const [groupIdAvailable, setGroupIdAvailable] = useState(false)
 
-  const groupState = useSelector((state: { group: any }) => state.group)
+  const groupState = useSelector((state) => state.group)
 
   addValidationRule('isAvailable', (values: string[], value: string) => {
     if (groupState.created) return true
@@ -84,7 +84,7 @@ const CreateGroupModal = ({ onCreate }: Props): JSX.Element => {
     return result
   }
 
-  const saveGroup = (): void => {
+  const saveGroup = async () => {
     if (!model) {
       message.error(t('Please enter required fields'))
       return
@@ -92,29 +92,23 @@ const CreateGroupModal = ({ onCreate }: Props): JSX.Element => {
 
     model.name = Locales.formModelToLocalizedString(model, 'name')
     model.description = Locales.formModelToLocalizedString(model, 'description')
-    GroupActions.createGroup(
-      model.group_id,
-      model.name,
-      model.description,
-      model.location,
-      model.published,
-      (err) => {
-        if (err) {
-          notification.error({
-            message: t('Server Error'),
-            description: err.message || err.toString(),
-            duration: 0
-          })
-        } else {
-          message.success(t('Group Created'), 1)
+    try {
+      await mutation(`
+          createGroup(group_id: "${model.group_id}", name: "${model.name}", description: "${model.description}")
+        `)
+      message.success(t('Group Created'), 1)
 
-          if (onCreate) {
-            onCreate(groupState)
-            setVisible(false)
-          }
-        }
+      if (onCreate) {
+        onCreate(groupState)
+        setVisible(false)
       }
-    )
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString(),
+        duration: 0
+      })
+    }
   }
 
   return (

@@ -2,21 +2,20 @@ import React from 'react'
 import LayerListStatic from './LayerListStatic'
 import { DownOutlined } from '@ant-design/icons'
 import { Dropdown } from 'antd'
-import { Layer } from '../../types/layer'
-import { LocalizedString } from '../../types/LocalizedString'
+import { Layer } from '../../../types/layer'
+import useT from '../../../hooks/useT'
 type Props = {
   name: string
   layers: Array<Layer>
   toggleVisibility: (layer_id: number) => void
-  t: (v: string | LocalizedString) => string
 }
 
 const LayerListDropDown = ({
   name,
   layers,
-  toggleVisibility,
-  t
+  toggleVisibility
 }: Props): JSX.Element => {
+  const { t } = useT()
   return (
     <div
       style={{
@@ -31,7 +30,6 @@ const LayerListDropDown = ({
           <LayerListStatic
             layers={layers}
             toggleVisibility={toggleVisibility}
-            t={t}
           />
         }
         trigger={['click']}

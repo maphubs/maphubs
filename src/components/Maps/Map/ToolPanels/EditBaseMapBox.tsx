@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, List } from 'antd'
-import { LocalizedString } from '../../../types/LocalizedString'
+import { LocalizedString } from '../../../../types/LocalizedString'
 
 const EditBaseMapBox = ({
   t,

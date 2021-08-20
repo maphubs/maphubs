@@ -1,5 +1,5 @@
 import React from 'react'
-import type { Layer } from '../../types/layer'
+import type { Layer } from '../../../types/layer'
 import _isEqual from 'lodash.isequal'
 import flow from 'lodash.flow'
 import MapStyles from './Styles'
@@ -13,7 +13,7 @@ import DraggleIndicator from './UI/DraggableIndicator'
 import DragItemConfig from './UI/DragItemConfig'
 
 import 'dnd-core/lib/actions/dragDrop'
-import { LocalizedString } from '../../types/LocalizedString'
+import { LocalizedString } from '../../../types/LocalizedString'
 
 type Props = {
   item: Layer

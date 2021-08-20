@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button } from 'antd'
 import Formsy from 'formsy-react'
 import FormField from './FormField'
-import useT from '../../hooks/useT'
+import { LocalizedString } from '../../../types/LocalizedString'
 
 type Props = {
   presets: Array<Record<string, any>>
@@ -11,6 +11,7 @@ type Props = {
   onSubmit?: (model: Record<string, unknown>) => void
   onChange?: (model: Record<string, unknown>) => void
   style?: React.CSSProperties
+  t: (v: string | LocalizedString) => string //* used by both Maps MapHubs UI so needs to be passed t()
 }
 
 const DataCollectionForm = ({
@@ -19,9 +20,9 @@ const DataCollectionForm = ({
   presets,
   values,
   onSubmit,
-  onChange
+  onChange,
+  t
 }: Props): JSX.Element => {
-  const { t } = useT()
   const [canSubmit, setCanSubmit] = useState(false)
 
   return (

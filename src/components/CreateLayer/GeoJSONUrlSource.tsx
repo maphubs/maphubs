@@ -11,8 +11,7 @@ import LayerAPI from '../../redux/reducers/layer-api'
 import {
   saveDataSettings,
   resetStyle,
-  tileServiceInitialized,
-  LayerState
+  tileServiceInitialized
 } from '../../redux/reducers/layerSlice'
 import { Layer } from '../../types/layer'
 
@@ -32,9 +31,7 @@ const GeoJSONUrlSource = ({
   const [canSubmit, setCanSubmit] = useState(false)
   const { t } = useT()
   const dispatch = useDispatch()
-  const layer_id = useSelector(
-    (state: { layer: LayerState }) => state.layer.layer_id
-  )
+  const layer_id = useSelector((state) => state.layer.layer_id)
 
   addValidationRule('isHttps', (values, value: string) => {
     return value ? value.startsWith('https://') : false

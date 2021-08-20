@@ -5,7 +5,6 @@ import CreateLayer from './CreateLayer'
 import useT from '../../hooks/useT'
 import LayerAPI from '../../redux/reducers/layer-api'
 import { useSelector } from '../../redux/hooks'
-import { LayerState } from '../../redux/reducers/layerSlice'
 
 type Props = {
   onSubmit: () => void
@@ -15,9 +14,7 @@ type Props = {
 const Step1 = ({ onSubmit, mapConfig }: Props): JSX.Element => {
   const { t } = useT()
   const router = useRouter()
-  const layer_id = useSelector(
-    (state: { layer: LayerState }) => state.layer.layer_id
-  )
+  const layer_id = useSelector((state) => state.layer.layer_id)
 
   const [warnIfUnsaved, setWarnIfUnsaved] = useState(false)
 

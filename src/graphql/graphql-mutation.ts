@@ -1,13 +1,11 @@
 const fetcher = (
   mutation: string,
-  admin?: boolean,
-  otp?: string
+  admin?: boolean
 ): Promise<Record<string, any>> =>
   fetch(admin ? '/api/graphql-admin' : '/api/graphql', {
     method: 'POST',
     headers: {
-      'Content-type': 'application/json',
-      Authentication: otp || ''
+      'Content-type': 'application/json'
     },
     body: JSON.stringify({
       query: `mutation { ${mutation} }`

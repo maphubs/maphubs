@@ -1,14 +1,14 @@
 import { FeatureCollection } from 'geojson'
-import mapboxgl from 'mapbox-gl'
-import TerraformerGL from '../../../services/terraformerGL'
-import MapComponent from '../Map'
+import TerraformerGL from '../../../../services/terraformerGL'
+import { SourceWithUrl } from './types/SourceWithUrl'
+import GenericSource from './GenericSource'
+import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import { SourceState } from './types/SourceState'
 
-const AGSFeatureServerQuery = {
-  load(
-    key: string,
-    source: mapboxgl.Source,
-    mapComponent: MapComponent
-  ): any | void {
+const debug = DebugService('AGSFeatureServerQuery')
+
+class AGSFeatureServerQuery extends GenericSource {
+  load(key: string, source: SourceWithUrl, state: SourceState): any {
     if (source.url) {
       return TerraformerGL.getArcGISFeatureServiceGeoJSON(source.url).then(
         (geoJSON: FeatureCollection) => {
@@ -16,42 +16,22 @@ const AGSFeatureServerQuery = {
             geoJSON.bbox &&
             Array.isArray(geoJSON.bbox) &&
             geoJSON.bbox.length > 0 &&
-            mapComponent.state.allowLayersToMoveMap
+            state.allowLayersToMoveMap
           ) {
-            mapComponent.zoomToData(geoJSON)
+            // TODO: fix AGS MapServerQuery zoom to data
+            // zoomToData(geoJSON)
           }
 
-          return mapComponent.addSource(key, {
+          return state.addSource(key, {
             type: 'geojson',
             data: geoJSON
           })
         },
         (err) => {
-          mapComponent.debugLog(err)
+          debug.log(err)
         }
       )
     }
-  },
-
-  addLayer(
-    layer: mapboxgl.Layer,
-    source: mapboxgl.Source,
-    position: number,
-    mapComponent: MapComponent
-  ): void {
-    if (mapComponent.state.editing) {
-      mapComponent.addLayerBefore(layer, mapComponent.getFirstDrawLayerID())
-    } else {
-      mapComponent.addLayer(layer, position)
-    }
-  },
-
-  removeLayer(layer: mapboxgl.Layer, mapComponent: MapComponent): void {
-    mapComponent.removeLayer(layer.id)
-  },
-
-  remove(key: string, mapComponent: MapComponent): void {
-    mapComponent.removeSource(key)
   }
 }
 export default AGSFeatureServerQuery

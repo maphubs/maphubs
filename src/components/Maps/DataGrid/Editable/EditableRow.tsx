@@ -26,13 +26,13 @@ const EditableCell = ({
   title: string
   editable: boolean
   children: any
-  dataIndex: number
+  dataIndex: string
   record: Record<string, any>
   handleSave: (...args: Array<any>) => any
   dataType: string
 }): JSX.Element => {
   const [editing, setEditing] = useState(false)
-  const inputRef = useRef()
+  const inputRef = useRef<Input>()
   const form = useContext(EditableContext)
   useEffect(() => {
     if (editing && inputRef.current) {

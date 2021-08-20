@@ -226,7 +226,6 @@ const EmbedMap = (): JSX.Element => {
 
               const bounds = _bbox(geoJSON)
 
-              // _this.refs.map.fitBounds(bounds, 12, 10, true);
               const layer = getLayerConfig()
               const newLayers = [layer, ...mapLayers]
               const glStyle = StyleHelper.buildMapStyle(mapLayers)
@@ -237,7 +236,6 @@ const EmbedMap = (): JSX.Element => {
                 glStyle,
                 layers: newLayers
               })
-              // MapState.state.map.fitBounds(bounds, 12, 50, false)
             }
           })
         })

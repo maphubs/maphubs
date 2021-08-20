@@ -9,8 +9,7 @@ import LayerAPI from '../../redux/reducers/layer-api'
 import {
   saveDataSettings,
   resetStyle,
-  tileServiceInitialized,
-  LayerState
+  tileServiceInitialized
 } from '../../redux/reducers/layerSlice'
 import { Layer } from '../../types/layer'
 
@@ -31,9 +30,7 @@ const PlanetLabsSource = ({
 }): JSX.Element => {
   const { t } = useT()
   const dispatch = useDispatch()
-  const layer_id = useSelector(
-    (state: { layer: LayerState }) => state.layer.layer_id
-  )
+  const layer_id = useSelector((state) => state.layer.layer_id)
 
   const [canSubmit, setCanSubmit] = useState(false)
 

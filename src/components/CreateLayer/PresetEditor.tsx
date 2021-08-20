@@ -5,7 +5,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import useT from '../../hooks/useT'
 import useUnload from '../../hooks/useUnload'
 import { useDispatch, useSelector } from '../../redux/hooks'
-import { addPreset, LayerState } from '../../redux/reducers/layerSlice'
+import { addPreset } from '../../redux/reducers/layerSlice'
 
 type Props = {
   onValid: () => void
@@ -16,11 +16,9 @@ const PresetEditor = ({ onValid, onInvalid }: Props): JSX.Element => {
   const { t } = useT()
   const dispatch = useDispatch()
   const pendingPresetChanges = useSelector(
-    (state: { layer: any }) => state.layer.pendingPresetChanges
+    (state) => state.layer.pendingPresetChanges
   )
-  const presets = useSelector(
-    (state: { layer: LayerState }) => state.layer.presets
-  )
+  const presets = useSelector((state) => state.layer.presets)
 
   useUnload((e) => {
     e.preventDefault()

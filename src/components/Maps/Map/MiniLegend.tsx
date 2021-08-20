@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
-import { Subscribe } from 'unstated'
-import BaseMapContainer from './containers/BaseMapContainer'
 import LegendItem from './LegendItem'
 import MapStyles from './Styles'
 import { Row, Col } from 'antd'
 import Settings from '@material-ui/icons/Settings'
 import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp'
-import { LocalizedString } from '../../types/LocalizedString'
-import { Layer } from '../../types/layer'
-import useT from '../../hooks/useT'
+import { LocalizedString } from '../../../types/LocalizedString'
+import { Layer } from '../../../types/layer'
+import useT from '../../../hooks/useT'
+import { useSelector } from '../redux/hooks'
 
 type Props = {
   title?: LocalizedString
@@ -36,6 +35,8 @@ const MiniLegend = ({
 }: Props): JSX.Element => {
   const { t } = useT()
   const [collapsed, setCollapsed] = useState(false)
+
+  const baseMapAttribution = useSelector((state) => state.baseMap.attribution)
   const toggleCollapsed = (): void => {
     setCollapsed(!collapsed)
   }
@@ -321,34 +322,30 @@ const MiniLegend = ({
 
                 return <LegendItem key={layer.layer_id} layer={layer} t={t} />
               })}
-              <Subscribe to={[BaseMapContainer]}>
-                {(BaseMap) => (
-                  <div
-                    className='base-map-legend'
-                    style={{
-                      lineHeight: '0.75em',
-                      padding: '2px'
+              <div
+                className='base-map-legend'
+                style={{
+                  lineHeight: '0.75em',
+                  padding: '2px'
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: '8px',
+                    float: 'left',
+                    backgroundColor: '#FFF'
+                  }}
+                  className='align-left'
+                >
+                  {t('Base Map')} -{' '}
+                  <span
+                    className='no-margin no-padding'
+                    dangerouslySetInnerHTML={{
+                      __html: baseMapAttribution
                     }}
-                  >
-                    <span
-                      style={{
-                        fontSize: '8px',
-                        float: 'left',
-                        backgroundColor: '#FFF'
-                      }}
-                      className='align-left'
-                    >
-                      {t('Base Map')} -{' '}
-                      <span
-                        className='no-margin no-padding'
-                        dangerouslySetInnerHTML={{
-                          __html: BaseMap.state.attribution
-                        }}
-                      />
-                    </span>
-                  </div>
-                )}
-              </Subscribe>
+                  />
+                </span>
+              </div>
             </div>
           </div>
         </li>

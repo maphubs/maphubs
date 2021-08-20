@@ -1,86 +1,46 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import request from 'superagent'
 import slugify from 'slugify'
 import { Card, Spin } from 'antd'
 import GetNameField from './Styles/get-name-field'
 import Attributes from './Attributes'
-import _isequal from 'lodash.isequal'
 import ActionPanel from './FeaturePopup/ActionPanel'
-import type { Layer } from '../../types/layer'
+import type { Layer } from '../../../types/layer'
 import 'react-image-lightbox/style.css'
 import { Feature } from 'geojson'
-import { LocalizedString } from '../../types/LocalizedString'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import Lightbox from 'react-image-lightbox'
+import useT from '../../../hooks/useT'
 
 const debug = DebugService('map/featurepopup')
 
-let Lightbox
 type Props = {
   features: Feature[]
   showButtons: boolean
-  t: (v: string | LocalizedString) => string
 }
-type State = {
-  showAttributes: boolean
-  layerLoaded: boolean
-  layer?: Layer
-  lightboxOpen?: boolean
-}
-export default class FeaturePopup extends React.Component<Props, State> {
-  static defaultProps: {
-    showButtons: boolean
-  } = {
-    showButtons: true
-  }
-  image: any
 
-  constructor(props: Props) {
-    super(props)
-    this.state = {
-      layerLoaded: false,
-      showAttributes: false
-    }
-  }
+const FeaturePopup = ({ features, showButtons }: Props): JSX.Element => {
+  const { t } = useT()
+  const [layerLoaded, setLayerLoaded] = useState(false)
+  const [showAttributes, setShowAttributes] = useState(false)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [layer, setLayer] = useState<Layer>(null)
 
-  componentDidMount(): void {
-    Lightbox = require('react-image-lightbox').default
-
-    if (this.props.features) {
-      const selectedFeature = this.props.features[0]
+  useEffect(() => {
+    if (features) {
+      const selectedFeature = features[0]
       const properties = selectedFeature.properties
 
       if (properties.layer_id) {
-        this.getLayer(properties.layer_id, properties.maphubs_host)
+        getLayer(properties.layer_id, properties.maphubs_host)
       } else {
-        this.setState({
-          layerLoaded: true
-        })
+        setLayerLoaded(true)
       }
     }
-  }
+  }, [features])
 
-  componentWillReceiveProps(nextProps: Props): void {
-    if (!_isequal(this.props.features, nextProps.features)) {
-      const selectedFeature = nextProps.features[0]
-      const properties = selectedFeature.properties
-
-      if (properties.layer_id) {
-        this.getLayer(properties.layer_id, properties.maphubs_host)
-      } else {
-        this.setState({
-          layerLoaded: true
-        })
-      }
-    }
-  }
-
-  getLayer: (layerId: number, host: string) => void = (
-    layerId: number,
-    host: string
-  ) => {
-    const { setState } = this
-
+  const getLayer = (layerId: number, host: string) => {
     debug.info(`Getting layer info for: ${layerId} from ${host}`)
 
     const baseUrl =
@@ -90,9 +50,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
 
     if (window.location.href.startsWith(`${baseUrl}/map/share/`)) {
       console.log(`layer lookup not supported on ${window.location.href}`)
-      this.setState({
-        layerLoaded: true
-      })
+      setLayerLoaded(true)
       return
     }
 
@@ -108,31 +66,23 @@ export default class FeaturePopup extends React.Component<Props, State> {
         if (!err && res.body?.layer) {
           const layer = res.body.layer
 
-          setState({
-            layer,
-            layerLoaded: true
-          })
+          setLayer(layer)
+          setLayerLoaded(true)
         } else {
-          setState({
-            layerLoaded: true
-          })
+          setLayerLoaded(true)
 
           debug.error(`failed to load layer info for: ${layerId}`)
         }
       })
   }
-  renderContentWithoutImage = (): JSX.Element => {
-    return <></>
-  }
-  renderContentWithImage = (
+
+  const renderContentWithImage = (
     name: string,
     description: string,
     photoUrl: string,
     featureName: string,
     properties: Record<string, any>
   ): JSX.Element => {
-    const { layerLoaded, lightboxOpen } = this.state
-    const { t } = this.props
     let nameDisplay
 
     if (name) {
@@ -204,11 +154,9 @@ export default class FeaturePopup extends React.Component<Props, State> {
             mainSrc={photoUrl}
             imageTitle={name}
             imageCaption={description}
-            onCloseRequest={() =>
-              this.setState({
-                lightboxOpen: false
-              })
-            }
+            onCloseRequest={() => {
+              setLightboxOpen(false)
+            }}
           />
         )}
         <div
@@ -219,11 +167,9 @@ export default class FeaturePopup extends React.Component<Props, State> {
             backgroundSize: 'cover',
             position: 'relative'
           }}
-          onClick={() =>
-            this.setState({
-              lightboxOpen: true
-            })
-          }
+          onClick={() => {
+            setLightboxOpen(true)
+          }}
         >
           {nameDisplay}
         </div>
@@ -231,9 +177,10 @@ export default class FeaturePopup extends React.Component<Props, State> {
       </div>
     )
   }
-  renderFeature = (feature: Record<string, any>, i: number): JSX.Element => {
-    const { layer, showAttributes } = this.state
-    const { t, showButtons } = this.props
+  const renderFeature = (
+    feature: Record<string, any>,
+    i: number
+  ): JSX.Element => {
     let nameField
     let nameFieldValue
     let featureName = ''
@@ -275,7 +222,7 @@ export default class FeaturePopup extends React.Component<Props, State> {
 
     const content =
       !showAttributes && photoUrl ? (
-        this.renderContentWithImage(
+        renderContentWithImage(
           nameFieldValue,
           descriptionFieldValue,
           photoUrl,
@@ -320,23 +267,20 @@ export default class FeaturePopup extends React.Component<Props, State> {
               featureName={featureName}
               toggled={showAttributes}
               enableToggle={photoUrl}
-              toggleData={this.toggleAttributes}
+              toggleData={toggleAttributes}
             />
           </div>
         )}
       </Card>
     )
   }
-  toggleAttributes: () => void = () => {
-    this.setState({
-      showAttributes: !this.state.showAttributes
-    })
+  const toggleAttributes: () => void = () => {
+    setShowAttributes(!showAttributes)
   }
 
-  render(): JSX.Element {
-    const { features } = this.props
-    return (
-      <div>{features.map((feature, i) => this.renderFeature(feature, i))}</div>
-    )
-  }
+  return <div>{features.map((feature, i) => renderFeature(feature, i))}</div>
 }
+FeaturePopup.defaultProps = {
+  showButtons: true
+}
+export default FeaturePopup

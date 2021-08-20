@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import { Row, Col, Button, message, notification } from 'antd'
 import ImageCrop from '../ImageCrop'
-import GroupActions from '../../actions/GroupActions'
 import classNames from 'classnames'
 import GroupIcon from '@material-ui/icons/Group'
 import useT from '../../hooks/useT'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from '../../redux/hooks'
+import { setGroupHasImage } from '../../redux/reducers/groupSlice'
+import mutation from '../../graphql/graphql-mutation'
 
 type Props = {
   onSubmit: (group_id: string) => void
@@ -21,26 +22,29 @@ const CreateGroupStep2 = ({
   onSubmit
 }: Props): JSX.Element => {
   const { t } = useT()
+  const dispatch = useDispatch()
   const [canSubmit, setCanSubmit] = useState(false)
   const [showImageCrop, setShowImageCrop] = useState(false)
 
-  const group_id = useSelector((state: { group: any }) => state.group.group_id)
-  const hasImage = useSelector((state: { group: any }) => state.group.hasImage)
+  const group_id = useSelector((state) => state.group.group_id)
+  const hasImage = useSelector((state) => state.group.hasImage)
 
-  const onCrop = (data: string): void => {
+  const onCrop = async (data: string) => {
     // send data to server
     setShowImageCrop(false)
-    GroupActions.setGroupImage(data, (err) => {
-      if (err) {
-        notification.error({
-          message: t('Server Error'),
-          description: err.message || err.toString(),
-          duration: 0
-        })
-      } else {
-        message.success(t('Image Saved'), 3)
-      }
-    })
+    try {
+      await mutation(`
+      setGroupImage(group_id: "${group_id}", image: "${data}")
+      `)
+      dispatch(setGroupHasImage(true))
+      message.success(t('Image Saved'), 3)
+    } catch (err) {
+      notification.error({
+        message: t('Server Error'),
+        description: err.message || err.toString(),
+        duration: 0
+      })
+    }
   }
 
   // hide if not active

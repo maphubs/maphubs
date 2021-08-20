@@ -22,19 +22,11 @@ const Step2 = ({
 }): JSX.Element => {
   const { t } = useT()
   const dispatch = useDispatch()
-  const layer_id = useSelector(
-    (state: { layer: LayerState }) => state.layer.layer_id
-  )
-  const style = useSelector((state: { layer: LayerState }) => state.layer.style)
-  const presets = useSelector(
-    (state: { layer: LayerState }) => state.layer.presets
-  )
-  const is_external = useSelector(
-    (state: { layer: LayerState }) => state.layer.is_external
-  )
-  const is_empty = useSelector(
-    (state: { layer: LayerState }) => state.layer.is_empty
-  )
+  const layer_id = useSelector((state) => state.layer.layer_id)
+  const style = useSelector((state) => state.layer.style)
+  const presets = useSelector((state) => state.layer.presets)
+  const is_external = useSelector((state) => state.layer.is_external)
+  const is_empty = useSelector((state) => state.layer.is_empty)
 
   const submit = () => {
     if (!is_external && !is_empty) {
