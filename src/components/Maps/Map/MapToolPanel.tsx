@@ -7,7 +7,7 @@ import CoordinatePanel from './ToolPanels/CoordinatePanel'
 // import AreaComparisonPanel from './ToolPanels/AreaComparisonPanel'
 import MapToolButton from './MapToolButton'
 import { Drawer, Collapse } from 'antd'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 
 const Panel = Collapse.Panel
 type Props = {
@@ -23,7 +23,7 @@ const MapToolPanel = ({
   gpxLink,
   onChangeBaseMap
 }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const [open, setOpen] = useState(false)
   const drawerContainer = useRef(null)
 

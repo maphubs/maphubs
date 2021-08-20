@@ -3,7 +3,7 @@ import { Button } from 'antd'
 import mapboxgl from 'mapbox-gl'
 import { FeatureCollection } from 'geojson'
 import shortid from 'shortid'
-import useT from '../../../../hooks/useT'
+import useMapT from '../../hooks/useMapT'
 import { message, notification } from 'antd'
 import IsochroneLegendHelper from '../IsochroneLegendHelper'
 import { useSelector } from '../../redux/hooks'
@@ -67,7 +67,7 @@ const getIsochroneStyle = (
 }
 
 const IsochronePanel = (): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const [selectingLocation, setSelectingLocation] = useState(false)
   const [isochroneResult, setIsochroneResult] = useState(null)
   const [isochroneClickHandler, setIsochroneClickHandler] = useState(null)

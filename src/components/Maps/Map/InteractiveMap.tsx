@@ -17,7 +17,7 @@ import mapboxgl, {
   RasterLayer
 } from 'mapbox-gl'
 import AutoSizer from 'react-virtualized-auto-sizer'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 
 type Props = {
   map_id: number
@@ -31,7 +31,7 @@ type Props = {
   disableScrollZoom?: boolean
   showTitle?: boolean
   categories?: Array<Record<string, any>>
-  fitBounds: Array<number>
+  fitBounds?: Array<number>
   fitBoundsOptions?: Record<string, any>
   interactive?: boolean
   mapConfig: Record<string, any>
@@ -69,7 +69,7 @@ type State = {
   basemap: string
 }
 const InteractiveMap = (props: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const mobileMapLegend = useRef()
   const mapLayersList = useRef()
   const [style, setStyle] = useState(props.style)
@@ -90,10 +90,6 @@ const InteractiveMap = (props: Props): JSX.Element => {
       prevLayers.current = props.layers
     }
   }, [props.layers])
-
-  useEffect(() => {
-    // TODO: change Map locale state when prop changes
-  }, [props.locale])
 
   const toggleVisibility = (layer_id: number) => {
     const layer = layers.find((layer) => layer.layer_id === layer_id)
@@ -243,7 +239,7 @@ const InteractiveMap = (props: Props): JSX.Element => {
             )
           }
           return (
-            <>
+            <div style={{ height, width }}>
               {width && width < 600 && (
                 <MapToolButton
                   onClick={() => setMobileMapLegendOpen(true)}
@@ -257,12 +253,7 @@ const InteractiveMap = (props: Props): JSX.Element => {
                 id={'map-' + map_id}
                 fitBounds={bounds}
                 fitBoundsOptions={fitBoundsOptions}
-                height={props.height}
                 interactive={interactive}
-                style={{
-                  width: '100%',
-                  height
-                }}
                 initialGLStyle={style}
                 showLogo={showLogo}
                 mapConfig={mapConfig}
@@ -273,7 +264,7 @@ const InteractiveMap = (props: Props): JSX.Element => {
                 gpxLink={gpxLink}
                 preserveDrawingBuffer={preserveDrawingBuffer}
                 hash={hash}
-                locale={locale}
+                locale={locale} //pass through props locale so Map component can set it in redux
                 mapboxAccessToken={mapboxAccessToken}
                 DGWMSConnectID={DGWMSConnectID}
                 earthEngineClientID={earthEngineClientID}
@@ -360,7 +351,7 @@ const InteractiveMap = (props: Props): JSX.Element => {
                   />
                 )}
               </Map>
-            </>
+            </div>
           )
         }}
       </AutoSizer>

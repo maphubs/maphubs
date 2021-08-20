@@ -248,6 +248,25 @@ const debouncedUpdateMapPosition: any = _debounce(
   }
 )
 
+const setBaseMapThunk = createAsyncThunk(
+  'baseMap/setBaseMap',
+  async (
+    baseMap: string,
+    { getState }
+  ): Promise<{
+    baseMap: string
+    baseMapStyle: BaseMapState['baseMapStyle']
+  }> => {
+    const appState = getState() as AppState
+    const state = appState.baseMap
+    const baseMapStyle = await getBaseMapStyle(state, baseMap)
+    return {
+      baseMap,
+      baseMapStyle
+    }
+  }
+)
+
 export const baseMapSlice = createSlice({
   name: 'baseMap',
   initialState,
@@ -299,25 +318,6 @@ export const selectBaseMapStyle = (
 
 // We can also write thunks by hand, which may contain both sync and async logic.
 // Here's an example of conditionally dispatching actions based on current state.
-
-const setBaseMapThunk = createAsyncThunk(
-  'baseMap/setBaseMap',
-  async (
-    baseMap: string,
-    { getState }
-  ): Promise<{
-    baseMap: string
-    baseMapStyle: BaseMapState['baseMapStyle']
-  }> => {
-    const appState = getState() as AppState
-    const state = appState.baseMap
-    const baseMapStyle = await getBaseMapStyle(state, baseMap)
-    return {
-      baseMap,
-      baseMapStyle
-    }
-  }
-)
 
 export { setBaseMapThunk }
 

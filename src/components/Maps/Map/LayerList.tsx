@@ -4,7 +4,7 @@ import { List, Empty } from 'antd'
 import { DndProvider } from 'react-dnd'
 import HTML5Backend from 'react-dnd-html5-backend'
 import update from 'react-addons-update'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 
 type Props = {
   layers: Array<Record<string, any>>
@@ -35,7 +35,7 @@ const LayerList = ({
   editLayer,
   openAddLayer
 }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
 
   const moveLayer = (dragIndex: any, hoverIndex: any) => {
     const dragLayer = layers[dragIndex]

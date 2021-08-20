@@ -4,10 +4,11 @@ import mapMaker from './reducers/mapMakerSlice'
 import map from './reducers/mapSlice'
 import baseMap from './reducers/baseMapSlice'
 import dataEditor from './reducers/dataEditorSlice'
+import locale from './reducers/localeSlice'
 
 export function makeStore() {
   return configureStore({
-    reducer: { map, baseMap, mapMaker, dataEditor }
+    reducer: { map, baseMap, mapMaker, dataEditor, locale }
   })
 }
 

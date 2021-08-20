@@ -3,7 +3,7 @@ import request from 'superagent'
 import { Tabs, notification, Input, Row, Drawer, List } from 'antd'
 import MapToolButton from '../MapToolButton'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import useT from '../../../../hooks/useT'
+import useMapT from '../../hooks/useMapT'
 import _includes from 'lodash.includes'
 import _find from 'lodash.find'
 import _buffer from '@turf/buffer'
@@ -83,10 +83,10 @@ const MapSearchPanel = ({ show, mapboxAccessToken }: Props): JSX.Element => {
   const drawerContainer = useRef()
   const idx = useRef()
   const searchFeaturesRef = useRef<SearchFeatures>()
-  const { t } = useT()
+  const { t } = useMapT()
   const [tab, setTab] = useState('data')
   const [open, setOpen] = useState(false)
-  const [searchResults, setSearchResults] = useState<SearchState>()
+  const [searchResults, setSearchResults] = useState<SearchState>({})
   const [searchSourceIds, setSearchSourceIds] = useState<string[]>()
   const [searchDisplayLayers, setSearchDisplayLayers] =
     useState<mapboxgl.AnyLayer[]>()

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import _findIndex from 'lodash.findindex'
 import _remove from 'lodash.remove'
 import _differenceBy from 'lodash.differenceby'
-import MapStyles from '../../components/Map/Styles'
+import MapStyles from '../../components/Maps/Map/Styles'
 
 import type { MapHubsField } from '../../types/maphubs-field'
 import localeUtil from '../../locales/util'

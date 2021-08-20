@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal, message, notification } from 'antd'
 import MapToolButton from '../Map/MapToolButton'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 import { useSelector, useDispatch } from '../redux/hooks'
 import {
   undoEdit,
@@ -20,7 +20,7 @@ const EditorToolButtons = ({
   stopEditingLayer,
   onFeatureUpdate
 }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const dispatch = useDispatch()
 
   const edits = useSelector((state) => state.dataEditor.edits)

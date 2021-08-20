@@ -7,7 +7,7 @@ import { Layer } from '../../types/layer'
 import useSWR from 'swr'
 import useStickyResult from '../../hooks/useStickyResult'
 import dynamic from 'next/dynamic'
-const InteractiveMap = dynamic(() => import('../Map/InteractiveMap'), {
+const InteractiveMap = dynamic(() => import('../Maps/Map/InteractiveMap'), {
   ssr: false
 })
 

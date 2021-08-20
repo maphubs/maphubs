@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { Button, Input, Row } from 'antd'
-import useT from '../../../../hooks/useT'
+import useMapT from '../../hooks/useMapT'
 import { useSelector } from '../../redux/hooks'
 import { selectMapboxMap } from '../../redux/reducers/mapSlice'
 
 const CoordinatePanel = (): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const [lat, setLat] = useState<string>()
   const [lon, setLon] = useState<string>()
 

@@ -25,7 +25,7 @@ import { getLayer } from '../../src/components/Feature/Map/layer-feature'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import useSWR from 'swr'
 import useStickyResult from '../../src/hooks/useStickyResult'
-import { Feature, FeatureInfo } from '../../src/types/feature'
+import { Feature } from '../../src/types/feature'
 
 // SSR Only
 import LayerModel from '../../src/models/layer'
@@ -36,7 +36,7 @@ import PageModel from '../../src/models/page'
 import dynamic from 'next/dynamic'
 import { Layer } from '../../src/types/layer'
 const InteractiveMap = dynamic(
-  () => import('../../src/components/Map/InteractiveMap'),
+  () => import('../../src/components/Maps/Map/InteractiveMap'),
   {
     ssr: false
   }
@@ -237,8 +237,6 @@ const FeaturePage = ({
     isPolygon = true
   }
 
-  const { mapLayers, glStyle } = FRState.state
-
   return (
     <ErrorBoundary t={t}>
       <Layout title={t('')}>
@@ -433,7 +431,6 @@ const FeaturePage = ({
               }}
             >
               <InteractiveMap
-                ref={mapRef}
                 height='100%'
                 fitBounds={feature.bbox}
                 layers={mapLayers}
@@ -446,7 +443,6 @@ const FeaturePage = ({
                 showTitle={false}
                 showLegendLayersButton={false}
                 gpxLink={gpxLink}
-                t={t}
                 locale={locale}
                 primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
                 mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}

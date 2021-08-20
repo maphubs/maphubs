@@ -7,7 +7,7 @@ import Layout from '../../src/components/Layout'
 import TextInput from '../../src/components/forms/textInput'
 import SelectGroup from '../../src/components/Groups/SelectGroup'
 
-import MiniLegend from '../../src/components/Map/MiniLegend'
+import MiniLegend from '../../src/components/Maps/Map/MiniLegend'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import type { Layer } from '../../src/types/layer'
 import request from 'superagent'
@@ -20,7 +20,7 @@ import useStickyResult from '../../src/hooks/useStickyResult'
 import { Group } from '../../src/types/group'
 import useUnload from '../../src/hooks/useUnload'
 import dynamic from 'next/dynamic'
-const MapHubsMap = dynamic(() => import('../../src/components/Map'), {
+const MapHubsMap = dynamic(() => import('../../src/components/Maps/Map'), {
   ssr: false
 })
 
@@ -121,8 +121,7 @@ const CreateRemoteLayer = (): JSX.Element => {
                 layer: res.body.layer
               })
             }
-          }
-          )
+          })
         })
     }
   }
@@ -146,12 +145,9 @@ const CreateRemoteLayer = (): JSX.Element => {
               const layer_id = res.body.layer_id
               setComplete(true)
 
-              router.push(
-                '/layer/info/' + layer_id + '/' + slugify(t(name))
-              )
+              router.push('/layer/info/' + layer_id + '/' + slugify(t(name)))
             }
-          }
-          )
+          })
         })
     }
   }
@@ -190,21 +186,16 @@ const CreateRemoteLayer = (): JSX.Element => {
       >
         <Row
           style={{
-            marginBottom: '20px'
+            marginBottom: '20px',
+            height: '400px'
           }}
         >
           <MapHubsMap
-            style={{
-              width: '100%',
-              height: '400px'
-            }}
             id='remote-layer-preview-map'
             showFeatureInfoEditButtons={false}
             mapConfig={mapConfig}
-            glStyle={layer.style}
+            initialGLStyle={layer.style}
             fitBounds={layer.preview_position?.bbox}
-            primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
-            t={t}
             locale={locale}
             mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
             DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
@@ -228,7 +219,7 @@ const CreateRemoteLayer = (): JSX.Element => {
               title={layer.name}
               layers={[layer]}
             />
-          </Map>
+          </MapHubsMap>
         </Row>
         <Row
           justify='end'

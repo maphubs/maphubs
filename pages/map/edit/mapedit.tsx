@@ -119,6 +119,7 @@ const MapEdit = (): JSX.Element => {
             onCreate={mapCreated}
             mapConfig={mapConfig}
             mapLayers={mapLayers}
+            basemap={map.basemap}
             map_id={map.map_id}
             title={map.title}
             owned_by_group_id={map.owned_by_group_id}

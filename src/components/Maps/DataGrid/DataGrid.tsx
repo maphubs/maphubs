@@ -15,7 +15,7 @@ import Highlighter from 'react-highlight-words'
 import turf_bbox from '@turf/bbox'
 import GetNameField from '../Map/Styles/get-name-field'
 import type { MapHubsField } from '../../../types/maphubs-field'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 import useUnload from '../../../hooks/useUnload'
 
 import { useDispatch, useSelector } from '../redux/hooks'
@@ -83,7 +83,7 @@ const getRowKey = (exampleRow: Record<string, any>) => {
 }
 
 const DataGrid = ({ layer, presets, geoJSON, canEdit }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const router = useRouter()
   const dispatch = useDispatch()
   const tableRef = useRef<any>()

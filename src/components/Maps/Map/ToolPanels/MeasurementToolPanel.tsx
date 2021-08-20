@@ -1,6 +1,6 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { Switch, Button } from 'antd'
-import useT from '../../../../hooks/useT'
+import useMapT from '../../hooks/useMapT'
 import { useSelector, useDispatch } from '../../redux/hooks'
 import { selectMapboxMap } from '../../redux/reducers/mapSlice'
 import _area from '@turf/area'
@@ -21,7 +21,7 @@ type Props = {
 
 const MeasurementToolPanel = ({ closePanel }: Props): JSX.Element => {
   const drawRef = useRef<MapboxDraw>()
-  const { t } = useT()
+  const { t } = useMapT()
   const dispatch = useDispatch()
 
   const mapboxMap = useSelector(selectMapboxMap)

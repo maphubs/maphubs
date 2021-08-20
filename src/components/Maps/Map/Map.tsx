@@ -30,15 +30,15 @@ import {
   setInteractiveLayers
 } from '../redux/reducers/mapSlice'
 import {
-  selectBaseMapStyle,
   setBaseMapThunk,
   updateMapPosition
 } from '../redux/reducers/baseMapSlice'
+import { changeLocale } from '../redux/reducers/localeSlice'
 import { setClickedFeature } from '../redux/reducers/dataEditorSlice'
 import { setBaseMapStyleThunk } from '../redux/reducers/map/setBaseMapStyleThunk'
 import { setOverlayStyleThunk } from '../redux/reducers/map/setOverlayStyleThunk'
 import { useDispatch, useSelector } from '../redux/hooks'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 import MapStyles from './Styles'
 
 const debug = DebugService('map')
@@ -49,8 +49,6 @@ type Props = {
   maxZoom?: number
   minZoom?: number
   zoom?: number
-  height?: string
-  style?: Record<string, any>
   initialBaseMap?: string
   initialGLStyle?: mapboxgl.Style
   features?: Array<Record<string, any>>
@@ -142,7 +140,6 @@ const MapHubsMap = ({
   showMapTools,
   showSearch,
   showFeatureInfoEditButtons,
-  style,
   categories,
   gpxLink,
   showPlayButton,
@@ -152,7 +149,7 @@ const MapHubsMap = ({
   interactionBufferSize,
   onChangeBaseMap
 }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const dispatch = useDispatch()
   const mapRef = useRef<mapboxgl.Map>()
 
@@ -652,7 +649,7 @@ const MapHubsMap = ({
     interactionBufferSize,
     selected,
     selectedFeature,
-    editingLayer.layer_id,
+    editingLayer,
     initGeoJSON,
     clearSelection,
     t
@@ -685,12 +682,33 @@ const MapHubsMap = ({
   }, [interactive, interactionActive, navPosition, showFullScreen, id])
 
   // handle locale change
-
   useEffect(() => {
-    changeLocale(locale)
-    // TODO: dispatch change to Map Redux
+    dispatch(changeLocale(locale))
+
+    debug.log(`(${id}) changing map language to: ${locale}`)
+
     // TODO: change inset map locale
-  }, [locale])
+
+    try {
+      if (
+        (baseMap === 'default' ||
+          baseMap === 'dark' ||
+          baseMap === 'streets' ||
+          baseMap === 'satellite-streets' ||
+          baseMap === 'topo') &&
+        languageControlRef.current
+      ) {
+        const glStyleUpdate = languageControlRef.current.setLanguage(
+          glStyle,
+          locale
+        )
+        // TODO: fix change map language, move to an async thunk
+        //mapRef.current.setStyle(glStyle)
+      }
+    } catch (err) {
+      debug.error(err)
+    }
+  }, [locale, glStyle, baseMap])
 
   const zoomToData = (data: FeatureCollection) => {
     const bbox =
@@ -747,7 +765,6 @@ const MapHubsMap = ({
   }, [data, id, mapLoaded, initGeoJSON])
 
   // handle fitBounds prop change
-
   useEffect(() => {
     if (fitBounds && mapRef.current) {
       //TODO: previously we did a deep compare _isEqual here with prev prop
@@ -799,34 +816,6 @@ const MapHubsMap = ({
     }
   }
 
-  const changeLocale = (language: string, map: any) => {
-    if (!language || !map) {
-      debug.log('missing required args')
-    }
-
-    debug.log(`(${id}) changing map language to: ${language}`)
-
-    try {
-      if (
-        (baseMap === 'default' ||
-          baseMap === 'dark' ||
-          baseMap === 'streets' ||
-          baseMap === 'satellite-streets' ||
-          baseMap === 'topo') &&
-        languageControlRef.current
-      ) {
-        const glStyleUpdate = languageControlRef.current.setLanguage(
-          glStyle,
-          language
-        )
-        // TODO: fix change map language, move to an async thunk
-        //mapRef.current.setStyle(glStyle)
-      }
-    } catch (err) {
-      debug.error(err)
-    }
-  }
-
   const className = classNames('mode', 'map', 'active')
 
   if (selectedFeature) {
@@ -847,7 +836,6 @@ const MapHubsMap = ({
       <FeaturePopup
         features={[selectedFeature]}
         showButtons={showFeatureInfoEditButtons}
-        t={t}
       />,
       el
     )
@@ -861,7 +849,7 @@ const MapHubsMap = ({
   }
 
   return (
-    <div id={`${id}-fullscreen-wrapper`} className={className} style={style}>
+    <div id={`${id}-fullscreen-wrapper`} className={className}>
       <style jsx global>
         {`
           .mapboxgl-canvas {
@@ -1136,12 +1124,10 @@ MapHubsMap.defaultProps = {
   hash: true,
   attributionControl: false,
   preserveDrawingBuffer: false,
-  style: {},
   allowLayerOrderOptimization: true,
   fitBoundsOptions: {
     animate: false
   },
-  height: '100%',
   mapConfig: {},
   insetConfig: {}
 }

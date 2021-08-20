@@ -3,7 +3,7 @@ import LocalizedInput from '../../forms/ant/LocalizedInput'
 import { Modal, Row, Button, message } from 'antd'
 import Formsy from 'formsy-react'
 import SelectGroup from '../../Groups/SelectGroup'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 import { useSession } from 'next-auth/client'
 
 import { LocalizedString } from '../../../types/LocalizedString'
@@ -22,7 +22,7 @@ const SaveMapModal = ({
   initialTitle,
   onSave
 }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const [session, loading] = useSession()
   const [visible, setVisible] = useState(false)
   const [title, setTitle] = useState(initialTitle)

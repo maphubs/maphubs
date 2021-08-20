@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Switch, Row, Col, Tooltip } from 'antd'
 import Info from '@material-ui/icons/Info'
 import MapStyles from '../Map/Styles'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 type Props = {
   item: Record<string, any>
   toggleVisibility: (...args: Array<any>) => void
@@ -12,7 +12,7 @@ const LayerListItemStatic = ({
   toggleVisibility,
   item
 }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const { name, source, layer_id, style } = item
   const active = MapStyles.settings.get(style, 'active')
   const [toggled, setToggled] = useState(active)

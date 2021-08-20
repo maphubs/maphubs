@@ -10,7 +10,7 @@ import {
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import knex from '../../../../src/connection'
 import shortid from 'shortid'
-import replaceShortID from '../../../../src/components/Map/Styles/replaceShortID'
+import replaceShortID from '../../../../src/components/Maps/Map/Styles/replaceShortID'
 import DataLoadUtils from '../../../../src/services/data-load-utils'
 import layerViews from '../../../../src/services/layer-views'
 import Bluebird from 'bluebird'

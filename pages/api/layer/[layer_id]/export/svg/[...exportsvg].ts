@@ -4,7 +4,7 @@ import { isMember } from '../../../../../../src/auth/check-user'
 import LayerModel from '../../../../../../src/models/layer'
 import { apiError } from '../../../../../../src/services/error-response'
 import knex from '../../../../../../src/connection'
-import MapStyles from '../../../../../../src/components/Map/Styles'
+import MapStyles from '../../../../../../src/components/Maps/Map/Styles'
 
 const signingKey = process.env.JWT_SIGNING_PRIVATE_KEY
 

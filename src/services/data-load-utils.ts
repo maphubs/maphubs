@@ -1,4 +1,4 @@
-import MapStyles from '../components/Map/Styles'
+import MapStyles from '../components/Maps/Map/Styles'
 import _buffer from '@turf/buffer'
 import _bbox from '@turf/bbox'
 import knex from '../connection'

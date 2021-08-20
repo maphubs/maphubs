@@ -2,14 +2,14 @@ import React from 'react'
 import type { BaseMapOption } from '../../redux/reducers/baseMapSlice'
 import { GlobalOutlined } from '@ant-design/icons'
 import { Row, Col, Avatar } from 'antd'
-import useT from '../../../../hooks/useT'
+import useMapT from '../../hooks/useMapT'
 import { useSelector } from '../../redux/hooks'
 
 type Props = {
   onChange: (baseMap: string) => void
 }
 const BaseMapSelection = ({ onChange }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
 
   const baseMap = useSelector((state) => state.baseMap.baseMap)
   const baseMapOptions = useSelector((state) => state.baseMap.baseMapOptions)

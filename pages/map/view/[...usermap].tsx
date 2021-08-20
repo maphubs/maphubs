@@ -24,7 +24,7 @@ import useSWR from 'swr'
 import useStickyResult from '../../../src/hooks/useStickyResult'
 import dynamic from 'next/dynamic'
 const InteractiveMap = dynamic(
-  () => import('../../../src/components/Map/InteractiveMap'),
+  () => import('../../../src/components/Maps/Map/InteractiveMap'),
   {
     ssr: false
   }
@@ -39,7 +39,7 @@ const UserMap = (): JSX.Element => {
   const publicShare = false // TODO: support public share map
   const [session] = useSession()
   const router = useRouter()
-  const { t } = useT()
+  const { t, locale } = useT()
   const [showEmbedCode, setShowEmbedCode] = useState(false)
   const [showCopyMap, setShowCopyMap] = useState(false)
   const [showPublicShare, setShowPublicShare] = useState(false)
@@ -124,6 +124,10 @@ const UserMap = (): JSX.Element => {
           <InteractiveMap
             height='calc(100vh - 50px)'
             {...map}
+            title={map.title}
+            position={map.position}
+            basemap={map.basemap}
+            style={map.style}
             layers={mapLayers}
             mapConfig={mapConfig}
             disableScrollZoom={false}
@@ -132,7 +136,7 @@ const UserMap = (): JSX.Element => {
             DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
             earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
             {...map.settings}
-            t={t}
+            locale={locale}
           />
           <style jsx global>
             {`

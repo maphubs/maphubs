@@ -1,4 +1,4 @@
-import MapStyles from '../components/Map/Styles'
+import MapStyles from '../components/Maps/Map/Styles'
 import knex from '../connection'
 import Presets from './presets'
 import assetUpload from '../services/asset-upload'

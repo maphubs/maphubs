@@ -7,7 +7,7 @@ import KeyboardArrowDown from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp'
 import { LocalizedString } from '../../../types/LocalizedString'
 import { Layer } from '../../../types/layer'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 import { useSelector } from '../redux/hooks'
 
 type Props = {
@@ -33,7 +33,7 @@ const MiniLegend = ({
   style,
   openLayersPanel
 }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const [collapsed, setCollapsed] = useState(false)
 
   const baseMapAttribution = useSelector((state) => state.baseMap.attribution)

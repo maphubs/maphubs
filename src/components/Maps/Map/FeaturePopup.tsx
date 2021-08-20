@@ -11,7 +11,7 @@ import { Feature } from 'geojson'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import Lightbox from 'react-image-lightbox'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 
 const debug = DebugService('map/featurepopup')
 
@@ -21,7 +21,7 @@ type Props = {
 }
 
 const FeaturePopup = ({ features, showButtons }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const [layerLoaded, setLayerLoaded] = useState(false)
   const [showAttributes, setShowAttributes] = useState(false)
   const [lightboxOpen, setLightboxOpen] = useState(false)

@@ -1,43 +1,26 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
-import MiniLegend from '../../src/components/Map/MiniLegend'
+import MiniLegend from '../../src/components/Maps/Map/MiniLegend'
 import { Row, Col, Switch, Modal, message } from 'antd'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 
-import { LocalizedString } from '../../src/types/LocalizedString'
 import { Layer } from '../../src/types/layer'
 import useT from '../../src/hooks/useT'
 import useSWR from 'swr'
 import useStickyResult from '../../src/hooks/useStickyResult'
 import { Map as MapType } from '../../src/types/map'
 import dynamic from 'next/dynamic'
-const MapHubsMap = dynamic(() => import('../../src/components/Map'), {
+const MapHubsMap = dynamic(() => import('../../src/components/Maps/Map'), {
   ssr: false
 })
 
-
-
 const confirm = Modal.confirm
-type Props = {
-  name: LocalizedString
-  layers: Layer[]
-  style: Record<string, any>
-  position: Record<string, any>
-  basemap: string
-  showLegend: boolean
-  showLogo: boolean
-  showScale: boolean
-  insetMap: boolean
-  locale: string
-  showToolbar?: boolean
-  settings: Record<string, any>
-}
 
 const StaticMap = (): JSX.Element => {
   const showLogo = true
 
   const router = useRouter()
-  const { t } = useT()
+  const { t, locale } = useT()
   const [showLegend, setShowLegend] = useState(false)
   const [showScale, setShowScale] = useState(false)
   const [showInset, setShowInset] = useState(false)
@@ -276,32 +259,33 @@ const StaticMap = (): JSX.Element => {
         </Row>
       )}
       <Row>
-        <div className='embed-map'>
+        <div
+          className='embed-map'
+          style={{
+            width: '100vw',
+            height: showSettings ? 'calc(100vh - 25px)' : '100vh'
+          }}
+        >
           <MapHubsMap
             id='static-map'
             interactive={false}
             showPlayButton={false}
             fitBounds={bounds}
-            insetMap={insetMap}
+            insetMap={showInset}
             insetConfig={insetConfig}
             showLogo={showLogo}
             showScale={showScale}
-            style={{
-              width: '100vw',
-              height: showSettings ? 'calc(100vh - 25px)' : '100vh'
-            }}
-            glStyle={map.style}
+            initialGLStyle={map.style}
             mapConfig={mapConfig}
             preserveDrawingBuffer
             navPosition='top-right'
-            primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
             mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
             DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
             earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
-            t={t}
+            locale={locale}
           >
             {legend}
-          </Map>
+          </MapHubsMap>
           {bottomLegend}
         </div>
       </Row>

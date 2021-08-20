@@ -9,7 +9,7 @@ import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import { Layer } from '../../../types/layer'
 import { Group } from '../../../types/group'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 
 const debug = DebugService('mapmaker/addlayerpanel')
 const { Option } = Select
@@ -31,7 +31,7 @@ const AddLayerPanel = ({
   onAdd,
   groups
 }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const [searchState, setSearchState] = useState<State>({
     searchResults: [],
     searchActive: false,

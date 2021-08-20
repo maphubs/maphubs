@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import Layout from '../../../src/components/Layout'
 import DataCollectionForm from '../../../src/components/Maps/DataCollection/DataCollectionForm'
 import ImageCrop from '../../../src/components/ImageCrop'
-import GetNameField from '../../../src/components/Map/Styles/get-name-field'
+import GetNameField from '../../../src/components/Maps/Map/Styles/get-name-field'
 import ErrorBoundary from '../../../src/components/ErrorBoundary'
 import { Modal, message, notification, Row, Col, Button } from 'antd'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
@@ -20,7 +20,7 @@ import request from 'superagent'
 import moment from 'moment'
 import { checkClientError } from '../../../src/services/client-error-response'
 
-const MapHubsMap = dynamic(() => import('../../../src/components/Map'), {
+const MapHubsMap = dynamic(() => import('../../../src/components/Maps/Map'), {
   ssr: false
 })
 
@@ -36,7 +36,7 @@ type AddPhotoPointStoreState = {
 
 const AddPhotoPoint = (): JSX.Element => {
   const router = useRouter()
-  const { t } = useT()
+  const { t, locale } = useT()
   const [showImageCrop, setShowImageCrop] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [addPhotoPointState, setAddPhotoPointState] =
@@ -318,20 +318,17 @@ const AddPhotoPoint = (): JSX.Element => {
           <Col sm={24} md={12}>
             <div
               style={{
-                width: '400px'
+                width: '400px',
+                height: '400px'
               }}
             >
               <MapHubsMap
                 id='add-photo-point-map'
-                style={{
-                  width: '100%',
-                  height: '400px'
-                }}
                 showFeatureInfoEditButtons={false}
                 showLogo
                 mapConfig={mapConfig}
                 data={geoJSON}
-                t={t}
+                locale={locale}
                 primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
               />
             </div>

@@ -15,7 +15,7 @@ import EditorToolButtons from './EditorToolButtons'
 import type { Layer } from '../../../types/layer'
 import BaseMapSelection from '../Map/ToolPanels/BaseMapSelection'
 import slugify from 'slugify'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 
 import { LocalizedString } from '../../../types/LocalizedString'
 
@@ -106,7 +106,7 @@ type Props = {
 }
 
 const MapMaker = (props: Props): JSX.Element => {
-  const { t, locale } = useT()
+  const { t } = useMapT()
   const dispatch = useDispatch()
   const [layerDesignerLayer, setLayerDesignerLayer] = useState<Layer>(null)
   const [canSave, setCanSave] = useState(false)
@@ -144,7 +144,7 @@ const MapMaker = (props: Props): JSX.Element => {
         basemap: props.basemap
       })
     )
-    dispatch(initBaseMap({ basemap: props.basemap }))
+    dispatch(setBaseMapThunk(props.basemap))
   }, [
     dispatch,
     props.map_id,
@@ -854,7 +854,7 @@ const MapMaker = (props: Props): JSX.Element => {
               mapConfig={props.mapConfig}
               onLoad={initEditLayer}
               hash
-              locale={locale}
+              locale={props.locale} //pass through props locale so Map component can set it in redux
               mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
               DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
               earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
@@ -925,6 +925,7 @@ MapMaker.defaultProps = {
   showVisibility: true,
   mapLayers: [],
   showTitleEdit: true,
-  settings: {}
+  settings: {},
+  basemap: 'default'
 }
 export default MapMaker

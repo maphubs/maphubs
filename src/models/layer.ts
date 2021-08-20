@@ -1,4 +1,4 @@
-import MapStyles from '../components/Map/Styles'
+import MapStyles from '../components/Maps/Map/Styles'
 import type { Layer } from '../types/layer'
 import knex from '../connection'
 import dbgeo from 'dbgeo'

@@ -176,11 +176,6 @@ const LayerStyle = ({
               <MapHubsMap
                 id='layer-style-map'
                 className='z-depth-2'
-                style={{
-                  height: '100%',
-                  width: '100%',
-                  margin: 'auto'
-                }}
                 initialGLStyle={style}
                 showLogo
                 mapConfig={mapConfig}

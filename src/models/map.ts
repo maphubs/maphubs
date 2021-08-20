@@ -1,4 +1,4 @@
-import MapStyles from '../components/Map/Styles'
+import MapStyles from '../components/Maps/Map/Styles'
 import knex from '../connection'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import Group from './group'

@@ -7,7 +7,7 @@ import _bbox from '@turf/bbox'
 import type { Layer } from '../../../src/types/layer'
 import ErrorBoundary from '../../../src/components/ErrorBoundary'
 import { Tooltip } from 'antd'
-import StyleHelper from '../../../src/components/Map/Styles/style'
+import StyleHelper from '../../../src/components/Maps/Map/Styles/style'
 
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite'
 import { LocalizedString } from '../../../src/types/LocalizedString'
@@ -24,7 +24,7 @@ import { signin } from 'next-auth/client'
 
 import dynamic from 'next/dynamic'
 const InteractiveMap = dynamic(
-  () => import('../../../src/components/Map/InteractiveMap'),
+  () => import('../../../src/components/Maps/Map/InteractiveMap'),
   {
     ssr: false
   }
@@ -41,7 +41,7 @@ const EmbedMap = (): JSX.Element => {
   const publicShare = false /// this page is not the public shared version
   const router = useRouter()
   const [session, loading] = useSession()
-  const { t } = useT()
+  const { t, locale } = useT()
 
   // get URL query params
   // for the geoJSON marker overlay
@@ -358,7 +358,7 @@ const EmbedMap = (): JSX.Element => {
         showScale={!hideScale}
         preserveDrawingBuffer
         primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
-        t={t}
+        locale={locale}
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
         DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
         earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}

@@ -3,7 +3,7 @@ import LayerListStatic from './LayerListStatic'
 import { DownOutlined } from '@ant-design/icons'
 import { Dropdown } from 'antd'
 import { Layer } from '../../../types/layer'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 type Props = {
   name: string
   layers: Array<Layer>
@@ -15,7 +15,7 @@ const LayerListDropDown = ({
   layers,
   toggleVisibility
 }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   return (
     <div
       style={{

@@ -5,12 +5,12 @@ import MapStyles from '../Map/Styles'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import { useSelector, useDispatch } from '../redux/hooks'
 import { updateSelectedFeatureTags } from '../redux/reducers/dataEditorSlice'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 
 const debug = DebugService('editLayerPanel')
 
 const EditLayerPanel = (): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const dispatch = useDispatch()
   const selectedEditFeature = useSelector(
     (state) => state.dataEditor.selectedEditFeature

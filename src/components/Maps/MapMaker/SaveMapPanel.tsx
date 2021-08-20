@@ -3,7 +3,7 @@ import { Row, message, Button } from 'antd'
 import Formsy from 'formsy-react'
 import MultiTextInput from '../../forms/MultiTextInput'
 import SelectGroup from '../../Groups/SelectGroup'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 import Locales from '../../../services/locales'
 import { LocalizedString } from '../../../types/LocalizedString'
 import { useSession } from 'next-auth/client'
@@ -21,7 +21,7 @@ const SaveMapPanel = ({
   owned_by_group_id,
   onSave
 }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const [session, loading] = useSession()
   const [canSave, setCanSave] = useState(false)
   const [saving, setSaving] = useState(false)

@@ -15,7 +15,7 @@ import {
   setImportedTags
 } from '../../redux/reducers/layerSlice'
 
-const MapHubsMap = dynamic(() => import('../Map'), {
+const MapHubsMap = dynamic(() => import('../Maps/Map'), {
   ssr: false
 })
 
@@ -112,7 +112,8 @@ const UploadLocalSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
     map = (
       <div
         style={{
-          width: '100%'
+          width: '100%',
+          height: '400px'
         }}
       >
         <p>
@@ -121,17 +122,11 @@ const UploadLocalSource = ({ onSubmit, mapConfig }: Props): JSX.Element => {
           )}
         </p>
         <MapHubsMap
-          style={{
-            width: '100%',
-            height: '400px'
-          }}
           id='upload-preview-map'
           showFeatureInfoEditButtons={false}
           mapConfig={mapConfig}
-          glStyle={style}
+          initialGLStyle={style}
           fitBounds={bbox}
-          primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
-          t={t}
           locale={locale}
           mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
           DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}

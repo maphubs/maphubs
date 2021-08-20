@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { SettingOutlined } from '@ant-design/icons'
 import { Tooltip, Button } from 'antd'
 import dynamic from 'next/dynamic'
-import useT from '../../../hooks/useT'
+import useMapT from '../hooks/useMapT'
 
 import { useDispatch, useSelector } from '../redux/hooks'
 import { setSettings } from '../redux/reducers/mapMakerSlice'
@@ -13,7 +13,7 @@ const CodeEditor = dynamic(() => import('../../LayerDesigner/CodeEditor'), {
 })
 
 const MapSettingsPanel = (): JSX.Element => {
-  const { t } = useT()
+  const { t } = useMapT()
   const dispatch = useDispatch()
   const [showSettingsEditor, setShowSettingsEditor] = useState(false)
 

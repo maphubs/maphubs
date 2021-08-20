@@ -13,7 +13,7 @@ import dynamic from 'next/dynamic'
 import { NextSeo } from 'next-seo'
 
 const InteractiveMap = dynamic(
-  () => import('../../../src/components/Map/InteractiveMap'),
+  () => import('../../../src/components/Maps/Map/InteractiveMap'),
   {
     ssr: false
   }
@@ -107,7 +107,6 @@ const LayerMap = (): JSX.Element => {
               mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
               DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
               earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
-              t={t}
               locale={locale}
             />
           </div>

@@ -1,4 +1,4 @@
-import MapStyles from '../components/Map/Styles'
+import MapStyles from '../components/Maps/Map/Styles'
 import knex from '../connection'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import { Knex } from 'knex'
