@@ -7,7 +7,7 @@ import _area from '@turf/area'
 import turf_length from '@turf/length'
 import { message } from 'antd'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../../lib/debug'
 import {
   setEnableMeasurementTools,
   setMeasurementMessage

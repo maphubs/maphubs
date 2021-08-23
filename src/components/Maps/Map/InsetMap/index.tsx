@@ -4,7 +4,7 @@ import MapToolButton from '../MapToolButton'
 import ArrowDownward from '@material-ui/icons/ArrowDownward'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../../lib/debug'
 import mapboxgl from 'mapbox-gl'
 import { FeatureCollection } from 'geojson'
 import { useSelector } from '../../redux/hooks'
@@ -394,7 +394,6 @@ const InsetMap = (props: Props): JSX.Element => {
           left: 0,
           bottom: 0,
           right: 0,
-          display: 'none',
           zIndex: 1
         }}
       />

@@ -3,7 +3,7 @@ import type { AppState } from '../../store'
 import _cloneDeep from 'lodash.clonedeep'
 import _map from 'lodash.map'
 import _remove from 'lodash.remove'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../../../lib/debug'
 
 const debug = DebugService('SetBaseMapStyleThunk')
 

@@ -50,7 +50,7 @@ const Layout = ({
         </Head>
         <Header activePage={activePage} {...headerConfig} />
       </header>
-      <main style={{ height: 'calc(100vh - 50px)' }}>{children}</main>
+      <main style={{ height: 'calc(100vh - 52px)' }}>{children}</main>
       {!hideFooter && (
         <footer>
           <Footer {...footerConfig} />

@@ -3,7 +3,7 @@ import type { AppState } from '../../store'
 import _cloneDeep from 'lodash.clonedeep'
 import _findIndex from 'lodash.findindex'
 import Bluebird from 'bluebird'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../../../lib/debug'
 import { SourceWithUrl } from '../../../Map/Sources/types/SourceWithUrl'
 import { removeLayers, removeSources, addLayers, loadSources } from './helpers'
 

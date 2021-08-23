@@ -1,5 +1,5 @@
 import Shortid from 'shortid'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../../lib/debug'
 import mapboxgl from 'mapbox-gl'
 const debug = DebugService('map-styles-color')
 type CircleLineFillLayer =

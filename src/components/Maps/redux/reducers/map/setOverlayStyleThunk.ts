@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import type { AppState } from '../../store'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../../../lib/debug'
 import _findIndex from 'lodash.findindex'
 import _cloneDeep from 'lodash.clonedeep'
 import _difference from 'lodash.difference'
@@ -49,8 +49,10 @@ const setOverlayStyleThunk = createAsyncThunk(
     const overlayMapStyle = appState.map.overlayMapStyle
     const baseMapStyle = appState.baseMap.baseMapStyle
     const mapboxMap = appState.map.mapboxMap
-    const glStyle = appState.map.glStyle
+    let glStyle = appState.map.glStyle
     const overlayStyle = _cloneDeep(args.overlayStyle)
+
+    if (!glStyle) glStyle = baseMapStyle
 
     const sourceState = {
       allowLayersToMoveMap: appState.map.allowLayersToMoveMap,

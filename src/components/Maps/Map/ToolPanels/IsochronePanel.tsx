@@ -8,7 +8,7 @@ import { message, notification } from 'antd'
 import IsochroneLegendHelper from '../IsochroneLegendHelper'
 import { useSelector } from '../../redux/hooks'
 import { selectMapboxMap } from '../../redux/reducers/mapSlice'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../../lib/debug'
 const debug = DebugService('Isochrone Panel')
 
 const getIsochroneStyle = (

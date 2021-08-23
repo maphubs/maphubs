@@ -5,7 +5,7 @@ import { SourceWithUrl } from '../../../Map/Sources/types/SourceWithUrl'
 import Bluebird from 'bluebird'
 import GenericSource from '../../../Map/Sources/GenericSource'
 import { SourceState } from '../../../Map/Sources/types/SourceState'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../../../lib/debug'
 import mapboxgl from 'mapbox-gl'
 const debug = DebugService('MapThunkHelpers')
 

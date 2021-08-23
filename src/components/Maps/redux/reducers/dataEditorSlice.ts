@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { Layer } from '../../../../types/layer'
-import Debug from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import Debug from '../../lib/debug'
 import type { AppState } from '../store'
 import { Feature } from 'geojson'
 import _assignIn from 'lodash.assignin'

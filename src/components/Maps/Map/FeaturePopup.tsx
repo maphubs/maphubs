@@ -9,7 +9,7 @@ import type { Layer } from '../../../types/layer'
 import 'react-image-lightbox/style.css'
 import { Feature } from 'geojson'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../lib/debug'
 import Lightbox from 'react-image-lightbox'
 import useMapT from '../hooks/useMapT'
 

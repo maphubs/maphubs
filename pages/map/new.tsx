@@ -84,7 +84,7 @@ const NewMap = ({
   mapConfig,
   groups
 }: Props): JSX.Element => {
-  const { t } = useT()
+  const { t, locale } = useT()
   const router = useRouter()
   const [saved, setSaved] = useState(false)
 
@@ -121,7 +121,7 @@ const NewMap = ({
       <Layout title={t('New Map')} activePage='map' hideFooter>
         <div
           style={{
-            height: 'calc(100% - 52px)',
+            height: '100%',
             width: '100%',
             overflow: 'hidden'
           }}
@@ -156,6 +156,7 @@ const NewMap = ({
               myLayers={myLayers}
               editLayer={editLayer}
               groups={groups}
+              locale={locale}
             />
           </MapProvider>
         </div>

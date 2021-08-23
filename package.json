@@ -94,7 +94,7 @@
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
     "dbgeo": "^1.1.0",
-    "debug": "^4.0.1",
+    "debug": "^4.3.2",
     "dms2dec": "1.1.0",
     "dotenv": "^8.2.0",
     "easyimage": "^3.1.1",

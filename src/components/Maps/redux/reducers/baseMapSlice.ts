@@ -8,7 +8,7 @@ import _find from 'lodash.find'
 
 import defaultBaseMapOptions from '../../Map/BaseMaps/base-map-options.json'
 
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../../lib/debug'
 import { MapPosition } from '../../../../types/map'
 import { Point } from 'geojson'
 import mapboxgl from 'mapbox-gl'
@@ -48,7 +48,12 @@ const initialState: BaseMapState = {
 const getBaseMapStyle = async (
   state: BaseMapState,
   baseMap: string
-): Promise<BaseMapState['baseMapStyle']> => {
+): Promise<{
+  baseMapStyle: BaseMapState['baseMapStyle']
+  attribution?: string
+  updateWithMapPosition?: boolean
+  bingImagerySet?: string
+}> => {
   const { mapboxAccessToken, baseMapOptions } = state
 
   const config = _find(baseMapOptions, {
@@ -56,11 +61,8 @@ const getBaseMapStyle = async (
   })
 
   if (config) {
-    state.attribution = config.attribution
-    state.updateWithMapPosition = config.updateWithMapPosition
     if (baseMap === 'bing-satellite') {
       // const bingMetadata = await this.getBingSource('Aerial')
-      state.bingImagerySet = 'Aerial'
 
       const style = config.style
 
@@ -72,9 +74,12 @@ const getBaseMapStyle = async (
         style.sprite = ''
       }
 
-      return style
-    } else if (config.loadFromFile) {
-      // this.loadFromFile(config.loadFromFile, cb)
+      return {
+        baseMapStyle: style,
+        attribution: config.attribution,
+        updateWithMapPosition: config.updateWithMapPosition,
+        bingImagerySet: 'Aerial'
+      }
     } else if (config.style) {
       const style = config.style
 
@@ -88,7 +93,11 @@ const getBaseMapStyle = async (
         }
       }
 
-      return style
+      return {
+        baseMapStyle: style,
+        attribution: config.attribution,
+        updateWithMapPosition: config.updateWithMapPosition
+      }
     } else if (config.url) {
       try {
         const response = await fetch(config.url)
@@ -103,7 +112,11 @@ const getBaseMapStyle = async (
           style.sprite = ''
         }
 
-        return style
+        return {
+          baseMapStyle: style,
+          attribution: config.attribution,
+          updateWithMapPosition: config.updateWithMapPosition
+        }
       } catch (err) {
         debug.error(err)
       }
@@ -122,7 +135,11 @@ const getBaseMapStyle = async (
       try {
         const response = await fetch(url)
         const result = await response.json()
-        return result
+        return {
+          baseMapStyle: result,
+          attribution: config.attribution,
+          updateWithMapPosition: config.updateWithMapPosition
+        }
       } catch (err) {
         debug.error(err)
       }
@@ -149,7 +166,9 @@ const getBaseMapStyle = async (
     try {
       const response = await fetch(url)
       const result = await response.json()
-      return result
+      return {
+        baseMapStyle: result
+      }
     } catch (err) {
       debug.error(err)
     }
@@ -256,13 +275,20 @@ const setBaseMapThunk = createAsyncThunk(
   ): Promise<{
     baseMap: string
     baseMapStyle: BaseMapState['baseMapStyle']
+    attribution?: string
+    updateWithMapPosition?: boolean
+    bingImagerySet?: string
   }> => {
     const appState = getState() as AppState
     const state = appState.baseMap
-    const baseMapStyle = await getBaseMapStyle(state, baseMap)
+    const { baseMapStyle, attribution, updateWithMapPosition, bingImagerySet } =
+      await getBaseMapStyle(state, baseMap)
     return {
       baseMap,
-      baseMapStyle
+      baseMapStyle,
+      attribution,
+      updateWithMapPosition,
+      bingImagerySet
     }
   }
 )
@@ -284,6 +310,9 @@ export const baseMapSlice = createSlice({
       if (state.updateWithMapPosition) {
         debouncedUpdateMapPosition(state, position, bbox)
       }
+    },
+    setMapboxAccessToken: (state, action: PayloadAction<string>) => {
+      state.mapboxAccessToken = action.payload
     }
   },
   // The `extraReducers` field lets the slice handle actions defined elsewhere,
@@ -296,18 +325,31 @@ export const baseMapSlice = createSlice({
         action: PayloadAction<{
           baseMap: string
           baseMapStyle: mapboxgl.Style
+          attribution?: string
+          updateWithMapPosition?: boolean
+          bingImagerySet?: string
         }>
       ) => {
-        const { baseMap, baseMapStyle } = action.payload
+        const {
+          baseMap,
+          baseMapStyle,
+          attribution,
+          updateWithMapPosition,
+          bingImagerySet
+        } = action.payload
         state.baseMap = baseMap
         state.baseMapStyle = baseMapStyle
+        if (attribution) state.attribution = attribution
+        if (updateWithMapPosition)
+          state.updateWithMapPosition = updateWithMapPosition
+        if (bingImagerySet) state.bingImagerySet = bingImagerySet
       }
     )
     return
   }
 })
 
-export const { updateMapPosition } = baseMapSlice.actions
+export const { updateMapPosition, setMapboxAccessToken } = baseMapSlice.actions
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of

@@ -3,7 +3,7 @@ import _find from 'lodash.find'
 import _buffer from '@turf/buffer'
 import _bbox from '@turf/bbox'
 import { v1 as uuidv1 } from 'uuid'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../../lib/debug'
 import mapboxgl from 'mapbox-gl'
 const debug = DebugService('MapSearchMixin')
 export default {

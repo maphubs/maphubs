@@ -18,7 +18,7 @@ import { Layer } from '../../../types/layer'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import $ from 'jquery'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../lib/debug'
 import { Feature, FeatureCollection, Point } from 'geojson'
 import mapboxgl from 'mapbox-gl'
 import ScalePositionControl from 'mapbox-gl-dual-scale-control'
@@ -31,6 +31,7 @@ import {
 } from '../redux/reducers/mapSlice'
 import {
   setBaseMapThunk,
+  setMapboxAccessToken,
   updateMapPosition
 } from '../redux/reducers/baseMapSlice'
 import { changeLocale } from '../redux/reducers/localeSlice'
@@ -161,6 +162,7 @@ const MapHubsMap = ({
   const [selected, setSelected] = useState(false)
   const [selectedFeature, setSelectedFeature] = useState<Feature>(null)
   const [mapLoaded, setMapLoaded] = useState(false)
+  const [mapLoading, setMapLoading] = useState(false)
 
   // map state
   const baseMap = useSelector((state) => state.baseMap.baseMap)
@@ -180,6 +182,10 @@ const MapHubsMap = ({
   // dataEditor state
   const editingLayer = useSelector((state) => state.dataEditor.editingLayer)
   const editing = useSelector((state) => state.dataEditor.editing)
+
+  useEffect(() => {
+    dispatch(setMapboxAccessToken(mapboxAccessToken))
+  }, [mapboxAccessToken, dispatch])
 
   // do not allow layers to position the map if user is providing the location
   useEffect(() => {
@@ -476,7 +482,7 @@ const MapHubsMap = ({
 
       const map = new mapboxgl.Map({
         container: id,
-        style: glStyle,
+        style: result.baseMapStyle,
         zoom: zoom || 0,
         minZoom: minZoom || 0,
         maxZoom: maxZoom || 22,
@@ -545,8 +551,18 @@ const MapHubsMap = ({
           initGeoJSON(data)
         }
 
+        setMapLoaded(true) // must set this true, before disablng loading otherwise createMap is called twice
+        setMapLoading(false)
+
         //! previously setOverlayStyle was called here after mapbox loaded
-        setMapLoaded(true)
+
+        dispatch(
+          setOverlayStyleThunk({
+            overlayStyle: initialGLStyle,
+            optimizeLayers: allowLayerOrderOptimization
+          })
+        )
+
         if (onLoad) onLoad()
       })
 
@@ -585,8 +601,8 @@ const MapHubsMap = ({
       }
 
       try {
-        const languageControl = new MapboxLanguage()
-        map.addControl(locale)
+        const languageControl = new MapboxLanguage(locale)
+        map.addControl(languageControl)
         languageControlRef.current = languageControl
       } catch (err) {
         console.error('failed to add langauge control')
@@ -598,16 +614,21 @@ const MapHubsMap = ({
       }
 
       mapRef.current = map
-      dispatch(initMap({ mapboxMap: mapRef.current, interactiveLayers }))
+      dispatch(initMap({ mapboxMap: map, interactiveLayers }))
     }
     let interactiveLayers: string[] = []
     if (initialGLStyle) {
       interactiveLayers = getInteractiveLayers(initialGLStyle)
     }
 
-    if (!mapLoaded) {
+    if (!mapLoaded && !mapLoading) {
+      console.log('CREATE MAP')
+      setMapLoading(true)
+
+      dispatch(setInteractiveLayers(interactiveLayers))
       createMap()
-    } else {
+    } else if (!mapLoading) {
+      /*
       debug.log(`(${id}) glstyle changing from props`)
 
       dispatch(
@@ -617,6 +638,7 @@ const MapHubsMap = ({
         })
       )
       dispatch(setInteractiveLayers(interactiveLayers))
+      */
     }
   }, [
     glStyle,
@@ -641,6 +663,7 @@ const MapHubsMap = ({
     onLoad,
     interactionActive,
     mapLoaded,
+    mapLoading,
     mapboxAccessToken,
     initialBaseMap,
     dispatch,
@@ -655,9 +678,14 @@ const MapHubsMap = ({
     t
   ])
 
+  useEffect(() => {
+    debug.log('glstyle changed')
+  }, [glStyle])
+
   // handle interactive setting changed
   useEffect(() => {
     if (interactionActive && !interactive) {
+      debug.log(`(${id}) enabling interaction`)
       // interactive is enabled but started disabled
       mapRef.current.addControl(
         new mapboxgl.NavigationControl({
@@ -684,9 +712,7 @@ const MapHubsMap = ({
   // handle locale change
   useEffect(() => {
     dispatch(changeLocale(locale))
-
     debug.log(`(${id}) changing map language to: ${locale}`)
-
     // TODO: change inset map locale
 
     try {
@@ -708,7 +734,7 @@ const MapHubsMap = ({
     } catch (err) {
       debug.error(err)
     }
-  }, [locale, glStyle, baseMap])
+  }, [locale, glStyle, baseMap, id, dispatch])
 
   const zoomToData = (data: FeatureCollection) => {
     const bbox =
@@ -849,7 +875,11 @@ const MapHubsMap = ({
   }
 
   return (
-    <div id={`${id}-fullscreen-wrapper`} className={className}>
+    <div
+      id={`${id}-fullscreen-wrapper`}
+      className={className}
+      style={{ height: '100%', width: '100%' }}
+    >
       <style jsx global>
         {`
           .mapboxgl-canvas {
@@ -1109,6 +1139,7 @@ const MapHubsMap = ({
 MapHubsMap.defaultProps = {
   id: 'map',
   initialBaseMap: 'default',
+  locale: 'en',
   className: '',
   interactive: true,
   showFeatureInfoEditButtons: true,

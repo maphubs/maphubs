@@ -1,5 +1,5 @@
 import TerraformerGL from '../../../../services/terraformerGL'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../../lib/debug'
 import GenericSource from './GenericSource'
 import { SourceWithUrl } from './types/SourceWithUrl'
 import { SourceState } from './types/SourceState'

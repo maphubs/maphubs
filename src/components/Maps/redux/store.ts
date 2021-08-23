@@ -8,7 +8,42 @@ import locale from './reducers/localeSlice'
 
 export function makeStore() {
   return configureStore({
-    reducer: { map, baseMap, mapMaker, dataEditor, locale }
+    reducer: { map, baseMap, mapMaker, dataEditor, locale },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          // Ignore these action types
+          ignoredActions: ['map/setMap', 'map/initMap'],
+          // Ignore these field paths in all actions
+          //ignoredActionPaths: ['meta.arg', 'payload.timestamp'],
+          // Ignore these paths in the state
+          ignoredPaths: ['map.mapboxMap']
+        }
+      }),
+    devTools: {
+      actionSanitizer: (action) => {
+        if (action.type === 'map/initMap' || action.type === 'map/setMap') {
+          return {
+            ...action,
+            payload: { ...action.payload, mapboxMap: '<<MAPBOX GL>>' },
+            mapboxMap: '<<MAPBOX GL>>'
+          }
+        }
+        return action
+      },
+      stateSanitizer: (state) => {
+        const sanitizedState = {}
+        if (state.map) {
+          const mapSanitized = {
+            ...state.map,
+            mapboxMap: '<<MAPBOX GL>>'
+          }
+          sanitizedState.map = mapSanitized
+        }
+
+        return { ...state, ...sanitizedState }
+      }
+    }
   })
 }
 

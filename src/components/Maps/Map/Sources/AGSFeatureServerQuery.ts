@@ -2,7 +2,7 @@ import { FeatureCollection } from 'geojson'
 import TerraformerGL from '../../../../services/terraformerGL'
 import { SourceWithUrl } from './types/SourceWithUrl'
 import GenericSource from './GenericSource'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../../lib/debug'
 import { SourceState } from './types/SourceState'
 
 const debug = DebugService('AGSFeatureServerQuery')

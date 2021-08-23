@@ -4,7 +4,7 @@ import Point from './point'
 import Polygon from './polygon'
 import type { Layer } from '../../../../types/layer'
 import _forEachRight from 'lodash.foreachright'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../../lib/debug'
 import mapboxgl from 'mapbox-gl'
 const debug = DebugService('MapStyles/style')
 

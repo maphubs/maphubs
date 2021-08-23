@@ -52,7 +52,7 @@ import mapboxgl from 'mapbox-gl'
 import drawTheme from '@mapbox/mapbox-gl-draw/src/lib/theme'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 //import 'jquery'
-import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
+import DebugService from '../lib/debug'
 import { Group } from '../../../types/group'
 
 const debug = DebugService('MapMaker')
@@ -144,7 +144,6 @@ const MapMaker = (props: Props): JSX.Element => {
         basemap: props.basemap
       })
     )
-    dispatch(setBaseMapThunk(props.basemap))
   }, [
     dispatch,
     props.map_id,
@@ -263,7 +262,7 @@ const MapMaker = (props: Props): JSX.Element => {
       !drawRef.current.get(clickedFeature.id)
     ) {
       // if not already editing this feature
-      debug('adding feature to mapbox-gl-draw')
+      debug.log('adding feature to mapbox-gl-draw')
       drawRef.current.add(clickedFeature)
       updateMapLayerFilters()
     }
@@ -839,11 +838,6 @@ const MapMaker = (props: Props): JSX.Element => {
           >
             <Map
               id='create-map-map'
-              style={{
-                height: '100%',
-                width: '100%',
-                margin: 'auto'
-              }}
               initialGLStyle={mapStyle}
               insetMap
               insetConfig={settings ? settings.insetConfig : undefined}
@@ -926,6 +920,7 @@ MapMaker.defaultProps = {
   mapLayers: [],
   showTitleEdit: true,
   settings: {},
-  basemap: 'default'
+  basemap: 'default',
+  locale: 'en'
 }
 export default MapMaker

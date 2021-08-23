@@ -1,6 +1,6 @@
 import mapboxgl from 'mapbox-gl'
 import Shortid from 'shortid'
-import type { Layer } from '../../../types/layer'
+import type { Layer } from '../../../../types/layer'
 
 type PatchedSymbolLayer = mapboxgl.SymbolLayer & {
   layout: mapboxgl.SymbolLayout & {
