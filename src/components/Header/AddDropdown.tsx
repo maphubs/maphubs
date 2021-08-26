@@ -34,7 +34,7 @@ const AddDropdown = ({ t, sidenav }: Props): JSX.Element => {
         </a>
       </Menu.Item>
       <Menu.Item>
-        <a href='/import' className='nav-hover-menu-item'>
+        <a href='/layer/import' className='nav-hover-menu-item'>
           {t('Import MapHubs File')}
         </a>
       </Menu.Item>

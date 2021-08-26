@@ -76,6 +76,16 @@ type LayerNotes {
   notes: String
 }
 
+type LocalizedString {
+  en: String
+  fr: String
+  es: String
+  pt: String
+  it: String
+  de: String
+  id: String
+}
+
 type Query {
   # Groups
   groups(locale: String): [Group] #locale is used to pre-sort alphabetically
@@ -126,34 +136,35 @@ type Query {
 
 type Mutation {
   # groups
-  createGroup(group_id: String!, name: JSON, description: JSON): Boolean
-  saveGroup(group_id: String!, name: JSON, description: JSON): Boolean
+  createGroup(group_id: String!, name: String, description: String): Boolean
+  saveGroup(group_id: String!, name: String, description: String): Boolean
   deleteGroup(group_id: String!): Boolean
-  addGroupMember(group_id: String!, user_id: Int!, asAdmin: Boolean!): Boolean
   setGroupMemberRole(group_id: String!, user_id: Int!, admin: Boolean!): Boolean
   removeGroupMember(group_id: String!, user_id: Int!): Boolean
-  setGroupImage(group_id: String!, image: String!, info: JSON): Boolean
+  setGroupImage(group_id: String!, image: String!, info: String): Boolean
+  rotateJoinCode(group_id: String!): String
+  joinGroup(group_id: String!, join_code: String): Boolean
 
   # Maps
   createMap(
     group_id: String!
-    layers: JSON
-    style: JSON
-    position: JSON
-    settings: JSON
+    layers: String
+    style: String
+    position: String
+    settings: String
     basemap: String
-    title: JSON
+    title: String
   ): Map
   saveMap(
     map_id: Int!
-    layers: JSON
-    style: JSON
-    position: JSON
-    settings: JSON
+    layers: String
+    style: String
+    position: String
+    settings: String
     basemap: String
-    title: JSON
+    title: String
   ): Boolean
   deleteMap(map_id: Int!): Boolean
-  copyMap(map_id: Int!, group_id: String!, title: JSON): Map
+  copyMap(map_id: Int!, group_id: String!, title: String): Map
   setMapPublic(map_id: Int!, isPublic: Boolean): String
 }

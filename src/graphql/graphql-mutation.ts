@@ -1,8 +1,8 @@
-const fetcher = (
+const fetcher = async (
   mutation: string,
   admin?: boolean
-): Promise<Record<string, any>> =>
-  fetch(admin ? '/api/graphql-admin' : '/api/graphql', {
+): Promise<Record<string, any>> => {
+  const res = await fetch(admin ? '/api/graphql-admin' : '/api/graphql', {
     method: 'POST',
     headers: {
       'Content-type': 'application/json'
@@ -10,30 +10,27 @@ const fetcher = (
     body: JSON.stringify({
       query: `mutation { ${mutation} }`
     })
-  }).then(async (res) => {
-    let body
-
-    try {
-      body = await res.json()
-    } catch {
-      console.error('API respsonse missing body')
-    }
-
-    if (res.status === 400) {
-      const error = body?.errors
-        ? new Error(body.errors[0].message)
-        : new Error('API Request Failed')
-      throw error
-    }
-
-    if (res.status === 401) {
-      const error = body?.error
-        ? new Error(body.error)
-        : new Error('API Request Unauthorized')
-      throw error
-    }
-
-    return body?.data
   })
+
+  const body: { data: any; errors?: any } = await res.json()
+
+  if (res.status === 401) {
+    throw new Error('API Request Unauthorized')
+  }
+
+  if (res.status === 400) {
+    const error = body?.errors
+      ? new Error(body.errors[0].message)
+      : new Error('API Request Failed')
+    throw error
+  }
+
+  if (body?.errors) {
+    const firstError = body.errors[0]
+    throw new Error(firstError.message)
+  }
+
+  return body?.data
+}
 
 export default fetcher

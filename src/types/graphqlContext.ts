@@ -1,6 +1,6 @@
 export interface Context {
   user: {
-    sub: number
+    sub: string
     role?: string
   }
 }

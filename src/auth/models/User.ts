@@ -26,6 +26,7 @@ export default class User {
       this.admin = admin
     }
   }
+  id: number
   name: string
   email: string
   image: string

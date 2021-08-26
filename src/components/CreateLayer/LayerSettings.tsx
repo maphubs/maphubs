@@ -103,14 +103,20 @@ const LayerSettings = ({
 
   if (showGroup && (!groups || groups.length === 0)) {
     return (
-      <div className='container'>
+      <div className='container' style={{ height: '100%' }}>
         <Row
+          align='middle'
+          justify='center'
           style={{
-            marginBottom: '20px'
+            marginBottom: '20px',
+            height: '100%'
           }}
         >
-          <h5>{t('Please Join a Group')}</h5>
-          <p>{t('Please create or join a group before creating a layer.')}</p>
+          <div style={{ width: '100%', textAlign: 'center' }}>
+            <h2 style={{ width: '100%' }}>{t('Please Join a Group')}</h2>
+
+            <p>{t('Please create or join a group before creating a layer.')}</p>
+          </div>
         </Row>
       </div>
     )

@@ -24,27 +24,28 @@ export default {
       settings
     }: {
       group_id: string
-      layers: Layer[]
-      style: mapboxgl.Style
-      position: MapPosition
-      settings: Record<string, unknown>
+      layers: string
+      style: string
+      position: string
+      settings: string
       basemap: string
-      title: LocalizedString
+      title: string
     },
     context: Context
   ): Promise<{ map_id: number }> {
     const { user } = context
+    const user_id = Number.parseInt(user.sub)
     if (group_id && basemap && position && settings && title) {
-      if (await GroupModel.allowedToModify(group_id, user.sub)) {
+      if (await GroupModel.allowedToModify(group_id, user_id)) {
         return knex.transaction(async (trx) => {
           const map_id = await MapModel.createGroupMap(
-            layers,
-            style,
+            JSON.parse(layers) as Layer[],
+            JSON.parse(style) as mapboxgl.Style,
             basemap,
-            position,
-            title,
-            settings,
-            user.sub,
+            JSON.parse(position) as MapPosition,
+            JSON.parse(title) as LocalizedString,
+            JSON.parse(settings) as Record<string, unknown>,
+            user_id,
             group_id,
             trx
           )
@@ -74,28 +75,29 @@ export default {
       settings
     }: {
       map_id: number
-      layers: Layer[]
-      style: mapboxgl.Style
-      position: MapPosition
-      settings: Record<string, unknown>
+      layers: string
+      style: string
+      position: string
+      settings: string
       basemap: string
-      title: LocalizedString
+      title: string
     },
     context: Context
   ): Promise<boolean> {
     const { user } = context
+    const user_id = Number.parseInt(user.sub)
 
     if (layers && style && settings && basemap && position && map_id && title) {
-      if (await MapModel.allowedToModify(map_id, user.sub)) {
+      if (await MapModel.allowedToModify(map_id, user_id)) {
         await MapModel.updateMap(
           map_id,
-          layers,
-          style,
+          JSON.parse(layers) as Layer[],
+          JSON.parse(style) as mapboxgl.Style,
           basemap,
-          position,
-          title,
-          settings,
-          user.sub
+          JSON.parse(position) as MapPosition,
+          JSON.parse(title) as LocalizedString,
+          JSON.parse(settings) as Record<string, unknown>,
+          user_id
         )
         // don't wait for screenshot
         screenshotUtils.reloadMapThumbnail(map_id)
@@ -119,7 +121,7 @@ export default {
   ): Promise<boolean> {
     const { user } = context
     if (map_id) {
-      if (await MapModel.allowedToModify(map_id, user.sub)) {
+      if (await MapModel.allowedToModify(map_id, Number.parseInt(user.sub))) {
         await MapModel.deleteMap(map_id)
         return true
       } else {
@@ -143,14 +145,15 @@ export default {
     context: Context
   ): Promise<{ map_id: number }> {
     const { user } = context
+    const user_id = Number.parseInt(user.sub)
 
     if (map_id && group_id) {
       // copy to a group
-      if (await GroupModel.allowedToModify(group_id, user.sub)) {
+      if (await GroupModel.allowedToModify(group_id, user_id)) {
         const copy_id = await MapModel.copyMapToGroup(
           map_id,
           group_id,
-          user.sub,
+          user_id,
           title
         )
         // don't wait for screenshot
@@ -179,7 +182,7 @@ export default {
   ): Promise<string> {
     const { user } = context
     if (map_id && typeof isPublic !== 'undefined') {
-      if (await MapModel.allowedToModify(map_id, user.sub)) {
+      if (await MapModel.allowedToModify(map_id, Number.parseInt(user.sub))) {
         if (isPublic) {
           return await MapModel.addPublicShareID(map_id)
         } else {

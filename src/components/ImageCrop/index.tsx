@@ -96,8 +96,6 @@ const ImageCrop = ({
     cropHeight: 0
   })
 
-  const cropperInstance = cropperRef.current.cropper
-
   // allow imageData to be loaded dynamically (used by Story editor toolbar?)
   useEffect(() => {
     if (imageData && !fileState.src) {
@@ -359,7 +357,7 @@ const ImageCrop = ({
     })
   }
   const onSave = () => {
-    const canvas = cropperInstance.getCroppedCanvas()
+    const canvas = cropperRef.current.cropper.getCroppedCanvas()
     // resize the image
     resizeImage(canvas)
       .then((dataURL) => {
@@ -388,36 +386,36 @@ const ImageCrop = ({
   }
 
   const zoomIn = (): void => {
-    cropperInstance.zoom(0.1)
+    cropperRef.current.cropper.zoom(0.1)
   }
   const zoomOut = (): void => {
-    cropperInstance.zoom(-0.1)
+    cropperRef.current.cropper.zoom(-0.1)
   }
 
   const cropOriginal = (): void => {
     resetCropPosition()
     const { img } = fileState
     if (img) {
-      cropperInstance.setAspectRatio(img.width / img.height)
+      cropperRef.current.cropper.setAspectRatio(img.width / img.height)
     }
   }
 
   const aspect16by9 = (): void => {
-    cropperInstance.setAspectRatio(16 / 9)
+    cropperRef.current.cropper.setAspectRatio(16 / 9)
   }
   const aspect3by2 = (): void => {
-    cropperInstance.setAspectRatio(3 / 2)
+    cropperRef.current.cropper.setAspectRatio(3 / 2)
   }
   const aspectSquare = (): void => {
-    cropperInstance.setAspectRatio(1)
+    cropperRef.current.cropper.setAspectRatio(1)
   }
   const resetCropPosition = (): void => {
     console.log('resetting crop position')
-    if (cropperInstance.reset) cropperInstance.reset()
+    if (cropperRef.current.cropper.reset) cropperRef.current.cropper.reset()
   }
   const resetImageCrop = (): void => {
-    if (cropperInstance.reset) cropperInstance.reset()
-    if (cropperInstance.clear) cropperInstance.clear()
+    if (cropperRef.current.cropper.reset) cropperRef.current.cropper.reset()
+    if (cropperRef.current.cropper.clear) cropperRef.current.cropper.clear()
     setFileState({
       src: undefined,
       img: undefined,
@@ -520,7 +518,9 @@ const ImageCrop = ({
             </Row>
             <Row
               style={{
-                height: 'calc(100% - 50px)'
+                height: 'calc(100% - 100px)',
+                maxHeight: 'calc(100vh - 200px)',
+                overflow: 'auto'
               }}
             >
               <Cropper

@@ -39,12 +39,15 @@ import MapModel from '../../../src/models/map'
 import StoryModel from '../../../src/models/story'
 import { Map } from '../../../src/types/map'
 import { Layer } from '../../../src/types/layer'
+import urlUtil from '../../../src/services/url-util'
+import { rotate } from 'easyimage'
 
 const { confirm } = Modal
 const debug = DebugService('views/GroupAdmin')
 
 type Props = {
   group: Group
+  initialJoinCode: string
   layers: Layer[]
   maps: Map[]
   members: Array<Record<string, any>>
@@ -55,9 +58,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const group = await GroupModel.getGroupByID(group_id)
   const session = await getSession(context)
   let allowedToModifyGroup
-  let user_id
+  const user_id = Number.parseInt(session.sub)
   if (session?.user) {
-    user_id = session.user.id || session.user.sub
     allowedToModifyGroup = await GroupModel.allowedToModify(
       group.group_id,
       user_id
@@ -75,7 +77,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     ? {
         props: {
           group,
-          maps: await MapModel.getGroupMaps(group_id, allowedToModifyGroup),
+          initialJoinCode: await GroupModel.getJoinCode(group_id),
+          maps: await MapModel.getGroupMaps(group_id),
           layers: await LayerModel.getGroupLayers(
             group_id,
             allowedToModifyGroup
@@ -92,11 +95,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         notFound: true
       }
 }
-const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
+const GroupAdmin = ({
+  group,
+  members,
+  layers,
+  maps,
+  initialJoinCode
+}: Props): JSX.Element => {
   const { t } = useT()
   const router = useRouter()
   const [canSubmit, setCanSubmit] = useState(false)
   const [showImageCrop, setShowImageCrop] = useState(false)
+  const [joinCode, setJoinCode] = useState(initialJoinCode)
 
   const submit = async (model: Record<string, any>) => {
     const group_id = group.group_id
@@ -104,7 +114,9 @@ const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
     model.description = Locales.formModelToLocalizedString(model, 'description')
     try {
       await mutation(`
-          saveGroup(group_id: "${model.group_id}", name: "${model.name}", description: "${model.description}")
+          saveGroup(group_id: "${model.group_id}", name: "${JSON.stringify(
+        JSON.stringify(model.name)
+      )}", description: "${JSON.stringify(JSON.stringify(model.description))}")
         `)
       message.info(t('Group Saved'), 3, () => {
         router.push(`/group/${group_id || ''}`)
@@ -225,21 +237,30 @@ const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
       }
     })
   }
-  const handleRotateInviteKey = async () => {
-    try {
-      await mutation(`
-      rotateGroupInviteKey(group_id: "${group.group_id}") {
-        key
+  const rotateJoinLink = async () => {
+    confirm({
+      title: t('Confirm Link Change'),
+      content: t(`This will create a new link and disabled the current link.`),
+      okText: t('New Link'),
+      okType: 'danger',
+      cancelText: t('Cancel'),
+
+      async onOk() {
+        try {
+          const result = await mutation(`
+          rotateJoinCode(group_id: "${group.group_id}")
+          `)
+          setJoinCode(result.rotateJoinCode)
+          message.info(t('Join Link Updated'), 7)
+        } catch (err) {
+          notification.error({
+            message: t('Server Error'),
+            description: err.message || err.toString(),
+            duration: 0
+          })
+        }
       }
-      `)
-      message.info(t('Invite Link Updated'), 7)
-    } catch (err) {
-      notification.error({
-        message: t('Server Error'),
-        description: err.message || err.toString(),
-        duration: 0
-      })
-    }
+    })
   }
 
   const onCrop = async (data: string) => {
@@ -263,11 +284,19 @@ const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
   const membersList = members.map((user) => {
     return {
       key: user.id,
-      label: user.display_name,
+      label: user.email,
       type: user.role,
       image: user.image
     }
   })
+
+  const writeToClipboard = (): void => {
+    if (joinCode)
+      navigator.clipboard.writeText(
+        `${urlUtil.getBaseUrl()}/group/${group.group_id}/join/${joinCode}`
+      )
+    message.info(t('Copied to Clipboard'))
+  }
 
   const groupUrl = `/group/${groupId}`
   return (
@@ -438,11 +467,23 @@ const GroupAdmin = ({ group, members, layers, maps }: Props): JSX.Element => {
                       'Share this link with people you want to join this group.'
                     )}
                   </p>
+                  <pre>{`${urlUtil.getBaseUrl()}/group/${
+                    group.group_id
+                  }/join/${joinCode}`}</pre>
+
                   <p>
                     {t(
                       'On password-protected sites, they will first need an account on the site, contact your site administrator for help inviting new users.'
                     )}
                   </p>
+                  <Row justify='space-between'>
+                    <Button type='primary' onClick={writeToClipboard}>
+                      {t('Copy Link')}
+                    </Button>
+                    <Button type='primary' danger onClick={rotateJoinLink}>
+                      {t('New Link')}
+                    </Button>
+                  </Row>
                 </Card>
               </Col>
             </Row>

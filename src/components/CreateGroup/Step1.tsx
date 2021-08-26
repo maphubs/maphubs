@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Formsy, { addValidationRule } from 'formsy-react'
 import { Row, Col, message, notification, Button } from 'antd'
 import MultiTextArea from '../forms/MultiTextArea'
 import TextInput from '../forms/textInput'
 import MultiTextInput from '../forms/MultiTextInput'
-import Toggle from '../forms/toggle'
 import Locales from '../../services/locales'
-import NavigationIcon from '@material-ui/icons/Navigation'
 import GroupWorkIcon from '@material-ui/icons/GroupWork'
 import InfoIcon from '@material-ui/icons/Info'
 import DescriptionIcon from '@material-ui/icons/Description'
@@ -33,24 +31,29 @@ const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
   const router = useRouter()
   const [canSubmit, setCanSubmit] = useState(false)
   const [groupIdValue, setGroupIdValue] = useState<string>()
-  const [groupIdAvailable, setGroupIdAvailable] = useState(false)
+  const [loaded, setLoaded] = useState(false)
 
   const created = useSelector((state) => state.group.created)
   const savedGroupID = useSelector((state) => state.group.group_id)
 
-  addValidationRule('isAvailable', (values: string[], value: string) => {
-    if (created) return true
-    // prevent extra server calls
-    let available: boolean
-    if (groupIdValue || value !== groupIdValue) {
-      setGroupIdValue(value)
-      available = checkGroupIdAvailable(value)
-      setGroupIdAvailable(available)
-    }
-    return available
-  })
+  if (!loaded) {
+    addValidationRule('isAvailable', (values: string[], value: string) => {
+      if (created) return true
+      // prevent extra server calls
+      let available: boolean
+      if (value && value.localeCompare(groupIdValue) !== 0) {
+        setGroupIdValue(value)
+        available = checkGroupIdAvailable(value)
+      }
+      return available
+    })
+  }
 
-  const checkGroupIdAvailable = (id: string) => {
+  useEffect(() => {
+    setLoaded(true)
+  }, [])
+
+  const checkGroupIdAvailable = (id: string): boolean => {
     let result = false
 
     // only check if a valid value was provided and we are running in the browser
@@ -94,7 +97,9 @@ const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
 
     try {
       await mutation(`
-          ${method}(group_id: "${model.group_id}", name: "${model.name}", description: "${model.description}")
+          ${method}(group_id: "${model.group_id}", name: ${JSON.stringify(
+        JSON.stringify(model.name)
+      )}, description: ${JSON.stringify(JSON.stringify(model.description))})
         `)
       dispatch(setGroupID(model.group_id))
       dispatch(setGroupCreated(true))
@@ -107,7 +112,7 @@ const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
       })
     }
   }
-  const handleCancel = async (): void => {
+  const handleCancel = async () => {
     if (created) {
       try {
         await mutation(`
@@ -244,40 +249,7 @@ const CreateGroupStep1 = ({ active, onSubmit }: Props): JSX.Element => {
                 required
               />
             </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <TextInput
-                name='location'
-                label='Location'
-                icon={<NavigationIcon />}
-                validations='maxLength:100'
-                validationErrors={{
-                  maxLength: t('Location must be 100 characters or less.')
-                }}
-                length={100}
-                tooltipPosition='top'
-                tooltip={t('Country or City Where the Group is Located')}
-                required
-                t={t}
-              />
-            </Row>
-            <Row
-              style={{
-                marginBottom: '20px'
-              }}
-            >
-              <Toggle
-                name='published'
-                labelOff={t('Draft')}
-                labelOn={t('Published')}
-                defaultChecked
-                tooltipPosition='top'
-                tooltip={t('Include in Public Group Listings')}
-              />
-            </Row>
+
             <Row justify='center' align='middle'>
               <Col span={4}>
                 <Button danger onClick={handleCancel}>

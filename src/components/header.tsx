@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { MenuOutlined } from '@ant-design/icons'
 import { Layout, Menu, Drawer, Row } from 'antd'
 import useT from '../hooks/useT'
@@ -73,7 +74,9 @@ const MapHubsHeader = ({
               height: '50px'
             }}
           >
-            <a href='/map/new'>{t('Make a Map')}</a>
+            <Link href='/map/new'>
+              <a>{t('Make a Map')}</a>
+            </Link>
           </Menu.Item>
         )}
         {showExplore && (
@@ -136,10 +139,7 @@ const MapHubsHeader = ({
                 <a href={customSearchLink || '/search'}>{t('Search')}</a>
               )}
               {mode !== 'vertical' && (
-                <SearchButton
-                  t={t}
-                  searchLink={customSearchLink || '/search'}
-                />
+                <SearchButton searchLink={customSearchLink || '/search'} />
               )}
             </Row>
           </Menu.Item>

@@ -6,11 +6,10 @@ declare module 'next-auth' {
    */
   interface Session {
     user: {
-      id: number
       email: string
-      /** The user's role */
-      role: string
-      terms_accepted?: boolean
     }
+    sub: string
+    role: string
+    terms_accepted?: boolean
   }
 }

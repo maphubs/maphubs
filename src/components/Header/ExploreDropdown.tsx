@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import { DownOutlined } from '@ant-design/icons'
 import { Menu, Dropdown } from 'antd'
 
@@ -6,29 +7,29 @@ const ExploreDropdown = ({ t }: { t: (v: string) => string }): JSX.Element => {
   const menu = (
     <Menu>
       <Menu.Item>
-        <a href='/explore' className='nav-hover-menu-item'>
-          {t('All')}
-        </a>
+        <Link href='/explore'>
+          <a className='nav-hover-menu-item'>{t('All')}</a>
+        </Link>
       </Menu.Item>
       <Menu.Item>
-        <a href='/maps' className='nav-hover-menu-item'>
-          {t('Maps')}
-        </a>
+        <Link href='/maps'>
+          <a className='nav-hover-menu-item'>{t('Maps')}</a>
+        </Link>
       </Menu.Item>
       <Menu.Item>
-        <a href='/stories' className='nav-hover-menu-item'>
-          {t('Stories')}
-        </a>
+        <Link href='/stories'>
+          <a className='nav-hover-menu-item'>{t('Stories')}</a>
+        </Link>
       </Menu.Item>
       <Menu.Item>
-        <a href='/layers' className='nav-hover-menu-item'>
-          {t('Layers')}
-        </a>
+        <Link href='/layers'>
+          <a className='nav-hover-menu-item'>{t('Layers')}</a>
+        </Link>
       </Menu.Item>
       <Menu.Item>
-        <a href='/groups' className='nav-hover-menu-item'>
-          {t('Groups')}
-        </a>
+        <Link href='/groups'>
+          <a className='nav-hover-menu-item'>{t('Groups')}</a>
+        </Link>
       </Menu.Item>
     </Menu>
   )

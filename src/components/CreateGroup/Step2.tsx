@@ -61,7 +61,7 @@ const CreateGroupStep2 = ({
         className='responsive-img'
         width={200}
         height={200}
-        src={`/group/${group_id}/image.png?cacheBreak=${Date.now()}`}
+        src={`/api/group/${group_id}/image.png?cacheBreak=${Date.now()}`}
       />
     ) : (
       <div

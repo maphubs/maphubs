@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { Modal, Row, Col, Button, Switch, notification } from 'antd'
+import { Modal, Row, Col, Button, Switch, notification, message } from 'antd'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import superagent from 'superagent'
-import LaunchIcon from '@material-ui/icons/Launch'
+import LinkIcon from '@material-ui/icons/Link'
 import useT from '../../hooks/useT'
 const { confirm } = Modal
 type Props = {
@@ -86,6 +86,7 @@ const PublicShareModal = ({
       navigator.clipboard.writeText(
         `${urlUtil.getBaseUrl()}/map/share/${shareID}`
       )
+    message.info(t('Copied to Clipboard'))
   }
 
   let shareUrl = ''
@@ -166,7 +167,7 @@ const PublicShareModal = ({
                 <a href={shareUrl} target='_blank' rel='noopener noreferrer'>
                   {shareUrl}
                 </a>
-                <LaunchIcon
+                <LinkIcon
                   className='omh-accent-text'
                   style={{
                     cursor: 'pointer'

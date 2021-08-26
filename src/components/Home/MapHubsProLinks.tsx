@@ -53,7 +53,7 @@ const MapHubsProLinks = (): JSX.Element => {
           }}
         >
           <a
-            href='/import'
+            href='/layer/import'
             style={{
               margin: 'auto'
             }}

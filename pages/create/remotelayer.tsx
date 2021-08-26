@@ -156,19 +156,23 @@ const CreateRemoteLayer = (): JSX.Element => {
     return (
       <ErrorBoundary t={t}>
         <Layout title={t('Add Remote Layer')} hideFooter>
-          <div>
-            <div className='container'>
-              <Row
-                style={{
-                  marginBottom: '20px'
-                }}
-              >
-                <h5>{t('Please Join a Group')}</h5>
+          <div className='container' style={{ height: '100%' }}>
+            <Row
+              align='middle'
+              justify='center'
+              style={{
+                marginBottom: '20px',
+                height: '100%'
+              }}
+            >
+              <div style={{ width: '100%', textAlign: 'center' }}>
+                <h2 style={{ width: '100%' }}>{t('Please Join a Group')}</h2>
+
                 <p>
                   {t('Please create or join a group before creating a layer.')}
                 </p>
-              </Row>
-            </div>
+              </div>
+            </Row>
           </div>
         </Layout>
       </ErrorBoundary>

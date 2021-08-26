@@ -70,7 +70,7 @@ const config = {
         const isAllowedToSignIn = await isMember(user)
         if (!isAllowedToSignIn) {
           log.warn('User is not allowed to sign in')
-          console.log(user)
+          console.warn(user)
         }
         return isAllowedToSignIn ? true : '/membership'
         // before email sent to user
@@ -94,6 +94,7 @@ const config = {
      * @return {object}              Session that will be returned to the client
      */
     session: async (session, user) => {
+      session.sub = user.sub
       session.role = user.role
       session.termsAccepted = user.termsAccepted
       return Promise.resolve(session)

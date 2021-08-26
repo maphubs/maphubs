@@ -1,6 +1,5 @@
 import { Context } from '../../types/graphqlContext'
 import { LocalizedString } from '../../types/LocalizedString'
-import Email from '@bit/kriscarle.maphubs-utils.maphubs-utils.email-util'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import GroupModel from '../../models/group'
 import LayerModel from '../../models/layer'
@@ -8,6 +7,7 @@ import MapModel from '../../models/map'
 import StoryModel from '../../models/story'
 import UserModel from '../../models/user'
 import ImageModel from '../../models/image'
+import safeCompare from 'safe-compare'
 
 const debug = DebugService('mutations/groups')
 
@@ -20,21 +20,21 @@ export default {
       description
     }: {
       group_id: string
-      name: LocalizedString
-      description: LocalizedString
+      name: string
+      description: string
     },
     context: Context
   ): Promise<boolean> {
     const { user } = context
     if (group_id) {
-      const result = await GroupModel.createGroup(
+      await GroupModel.createGroup(
         group_id,
-        name,
-        description,
-        user.sub
+        JSON.parse(name) as LocalizedString,
+        JSON.parse(description) as LocalizedString,
+        Number.parseInt(user.sub)
       )
 
-      return result
+      return true
     }
   },
   async saveGroup(
@@ -45,16 +45,20 @@ export default {
       description
     }: {
       group_id: string
-      name: LocalizedString
-      description: LocalizedString
+      name: string
+      description: string
     },
     context: Context
   ): Promise<boolean> {
     const { user } = context
     if (group_id) {
-      if (await GroupModel.isGroupAdmin(group_id, user.sub)) {
-        const result = await GroupModel.updateGroup(group_id, name, description)
-        return result
+      if (await GroupModel.isGroupAdmin(group_id, Number.parseInt(user.sub))) {
+        await GroupModel.updateGroup(
+          group_id,
+          JSON.parse(name) as LocalizedString,
+          JSON.parse(description) as LocalizedString
+        )
+        return true
       } else {
         throw new Error('Not allowed to modify group')
       }
@@ -71,7 +75,7 @@ export default {
   ): Promise<boolean> {
     const { user } = context
     if (group_id) {
-      if (await GroupModel.isGroupAdmin(group_id, user.sub)) {
+      if (await GroupModel.isGroupAdmin(group_id, Number.parseInt(user.sub))) {
         // check if the group has any layers, maps, or stories
         const layers = await LayerModel.getGroupLayers(group_id, false)
         if (layers && layers.length > 0) {
@@ -98,53 +102,7 @@ export default {
       }
     }
   },
-  async addGroupMember(
-    _: unknown,
-    {
-      group_id,
-      user_id,
-      asAdmin
-    }: {
-      group_id: string
-      user_id: number
-      asAdmin: boolean
-    },
-    context: Context
-  ): Promise<boolean> {
-    const { user } = context
-    if (group_id) {
-      if (await GroupModel.isGroupAdmin(group_id, user.sub)) {
-        const role = asAdmin ? 'Administrator' : 'Member'
 
-        const dbUser = await UserModel.getUser(user_id)
-
-        const members = await GroupModel.getGroupMembers(group_id)
-        let alreadyInGroup = false
-        for (const member of members) {
-          if (member.id === dbUser.id) {
-            alreadyInGroup = true
-          }
-        }
-
-        if (!alreadyInGroup) {
-          await GroupModel.addGroupMember(group_id, dbUser.id, role)
-          debug.log(`Added ${dbUser.email} to ${group_id}`)
-          Email.send({
-            from: process.env.NEXT_PUBLIC_PRODUCT_NAME + ' <info@maphubs.com>',
-            to: dbUser.email,
-            subject: `Welcome to Group: ${group_id} - ${process.env.NEXT_PUBLIC_PRODUCT_NAME}`,
-            text: `You have been added to the group ${group_id}`,
-            html: `You have been added to the group ${group_id}`
-          })
-          return true
-        } else {
-          throw new Error('User is already a member of this group')
-        }
-      } else {
-        throw new Error('Not allowed to modify group')
-      }
-    }
-  },
   async setGroupMemberRole(
     _: unknown,
     {
@@ -161,12 +119,16 @@ export default {
     const { user } = context
 
     if (group_id) {
-      if (await GroupModel.isGroupAdmin(group_id, user.sub)) {
+      if (await GroupModel.isGroupAdmin(group_id, Number.parseInt(user.sub))) {
         const role = admin ? 'Administrator' : 'Member'
-        const dbUser = await UserModel.getUser(user_id)
-        await GroupModel.updateGroupMemberRole(group_id, dbUser.id, role)
-        debug.log(`Added role ${role} to ${dbUser.email} of ${group_id}`)
-        return true
+        const dbUser = await UserModel.byID(user_id)
+        if (dbUser) {
+          await GroupModel.updateGroupMemberRole(group_id, dbUser.id, role)
+          debug.log(`Added role ${role} to ${dbUser.email} of ${group_id}`)
+          return true
+        } else {
+          throw new Error('User not found')
+        }
       } else {
         throw new Error('Not allowed to modify group')
       }
@@ -186,30 +148,34 @@ export default {
     const { user } = context
 
     if (group_id) {
-      if (await GroupModel.isGroupAdmin(group_id, user.sub)) {
-        const dbUser = await UserModel.getUser(user_id)
-        // don't allow removal of last admin
-        const members = await GroupModel.getGroupMembersByRole(
-          group_id,
-          'Administrator'
-        )
+      if (await GroupModel.isGroupAdmin(group_id, Number.parseInt(user.sub))) {
+        const dbUser = await UserModel.byID(user_id)
+        if (dbUser) {
+          // don't allow removal of last admin
+          const members = await GroupModel.getGroupMembersByRole(
+            group_id,
+            'Administrator'
+          )
 
-        if (members && members.length === 1 && members[0].id === user_id) {
-          // last admin
-          debug.log(
-            'Attempted to delete last admin ' +
-              dbUser.email +
-              ' from ' +
-              group_id
-          )
-          throw new Error(
-            'Unable to delete only administrator from the group. Please assign another admin first.'
-          )
+          if (members && members.length === 1 && members[0].id === user_id) {
+            // last admin
+            debug.log(
+              'Attempted to delete last admin ' +
+                dbUser.email +
+                ' from ' +
+                group_id
+            )
+            throw new Error(
+              'Unable to delete only administrator from the group. Please assign another admin first.'
+            )
+          } else {
+            await GroupModel.removeGroupMember(group_id, dbUser.id)
+            debug.log('Removed ' + dbUser.email + ' from ' + group_id)
+
+            return true
+          }
         } else {
-          await GroupModel.removeGroupMember(group_id, dbUser.id)
-          debug.log('Removed ' + dbUser.email + ' from ' + group_id)
-
-          return true
+          throw new Error('User not found')
         }
       } else {
         throw new Error('Not allowed to modify group')
@@ -225,19 +191,75 @@ export default {
     }: {
       group_id: string
       image: string
-      info: Record<string, unknown>
+      info: string
     },
     context: Context
   ): Promise<boolean> {
     const { user } = context
 
     if (group_id) {
-      if (await GroupModel.isGroupAdmin(group_id, user.sub)) {
-        await ImageModel.setGroupImage(group_id, image, info)
+      if (await GroupModel.isGroupAdmin(group_id, Number.parseInt(user.sub))) {
+        await ImageModel.setGroupImage(group_id, image, JSON.parse(info))
         return true
       } else {
         throw new Error('Not allowed to modify group')
       }
+    }
+  },
+
+  async rotateJoinCode(
+    _: unknown,
+    {
+      group_id
+    }: {
+      group_id: string
+    },
+    context: Context
+  ): Promise<string> {
+    const { user } = context
+
+    if (
+      group_id &&
+      (await GroupModel.isGroupAdmin(group_id, Number.parseInt(user.sub)))
+    ) {
+      const newCode = await GroupModel.rotateJoinCode(group_id)
+      return newCode
+    } else {
+      throw new Error('Not allowed to modify group')
+    }
+  },
+
+  async joinGroup(
+    _: unknown,
+    {
+      group_id,
+      join_code
+    }: {
+      group_id: string
+      join_code: string
+    },
+    context: Context
+  ): Promise<boolean> {
+    const { user } = context
+
+    const user_id = Number.parseInt(user.sub)
+
+    if (group_id && join_code) {
+      const code = await GroupModel.getGroupJoinCode(group_id)
+      if (safeCompare(code, join_code)) {
+        const existingMembers = await GroupModel.getGroupMembers(group_id)
+        const existingMember = existingMembers.find((u) => u.id === user_id)
+        if (!existingMember) {
+          await GroupModel.addGroupMember(group_id, user_id, 'Member')
+          return true
+        } else {
+          throw new Error('You are already a member of this group')
+        }
+      } else {
+        throw new Error('Missing required data') // intentionally vague error message
+      }
+    } else {
+      throw new Error('Missing required data')
     }
   }
 }

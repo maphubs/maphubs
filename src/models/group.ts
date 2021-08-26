@@ -3,6 +3,8 @@ import _find from 'lodash.find'
 import { Knex } from 'knex'
 import { Group } from '../types/group'
 import { LocalizedString } from '../types/LocalizedString'
+import { User } from '../types/user'
+import { nanoid } from 'nanoid'
 
 export default {
   getAllGroups(trx?: Knex.Transaction): Knex.QueryBuilder {
@@ -206,16 +208,15 @@ export default {
 
     return db
       .select(
-        'public.users.id',
-        'public.users.display_name',
-        'public.users.email',
+        'public.nextauth_users.id',
+        'public.nextauth_users.email',
         'omh.group_memberships.role'
       )
       .from('omh.group_memberships')
       .leftJoin(
-        'public.users',
+        'public.nextauth_users',
         'omh.group_memberships.user_id',
-        'public.users.id'
+        'public.nextauth_users.id'
       )
       .where('omh.group_memberships.group_id', groupId)
   },
@@ -223,16 +224,15 @@ export default {
   getGroupMembersByRole(groupId: string, role: string): Knex.QueryBuilder {
     return knex
       .select(
-        'public.users.id',
-        'public.users.display_name',
-        'public.users.email',
+        'public.nextauth_users.id',
+        'public.nextauth_users.email',
         'omh.group_memberships.role'
       )
       .from('omh.group_memberships')
       .leftJoin(
-        'public.users',
+        'public.nextauth_users',
         'omh.group_memberships.user_id',
-        'public.users.id'
+        'public.nextauth_users.id'
       )
       .where({
         'omh.group_memberships.group_id': groupId,
@@ -280,17 +280,23 @@ export default {
     if (!groupId || userId <= 0) {
       return false
     } else {
-      const users = await this.getGroupMembers(groupId)
+      const groupMembers: User[] = await this.getGroupMembers(groupId)
+      console.log(`userID(${userId}) ${typeof userId}`)
+      console.log(groupMembers)
 
-      const user = _find(users, {
-        id: userId
-      })
+      const foundUser = groupMembers.find((u) => u.id === userId)
 
-      if (user && user.role === 'Administrator') {
-        return true
+      console.log(foundUser)
+      if (foundUser) {
+        if (foundUser.role === 'Administrator') {
+          return true
+        } else {
+          console.warn('user not group admin')
+          return false
+        }
+      } else {
+        throw new Error(`User not found: ${userId}`)
       }
-
-      return false
     }
   },
 
@@ -325,6 +331,7 @@ export default {
     userId: number
   ): Promise<any> {
     return knex.transaction(async (trx) => {
+      console.info(`Creating group ${groupId} for user ${userId}`)
       await trx('omh.groups').insert({
         group_id: groupId,
         name,
@@ -370,5 +377,24 @@ export default {
         .del()
       return true
     })
+  },
+
+  async getJoinCode(groupId: string): Promise<string> {
+    const result = await knex('omh.groups')
+      .select('join_code')
+      .where({ group_id: groupId })
+    if (result && result.length === 1) {
+      return result[0].join_code
+    } else {
+      throw new Error('group not found')
+    }
+  },
+
+  async rotateJoinCode(groupId: string): Promise<string> {
+    const code = nanoid()
+    await knex('omh.groups')
+      .update({ join_code: code })
+      .where({ group_id: groupId })
+    return code
   }
 }

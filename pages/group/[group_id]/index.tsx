@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { GetServerSideProps } from 'next'
 import { useSession, getSession } from 'next-auth/client'
 import Layout from '../../../src/components/Layout'
@@ -6,20 +7,10 @@ import CardCarousel from '../../../src/components/CardCarousel/CardCarousel'
 import cardUtil from '../../../src/services/card-util'
 import { Group } from '../../../src/types/group'
 import ErrorBoundary from '../../../src/components/ErrorBoundary'
-import { PlusOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons'
+import { PlusOutlined, SettingOutlined } from '@ant-design/icons'
 import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
 import { NextSeo } from 'next-seo'
-import {
-  Row,
-  Col,
-  Avatar,
-  List,
-  Button,
-  Tooltip,
-  Typography,
-  Divider
-} from 'antd'
-import SupervisorAccount from '@material-ui/icons/SupervisorAccount'
+import { Row, Col, Avatar, Button, Typography, Divider } from 'antd'
 import useT from '../../../src/hooks/useT'
 
 // SSR only
@@ -37,7 +28,6 @@ type Props = {
   maps: Map[]
   layers: Layer[]
   stories: Story[]
-  members: Array<Record<string, any>>
   allowedToModifyGroup?: boolean
 }
 type State = {
@@ -53,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (session?.user) {
     allowedToModifyGroup = await GroupModel.allowedToModify(
       group.group_id,
-      session.user.id || session.user.sub
+      Number.parseInt(session.sub)
     )
   }
   if (!group) {
@@ -65,10 +55,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       group,
-      maps: await MapModel.getGroupMaps(group_id, allowedToModifyGroup),
+      maps: await MapModel.getGroupMaps(group_id),
       layers: await LayerModel.getGroupLayers(group_id, allowedToModifyGroup),
       stories: await StoryModel.getGroupStories(group_id, allowedToModifyGroup),
-      members: await GroupModel.getGroupMembers(group_id),
       allowedToModifyGroup
     }
   }
@@ -78,7 +67,6 @@ const GroupInfo = ({
   maps,
   layers,
   stories,
-  members,
   allowedToModifyGroup
 }: Props): JSX.Element => {
   const { t } = useT()
@@ -273,72 +261,19 @@ const GroupInfo = ({
                         textAlign: 'right'
                       }}
                     >
-                      <Button
-                        style={{
-                          margin: 'auto'
-                        }}
-                        href={`/group/${group.group_id}/admin`}
-                      >
-                        <SettingOutlined />
-                        {t('Manage')}
-                      </Button>
+                      <Link href={`/group/${group.group_id}/admin`}>
+                        <Button
+                          style={{
+                            margin: 'auto'
+                          }}
+                        >
+                          <SettingOutlined />
+                          {t('Manage')}
+                        </Button>
+                      </Link>
                     </Col>
                   </Row>
                 )}
-                <Row>
-                  <List
-                    size='small'
-                    header={
-                      <div>
-                        <b>{t('Members')}</b>
-                      </div>
-                    }
-                    bordered
-                    dataSource={members}
-                    style={{
-                      width: '100%'
-                    }}
-                    renderItem={(user) => {
-                      if (
-                        user.display_name === 'maphubs' &&
-                        members.length > 1
-                      ) {
-                        return <span />
-                      }
-
-                      let adminIcon = <></>
-
-                      if (user.role === 'Administrator') {
-                        adminIcon = (
-                          <Tooltip
-                            title={t('Group Administrator')}
-                            placement='top'
-                          >
-                            <SupervisorAccount />
-                          </Tooltip>
-                        )
-                      }
-
-                      return (
-                        <List.Item actions={[adminIcon]}>
-                          <List.Item.Meta
-                            avatar={
-                              user.image ? (
-                                <Avatar
-                                  src={user.image}
-                                  alt={t('Profile Photo')}
-                                />
-                              ) : (
-                                <Avatar size={24} icon={<UserOutlined />} />
-                              )
-                            }
-                            title={user.display_name}
-                          />
-                        </List.Item>
-                      )
-                    }}
-                  />
-                </Row>
               </Col>
             </Row>
             <Divider />

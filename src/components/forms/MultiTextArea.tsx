@@ -72,7 +72,7 @@ const MultiTextArea = ({
   const [localValue, setLocalValue] = useState(tempValue)
 
   useEffect(() => {
-    if (!_isequal(value, localValue)) {
+    if (value && !_isequal(value, localValue)) {
       if (value) {
         setLocalValue(value)
       } else {

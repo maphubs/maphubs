@@ -36,7 +36,9 @@ const apolloServer = new ApolloServer({
 
     if (
       process.env.NODE_ENV === 'production' &&
-      err.message.startsWith('select')
+      (err.message.startsWith('select') ||
+        err.message.startsWith('insert') ||
+        err.message.startsWith('update'))
     ) {
       // don't expose DB queries in production
       return new Error('Internal server error')
