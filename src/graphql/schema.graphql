@@ -1,0 +1,170 @@
+scalar JSON
+
+type Group {
+  group_id: ID!
+  name: JSON
+  description: JSON
+  hasimage: Boolean
+}
+
+type Layer {
+  layer_id: ID!
+  shortid: String!
+  name: JSON
+  description: JSON
+  data_type: String
+  remote: Boolean
+  remote_host: String
+  remote_layer_id: String
+  status: String
+  source: JSON
+  license: String
+  presets: JSON
+  is_external: Boolean
+  external_layer_type: String
+  external_layer_config: JSON
+  owned_by_group_id: String
+  style: JSON
+  legend_html: String
+  labels: JSON
+  settings: JSON
+  extent_bbox: JSON
+  preview_position: JSON
+}
+
+type LayerStats {
+  stats: JSON
+}
+
+type Story {
+  story_id: ID!
+  title: JSON
+  firstimage: String
+  summary: JSON
+  published: Boolean
+  author: JSON
+  owned_by_group_id: String
+  groupname: JSON
+  published_at: String
+}
+
+type Map {
+  map_id: ID!
+  title: JSON
+  position: JSON
+  style: JSON
+  settings: JSON
+  basemap: String
+  created_at: String
+  updated_at: String
+  owned_by_group_id: String
+  share_id: String
+  has_screenshot: Boolean
+}
+
+type User {
+  id: ID!
+}
+
+type PageConfig {
+  headerConfig: JSON
+  footerConfig: JSON
+  mapConfig: JSON
+}
+
+type LayerNotes {
+  notes: String
+}
+
+type LocalizedString {
+  en: String
+  fr: String
+  es: String
+  pt: String
+  it: String
+  de: String
+  id: String
+}
+
+type Query {
+  # Groups
+  groups(locale: String): [Group] #locale is used to pre-sort alphabetically
+  group(id: String): Group
+  featuredGroups(limit: Int): [Group]
+  recentGroups(limit: Int): [Group]
+  groupLayers(id: String, includeMapInfo: Boolean): [Layer]
+  groupMaps(id: String): [Map]
+  groupStories(id: String): [Story]
+  allowedToModifyGroup(id: String): Boolean
+  groupMembers(id: String): [User]
+
+  # Layers
+  layer(id: Int): Layer
+  layers: [Layer]
+  featuredLayers(limit: Int): [Layer]
+  recentLayers(limit: Int): [Layer]
+  popularLayers(limit: Int, attachPermissions: Boolean): [Layer]
+  layerStats: LayerStats
+  allowedToModifyLayer(id: Int): Boolean
+  myLayers(limit: Int): [Layer]
+  layerNotes(id: Int): LayerNotes
+
+  # Stories
+  stories: [Story]
+  story(id: Int): Story
+  featuredStories(limit: Int): [Story]
+  recentStories(limit: Int, tags: JSON): [Story]
+  allowedToModifyStory(id: Int): Boolean
+
+  # Maps
+  maps(locale: String): [Map]
+  map(id: Int): Map
+  featuredMaps(limit: Int): [Map]
+  recentMaps(limit: Int): [Map]
+  mapLayers(id: Int, attachPermissions: Boolean): [Layer]
+  allowedToModifyMap(id: Int): Boolean
+  myMaps: [Map]
+
+  # Users
+  #account: User
+
+  # Other
+  pageConfig: PageConfig
+  mapConfig: JSON
+  homeConfig: JSON
+}
+
+type Mutation {
+  # groups
+  createGroup(group_id: String!, name: String, description: String): Boolean
+  saveGroup(group_id: String!, name: String, description: String): Boolean
+  deleteGroup(group_id: String!): Boolean
+  setGroupMemberRole(group_id: String!, user_id: Int!, admin: Boolean!): Boolean
+  removeGroupMember(group_id: String!, user_id: Int!): Boolean
+  setGroupImage(group_id: String!, image: String!, info: String): Boolean
+  rotateJoinCode(group_id: String!): String
+  joinGroup(group_id: String!, join_code: String): Boolean
+
+  # Maps
+  createMap(
+    group_id: String!
+    layers: String
+    style: String
+    position: String
+    settings: String
+    basemap: String
+    title: String
+  ): Map
+  saveMap(
+    map_id: Int!
+    layers: String
+    style: String
+    position: String
+    settings: String
+    basemap: String
+    title: String
+  ): Boolean
+  deleteMap(map_id: Int!): Boolean
+  copyMap(map_id: Int!, group_id: String!, title: String): Map
+  setMapPublic(map_id: Int!, isPublic: Boolean): String
+}

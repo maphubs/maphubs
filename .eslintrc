@@ -1,58 +1,30 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
     "ecmaVersion": 8,
     "sourceType": "module",
-    "ecmaFeatures": {
-      "arrowFunctions": true,
-      "binaryLiterals": true,
-      "blockBindings": true,
-      "classes": true,
-      "defaultParams": true,
-      "destructuring": true,
-      "forOf": true,
-      "generators": true,
-      "modules": true,
-      "objectLiteralComputedProperties": true,
-      "objectLiteralDuplicateProperties": true,
-      "objectLiteralShorthandMethods": true,
-      "objectLiteralShorthandProperties": true,
-      "octalLiterals": true,
-      "regexUFlag": true,
-      "regexYFlag": true,
-      "spread": true,
-      "superInFunctions": true,
-      "templateStrings": true,
-      "unicodeCodePointEscapes": true,
-      "globalReturn": true,
-      "jsx": true
-    }
+    "ecmaFeatures": { "jsx": true }
   },
   "extends": [
-    "standard", "standard-react",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
     "plugin:security/recommended",
-    "plugin:unicorn/recommended"
+    "plugin:unicorn/recommended",
+    "prettier"
   ],
   "rules": {
-    "flowtype/define-flow-type": 1,
-    "flowtype/use-flow-type": 1,
     "security/detect-object-injection": "off",
     "unicorn/filename-case": "off",
     "camelcase": "off",
     "object-curly-spacing": "off",
-    "standard/object-curly-even-spacing": [2, "either"],
-    "unicorn/catch-error-name": ["error", {"name": "err"}],
+    "unicorn/catch-error-name": ["error", { "name": "err" }],
     "unicorn/prevent-abbreviations": "off",
-    "unicorn/no-fn-reference-in-iterator": "off", // not compatible with old jquery().find() code
-    "unicorn/no-null": "off", // knexjs code expects nulls for DB queries 
+    "unicorn/no-null": "off",
     "react/jsx-handler-names": "off",
-    // Adding next two rules to avoid bug in babel-eslint:
-    // https://github.com/babel/babel-eslint/issues/799
-    "indent": [
-      "warn", 2,
-      { "ignoredNodes": ["TemplateLiteral"] }
-    ],
-    "template-curly-spacing": "off"
+    "react/display-name": "off",
+    "@typescript-eslint/no-unused-vars": "off"
   },
 
   "env": {
@@ -61,23 +33,19 @@
     "es6": true
   },
 
-  "globals": {
-    "L": true,
-    "HS": true,
-    "M": true,
-    "MAPHUBS_CONFIG": true,
-    "Raven": true
-  },
+  "globals": {},
   "plugins": [
-    "babel",
-    "flowtype",
+    "@typescript-eslint",
     "security",
-    "unicorn"
+    "unicorn",
+    "react",
+    "react-hooks",
+    "promise"
   ],
   "settings": {
     "react": {
       "pragma": "React",
-      "version": "16.8"
+      "version": "16.4"
     }
   }
 }

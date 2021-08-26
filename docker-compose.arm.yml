@@ -1,0 +1,94 @@
+version: '2'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    env_file:
+      - ./env/dev/db.env
+      - ./env/dev/web.env
+      - ./env/dev/host.env
+      - ./env/dev/secret/db-pass.env
+      - ./env/dev/secret/web-secret.env
+    depends_on:
+      - db
+    ports:
+      - '4000:4000'
+    volumes:
+      - './src:/app/src'
+      - './assets:/app/assets'
+      - './temp:/app/temp'
+      - './logs:/app/logs'
+      - '../iD:/app/iD'
+      - './deploy:/app/deploy'
+  db:
+    platform: linux/arm64
+    build:
+      context: ./db-server
+      dockerfile: Dockerfile.arm
+    env_file:
+      - ./env/dev/db.env
+      - ./env/dev/secret/db-pass.env
+      - ./env/dev/secret/db-server-pass.env
+    volumes:
+      - 'db-data:/var/lib/postgresql/data'
+    ports:
+      - '5432:5432'
+    restart: always
+  db-replica:
+    build:
+      context: ./db-server
+    env_file:
+      - ./env/dev/db-replica.env
+      - ./env/dev/secret/db-pass.env
+      - ./env/dev/secret/db-server-pass.env
+    volumes:
+      - 'db-data-replica:/var/lib/postgresql/data'
+    ports:
+      - '5433:5432'
+    depends_on:
+      - db
+  tiles:
+    build:
+      context: ../maphubs-tileserver
+    env_file:
+      - ./env/dev/host.env
+      - ./env/dev/db.env
+      - ./env/dev/secret/db-pass.env
+      - ./env/dev/tiles.env
+      - ./env/dev/secret/web-secret.env
+    volumes:
+      - '../maphubs-tileserver/data:/data'
+      - '../maphubs-tileserver/logs:/logs'
+    ports:
+      - '4001:4001'
+    restart: always
+    depends_on:
+      - db
+  screenshots:
+    image: 'quay.io/maphubs/screenshots:v1.1.0'
+    environment:
+      HOST: maphubs.test
+      INTERNAL_PORT: 3000
+    extra_hosts:
+      - 'maphubs.test:192.168.65.2'
+    ports:
+      - '3000:3000'
+    volumes:
+      - './logs:/app/logs'
+    restart: always
+  uppy:
+    image: transloadit/uppy-server
+    env_file:
+      - ./env/dev/secret/uppy.env
+    volumes:
+      - './temp/uppy:/app/uploads'
+    ports:
+      - '3020:3020'
+volumes:
+  db-data:
+    external:
+      name: maphubs-db-data
+  db-data-replica:
+    external:
+      name: maphubs-db-data-replica

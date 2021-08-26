@@ -1,5 +1,5 @@
-#!/bin/sh
+#!/bin/bash
 
 ./load-dev-env.sh
 
-DEBUG="maphubs:*,maphubs-error:*" NODE_OPTIONS='--inspect' node --max-old-space-size=2048 server.js
+DEBUG="maphubs:*,maphubs-error:*" yarn run ts-node --project tsconfig.server.json ./server.ts

@@ -1,7 +1,7 @@
 #!/bin/sh
 NODE_ENV=production
 PACKAGE_VERSION=`node -p "require('./version.json').version"`
-ASSET_CDN_PREFIX=https://hpvhe47439ygwrt.belugacdn.link/maphubs
+ASSET_CDN_PREFIX=https://cdn-maphubs.b-cdn.net/maphubs
 
 #next.js build and export assets
 node --max_old_space_size=8124 node_modules/next/dist/bin/next build
