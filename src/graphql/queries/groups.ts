@@ -27,7 +27,7 @@ export default {
     context: Context
   ): Promise<boolean> {
     const { user } = context
-    return GroupModel.allowedToModify(args.id, user.sub)
+    return GroupModel.allowedToModify(args.id, Number.parseInt(user.sub))
   },
 
   async groupMembers(
@@ -37,11 +37,25 @@ export default {
   ): Promise<boolean> {
     const { user } = context
     // only reveal the members list to other members
-    const canEdit = await GroupModel.allowedToModify(args.id, user.sub)
+    const canEdit = await GroupModel.allowedToModify(
+      args.id,
+      Number.parseInt(user.sub)
+    )
     if (canEdit) {
       return GroupModel.getGroupMembers(args.id)
     } else {
       throw new Error('Unauthorized')
     }
+  },
+
+  async userGroups(
+    _: unknown,
+    args: { id: string },
+    context: Context
+  ): Promise<Group[]> {
+    const { user } = context
+    // only reveal the members list to other members
+    const groups = await GroupModel.getGroupsForUser(Number.parseInt(user.sub))
+    return groups
   }
 }

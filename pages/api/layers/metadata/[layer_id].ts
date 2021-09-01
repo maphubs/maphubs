@@ -3,7 +3,7 @@ import jwt from 'next-auth/jwt'
 import { isMember } from '../../../../src/auth/check-user'
 import { apiError } from '../../../../src/services/error-response'
 import LayerModel from '../../../../src/models/layer'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from '../../../../src/services/url-util'
 
 const signingKey = process.env.JWT_SIGNING_PRIVATE_KEY
 

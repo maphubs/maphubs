@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Avatar } from 'antd'
 import { IntlProvider, FormattedDate } from 'react-intl'
 import useT from '../../hooks/useT'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from '../../services/url-util'
 import { Story } from '../../types/story'
 
 const StoryHeader = ({ story }: { story: Story }): JSX.Element => {

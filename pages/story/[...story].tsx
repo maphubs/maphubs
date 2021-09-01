@@ -12,7 +12,7 @@ import ShareButtons from '../../src/components/ShareButtons'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import FloatingButton from '../../src/components/FloatingButton'
 import Edit from '@material-ui/icons/Edit'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from '../../src/services/url-util'
 
 import { Story } from '../../src/types/story'
 import useT from '../../src/hooks/useT'

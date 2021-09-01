@@ -30,7 +30,7 @@ const handler: NextApiHandler = async (req, res) => {
       ? imageUtils.processImage(result.image, req, res)
       : res.status(404).send('')
   } catch (err) {
-    apiError(res, 404)(err)
+    res.status(404).send('')
   }
 }
 export default handler

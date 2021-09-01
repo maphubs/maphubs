@@ -11,12 +11,7 @@ export default {
     const db = trx || knex
 
     return db
-      .select(
-        'omh.groups.*',
-        db.raw(
-          'CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage'
-        )
-      )
+      .select('omh.groups.*')
       .table('omh.groups')
       .leftJoin(
         'omh.group_images',
@@ -31,9 +26,6 @@ export default {
         'omh.groups.*',
         knex.raw(
           '(select max(last_updated) from omh.layers where owned_by_group_id=omh.groups.group_id) as layers_updated'
-        ),
-        knex.raw(
-          'CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage'
         )
       )
       .table('omh.groups')
@@ -51,12 +43,7 @@ export default {
 
   getFeaturedGroups(number = 15): Knex.QueryBuilder {
     return knex
-      .select(
-        'omh.groups.*',
-        knex.raw(
-          'CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage'
-        )
-      )
+      .select('omh.groups.*')
       .table('omh.groups')
       .leftJoin(
         'omh.group_images',
@@ -121,12 +108,7 @@ export default {
   getSearchResults(input: string): Knex.QueryBuilder {
     input = input.toLowerCase()
     return knex
-      .select(
-        'omh.groups.*',
-        knex.raw(
-          'CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage'
-        )
-      )
+      .select('omh.groups.*')
       .table('omh.groups')
       .leftJoin(
         'omh.group_images',
@@ -165,12 +147,7 @@ export default {
   ): Promise<Group[]> {
     const db = trx || knex
     const groups = await db
-      .select(
-        'omh.groups.*',
-        db.raw(
-          'CASE WHEN omh.group_images.group_id IS NOT NULL THEN true ELSE false END as hasImage'
-        )
-      )
+      .select('omh.groups.*')
       .from('omh.group_memberships')
       .leftJoin(
         'omh.groups',

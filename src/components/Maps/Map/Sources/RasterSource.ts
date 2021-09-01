@@ -1,4 +1,4 @@
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from '../../../../services/url-util'
 import mapboxgl from 'mapbox-gl'
 import drawTheme from '@mapbox/mapbox-gl-draw/src/lib/theme'
 import GenericSource from './GenericSource'

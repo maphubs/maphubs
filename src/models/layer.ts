@@ -1,7 +1,6 @@
 import MapStyles from '../components/Maps/Map/Styles'
 import type { Layer } from '../types/layer'
 import knex from '../connection'
-import dbgeo from 'dbgeo'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import _find from 'lodash.find'
 import Presets from './presets'
@@ -594,41 +593,31 @@ export default {
         layerTable
       }
     )
-    return new Promise((resolve, reject) => {
-      dbgeo.parse(
-        data.rows,
-        {
-          outputFormat: 'geojson',
-          geometryColumn: 'geom',
-          geometryType: 'geojson'
-        },
-        (error, result) => {
-          if (error) {
-            log.error(error)
-            reject(error)
-            return
-          }
+    const geojson = {
+      type: 'FeatureCollection',
+      features: [],
+      bbox: JSON.parse(bbox.rows[0].bbox)
+    }
+    for (const row of data.rows) {
+      // convert tags to properties
+      const properties = {}
+      const tags = row.tags
 
-          if (result.features) {
-            // convert tags to properties
-            for (const feature of result.features) {
-              const tags = feature.properties.tags
-
-              if (tags) {
-                for (const key of Object.keys(tags)) {
-                  const val = tags[key]
-                  feature.properties[key] = val
-                }
-                delete feature.properties.tags
-              }
-            }
-          }
-
-          result.bbox = JSON.parse(bbox.rows[0].bbox)
-          resolve(result)
+      if (tags) {
+        for (const key of Object.keys(tags)) {
+          const val = tags[key]
+          properties[key] = val
         }
-      )
-    })
+      }
+
+      const feature = {
+        type: 'Feature',
+        properties,
+        geometry: JSON.parse(row.geom)
+      }
+      geojson.features.push(feature)
+    }
+    return geojson
   },
 
   async getGeoJSONAgg(

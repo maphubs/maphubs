@@ -5,7 +5,7 @@ import request from 'superagent'
 import SearchBox from '../SearchBox'
 import CardCollection from './CardCollection'
 import cardUtil from '../../services/card-util'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from '../../services/url-util'
 import useT from '../../hooks/useT'
 import { CardConfig } from './Card'
 const { Title } = Typography

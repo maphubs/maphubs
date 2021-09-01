@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Modal, Row, Col, Button, Switch, notification, message } from 'antd'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from '../../services/url-util'
 import superagent from 'superagent'
 import LinkIcon from '@material-ui/icons/Link'
 import useT from '../../hooks/useT'

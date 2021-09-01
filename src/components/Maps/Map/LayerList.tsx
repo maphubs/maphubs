@@ -93,6 +93,7 @@ const LayerList = ({
                   removeFromMap={removeFromMap}
                   showLayerDesigner={showLayerDesigner}
                   editLayer={editLayer}
+                  t={t}
                 />
               </List.Item>
             )}

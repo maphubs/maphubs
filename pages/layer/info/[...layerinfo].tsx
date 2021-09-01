@@ -47,7 +47,7 @@ import {
 import request from 'superagent'
 
 import ErrorBoundary from '../../../src/components/ErrorBoundary'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from '../../../src/services/url-util'
 import moment from 'moment-timezone'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import { Layer } from '../../../src/types/layer'
@@ -59,6 +59,7 @@ import { NextSeo } from 'next-seo'
 import LayerModel from '../../../src/models/layer'
 import PageModel from '../../../src/models/page'
 import LayerStatsModel from '../../../src/models/stats'
+import MapProvider from '../../../src/components/Maps/redux/MapProvider'
 
 import dynamic from 'next/dynamic'
 const InteractiveMap = dynamic(
@@ -707,27 +708,29 @@ const LayerInfo = ({
                   height: '100%'
                 }}
               >
-                <InteractiveMap
-                  height='100vh - 50px'
-                  fitBounds={layer.preview_position.bbox}
-                  style={glStyle}
-                  layers={[layer]}
-                  map_id={layer.layer_id}
-                  mapConfig={mapConfig}
-                  title={layer.name}
-                  showTitle={false}
-                  hideInactive={false}
-                  disableScrollZoom={false}
-                  primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
-                  mapboxAccessToken={
-                    process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
-                  }
-                  DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
-                  earthEngineClientID={
-                    process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
-                  }
-                  locale={locale}
-                />
+                <MapProvider>
+                  <InteractiveMap
+                    height='100vh - 50px'
+                    fitBounds={layer.preview_position.bbox}
+                    style={glStyle}
+                    layers={[layer]}
+                    map_id={layer.layer_id}
+                    mapConfig={mapConfig}
+                    title={layer.name}
+                    showTitle={false}
+                    hideInactive={false}
+                    disableScrollZoom={false}
+                    primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
+                    mapboxAccessToken={
+                      process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+                    }
+                    DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+                    earthEngineClientID={
+                      process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
+                    }
+                    locale={locale}
+                  />
+                </MapProvider>
               </Col>
             </Row>
             {editButton}

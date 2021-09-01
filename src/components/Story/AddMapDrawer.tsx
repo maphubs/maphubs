@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Drawer, Row, Divider, message, notification } from 'antd'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from '../../services/url-util'
 import request from 'superagent'
 import cardUtil from '../../services/card-util'
 import CardCarousel from '../CardCarousel/CardCarousel'

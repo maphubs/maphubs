@@ -1,7 +1,7 @@
 import Locales from '../services/locales'
 import Map from '../models/map'
 import { nextError } from './error-response'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from './url-util'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import pageOptions from './page-options-helper'
 

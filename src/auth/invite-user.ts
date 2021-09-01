@@ -1,3 +1,4 @@
+import config from './config'
 import Adapters from 'next-auth/adapters'
 import Models from './models'
 import { randomBytes } from 'crypto'
@@ -5,7 +6,6 @@ import parseUrl from '../../node_modules/next-auth/dist/lib/parse-url'
 import Providers from 'next-auth/providers'
 import nodemailer from 'nodemailer'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
-import config from './config'
 
 // Email HTML body
 const html = ({ url, email }) => {

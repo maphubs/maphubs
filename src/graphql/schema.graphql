@@ -4,7 +4,6 @@ type Group {
   group_id: ID!
   name: JSON
   description: JSON
-  hasimage: Boolean
 }
 
 type Layer {
@@ -97,6 +96,7 @@ type Query {
   groupStories(id: String): [Story]
   allowedToModifyGroup(id: String): Boolean
   groupMembers(id: String): [User]
+  userGroups: [Group]
 
   # Layers
   layer(id: Int): Layer

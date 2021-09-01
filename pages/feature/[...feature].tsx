@@ -22,9 +22,7 @@ import {
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import { getLayer } from '../../src/components/Feature/Map/layer-feature'
 
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
-import useSWR from 'swr'
-import useStickyResult from '../../src/hooks/useStickyResult'
+import urlUtil from '../../src/services/url-util'
 import { Feature } from '../../src/types/feature'
 
 // SSR Only

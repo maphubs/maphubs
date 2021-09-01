@@ -5,7 +5,7 @@ import MapModel from '../../../src/models/map'
 import { apiError } from '../../../src/services/error-response'
 import Locales from '../../../src/services/locales'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from '../../../src/services/url-util'
 
 const debug = DebugService('oembed')
 

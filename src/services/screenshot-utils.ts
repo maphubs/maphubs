@@ -2,7 +2,7 @@ import request from 'superagent'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import knex from '../connection'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from './url-util'
 import Crypto from 'crypto'
 import { NextApiRequest, NextApiResponse } from 'next'
 

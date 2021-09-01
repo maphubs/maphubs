@@ -54,16 +54,16 @@ const handler: NextApiHandler = async (req, res) => {
   }
   const user_id = Number.parseInt(user.sub)
 
-  // Run the middleware
-  await runMiddleware(
-    req,
-    res,
-    multer({
-      dest: process.env.TEMP_FILE_PATH + '/uploads/'
-    }).single('file')
-  )
-
   try {
+    // Run the middleware
+    console.log('running middleware')
+    await runMiddleware(
+      req,
+      res,
+      multer({
+        dest: process.env.TEMP_FILE_PATH + '/uploads/'
+      }).single('file')
+    )
     const group_id = req.query.group_id as string
     debug.log('adding to group: ' + group_id)
 
@@ -75,6 +75,7 @@ const handler: NextApiHandler = async (req, res) => {
         path: string
       }
     }
+    // console.log(reqExtended)
     const file = reqExtended.file
 
     if (!file) {
@@ -266,15 +267,14 @@ const handler: NextApiHandler = async (req, res) => {
       apiDataError(res)
     }
   } catch (err) {
-    apiError(res, 500)(err)
+    console.error(err)
+    res.status(500).json({ error: err.message })
   }
 }
 export default handler
 
 export const config = {
   api: {
-    bodyParser: {
-      sizeLimit: '250mb'
-    }
+    bodyParser: false
   }
 }

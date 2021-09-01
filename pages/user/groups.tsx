@@ -30,7 +30,6 @@ const MyGroups = (): JSX.Element => {
     group_id
     name
     description
-    hasimage
   }
  }
  `

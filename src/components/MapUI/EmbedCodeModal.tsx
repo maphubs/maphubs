@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Modal, Switch, Row, message, Alert, Tooltip } from 'antd'
 import { htmlEncode } from 'js-htmlencode'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from '../../services/url-util'
 import useT from '../../hooks/useT'
 
 type Props = {

@@ -2,7 +2,7 @@ import slugify from 'slugify'
 import type { Layer } from '../types/layer'
 import type { CardConfig } from '../components/CardCarousel/Card'
 
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from './url-util'
 import { LocalizedString } from '../types/LocalizedString'
 
 type CardConfigArray = Array<CardConfig>
@@ -69,17 +69,13 @@ export default {
   ): CardConfig {
     let image_url
 
-    if (group.hasimage) {
-      image_url = `/api/group/${group.group_id}/image.png`
-    }
-
     return {
       id: `group-${group.group_id}`,
       title: group.name,
       // LocalizedString
       description: group.description,
       // LocalizedString
-      image_url,
+      image_url: `/api/group/${group.group_id}/image.png`,
       link: '/group/' + group.group_id,
       group: group.group_id,
       type: 'group',

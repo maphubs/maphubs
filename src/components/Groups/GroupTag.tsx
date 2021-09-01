@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Avatar, Tooltip } from 'antd'
-import urlUtil from '@bit/kriscarle.maphubs-utils.maphubs-utils.url-util'
+import urlUtil from '../../services/url-util'
 type Props = {
   group: string
   size?: number

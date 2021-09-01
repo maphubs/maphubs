@@ -89,7 +89,8 @@ const CardCarousel = ({
               }}
             >
               <List
-                direction='horizontal'
+                layout='horizontal'
+                direction='ltr'
                 height={330}
                 itemCount={count}
                 itemSize={220}
