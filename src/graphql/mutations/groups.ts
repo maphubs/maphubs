@@ -199,7 +199,11 @@ export default {
 
     if (group_id) {
       if (await GroupModel.isGroupAdmin(group_id, Number.parseInt(user.sub))) {
-        await ImageModel.setGroupImage(group_id, image, JSON.parse(info))
+        await ImageModel.setGroupImage(
+          group_id,
+          image,
+          JSON.parse(info || '{}')
+        )
         return true
       } else {
         throw new Error('Not allowed to modify group')
