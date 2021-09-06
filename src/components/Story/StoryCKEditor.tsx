@@ -4,6 +4,7 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import CKEditor from '@ckeditor/ckeditor5-react'
 import MapHubsEditor from '@maphubs/maphubs-story-editor'
 import localeUtil from '../../locales/util'
+import { LocalizedString } from '../../types/LocalizedString'
 
 const supportedLangs = localeUtil.getSupported()
 let languagesFromConfig
@@ -21,7 +22,7 @@ if (process.env.NEXT_PUBLIC_LANGUAGES) {
 
 const TabPane = Tabs.TabPane
 type Props = {
-  initialData?: string
+  initialData?: LocalizedString
   onChange?: (...args: Array<any>) => any
   getMap?: (...args: Array<any>) => any
   cropImage?: (...args: Array<any>) => any

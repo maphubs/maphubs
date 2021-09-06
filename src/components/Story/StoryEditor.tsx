@@ -27,6 +27,22 @@ import useT from '../../hooks/useT'
 import useUnload from '../../hooks/useUnload'
 import { Map } from '../../types/map'
 import { Group } from '../../types/group'
+import { useDispatch, useSelector } from '../../redux/hooks'
+import {
+  setModified,
+  bodyChange,
+  publishDateChange,
+  togglePublished,
+  titleChange,
+  authorChange,
+  summaryChange,
+  groupChange,
+  tagsChange
+} from '../../redux/reducers/storySlice'
+
+import { deleteStory } from '../../redux/reducers/story-api/deleteStory'
+import { saveStory } from '../../redux/reducers/story-api/saveStory'
+
 const StoryCKEditor = dynamic(() => import('./StoryCKEditor'), {
   ssr: false
 })
@@ -41,9 +57,36 @@ type ImageCropState = {
   imageCropCallback: (imageData: string) => void
 }
 
+const getFirstImage = () => {
+  // attempt to find the first map or image
+  let firstImg
+  const firstEmbed = $('.ck-content').find('img, .ck-media__wrapper').first()
+
+  if (firstEmbed.is('.ck-media__wrapper')) {
+    // console.log(firstEmbed)
+    const oembedURL = firstEmbed.attr('data-oembed-url')
+    const parts = oembedURL.split('/')
+
+    if (
+      parts &&
+      parts.length >= 6 &&
+      parts[3] === 'map' &&
+      parts[4] === 'view'
+    ) {
+      const mapid = parts[5]
+      firstImg = `${urlUtil.getBaseUrl()}/api/screenshot/map/${mapid}.png`
+    } // console.log(parts)
+  } else {
+    firstImg = firstEmbed.attr('src')
+  }
+
+  return firstImg
+}
+
 const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
   const { t, locale } = useT()
   const router = useRouter()
+  const dispatch = useDispatch()
   const [showAddMap, setShowAddMap] = useState(false)
   const [showImageCrop, setShowImageCrop] = useState(false)
   const [imageCropState, setImageCropState] = useState<ImageCropState>({
@@ -54,6 +97,8 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
     () => {}
   )
 
+  const storyState = useSelector((state) => state.story)
+
   useUnload((e) => {
     e.preventDefault()
     if (storyState.modified) {
@@ -63,32 +108,7 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
     window.close()
   })
 
-  const getFirstImage = () => {
-    // attempt to find the first map or image
-    let firstImg
-    const firstEmbed = $('.ck-content').find('img, .ck-media__wrapper').first()
-
-    if (firstEmbed.is('.ck-media__wrapper')) {
-      // console.log(firstEmbed)
-      const oembedURL = firstEmbed.attr('data-oembed-url')
-      const parts = oembedURL.split('/')
-
-      if (
-        parts &&
-        parts.length >= 6 &&
-        parts[3] === 'map' &&
-        parts[4] === 'view'
-      ) {
-        const mapid = parts[5]
-        firstImg = `${urlUtil.getBaseUrl()}/api/screenshot/map/${mapid}.png`
-      } // console.log(parts)
-    } else {
-      firstImg = firstEmbed.attr('src')
-    }
-
-    return firstImg
-  }
-  const save = async () => {
+  const onSave = async () => {
     const { title, author, body } = storyState
 
     if (!title) {
@@ -110,10 +130,22 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
     const closeSavingMessage = message.loading(t('Saving'), 0)
 
     try {
-      await story.save(firstimage)
+      await saveStory({
+        story_id,
+        owned_by_group_id,
+        body,
+        title,
+        author,
+        summary,
+        published,
+        published_at,
+        tags,
+        firstimage
+      })
       closeSavingMessage()
       message.info(t('Story Saved'))
-      story.setModified(false)
+
+      dispatch(setModified({ modified: false }))
     } catch (err) {
       closeSavingMessage()
       notification.error({
@@ -123,9 +155,9 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
       })
     }
   }
-  const deleteStory = async () => {
+  const onDeleteStory = async () => {
     try {
-      await story.delete()
+      await deleteStory(storyState.story_id)
       message.info(t('Story Deleted'), 1, () => {
         router.push('/')
       })
@@ -193,12 +225,15 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
           height: '100%'
         }}
       >
-        <ErrorBoundary t={t}>
+        <ErrorBoundary t={t} autoHeight>
           <StoryCKEditor
+            story_id={story_id}
             initialData={body}
-            onChange={story.bodyChange}
+            onChange={(lang: string, update: string) => {
+              dispatch(bodyChange({ lang, update }))
+            }}
             cropImage={onSelectImage}
-            onUploadImage={() => {
+            onImageUpload={() => {
               message.info(t('Image Saved'))
             }}
             getMap={(cb) => {
@@ -235,7 +270,9 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
               </span>
               <Switch
                 defaultChecked={published}
-                onChange={story.togglePublished}
+                onChange={(published) => {
+                  dispatch(togglePublished({ published }))
+                }}
               />
               <span
                 style={{
@@ -275,7 +312,9 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
               <b>Published Date</b>
             </p>
             <DatePicker
-              onChange={story.publishDateChange}
+              onChange={(date) => {
+                dispatch(publishDateChange({ date }))
+              }}
               defaultValue={moment(published_at)}
               format='YYYY-MM-DD'
             />
@@ -311,14 +350,18 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
               <LocalizedInput
                 initialValue={title}
                 placeholder='Title'
-                onChange={story.titleChange}
+                onChange={(val) => {
+                  dispatch(titleChange({ title: val }))
+                }}
               />
             </Row>
             <Row>
               <LocalizedInput
                 initialValue={author}
                 placeholder='Author'
-                onChange={story.authorChange}
+                onChange={(val) => {
+                  dispatch(authorChange({ author: val }))
+                }}
               />
             </Row>
             <Row>
@@ -326,7 +369,9 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
                 type='area'
                 initialValue={summary}
                 placeholder='Summary'
-                onChange={story.summaryChange}
+                onChange={(val) => {
+                  dispatch(summaryChange({ summary: val }))
+                }}
               />
             </Row>
           </Row>
@@ -345,7 +390,9 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
               <SelectGroup
                 groups={groups}
                 group_id={owned_by_group_id}
-                onGroupChange={story.groupChange}
+                onGroupChange={(val) => {
+                  dispatch(groupChange({ owned_by_group_id: val }))
+                }}
                 canChangeGroup={canChangeGroup}
               />
             </Formsy>
@@ -355,12 +402,17 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
               marginBottom: '20px'
             }}
           >
-            <Tags initialTags={tags} onChange={story.tagsChange} />
+            <Tags
+              initialTags={tags}
+              onChange={(val) => {
+                dispatch(tagsChange({ tags: val }))
+              }}
+            />
           </Row>
         </ErrorBoundary>
         <Row justify='start'>
           <Col span={12}>
-            <Button type='primary' disabled={!modified} onClick={save}>
+            <Button type='primary' disabled={!modified} onClick={onSave}>
               {t('Save')}
             </Button>
           </Col>
@@ -371,7 +423,7 @@ const StoryEditor = ({ myMaps, recentMaps, groups }: Props): JSX.Element => {
                 title={t('Delete this story?')}
                 okText='Yes'
                 cancelText='No'
-                onConfirm={deleteStory}
+                onConfirm={onDeleteStory}
               >
                 <Button danger icon={<DeleteOutlined />}>
                   {t('Delete')}

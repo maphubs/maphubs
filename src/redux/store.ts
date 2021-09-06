@@ -3,10 +3,11 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import locale from './reducers/localeSlice'
 import group from './reducers/groupSlice'
 import layer from './reducers/layerSlice'
+import story from './reducers/storySlice'
 
 export function makeStore() {
   return configureStore({
-    reducer: { locale, group, layer }
+    reducer: { locale, group, layer, story }
   })
 }
 

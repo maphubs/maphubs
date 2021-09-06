@@ -6,6 +6,8 @@ import { LocalizedString } from '../types/LocalizedString'
 const debug = DebugService('react-error-boundary')
 type Props = {
   t: (v: string | LocalizedString) => string
+  autoHeight?: boolean
+  autoWidth?: boolean
   children: JSX.Element | JSX.Element[]
 }
 type State = {
@@ -30,7 +32,7 @@ export default class ErrorBoundary extends React.Component<Props, State> {
 
   render(): JSX.Element {
     const { props, state } = this
-    const { t } = props
+    const { t, autoHeight, autoWidth, children } = props
 
     return state.error ? (
       <div
@@ -73,7 +75,14 @@ export default class ErrorBoundary extends React.Component<Props, State> {
         </div>
       </div>
     ) : (
-      <div>{props.children}</div>
+      <div
+        style={{
+          height: autoHeight ? '100%' : 'inherit',
+          width: autoWidth ? '100%' : 'inherit'
+        }}
+      >
+        {children}
+      </div>
     )
   }
 }

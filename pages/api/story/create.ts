@@ -16,7 +16,7 @@ const createStory: NextApiHandler = async (req, res) => {
   try {
     const story_id = await StoryModel.createStory(user_id)
     log.info(`created new story: ${story_id}`)
-    res.redirect(`/editstory/${story_id}/New Story`)
+    res.redirect(`/story/edit/${story_id}/New Story`)
   } catch (err) {
     apiError(res, 500)(err)
   }

@@ -21,9 +21,11 @@ export default {
         'omh.stories.firstimage',
         'omh.stories.published',
         'omh.stories.author',
-        'omh.stories.created_at',
-        knex.raw("timezone('UTC', omh.stories.updated_at) as updated_at"),
-        'omh.stories.published_at',
+        knex.raw("timezone('UTC', omh.stories.created_at)::text as created_at"),
+        knex.raw("timezone('UTC', omh.stories.updated_at)::text as updated_at"),
+        knex.raw(
+          "timezone('UTC', omh.stories.published_at)::text as published_at"
+        ),
         'omh.stories.updated_by',
         'omh.stories.owned_by_group_id',
         'omh.groups.name as groupname',

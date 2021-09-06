@@ -248,7 +248,7 @@ const GroupInfo = ({
                         style={{
                           margin: 'auto'
                         }}
-                        href={'/create/story?group_id=' + group.group_id}
+                        href={'/api/story/create?group_id=' + group.group_id}
                       >
                         <PlusOutlined />
                         {t('Story')}

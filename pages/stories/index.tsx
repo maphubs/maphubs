@@ -106,7 +106,7 @@ const Stories = (): JSX.Element => {
         </Row>
         <FloatingAddButton
           onClick={() => {
-            router.push('/create/story')
+            router.push('/api/story/create')
           }}
           tooltip={t('Create New Story')}
         />

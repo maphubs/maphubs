@@ -48,14 +48,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   // add Coral Talk jwt
-  let coral_jwt
+  let coral_jwt = null
   if (process.env.CORAL_TALK_SECRET) {
     const token = jwt.sign(
       {
         user: {
-          id: session.user.id,
+          id: Number.parseInt(session.sub),
           email: session.user.email,
-          username: undefined
+          username: session.user.email
         }
       },
       process.env.CORAL_TALK_SECRET,
@@ -116,7 +116,7 @@ const StoryPage = ({
           />
         </Row>
         <Row>
-          <ErrorBoundary t={t}>
+          <ErrorBoundary t={t} autoHeight autoWidth>
             <Comments coral_jwt={coral_jwt} />
           </ErrorBoundary>
         </Row>

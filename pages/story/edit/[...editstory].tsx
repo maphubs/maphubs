@@ -9,18 +9,23 @@ import { Story } from '../../../src/types/story'
 import useSWR from 'swr'
 import useStickyResult from '../../../src/hooks/useStickyResult'
 import { Group } from '../../../src/types/group'
+import { useDispatch, useSelector } from '../../../src/redux/hooks'
+import { initStory } from '../../../src/redux/reducers/storySlice'
+import { useEffect } from 'react'
 
 const EditStory = (): JSX.Element => {
   const router = useRouter()
   const { t } = useT()
+  const dispatch = useDispatch()
 
   const slug = router.query.editstory || []
-  const id = slug[0]
+
+  const id = slug[0] || 'UNKNOWN'
 
   const { data } = useSWR([
     `
     {
-      story(id: "{id}") {
+      story(id: {id}) {
         story_id
         title
         body
@@ -45,7 +50,7 @@ const EditStory = (): JSX.Element => {
         group_id
         name
       }
-      allowedToModifyStory(id: "{id}")
+      allowedToModifyStory(id: {id})
     }
     `,
     id
@@ -59,12 +64,17 @@ const EditStory = (): JSX.Element => {
   } = useStickyResult(data) || {}
   const { story, myMaps, recentMaps, userGroups, allowedToModifyStory } =
     stickyData
-  // TODO: initial redux state
+
   // dispatch story to redux store
+  useEffect(() => {
+    if (story) {
+      dispatch(initStory(story))
+    }
+  }, [story, dispatch])
 
-  const title = story.title ? t(story.title) : 'New Story'
+  const title = story?.title ? t(story.title) : 'New Story'
 
-  if (story.owned_by_group_id && !allowedToModifyStory) {
+  if (story?.owned_by_group_id && !allowedToModifyStory) {
     return (
       <ErrorBoundary t={t}>
         <Layout>
@@ -83,11 +93,13 @@ const EditStory = (): JSX.Element => {
             height: 'calc(100% - 50px)'
           }}
         >
-          <StoryEditor
-            myMaps={myMaps}
-            recentMaps={recentMaps}
-            groups={userGroups}
-          />
+          {story && (
+            <StoryEditor
+              myMaps={myMaps}
+              recentMaps={recentMaps}
+              groups={userGroups}
+            />
+          )}
         </div>
       </Layout>
     </ErrorBoundary>
