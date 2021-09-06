@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       }
     }
 
-    const user_id = session.user.id || session.user.sub
+    const user_id = Number.parseInt(session.sub)
 
     const layer_id = await LayerModel.createLayer(user_id, trx)
     const layer = await LayerModel.getLayerByID(layer_id, trx)

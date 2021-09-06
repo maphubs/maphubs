@@ -38,7 +38,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (session?.user) {
     allowedToModifyStory = await StoryModel.allowedToModify(
       story_id,
-      session.user.id || session.user.sub
+      Number.parseInt(session.sub)
     )
   }
   if (!story) {

@@ -113,7 +113,7 @@ export default {
         'external_layer_type',
         'external_layer_config',
         'owned_by_group_id',
-        knex.raw("timezone('UTC', last_updated) as last_updated"),
+        knex.raw("timezone('UTC', last_updated)::text as last_updated"),
         'views'
       )
       .table('omh.layers')
@@ -159,7 +159,7 @@ export default {
         'extent_bbox',
         'preview_position',
         'owned_by_group_id',
-        knex.raw("timezone('UTC', last_updated) as last_updated")
+        knex.raw("timezone('UTC', last_updated)::text as last_updated")
       )
       .table('omh.layers')
       .where({
@@ -189,7 +189,7 @@ export default {
         'external_layer_type',
         'external_layer_config',
         'owned_by_group_id',
-        knex.raw("timezone('UTC', last_updated) as last_updated"),
+        knex.raw("timezone('UTC', last_updated)::text as last_updated"),
         'views'
       )
       .table('omh.layers')
@@ -292,7 +292,7 @@ export default {
         'external_layer_type',
         'external_layer_config',
         'owned_by_group_id',
-        knex.raw("timezone('UTC', last_updated) as last_updated"),
+        knex.raw("timezone('UTC', last_updated)::text as last_updated"),
         'views'
       )
       .where(
@@ -348,7 +348,7 @@ export default {
             'external_layer_config',
             'disable_export',
             'owned_by_group_id',
-            knex.raw("timezone('UTC', last_updated) as last_updated"),
+            knex.raw("timezone('UTC', last_updated)::text as last_updated"),
             'views',
             'style',
             'legend_html',
@@ -378,7 +378,7 @@ export default {
             'external_layer_type',
             'external_layer_config',
             'owned_by_group_id',
-            knex.raw("timezone('UTC', last_updated) as last_updated"),
+            knex.raw("timezone('UTC', last_updated)::text as last_updated"),
             'views'
           )
           .table('omh.layers')
@@ -425,7 +425,7 @@ export default {
         'external_layer_config',
         'allow_public_submit',
         'owned_by_group_id',
-        knex.raw("timezone('UTC', last_updated) as last_updated"),
+        knex.raw("timezone('UTC', last_updated)::text as last_updated"),
         'views'
       )
       .table('omh.layers')
@@ -472,8 +472,8 @@ export default {
         'is_empty',
         'allow_public_submit',
         'owned_by_group_id',
-        knex.raw("timezone('UTC', last_updated) as last_updated"),
-        knex.raw("timezone('UTC', creation_time) as creation_time"),
+        knex.raw("timezone('UTC', last_updated)::text as last_updated"),
+        knex.raw("timezone('UTC', creation_time)::text as creation_time"),
         'views',
         'style',
         'labels',
@@ -531,8 +531,8 @@ export default {
         'is_empty',
         'allow_public_submit',
         'owned_by_group_id',
-        knex.raw("timezone('UTC', last_updated) as last_updated"),
-        knex.raw("timezone('UTC', creation_time) as creation_time"),
+        knex.raw("timezone('UTC', last_updated)::text as last_updated"),
+        knex.raw("timezone('UTC', creation_time)::text as creation_time"),
         'views',
         'style',
         'labels',

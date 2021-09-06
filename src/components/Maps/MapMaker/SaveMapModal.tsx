@@ -7,12 +7,14 @@ import useMapT from '../hooks/useMapT'
 import { useSession } from 'next-auth/client'
 
 import { LocalizedString } from '../../../types/LocalizedString'
+import { Group } from '../../../types/group'
 type Props = {
   onSave: (...args: Array<any>) => void
   editing?: boolean
   editingLayer?: boolean
   owned_by_group_id: string
   initialTitle?: LocalizedString
+  userGroups: Group[]
 }
 
 const SaveMapModal = ({
@@ -20,7 +22,8 @@ const SaveMapModal = ({
   editing,
   editingLayer,
   initialTitle,
-  onSave
+  onSave,
+  userGroups
 }: Props): JSX.Element => {
   const { t } = useMapT()
   const [session, loading] = useSession()
@@ -62,12 +65,6 @@ const SaveMapModal = ({
         closeSavingMessage()
       }
     )
-  }
-
-  let groups = []
-
-  if (user && user.groups) {
-    groups = user.groups
   }
 
   return (
@@ -120,7 +117,7 @@ const SaveMapModal = ({
             <Row>
               <Formsy>
                 <SelectGroup
-                  groups={groups}
+                  groups={userGroups}
                   group_id={owned_by_group_id}
                   canChangeGroup={!editing}
                   editing={editing}

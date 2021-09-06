@@ -38,7 +38,7 @@ type Props = {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context)
-  const user_id = session.user.id || session.user.sub
+  const user_id = Number.parseInt(session.sub)
 
   const popularLayers = await LayerModel.getPopularLayers()
   let myLayers = []

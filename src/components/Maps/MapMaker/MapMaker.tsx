@@ -815,6 +815,7 @@ const MapMaker = (props: Props): JSX.Element => {
               initialTitle={title}
               editing={props.edit}
               onSave={onSave}
+              userGroups={props.groups}
             />
           </Col>
         </Row>

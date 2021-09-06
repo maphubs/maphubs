@@ -107,7 +107,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   if (session?.user) {
     allowedToModifyLayer = await LayerModel.allowedToModify(
       layer_id,
-      session.user.id || session.user.sub
+      Number.parseInt(session.sub)
     )
   }
 
