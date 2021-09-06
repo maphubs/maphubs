@@ -49,19 +49,24 @@ const setOverlayStyleThunk = createAsyncThunk(
     const overlayMapStyle = appState.map.overlayMapStyle
     const baseMapStyle = appState.baseMap.baseMapStyle
     const mapboxMap = appState.map.mapboxMap
-    let glStyle = appState.map.glStyle
+    // get a clone of the style, use the baseMapStyle if this is the first load
+    const glStyle = JSON.parse(
+      JSON.stringify(appState.map.glStyle || baseMapStyle)
+    )
     const overlayStyle = _cloneDeep(args.overlayStyle)
-
-    if (!glStyle) glStyle = baseMapStyle
 
     const sourceState = {
       allowLayersToMoveMap: appState.map.allowLayersToMoveMap,
       editing: appState.dataEditor.editing,
       mapboxMap,
       addSource: (key: string, source: SourceWithUrl) => {
+        debug.info('addSource')
+        //const newSources = {...appState.map.glStyle.sources, key: source}
+        if (!glStyle.sources) glStyle.sources = {}
         glStyle.sources[key] = source as mapboxgl.AnySourceData
       },
       addLayer: (layer: mapboxgl.AnyLayer, position?: number) => {
+        debug.info('addLayer')
         const index = _findIndex(glStyle.layers, {
           id: layer.id
         })

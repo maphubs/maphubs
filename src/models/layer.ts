@@ -488,7 +488,14 @@ export default {
       .where('layer_id', layer_id)
 
     if (result && result.length === 1) {
-      return result[0]
+      const layer = result[0]
+      const active = MapStyles.settings.get(layer.style, 'active')
+
+      if (typeof active === 'undefined' || !active) {
+        console.log('toggling layer active')
+        layer.style = MapStyles.settings.set(layer.style, 'active', true)
+      }
+      return layer
     }
 
     // else
@@ -540,7 +547,13 @@ export default {
       .whereRaw('trim(shortid) = trim(?)', [shortid])
 
     if (result && result.length === 1) {
-      return result[0]
+      const layer = result[0]
+      const active = MapStyles.settings.get(layer.style, 'active')
+
+      if (typeof active === 'undefined') {
+        layer.style = MapStyles.settings.set(layer.style, 'active', true)
+      }
+      return layer
     }
 
     // else

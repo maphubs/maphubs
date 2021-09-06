@@ -41,6 +41,7 @@ import { setOverlayStyleThunk } from '../redux/reducers/map/setOverlayStyleThunk
 import { useDispatch, useSelector } from '../redux/hooks'
 import useMapT from '../hooks/useMapT'
 import MapStyles from './Styles'
+import _isequal from 'lodash.isequal'
 
 const debug = DebugService('map')
 type Props = {
@@ -677,10 +678,20 @@ const MapHubsMap = ({
     clearSelection,
     t
   ])
-
+  const prevGLStyle = useRef<mapboxgl.Style>()
   useEffect(() => {
-    debug.log('glstyle changed')
-  }, [glStyle])
+    if (!prevGLStyle.current || !_isequal(prevGLStyle, initialGLStyle)) {
+      debug.log(`(${id}) glstyle changing from props`)
+
+      dispatch(
+        setOverlayStyleThunk({
+          overlayStyle: initialGLStyle,
+          optimizeLayers: allowLayerOrderOptimization
+        })
+      )
+    }
+    prevGLStyle.current = initialGLStyle
+  }, [allowLayerOrderOptimization, initialGLStyle, dispatch, id])
 
   // handle interactive setting changed
   useEffect(() => {
@@ -803,9 +814,12 @@ const MapHubsMap = ({
           [bounds[2], bounds[3]]
         ]
       }
-
-      debug.log(`(${id}) bounds: ${bounds.toString()}`)
-      mapRef.current.fitBounds(bounds, fitBoundsOptions)
+      try {
+        debug.log(`(${id}) bounds: ${bounds.toString()}`)
+        mapRef.current.fitBounds(bounds, fitBoundsOptions)
+      } catch (err) {
+        debug.error(`Failed to fit Bounds: ${err.message}`)
+      }
 
       // disable map postion from layers if user is now providing bounds
       if (allowLayersToMoveMap) {
