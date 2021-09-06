@@ -86,7 +86,7 @@ type Props = {
   layerNotes: { notes: string }
   allowedToModifyLayer: boolean
   mapConfig: Record<string, unknown>
-  layerStats: { stats: { maps: number; stories: number } }
+  layerStats: { maps: number; stories: number }
 }
 
 // use SSR for SEO
@@ -397,10 +397,10 @@ const LayerInfo = ({
         }}
       />
       <ErrorBoundary t={t}>
-        <Layout>
+        <Layout hideFooter>
           <div
             style={{
-              height: 'calc(100% - 51px)',
+              height: '100%',
               marginTop: 0
             }}
           >
@@ -434,7 +434,7 @@ const LayerInfo = ({
                 <style jsx global>
                   {`
                     .ant-tabs-content {
-                      height: calc(100% - 44px);
+                      height: 100%;
                     }
                     .ant-tabs-tabpane {
                       height: 100%;
@@ -662,7 +662,7 @@ const LayerInfo = ({
                         </Card>
                       </Col>
                     </Row>
-                    <Stats stats={layerStats?.stats} />
+                    <Stats stats={layerStats} />
                   </TabPane>
                   <TabPane tab={t('Notes')} key='notes'>
                     <LayerNotes
@@ -710,7 +710,7 @@ const LayerInfo = ({
               >
                 <MapProvider>
                   <InteractiveMap
-                    height='100vh - 50px'
+                    height='100%'
                     fitBounds={layer.preview_position.bbox}
                     style={glStyle}
                     layers={[layer]}
