@@ -1,6 +1,6 @@
 import type { NextApiHandler } from 'next'
 import jwt from 'next-auth/jwt'
-import { isMember } from '../../../src/auth/check-user'
+import { isMember } from '../../../../src/auth/check-user'
 
 import tus from 'tus-node-server'
 import { EVENTS } from 'tus-node-server'
@@ -23,6 +23,20 @@ const metadataStringToObject = (stringValue) => {
   return metadata
 }
 
+// Helper method to wait for a middleware to execute before continuing
+// And to throw an error when an error happens in a middleware
+function runMiddleware(req, res, fn) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) {
+        return reject(result)
+      }
+
+      return resolve(result)
+    })
+  })
+}
+
 const handler: NextApiHandler = async (req, res) => {
   const user = (await jwt.getToken({
     req,
@@ -41,9 +55,11 @@ const handler: NextApiHandler = async (req, res) => {
   const server = new tus.Server()
   server.datastore = new tus.FileStore({
     path: '/' + UPLOAD_PATH
+    //relativeLocation: true
   })
-  const uploadApp = express()
-  uploadApp.all('*', server.handle.bind(server))
+
+  //const uploadApp = express()
+  //uploadApp.all('*', server.handle.bind(server))
   server.on(EVENTS.EVENT_UPLOAD_COMPLETE, async (event) => {
     console.log(event)
     console.log(`Upload complete for file ${event.file.id}`)
@@ -51,7 +67,9 @@ const handler: NextApiHandler = async (req, res) => {
     debug.log(metadata)
   })
 
-  return uploadApp(req, res)
+  //return uploadApp(req, res)
+  req.baseUrl = '/api/layer/upload'
+  return await runMiddleware(req, res, server.handle.bind(server))
 }
 
 export default handler

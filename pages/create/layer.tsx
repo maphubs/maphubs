@@ -17,12 +17,15 @@ import $ from 'jquery'
 import { LocalizedString } from '../../src/types/LocalizedString'
 import useUnload from '../../src/hooks/useUnload'
 import useT from '../../src/hooks/useT'
+import { useDispatch } from '../../src/redux/hooks'
+import { loadLayer } from '../../src/redux/reducers/layerSlice'
 
 //SSR Only
 import knex from '../../src/connection'
 import LayerModel from '../../src/models/layer'
 import PageModel from '../../src/models/page'
 import GroupModel from '../../src/models/group'
+import { useEffect } from 'react'
 
 const debug = debugFactory('CreateLayer')
 const Step = Steps.Step
@@ -47,9 +50,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const layer_id = await LayerModel.createLayer(user_id, trx)
     const layer = await LayerModel.getLayerByID(layer_id, trx)
-
-    layer.last_updated = layer.last_updated.toISOString()
-    layer.creation_time = layer.creation_time.toISOString()
+    console.info(`Created layer ${layer_id}`)
+    // convert undefined to null for JSON serialization
+    if (!layer.style) layer.style = null
 
     const allowedToModifyLayer = await LayerModel.allowedToModify(
       layer_id,
@@ -70,7 +73,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const CreateLayer = ({ layer, userGroups, mapConfig }: Props): JSX.Element => {
   const { t } = useT()
   const router = useRouter()
+  const dispatch = useDispatch()
   const [step, setStep] = useState(1)
+
+  useEffect(() => {
+    dispatch(loadLayer(layer))
+  }, [layer, dispatch])
 
   useUnload((e) => {
     e.preventDefault()
@@ -169,6 +177,7 @@ const CreateLayer = ({ layer, userGroups, mapConfig }: Props): JSX.Element => {
               </Steps>
             </Row>
             <Row
+              justify='center'
               style={{
                 height: 'calc(100% - 65px)'
               }}

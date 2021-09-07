@@ -62,9 +62,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  layer.last_updated = layer.last_updated.toISOString()
-  layer.creation_time = layer.creation_time.toISOString()
-
   const session = await getSession(context)
   let allowedToModifyLayer = null
   if (session?.user) {

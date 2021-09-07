@@ -18,48 +18,45 @@ export default {
   getSource(
     type: string,
     mapConfig: Record<string, any>,
+    onSubmit: () => void,
     t: (v: string | LocalizedString) => string
   ): JSX.Element {
     switch (type) {
       case 'local': {
-        return (
-          <UploadLocalSource onSubmit={this.onSubmit} mapConfig={mapConfig} />
-        )
+        return <UploadLocalSource onSubmit={onSubmit} mapConfig={mapConfig} />
       }
       case 'geojson': {
-        return <GeoJSONUrlSource onSubmit={this.onSubmit} />
+        return <GeoJSONUrlSource onSubmit={onSubmit} />
       }
       case 'mapbox': {
-        return <MapboxSource onSubmit={this.onSubmit} />
+        return <MapboxSource onSubmit={onSubmit} />
       }
       case 'raster': {
-        return <RasterTileSource onSubmit={this.onSubmit} />
+        return <RasterTileSource onSubmit={onSubmit} />
       }
       case 'raster-upload': {
-        return (
-          <UploadRasterSource onSubmit={this.onSubmit} mapConfig={mapConfig} />
-        )
+        return <UploadRasterSource onSubmit={onSubmit} mapConfig={mapConfig} />
       }
       case 'vector': {
-        return <VectorTileSource onSubmit={this.onSubmit} />
+        return <VectorTileSource onSubmit={onSubmit} />
       }
       case 'ags': {
-        return <AGOLSource onSubmit={this.onSubmit} />
+        return <AGOLSource onSubmit={onSubmit} />
       }
       case 'planet': {
-        return <PlanetLabsSource onSubmit={this.onSubmit} />
+        return <PlanetLabsSource onSubmit={onSubmit} />
       }
       case 'sentinel': {
-        return <SentinelSource onSubmit={this.onSubmit} />
+        return <SentinelSource onSubmit={onSubmit} />
       }
       case 'wms': {
-        return <WMSSource onSubmit={this.onSubmit} />
+        return <WMSSource onSubmit={onSubmit} />
       }
       case 'dgwms': {
-        return <DGWMSSource onSubmit={this.onSubmit} />
+        return <DGWMSSource onSubmit={onSubmit} />
       }
       case 'earthengine': {
-        return <EarthEngineSource onSubmit={this.onSubmit} />
+        return <EarthEngineSource onSubmit={onSubmit} />
       }
       case 'remote': {
         return (
@@ -98,10 +95,10 @@ export default {
       case 'point':
       case 'line':
       case 'polygon': {
-        return <EmptyLocalSource type={type} onSubmit={this.onSubmit} />
+        return <EmptyLocalSource type={type} onSubmit={onSubmit} />
       }
       default: {
-        return ''
+        return <></>
       }
     }
   }

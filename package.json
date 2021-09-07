@@ -82,7 +82,7 @@
     "@uppy/react": "^1.6.3",
     "@uppy/tus": "^1.5.10",
     "ace-builds": "^1.4.11",
-    "antd": "4.15.6",
+    "antd": "4.16.13",
     "apollo-server-micro": "^3.0.2",
     "babel-plugin-import": "^1.13.0",
     "bluebird": "^3.7.2",

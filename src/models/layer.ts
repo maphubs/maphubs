@@ -495,6 +495,8 @@ export default {
         console.log('toggling layer active')
         layer.style = MapStyles.settings.set(layer.style, 'active', true)
       }
+      if (typeof layer.created_by_user_id === 'string')
+        layer.created_by_user_id = Number.parseInt(layer.created_by_user_id)
       return layer
     }
 
@@ -1144,8 +1146,13 @@ export default {
         last_updated: knex.raw('now()')
       })
     // update the thumbnail
-    await ScreenshotUtils.reloadLayerThumbnail(layer_id)
-    return ScreenshotUtils.reloadLayerImage(layer_id)
+    try {
+      await ScreenshotUtils.reloadLayerThumbnail(layer_id)
+      await ScreenshotUtils.reloadLayerImage(layer_id)
+    } catch (err) {
+      log.error(err)
+    }
+    return true
   },
 
   async savePresets(

@@ -18,8 +18,10 @@ import useT from '../../hooks/useT'
 import { useDispatch, useSelector } from '../../redux/hooks'
 import LayerAPI from '../../redux/reducers/layer-api'
 import { setStyle, resetStyle } from '../../redux/reducers/layerSlice'
-
 import dynamic from 'next/dynamic'
+import MapProvider from '../Maps/redux/MapProvider'
+import { MapState } from '../Maps/redux/reducers/mapSlice'
+
 const MapHubsMap = dynamic(() => import('../Maps/Map'), {
   ssr: false
 })
@@ -44,18 +46,18 @@ const LayerStyle = ({
   const dispatch = useDispatch()
   const [rasterOpacity, setRasterOpacity] = useState(100) // FIXME: opacity slider always starts at 100
   const layerState = useSelector((state) => state.layer)
+  const [mapState, setMapState] = useState<MapState>()
 
   const submit = async (): Promise<void> => {
     const { layer_id, name, style, labels, legend_html } = layerState
-
     const closeSavingMessage = message.loading(t('Saving'), 0)
-    const center = mapboxMap.getCenter()
-    const zoom = mapboxMap.getZoom()
+    const center = mapState.mapboxMap.getCenter()
+    const zoom = mapState.mapboxMap.getZoom()
     const preview_position = {
       zoom,
       lng: center.lng,
       lat: center.lat,
-      bbox: mapboxMap.getBounds().toArray()
+      bbox: mapState.mapboxMap.getBounds().toArray()
     }
 
     const data = {
@@ -79,7 +81,7 @@ const LayerStyle = ({
   }
 
   const changeOpacity = (opacity: number): void => {
-    const { is_external, external_layer_config, layer_id, shortid } = layerState
+    const { layer_id, shortid, external_layer_config, is_external } = layerState
     const elc = external_layer_config || {}
 
     const style =
@@ -173,35 +175,44 @@ const LayerStyle = ({
                 padding: '20px'
               }}
             >
-              <MapHubsMap
-                id='layer-style-map'
-                className='z-depth-2'
-                initialGLStyle={style}
-                showLogo
-                mapConfig={mapConfig}
-                fitBounds={mapExtent}
-                locale={locale}
-                mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-                DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
-                earthEngineClientID={
-                  process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
-                }
+              {' '}
+              <MapProvider
+                getMapState={(val) => {
+                  setMapState(val)
+                }}
               >
-                <MiniLegend
-                  style={{
-                    position: 'absolute',
-                    top: '5px',
-                    left: '5px',
-                    minWidth: '200px',
-                    width: '20%',
-                    zIndex: 2
-                  }}
-                  collapsible
-                  hideInactive={false}
-                  showLayersButton={false}
-                  layers={[layerState]}
-                />
-              </MapHubsMap>
+                <MapHubsMap
+                  id='layer-style-map'
+                  className='z-depth-2'
+                  initialGLStyle={style}
+                  showLogo
+                  mapConfig={mapConfig}
+                  fitBounds={mapExtent}
+                  locale={locale}
+                  mapboxAccessToken={
+                    process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+                  }
+                  DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+                  earthEngineClientID={
+                    process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
+                  }
+                >
+                  <MiniLegend
+                    style={{
+                      position: 'absolute',
+                      top: '5px',
+                      left: '5px',
+                      minWidth: '200px',
+                      width: '20%',
+                      zIndex: 2
+                    }}
+                    collapsible
+                    hideInactive={false}
+                    showLayersButton={false}
+                    layers={[layerState]}
+                  />
+                </MapHubsMap>
+              </MapProvider>
             </Row>
           )}
         </Col>
@@ -330,12 +341,7 @@ const LayerStyle = ({
               </Button>
             </Col>
             <Col span={6} offset={12}>
-              <Button
-                type='primary'
-                onClick={() => {
-                  submit(MapState)
-                }}
-              >
+              <Button type='primary' onClick={submit}>
                 {t('Save')}
               </Button>
             </Col>

@@ -65,6 +65,7 @@ const handler: NextApiHandler = async (req, res) => {
           const path = UPLOAD_PATH + '/' + fileid
           const ext = getExt(originalName)
           const pathWithExt = `${path}.${ext}`
+          debug.info(`Adding extension to file ${pathWithExt}`)
           await new Promise((resolve, reject) => {
             // path set by us with a uuid filename, extension value is not copying directly from user input
             // eslint-disable-next-line security/detect-non-literal-fs-filename
@@ -76,6 +77,7 @@ const handler: NextApiHandler = async (req, res) => {
           let importerResult
 
           try {
+            debug.info(`Running Importer`)
             importerResult = await importer(pathWithExt, layer_id)
           } catch (err) {
             log.error(err.message)
@@ -105,9 +107,19 @@ const handler: NextApiHandler = async (req, res) => {
             // pass through other types of results
             return res.status(200).send(importerResult)
           }
+        } else {
+          log.error(
+            `Unauthorized user: ${user_id} layer was started by ${layer.created_by_user_id}`
+          )
+          log.error(`${typeof layer.created_by_user_id}`)
+          return res
+            .status(400)
+            .send({ success: false, error: 'invalid user_id' })
         }
       } else {
-        return res.status(400).send('layer not found')
+        return res
+          .status(400)
+          .send({ success: false, error: 'layer not found' })
       }
     } catch (err) {
       log.error(err.message)

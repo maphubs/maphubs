@@ -40,7 +40,12 @@ const CreateLayer = ({
     }
   }, [source])
 
-  const sourceDisplay = LayerSourceHelper.getSource(source, mapConfig, t)
+  const sourceDisplay = LayerSourceHelper.getSource(
+    source,
+    mapConfig,
+    onSubmit,
+    t
+  )
   return (
     <>
       <style jsx global>
@@ -56,14 +61,8 @@ const CreateLayer = ({
           }
         `}
       </style>
-      <div className='container'>
-        <Row
-          justify='center'
-          align='top'
-          style={{
-            maxWidth: '850px'
-          }}
-        >
+      <div style={{ maxWidth: '850px' }}>
+        <Row justify='center' align='top'>
           <Col sm={24} md={10}>
             <p className='section-header'>{t('Upload Data')}</p>
             <Row

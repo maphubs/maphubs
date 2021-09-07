@@ -36,7 +36,7 @@ const Step1 = ({ onSubmit, mapConfig }: Props): JSX.Element => {
   }
 
   return (
-    <Row>
+    <Row justify='center'>
       <CreateLayer
         onSubmit={onSubmit}
         mapConfig={mapConfig}
