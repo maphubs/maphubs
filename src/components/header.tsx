@@ -64,7 +64,8 @@ const MapHubsHeader = ({
           height: '50px',
           lineHeight: '50px',
           textAlign: mode === 'vertical' ? 'left' : 'right',
-          borderBottom: 'none'
+          borderBottom: 'none',
+          justifyContent: 'flex-end'
         }}
       >
         {showMakeAMap && (
@@ -229,6 +230,7 @@ const MapHubsHeader = ({
           }
         `}
       </style>
+
       {NavMenu}
 
       <MenuOutlined
