@@ -269,7 +269,6 @@ const StaticMap = (): JSX.Element => {
           <MapHubsMap
             id='static-map'
             interactive={false}
-            showPlayButton={false}
             fitBounds={bounds}
             insetMap={showInset}
             insetConfig={insetConfig}

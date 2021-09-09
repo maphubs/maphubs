@@ -56,7 +56,6 @@ type Props = {
   earthEngineClientID?: string
   showLayerVisibility?: boolean
   showLayerInfo?: boolean
-  showPlayButton?: boolean
   showSearch?: boolean
   onLoad?: (...args: Array<any>) => void
 }
@@ -141,7 +140,6 @@ const InteractiveMap = (props: Props): JSX.Element => {
     hash,
     showLayerVisibility,
     showLayerInfo,
-    showPlayButton,
     showFeatureInfoEditButtons,
     showMapTools,
     showSearch,
@@ -272,7 +270,6 @@ const InteractiveMap = (props: Props): JSX.Element => {
                 mapLayers={layers}
                 toggleVisibility={toggleVisibility}
                 onLoad={onLoad}
-                showPlayButton={showPlayButton}
                 showMapTools={showMapTools}
                 showFeatureInfoEditButtons={showFeatureInfoEditButtons}
                 showSearch={showSearch}
@@ -377,7 +374,6 @@ InteractiveMap.defaultProps = {
   // show toggles in layer menu
   showLayerInfo: true,
   // show info links in layer menu
-  showPlayButton: true,
   showMapTools: true,
   showFeatureInfoEditButtons: true,
   showSearch: true,

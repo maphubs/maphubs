@@ -12,7 +12,6 @@ import MapSearchPanel from './Search/MapSearchPanel'
 import MapToolPanel from './MapToolPanel'
 import InsetMap from './InsetMap'
 import turfCentroid from '@turf/centroid'
-import PlayArrow from '@material-ui/icons/PlayArrow'
 import MapLayerMenu from './MapLayerMenu'
 import { Layer } from '../../../types/layer'
 import 'mapbox-gl/dist/mapbox-gl.css'
@@ -58,7 +57,6 @@ type Props = {
   tileJSONUrl?: string
   data?: FeatureCollection
   interactive?: boolean
-  showPlayButton?: boolean
   showLogo?: boolean
   showScale?: boolean
   showFeatureInfoEditButtons?: boolean
@@ -144,7 +142,6 @@ const MapHubsMap = ({
   showFeatureInfoEditButtons,
   categories,
   gpxLink,
-  showPlayButton,
   children,
   mapboxAccessToken,
   insetConfig,
@@ -850,14 +847,6 @@ const MapHubsMap = ({
     }
   }, [])
 
-  const startInteractive = () => {
-    setInteractionActive(true)
-
-    if (!enableRotation) {
-      mapRef.current.dragRotate.disable()
-      mapRef.current.touchZoomRotate.disableRotation()
-    }
-  }
   const changeBaseMap = async (mapName: string) => {
     debug.log(`(${id}) changing basemap to: ${mapName}`)
     const result = await dispatch(setBaseMapThunk(mapName)).unwrap()
@@ -1127,20 +1116,6 @@ const MapHubsMap = ({
             />
           </div>
         )}
-        {!interactionActive && showPlayButton && (
-          <a
-            onClick={startInteractive}
-            style={{
-              position: 'absolute',
-              left: '50%',
-              bottom: '50%',
-              backgroundColor: 'rgba(25,25,25,0.1)',
-              zIndex: 999
-            }}
-          >
-            <PlayArrow />
-          </a>
-        )}
         {mapLoaded && children}
         {mapLoaded && showLogo && (
           <img
@@ -1176,7 +1151,6 @@ MapHubsMap.defaultProps = {
   showFeatureInfoEditButtons: true,
   showMapTools: true,
   showSearch: true,
-  showPlayButton: true,
   navPosition: 'top-right' as Props['navPosition'],
   showLogo: true,
   insetMap: true,

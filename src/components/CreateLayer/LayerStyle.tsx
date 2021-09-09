@@ -220,7 +220,6 @@ const LayerStyle = ({
                   }
                   preserveDrawingBuffer
                   interactive={!screenshotMode}
-                  showPlayButton={!screenshotMode}
                   insetMap={!screenshotMode}
                 >
                   {!screenshotMode && (
