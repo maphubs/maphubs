@@ -27,7 +27,13 @@ const handler: NextApiHandler = async (req, res) => {
     const layer_id = Number.parseInt(fileParts[0])
     const image = await ScreenshotUtils.getLayerThumbnail(layer_id)
 
-    return ScreenshotUtils.returnImage(image, 'image/jpeg', req, res)
+    if (!image) {
+      return res.status(404).send('')
+    }
+
+    const imageData = image.split(',')[1]
+
+    return ScreenshotUtils.returnImage(imageData, 'image/jpeg', req, res)
   } catch (err) {
     apiError(res, 500)(err)
   }

@@ -135,7 +135,7 @@ const OpacityChooser = ({
               <Col sm={24} md={12}>
                 <Button
                   onClick={() => {
-                    setShowStyleEditor(false)
+                    setShowStyleEditor(true)
                   }}
                   type='primary'
                 >
@@ -163,8 +163,8 @@ const OpacityChooser = ({
         initialCode={JSON.stringify(style, undefined, 2)}
         title={t('Editing Layer Style')}
         onSave={(style: string): void => {
-          style = JSON.parse(style)
-          onStyleChange(style)
+          setShowStyleEditor(false)
+          onStyleChange(JSON.parse(style))
         }}
         onCancel={() => {
           setShowStyleEditor(false)
@@ -176,7 +176,10 @@ const OpacityChooser = ({
         mode='html'
         initialCode={legendCode}
         title={t('Edit Layer Legend')}
-        onSave={onLegendChange}
+        onSave={(code) => {
+          onLegendChange(code)
+          setShowLegendEditor(false)
+        }}
         onCancel={() => {
           setShowLegendEditor(false)
         }}

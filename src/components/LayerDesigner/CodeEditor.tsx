@@ -105,7 +105,7 @@ const CodeEditor = ({
         centered
         width='60vw'
         bodyStyle={{
-          height: 'calc(100% - 110px)',
+          height: 'calc(80vh - 110px)',
           padding: '0px'
         }}
         onCancel={() => {

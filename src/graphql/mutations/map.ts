@@ -6,7 +6,6 @@ import GroupModel from '../../models/group'
 import { Layer } from '../../types/layer'
 import mapboxgl from 'mapbox-gl'
 import { MapPosition } from '../../types/map'
-import screenshotUtils from '../../services/screenshot-utils'
 import knex from '../../connection'
 
 const debug = DebugService('mutations/groups')
@@ -47,11 +46,10 @@ export default {
             JSON.parse(settings) as Record<string, unknown>,
             user_id,
             group_id,
+            // TODO: add screenshot
             trx
           )
-          // intentionally not returning here since we don't want to wait for the reload
-          screenshotUtils.reloadMapThumbnail(map_id)
-          screenshotUtils.reloadMapImage(map_id)
+
           return {
             map_id
           }
@@ -97,11 +95,10 @@ export default {
           JSON.parse(position) as MapPosition,
           JSON.parse(title) as LocalizedString,
           JSON.parse(settings) as Record<string, unknown>,
+          // TODO: add screenshot
           user_id
         )
-        // don't wait for screenshot
-        screenshotUtils.reloadMapThumbnail(map_id)
-        screenshotUtils.reloadMapImage(map_id)
+
         return true
       } else {
         throw new Error('you do not have permission to modify this map')
@@ -156,9 +153,6 @@ export default {
           user_id,
           title
         )
-        // don't wait for screenshot
-        screenshotUtils.reloadMapThumbnail(copy_id)
-        screenshotUtils.reloadMapImage(copy_id)
         return {
           map_id: copy_id
         }

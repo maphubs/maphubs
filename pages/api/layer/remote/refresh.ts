@@ -28,15 +28,10 @@ const handler: NextApiHandler = async (req, res) => {
         const layer = await LayerModel.getLayerByID(req.body.layer_id)
 
         if (layer && layer.remote) {
-          let url
+          const url = `${
+            layer.remote_host === 'localhost' ? 'http://' : 'https://'
+          }${layer.remote_host}/api/layer/${layer.remote_layer_id}/metadata`
 
-          url = layer.remote_host === 'localhost' ? 'http://' : 'https://'
-
-          url =
-            url +
-            layer.remote_host +
-            '/api/layer/metadata/' +
-            layer.remote_layer_id
           const response = await request.get(url)
           const result = await LayerModel.updateRemoteLayer(
             layer.layer_id,

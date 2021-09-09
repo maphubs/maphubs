@@ -24,7 +24,8 @@ export default {
     onClick?: (...args: Array<any>) => any
   ): CardConfig {
     const layer_id: number = layer.layer_id ? layer.layer_id : -1
-    const image_url = `/api/screenshot/layer/thumbnail/${layer_id}.jpg`
+    const baseUrl = urlUtil.getBaseUrl()
+    const image_url = `${baseUrl}/api/screenshot/layer/thumbnail/${layer_id}.jpg`
     return {
       id: `layer-${layer_id.toString()}`,
       title: layer.name,

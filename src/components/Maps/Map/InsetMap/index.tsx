@@ -31,6 +31,7 @@ type Props = {
     zoom: number
   }
   mapboxAccessToken: string
+  preserveDrawingBuffer?: boolean
 }
 
 const getGeoJSONFromBounds = (
@@ -79,7 +80,8 @@ const InsetMap = (props: Props): JSX.Element => {
     minWidth,
     maxWidth,
     height,
-    width
+    width,
+    preserveDrawingBuffer
   } = props
   const insetMapRef = useRef(null)
   const [collapsed, setCollapsed] = useState(props.collapsed)
@@ -235,7 +237,8 @@ const InsetMap = (props: Props): JSX.Element => {
         maxZoom: maxZoom,
         interactive: false,
         center,
-        attributionControl: false
+        attributionControl: false,
+        preserveDrawingBuffer
       })
       insetMapRef.current = insetMap
       insetMap.on('styledata', () => {
@@ -310,7 +313,8 @@ const InsetMap = (props: Props): JSX.Element => {
     fixedPosition,
     mapboxAccessToken,
     maxZoom,
-    padding
+    padding,
+    preserveDrawingBuffer
   ])
 
   /*
@@ -353,21 +357,18 @@ const InsetMap = (props: Props): JSX.Element => {
         left: '5px'
       }}
     >
-      <div
-        id={id + '_inset'}
-        style={{
-          display: 'none'
-        }}
-      >
-        <MapToolButton
-          onClick={toggleCollapsed}
-          color='#323333'
-          top='auto'
-          right='auto'
-          bottom='5px'
-          left='5px'
-          icon='near_me'
-        />
+      <div id={id + '_inset'}>
+        {collapsible && (
+          <MapToolButton
+            onClick={toggleCollapsed}
+            color='#323333'
+            top='auto'
+            right='auto'
+            bottom='5px'
+            left='5px'
+            icon='near_me'
+          />
+        )}
       </div>
     </div>
   ) : (
@@ -382,7 +383,9 @@ const InsetMap = (props: Props): JSX.Element => {
         minWidth: minWidth,
         maxWidth: maxWidth,
         height: height,
-        width: width
+        width: width,
+        zIndex: 1,
+        border: '0.5px solid rgba(222,222,222,50)'
       }}
     >
       <div

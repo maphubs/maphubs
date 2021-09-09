@@ -1,5 +1,4 @@
 import MapStyles from '../components/Maps/Map/Styles'
-import type { Layer } from '../types/layer'
 import knex from '../connection'
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import _find from 'lodash.find'
@@ -8,11 +7,13 @@ import DataLoadUtils from '../services/data-load-utils'
 import Group from './group'
 import Map from './map'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import ScreenshotUtils from '../services/screenshot-utils'
 import PhotoAttachment from './photo-attachment'
 import shortid from 'shortid'
 import Bluebird from 'bluebird'
 import { Knex } from 'knex'
+import mapboxgl from 'mapbox-gl'
+import ImageUtils from '../services/image-utils'
+import { Layer } from '../types/layer'
 
 const debug = DebugService('model/layers')
 
@@ -814,7 +815,7 @@ export default {
   async updateRemoteLayer(
     layer_id: number,
     group_id: string,
-    layer: any,
+    layer: Layer,
     host: string,
     user_id: number
   ): Promise<number> {
@@ -866,8 +867,7 @@ export default {
         layer_id
       })
       .update(layer)
-    await ScreenshotUtils.reloadLayerThumbnail(layer_id)
-    await ScreenshotUtils.reloadLayerImage(layer_id)
+
     return result
   },
 
@@ -1125,13 +1125,15 @@ export default {
 
   async saveStyle(
     layer_id: number,
-    style: any,
-    labels: any,
-    legend_html: any,
-    settings: any,
-    preview_position: any,
+    style: mapboxgl.Style,
+    labels: Record<string, unknown>,
+    legend_html: string,
+    settings: Record<string, unknown>,
+    preview_position: Record<string, unknown>,
+    screenshot: string,
     user_id: number
   ): Promise<boolean> {
+    const thumbnail = await ImageUtils.resizeBase64(screenshot, 800, 600)
     await knex('omh.layers')
       .where({
         layer_id
@@ -1142,16 +1144,12 @@ export default {
         settings: JSON.stringify(settings),
         legend_html,
         preview_position,
+        screenshot,
+        thumbnail,
         updated_by_user_id: user_id,
         last_updated: knex.raw('now()')
       })
-    // update the thumbnail
-    try {
-      await ScreenshotUtils.reloadLayerThumbnail(layer_id)
-      await ScreenshotUtils.reloadLayerImage(layer_id)
-    } catch (err) {
-      log.error(err)
-    }
+
     return true
   },
 

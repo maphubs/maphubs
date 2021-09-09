@@ -402,17 +402,7 @@ const LayerDesigner = ({
           </Row>
         </TabPane>
       </Tabs>
-      <CodeEditor
-        visible={showStyleEditor}
-        id='layer-style-editor'
-        mode='json'
-        initialCode={JSON.stringify(initialStyle, undefined, 2)}
-        title={t('Editing Layer Style')}
-        onSave={onCodeStyleChange}
-        onCancel={() => {
-          setShowStyleEditor(false)
-        }}
-      />
+
       <CodeEditor
         visible={showLegendEditor}
         id='layer-legend-editor'
@@ -425,6 +415,17 @@ const LayerDesigner = ({
         }}
         onCancel={() => {
           setShowLegendEditor(false)
+        }}
+      />
+      <CodeEditor
+        visible={showStyleEditor}
+        id='layer-style-editor'
+        mode='json'
+        initialCode={JSON.stringify(initialStyle, undefined, 2)}
+        title={t('Editing Layer Style')}
+        onSave={onCodeStyleChange}
+        onCancel={() => {
+          setShowStyleEditor(false)
         }}
       />
     </div>

@@ -300,7 +300,8 @@ const MiniLegend = ({
               style={{
                 overflowX: 'hidden',
                 overflowY: allowScroll ? 'auto' : 'hidden',
-                maxHeight: contentHeight,
+                height: '100%',
+                zIndex: 999,
                 padding: '5px'
               }}
             >

@@ -286,6 +286,7 @@ export default {
         map.settings,
         user_id,
         to_group_id,
+        map.screenshot,
         trx
       )
     })

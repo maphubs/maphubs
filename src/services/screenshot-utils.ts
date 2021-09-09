@@ -40,8 +40,6 @@ export default {
   },
 
   getLayerThumbnail(layer_id: number): any {
-    const _this = this
-
     debug.log('get thumbnail image for layer: ' + layer_id)
     return knex('omh.layers')
       .select('thumbnail')
@@ -59,62 +57,13 @@ export default {
           return result[0].thumbnail
         } else {
           debug.log('no image in database for layer: ' + layer_id)
-          return _this.updateLayerThumbnail(layer_id)
+          return
         }
-      })
-  },
-
-  async updateLayerThumbnail(layer_id: number): Promise<any> {
-    debug.log('updating image for layer: ' + layer_id)
-    const width = 400
-    const height = 300
-    const maphubsUrl =
-      urlUtil.getBaseUrl() + '/api/layer/' + layer_id + '/static/render/'
-    const options = Object.assign(screenshotOptions, {
-      url: maphubsUrl,
-      width,
-      height,
-      type: 'jpeg',
-      quality: 0.8
-    })
-    debug.log(JSON.stringify(options))
-    const image = await this.base64Download(
-      process.env.SCREENSHOT_SERVICE_URL,
-      options
-    )
-    await knex('omh.layers')
-      .update({
-        thumbnail: image
-      })
-      .where({
-        layer_id
-      })
-    log.info('Updated Layer Thumbnail: ' + layer_id)
-    return image
-  },
-
-  reloadLayerThumbnail(layer_id: number): any {
-    const _this = this
-
-    return knex('omh.layers')
-      .update({
-        thumbnail: null
-      })
-      .where({
-        layer_id
-      })
-      .then(() => {
-        // don't return the promise because we want this to run async
-        _this.updateLayerThumbnail(layer_id)
-
-        return true
       })
   },
 
   // Layer image
   getLayerImage(layer_id: number): any {
-    const _this = this
-
     debug.log('get image for layer: ' + layer_id)
     return knex('omh.layers')
       .select('screenshot')
@@ -132,54 +81,9 @@ export default {
           return result[0].screenshot
         } else {
           debug.log('no image in database for layer: ' + layer_id)
-          return _this.updateLayerImage(layer_id)
+          return null
         }
       })
-  },
-
-  async updateLayerImage(layer_id: number): Promise<any> {
-    debug.log('updating image for layer: ' + layer_id)
-    // get screenshot from the manet service
-    const width = 1200
-    const height = 630
-    const baseUrl = urlUtil.getBaseUrl() // use internal route
-
-    const maphubsUrl = baseUrl + '/api/layer/' + layer_id + '/static/render/'
-    const options = Object.assign(screenshotOptions, {
-      url: maphubsUrl,
-      width,
-      height,
-      type: 'png',
-      quality: 1
-    })
-    debug.log(JSON.stringify(options))
-    // replace image in database
-    const image = await this.base64Download(
-      process.env.SCREENSHOT_SERVICE_URL,
-      options
-    )
-    await knex('omh.layers')
-      .update({
-        screenshot: image
-      })
-      .where({
-        layer_id
-      })
-    log.info('Updated Layer Image: ' + layer_id)
-    return image
-  },
-
-  async reloadLayerImage(layer_id: number): Promise<boolean> {
-    await knex('omh.layers')
-      .update({
-        screenshot: null
-      })
-      .where({
-        layer_id
-      })
-    // don't return the promise because we want this to run async
-    this.updateLayerImage(layer_id)
-    return true
   },
 
   // Map Image
@@ -199,7 +103,6 @@ export default {
       return result[0].screenshot
     } else {
       debug.log('no image in database for map: ' + map_id)
-      return this.updateMapImage(map_id)
     }
   },
 
@@ -232,19 +135,6 @@ export default {
       })
     log.info('Updated Map Image: ' + map_id)
     return image
-  },
-
-  async reloadMapImage(map_id: number): Promise<boolean> {
-    await knex('omh.maps')
-      .update({
-        screenshot: null
-      })
-      .where({
-        map_id
-      })
-    // don't return the promise because we want this to run async
-    this.updateMapImage(map_id)
-    return true
   },
 
   async updateMapThumbnail(map_id: number): Promise<any> {
@@ -297,21 +187,7 @@ export default {
       return result[0].thumbnail
     } else {
       debug.log('no image in database for map: ' + map_id)
-      return this.updateMapThumbnail(map_id)
     }
-  },
-
-  async reloadMapThumbnail(map_id: number): Promise<boolean> {
-    await knex('omh.maps')
-      .update({
-        thumbnail: null
-      })
-      .where({
-        map_id
-      })
-    // don't return the promise because we want this to run async
-    this.updateMapThumbnail(map_id)
-    return true
   },
 
   returnImage(

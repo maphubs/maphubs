@@ -28,6 +28,7 @@ const saveStyle: NextApiHandler = async (req, res) => {
           data.legend_html,
           data.settings,
           data.preview_position,
+          data.screenshot,
           user_id
         )
         if (result) {
@@ -52,3 +53,11 @@ const saveStyle: NextApiHandler = async (req, res) => {
   }
 }
 export default saveStyle
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '25mb'
+    }
+  }
+}

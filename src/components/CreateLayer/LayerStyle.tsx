@@ -20,7 +20,7 @@ import LayerAPI from '../../redux/reducers/layer-api'
 import { setStyle, resetStyle } from '../../redux/reducers/layerSlice'
 import dynamic from 'next/dynamic'
 import MapProvider from '../Maps/redux/MapProvider'
-import { MapState } from '../Maps/redux/reducers/mapSlice'
+import { toPng } from 'html-to-image'
 
 const MapHubsMap = dynamic(() => import('../Maps/Map'), {
   ssr: false
@@ -46,25 +46,42 @@ const LayerStyle = ({
   const dispatch = useDispatch()
   const [rasterOpacity, setRasterOpacity] = useState(100) // FIXME: opacity slider always starts at 100
   const layerState = useSelector((state) => state.layer)
-  const [mapState, setMapState] = useState<MapState>()
+  const [mapboxMap, setMapboxMap] = useState<mapboxgl.Map>()
+  const [screenshotMode, setScreenshotMode] = useState(false)
 
   const submit = async (): Promise<void> => {
+    setScreenshotMode(true)
+    const dataUrl = await toPng(document.getElementById('layer-style-map'), {
+      quality: 0.95
+    })
+    /*
+    const link = document.createElement('a')
+    link.download = 'test.png'
+    link.href = dataUrl
+    link.click()
+*/
+    //remove the data URL prefix
+    //const imageData = dataUrl.split(',')[1]
+
+    setScreenshotMode(false)
+
     const { layer_id, name, style, labels, legend_html } = layerState
     const closeSavingMessage = message.loading(t('Saving'), 0)
-    const center = mapState.mapboxMap.getCenter()
-    const zoom = mapState.mapboxMap.getZoom()
+    const center = mapboxMap.getCenter()
+    const zoom = mapboxMap.getZoom()
     const preview_position = {
       zoom,
       lng: center.lng,
       lat: center.lat,
-      bbox: mapState.mapboxMap.getBounds().toArray()
+      bbox: mapboxMap.getBounds().toArray()
     }
 
     const data = {
       style,
       labels,
       legend_html,
-      preview_position
+      preview_position,
+      screenshot: dataUrl
     }
     try {
       await LayerAPI.saveStyle(layer_id, data)
@@ -105,6 +122,11 @@ const LayerStyle = ({
     setRasterOpacity(opacity)
   }
   const onColorChange = (style: mapboxgl.Style, legend_html: string): void => {
+    dispatch(setStyle({ style, legend_html }))
+  }
+
+  const onStyleChange = (style: mapboxgl.Style): void => {
+    const legend_html = MapStyles.legend.rasterLegend()
     dispatch(setStyle({ style, legend_html }))
   }
 
@@ -177,8 +199,8 @@ const LayerStyle = ({
             >
               {' '}
               <MapProvider
-                getMapState={(val) => {
-                  setMapState(val)
+                getMapboxMap={(val) => {
+                  setMapboxMap(val)
                 }}
               >
                 <MapHubsMap
@@ -196,21 +218,27 @@ const LayerStyle = ({
                   earthEngineClientID={
                     process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
                   }
+                  preserveDrawingBuffer
+                  interactive={!screenshotMode}
+                  showPlayButton={!screenshotMode}
+                  insetMap={!screenshotMode}
                 >
-                  <MiniLegend
-                    style={{
-                      position: 'absolute',
-                      top: '5px',
-                      left: '5px',
-                      minWidth: '200px',
-                      width: '20%',
-                      zIndex: 2
-                    }}
-                    collapsible
-                    hideInactive={false}
-                    showLayersButton={false}
-                    layers={[layerState]}
-                  />
+                  {!screenshotMode && (
+                    <MiniLegend
+                      style={{
+                        position: 'absolute',
+                        top: '5px',
+                        left: '5px',
+                        minWidth: '200px',
+                        width: '20%',
+                        zIndex: 2
+                      }}
+                      collapsible
+                      hideInactive={false}
+                      showLayersButton={false}
+                      layers={[layerState]}
+                    />
+                  )}
                 </MapHubsMap>
               </MapProvider>
             </Row>
@@ -228,10 +256,10 @@ const LayerStyle = ({
               <LayerDesigner
                 onColorChange={onColorChange}
                 initialStyle={style}
-                onStyleChange={setStyle}
+                onStyleChange={onStyleChange}
                 labels={labels}
                 onLabelsChange={setLabels}
-                onMarkersChange={setStyle}
+                onMarkersChange={onStyleChange}
                 layer={layerState}
                 legend={legendCode}
                 onLegendChange={setLegend}
@@ -249,7 +277,7 @@ const LayerStyle = ({
                 value={rasterOpacity}
                 onChange={changeOpacity}
                 style={style}
-                onStyleChange={setStyle}
+                onStyleChange={onStyleChange}
                 onColorChange={onColorChange}
                 layer={layerState}
                 legendCode={legendCode}

@@ -12,7 +12,8 @@ export const saveStyle = async (
       style: data.style,
       labels: data.labels,
       legend_html: data.legend_html,
-      preview_position: data.preview_position
+      preview_position: data.preview_position,
+      screenshot: data.screenshot
     })
   })
   const result = await response.json()

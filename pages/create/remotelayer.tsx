@@ -104,9 +104,7 @@ const CreateRemoteLayer = (): JSX.Element => {
     ) {
       const remote_layer_id = pathParts[3]
       request
-        .get(
-          'https://' + remote_host + '/api/layer/metadata/' + remote_layer_id
-        )
+        .get(`https://${remote_host}/api/layer/${remote_layer_id}/metadata`)
         .type('json')
         .accept('json')
         .timeout(1_200_000)

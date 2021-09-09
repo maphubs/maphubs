@@ -375,7 +375,7 @@ const LayerInfo = ({
   const canonical = `${baseUrl}/layer/${layer.layer_id}/${slugify(
     t(layer.name)
   )}`
-  const imageUrl = `${baseUrl}/api/screenshot/layer/image/${layer.layer_id}.png`
+  const imageUrl = `${baseUrl}/api/screenshot/layer/image/${layer.layer_id}.jpg`
 
   return (
     <>
@@ -390,8 +390,8 @@ const LayerInfo = ({
           images: [
             {
               url: imageUrl,
-              width: 1200,
-              height: 630,
+              height: 1200,
+              width: 800,
               alt: t(layer.name)
             }
           ],

@@ -157,6 +157,8 @@ const MapHubsMap = ({
 
   const mapboxPopupRef = useRef<mapboxgl.Popup>()
   const languageControlRef = useRef()
+  const navControlRef = useRef<mapboxgl.NavigationControl>()
+  const fullScreenControlRef = useRef<mapboxgl.FullscreenControl>()
 
   // local state
   const [interactionActive, setInteractionActive] = useState(interactive)
@@ -574,18 +576,18 @@ const MapHubsMap = ({
       map.on('click', clickHandler)
 
       if (interactionActive) {
-        map.addControl(
-          new mapboxgl.NavigationControl({
-            showCompass: false
-          }),
-          navPosition
-        )
-        if (showFullScreen)
-          map.addControl(
-            new mapboxgl.FullscreenControl({
-              container: document.querySelector(`#${id}-fullscreen-wrapper`)
-            })
-          )
+        const navControl = new mapboxgl.NavigationControl({
+          showCompass: false
+        })
+        navControlRef.current = navControl
+        map.addControl(navControl, navPosition)
+        if (showFullScreen) {
+          const fullScreenControl = new mapboxgl.FullscreenControl({
+            container: document.querySelector(`#${id}-fullscreen-wrapper`)
+          })
+          fullScreenControlRef.current = fullScreenControl
+          map.addControl(fullScreenControl)
+        }
       }
 
       if (attributionControl) {
@@ -695,28 +697,41 @@ const MapHubsMap = ({
 
   // handle interactive setting changed
   useEffect(() => {
-    if (interactionActive && !interactive) {
+    if (!interactionActive && interactive) {
       debug.log(`(${id}) enabling interaction`)
       // interactive is enabled but started disabled
-      mapRef.current.addControl(
-        new mapboxgl.NavigationControl({
-          showCompass: false
-        }),
-        navPosition
-      )
-      if (showFullScreen)
-        mapRef.current.addControl(
-          new mapboxgl.FullscreenControl({
-            container: document.querySelector(`#${id}-fullscreen-wrapper`)
-          }),
-          navPosition
-        )
+      const navControl = new mapboxgl.NavigationControl({
+        showCompass: false
+      })
+      mapRef.current.addControl(navControl, navPosition)
+      navControlRef.current = navControl
+      if (showFullScreen) {
+        const fullScreenControl = new mapboxgl.FullscreenControl({
+          container: document.querySelector(`#${id}-fullscreen-wrapper`)
+        })
+        fullScreenControlRef.current = fullScreenControl
+        mapRef.current.addControl(fullScreenControl, navPosition)
+      }
       if (mapRef.current.dragPan) mapRef.current.dragPan.enable()
       if (mapRef.current.scrollZoom) mapRef.current.scrollZoom.enable()
       if (mapRef.current.doubleClickZoom)
         mapRef.current.doubleClickZoom.enable()
       if (mapRef.current.touchZoomRotate)
         mapRef.current.touchZoomRotate.enable()
+      setInteractionActive(true)
+    } else if (interactionActive && !interactive) {
+      debug.log(`(${id}) disabling interaction`)
+
+      mapRef.current.removeControl(navControlRef.current)
+      mapRef.current.removeControl(fullScreenControlRef.current)
+
+      if (mapRef.current.dragPan) mapRef.current.dragPan.disable()
+      if (mapRef.current.scrollZoom) mapRef.current.scrollZoom.disable()
+      if (mapRef.current.doubleClickZoom)
+        mapRef.current.doubleClickZoom.disable()
+      if (mapRef.current.touchZoomRotate)
+        mapRef.current.touchZoomRotate.disable()
+      setInteractionActive(false)
     }
   }, [interactive, interactionActive, navPosition, showFullScreen, id])
 
@@ -1067,7 +1082,9 @@ const MapHubsMap = ({
             id={id}
             bottom={showLogo ? '30px' : '25px'}
             mapboxAccessToken={mapboxAccessToken}
+            preserveDrawingBuffer={preserveDrawingBuffer}
             {...insetConfig}
+            collapsible={interactionActive}
           />
         )}
         {showMapTools && (

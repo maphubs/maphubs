@@ -100,7 +100,7 @@ const LayerAdmin = ({
   const { style, labels, legend_html, preview_position, presets } =
     useSelector(selectMapStyle)
 
-  const user = session.user
+  const user = session?.user
 
   useEffect(() => {
     dispatch(loadLayer(layer))
@@ -245,6 +245,16 @@ const LayerAdmin = ({
   const layerId = layer.layer_id || 0
   const layerName = slugify(t(layer.name))
   const layerInfoUrl = `/layer/info/${layerId}/${layerName}`
+
+  if (!user) {
+    return (
+      <Layout title={t('Layer Settings')} hideFooter>
+        <Row align='middle' justify='center'>
+          <h2>Not authorized to edit this layer</h2>
+        </Row>
+      </Layout>
+    )
+  }
 
   return layer.remote ? (
     <ErrorBoundary t={t}>
@@ -405,46 +415,48 @@ const LayerAdmin = ({
                   </Row>
                 </Row>
               </TabPane>
-              <TabPane
-                tab={t('Fields')}
-                key='fields'
-                style={{
-                  position: 'relative'
-                }}
-              >
-                <div
-                  className='container'
+              {!layer.is_external && (
+                <TabPane
+                  tab={t('Fields')}
+                  key='fields'
                   style={{
-                    height: '100%'
+                    position: 'relative'
                   }}
                 >
-                  <Title level={3}>{t('Data Fields')}</Title>
-                  <Row justify='end'>
-                    <Button
-                      type='primary'
-                      onClick={savePresets}
-                      disabled={!canSavePresets}
-                    >
-                      {t('Save')}
-                    </Button>
-                  </Row>
-                  <Row
+                  <div
+                    className='container'
                     style={{
-                      height: 'calc(100% - 100px)',
-                      overflowY: 'auto'
+                      height: '100%'
                     }}
                   >
-                    <PresetEditor
-                      onValid={() => {
-                        setCanSavePresets(true)
+                    <Title level={3}>{t('Data Fields')}</Title>
+                    <Row justify='end'>
+                      <Button
+                        type='primary'
+                        onClick={savePresets}
+                        disabled={!canSavePresets}
+                      >
+                        {t('Save')}
+                      </Button>
+                    </Row>
+                    <Row
+                      style={{
+                        height: 'calc(100% - 100px)',
+                        overflowY: 'auto'
                       }}
-                      onInvalid={() => {
-                        setCanSavePresets(false)
-                      }}
-                    />
-                  </Row>
-                </div>
-              </TabPane>
+                    >
+                      <PresetEditor
+                        onValid={() => {
+                          setCanSavePresets(true)
+                        }}
+                        onInvalid={() => {
+                          setCanSavePresets(false)
+                        }}
+                      />
+                    </Row>
+                  </div>
+                </TabPane>
+              )}
               <TabPane
                 tab={t('Style/Display')}
                 key='style'

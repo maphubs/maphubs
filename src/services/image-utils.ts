@@ -1,13 +1,10 @@
 import { v4 as uuidv4 } from 'uuid'
 
-import Bluebird from 'bluebird'
-
-import fsNode from 'fs'
-const fs = Bluebird.promisifyAll(fsNode)
+import * as fs from 'fs/promises'
 
 import log from '@bit/kriscarle.maphubs-utils.maphubs-utils.log'
 import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
-import easyimg from 'easyimage'
+import { resize, crop as easyImageCrop, convert } from 'easyimage'
 import Crypto from 'crypto'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -77,13 +74,15 @@ export default {
     const origfilePath = process.env.TEMP_FILE_PATH + '/' + origFile
     const resizedFilePath = process.env.TEMP_FILE_PATH + '/' + resizedFile
     const convertedFilePath = process.env.TEMP_FILE_PATH + '/' + convertedFile
-
+    //console.log('resizing base64 image')
     try {
       // decode base64
       const imageBuffer = this.decodeBase64Image(dataString)
 
       // save it to a file
-      await fs.writeFileAsync(origfilePath, imageBuffer.data)
+      //console.log('writing original file')
+      //console.log(imageBuffer)
+      await fs.writeFile(origfilePath, imageBuffer.data)
       const options = {
         src: origfilePath,
         dst: resizedFilePath,
@@ -91,7 +90,8 @@ export default {
         cropWidth: undefined,
         cropHeight: undefined,
         width: targetWidth,
-        height: targetHeight
+        height: targetHeight,
+        quality: 100
       }
       let resizedImage
 
@@ -99,10 +99,10 @@ export default {
         options.cropWidth = targetWidth
         options.cropHeight = targetHeight
         debug.log('cropping')
-        resizedImage = await easyimg.crop(options)
+        resizedImage = await easyImageCrop(options)
       } else {
         debug.log('resizing')
-        resizedImage = await easyimg.resize(options)
+        resizedImage = await resize(options)
       }
 
       debug.log(
@@ -111,28 +111,29 @@ export default {
           ' x ' +
           resizedImage.height
       )
-      await easyimg.convert({
+      await convert({
         src: resizedFilePath,
         dst: convertedFilePath,
         quality: 85
       })
       // using configured temp path and uuid's, no user input used in path
       // eslint-disable-next-line security/detect-non-literal-fs-filename
-      const bitmap = fs.readFileSync(convertedFilePath)
+      const bitmap = await fs.readFile(convertedFilePath)
       const resizedImageBase64String =
         'data:image/jpeg;base64,' + Buffer.from(bitmap).toString('base64')
 
       /* eslint-disable security/detect-non-literal-fs-filename */
-      await fs.unlinkAsync(origfilePath)
-      await fs.unlinkAsync(resizedFilePath)
-      await fs.unlinkAsync(convertedFilePath)
+      await fs.unlink(origfilePath)
+      await fs.unlink(resizedFilePath)
+      await fs.unlink(convertedFilePath)
       return resizedImageBase64String
     } catch (err) {
       try {
+        console.log(err)
         log.error(err)
-        await fs.unlinkAsync(origfilePath)
-        await fs.unlinkAsync(resizedFilePath)
-        await fs.unlinkAsync(convertedFilePath)
+        await fs.unlink(origfilePath)
+        await fs.unlink(resizedFilePath)
+        await fs.unlink(convertedFilePath)
       } catch (err) {
         log.error(err)
       }
