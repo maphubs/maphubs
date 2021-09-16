@@ -122,7 +122,7 @@ const UserMap = (): JSX.Element => {
           }}
         >
           <InteractiveMap
-            height='calc(100vh - 50px)'
+            height='100%'
             {...map}
             title={map.title}
             position={map.position}

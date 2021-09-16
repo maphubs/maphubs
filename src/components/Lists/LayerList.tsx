@@ -26,10 +26,13 @@ type FilterState = {
 const LayerList = ({ layers, groups }: Props): JSX.Element => {
   const searchInput = useRef<Input>()
   const { t } = useT()
-  const [searchState, setSearchState] = useState<SearchState>()
+  const [searchState, setSearchState] = useState<SearchState>({})
   const [filterState, setFilterState] = useState<FilterState>({
     filteredInfo: {},
-    sortedInfo: {}
+    sortedInfo: {
+      columnKey: 'last_updated',
+      order: 'descend'
+    }
   })
 
   const handleChange = (pagination: any, filters: any, sorter: any) => {
@@ -283,6 +286,7 @@ const LayerList = ({ layers, groups }: Props): JSX.Element => {
       dataIndex: 'last_updated',
       key: 'last_updated',
       width: 200,
+
       sortOrder: sortedInfo.columnKey === 'last_updated' && sortedInfo.order,
       sorter: (a, b) => {
         const aVal = a.last_updated

@@ -1,66 +1,42 @@
 import React from 'react'
-import Layout from '../../src/components/Layout'
 import { useRouter } from 'next/router'
-import { Row, Button, Typography } from 'antd'
-import CardCollection from '../../src/components/CardCarousel/CardCollection'
-import CardSearch from '../../src/components/CardCarousel/CardSearch'
+import Layout from '../../src/components/Layout'
+import { Row, Col, Button, Typography } from 'antd'
+import LayerList from '../../src/components/Lists/LayerList'
 import type { Layer } from '../../src/types/layer'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
-import FloatingAddButton from '../../src/components/FloatingAddButton'
-import cardUtil from '../../src/services/card-util'
 import useSWR from 'swr'
 import useStickyResult from '../../src/hooks/useStickyResult'
+import { Group } from '../../src/types/group'
 import useT from '../../src/hooks/useT'
+
 const { Title } = Typography
 
-const Layers = (): JSX.Element => {
-  const { t } = useT()
+const AllLayers = (): JSX.Element => {
+  const { t, locale } = useT()
   const router = useRouter()
-
   const { data } = useSWR(`
   {
-    featuredLayers(limit: 25) {
+    layers {
       layer_id
-      shortid
       name
-      description
-      source
+      owned_by_group_id
+      last_updated
     }
-    recentLayers(limit: 25) {
-      layer_id
-      shortid
+    groups(locale: "${locale}") {
+      group_id
       name
-      description
-      source
-    }
-    popularLayers(limit: 25) {
-      layer_id
-      shortid
-      name
-      description
-      source
     }
   }
   `)
   const stickyData: {
-    featuredLayers: Layer[]
-    recentLayers: Layer[]
-    popularLayers: Layer[]
+    layers: Layer[]
+    groups: Group[]
   } = useStickyResult(data) || {}
-  const { featuredLayers, recentLayers, popularLayers } = stickyData
-
-  const featuredCards = featuredLayers
-    ? featuredLayers.map((layer) => cardUtil.getLayerCard(layer))
-    : []
-  const recentCards = recentLayers
-    ? recentLayers.map((layer) => cardUtil.getLayerCard(layer))
-    : []
-  const popularCards = popularLayers
-    ? popularLayers.map((layer) => cardUtil.getLayerCard(layer))
-    : []
+  const { layers, groups } = stickyData
   return (
     <ErrorBoundary t={t}>
-      <Layout title={t('Layers')} activePage='layers'>
+      <Layout title={t('Layer')} activePage='layers'>
         <div
           style={{
             margin: '10px'
@@ -72,47 +48,36 @@ const Layers = (): JSX.Element => {
               marginBottom: '10px'
             }}
           >
-            <Title level={2}>{t('Layers')}</Title>
+            <Col span={8}>
+              <Title level={2}>{t('Layers')}</Title>
+            </Col>
+            <Col
+              span={8}
+              offset={8}
+              style={{
+                textAlign: 'right'
+              }}
+            >
+              <Button
+                onClick={() => {
+                  router.push('/createlayer')
+                }}
+              >
+                {t('Create New Layer')}
+              </Button>
+            </Col>
           </Row>
-          <CardSearch cardType='layer' />
-          {featuredCards.length > 0 && (
-            <CardCollection
-              title={t('Featured')}
-              cards={featuredCards}
-              viewAllLink='/layers/all'
-            />
-          )}
-          <CardCollection
-            title={t('Popular')}
-            cards={popularCards}
-            viewAllLink='/layers/all'
-          />
-          <CardCollection
-            title={t('Recent')}
-            cards={recentCards}
-            viewAllLink='/layers/all'
-          />
-
-          <FloatingAddButton
-            onClick={() => {
-              router.push('/createlayer')
-            }}
-            tooltip={t('Create New Layer')}
-          />
           <Row
-            justify='center'
             style={{
-              paddingBottom: '20px',
-              textAlign: 'center'
+              width: '100%',
+              height: 'calc(100vh - 150px)'
             }}
           >
-            <Button type='primary' href='/layers/all'>
-              {t('View All Layers')}
-            </Button>
+            <LayerList layers={layers || []} groups={groups || []} />
           </Row>
         </div>
       </Layout>
     </ErrorBoundary>
   )
 }
-export default Layers
+export default AllLayers

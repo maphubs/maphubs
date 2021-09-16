@@ -29,6 +29,7 @@ type Layer {
   settings: JSON
   extent_bbox: JSON
   preview_position: JSON
+  last_updated: String
 }
 
 type LayerStats {
