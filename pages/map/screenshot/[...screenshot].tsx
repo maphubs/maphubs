@@ -1,93 +1,73 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import MiniLegend from '../../src/components/Maps/Map/MiniLegend'
+import { GetServerSideProps } from 'next'
+import MiniLegend from '../../../src/components/Maps/Map/MiniLegend'
 import { Row, Col, Switch, Modal, message } from 'antd'
-import ErrorBoundary from '../../src/components/ErrorBoundary'
+import ErrorBoundary from '../../../src/components/ErrorBoundary'
 
-import { Layer } from '../../src/types/layer'
-import useT from '../../src/hooks/useT'
-import useSWR from 'swr'
-import useStickyResult from '../../src/hooks/useStickyResult'
-import { Map as MapType } from '../../src/types/map'
+import { Layer } from '../../../src/types/layer'
+import useT from '../../../src/hooks/useT'
+import { Map } from '../../../src/types/map'
+import MapProvider from '../../../src/components/Maps/redux/MapProvider'
 import dynamic from 'next/dynamic'
-const MapHubsMap = dynamic(() => import('../../src/components/Maps/Map'), {
+//SSR Only
+import MapModel from '../../../src/models/map'
+import PageModel from '../../../src/models/page'
+
+const MapHubsMap = dynamic(() => import('../../../src/components/Maps/Map'), {
   ssr: false
 })
 
 const confirm = Modal.confirm
 
-const StaticMap = (): JSX.Element => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const map_id = Number.parseInt(context.params.screenshot[0])
+  const map = await MapModel.getMap(map_id)
+  if (!map) {
+    return {
+      notFound: true
+    }
+  }
+
+  const mapConfig = (await PageModel.getPageConfigs(['map'])[0]) || null
+  return {
+    props: {
+      map,
+      mapLayers: await MapModel.getMapLayers(map_id),
+      mapConfig
+    }
+  }
+}
+
+const StaticMap = ({
+  map,
+  mapLayers,
+  mapConfig
+}: {
+  map: Map
+  mapLayers: Layer[]
+  mapConfig: Record<string, unknown>
+}): JSX.Element => {
   const showLogo = true
 
   const router = useRouter()
   const { t, locale } = useT()
-  const [showLegend, setShowLegend] = useState(false)
-  const [showScale, setShowScale] = useState(false)
-  const [showInset, setShowInset] = useState(false)
-  const [showSettings, setShowSettings] = useState(false)
+  const [showLegend, setShowLegend] = useState(true)
+  const [showScale, setShowScale] = useState(true)
+  const [showInset, setShowInset] = useState(true)
+  const [showSettings, setShowSettings] = useState(true)
 
-  // TODO: use AutoSizer
-  const [size, setSize] = useState({
-    width: 1024,
-    height: 600
-  })
-
-  const slug = router.query.static || []
-  const map_id = slug[0]
-
-  const { data } = useSWR([
-    `
-  {
-    map(id: "{id}") {
-      map_id
-      title
-      position
-      style
-      settings
-      basemap
-      created_at
-      updated_at
-      owned_by_group_id
-      share_id
+  useEffect(() => {
+    const keyDownHandler = (e: KeyboardEvent) => {
+      if (e.key === 's' || e.key === 'S') {
+        setShowSettings(true)
+      }
     }
-    mapLayers(id: "{id}") {
-      layer_id
-      shortid
-      name
-      description
-      source
-      data_type
-      style
-      legend_html
+    window.addEventListener('keydown', keyDownHandler)
+    return () => {
+      window.removeEventListener('keydown', keyDownHandler)
     }
-    allowedToModifyMap(id: "{id}")
-    mapConfig
-  }
-  `,
-    map_id
-  ])
-  const stickyData: {
-    map: MapType
-    mapLayers: Layer[]
-    allowedToModifyMap: boolean
-    mapConfig: Record<string, unknown>
-  } = useStickyResult(data) || {}
-  const { map, mapLayers, allowedToModifyMap, mapConfig } = stickyData
-
-  /*
-  constructor(props: Props) {
-    super(props)
-
-    this.state = {
-      userShowInset: props.insetMap,
-      userShowLegend: props.showLegend,
-      userShowScale: props.showScale,
-      showSettings: !!props.showToolbar,
-      width: 1024,
-      height: 600
-    }
-  }
-  */
+  }, [])
 
   /*
   componentDidMount(): void {
@@ -121,42 +101,6 @@ const StaticMap = (): JSX.Element => {
   const hideSettings = (): void => {
     setShowSettings(false)
     message.info(t('press the "s" key to reopen settings'), 3)
-  }
-
-  let legend, bottomLegend
-
-  if (showLegend) {
-    if (size.width < 600) {
-      bottomLegend = (
-        <MiniLegend
-          style={{
-            width: '100%'
-          }}
-          collapsible={false}
-          title={map.title}
-          hideInactive={false}
-          showLayersButton={false}
-          layers={mapLayers}
-        />
-      )
-    } else {
-      legend = (
-        <MiniLegend
-          style={{
-            position: 'absolute',
-            top: '5px',
-            left: '5px',
-            minWidth: '275px',
-            width: '25%'
-          }}
-          collapsible={false}
-          title={map.title}
-          hideInactive
-          showLayersButton={false}
-          layers={mapLayers}
-        />
-      )
-    }
   }
 
   let bounds
@@ -213,7 +157,7 @@ const StaticMap = (): JSX.Element => {
             </span>
             <Switch
               defaultChecked={showLegend}
-              onChange={setShowLegend}
+              onChange={toggleLegend}
               size='small'
             />
           </Col>
@@ -259,34 +203,50 @@ const StaticMap = (): JSX.Element => {
         </Row>
       )}
       <Row>
-        <div
-          className='embed-map'
-          style={{
-            width: '100vw',
-            height: showSettings ? 'calc(100vh - 25px)' : '100vh'
-          }}
-        >
-          <MapHubsMap
-            id='static-map'
-            interactive={false}
-            fitBounds={bounds}
-            insetMap={showInset}
-            insetConfig={insetConfig}
-            showLogo={showLogo}
-            showScale={showScale}
-            initialGLStyle={map.style}
-            mapConfig={mapConfig}
-            preserveDrawingBuffer
-            navPosition='top-right'
-            mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-            DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
-            earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
-            locale={locale}
+        <MapProvider>
+          <div
+            className='embed-map'
+            style={{
+              width: '100vw',
+              height: showSettings ? 'calc(100vh - 25px)' : '100vh'
+            }}
           >
-            {legend}
-          </MapHubsMap>
-          {bottomLegend}
-        </div>
+            <MapHubsMap
+              id='static-map'
+              interactive={false}
+              fitBounds={bounds}
+              insetMap={showInset}
+              insetConfig={insetConfig}
+              showLogo={showLogo}
+              showScale={showScale}
+              initialGLStyle={map.style}
+              mapConfig={mapConfig}
+              preserveDrawingBuffer
+              navPosition='top-right'
+              mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+              DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+              earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
+              locale={locale}
+            >
+              {showLegend && (
+                <MiniLegend
+                  style={{
+                    position: 'absolute',
+                    top: '5px',
+                    left: '5px',
+                    minWidth: '275px',
+                    width: '25%'
+                  }}
+                  collapsible={false}
+                  title={map.title}
+                  hideInactive
+                  showLayersButton={false}
+                  layers={mapLayers}
+                />
+              )}
+            </MapHubsMap>
+          </div>
+        </MapProvider>
       </Row>
     </ErrorBoundary>
   )
