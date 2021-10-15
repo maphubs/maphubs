@@ -17,10 +17,22 @@ export default {
 
     const result = await db('omh.maps')
       .select(
-        knex.raw(`map_id, title, position, style, settings, basemap, created_by,
-      created_at, updated_by, updated_at, views, owned_by_group_id,
-      share_id,
-     CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`)
+        'map_id',
+        'title',
+        'position',
+        'style',
+        'settings',
+        'basemap',
+        'created_by',
+        'updated_by',
+        'views',
+        'owned_by_group_id',
+        'share_id',
+        knex.raw("timezone('UTC', created_at)::text as created_at"),
+        knex.raw("timezone('UTC', updated_at)::text as updated_at"),
+        knex.raw(
+          `CASE WHEN screenshot IS NULL THEN FALSE ELSE TRUE END as has_screenshot`
+        )
       )
       .where({
         map_id
@@ -75,8 +87,12 @@ export default {
         'omh.layers.disable_export',
         'omh.layers.is_empty',
         'omh.layers.owned_by_group_id',
-        knex.raw("timezone('UTC', omh.layers.last_updated) as last_updated"),
-        knex.raw("timezone('UTC', omh.layers.creation_time) as creation_time"),
+        knex.raw(
+          "timezone('UTC', omh.layers.last_updated)::text as last_updated"
+        ),
+        knex.raw(
+          "timezone('UTC', omh.layers.creation_time)::text as creation_time"
+        ),
         'omh.layers.views',
         'omh.layers.style as default_style',
         'omh.layers.labels as default_labels',

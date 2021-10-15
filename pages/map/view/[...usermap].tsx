@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
-import { useSession } from 'next-auth/client'
+import { GetServerSideProps } from 'next'
+import { useSession, getSession } from 'next-auth/client'
 import Layout from '../../../src/components/Layout'
 import { message } from 'antd'
 import PublicShareModal from '../../../src/components/InteractiveMap/PublicShareModal'
@@ -16,13 +17,16 @@ import EditIcon from '@material-ui/icons/Edit'
 import ShareIcon from '@material-ui/icons/Share'
 import { Fab, Action } from 'react-tiny-fab'
 import 'react-tiny-fab/dist/styles.css'
-
+import MapProvider from '../../../src/components/Maps/redux/MapProvider'
 import useT from '../../../src/hooks/useT'
 import { Map } from '../../../src/types/map'
 import { Layer } from '../../../src/types/layer'
-import useSWR from 'swr'
-import useStickyResult from '../../../src/hooks/useStickyResult'
 import dynamic from 'next/dynamic'
+
+//SSR Only
+import MapModel from '../../../src/models/map'
+import PageModel from '../../../src/models/page'
+
 const InteractiveMap = dynamic(
   () => import('../../../src/components/Maps/Map/InteractiveMap'),
   {
@@ -35,7 +39,46 @@ type UserMapState = {
   showEmbedCode?: boolean
 }
 
-const UserMap = (): JSX.Element => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const map_id = Number.parseInt(context.params.usermap[0])
+  const map = await MapModel.getMap(map_id)
+  if (!map) {
+    return {
+      notFound: true
+    }
+  }
+
+  const session = await getSession(context)
+  let allowedToModifyMap = null
+  if (session?.user) {
+    allowedToModifyMap = await MapModel.allowedToModify(
+      map_id,
+      Number.parseInt(session.sub)
+    )
+  }
+
+  const mapConfig = (await PageModel.getPageConfigs(['map'])[0]) || null
+  return {
+    props: {
+      map,
+      mapLayers: await MapModel.getMapLayers(map_id),
+      mapConfig,
+      allowedToModifyMap
+    }
+  }
+}
+
+const UserMap = ({
+  map,
+  mapLayers,
+  allowedToModifyMap,
+  mapConfig
+}: {
+  map: Map
+  mapLayers: Layer[]
+  allowedToModifyMap: boolean
+  mapConfig: Record<string, unknown>
+}): JSX.Element => {
   const publicShare = false // TODO: support public share map
   const [session] = useSession()
   const router = useRouter()
@@ -44,53 +87,11 @@ const UserMap = (): JSX.Element => {
   const [showCopyMap, setShowCopyMap] = useState(false)
   const [showPublicShare, setShowPublicShare] = useState(false)
 
-  const slug = router.query.usermap || []
-  const map_id = slug[0]
-
-  const { data } = useSWR([
-    `
-  {
-    map(id: "{id}") {
-      map_id
-      title
-      position
-      style
-      settings
-      basemap
-      created_at
-      updated_at
-      owned_by_group_id
-      share_id
-    }
-    mapLayers(id: "{id}") {
-      layer_id
-      shortid
-      name
-      description
-      source
-      data_type
-      style
-      legend_html
-    }
-    allowedToModifyMap(id: "{id}")
-    mapConfig
-  }
-  `,
-    map_id
-  ])
-  const stickyData: {
-    map: Map
-    mapLayers: Layer[]
-    allowedToModifyMap: boolean
-    mapConfig: Record<string, unknown>
-  } = useStickyResult(data) || {}
-  const { map, mapLayers, allowedToModifyMap, mapConfig } = stickyData
-
   const onEdit = (): void => {
     router.push('/map/edit/' + map.map_id)
   }
   const onFullScreen = (): void => {
-    let fullScreenLink = `/api/map/${map.map_id}/static/render?showToolbar=1`
+    let fullScreenLink = `/map/screenshot/${map.map_id}`
 
     if (window.location.hash) {
       fullScreenLink = fullScreenLink += window.location.hash
@@ -109,162 +110,167 @@ const UserMap = (): JSX.Element => {
     }
   }
 
-  const copyMapTitle = JSON.parse(JSON.stringify(map.title))
-  // TODO: change copied map title in other languages
-  copyMapTitle.en = `${copyMapTitle.en} - Copy`
+  console.log(map)
+
   return (
     <ErrorBoundary t={t}>
-      <Layout title={t(map.title)} hideFooter>
-        <div
-          style={{
-            height: 'calc(100% - 50px)',
-            marginTop: 0
-          }}
-        >
-          <InteractiveMap
-            height='100%'
-            {...map}
-            title={map.title}
-            position={map.position}
-            basemap={map.basemap}
-            style={map.style}
-            layers={mapLayers}
-            mapConfig={mapConfig}
-            disableScrollZoom={false}
-            primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
-            mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
-            DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
-            earthEngineClientID={process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID}
-            {...map.settings}
-            locale={locale}
-          />
-          <style jsx global>
-            {`
-              .rtf {
-                z-index: 999 !important;
-              }
-            `}
-          </style>
-          {!publicShare && (
-            <Fab
-              mainButtonStyles={{
-                backgroundColor: process.env.NEXT_PUBLIC_PRIMARY_COLOR
-              }}
-              position={{
-                bottom: 75,
-                right: 0
-              }}
-              event='click'
-              icon={<MoreVertIcon />}
-            >
-              <Action
-                text={t('Print/Screenshot')}
-                style={{
-                  backgroundColor: 'grey'
+      {map && (
+        <Layout title={t(map.title)} hideFooter>
+          <div
+            style={{
+              height: '100%',
+              marginTop: 0
+            }}
+          >
+            <MapProvider>
+              <InteractiveMap
+                height='100%'
+                {...map}
+                title={map.title}
+                position={map.position}
+                basemap={map.basemap}
+                style={map.style}
+                layers={mapLayers}
+                mapConfig={mapConfig}
+                disableScrollZoom={false}
+                primaryColor={process.env.NEXT_PUBLIC_PRIMARY_COLOR}
+                mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}
+                DGWMSConnectID={process.env.NEXT_PUBLIC_DG_WMS_CONNECT_ID}
+                earthEngineClientID={
+                  process.env.NEXT_PUBLIC_EARTHENGINE_CLIENTID
+                }
+                {...map.settings}
+                locale={locale}
+              />
+            </MapProvider>
+            <style jsx global>
+              {`
+                .rtf {
+                  z-index: 999 !important;
+                }
+              `}
+            </style>
+            {!publicShare && (
+              <Fab
+                mainButtonStyles={{
+                  backgroundColor: process.env.NEXT_PUBLIC_PRIMARY_COLOR
                 }}
-                onClick={onFullScreen}
+                position={{
+                  bottom: 75,
+                  right: 0
+                }}
+                event='click'
+                icon={<MoreVertIcon />}
               >
-                <PrintIcon />
-              </Action>
-              <Action
-                text={t('Embed')}
-                style={{
-                  backgroundColor: 'orange'
-                }}
-                onClick={() => {
-                  setShowEmbedCode(true)
-                }}
-              >
-                <CodeIcon />
-              </Action>
-              <Action
-                text={t('Get Map as a PNG Image')}
-                style={{
-                  backgroundColor: 'green'
-                }}
-                onClick={download}
-                download={`${t(map.title)} - ${
-                  process.env.NEXT_PUBLIC_PRODUCT_NAME
-                }.png`}
-                href={`/api/screenshot/map/${map.map_id}.png`}
-              >
-                <PhotoIcon />
-              </Action>
-              {session?.user && !publicShare && (
                 <Action
-                  text={t('Copy Map')}
+                  text={t('Print/Screenshot')}
                   style={{
-                    backgroundColor: 'purple'
+                    backgroundColor: 'grey'
+                  }}
+                  onClick={onFullScreen}
+                >
+                  <PrintIcon />
+                </Action>
+                <Action
+                  text={t('Embed')}
+                  style={{
+                    backgroundColor: 'orange'
                   }}
                   onClick={() => {
-                    setShowCopyMap(true)
+                    setShowEmbedCode(true)
                   }}
                 >
-                  <QueueIcon />
+                  <CodeIcon />
                 </Action>
-              )}
-              {allowedToModifyMap && !publicShare && (
                 <Action
-                  text={t('Edit Map')}
+                  text={t('Get Map as a PNG Image')}
                   style={{
-                    backgroundColor: 'blue'
+                    backgroundColor: 'green'
                   }}
-                  onClick={onEdit}
+                  onClick={download}
+                  download={`${t(map.title)} - ${
+                    process.env.NEXT_PUBLIC_PRODUCT_NAME
+                  }.png`}
+                  href={`/api/screenshot/map/${map.map_id}.png`}
                 >
-                  <EditIcon />
+                  <PhotoIcon />
                 </Action>
-              )}
-              {allowedToModifyMap &&
-                process.env.NEXT_PUBLIC_MAPHUBS_PRO === 'true' &&
-                !publicShare && (
+                {session?.user && !publicShare && (
                   <Action
-                    text={t('Share')}
+                    text={t('Copy Map')}
                     style={{
-                      backgroundColor: 'red'
+                      backgroundColor: 'purple'
                     }}
                     onClick={() => {
-                      setShowPublicShare(true)
+                      setShowCopyMap(true)
                     }}
                   >
-                    <ShareIcon />
+                    <QueueIcon />
                   </Action>
                 )}
-            </Fab>
-          )}
-          {allowedToModifyMap &&
-            process.env.NEXT_PUBLIC_MAPHUBS_PRO === 'true' &&
-            !publicShare && (
-              <PublicShareModal
-                visible={showPublicShare}
+                {allowedToModifyMap && !publicShare && (
+                  <Action
+                    text={t('Edit Map')}
+                    style={{
+                      backgroundColor: 'blue'
+                    }}
+                    onClick={onEdit}
+                  >
+                    <EditIcon />
+                  </Action>
+                )}
+                {allowedToModifyMap &&
+                  process.env.NEXT_PUBLIC_MAPHUBS_PRO === 'true' &&
+                  !publicShare && (
+                    <Action
+                      text={t('Share')}
+                      style={{
+                        backgroundColor: 'red'
+                      }}
+                      onClick={() => {
+                        setShowPublicShare(true)
+                      }}
+                    >
+                      <ShareIcon />
+                    </Action>
+                  )}
+              </Fab>
+            )}
+            {allowedToModifyMap &&
+              process.env.NEXT_PUBLIC_MAPHUBS_PRO === 'true' &&
+              !publicShare && (
+                <PublicShareModal
+                  visible={showPublicShare}
+                  map_id={map.map_id}
+                  share_id={map.share_id}
+                  onClose={() => {
+                    setShowPublicShare(false)
+                  }}
+                />
+              )}
+            {session?.user && !publicShare && (
+              <CopyMapModal
+                visible={showCopyMap}
+                onClose={() => {
+                  setShowCopyMap(false)
+                }}
+                title={map.title}
+                map_id={map.map_id}
+              />
+            )}
+            {showEmbedCode && (
+              <EmbedCodeModal
+                show={showEmbedCode}
                 map_id={map.map_id}
                 share_id={map.share_id}
                 onClose={() => {
-                  setShowPublicShare(false)
+                  setShowEmbedCode(false)
                 }}
               />
             )}
-          {session?.user && !publicShare && (
-            <CopyMapModal
-              visible={showCopyMap}
-              onClose={() => {
-                setShowCopyMap(false)
-              }}
-              title={copyMapTitle}
-              map_id={map.map_id}
-            />
-          )}
-          {showEmbedCode && (
-            <EmbedCodeModal
-              show={showEmbedCode}
-              map_id={map.map_id}
-              share_id={map.share_id}
-              onClose={() => {
-                setShowEmbedCode(false)
-              }}
-            />
-          )}
-        </div>
-      </Layout>
+          </div>
+        </Layout>
+      )}
     </ErrorBoundary>
   )
 }
