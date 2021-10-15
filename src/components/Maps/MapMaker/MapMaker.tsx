@@ -65,22 +65,34 @@ type Props = {
   showVisibility: boolean
   onCreate: ({
     group_id,
+    layers,
+    style,
+    settings,
     title,
     position,
     basemap
   }: {
     group_id: string
+    layers: Layer[]
+    style: mapboxgl.Style
+    settings: Record<string, unknown>
     title: LocalizedString
     position: MapPosition
     basemap: string
-  }) => Promise<{ map_id: number }>
+  }) => Promise<number>
   onSave: ({
     map_id,
+    layers,
+    style,
+    settings,
     title,
     position,
     basemap
   }: {
     map_id: number
+    layers: Layer[]
+    style: mapboxgl.Style
+    settings: Record<string, unknown>
     title: LocalizedString
     position: MapPosition
     basemap: string
@@ -284,8 +296,8 @@ const MapMaker = (props: Props): JSX.Element => {
   }
 
   const onSave = async (
-    model: Record<string, any>,
-    cb: (...args: Array<any>) => any
+    model: { title: LocalizedString; group: string },
+    cb: () => void
   ) => {
     // get position from the map
     const center = mapboxMap.getCenter()
@@ -298,49 +310,30 @@ const MapMaker = (props: Props): JSX.Element => {
 
     if (!map_id || map_id === -1) {
       // callback to the page so it can save to the db
-      const result = await props.onCreate({
+      const map_id = await props.onCreate({
+        group_id: model.group,
+        layers: mapLayers,
+        style: mapStyle,
+        settings,
         title: model.title,
         position,
-        basemap,
-        group_id: model.group
+        basemap
       })
       // dispatch the create action
       dispatch(
         createMap({
-          map_id: result.map_id,
+          map_id,
           title: model.title,
           position,
           group_id: model.group
         })
       )
-
-      /*
-        Actions.createMap(
-          model.title,
-          position,
-          basemap,
-          model.group
-          (err) => {
-            cb()
-
-            if (err) {
-              // display error to user
-              notification.error({
-                message: t('Error'),
-                description: err.message || err.toString() || err,
-                duration: 0
-              })
-            } else {
-              // hide designer
-              message.success(t('Map Saved'))
-              if (onCreate) onCreate(map_id, title)
-            }
-          }
-        )
-        */
     } else {
       await props.onSave({
         map_id,
+        layers: mapLayers,
+        style: mapStyle,
+        settings,
         title: model.title,
         position,
         basemap
@@ -353,7 +346,7 @@ const MapMaker = (props: Props): JSX.Element => {
         })
       )
     }
-    message.success(t('Map Saved'))
+    cb() // closes the saving message
   }
 
   const showLayerDesigner = (layerId: number) => {

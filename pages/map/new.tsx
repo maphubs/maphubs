@@ -9,10 +9,11 @@ import { message, notification } from 'antd'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import type { Layer } from '../../src/types/layer'
 import type { Group } from '../../src/types/group'
+import { MapPosition } from '../../src/types/map'
 
 import { LocalizedString } from '../../src/types/LocalizedString'
 import useT from '../../src/hooks/useT'
-
+import mutation from '../../src/graphql/graphql-mutation'
 import dynamic from 'next/dynamic'
 import { MapMakerState } from '../../src/components/Maps/redux/reducers/mapMakerSlice'
 import MapProvider from '../../src/components/Maps/redux/MapProvider'
@@ -112,10 +113,6 @@ const NewMap = ({
   }
   */
 
-  const mapCreated = (mapId: number, title: LocalizedString): void => {
-    router.push('/map/view/' + mapId + '/' + slugify(t(title)))
-  }
-
   return (
     <ErrorBoundary t={t}>
       <Layout title={t('New Map')} activePage='map' hideFooter>
@@ -129,28 +126,106 @@ const NewMap = ({
           <MapProvider>
             <MapMaker
               mapConfig={mapConfig}
-              onSave={(mapMakerState: MapMakerState) => {
-                // TODO: call mutation to save map
-                setSaved(true)
-              }}
-              onCreate={(mapMakerState: MapMakerState) => {
-                // TODO: call mutation to create map
-              }}
-              onDelete={(map_id: number) => {
-                // TODO: call mutation to delete map
-                /*
-              Actions.deleteMap(map_id, (err) => {
-                if (err) {
+              onSave={async ({
+                map_id,
+                layers,
+                style,
+                settings,
+                title,
+                position,
+                basemap
+              }: {
+                map_id: number
+                layers: Layer[]
+                style: mapboxgl.Style
+                settings: Record<string, unknown>
+                title: LocalizedString
+                position: MapPosition
+                basemap: string
+              }) => {
+                try {
+                  const result = await mutation(`
+                      saveMap(
+                        map_id: ${map_id},
+                        layers: "${layers}", 
+                        style: "${style}",   
+                        position: "${position}", 
+                        settings: "${settings}", 
+                        basemap: "${basemap}",
+                        title: "${title}"
+                      )
+                    `)
+                  const mapId = result.createMap.map_id
+                  message.success(t('Map Created'), 1)
+                  setSaved(true)
+                  router.push('/map/view/' + mapId + '/' + slugify(t(title)))
+                  return true
+                } catch (err) {
                   notification.error({
-                    message: t('Error'),
-                    description: err.message || err.toString() || err,
+                    message: t('Server Error'),
+                    description: err.message || err.toString(),
                     duration: 0
                   })
-                } else {
-                  router.push('/maps')
                 }
-              })
-              */
+              }}
+              onCreate={async ({
+                group_id,
+                layers,
+                style,
+                settings,
+                title,
+                position,
+                basemap
+              }: {
+                group_id: string
+                layers: Layer[]
+                style: mapboxgl.Style
+                settings: Record<string, unknown>
+                title: LocalizedString
+                position: MapPosition
+                basemap: string
+              }) => {
+                try {
+                  const result = await mutation(`
+                      createMap(
+                        group_id: "${group_id}",
+                        layers: ${JSON.stringify(JSON.stringify(layers))}, 
+                        style: ${JSON.stringify(JSON.stringify(style))},   
+                        position: ${JSON.stringify(JSON.stringify(position))}, 
+                        settings: ${JSON.stringify(JSON.stringify(settings))}, 
+                        basemap: "${basemap}",
+                        title: ${JSON.stringify(JSON.stringify(title))}
+                      ) {
+                        map_id
+                      }
+                    `)
+                  const mapId = result.createMap.map_id
+                  message.success(t('Map Created'), 1)
+
+                  router.push('/map/view/' + mapId + '/' + slugify(t(title)))
+                  return mapId
+                } catch (err) {
+                  notification.error({
+                    message: t('Server Error'),
+                    description: err.message || err.toString(),
+                    duration: 0
+                  })
+                }
+              }}
+              onDelete={async (map_id: number) => {
+                try {
+                  await mutation(`
+                  deleteMap(map_id: ${map_id})
+                    `)
+                  router.push('/maps')
+                  return true
+                } catch (err) {
+                  notification.error({
+                    message: t('Server Error'),
+                    description: err.message || err.toString(),
+                    duration: 0
+                  })
+                }
               }}
               popularLayers={popularLayers}
               myLayers={myLayers}

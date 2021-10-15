@@ -9,7 +9,10 @@ import { useSession } from 'next-auth/client'
 import { LocalizedString } from '../../../types/LocalizedString'
 import { Group } from '../../../types/group'
 type Props = {
-  onSave: (...args: Array<any>) => void
+  onSave: (
+    { title, group }: { title: LocalizedString; group: string },
+    cb: () => void
+  ) => void
   editing?: boolean
   editingLayer?: boolean
   owned_by_group_id: string

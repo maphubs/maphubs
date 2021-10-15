@@ -21,6 +21,10 @@ const CopyMapModal = ({
   const { t } = useT()
   const router = useRouter()
 
+  const copyMapTitle = JSON.parse(JSON.stringify(title))
+  // TODO: change copied map title in other languages
+  copyMapTitle.en = `${copyMapTitle.en} - Copy`
+
   const onCopyMap = async (formData: {
     title: LocalizedString
     group: string
@@ -68,7 +72,7 @@ const CopyMapModal = ({
       onCancel={onClose}
       footer={[]}
     >
-      <SaveMapPanel title={title} onSave={onCopyMap} />
+      <SaveMapPanel title={copyMapTitle} onSave={onCopyMap} />
     </Modal>
   )
 }
