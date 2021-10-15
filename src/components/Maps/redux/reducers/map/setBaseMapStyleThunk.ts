@@ -25,9 +25,9 @@ const setBaseMapStyleThunk = createAsyncThunk(
   }> => {
     const appState = getState() as AppState
     const overlayMapStyle = appState.map.overlayMapStyle
-    const baseMapStyle = appState.baseMap.baseMapStyle
+    const prevBaseMapStyle = appState.baseMap.prevBaseMapStyle
     const mapboxMap = appState.map.mapboxMap
-    let glStyle = appState.map.glStyle
+    let glStyle = _cloneDeep(appState.map.glStyle)
 
     const style = _cloneDeep(args.style)
 
@@ -36,13 +36,13 @@ const setBaseMapStyleThunk = createAsyncThunk(
       const sourcesToAdd = Object.keys(style.sources)
       const layersToAdd = style.layers
 
-      if (baseMapStyle) {
+      if (prevBaseMapStyle) {
         // need to clear previous base map
-        for (const element of Object.keys(baseMapStyle.sources)) {
+        for (const element of Object.keys(prevBaseMapStyle.sources)) {
           delete glStyle.sources[element]
         }
 
-        for (const element of _map(baseMapStyle.layers, 'id')) {
+        for (const element of _map(prevBaseMapStyle.layers, 'id')) {
           _remove(glStyle.layers, {
             id: element
           })
@@ -68,6 +68,8 @@ const setBaseMapStyleThunk = createAsyncThunk(
     glStyle.glyphs = style.glyphs || glStyle.glyphs
     glStyle.sprite = style.sprite || glStyle.sprite
     glStyle.metadata = style.metadata
+    glStyle.id = style.id || glStyle.id
+    glStyle.name = style.name || glStyle.name
 
     if (mapboxMap && !args.skipUpdate) {
       try {

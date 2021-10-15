@@ -3,6 +3,7 @@ import mapboxgl from 'mapbox-gl'
 import type { AppState } from '../store'
 
 import { setOverlayStyleThunk } from './map/setOverlayStyleThunk'
+import { setBaseMapStyleThunk } from './map/setBaseMapStyleThunk'
 
 export interface MapState {
   mapboxMap?: mapboxgl.Map
@@ -88,6 +89,19 @@ export const mapSlice = createSlice({
         const { overlayMapStyle, glStyle } = action.payload
 
         state.overlayMapStyle = overlayMapStyle
+        state.glStyle = glStyle
+      }
+    )
+    builder.addCase(
+      setBaseMapStyleThunk.fulfilled,
+      (
+        state,
+        action: PayloadAction<{
+          glStyle: mapboxgl.Style
+        }>
+      ) => {
+        const { glStyle } = action.payload
+
         state.glStyle = glStyle
       }
     )

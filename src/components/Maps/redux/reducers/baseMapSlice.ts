@@ -28,6 +28,7 @@ export type BaseMapOption = {
 export type BaseMapState = {
   baseMap: string
   baseMapStyle?: mapboxgl.Style
+  prevBaseMapStyle?: mapboxgl.Style
   attribution: string
   bingImagerySet?: string
   updateWithMapPosition: boolean
@@ -286,6 +287,7 @@ const setBaseMapThunk = createAsyncThunk(
     return {
       baseMap,
       baseMapStyle,
+      prevBaseMapStyle: state.baseMapStyle,
       attribution,
       updateWithMapPosition,
       bingImagerySet
@@ -325,6 +327,7 @@ export const baseMapSlice = createSlice({
         action: PayloadAction<{
           baseMap: string
           baseMapStyle: mapboxgl.Style
+          prevBaseMapStyle?: mapboxgl.Style
           attribution?: string
           updateWithMapPosition?: boolean
           bingImagerySet?: string
@@ -333,12 +336,14 @@ export const baseMapSlice = createSlice({
         const {
           baseMap,
           baseMapStyle,
+          prevBaseMapStyle,
           attribution,
           updateWithMapPosition,
           bingImagerySet
         } = action.payload
         state.baseMap = baseMap
         state.baseMapStyle = baseMapStyle
+        state.prevBaseMapStyle = prevBaseMapStyle
         if (attribution) state.attribution = attribution
         if (updateWithMapPosition)
           state.updateWithMapPosition = updateWithMapPosition
