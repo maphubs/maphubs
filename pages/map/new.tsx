@@ -15,7 +15,6 @@ import { LocalizedString } from '../../src/types/LocalizedString'
 import useT from '../../src/hooks/useT'
 import mutation from '../../src/graphql/graphql-mutation'
 import dynamic from 'next/dynamic'
-import { MapMakerState } from '../../src/components/Maps/redux/reducers/mapMakerSlice'
 import MapProvider from '../../src/components/Maps/redux/MapProvider'
 const MapMaker = dynamic(
   () => import('../../src/components/Maps/MapMaker/MapMaker'),
@@ -144,21 +143,21 @@ const NewMap = ({
                 basemap: string
               }) => {
                 try {
-                  const result = await mutation(`
+                  await mutation(`
                       saveMap(
                         map_id: ${map_id},
-                        layers: "${layers}", 
-                        style: "${style}",   
-                        position: "${position}", 
-                        settings: "${settings}", 
+                        layers: ${JSON.stringify(JSON.stringify(layers))}, 
+                        style: ${JSON.stringify(JSON.stringify(style))},   
+                        position: ${JSON.stringify(JSON.stringify(position))}, 
+                        settings: ${JSON.stringify(JSON.stringify(settings))}, 
                         basemap: "${basemap}",
-                        title: "${title}"
+                        title: ${JSON.stringify(JSON.stringify(title))}
                       )
                     `)
-                  const mapId = result.createMap.map_id
-                  message.success(t('Map Created'), 1)
+
+                  message.success(t('Map Saved'), 1)
                   setSaved(true)
-                  router.push('/map/view/' + mapId + '/' + slugify(t(title)))
+                  router.push('/map/view/' + map_id + '/' + slugify(t(title)))
                   return true
                 } catch (err) {
                   notification.error({

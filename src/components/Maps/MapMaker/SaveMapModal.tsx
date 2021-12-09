@@ -28,6 +28,7 @@ const SaveMapModal = ({
   onSave,
   userGroups
 }: Props): JSX.Element => {
+  console.log(`render savemapmodel title: ${initialTitle}`)
   const { t } = useMapT()
   const [session, loading] = useSession()
   const [visible, setVisible] = useState(false)
@@ -53,9 +54,9 @@ const SaveMapModal = ({
       return
     }
     let selectedGroup = group
-    if (!group && user?.groups.length === 1) {
+    if (!group && userGroups.length === 1) {
       // creating a new layer when user is only the member of a single group (not showing the group dropdown)
-      selectedGroup = user.groups[0].group_id
+      selectedGroup = userGroups[0].group_id
     }
 
     const closeSavingMessage = message.loading(t('Saving'), 0)
@@ -112,7 +113,7 @@ const SaveMapModal = ({
           <>
             <Row>
               <LocalizedInput
-                initialValue={title}
+                initialValue={initialTitle}
                 placeholder={t('Title')}
                 onChange={setTitle}
               />

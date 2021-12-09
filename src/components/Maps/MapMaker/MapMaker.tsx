@@ -62,8 +62,8 @@ const TabPane = Tabs.TabPane
 type Props = {
   edit?: boolean
   mapLayers: Array<Layer>
-  showVisibility: boolean
-  onCreate: ({
+  showVisibility?: boolean
+  onCreate?: ({
     group_id,
     layers,
     style,
@@ -109,11 +109,6 @@ type Props = {
   mapConfig: Record<string, any>
   settings: Record<string, any>
   groups: Group[]
-  containers: {
-    dataEditorState: Record<string, any>
-    mapState: Record<string, any>
-    baseMapState: Record<string, any>
-  }
   locale: string
 }
 
@@ -805,7 +800,7 @@ const MapMaker = (props: Props): JSX.Element => {
             <SaveMapModal
               owned_by_group_id={owned_by_group_id}
               editingLayer={!!editingLayer}
-              initialTitle={title}
+              initialTitle={title || props.title}
               editing={props.edit}
               onSave={onSave}
               userGroups={props.groups}
