@@ -1,12 +1,4 @@
 const path = require('path')
-/*
-const withTM = require('next-transpile-modules')([
-  'react-dnd',
-  'dnd-core',
-  'react-dnd-html5-backend',
-  '@mapbox/mapbox-gl-draw'
-])
-*/
 const withAntdLess = require('next-plugin-antd-less')
 const { getThemeVariables } = require('antd/dist/theme')
 const lessToJS = require('less-vars-to-js')
