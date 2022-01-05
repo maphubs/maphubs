@@ -114,9 +114,9 @@ const GroupAdmin = ({
     model.description = Locales.formModelToLocalizedString(model, 'description')
     try {
       await mutation(`
-          saveGroup(group_id: "${model.group_id}", name: "${JSON.stringify(
+          saveGroup(group_id: "${model.group_id}", name: ${JSON.stringify(
         JSON.stringify(model.name)
-      )}", description: "${JSON.stringify(JSON.stringify(model.description))}")
+      )}, description: ${JSON.stringify(JSON.stringify(model.description))})
         `)
       message.info(t('Group Saved'), 3, () => {
         router.push(`/group/${group_id || ''}`)
