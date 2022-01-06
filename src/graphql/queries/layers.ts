@@ -43,15 +43,8 @@ export default {
     return LayerModel.attachPermissionsToLayers(layers, user.sub)
   },
 
-  layerStats(
-    _: unknown,
-    args: { id: number }
-  ): Promise<{ maps: number; stories: number }> {
+  layerStats(_: unknown, args: { id: number }): Promise<{ maps: number }> {
     return StatsModel.getLayerStats(args.id)
-  },
-
-  layerNotes(_: unknown, args: { id: number }): Promise<{ notes: string }> {
-    return LayerModel.getLayerNotes(args.id)
   },
 
   allowedToModifyLayer(

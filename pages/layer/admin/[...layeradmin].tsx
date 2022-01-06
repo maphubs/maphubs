@@ -191,7 +191,7 @@ const LayerAdmin = ({
         t(layer.name) +
         '. ' +
         t(
-          'All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps, and stories.'
+          'All additions, modifications, and feature notes will be deleted. This layer will also be removed from all maps.'
         ),
       okText: t('Delete'),
       okType: 'danger',

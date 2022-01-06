@@ -12,7 +12,6 @@ import { Layer } from '../src/types/layer'
 import useT from '../src/hooks/useT'
 import useSWR from 'swr'
 import useStickyResult from '../src/hooks/useStickyResult'
-import { Story } from '../src/types/story'
 import { Map } from '../src/types/map'
 import { Group } from '../src/types/group'
 
@@ -45,28 +44,6 @@ const Explore = (): JSX.Element => {
       description
       source
     }
-    recentStories(limit: 25) {
-      story_id
-      title
-      firstimage
-      summary
-      author
-      owned_by_group_id
-      groupname
-      published
-      published_at
-    }
-    featuredStories(limit: 25) {
-      story_id
-      title
-      firstimage
-      summary
-      author
-      owned_by_group_id
-      groupname
-      published
-      published_at
-    }
     featuredMaps(limit: 25) {
       map_id
       title
@@ -92,8 +69,6 @@ const Explore = (): JSX.Element => {
   }
   `)
   const stickyData: {
-    featuredStories: Story[]
-    recentStories: Story[]
     featuredMaps: Map[]
     recentMaps: Map[]
     featuredLayers: Layer[]
@@ -103,8 +78,6 @@ const Explore = (): JSX.Element => {
     recentGroups: Group[]
   } = useStickyResult(data) || {}
   const {
-    featuredStories,
-    recentStories,
     featuredMaps,
     recentMaps,
     featuredLayers,
@@ -115,16 +88,11 @@ const Explore = (): JSX.Element => {
   } = stickyData
 
   const defaultMode = 'recent'
-  const [storyMode, setStoryMode] = useState(defaultMode)
   const [mapMode, setMapMode] = useState(defaultMode)
   const [groupMode, setGroupMode] = useState(defaultMode)
   const [layerMode, setLayerMode] = useState(defaultMode)
 
   const dataMap = {
-    stories: {
-      featured: featuredStories,
-      recent: recentStories
-    },
     maps: {
       featured: featuredMaps,
       recent: recentMaps
@@ -140,11 +108,6 @@ const Explore = (): JSX.Element => {
     }
   }
 
-  const storyCards = dataMap.stories[storyMode]
-    ? _shuffle(
-        dataMap.stories[storyMode].map((s) => cardUtil.getStoryCard(s, t))
-      )
-    : []
   const mapCards = dataMap.maps[mapMode]
     ? _shuffle(dataMap.maps[mapMode].map((m) => cardUtil.getMapCard(m)))
     : []
@@ -179,59 +142,7 @@ const Explore = (): JSX.Element => {
               />
             </Col>
           </Row>
-          <Row
-            style={{
-              width: '100%',
-              marginBottom: '20px'
-            }}
-          >
-            <Row
-              style={{
-                height: '50px',
-                width: '100%',
-                position: 'relative'
-              }}
-            >
-              <div
-                style={{
-                  position: 'absolute',
-                  right: '10px',
-                  top: '5px'
-                }}
-              >
-                <CardFilter
-                  value={storyMode}
-                  onChange={(value) => {
-                    setStoryMode(value)
-                  }}
-                />
-              </div>
-              <a href='/stories'>
-                <Title level={2}>{t('Stories')}</Title>
-              </a>
-            </Row>
-            <Row
-              style={{
-                width: '100%',
-                marginBottom: '20px'
-              }}
-            >
-              <CardCarousel cards={storyCards} />
-            </Row>
-            <Row
-              justify='center'
-              align='middle'
-              style={{
-                height: '45px',
-                width: '100%'
-              }}
-            >
-              <Button type='primary' href='/stories'>
-                {t('More Stories')}
-              </Button>
-            </Row>
-          </Row>
-          <div className='divider' />
+
           <Row
             style={{
               width: '100%',

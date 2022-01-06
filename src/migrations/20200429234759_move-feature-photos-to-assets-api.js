@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-module */
 exports.up = async (knex) => {
   // add new photo_url field
   await knex.raw(

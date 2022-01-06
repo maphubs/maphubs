@@ -1,8 +1,8 @@
-
+/* eslint-disable unicorn/prefer-module */
 exports.up = async (knex) => {
-  return knex.raw('UPDATE omh.stories SET published_at = updated_at WHERE published_at IS NULL;')
+  return null
 }
 
 exports.down = async (knex) => {
-  //
+  return null
 }

@@ -5,59 +5,6 @@ import { Knex } from 'knex'
 const debug = DebugService('feature')
 
 export default {
-  async getFeatureNotes(
-    mhid: string,
-    layerId: number,
-    trx?: Knex.Transaction
-  ): Promise<any> {
-    const db = trx || knex
-    const result = await db('omh.feature_notes').select('notes').where({
-      mhid,
-      layer_id: layerId
-    })
-
-    if (result && result.length === 1) {
-      return result[0].notes
-    }
-
-    return null
-  },
-
-  async saveFeatureNote(
-    mhid: string,
-    layerId: number,
-    userId: number,
-    notes: string,
-    trx?: Knex.Transaction
-  ): Promise<any> {
-    const db = trx || knex
-    const result = await db('omh.feature_notes').select('mhid').where({
-      mhid,
-      layer_id: layerId
-    })
-
-    return result && result.length === 1
-      ? db('omh.feature_notes')
-          .update({
-            notes,
-            updated_by: userId,
-            updated_at: db.raw('now()')
-          })
-          .where({
-            mhid,
-            layer_id: layerId
-          })
-      : db('omh.feature_notes').insert({
-          layer_id: layerId,
-          mhid,
-          notes,
-          created_by: userId,
-          created_at: db.raw('now()'),
-          updated_by: userId,
-          updated_at: db.raw('now()')
-        })
-  },
-
   /**
    * Get GeoJSON for feature(s)
    *

@@ -24,11 +24,6 @@ const AddDropdown = ({ t, sidenav }: Props): JSX.Element => {
         </a>
       </Menu.Item>
       <Menu.Item>
-        <a href='/api/story/create' className='nav-hover-menu-item'>
-          {t('New Story')}
-        </a>
-      </Menu.Item>
-      <Menu.Item>
         <a href='/create/remotelayer' className='nav-hover-menu-item'>
           {t('Remote Layer')}
         </a>

@@ -117,50 +117,5 @@ export default {
 
       return this.insertGroupImage(group_id, image, info, trx)
     })
-  },
-
-  /// //////////
-  // Stories
-  /// /////////
-  async getStoryImage(
-    story_id: number,
-    image_id: number
-  ): Promise<StringDecoder> {
-    debug.log('get image for story: ' + story_id)
-    const result = await knex('omh.story_images').select('image_id').where({
-      story_id,
-      image_id
-    })
-
-    if (result.length === 1) {
-      debug.log('image found: ' + image_id)
-      return this.getImageByID(image_id)
-    } else {
-      throw new Error('No Image Found for Story: ' + story_id)
-    }
-  },
-
-  // keep to support deleting legacy stories
-  async removeAllStoryImages(
-    story_id: number,
-    trx: Knex.Transaction
-  ): Promise<boolean> {
-    const results = await trx('omh.story_images').select('image_id').where({
-      story_id
-    })
-    // eslint-disable-next-line unicorn/no-array-callback-reference, unicorn/no-array-method-this-argument
-    return Bluebird.map(results, async (result) => {
-      await trx('omh.story_images')
-        .where({
-          story_id,
-          image_id: result.image_id
-        })
-        .del()
-      return trx('omh.images')
-        .where({
-          image_id: result.image_id
-        })
-        .del()
-    })
   }
 }

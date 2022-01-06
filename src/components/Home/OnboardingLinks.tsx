@@ -19,7 +19,7 @@ const OnboardingLinks = (): JSX.Element => {
         width: '100%'
       }}
     >
-      <Col sm={24} md={6}>
+      <Col sm={24} md={8}>
         <div
           className='home-onboarding-icon-wrapper'
           style={{
@@ -48,7 +48,7 @@ const OnboardingLinks = (): JSX.Element => {
           </a>
         </div>
       </Col>
-      <Col sm={24} md={6}>
+      <Col sm={24} md={8}>
         <div
           className='home-onboarding-icon-wrapper'
           style={{
@@ -77,36 +77,7 @@ const OnboardingLinks = (): JSX.Element => {
           </a>
         </div>
       </Col>
-      <Col sm={24} md={6}>
-        <div
-          className='home-onboarding-icon-wrapper'
-          style={{
-            textAlign: 'center'
-          }}
-        >
-          <a
-            href='/stories'
-            style={{
-              margin: 'auto'
-            }}
-          >
-            <div
-              className='valign-wrapper'
-              style={{
-                height: '125px',
-                position: 'relative',
-                margin: 'auto'
-              }}
-            >
-              <ReadOutlined />
-            </div>
-            <Title level={4} className='center-align'>
-              {t('Stories')}
-            </Title>
-          </a>
-        </div>
-      </Col>
-      <Col sm={24} md={6}>
+      <Col sm={24} md={8}>
         <div
           className='home-onboarding-icon-wrapper'
           style={{

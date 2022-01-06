@@ -36,11 +36,9 @@ import mutation from '../../../src/graphql/graphql-mutation'
 import GroupModel from '../../../src/models/group'
 import LayerModel from '../../../src/models/layer'
 import MapModel from '../../../src/models/map'
-import StoryModel from '../../../src/models/story'
 import { Map } from '../../../src/types/map'
 import { Layer } from '../../../src/types/layer'
 import urlUtil from '../../../src/services/url-util'
-import { rotate } from 'easyimage'
 
 const { confirm } = Modal
 const debug = DebugService('views/GroupAdmin')
@@ -80,10 +78,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           initialJoinCode: await GroupModel.getJoinCode(group_id),
           maps: await MapModel.getGroupMaps(group_id),
           layers: await LayerModel.getGroupLayers(
-            group_id,
-            allowedToModifyGroup
-          ),
-          stories: await StoryModel.getGroupStories(
             group_id,
             allowedToModifyGroup
           ),

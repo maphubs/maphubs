@@ -1,6 +1,9 @@
+/* eslint-disable unicorn/prefer-module */
 
 exports.up = function (knex) {
-  return knex.raw('ALTER TABLE omh.layers ADD COLUMN private boolean NOT NULL DEFAULT false;')
+  return knex.raw(
+    'ALTER TABLE omh.layers ADD COLUMN private boolean NOT NULL DEFAULT false;'
+  )
 }
 
 exports.down = function (knex) {

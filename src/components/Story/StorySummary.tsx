@@ -1,41 +1,25 @@
 import React from 'react'
-import slugify from 'slugify'
-import StoryHeader from './StoryHeader'
 import ShareButtons from '../../components/ShareButtons'
-import urlUtil from '../../services/url-util'
 import { Typography } from 'antd'
 import { Story } from '../../types/story'
-import { LocalizedString } from '../../types/LocalizedString'
+import useT from '../../hooks/useT'
 const { Title } = Typography
 type Props = {
   story: Story
-  t: (v: string | LocalizedString) => string
 }
-const StorySummary = ({ story, t }: Props): JSX.Element => {
-  const baseUrl = urlUtil.getBaseUrl() || ''
-  const linkUrl = `${baseUrl}/story/${slugify(t(story.title))}/${
-    story.story_id
-  }`
+const StorySummary = ({ story }: Props): JSX.Element => {
+  const { t } = useT()
+
+  const linkUrl = ``
   let imageUrl
 
-  if (story.firstimage) {
-    imageUrl = story.firstimage.replace(/\/image\//i, '/thumbnail/')
+  // TODO: update to support Ghost
 
-    if (imageUrl.startsWith(baseUrl)) {
-      imageUrl = imageUrl.replace(baseUrl, '')
-    }
-  }
+  const title = story.title
 
-  let title = t(story.title)
-  title = title
-    .replace('<br>', '')
-    .replace('<br />', '')
-    .replace('<p>', '')
-    .replace('</p>', '')
   return (
     <div>
-      <StoryHeader story={story} baseUrl={baseUrl} />
-      {story.firstimage && (
+      {story.image && (
         <div
           style={{
             marginBottom: '10px'
@@ -46,7 +30,7 @@ const StorySummary = ({ story, t }: Props): JSX.Element => {
               style={{
                 height: '160px',
                 width: '100%',
-                backgroundImage: 'url(' + imageUrl + ')',
+                backgroundImage: 'url()',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
               }}
@@ -58,7 +42,7 @@ const StorySummary = ({ story, t }: Props): JSX.Element => {
         <Title level={3}>{title}</Title>
       </a>
       <div className='story-content'>
-        <p className='fade'>{t(story.summary)}</p>
+        <p className='fade'>{story.summary}</p>
       </div>
       <a
         href={linkUrl}
@@ -69,28 +53,8 @@ const StorySummary = ({ story, t }: Props): JSX.Element => {
       >
         {t('Read more...')}
       </a>
-      {!story.published && (
-        <p
-          style={{
-            position: 'absolute',
-            top: '15px',
-            left: '50%',
-            right: '50%'
-          }}
-        >
-          <b
-            style={{
-              color: 'red',
-              textTransform: 'uppercase'
-            }}
-          >
-            {t('Draft')}
-          </b>
-        </p>
-      )}
       <ShareButtons
         title={story.title}
-        t={t}
         iconSize={24}
         style={{
           position: 'absolute',

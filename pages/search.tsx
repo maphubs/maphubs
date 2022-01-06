@@ -40,7 +40,6 @@ const Search = (): JSX.Element => {
         let layerResults = []
         let groupResults = []
         let mapResults = []
-        const storyResults = []
 
         // layers
         if (
@@ -71,8 +70,7 @@ const Search = (): JSX.Element => {
         const searchCards = _shuffle([
           ...layerResults.map((layer) => cardUtil.getLayerCard(layer)),
           ...groupResults.map((group) => cardUtil.getGroupCard(group)),
-          ...mapResults.map((map) => cardUtil.getMapCard(map)),
-          ...storyResults.map((s) => cardUtil.getStoryCard(s, t))
+          ...mapResults.map((map) => cardUtil.getMapCard(map))
         ])
         setSearchCards(searchCards)
         closeSearchingMessage()

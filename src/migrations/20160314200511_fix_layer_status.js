@@ -1,6 +1,7 @@
-
-exports.up = (knex) => {
-  return knex('omh.layers').update({status: 'published'})
+/* eslint-disable unicorn/prefer-module */
+exports.up = () => {
+  // removed
+  return Promise.resolve()
 }
 
 exports.down = () => {

@@ -7,7 +7,6 @@ import Layout from '../../src/components/Layout'
 import slugify from 'slugify'
 import Comments from '../../src/components/Comments'
 import FeatureProps from '../../src/components/Feature/FeatureProps'
-import FeatureNotes from '../../src/components/Feature/FeatureNotes'
 import { Tabs, Row, Col } from 'antd'
 import useT from '../../src/hooks/useT'
 
@@ -71,7 +70,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const geoJSON = await FeatureModel.getGeoJSON(mhid, layer.layer_id)
-  const notes = await FeatureModel.getFeatureNotes(mhid, layer.layer_id)
   if (geoJSON) {
     const photos = await PhotoAttachmentModel.getPhotosForFeature(
       layer.layer_id,
@@ -387,21 +385,6 @@ const FeaturePage = ({
                       </ErrorBoundary>
                     </TabPane>
                   )}
-                  <TabPane
-                    tab={t('Notes')}
-                    key='notes'
-                    style={{
-                      position: 'relative',
-                      height: '100%'
-                    }}
-                  >
-                    <FeatureNotes
-                      initialNotes={notes}
-                      canEdit={canEdit}
-                      layer_id={layer.layer_id}
-                      mhid={mhid}
-                    />
-                  </TabPane>
                   <TabPane
                     tab={t('Export')}
                     key='export'

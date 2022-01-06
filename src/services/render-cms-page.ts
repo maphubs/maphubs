@@ -1,10 +1,8 @@
 import Layer from '../models/layer'
 import Group from '../models/group'
 import Map from '../models/map'
-import Story from '../models/story'
 import pageOptions from './page-options-helper'
 import { Layer as LayerType } from '../types/layer'
-import { Story as StoryType } from '../types/story'
 import { Group as GroupType } from '../types/group'
 
 export default async function (
@@ -19,8 +17,6 @@ export default async function (
     featuredLayers?: LayerType[]
     popularLayers?: LayerType[]
     recentLayers?: LayerType[]
-    featuredStories?: StoryType[]
-    recentStories?: StoryType[]
     featuredGroups?: GroupType[]
     recentGroups?: GroupType[]
     featuredMaps?: any[]
@@ -43,36 +39,9 @@ export default async function (
             break
           }
           case 'storyfeed': {
-            if (component.datasets) {
-              await Promise.all(
-                component.datasets.map(async (dataset) => {
-                  const { type, max, tags } = dataset
-                  const number = max || 6
-
-                  switch (type) {
-                    case 'featured': {
-                      results.featuredStories = await Story.getFeaturedStories(
-                        number
-                      )
-
-                      break
-                    }
-                    case 'recent': {
-                      results.recentStories = await Story.getRecentStories({
-                        number,
-                        tags
-                      })
-
-                      break
-                    }
-                    // No default
-                  }
-                })
-              )
-            } else {
-              results.featuredStories = await Story.getFeaturedStories(5)
+            if (component.config) {
+              // TODO: implement Ghost
             }
-
             break
           }
           case 'carousel': {
@@ -153,27 +122,7 @@ export default async function (
 
                       break
                     }
-                    case 'story': {
-                      switch (filter) {
-                        case 'featured': {
-                          results.featuredStories =
-                            await Story.getFeaturedStories(number)
 
-                          break
-                        }
-                        case 'recent': {
-                          results.recentStories = await Story.getRecentStories({
-                            number,
-                            tags
-                          })
-
-                          break
-                        }
-                        // No default
-                      }
-
-                      break
-                    }
                     // No default
                   }
                 })

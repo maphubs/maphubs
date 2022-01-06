@@ -16,7 +16,6 @@ import type { Layer } from '../../src/types/layer'
 import type { Group } from '../../src/types/group'
 import ErrorBoundary from '../../src/components/ErrorBoundary'
 import XComponentReact from '../../src/components/XComponentReact'
-import { Story } from '../../src/types/story'
 import useT from '../../src/hooks/useT'
 import HomePageMap from '../../src/components/Home/HomePageMap'
 import HomePageButton from '../../src/components/Home/HomePageButton'
@@ -25,7 +24,6 @@ import { LocalizedString } from '../../src/types/LocalizedString'
 
 // SSR only
 import PageModel from '../../src/models/page'
-import StoryModel from '../../src/models/story'
 import GroupModel from '../../src/models/group'
 import LayerModel from '../../src/models/layer'
 import MapModel from '../../src/models/map'
@@ -36,8 +34,6 @@ type Props = {
   featuredLayers?: Layer[]
   popularLayers?: Layer[]
   recentLayers?: Layer[]
-  featuredStories?: Story[]
-  recentStories?: Story[]
   featuredGroups?: Group[]
   recentGroups?: Group[]
   featuredMaps?: Map[]
@@ -85,31 +81,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         switch (component.type) {
           case 'storyfeed': {
             if (component.datasets) {
-              await Promise.all(
-                component.datasets.map(async (dataset) => {
-                  const { type, max, tags } = dataset
-                  const number = max || 6
-
-                  switch (type) {
-                    case 'featured': {
-                      results.featuredStories =
-                        await StoryModel.getFeaturedStories(number)
-                      break
-                    }
-                    case 'recent': {
-                      results.recentStories = await StoryModel.getRecentStories(
-                        {
-                          number,
-                          tags
-                        }
-                      )
-                      break
-                    }
-                  }
-                })
-              )
-            } else {
-              results.featuredStories = await StoryModel.getFeaturedStories(5)
+              // TODO: implement Ghost storyfeed
             }
 
             break
@@ -182,25 +154,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                       }
                       break
                     }
-                    case 'story': {
-                      switch (filter) {
-                        case 'featured': {
-                          results.featuredStories =
-                            await StoryModel.getFeaturedStories(number)
-
-                          break
-                        }
-                        case 'recent': {
-                          results.recentStories =
-                            await StoryModel.getRecentStories({
-                              number,
-                              tags
-                            })
-                          break
-                        }
-                      }
-                      break
-                    }
                   }
                 })
               )
@@ -225,8 +178,6 @@ const CustomPage = ({
   featuredLayers,
   popularLayers,
   recentLayers,
-  featuredStories,
-  recentStories,
   featuredGroups,
   recentGroups,
   featuredMaps,
@@ -286,9 +237,7 @@ const CustomPage = ({
     const featuredMapsCards = featuredMaps
       ? shuffle(featuredMaps.map((element) => cardUtil.getMapCard(element)))
       : []
-    const featuredStoriesCards = featuredStories
-      ? shuffle(featuredStories.map((s) => cardUtil.getStoryCard(s, t)))
-      : []
+
     const popularLayersCards = popularLayers
       ? shuffle(popularLayers.map((element) => cardUtil.getLayerCard(element)))
       : []
@@ -301,9 +250,6 @@ const CustomPage = ({
       : []
     const recentMapsCards = recentMaps
       ? shuffle(recentMaps.map((element) => cardUtil.getMapCard(element)))
-      : []
-    const recentStoriesCards = recentStories
-      ? shuffle(recentStories.map((s) => cardUtil.getStoryCard(s, t)))
       : []
 
     if (config.datasets) {
@@ -330,12 +276,6 @@ const CustomPage = ({
 
             break
           }
-          case 'story': {
-            if (filter === 'featured') return featuredStoriesCards
-            if (filter === 'recent') return recentStoriesCards
-
-            break
-          }
           // No default
         }
       })
@@ -349,12 +289,10 @@ const CustomPage = ({
         featuredLayersCards,
         featuredGroupsCards,
         featuredMapsCards,
-        featuredStoriesCards,
         popularLayersCards,
         recentLayersCards,
         recentGroupsCards,
-        recentMapsCards,
-        recentStoriesCards
+        recentMapsCards
       ])
     }
 
@@ -416,14 +354,6 @@ const CustomPage = ({
   ): JSX.Element => {
     let stories = []
 
-    if (featuredStories && featuredStories.length > 0) {
-      stories = [...stories, ...featuredStories]
-    }
-
-    if (recentStories && recentStories.length > 0) {
-      stories = [...stories, ...recentStories]
-    }
-
     const title = config.title ? t(config.title) : t('Stories')
 
     const style = Object.assign(config.style || {}, {
@@ -459,7 +389,7 @@ const CustomPage = ({
               {stories.map((story) => {
                 return (
                   <Card
-                    key={story.story_id}
+                    key={story.id}
                     style={{
                       maxWidth: '800px',
                       marginLeft: 'auto',
@@ -468,7 +398,7 @@ const CustomPage = ({
                       border: '1px solid #ddd'
                     }}
                   >
-                    <StorySummary story={story} t={t} />
+                    <StorySummary story={story} />
                   </Card>
                 )
               })}

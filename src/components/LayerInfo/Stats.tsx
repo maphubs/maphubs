@@ -4,7 +4,6 @@ import useT from '../../hooks/useT'
 type Props = {
   stats: {
     maps: number
-    stories: number
   }
 }
 export default function LayerInfoStats({ stats }: Props): JSX.Element {
@@ -28,16 +27,6 @@ export default function LayerInfoStats({ stats }: Props): JSX.Element {
       >
         <b>{t('Maps')}</b>
         <p>{stats && stats.maps}</p>
-      </Col>
-      <Col
-        sm={16}
-        md={8}
-        style={{
-          textAlign: 'center'
-        }}
-      >
-        <b>{t('Stories')}</b>
-        <p>{stats && stats.stories}</p>
       </Col>
     </Row>
   )

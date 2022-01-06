@@ -1,4 +1,4 @@
-
+/* eslint-disable unicorn/prefer-module */
 exports.up = function (knex) {
   return Promise.all([
     knex.raw(`

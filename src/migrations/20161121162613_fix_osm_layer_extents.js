@@ -1,8 +1,9 @@
-
-exports.up = function (knex) {
-  return knex.raw('UPDATE omh.layers SET extent_bbox=\'[-175, -85, 175, 85]\' where owned_by_group_id=\'OpenStreetMap\'')
+/* eslint-disable unicorn/prefer-module */
+exports.up = () => {
+  // removed
+  return Promise.resolve()
 }
 
-exports.down = function () {
+exports.down = () => {
   return Promise.resolve()
 }

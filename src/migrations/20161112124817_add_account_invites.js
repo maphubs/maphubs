@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-module */
 exports.up = function (knex) {
   return Promise.all([
     knex.raw(`
@@ -16,7 +17,7 @@ exports.up = function (knex) {
                 REFERENCES users (id)
         )
     `),
-    knex('omh.admins').insert({user_id: 1})
+    knex('omh.admins').insert({ user_id: 1 })
   ])
 }
 

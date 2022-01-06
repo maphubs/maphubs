@@ -74,12 +74,6 @@ const MapHubsCard = ({
 
         break
       }
-      case 'story': {
-        icon = <LibraryBooksIcon style={iconStyle} />
-        toolTipText = t('Story')
-
-        break
-      }
       case 'map': {
         icon = <MapIcon style={iconStyle} />
         toolTipText = t('Map')
@@ -113,40 +107,7 @@ const MapHubsCard = ({
 
   let image
 
-  if (type === 'story' && (!image_url || imageFailed)) {
-    image = (
-      <div
-        className='card-image valign-wrapper'
-        style={{
-          width: '200px',
-          height: '150px'
-        }}
-      >
-        <LibraryBooksIcon
-          className='omh-accent-text valign center-align'
-          style={{
-            fontSize: '80px',
-            margin: 'auto'
-          }}
-        />
-        {addButton}
-      </div>
-    )
-  } else if (type === 'story' && image_url) {
-    image = (
-      <div
-        style={{
-          height: '150px',
-          width: '200px',
-          backgroundImage: 'url(' + image_url + ')',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      >
-        {addButton}
-      </div>
-    )
-  } else if (type === 'group' && (!image_url || imageFailed)) {
+  if (type === 'group' && (!image_url || imageFailed)) {
     image = (
       <div
         className='card-image valign-wrapper'

@@ -1,9 +1,9 @@
-exports.up = function (knex) {
-  return Promise.all([
-    knex.raw('UPDATE omh.layers SET settings=\'{}\' where settings IS NULL')
-  ])
+/* eslint-disable unicorn/prefer-module */
+exports.up = () => {
+  // removed
+  return Promise.resolve()
 }
 
-exports.down = function () {
+exports.down = () => {
   return Promise.resolve()
 }

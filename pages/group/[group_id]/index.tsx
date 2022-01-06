@@ -17,9 +17,7 @@ import useT from '../../../src/hooks/useT'
 import GroupModel from '../../../src/models/group'
 import LayerModel from '../../../src/models/layer'
 import MapModel from '../../../src/models/map'
-import StoryModel from '../../../src/models/story'
 import { Map } from '../../../src/types/map'
-import { Story } from '../../../src/types/story'
 import { Layer } from '../../../src/types/layer'
 
 const { Title } = Typography
@@ -27,7 +25,6 @@ type Props = {
   group: Group
   maps: Map[]
   layers: Layer[]
-  stories: Story[]
   allowedToModifyGroup?: boolean
 }
 type State = {
@@ -57,7 +54,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       group,
       maps: await MapModel.getGroupMaps(group_id),
       layers: await LayerModel.getGroupLayers(group_id, allowedToModifyGroup),
-      stories: await StoryModel.getGroupStories(group_id, allowedToModifyGroup),
       allowedToModifyGroup
     }
   }
@@ -66,7 +62,6 @@ const GroupInfo = ({
   group,
   maps,
   layers,
-  stories,
   allowedToModifyGroup
 }: Props): JSX.Element => {
   const { t } = useT()
@@ -75,8 +70,7 @@ const GroupInfo = ({
 
   const mapCards = maps.map((map) => cardUtil.getMapCard(map))
   const layerCards = layers.map((layer, i) => cardUtil.getLayerCard(layer, i))
-  const storyCards = stories.map((s) => cardUtil.getStoryCard(s, t))
-  const allCards = cardUtil.combineCards([mapCards, layerCards, storyCards])
+  const allCards = cardUtil.combineCards([mapCards, layerCards])
   let descriptionWithLinks = ''
 
   if (group.description) {
@@ -235,23 +229,6 @@ const GroupInfo = ({
                       >
                         <PlusOutlined />
                         {t('Layer')}
-                      </Button>
-                    </Col>
-                    <Col
-                      sm={24}
-                      md={6}
-                      style={{
-                        textAlign: 'right'
-                      }}
-                    >
-                      <Button
-                        style={{
-                          margin: 'auto'
-                        }}
-                        href={'/api/story/create?group_id=' + group.group_id}
-                      >
-                        <PlusOutlined />
-                        {t('Story')}
                       </Button>
                     </Col>
                     <Col

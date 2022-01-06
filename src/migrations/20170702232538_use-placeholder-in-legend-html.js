@@ -1,9 +1,9 @@
-
-exports.up = function (knex) {
-  return knex.raw(`UPDATE omh.layers 
-SET legend_html = regexp_replace(legend_html, '<h3>.*?<\\/h3>' , '<h3>{NAME}</h3>')`)
+/* eslint-disable unicorn/prefer-module */
+exports.up = () => {
+  // removed
+  return Promise.resolve()
 }
 
-exports.down = function () {
+exports.down = () => {
   return Promise.resolve()
 }

@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-module */
 exports.up = function (knex) {
   return knex.raw('ALTER TABLE omh.maps ADD COLUMN share_id text;')
 }

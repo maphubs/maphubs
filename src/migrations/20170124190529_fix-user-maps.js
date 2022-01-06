@@ -1,12 +1,9 @@
-
-exports.up = function (knex) {
-  return knex.raw(`
-        UPDATE omh.maps a SET owned_by_user_id = b.user_id
-        FROM omh.user_maps AS b
-        WHERE a.map_id = b.map_id;
-      `)
+/* eslint-disable unicorn/prefer-module */
+exports.up = () => {
+  // removed
+  return Promise.resolve()
 }
 
-exports.down = function () {
+exports.down = () => {
   return Promise.resolve()
 }

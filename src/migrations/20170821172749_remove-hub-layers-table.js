@@ -1,8 +1,8 @@
-
+/* eslint-disable unicorn/prefer-module */
 exports.up = function (knex) {
-  return knex.raw('drop table omh.hub_layers;')
+  return null
 }
 
 exports.down = function () {
-  return Promise.resolve()
+  return null
 }

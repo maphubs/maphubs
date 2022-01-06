@@ -6,18 +6,15 @@ import { GetServerSideProps } from 'next'
 import { Row, Col, Divider, Typography, Card } from 'antd'
 import TrendingUpIcon from '@material-ui/icons/TrendingUp'
 import CardCarousel from '../src/components/CardCarousel/CardCarousel'
-import StorySummary from '../src/components/Story/StorySummary'
 import Slides from '../src/components/Home/Slides'
 import OnboardingLinks from '../src/components/Home/OnboardingLinks'
 import MapHubsProLinks from '../src/components/Home/MapHubsProLinks'
 import _shuffle from 'lodash.shuffle'
 import cardUtil from '../src/services/card-util'
-
 import { Layer } from '../src/types/layer'
 import { Group } from '../src/types/group'
 import ErrorBoundary from '../src/components/ErrorBoundary'
 import XComponentReact from '../src/components/XComponentReact'
-import { Story } from '../src/types/story'
 import useT from '../src/hooks/useT'
 import HomePageMap from '../src/components/Home/HomePageMap'
 import HomePageButton from '../src/components/Home/HomePageButton'
@@ -26,7 +23,6 @@ import { LocalizedString } from '../src/types/LocalizedString'
 
 // SSR only
 import PageModel from '../src/models/page'
-import StoryModel from '../src/models/story'
 import GroupModel from '../src/models/group'
 import LayerModel from '../src/models/layer'
 import MapModel from '../src/models/map'
@@ -39,8 +35,6 @@ type Props = {
   featuredLayers?: Layer[]
   popularLayers?: Layer[]
   recentLayers?: Layer[]
-  featuredStories?: Story[]
-  recentStories?: Story[]
   featuredGroups?: Group[]
   recentGroups?: Group[]
   featuredMaps?: Map[]
@@ -83,34 +77,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       pageConfig.components.map(async (component: Record<string, any>) => {
         switch (component.type) {
           case 'storyfeed': {
-            if (component.datasets) {
-              await Promise.all(
-                component.datasets.map(async (dataset) => {
-                  const { type, max, tags } = dataset
-                  const number = max || 6
-
-                  switch (type) {
-                    case 'featured': {
-                      results.featuredStories =
-                        await StoryModel.getFeaturedStories(number)
-                      break
-                    }
-                    case 'recent': {
-                      results.recentStories = await StoryModel.getRecentStories(
-                        {
-                          number,
-                          tags
-                        }
-                      )
-                      break
-                    }
-                  }
-                })
-              )
-            } else {
-              results.featuredStories = await StoryModel.getFeaturedStories(5)
+            if (component.config) {
+              // TODO: implement Ghost storyfeed
             }
-
             break
           }
           case 'carousel': {
@@ -181,25 +150,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                       }
                       break
                     }
-                    case 'story': {
-                      switch (filter) {
-                        case 'featured': {
-                          results.featuredStories =
-                            await StoryModel.getFeaturedStories(number)
-
-                          break
-                        }
-                        case 'recent': {
-                          results.recentStories =
-                            await StoryModel.getRecentStories({
-                              number,
-                              tags
-                            })
-                          break
-                        }
-                      }
-                      break
-                    }
                   }
                 })
               )
@@ -227,8 +177,6 @@ const Home = ({
   featuredLayers,
   popularLayers,
   recentLayers,
-  featuredStories,
-  recentStories,
   featuredGroups,
   recentGroups,
   featuredMaps,
@@ -290,9 +238,6 @@ const Home = ({
     const featuredMapsCards = featuredMaps
       ? shuffle(featuredMaps.map((element) => cardUtil.getMapCard(element)))
       : []
-    const featuredStoriesCards = featuredStories
-      ? shuffle(featuredStories.map((s) => cardUtil.getStoryCard(s, t)))
-      : []
     const popularLayersCards = popularLayers
       ? shuffle(popularLayers.map((element) => cardUtil.getLayerCard(element)))
       : []
@@ -305,9 +250,6 @@ const Home = ({
       : []
     const recentMapsCards = recentMaps
       ? shuffle(recentMaps.map((element) => cardUtil.getMapCard(element)))
-      : []
-    const recentStoriesCards = recentStories
-      ? shuffle(recentStories.map((s) => cardUtil.getStoryCard(s, t)))
       : []
 
     if (config.datasets) {
@@ -334,12 +276,6 @@ const Home = ({
 
             break
           }
-          case 'story': {
-            if (filter === 'featured') return featuredStoriesCards
-            if (filter === 'recent') return recentStoriesCards
-
-            break
-          }
           // No default
         }
       })
@@ -353,12 +289,10 @@ const Home = ({
         featuredLayersCards,
         featuredGroupsCards,
         featuredMapsCards,
-        featuredStoriesCards,
         popularLayersCards,
         recentLayersCards,
         recentGroupsCards,
-        recentMapsCards,
-        recentStoriesCards
+        recentMapsCards
       ])
     }
 
@@ -420,13 +354,7 @@ const Home = ({
   ): JSX.Element => {
     let stories = []
 
-    if (featuredStories && featuredStories.length > 0) {
-      stories = [...stories, ...featuredStories]
-    }
-
-    if (recentStories && recentStories.length > 0) {
-      stories = [...stories, ...recentStories]
-    }
+    // TODO: implment Ghost storyfeed
 
     const title = config.title ? t(config.title) : t('Stories')
 
@@ -463,7 +391,7 @@ const Home = ({
               {stories.map((story) => {
                 return (
                   <Card
-                    key={story.story_id}
+                    key={story.id}
                     style={{
                       maxWidth: '800px',
                       marginLeft: 'auto',
@@ -472,7 +400,7 @@ const Home = ({
                       border: '1px solid #ddd'
                     }}
                   >
-                    <StorySummary story={story} t={t} />
+                    <></>
                   </Card>
                 )
               })}

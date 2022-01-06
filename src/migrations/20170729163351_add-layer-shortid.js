@@ -1,13 +1,6 @@
-var shortid = require('shortid')
+/* eslint-disable unicorn/prefer-module */
 exports.up = function (knex) {
   return knex.raw('ALTER TABLE omh.layers ADD COLUMN shortid text;')
-    .then(() => {
-      return knex.select('layer_id').from('omh.layers').then(layers => {
-        return Promise.all(layers.map(layer => {
-          return knex('omh.layers').update({shortid: shortid.generate()}).where({layer_id: layer.layer_id})
-        }))
-      })
-    })
 }
 
 exports.down = function (knex) {

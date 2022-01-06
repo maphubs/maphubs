@@ -1,6 +1,5 @@
 import slugify from 'slugify'
 import Layer from '../models/layer'
-import Story from '../models/story'
 import Map from '../models/map'
 import Group from '../models/group'
 import urlUtil from './url-util'
@@ -56,26 +55,6 @@ export default {
           '/' +
           slugify(layer.name.en),
         changefreq: 'weekly',
-        lastmodISO
-      })
-    }
-    return sm
-  },
-
-  async addStoriesToSiteMap(sm: any): Promise<any> {
-    const stories = await Story.getAllStories().orderBy(
-      'omh.stories.updated_at',
-      'desc'
-    )
-    for (const story of stories) {
-      const title = story.title.en
-      const baseUrl = urlUtil.getBaseUrl()
-      const story_url = `${baseUrl}/story/${slugify(title)}/${story.story_id}`
-      let lastmodISO = null
-      if (story.updated_at) lastmodISO = story.updated_at.toISOString()
-      sm.write({
-        url: story_url,
-        changefreq: 'daily',
         lastmodISO
       })
     }

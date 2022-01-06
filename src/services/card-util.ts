@@ -1,9 +1,6 @@
-import slugify from 'slugify'
 import type { Layer } from '../types/layer'
 import type { CardConfig } from '../components/CardCarousel/Card'
-
 import urlUtil from './url-util'
-import { LocalizedString } from '../types/LocalizedString'
 
 type CardConfigArray = Array<CardConfig>
 export default {
@@ -85,51 +82,26 @@ export default {
     }
   },
 
-  getStoryCard(
-    story: Record<string, any>,
-    t: (v: string | LocalizedString) => string
-  ): {
+  getStoryCard(story: Record<string, any>): {
     data: any
-    draft: any
-    group: {
-      group_id: any
-      name: any
-    }
     id: string
     image_url: any | void | string
     link: string
     title: any
     type: string
   } {
-    let title = t(story.title)
-    title = title
-      .replace('<br>', '')
-      .replace('<br />', '')
-      .replace('<p>', '')
-      .replace('</p>', '')
-    const baseUrl = urlUtil.getBaseUrl()
-    const story_url = `${baseUrl}/story/${slugify(title)}/${story.story_id}`
+    // TODO: update to support Ghost
+    const title = story.title
+
+    const story_url = ``
     let image_url
 
-    if (story.firstimage) {
-      image_url = story.firstimage.replace(/\/image\//i, '/thumbnail/')
-
-      if (image_url.startsWith(baseUrl)) {
-        image_url = image_url.replace(baseUrl, '')
-      }
-    }
-
     return {
-      id: `story-${story.story_id.toString()}`,
+      id: `story-${story.id.toString()}`,
       title,
       image_url,
       link: story_url,
       type: 'story',
-      group: {
-        group_id: story.owned_by_group_id,
-        name: story.groupname
-      },
-      draft: !story.published,
       data: story
     }
   }

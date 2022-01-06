@@ -3,8 +3,7 @@ import { Row, Col, Typography } from 'antd'
 import {
   UploadOutlined,
   CloudDownloadOutlined,
-  UsergroupAddOutlined,
-  ReadOutlined
+  UsergroupAddOutlined
 } from '@ant-design/icons'
 import useT from '../../hooks/useT'
 
@@ -18,7 +17,7 @@ const MapHubsProLinks = (): JSX.Element => {
         width: '100%'
       }}
     >
-      <Col sm={24} md={6}>
+      <Col sm={24} md={8}>
         <div
           className='mhp-links-icon-wrapper'
           style={{
@@ -45,7 +44,7 @@ const MapHubsProLinks = (): JSX.Element => {
           </a>
         </div>
       </Col>
-      <Col sm={24} md={6}>
+      <Col sm={24} md={8}>
         <div
           className='mhp-links-icon-wrapper'
           style={{
@@ -72,7 +71,7 @@ const MapHubsProLinks = (): JSX.Element => {
           </a>
         </div>
       </Col>
-      <Col sm={24} md={6}>
+      <Col sm={24} md={8}>
         <div
           className='mhp-links-icon-wrapper'
           style={{
@@ -99,33 +98,7 @@ const MapHubsProLinks = (): JSX.Element => {
           </a>
         </div>
       </Col>
-      <Col sm={24} md={6}>
-        <div
-          className='mhp-links-icon-wrapper'
-          style={{
-            textAlign: 'center'
-          }}
-        >
-          <a
-            href='/api/story/create'
-            style={{
-              margin: 'auto'
-            }}
-          >
-            <div
-              className='valign-wrapper'
-              style={{
-                height: '125px',
-                position: 'relative',
-                margin: 'auto'
-              }}
-            >
-              <ReadOutlined />
-            </div>
-            <Title level={4}>{t('Create a Story')}</Title>
-          </a>
-        </div>
-      </Col>
+
       <style jsx global>
         {`
           .mhp-links-icon-wrapper {

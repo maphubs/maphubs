@@ -1,32 +1,19 @@
-
+/* eslint-disable unicorn/prefer-module */
 exports.up = function (knex) {
   return knex.raw(`
         INSERT INTO omh.page (page_id, config) VALUES ('footer', '{
   "showPoweredByMapHubs": true,
-  "showMapForEnvironmentMoabiLogo": false,
-  "copyrightText": "2017 MapHubs, Inc.",
+  "copyrightText": 2022 MapHubs, Inc.",
   "showContactUs": true,
   "links": [
     {
       "name": "Help",
-      "href": "http://help.maphubs.com",
+      "href": "https://maphubs.notion.site/MapHubs-Help-8888dfa464f04661afa4cde0057fff37",
       "target": "_blank"
     },
     {
       "name": "About",
       "href": "https://maphubs.com"
-    },
-    {
-      "name": "Journalists",
-      "href": "/journalists"
-    },
-    {
-      "name": "Terms",
-      "href": "/terms"
-    },
-    {
-      "name": "Privacy",
-      "href": "/privacy"
     }
   ]
   }')

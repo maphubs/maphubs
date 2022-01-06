@@ -4,7 +4,6 @@ import DebugService from '@bit/kriscarle.maphubs-utils.maphubs-utils.debug'
 import GroupModel from '../../models/group'
 import LayerModel from '../../models/layer'
 import MapModel from '../../models/map'
-import StoryModel from '../../models/story'
 import UserModel from '../../models/user'
 import ImageModel from '../../models/image'
 import safeCompare from 'safe-compare'
@@ -76,7 +75,7 @@ export default {
     const { user } = context
     if (group_id) {
       if (await GroupModel.isGroupAdmin(group_id, Number.parseInt(user.sub))) {
-        // check if the group has any layers, maps, or stories
+        // check if the group has any layers or maps
         const layers = await LayerModel.getGroupLayers(group_id, false)
         if (layers && layers.length > 0) {
           throw new Error(
@@ -89,12 +88,7 @@ export default {
             'Group has maps: You must first delete all the maps in this group'
           )
         }
-        const stories = await StoryModel.getGroupStories(group_id, true)
-        if (stories && stories.length > 0) {
-          throw new Error(
-            'Group has stories: You must first delete all the stories in this group'
-          )
-        }
+
         const result = await GroupModel.deleteGroup(group_id)
         return result
       } else {

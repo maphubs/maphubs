@@ -33,14 +33,9 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
       changefreq: 'daily'
     })
     smStream.write({
-      url: `${baseUrl}/stories`,
-      changefreq: 'daily'
-    })
-    smStream.write({
       url: `${baseUrl}/groups`,
       changefreq: 'daily'
     })
-    await siteMapUtil.addStoriesToSiteMap(smStream)
     await siteMapUtil.addMapsToSiteMap(smStream)
     await siteMapUtil.addLayersToSiteMap(smStream)
     await siteMapUtil.addGroupsToSiteMap(smStream)

@@ -17,11 +17,6 @@ const ExploreDropdown = ({ t }: { t: (v: string) => string }): JSX.Element => {
         </Link>
       </Menu.Item>
       <Menu.Item>
-        <Link href='/stories'>
-          <a className='nav-hover-menu-item'>{t('Stories')}</a>
-        </Link>
-      </Menu.Item>
-      <Menu.Item>
         <Link href='/layers'>
           <a className='nav-hover-menu-item'>{t('Layers')}</a>
         </Link>

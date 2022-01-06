@@ -1,24 +1,17 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable unicorn/prefer-module */
+
 const path = require('path')
 const withAntdLess = require('next-plugin-antd-less')
 const { getThemeVariables } = require('antd/dist/theme')
 const lessToJS = require('less-vars-to-js')
 const fs = require('fs')
-// const { styles } = require('@ckeditor/ckeditor5-dev-utils')
 
 const { ASSET_CDN_PREFIX } = process.env
 
 const useCDN = ASSET_CDN_PREFIX && process.env.NODE_ENV === 'production'
 const assetPrefix = useCDN ? ASSET_CDN_PREFIX : ''
 console.log(`assetPrefix: ${assetPrefix}`)
-
-/*
-const postCSSConfig = styles.getPostCssConfig({
-  themeImporter: {
-    themePath: require.resolve('@ckeditor/ckeditor5-theme-lark')
-  },
-  minify: true
-})
-*/
 
 const antdThemeVariables = getThemeVariables({
   dark: false,

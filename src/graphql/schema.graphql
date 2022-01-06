@@ -36,19 +36,6 @@ type LayerStats {
   stats: JSON
 }
 
-type Story {
-  story_id: ID!
-  title: JSON
-  firstimage: String
-  summary: JSON
-  body: JSON
-  published: Boolean
-  author: JSON
-  owned_by_group_id: String
-  groupname: JSON
-  published_at: String
-}
-
 type Map {
   map_id: ID!
   title: JSON
@@ -73,10 +60,6 @@ type PageConfig {
   mapConfig: JSON
 }
 
-type LayerNotes {
-  notes: String
-}
-
 type LocalizedString {
   en: String
   fr: String
@@ -95,7 +78,6 @@ type Query {
   recentGroups(limit: Int): [Group]
   groupLayers(id: String, includeMapInfo: Boolean): [Layer]
   groupMaps(id: String): [Map]
-  groupStories(id: String): [Story]
   allowedToModifyGroup(id: String): Boolean
   groupMembers(id: String): [User]
   userGroups: [Group]
@@ -109,14 +91,6 @@ type Query {
   layerStats: LayerStats
   allowedToModifyLayer(id: Int): Boolean
   myLayers(limit: Int): [Layer]
-  layerNotes(id: Int): LayerNotes
-
-  # Stories
-  stories: [Story]
-  story(id: Int): Story
-  featuredStories(limit: Int): [Story]
-  recentStories(limit: Int, tags: JSON): [Story]
-  allowedToModifyStory(id: Int): Boolean
 
   # Maps
   maps(locale: String): [Map]

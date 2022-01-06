@@ -19,7 +19,6 @@ import Comments from '../../../src/components/Comments'
 import TerraformerGL from '../../../src/services/terraformerGL'
 import GroupTag from '../../../src/components/Groups/GroupTag'
 import Licenses from '../../../src/components/CreateLayer/licenses'
-import LayerNotes from '../../../src/components/CreateLayer/LayerNotes'
 import DataGrid from '../../../src/components/Maps/DataGrid/DataGrid'
 import MapStyles from '../../../src/components/Maps/Map/Styles'
 import geobuf from 'geobuf'
@@ -83,10 +82,9 @@ type GeoJSONState = {
 
 type Props = {
   layer: Layer
-  layerNotes: { notes: string }
   allowedToModifyLayer: boolean
   mapConfig: Record<string, unknown>
-  layerStats: { maps: number; stories: number }
+  layerStats: { maps: number }
 }
 
 // use SSR for SEO
@@ -112,7 +110,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       layer,
-      layerNotes: await LayerModel.getLayerNotes(layer_id),
       layerStats: await LayerStatsModel.getLayerStats(layer_id),
       mapConfig,
       allowedToModifyLayer
@@ -122,7 +119,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const LayerInfo = ({
   layer,
-  layerNotes,
   allowedToModifyLayer,
   mapConfig,
   layerStats
@@ -677,13 +673,7 @@ const LayerInfo = ({
                       </Row>
                       <Stats stats={layerStats} />
                     </TabPane>
-                    <TabPane tab={t('Notes')} key='notes'>
-                      <LayerNotes
-                        canEdit={allowedToModifyLayer}
-                        initialNotes={layerNotes?.notes}
-                        layer_id={layer.layer_id}
-                      />
-                    </TabPane>
+
                     {process.env.NEXT_PUBLIC_ENABLE_COMMENTS && (
                       <TabPane tab={t('Discuss')} key='discuss'>
                         <ErrorBoundary t={t}>

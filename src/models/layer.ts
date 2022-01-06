@@ -583,18 +583,6 @@ export default {
     return false
   },
 
-  async getLayerNotes(layer_id: number): Promise<{ notes: string } | null> {
-    const result = await knex('omh.layer_notes').select('notes').where({
-      layer_id
-    })
-
-    if (result && result.length === 1) {
-      return result[0]
-    }
-
-    return null
-  },
-
   async getGeoJSON(layer_id: number): Promise<any> {
     const layerTable = `layers.data_${layer_id}`
     const data = await knex.raw(
@@ -956,7 +944,7 @@ export default {
         .where({
           layer_id
         })
-        .del()
+        .del() // keep until all layer notes are deleted
       await PhotoAttachment.removeAllLayerAttachments(layer_id, trx)
       await trx('omh.layers')
         .where({
@@ -1162,35 +1150,6 @@ export default {
     trx?: Knex.Transaction
   ): Promise<number> {
     return Presets.savePresets(layer_id, presets, style, user_id, create, trx)
-  },
-
-  async saveLayerNote(
-    layer_id: number,
-    user_id: number,
-    notes: string
-  ): Promise<Knex.QueryBuilder> {
-    const result = await knex('omh.layer_notes').select('layer_id').where({
-      layer_id
-    })
-
-    return result && result.length === 1
-      ? knex('omh.layer_notes')
-          .update({
-            notes,
-            updated_by: user_id,
-            updated_at: knex.raw('now()')
-          })
-          .where({
-            layer_id
-          })
-      : knex('omh.layer_notes').insert({
-          layer_id,
-          notes,
-          created_by: user_id,
-          created_at: knex.raw('now()'),
-          updated_by: user_id,
-          updated_at: knex.raw('now()')
-        })
   },
 
   async importLayer(

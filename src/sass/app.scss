@@ -1,8 +1,9 @@
-
-html, body {
+html,
+body {
   height: 100%;
   font-display: auto;
-  font-family: -apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', sans-serif
+  font-family: -apple-system, BlinkMacSystemFont, Roboto, 'Open Sans',
+    sans-serif;
 }
 
 #__next {
@@ -29,17 +30,21 @@ nav {
   background-color: $nav-background-color;
 }
 
-nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
+nav,
+nav .nav-wrapper i,
+nav a.button-collapse,
+nav a.button-collapse i {
   height: 50px;
   line-height: 50px;
 }
 
-.nav-menu, .ant-layout-header {
+.nav-menu,
+.ant-layout-header {
   background: $nav-background-color !important;
   color: $navbar-font-color !important;
 }
 
-.ant-menu-item  {
+.ant-menu-item {
   background: $nav-background-color !important;
 }
 
@@ -60,30 +65,30 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 .category-dropdown-button {
-  color:$navbar-font-color !important;
+  color: $navbar-font-color !important;
 }
 
 .category-dropdown-button i {
-  color:$navbar-font-color !important;
+  color: $navbar-font-color !important;
 }
 
 .selected-feature-close {
   float: right;
   z-index: 999;
-  color: #FFF;
+  color: #fff;
   background-color: $primary-color;
 }
 
-#beta-text{
-  color:$navbar-font-color !important;
+#beta-text {
+  color: $navbar-font-color !important;
 }
 
-.dropdown-content li:hover{
+.dropdown-content li:hover {
   color: $navbar-hover-font-color;
   background-color: $primary-color;
 }
 
-.dropdown-content li>a:hover{
+.dropdown-content li > a:hover {
   color: $navbar-hover-font-color;
   background-color: $primary-color;
 }
@@ -97,18 +102,18 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   color: $navbar-hover-font-color;
   background-color: $primary-color;
 
-  -o-transition:.5s;
-  -ms-transition:.5s;
-  -moz-transition:.5s;
-  -webkit-transition:.5s;
-  transition:.5s;
+  -o-transition: 0.5s;
+  -ms-transition: 0.5s;
+  -moz-transition: 0.5s;
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
 }
 
 .input-field label {
   font-size: 0.8rem !important;
 }
 
-.input-field input[type=search] {
+.input-field input[type='search'] {
   padding-left: 32px;
   width: calc(100% - 32px);
   border-radius: 25px;
@@ -118,11 +123,11 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   opacity: 0 !important;
 }
 
- .image-remove-button {
-   display: none;
- }
+.image-remove-button {
+  display: none;
+}
 
- .map-remove-button {
+.map-remove-button {
   display: none;
 }
 
@@ -130,42 +135,46 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 
 .fade {
   position: relative;
-  height: 6.0em; /* exactly 4 lines */
+  height: 6em; /* exactly 4 lines */
   line-height: 1.5em;
   overflow: hidden;
 }
 
 .fade span {
-  height: 6.0em; /* exactly 4 lines */
+  height: 6em; /* exactly 4 lines */
   line-height: 1.5em;
 }
 .fade:after {
-  content: "";
+  content: '';
   text-align: right;
   position: absolute;
   bottom: 0;
   right: 0;
   width: 60%;
   height: 1.5em;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 50%);
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 1) 50%
+  );
 }
 
-  .attribute-collection-item {
-    padding: 2px;
-  }
+.attribute-collection-item {
+  padding: 2px;
+}
 
-  .attribute-collection-item p {
-    margin: 0;
-  }
+.attribute-collection-item p {
+  margin: 0;
+}
 
-  .page-footer {
-    color: $footer-font-color;
-  }
+.page-footer {
+  color: $footer-font-color;
+}
 
-  .footer-copyright {
-     color: $footer-font-color !important;
-    background-color: $footer-bg-color !important;
-  }
+.footer-copyright {
+  color: $footer-font-color !important;
+  background-color: $footer-bg-color !important;
+}
 
 @mixin word-wrap() {
   overflow-wrap: break-word;
@@ -191,20 +200,20 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
   display: none;
 }
 
-.image-crop-modal{
+.image-crop-modal {
   width: 90% !important;
   height: 85% !important;
   max-height: 85% !important;
   max-width: 915px !important;
 }
 
-.create-map-modal{
+.create-map-modal {
   width: 100% !important;
   height: 85% !important;
   max-height: 85% !important;
 }
 
-.code-edit-modal{
+.code-edit-modal {
   width: 95vw !important;
   max-width: 800px !important;
   height: 95vh !important;
@@ -220,7 +229,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 .embed-map-container {
-  position:relative;
+  position: relative;
   padding-bottom: 50%;
   padding-top: 30px;
   height: 0 !important;
@@ -228,7 +237,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 .embed-map-container iframe {
-  border:none;
+  border: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -237,7 +246,7 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 .embed-image-container {
-  position:relative;
+  position: relative;
 }
 
 .embed-image-container img {
@@ -245,57 +254,27 @@ nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
 }
 
 .label-field input {
- text-align: center;
+  text-align: center;
   border-bottom: none !important;
   height: 50px !important;
-  margin: 0  !important;
+  margin: 0 !important;
   padding-right: 5px;
   line-height: 50px !important;
 }
 
-.custom-scroll-bar::-webkit-scrollbar-track
-{
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    border-radius: 10px;
-    background-color: #F5F5F5;
+.custom-scroll-bar::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #f5f5f5;
 }
 
-.custom-scroll-bar::-webkit-scrollbar
-{
-    width: 8px;
-    background-color: #F5F5F5;
+.custom-scroll-bar::-webkit-scrollbar {
+  width: 8px;
+  background-color: #f5f5f5;
 }
 
-.custom-scroll-bar::-webkit-scrollbar-thumb
-{
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-    background-color: $primary-color;
-}
-
-
-.story-media-edit-button {
-  height:30px;
-  line-height: 30px;
-  width: 30px;
-  color: $primary-color;
-  border-radius: 4px;
-  cursor: pointer;
-  background-color: white;
-  border-color: #ddd;
-  border-style: solid;
-  border-width: 1px;
-  z-index: 100;
-  text-align: center;
-  margin-right: 5px;
-  font-size: 25px;
-}
-
-.story-title {
-  font-display: auto;
-  font-family: -apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', sans-serif
-}
-
-.notes-content {
-  height: calc(100% - 25px);
+.custom-scroll-bar::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: $primary-color;
 }
