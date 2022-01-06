@@ -37,7 +37,7 @@ const SaveMapModal = ({
 
   let user
   if (!loading) {
-    user = session.user
+    user = session?.user
   }
 
   const recheckLogin = (): void => {
