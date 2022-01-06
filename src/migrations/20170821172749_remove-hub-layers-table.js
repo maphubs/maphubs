@@ -1,8 +1,9 @@
 /* eslint-disable unicorn/prefer-module */
-exports.up = function (knex) {
-  return null
+exports.up = () => {
+  // removed
+  return Promise.resolve()
 }
 
-exports.down = function () {
-  return null
+exports.down = () => {
+  return Promise.resolve()
 }

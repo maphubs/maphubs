@@ -1,7 +1,6 @@
 var getenv = require('getenv')
-var connection = `postgres://${getenv('DB_USER')}:${getenv('DB_PASS')}@${getenv('DB_HOST')}:${getenv('DB_PORT')}/${getenv('DB_DATABASE')}`
+var connection = getenv('DB_CONNECTION')
 module.exports = {
-
   development: {
     client: 'pg',
     connection,

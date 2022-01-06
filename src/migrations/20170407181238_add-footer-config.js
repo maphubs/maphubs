@@ -3,7 +3,7 @@ exports.up = function (knex) {
   return knex.raw(`
         INSERT INTO omh.page (page_id, config) VALUES ('footer', '{
   "showPoweredByMapHubs": true,
-  "copyrightText": 2022 MapHubs, Inc.",
+  "copyrightText": "2022 MapHubs, Inc.",
   "showContactUs": true,
   "links": [
     {
